@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+}
+
+.graph-viz {
+  width: 100%;
+  height: 100px;
+  background: white;
+  text-align: left;
+}

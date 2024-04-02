@@ -1,0 +1,4 @@
+fastapi
+networkx
+numpy
+pandas
