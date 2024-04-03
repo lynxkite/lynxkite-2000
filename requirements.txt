@@ -2,3 +2,4 @@ fastapi
 networkx
 numpy
 pandas
+uvicorn

@@ -79,4 +79,21 @@ engine.events.afterRun.subscribe(token, (result) => {
     applyResult(result, baklava.editor);
     engine.resume();
 });
+let lastSave;
+baklava.editor.nodeEvents.update.subscribe(token, async (result) => {
+  const s = JSON.stringify(baklava.editor.save());
+  if (s !== lastSave) {
+    lastSave = s;
+    console.log('save', JSON.parse(s));
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: s,
+    });
+    const j = await res.json();
+    console.log('save response', j);
+  }
+});
 </script>
