@@ -8,3 +8,7 @@ body {
   background: white;
   text-align: left;
 }
+
+.baklava-node-interface[data-interface-type="graph"] .__port {
+  background-color: #39bcf3;
+}

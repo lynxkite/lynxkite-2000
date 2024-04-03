@@ -17,11 +17,15 @@
 
 <script setup lang="ts">
 import { BaklavaEditor, useBaklava } from "@baklavajs/renderer-vue";
+import { BaklavaInterfaceTypes, NodeInterfaceType, setType } from "@baklavajs/interface-types";
 import * as BaklavaJS from "baklavajs";
 import "@baklavajs/themes/dist/syrup-dark.css";
 import { markRaw } from "vue";
 import { NodeInterface } from "baklavajs";
 import GraphViz from "./components/GraphViz.vue";
+
+const graphType = new NodeInterfaceType<string>("graph");
+const tableType = new NodeInterfaceType<string>("table");
 
 const ops = [
   { name: 'Create scale-free graph', type: 'Creation', inputs: [], outputs: ['graph'], params: ['Number of nodes'] },
@@ -40,26 +44,40 @@ const ops = [
 ];
 
 function makeParam(param: string): NodeInterface {
-  return new BaklavaJS.TextInputInterface(param).setPort(false);
+  return new BaklavaJS.TextInputInterface(param, "").setPort(false);
 }
 
 function makeOutput(output: string): NodeInterface {
   if (output === 'graph-viz') {
     return new NodeInterface(output, 0).setComponent(markRaw(GraphViz)).setPort(false);
-  } else if (output === 'num') {
-    return new BaklavaJS.NumberInterface(output, 0);
+  } else if (output === 'graph') {
+    return new BaklavaJS.NodeInterface(output, 0).use(setType, graphType);
+  } else if (output === 'table') {
+    return new BaklavaJS.NodeInterface(output, 0).use(setType, tableType);
   } else {
     return new BaklavaJS.NodeInterface(output, 0);
   }
 }
+function makeInput(input: string): NodeInterface {
+  if (input === 'graph') {
+    return new BaklavaJS.NodeInterface(input, 0).use(setType, graphType);
+  } else if (input === 'table') {
+    return new BaklavaJS.NodeInterface(input, 0).use(setType, tableType);
+  } else {
+    return new BaklavaJS.NodeInterface(input, 0);
+  }
+}
 
 const baklava = useBaklava();
+const nodeInterfaceTypes = new BaklavaInterfaceTypes(baklava.editor, { viewPlugin: baklava });
+nodeInterfaceTypes.addTypes(graphType, tableType);
+
 for (const op of ops) {
   baklava.editor.registerNodeType(BaklavaJS.defineNode({
     type: op.name,
     inputs: {
-      ...op.inputs.reduce((acc, input) => ({ ...acc, [input]: () => new BaklavaJS.NodeInterface(input) }), {}),
-      ...op.params.reduce((acc, param) => ({ ...acc, [param]: () => makeParam(param)}), {}),
+      ...op.inputs.reduce((acc, input) => ({ ...acc, [input]: () => makeInput(input) }), {}),
+      ...op.params.reduce((acc, param) => ({ ...acc, [param]: () => makeParam(param) }), {}),
     },
     outputs: op.outputs.reduce((acc, output) => ({ ...acc, [output]: () => makeOutput(output) }), {}),
     calculate: op.calculate,
