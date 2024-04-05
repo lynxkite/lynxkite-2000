@@ -1,23 +1,24 @@
 {
-  "name": "lynxkite-2000",
+  "name": "vite-svelte-flow-template",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "baklavajs": "^2.4.3",
-    "graphology": "^0.25.4",
-    "sigma": "^3.0.0-beta.14",
-    "vue": "^3.4.21"
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vue-tsc": "^2.0.6"
+    "@sveltejs/vite-plugin-svelte": "^3.0.2",
+    "@tsconfig/svelte": "^5.0.4",
+    "svelte": "^4.2.12",
+    "svelte-check": "^3.6.9",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.4",
+    "vite": "^5.2.8"
+  },
+  "dependencies": {
+    "@xyflow/svelte": "^0.0.40"
   }
 }
