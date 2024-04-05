@@ -1,6 +1,7 @@
 from typing import Union
 import fastapi
 import pydantic
+import networkx as nx
 
 class Position(pydantic.BaseModel):
     x: float
@@ -45,4 +46,5 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @app.post("/api/save")
 def save(ws: Workspace):
     print(ws)
-    return {"status": "ok"}
+    G = nx.scale_free_graph(100)
+    return {"graph": list(nx.to_edgelist(G))}

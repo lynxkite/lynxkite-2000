@@ -49,7 +49,7 @@ function makeParam(param: string): NodeInterface {
 
 function makeOutput(output: string): NodeInterface {
   if (output === 'graph-viz') {
-    return new NodeInterface(output, 0).setComponent(markRaw(GraphViz)).setPort(false);
+    return new NodeInterface(output, "asd").setComponent(markRaw(GraphViz)).setPort(false);
   } else if (output === 'graph') {
     return new BaklavaJS.NodeInterface(output, 0).use(setType, graphType);
   } else if (output === 'table') {
