@@ -6,6 +6,7 @@
     Background,
     MiniMap,
     MarkerType,
+    Position,
     type Node,
     type Edge,
   } from '@xyflow/svelte';
@@ -22,12 +23,21 @@
       type: 'basic',
       data: { title: 'Compute PageRank', params: { damping: 0.85, iterations: 3 } },
       position: { x: 0, y: 0 },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
     },
     {
       id: '2',
       // type: 'basic',
       data: { label: 'World' },
       position: { x: 150, y: 150 },
+    },
+    {
+      id: '3',
+      type: 'basic',
+      data: { title: 'Import Parquet', params: { filename: '/tmp/x.parquet' } },
+      position: { x: -300, y: 0 },
+      sourcePosition: Position.Right,
     },
   ]);
 

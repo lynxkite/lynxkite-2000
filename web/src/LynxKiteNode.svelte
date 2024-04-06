@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Handle, Position, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
+  import { Handle, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
 
   type $$Props = NodeProps;
 
@@ -19,24 +19,37 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
 
   const { updateNodeData } = useSvelteFlow();
+
+  let expanded = true;
+  function titleClicked() {
+    expanded = !expanded;
+  }
 </script>
 
 <div class="node-container">
   <div class="lynxkite-node">
-    <div class="title">{data.title}</div>
-    {#each Object.entries(data.params) as [name, value]}
-    <div class="param">
-      <label>
-        {name}<br>
-        <input
-          value={value}
-          on:input={(evt) => updateNodeData(id, { params: { ...data.params, [name]: evt.currentTarget.value } })}
-        />
-      </label>
+    <div class="title" on:click={titleClicked}>
+      {data.title}
     </div>
-    {/each}
-    <Handle type="source" position={Position.Right} />
-    <Handle type="target" position={Position.Left} />
+    {#if expanded}
+      {#each Object.entries(data.params) as [name, value]}
+        <div class="param">
+          <label>
+            {name}<br>
+            <input
+              value={value}
+              on:input={(evt) => updateNodeData(id, { params: { ...data.params, [name]: evt.currentTarget.value } })}
+            />
+          </label>
+        </div>
+      {/each}
+    {/if}
+    {#if sourcePosition}
+      <Handle type="source" position={sourcePosition} />
+    {/if}
+    {#if targetPosition}
+      <Handle type="target" position={targetPosition} />
+    {/if}
   </div>
 </div>
 
@@ -59,9 +72,10 @@
     background: white;
   }
   .title {
-    background: #ff8800; /* Brand color. */
+    background: #ff8800;
     font-weight: bold;
     padding: 8px;
+    min-width: 170px;
     max-width: 300px;
   }
 </style>
