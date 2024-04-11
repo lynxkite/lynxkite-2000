@@ -65,7 +65,7 @@
     width: calc(100% - 8px);
   }
   .node-container {
-    padding: 5px;
+    padding: 8px;
   }
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);

@@ -11,6 +11,7 @@
     type Edge,
   } from '@xyflow/svelte';
   import LynxKiteNode from './LynxKiteNode.svelte';
+  import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
   const nodeTypes: NodeTypes = {
@@ -27,12 +28,6 @@
       targetPosition: Position.Left,
     },
     {
-      id: '2',
-      // type: 'basic',
-      data: { label: 'World' },
-      position: { x: 150, y: 150 },
-    },
-    {
       id: '3',
       type: 'basic',
       data: { title: 'Import Parquet', params: { filename: '/tmp/x.parquet' } },
@@ -43,21 +38,48 @@
 
   const edges = writable<Edge[]>([
     {
-      id: '1-2',
-      source: '1',
-      target: '2',
+      id: '3-1',
+      source: '3',
+      target: '1',
       markerEnd: {
-        type: MarkerType.Arrow
+        type: MarkerType.ArrowClosed,
       },
     },
   ]);
+
+  function onPaneContextMenu({ detail: { event } }) {
+    event.preventDefault();
+    const width = 500;
+    const height = 200;
+    showNodeSearch = {
+      top: event.clientY < height - 200 ? event.clientY : undefined,
+      left: event.clientX < width - 200 ? event.clientX : undefined,
+      right: event.clientX >= width - 200 ? width - event.clientX : undefined,
+      bottom: event.clientY >= height - 200 ? height - event.clientY : undefined
+    };
+    showNodeSearch = {
+      top: event.clientY,
+      left: event.clientX - 150,
+    };
+  }
+  function addNode(node: Node) {
+    nodes.update((n) => [...n, node]);
+  }
+
+  let showNodeSearch;
 </script>
 
 <div style:height="100vh">
-  <SvelteFlow {nodes} {edges} {nodeTypes} fitView>
+  <SvelteFlow {nodes} {edges} {nodeTypes} fitView
+    on:nodecontextmenu={onPaneContextMenu}
+    on:panecontextmenu={onPaneContextMenu}
+    on:paneclick={() => showNodeSearch = undefined}
+    on:nodeclick={() => showNodeSearch = undefined}
+    >
     <Background />
     <Controls />
     <Background />
     <MiniMap />
+    {#if showNodeSearch}<NodeSearch on:add={addNode} pos={showNodeSearch} />{/if}
   </SvelteFlow>
 </div>

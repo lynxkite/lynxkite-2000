@@ -3,3 +3,21 @@
   line-height: 1.5;
   font-weight: 400;
 }
+path.svelte-flow__edge-path {
+  stroke-width: 2;
+  stroke: black;
+}
+.svelte-flow__edge.selected path.svelte-flow__edge-path {
+  stroke-width: 5;
+  stroke: black;
+}
+.svelte-flow__handle {
+  border-color: black;
+  background: white;
+  width: 10px;
+  height: 10px;
+}
+.svelte-flow__arrowhead * {
+  stroke: none;
+  fill: black;
+}
