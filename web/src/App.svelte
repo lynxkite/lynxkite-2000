@@ -47,17 +47,24 @@
     },
   ]);
 
-  function onPaneContextMenu({ detail: { event } }) {
+  function closeNodeSearch() {
+    nodeSearchPos = undefined;
+  }
+  function toggleNodeSearch({ detail: { event } }) {
+    if (nodeSearchPos) {
+      closeNodeSearch();
+      return;
+    }
     event.preventDefault();
     const width = 500;
     const height = 200;
-    showNodeSearch = {
+    nodeSearchPos = {
       top: event.clientY < height - 200 ? event.clientY : undefined,
       left: event.clientX < width - 200 ? event.clientX : undefined,
       right: event.clientX >= width - 200 ? width - event.clientX : undefined,
       bottom: event.clientY >= height - 200 ? height - event.clientY : undefined
     };
-    showNodeSearch = {
+    nodeSearchPos = {
       top: event.clientY,
       left: event.clientX - 150,
     };
@@ -66,20 +73,27 @@
     nodes.update((n) => [...n, node]);
   }
 
-  let showNodeSearch;
+  const boxes = [
+    { name: 'Compute PageRank' },
+    { name: 'Import Parquet' },
+    { name: 'Export Parquet' },
+    { name: 'Export CSV' },
+  ];
+
+  let nodeSearchPos;
 </script>
 
 <div style:height="100vh">
   <SvelteFlow {nodes} {edges} {nodeTypes} fitView
-    on:nodecontextmenu={onPaneContextMenu}
-    on:panecontextmenu={onPaneContextMenu}
-    on:paneclick={() => showNodeSearch = undefined}
-    on:nodeclick={() => showNodeSearch = undefined}
+    on:paneclick={toggleNodeSearch}
+    proOptions={{ hideAttribution: true }}
+    maxZoom={1.5}
+    minZoom={0.3}
     >
     <Background />
     <Controls />
     <Background />
     <MiniMap />
-    {#if showNodeSearch}<NodeSearch on:add={addNode} pos={showNodeSearch} />{/if}
+    {#if nodeSearchPos}<NodeSearch boxes={boxes} on:cancel={closeNodeSearch} on:add={addNode} pos={nodeSearchPos} />{/if}
   </SvelteFlow>
 </div>
