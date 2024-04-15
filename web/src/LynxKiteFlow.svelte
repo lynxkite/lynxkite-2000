@@ -12,13 +12,15 @@
     type Node,
     type Edge,
   } from '@xyflow/svelte';
-  import LynxKiteNode from './LynxKiteNode.svelte';
+  import NodeWithParams from './NodeWithParams.svelte';
+  import NodeWithGraphVisualization from './NodeWithGraphVisualization.svelte';
   import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
   const { screenToFlowPosition } = useSvelteFlow();
   const nodeTypes: NodeTypes = {
-    basic: LynxKiteNode,
+    basic: NodeWithParams,
+    graphviz: NodeWithGraphVisualization,
   };
 
   const nodes = writable<Node[]>([
@@ -37,6 +39,13 @@
       position: { x: -300, y: 0 },
       sourcePosition: Position.Right,
     },
+    {
+      id: '4',
+      type: 'graphviz',
+      data: { title: 'Visualize graph', params: {} },
+      position: { x: 300, y: 0 },
+      targetPosition: Position.Left,
+    },
   ]);
 
   const edges = writable<Edge[]>([
@@ -44,6 +53,14 @@
       id: '3-1',
       source: '3',
       target: '1',
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    },
+    {
+      id: '3-4',
+      source: '1',
+      target: '4',
       markerEnd: {
         type: MarkerType.ArrowClosed,
       },
@@ -97,12 +114,12 @@
     {
       type: 'basic',
       data: { title: 'Export Parquet', params: { filename: '/tmp/x.parquet' } },
-      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
     },
     {
-      type: 'basic',
-      data: { title: 'Export CSV', params: { filename: '/tmp/x.csv' } },
-      sourcePosition: Position.Right,
+      type: 'graphviz',
+      data: { title: 'Visualize graph', params: {} },
+      targetPosition: Position.Left,
     },
     {
       type: 'basic',

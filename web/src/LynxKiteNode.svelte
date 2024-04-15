@@ -32,17 +32,7 @@
       {data.title}
     </div>
     {#if expanded}
-      {#each Object.entries(data.params) as [name, value]}
-        <div class="param">
-          <label>
-            {name}<br>
-            <input
-              value={value}
-              on:input={(evt) => updateNodeData(id, { params: { ...data.params, [name]: evt.currentTarget.value } })}
-            />
-          </label>
-        </div>
-      {/each}
+      <slot />
     {/if}
     {#if sourcePosition}
       <Handle type="source" position={sourcePosition} />
@@ -54,16 +44,6 @@
 </div>
 
 <style>
-  .param {
-    padding: 8px;
-  }
-  .param label {
-    font-size: 12px;
-    display: block;
-  }
-  .param input {
-    width: calc(100% - 8px);
-  }
   .node-container {
     padding: 8px;
   }
