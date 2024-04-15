@@ -9,12 +9,11 @@
   let selectedIndex = 0;
   onMount(() => searchBox.focus());
   const fuse = new Fuse(boxes, {
-    keys: ['name']
+    keys: ['data.title']
   })
   function onInput() {
-    console.log('input', searchBox.value, selectedIndex);
     hits = fuse.search(searchBox.value);
-    selectedIndex = Math.min(selectedIndex, hits.length - 1);
+    selectedIndex = Math.max(0, Math.min(selectedIndex, hits.length - 1));
   }
   function onKeyDown(e) {
     if (e.key === 'ArrowDown') {
@@ -24,7 +23,9 @@
       e.preventDefault();
       selectedIndex = Math.max(selectedIndex - 1, 0);
     } else if (e.key === 'Enter') {
-      dispatch('add', {x: pos.left, y: pos.top, ...hits[selectedIndex].item});
+      const node = {...hits[selectedIndex].item};
+      node.position = {x: pos.left, y: pos.top};
+      dispatch('add', node);
     } else if (e.key === 'Escape') {
       dispatch('cancel');
     }
@@ -42,7 +43,7 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
     on:focusout={() => dispatch('cancel')}
     placeholder="Search for box">
   {#each hits as box, index}
-    <div class="search-result" class:selected={index == selectedIndex}>{index} {box.item.name}</div>
+    <div class="search-result" class:selected={index == selectedIndex}>{index} {box.item.data.title}</div>
   {/each}
 </div>
 
