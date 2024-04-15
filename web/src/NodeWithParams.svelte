@@ -7,7 +7,7 @@
   const { updateNodeData } = useSvelteFlow();
 </script>
 
-<LynxKiteNode id={id} data={data} {...$$restProps}>
+<LynxKiteNode {...$$props}>
   {#each Object.entries(data.params) as [name, value]}
     <div class="param">
       <label>

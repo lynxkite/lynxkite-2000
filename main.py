@@ -44,4 +44,25 @@ def read_item(item_id: int, q: Union[str, None] = None):
 def save(ws: Workspace):
     print(ws)
     G = nx.scale_free_graph(4)
+    return {'graph':{
+    'attributes': {
+      'name': 'My Graph'
+    },
+    'options': {
+      'allowSelfLoops': True,
+      'multi': False,
+      'type': 'mixed'
+    },
+    'nodes': [
+      {'key': 'Thomas'},
+      {'key': 'Eric'}
+    ],
+    'edges': [
+      {
+        'key': 'T->E',
+        'source': 'Thomas',
+        'target': 'Eric',
+      }
+    ]
+  }}
     return {"graph": list(nx.to_edgelist(G))}
