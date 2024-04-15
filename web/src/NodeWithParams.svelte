@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ComponentProps } from 'svelte';
   import { Handle, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
   import LynxKiteNode from './LynxKiteNode.svelte';
   type $$Props = NodeProps;
