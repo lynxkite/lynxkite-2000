@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Handle, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
+  import { Handle, type NodeProps } from '@xyflow/svelte';
 
   type $$Props = NodeProps;
 
-  export let id: $$Props['id'];
+  export let id: $$Props['id']; id;
   export let data: $$Props['data'];
   export let dragHandle: $$Props['dragHandle'] = undefined; dragHandle;
   export let type: $$Props['type']  = undefined; type;
@@ -17,8 +17,6 @@
   export let sourcePosition: $$Props['sourcePosition'] = undefined; sourcePosition;
   export let positionAbsoluteX: $$Props['positionAbsoluteX'] = undefined; positionAbsoluteX;
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
-
-  const { updateNodeData } = useSvelteFlow();
 
   let expanded = true;
   function titleClicked() {

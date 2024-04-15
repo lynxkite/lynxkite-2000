@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
+  import { writable, derived } from 'svelte/store';
   import {
     SvelteFlow,
     Controls,
@@ -18,6 +18,7 @@
   import '@xyflow/svelte/dist/style.css';
 
   const { screenToFlowPosition } = useSvelteFlow();
+
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
     graphviz: NodeWithGraphVisualization,
@@ -129,7 +130,32 @@
     },
   ];
 
-  let nodeSearchPos: XYPosition | undefined = undefined
+  let nodeSearchPos: XYPosition | undefined = undefined;
+
+  const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
+  let backendWorkspace;
+  graph.subscribe(async (g) => {
+    const dragging = g.nodes.find((n) => n.dragging);
+    if (dragging) return;
+    g = JSON.parse(JSON.stringify(g));
+    for (const node of g.nodes) {
+      delete node.computed;
+    }
+    const ws = JSON.stringify(g);
+    if (ws === backendWorkspace) return;
+    backendWorkspace = ws;
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(g),
+    });
+    const j = await res.json();
+    g.nodes[2].data.graph = j.graph;
+    backendWorkspace = JSON.stringify(g);
+    nodes.set(g.nodes);
+  });
 </script>
 
 <div style:height="100vh">

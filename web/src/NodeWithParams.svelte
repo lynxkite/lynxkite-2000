@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Handle, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
+  import { type NodeProps, useSvelteFlow } from '@xyflow/svelte';
   import LynxKiteNode from './LynxKiteNode.svelte';
   type $$Props = NodeProps;
   export let id: $$Props['id'];

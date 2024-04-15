@@ -7,27 +7,24 @@ class Position(pydantic.BaseModel):
     x: float
     y: float
 
+class WorkspaceNodeData(pydantic.BaseModel):
+    title: str
+    params: dict
+
 class WorkspaceNode(pydantic.BaseModel):
     id: str
-    title: str
     type: str
+    data: WorkspaceNodeData
     position: Position
 
-class WorkspaceConnection(pydantic.BaseModel):
+class WorkspaceEdge(pydantic.BaseModel):
     id: str
-    # Baklava.js calls it "from", but that's a reserved keyword in Python.
-    src: str = pydantic.Field(None, alias='from')
-    dst: str = pydantic.Field(None, alias='to')
-
-class WorkspaceGraph(pydantic.BaseModel):
-    nodes: list[WorkspaceNode]
-    connections: list[WorkspaceConnection]
-    panning: Position
-    scaling: float
-    nodes: list[WorkspaceNode]
+    source: str
+    target: str
 
 class Workspace(pydantic.BaseModel):
-    graph: WorkspaceGraph
+    nodes: list[WorkspaceNode]
+    edges: list[WorkspaceEdge]
 
 
 app = fastapi.FastAPI()
@@ -46,5 +43,5 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @app.post("/api/save")
 def save(ws: Workspace):
     print(ws)
-    G = nx.scale_free_graph(100)
+    G = nx.scale_free_graph(4)
     return {"graph": list(nx.to_edgelist(G))}
