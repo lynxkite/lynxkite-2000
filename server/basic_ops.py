@@ -9,7 +9,7 @@ def import_parquet(*, filename: str):
   return pd.read_parquet(filename)
 
 @ops.op("Create scale-free graph")
-def create_scale_free_graph(*, nodes: int):
+def create_scale_free_graph(*, nodes: int = 10):
   '''Creates a scale-free graph with the given number of nodes.'''
   return nx.scale_free_graph(nodes)
 
@@ -19,7 +19,7 @@ def compute_pagerank(graph, *, damping: 0.85, iterations: 3):
 
 @ops.op("Visualize graph")
 def visualize_graph(graph) -> 'graphviz':
-  return {'graph':{
+  return {
     'attributes': {
       'name': 'My Graph'
     },
@@ -39,4 +39,4 @@ def visualize_graph(graph) -> 'graphviz':
         'target': 'Eric',
       }
     ]
-  }}
+  }

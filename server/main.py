@@ -1,6 +1,7 @@
 from typing import Optional
 import fastapi
 import pydantic
+import traceback
 from . import ops
 from . import basic_ops
 
@@ -65,9 +66,11 @@ def execute(ws):
                 try:
                   output = op(*inputs, **data.params)
                 except Exception as e:
+                  traceback.print_exc()
                   data.error = str(e)
                   failed += 1
                   continue
+                data.error = None
                 outputs[node.id] = output
                 if op.type == 'graphviz':
                     data.graph = output

@@ -14,7 +14,13 @@ class Op:
   type: str
 
   def __call__(self, *inputs, **params):
-    # Do conversions here.
+    # Convert parameters.
+    sig = inspect.signature(self.func)
+    for p in params:
+      if p in self.params:
+        t = sig.parameters[p].annotation
+        if t == int:
+          params[p] = int(params[p])
     res = self.func(*inputs, **params)
     return res
 

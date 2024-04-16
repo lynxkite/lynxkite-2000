@@ -113,6 +113,12 @@
 
   const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
   let backendWorkspace;
+  // Like JSON.stringify, but with keys sorted.
+  function orderedJSON(obj: any) {
+    const allKeys = new Set();
+    JSON.stringify(obj, (key, value) => (allKeys.add(key), value));
+    return JSON.stringify(obj, Array.from(allKeys).sort());
+  }
   graph.subscribe(async (g) => {
     const dragging = g.nodes.find((n) => n.dragging);
     if (dragging) return;
@@ -120,7 +126,7 @@
     for (const node of g.nodes) {
       delete node.computed;
     }
-    const ws = JSON.stringify(g);
+    const ws = orderedJSON(g);
     if (ws === backendWorkspace) return;
     console.log('current vs backend', '\n' + ws, '\n' + backendWorkspace);
     backendWorkspace = ws;
@@ -129,10 +135,10 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(g),
+      body: ws,
     });
     const j = await res.json();
-    backendWorkspace = JSON.stringify(j);
+    backendWorkspace = orderedJSON(j);
     nodes.set(j.nodes);
   });
 </script>
