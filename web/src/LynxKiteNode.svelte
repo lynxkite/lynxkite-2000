@@ -28,8 +28,12 @@
   <div class="lynxkite-node">
     <div class="title" on:click={titleClicked}>
       {data.title}
+      {#if data.error}<span class="error-sign">⚠️</span>{/if}
     </div>
     {#if expanded}
+      {#if data.error}
+        <div class="error">{data.error}</div>
+      {/if}
       <slot />
     {/if}
     {#if sourcePosition}
@@ -42,8 +46,18 @@
 </div>
 
 <style>
+  .error {
+    background: #ffdddd;
+    padding: 8px;
+    font-size: 12px;
+  }
+  .error-sign {
+    float: right;
+  }
   .node-container {
     padding: 8px;
+    min-width: 170px;
+    max-width: 300px;
   }
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
@@ -53,7 +67,5 @@
     background: #ff8800;
     font-weight: bold;
     padding: 8px;
-    min-width: 170px;
-    max-width: 300px;
   }
 </style>

@@ -37,7 +37,7 @@
       id: '3',
       type: 'basic',
       data: { title: 'Import Parquet', params: { filename: '/tmp/x.parquet' } },
-      position: { x: -300, y: 0 },
+      position: { x: -400, y: 0 },
       sourcePosition: Position.Right,
     },
     {
@@ -54,17 +54,13 @@
       id: '3-1',
       source: '3',
       target: '1',
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
+      // markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
       id: '3-4',
       source: '1',
       target: '4',
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
+      // markerEnd: { type: MarkerType.ArrowClosed },
     },
   ]);
 
@@ -105,30 +101,13 @@
     });
     closeNodeSearch();
   }
-
-  const boxes = [
-    {
-      type: 'basic',
-      data: { title: 'Import Parquet', params: { filename: '/tmp/x.parquet' } },
-      sourcePosition: Position.Right,
-    },
-    {
-      type: 'basic',
-      data: { title: 'Export Parquet', params: { filename: '/tmp/x.parquet' } },
-      targetPosition: Position.Left,
-    },
-    {
-      type: 'graphviz',
-      data: { title: 'Visualize graph', params: {} },
-      targetPosition: Position.Left,
-    },
-    {
-      type: 'basic',
-      data: { title: 'Compute PageRank', params: { damping: 0.85, iterations: 3 } },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-  ];
+  const boxes = writable([]);
+  async function getBoxes() {
+    const res = await fetch('/api/catalog');
+    const j = await res.json();
+    boxes.set(j);
+  }
+  getBoxes();
 
   let nodeSearchPos: XYPosition | undefined = undefined;
 
@@ -143,6 +122,7 @@
     }
     const ws = JSON.stringify(g);
     if (ws === backendWorkspace) return;
+    console.log('current vs backend', '\n' + ws, '\n' + backendWorkspace);
     backendWorkspace = ws;
     const res = await fetch('/api/save', {
       method: 'POST',
@@ -152,9 +132,8 @@
       body: JSON.stringify(g),
     });
     const j = await res.json();
-    g.nodes[2].data.graph = j.graph;
-    backendWorkspace = JSON.stringify(g);
-    nodes.set(g.nodes);
+    backendWorkspace = JSON.stringify(j);
+    nodes.set(j.nodes);
   });
 </script>
 
@@ -165,10 +144,9 @@
     maxZoom={1.5}
     minZoom={0.3}
     >
-    <Background />
+    <Background patternColor="#39bcf3" />
     <Controls />
-    <Background />
     <MiniMap />
-    {#if nodeSearchPos}<NodeSearch boxes={boxes} on:cancel={closeNodeSearch} on:add={addNode} pos={nodeSearchPos} />{/if}
+    {#if nodeSearchPos}<NodeSearch boxes={$boxes} on:cancel={closeNodeSearch} on:add={addNode} pos={nodeSearchPos} />{/if}
   </SvelteFlow>
 </div>

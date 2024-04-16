@@ -8,7 +8,7 @@
   let hits = [];
   let selectedIndex = 0;
   onMount(() => searchBox.focus());
-  const fuse = new Fuse(boxes, {
+  $: fuse = new Fuse(boxes, {
     keys: ['data.title']
   })
   function onInput() {
