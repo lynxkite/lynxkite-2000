@@ -5,14 +5,13 @@
   import * as graphologyLibrary from 'graphology-library';
   import LynxKiteNode from './LynxKiteNode.svelte';
   type $$Props = NodeProps;
-  export let id: $$Props['id'];
   export let data: $$Props['data'];
   let sigmaCanvas: HTMLElement;
   let sigmaInstance: Sigma;
 
   $: if (sigmaCanvas) sigmaInstance = new Sigma(new graphology.Graph(), sigmaCanvas);
-  $: if (sigmaInstance && data.graph) {
-    const graph = graphology.Graph.from(data.graph);
+  $: if (sigmaInstance && data.view) {
+    const graph = graphology.Graph.from(data.view);
     graphologyLibrary.layout.random.assign(graph);
     const settings = graphologyLibrary.layoutForceAtlas2.inferSettings(graph);
     graphologyLibrary.layoutForceAtlas2.assign(graph, { iterations: 10, settings });

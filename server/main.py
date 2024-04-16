@@ -72,8 +72,8 @@ def execute(ws):
                   continue
                 data.error = None
                 outputs[node.id] = output
-                if op.type == 'graphviz':
-                    data.graph = output
+                if op.type == 'graph_view' or op.type == 'table_view':
+                    data.view = output
 
 
 @app.post("/api/save")

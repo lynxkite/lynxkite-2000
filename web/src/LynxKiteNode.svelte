@@ -56,12 +56,14 @@
   }
   .node-container {
     padding: 8px;
-    min-width: 170px;
-    max-width: 300px;
   }
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
     background: white;
+    min-width: 170px;
+    max-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
   }
   .title {
     background: #ff8800;

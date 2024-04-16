@@ -14,11 +14,11 @@ def create_scale_free_graph(*, nodes: int = 10):
   return nx.scale_free_graph(nodes)
 
 @ops.op("Compute PageRank")
-def compute_pagerank(graph, *, damping: 0.85, iterations: 3):
+def compute_pagerank(graph: nx.Graph, *, damping: 0.85, iterations: 3):
   return nx.pagerank(graph)
 
 @ops.op("Visualize graph")
-def visualize_graph(graph) -> 'graphviz':
+def visualize_graph(graph: ops.Bundle) -> 'graph_view':
   return {
     'attributes': {
       'name': 'My Graph'
@@ -40,3 +40,15 @@ def visualize_graph(graph) -> 'graphviz':
       }
     ]
   }
+
+@ops.op("View table")
+def view_table(dfs: ops.Bundle) -> 'table_view':
+  v = {
+    'dataframes': { name: {
+      'columns': [str(c) for c in df.columns],
+      'data': df.values.tolist(),
+    } for name, df in dfs.dfs.items() },
+    'edges': dfs.edges,
+  }
+  print(v)
+  return v

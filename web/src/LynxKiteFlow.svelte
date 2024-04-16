@@ -13,7 +13,8 @@
     type Edge,
   } from '@xyflow/svelte';
   import NodeWithParams from './NodeWithParams.svelte';
-  import NodeWithGraphVisualization from './NodeWithGraphVisualization.svelte';
+  import NodeWithGraphView from './NodeWithGraphView.svelte';
+  import NodeWithTableView from './NodeWithTableView.svelte';
   import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
@@ -21,33 +22,11 @@
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
-    graphviz: NodeWithGraphVisualization,
+    graph_view: NodeWithGraphView,
+    table_view: NodeWithTableView,
   };
 
-  const nodes = writable<Node[]>([
-    {
-      id: '1',
-      type: 'basic',
-      data: { title: 'Compute PageRank', params: { damping: 0.85, iterations: 3 } },
-      position: { x: 0, y: 0 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-    {
-      id: '3',
-      type: 'basic',
-      data: { title: 'Import Parquet', params: { filename: '/tmp/x.parquet' } },
-      position: { x: -400, y: 0 },
-      sourcePosition: Position.Right,
-    },
-    {
-      id: '4',
-      type: 'graphviz',
-      data: { title: 'Visualize graph', params: {} },
-      position: { x: 300, y: 0 },
-      targetPosition: Position.Left,
-    },
-  ]);
+  const nodes = writable<Node[]>([]);
 
   const edges = writable<Edge[]>([
     {
