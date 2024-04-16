@@ -107,7 +107,6 @@
     }
     const ws = orderedJSON(g);
     if (ws === backendWorkspace) return;
-    console.log('current vs backend', '\n' + ws, '\n' + backendWorkspace);
     backendWorkspace = ws;
     const res = await fetch('/api/save', {
       method: 'POST',

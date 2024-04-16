@@ -19,26 +19,14 @@ def compute_pagerank(graph: nx.Graph, *, damping: 0.85, iterations: 3):
 
 @ops.op("Visualize graph")
 def visualize_graph(graph: ops.Bundle) -> 'graph_view':
+  nodes = graph.dfs['nodes']['id'].tolist()
+  edges = graph.dfs['edges'].drop_duplicates(['source', 'target'])
+  edges = edges.to_dict(orient='records')
   return {
-    'attributes': {
-      'name': 'My Graph'
-    },
-    'options': {
-      'allowSelfLoops': True,
-      'multi': False,
-      'type': 'mixed'
-    },
-    'nodes': [
-      {'key': 'Thomas'},
-      {'key': 'Eric'}
-    ],
-    'edges': [
-      {
-        'key': 'T->E',
-        'source': 'Thomas',
-        'target': 'Eric',
-      }
-    ]
+    'attributes': {},
+    'options': {},
+    'nodes': [{'key': id} for id in nodes],
+    'edges': [{'key': str(r['source']) + ' -> ' + str(r['target']), **r} for r in edges],
   }
 
 @ops.op("View table")
