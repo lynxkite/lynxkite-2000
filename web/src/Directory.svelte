@@ -1,6 +1,10 @@
 <script lang="ts">
   // The directory browser.
   import logo from './assets/logo.png';
+  import Home from 'virtual:icons/tabler/home'
+  import Folder from 'virtual:icons/tabler/folder'
+  import File from 'virtual:icons/tabler/file'
+
   export let path = '';
   async function fetchList(path) {
     const encodedPath = encodeURIComponent(path || '');
@@ -9,11 +13,11 @@
     return j;
   }
   $: list = fetchList(path);
-  function open(item) {
+  function link(item) {
     if (item.type === 'directory') {
-      location.hash = `#dir?path=${item.name}`;
+      return `#dir?path=${item.name}`;
     } else {
-      location.hash = `#edit?path=${item.name}`;
+      return `#edit?path=${item.name}`;
     }
   }
   function shortName(item) {
@@ -27,11 +31,19 @@
     <div class="tagline">The Complete Graph Data Science Platform</div>
   </div>
   <div class="entry-list">
+    {#if path} <div class="breadcrumbs"><a href="#dir"><Home /></a> {path} </div> {/if}
     {#await list}
       <div>Loading...</div>
     {:then list}
       {#each list as item}
-        <div class="entry" on:click={open(item)}>{shortName(item)}</div>
+        <a class="entry" href={link(item)}>
+          {#if item.type === 'directory'}
+            <Folder />
+          {:else}
+            <File />
+          {/if}
+          {shortName(item)}
+        </a>
       {/each}
     {:catch error}
       <p style="color: red">{error.message}</p>
@@ -40,12 +52,6 @@
 </div>
 
 <style>
-  @media (min-width: 640px) {
-    .directory {
-      width: 100%;
-    }
-  }
-
   .entry-list {
     width: 100%;
     margin: 10px auto;
@@ -84,12 +90,14 @@
     }
   }
 
-  .entry-list .entry {
-    position: relative;
-    border-bottom: 1px solid whitesmoke;
+  .breadcrumbs {
+    padding-left: 10px;
+    font-size: 20px;
   }
   .entry-list .entry {
-    padding-left: 40px;
+    display: block;
+    border-bottom: 1px solid whitesmoke;
+    padding-left: 10px;
     color: #004165;
     cursor: pointer;
     user-select: none;
@@ -107,5 +115,8 @@
   .directory-page {
     background: #002a4c;
     height: 100vh;
+  }
+  a {
+    color: black;
   }
 </style>
