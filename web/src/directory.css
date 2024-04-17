@@ -1,0 +1,10 @@
+@media (min-width: 640px) {
+  .directory {
+    width: 100%;
+  }
+}
+
+.directory {
+  width: 800px;
+  background: white;
+}

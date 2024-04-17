@@ -1,5 +1,7 @@
 from typing import Optional
+import dataclasses
 import fastapi
+import pathlib
 import pydantic
 import traceback
 from . import ops
@@ -82,3 +84,18 @@ def save(ws: Workspace):
     execute(ws)
     print('exec done', ws)
     return ws
+
+DATA_PATH = pathlib.Path.cwd() / 'data'
+
+@dataclasses.dataclass(order=True)
+class DirectoryEntry:
+    name: str
+    type: str
+
+@app.get("/api/dir/list")
+def list_dir(path: str):
+    path = DATA_PATH / path
+    assert path.is_relative_to(DATA_PATH)
+    return sorted([
+        DirectoryEntry(p.relative_to(DATA_PATH), 'directory' if p.is_dir() else 'workspace')
+        for p in path.iterdir()])

@@ -38,5 +38,4 @@ def view_table(dfs: ops.Bundle) -> 'table_view':
     } for name, df in dfs.dfs.items() },
     'edges': dfs.edges,
   }
-  print(v)
   return v
