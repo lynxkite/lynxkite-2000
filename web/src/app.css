@@ -11,8 +11,9 @@ path.svelte-flow__edge-path {
   stroke: black;
 }
 .svelte-flow__edge.selected path.svelte-flow__edge-path {
-  stroke-width: 5;
-  stroke: black;
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 10px;
+  border-radius: 1px;
 }
 .svelte-flow__handle {
   border-color: black;
@@ -23,4 +24,8 @@ path.svelte-flow__edge-path {
 .svelte-flow__arrowhead * {
   stroke: none;
   fill: black;
+}
+.selected .lynxkite-node {
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 5px;
 }

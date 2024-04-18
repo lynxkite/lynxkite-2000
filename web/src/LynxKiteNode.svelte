@@ -64,6 +64,7 @@
     max-width: 300px;
     max-height: 400px;
     overflow-y: auto;
+    border-radius: 1px;
   }
   .title {
     background: #ff8800;
