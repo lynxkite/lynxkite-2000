@@ -21,7 +21,7 @@
     "vite": "^5.2.8"
   },
   "dependencies": {
-    "@xyflow/svelte": "^0.0.39",
+    "@xyflow/svelte": "^0.0.41",
     "fuse.js": "^7.0.0",
     "graphology": "^0.25.4",
     "graphology-library": "^0.8.0",

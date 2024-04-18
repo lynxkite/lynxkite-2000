@@ -52,9 +52,7 @@ class Bundle:
   @classmethod
   def from_nx(cls, graph: nx.Graph):
     edges = nx.to_pandas_edgelist(graph)
-    print(edges)
     nodes = pd.DataFrame({'id': list(graph.nodes)})
-    print(nodes)
     return cls(
       dfs={'edges': edges, 'nodes': nodes},
       edges=[

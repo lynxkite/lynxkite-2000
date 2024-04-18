@@ -3,7 +3,9 @@
   import logo from './assets/logo.png';
   import Home from 'virtual:icons/tabler/home'
   import Folder from 'virtual:icons/tabler/folder'
+  import FolderPlus from 'virtual:icons/tabler/folder-plus'
   import File from 'virtual:icons/tabler/file'
+  import FilePlus from 'virtual:icons/tabler/file-plus'
 
   export let path = '';
   async function fetchList(path) {
@@ -23,6 +25,30 @@
   function shortName(item) {
     return item.name.split('/').pop();
   }
+  function newName(list) {
+    let i = 0;
+    while (true) {
+      const name = `Untitled${i ? ` ${i}` : ''}`;
+      if (!list.find(item => item.name === name)) {
+        return name;
+      }
+      i++;
+    }
+  }
+  function newWorkspaceIn(path, list) {
+    const pathSlash = path ? `${path}/` : '';
+    return `#edit?path=${pathSlash}${newName(list)}`;
+  }
+  async function newFolderIn(path, list) {
+    const pathSlash = path ? `${path}/` : '';
+    const name = newName(list);
+    const res = await fetch(`/api/dir/mkdir`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: pathSlash + name }),
+    });
+    list = await res.json();
+  }
 </script>
 
 <div class="directory-page">
@@ -31,10 +57,14 @@
     <div class="tagline">The Complete Graph Data Science Platform</div>
   </div>
   <div class="entry-list">
-    {#if path} <div class="breadcrumbs"><a href="#dir"><Home /></a> {path} </div> {/if}
     {#await list}
       <div>Loading...</div>
     {:then list}
+      <div class="actions">
+        <a href="{newWorkspaceIn(path, list)}"><FilePlus /> New workspace</a>
+        <a href on:click="{newFolderIn(path, list)}"><FolderPlus /> New folder</a>
+      </div>
+      {#if path} <div class="breadcrumbs"><a href="#dir"><Home /></a> {path} </div> {/if}
       {#each list as item}
         <a class="entry" href={link(item)}>
           {#if item.type === 'directory'}
@@ -58,7 +88,7 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0px 2px 4px;
-    padding: 10px 0;
+    padding: 0 0 10px 0;
   }
   @media (min-width: 768px) {
     .entry-list {
@@ -90,9 +120,27 @@
     }
   }
 
+  .actions {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 5px;
+  }
+  .actions a {
+    padding: 2px 10px;
+    border-radius: 5px;
+  }
+  .actions a:hover {
+    background: #39bcf3;
+    color: white;
+  }
+
   .breadcrumbs {
     padding-left: 10px;
     font-size: 20px;
+    background: #002a4c20;
+  }
+  .breadcrumbs a:hover {
+    color: #39bcf3;
   }
   .entry-list .entry {
     display: block;
@@ -118,5 +166,6 @@
   }
   a {
     color: black;
+    text-decoration: none;
   }
 </style>

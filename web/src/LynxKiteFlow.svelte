@@ -26,22 +26,20 @@
     table_view: NodeWithTableView,
   };
 
+  export let path = '';
   const nodes = writable<Node[]>([]);
-
-  const edges = writable<Edge[]>([
-    {
-      id: '3-1',
-      source: '3',
-      target: '1',
-      // markerEnd: { type: MarkerType.ArrowClosed },
-    },
-    {
-      id: '3-4',
-      source: '1',
-      target: '4',
-      // markerEnd: { type: MarkerType.ArrowClosed },
-    },
-  ]);
+  const edges = writable<Edge[]>([]);
+  let workspaceLoaded = false;
+  async function fetchWorkspace(path) {
+    if (!path) return;
+    const res = await fetch(`/api/load?path=${path}`);
+    const j = await res.json();
+    nodes.set(j.nodes);
+    edges.set(j.edges);
+    backendWorkspace = orderedJSON(j);
+    workspaceLoaded = true;
+  }
+  $: fetchWorkspace(path);
 
   function closeNodeSearch() {
     nodeSearchPos = undefined;
@@ -52,17 +50,9 @@
       return;
     }
     event.preventDefault();
-    const width = 500;
-    const height = 200;
     nodeSearchPos = {
-      top: event.clientY < height - 200 ? event.clientY : undefined,
-      left: event.clientX < width - 200 ? event.clientX : undefined,
-      right: event.clientX >= width - 200 ? width - event.clientX : undefined,
-      bottom: event.clientY >= height - 200 ? height - event.clientY : undefined
-    };
-    nodeSearchPos = {
-      top: event.clientY,
-      left: event.clientX - 150,
+      top: event.offsetY,
+      left: event.offsetX - 155,
     };
   }
   function addNode(e) {
@@ -99,6 +89,9 @@
     return JSON.stringify(obj, Array.from(allKeys).sort());
   }
   graph.subscribe(async (g) => {
+    if (!workspaceLoaded) {
+      return;
+    }
     const dragging = g.nodes.find((n) => n.dragging);
     if (dragging) return;
     g = JSON.parse(JSON.stringify(g));
@@ -107,13 +100,14 @@
     }
     const ws = orderedJSON(g);
     if (ws === backendWorkspace) return;
+    console.log('save', '\n' + ws, '\n' + backendWorkspace);
     backendWorkspace = ws;
     const res = await fetch('/api/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: ws,
+      body: JSON.stringify({ path, ws: g }),
     });
     const j = await res.json();
     backendWorkspace = orderedJSON(j);
@@ -121,7 +115,7 @@
   });
 </script>
 
-<div style:height="100vh">
+<div style:height="100%">
   <SvelteFlow {nodes} {edges} {nodeTypes} fitView
     on:paneclick={toggleNodeSearch}
     proOptions={{ hideAttribution: true }}

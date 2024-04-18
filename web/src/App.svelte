@@ -10,8 +10,7 @@
     if (parts.length > 1) {
       parameters = Object.fromEntries(new URLSearchParams(parts[1]));
     }
-    console.log(parameters);
-	}
+  }
   onHashChange();
 </script>
 

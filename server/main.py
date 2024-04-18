@@ -1,6 +1,7 @@
 from typing import Optional
 import dataclasses
 import fastapi
+import json
 import pathlib
 import pydantic
 import traceback
@@ -78,11 +79,33 @@ def execute(ws):
                     data.view = output
 
 
+class SaveRequest(BaseConfig):
+    path: str
+    ws: Workspace
+
+def save(req: SaveRequest):
+    path = DATA_PATH / req.path
+    assert path.is_relative_to(DATA_PATH)
+    j = req.ws.model_dump_json(indent=2)
+    with open(path, 'w') as f:
+        f.write(j)
+
 @app.post("/api/save")
-def save(ws: Workspace):
-    print(ws)
-    execute(ws)
-    print('exec done', ws)
+def save_and_execute(req: SaveRequest):
+    save(req)
+    execute(req.ws)
+    save(req)
+    return req.ws
+
+@app.get("/api/load")
+def load(path: str):
+    path = DATA_PATH / path
+    assert path.is_relative_to(DATA_PATH)
+    if not path.exists():
+        return Workspace(nodes=[], edges=[])
+    with open(path) as f:
+        j = f.read()
+    ws = Workspace.model_validate_json(j)
     return ws
 
 DATA_PATH = pathlib.Path.cwd() / 'data'
@@ -99,3 +122,11 @@ def list_dir(path: str):
     return sorted([
         DirectoryEntry(p.relative_to(DATA_PATH), 'directory' if p.is_dir() else 'workspace')
         for p in path.iterdir()])
+
+@app.post("/api/dir/mkdir")
+def make_dir(req: dict):
+    path = DATA_PATH / req['path']
+    assert path.is_relative_to(DATA_PATH)
+    assert not path.exists()
+    path.mkdir()
+    return list_dir(path.parent)

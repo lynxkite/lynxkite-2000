@@ -23,12 +23,20 @@
       e.preventDefault();
       selectedIndex = Math.max(selectedIndex - 1, 0);
     } else if (e.key === 'Enter') {
-      const node = {...hits[selectedIndex].item};
-      node.position = {x: pos.left, y: pos.top};
-      dispatch('add', node);
+      addSelected();
     } else if (e.key === 'Escape') {
       dispatch('cancel');
     }
+  }
+  function addSelected() {
+    const node = {...hits[selectedIndex].item};
+    node.position = {x: pos.left, y: pos.top};
+    dispatch('add', node);
+  }
+  async function lostFocus(e) {
+    // If it's a click on a result, let the click handler handle it.
+    if (e.relatedTarget && e.relatedTarget.closest('.node-search')) return;
+    dispatch('cancel');
   }
 
 </script>
@@ -40,10 +48,18 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
     bind:this={searchBox}
     on:input={onInput}
     on:keydown={onKeyDown}
-    on:focusout={() => dispatch('cancel')}
+    on:focusout={lostFocus}
     placeholder="Search for box">
   {#each hits as box, index}
-    <div class="search-result" class:selected={index == selectedIndex}>{index} {box.item.data.title}</div>
+    <div
+      tabindex="0"
+      on:focus={() => selectedIndex = index}
+      on:mouseenter={() => selectedIndex = index}
+      on:click={addSelected}
+      class="search-result"
+      class:selected={index == selectedIndex}>
+      {box.item.data.title}
+    </div>
   {/each}
 </div>
 
@@ -58,6 +74,7 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
   }
   .search-result {
     padding: 4px;
+    cursor: pointer;
   }
   .search-result.selected {
     background-color: #f80;
