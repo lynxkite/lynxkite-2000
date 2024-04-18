@@ -1,7 +1,8 @@
 '''Some operations. To be split into separate files when we have more.'''
 from . import ops
-import pandas as pd
+import matplotlib
 import networkx as nx
+import pandas as pd
 
 @ops.op("Import Parquet")
 def import_parquet(*, filename: str):
@@ -14,28 +15,51 @@ def create_scale_free_graph(*, nodes: int = 10):
   return nx.scale_free_graph(nodes)
 
 @ops.op("Compute PageRank")
-def compute_pagerank(graph: nx.Graph, *, damping: 0.85, iterations: 3):
-  return nx.pagerank(graph)
+def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=3):
+  graph = graph.copy()
+  pr = nx.pagerank(graph, alpha=damping, max_iter=iterations)
+  nx.set_node_attributes(graph, pr, 'pagerank')
+  return graph
+
+
+def _map_color(value):
+  cmap = matplotlib.cm.get_cmap('viridis')
+  value = (value - value.min()) / (value.max() - value.min())
+  rgba = cmap(value)
+  return ['#{:02x}{:02x}{:02x}'.format(int(r*255), int(g*255), int(b*255)) for r, g, b in rgba[:, :3]]
 
 @ops.op("Visualize graph")
-def visualize_graph(graph: ops.Bundle) -> 'graph_view':
-  nodes = graph.dfs['nodes']['id'].tolist()
+def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = None) -> 'graph_view':
+  nodes = graph.dfs['nodes'].copy()
+  node_attributes = sorted(nodes.columns)
+  if color_nodes_by:
+    nodes['color'] = _map_color(nodes[color_nodes_by])
+  nodes = nodes.to_records()
   edges = graph.dfs['edges'].drop_duplicates(['source', 'target'])
-  edges = edges.to_dict(orient='records')
-  return {
+  edges = edges.to_records()
+  v = {
+    'node_attributes': node_attributes,
     'attributes': {},
     'options': {},
-    'nodes': [{'key': id} for id in nodes],
-    'edges': [{'key': str(r['source']) + ' -> ' + str(r['target']), **r} for r in edges],
+    'nodes': [
+      {
+        'key': str(n.id),
+        'attributes': {'color': n.color, 'size': 5} if color_nodes_by else {}
+      }
+      for n in nodes],
+    'edges': [
+      {'key': str(r.source) + ' -> ' + str(r.target), 'source': str(r.source), 'target': str(r.target)}
+      for r in edges],
   }
+  return v
 
-@ops.op("View table")
-def view_table(dfs: ops.Bundle) -> 'table_view':
+@ops.op("View tables")
+def view_tables(dfs: ops.Bundle) -> 'table_view':
   v = {
     'dataframes': { name: {
       'columns': [str(c) for c in df.columns],
       'data': df.values.tolist(),
     } for name, df in dfs.dfs.items() },
-    'edges': dfs.edges,
+    'relations': dfs.relations,
   }
   return v

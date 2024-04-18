@@ -21,8 +21,12 @@ class Op:
     for p in params:
       if p in self.params:
         t = sig.parameters[p].annotation
+        if t is inspect._empty:
+          t = type(sig.parameters[p].default)
         if t == int:
           params[p] = int(params[p])
+        elif t == float:
+          params[p] = float(params[p])
     # Convert inputs.
     inputs = list(inputs)
     for i, (x, p) in enumerate(zip(inputs, sig.parameters.values())):
@@ -35,7 +39,7 @@ class Op:
     return res
 
 @dataclasses.dataclass
-class EdgeDefinition:
+class RelationDefinition:
   df: str
   source_column: str
   target_column: str
@@ -47,16 +51,17 @@ class EdgeDefinition:
 @dataclasses.dataclass
 class Bundle:
   dfs: dict
-  edges: list[EdgeDefinition]
+  relations: list[RelationDefinition]
 
   @classmethod
   def from_nx(cls, graph: nx.Graph):
     edges = nx.to_pandas_edgelist(graph)
-    nodes = pd.DataFrame({'id': list(graph.nodes)})
+    nodes = pd.DataFrame.from_dict(dict(graph.nodes(data=True)), orient='index')
+    nodes['id'] = nodes.index
     return cls(
       dfs={'edges': edges, 'nodes': nodes},
-      edges=[
-        EdgeDefinition(
+      relations=[
+        RelationDefinition(
           df='edges',
           source_column='source',
           target_column='target',
