@@ -15,11 +15,9 @@ def create_scale_free_graph(*, nodes: int = 10):
   return nx.scale_free_graph(nodes)
 
 @ops.op("Compute PageRank")
+@ops.nx_node_attribute_func('pagerank')
 def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=3):
-  graph = graph.copy()
-  pr = nx.pagerank(graph, alpha=damping, max_iter=iterations)
-  nx.set_node_attributes(graph, pr, 'pagerank')
-  return graph
+  return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
 def _map_color(value):
@@ -28,8 +26,8 @@ def _map_color(value):
   rgba = cmap(value)
   return ['#{:02x}{:02x}{:02x}'.format(int(r*255), int(g*255), int(b*255)) for r, g, b in rgba[:, :3]]
 
-@ops.op("Visualize graph")
-def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = None) -> 'graph_view':
+@ops.op("Visualize graph", view="graph_view")
+def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = None):
   nodes = graph.dfs['nodes'].copy()
   node_attributes = sorted(nodes.columns)
   if color_nodes_by:
@@ -53,8 +51,8 @@ def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = Non
   }
   return v
 
-@ops.op("View tables")
-def view_tables(dfs: ops.Bundle) -> 'table_view':
+@ops.op("View tables", view="table_view")
+def view_tables(dfs: ops.Bundle):
   v = {
     'dataframes': { name: {
       'columns': [str(c) for c in df.columns],

@@ -60,8 +60,8 @@
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
     background: white;
-    min-width: 170px;
-    max-width: 300px;
+    min-width: 200px;
+    max-width: 400px;
     max-height: 400px;
     overflow-y: auto;
     border-radius: 1px;

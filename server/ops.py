@@ -1,5 +1,6 @@
 '''API for implementing LynxKite operations.'''
 import dataclasses
+import functools
 import inspect
 import networkx as nx
 import pandas as pd
@@ -22,7 +23,7 @@ class Op:
       if p in self.params:
         t = sig.parameters[p].annotation
         if t is inspect._empty:
-          t = type(sig.parameters[p].default)
+          t = type(self.params[p])
         if t == int:
           params[p] = int(params[p])
         elif t == float:
@@ -56,7 +57,8 @@ class Bundle:
   @classmethod
   def from_nx(cls, graph: nx.Graph):
     edges = nx.to_pandas_edgelist(graph)
-    nodes = pd.DataFrame.from_dict(dict(graph.nodes(data=True)), orient='index')
+    d = dict(graph.nodes(data=True))
+    nodes = pd.DataFrame(d.values(), index=d.keys())
     nodes['id'] = nodes.index
     return cls(
       dfs={'edges': edges, 'nodes': nodes},
@@ -79,10 +81,22 @@ class Bundle:
     return graph
 
 
-def op(name):
+def nx_node_attribute_func(name):
+  '''Decorator for wrapping a function that adds a NetworkX node attribute.'''
+  def decorator(func):
+    @functools.wraps(func)
+    def wrapper(graph: nx.Graph, **kwargs):
+      graph = graph.copy()
+      attr = func(graph, **kwargs)
+      nx.set_node_attributes(graph, attr, name)
+      return graph
+    return wrapper
+  return decorator
+
+
+def op(name, *, view='basic'):
   '''Decorator for defining an operation.'''
   def decorator(func):
-    type = func.__annotations__.get('return') or 'basic'
     sig = inspect.signature(func)
     # Positional arguments are inputs.
     inputs = {
@@ -93,8 +107,8 @@ def op(name):
       name: param.default if param.default is not inspect._empty else None
       for name, param in sig.parameters.items()
       if param.kind == param.KEYWORD_ONLY}
-    outputs = {'output': 'yes'} if type == 'basic' else {} # Maybe more fancy later.
-    op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=type)
+    outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
+    op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=view)
     ALL_OPS[name] = op
     return func
   return decorator

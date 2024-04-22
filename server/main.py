@@ -7,6 +7,7 @@ import pydantic
 import traceback
 from . import ops
 from . import basic_ops
+from . import networkx_ops
 
 class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
