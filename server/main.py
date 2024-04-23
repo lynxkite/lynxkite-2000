@@ -1,9 +1,10 @@
 from typing import Optional
 import dataclasses
 import fastapi
-import json
+import os
 import pathlib
 import pydantic
+import tempfile
 import traceback
 from . import ops
 from . import basic_ops
@@ -88,8 +89,11 @@ def save(req: SaveRequest):
     path = DATA_PATH / req.path
     assert path.is_relative_to(DATA_PATH)
     j = req.ws.model_dump_json(indent=2)
-    with open(path, 'w') as f:
+    with tempfile.NamedTemporaryFile('w', delete_on_close=False) as f:
         f.write(j)
+        f.close()
+        os.replace(f.name, path)
+
 
 @app.post("/api/save")
 def save_and_execute(req: SaveRequest):
