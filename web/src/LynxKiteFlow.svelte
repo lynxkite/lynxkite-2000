@@ -6,11 +6,12 @@
     Background,
     MiniMap,
     MarkerType,
-    Position,
     useSvelteFlow,
     type XYPosition,
     type Node,
     type Edge,
+    type Connection,
+    type NodeTypes,
   } from '@xyflow/svelte';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithGraphView from './NodeWithGraphView.svelte';
@@ -81,7 +82,7 @@
   let nodeSearchPos: XYPosition | undefined = undefined;
 
   const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
-  let backendWorkspace;
+  let backendWorkspace: string;
   // Like JSON.stringify, but with keys sorted.
   function orderedJSON(obj: any) {
     const allKeys = new Set();
@@ -100,7 +101,7 @@
     }
     const ws = orderedJSON(g);
     if (ws === backendWorkspace) return;
-    console.log('save', '\n' + ws, '\n' + backendWorkspace);
+    // console.log('save', '\n' + ws, '\n' + backendWorkspace);
     backendWorkspace = ws;
     const res = await fetch('/api/save', {
       method: 'POST',
@@ -113,6 +114,13 @@
     backendWorkspace = orderedJSON(j);
     nodes.set(j.nodes);
   });
+  function onconnect(connection: Connection) {
+    edges.update((edges) => {
+      // Only one source can connect to a given target.
+      return edges.filter((e) => e.source === connection.source || e.target !== connection.target);
+    });
+  }
+
 </script>
 
 <div style:height="100%">
@@ -121,6 +129,7 @@
     proOptions={{ hideAttribution: true }}
     maxZoom={1.5}
     minZoom={0.3}
+    onconnect={onconnect}
     >
     <Background patternColor="#39bcf3" />
     <Controls />
