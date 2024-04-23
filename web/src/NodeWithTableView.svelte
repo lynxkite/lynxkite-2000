@@ -3,12 +3,14 @@
   import LynxKiteNode from './LynxKiteNode.svelte';
   type $$Props = NodeProps;
   export let data: $$Props['data'];
+  const open = {};
 </script>
 
 <LynxKiteNode {...$$props}>
   {#if data.view}
     {#each Object.entries(data.view.dataframes) as [name, df]}
-      <div class="df-head">{name}</div>
+      <div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>
+      {#if open[name]}
       <table>
         <tr>
           {#each df.columns as column}
@@ -23,6 +25,7 @@
           </tr>
         {/each}
       </table>
+      {/if}
     {/each}
   {/if}
 </LynxKiteNode>
@@ -31,6 +34,7 @@
     font-weight: bold;
     padding: 8px;
     background: #f0f0f0;
+    cursor: pointer;
   }
   table {
     margin: 8px;
