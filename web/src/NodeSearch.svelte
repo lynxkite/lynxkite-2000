@@ -50,17 +50,19 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
     on:keydown={onKeyDown}
     on:focusout={lostFocus}
     placeholder="Search for box">
-  {#each hits as box, index}
-    <div
-      tabindex="0"
-      on:focus={() => selectedIndex = index}
-      on:mouseenter={() => selectedIndex = index}
-      on:click={addSelected}
-      class="search-result"
-      class:selected={index == selectedIndex}>
-      {box.item.data.title}
-    </div>
-  {/each}
+  <div class="matches">
+    {#each hits as box, index}
+      <div
+        tabindex="0"
+        on:focus={() => selectedIndex = index}
+        on:mouseenter={() => selectedIndex = index}
+        on:click={addSelected}
+        class="search-result"
+        class:selected={index == selectedIndex}>
+        {box.item.data.title}
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style>
@@ -88,5 +90,12 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
+    max-height: -webkit-fill-available;
+    max-height: -moz-available;
+    display: flex;
+    flex-direction: column;
+  }
+  .matches {
+    overflow-y: auto;
   }
 </style>
