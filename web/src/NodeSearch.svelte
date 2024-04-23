@@ -5,7 +5,7 @@
   export let pos;
   export let boxes;
   let searchBox: HTMLInputElement;
-  let hits = [];
+  let hits = boxes.map(box => ({item: box}));
   let selectedIndex = 0;
   onMount(() => searchBox.focus());
   $: fuse = new Fuse(boxes, {
