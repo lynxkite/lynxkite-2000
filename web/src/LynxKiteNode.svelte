@@ -3,6 +3,8 @@
 
   type $$Props = NodeProps;
 
+  export let nodeStyle = '';
+  export let containerStyle = '';
   export let id: $$Props['id']; id;
   export let data: $$Props['data'];
   export let dragHandle: $$Props['dragHandle'] = undefined; dragHandle;
@@ -17,15 +19,20 @@
   export let sourcePosition: $$Props['sourcePosition'] = undefined; sourcePosition;
   export let positionAbsoluteX: $$Props['positionAbsoluteX'] = undefined; positionAbsoluteX;
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
+  export let onToggle = () => {};
 
   let expanded = true;
   function titleClicked() {
     expanded = !expanded;
+    onToggle({ expanded });
+  }
+  function asPx(n: number) {
+    return n ? n + 'px' : undefined;
   }
 </script>
 
-<div class="node-container">
-  <div class="lynxkite-node">
+<div class="node-container" style:width={asPx(width)} style:height={asPx(height)} style={containerStyle}>
+  <div class="lynxkite-node" style={nodeStyle}>
     <div class="title" on:click={titleClicked}>
       {data.title}
       {#if data.error}<span class="error-sign">⚠️</span>{/if}
@@ -56,15 +63,16 @@
   }
   .node-container {
     padding: 8px;
+    min-width: 200px;
+    max-width: 400px;
+    max-height: 400px;
   }
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
     background: white;
-    min-width: 200px;
-    max-width: 400px;
-    max-height: 400px;
     overflow-y: auto;
     border-radius: 1px;
+    height: 100%;
   }
   .title {
     background: #ff8800;

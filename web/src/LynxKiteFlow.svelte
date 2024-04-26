@@ -14,8 +14,10 @@
     type NodeTypes,
   } from '@xyflow/svelte';
   import NodeWithParams from './NodeWithParams.svelte';
+  import NodeWithParamsVertical from './NodeWithParamsVertical.svelte';
   import NodeWithGraphView from './NodeWithGraphView.svelte';
   import NodeWithTableView from './NodeWithTableView.svelte';
+  import NodeWithSubFlow from './NodeWithSubFlow.svelte';
   import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
@@ -23,8 +25,10 @@
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
+    vertical: NodeWithParamsVertical,
     graph_view: NodeWithGraphView,
     table_view: NodeWithTableView,
+    sub_flow: NodeWithSubFlow,
   };
 
   export let path = '';
@@ -43,29 +47,35 @@
   $: fetchWorkspace(path);
 
   function closeNodeSearch() {
-    nodeSearchPos = undefined;
+    nodeSearchSettings = undefined;
   }
   function toggleNodeSearch({ detail: { event } }) {
-    if (nodeSearchPos) {
+    if (nodeSearchSettings) {
       closeNodeSearch();
       return;
     }
     event.preventDefault();
-    nodeSearchPos = {
-      top: event.offsetY,
-      left: event.offsetX - 155,
+    nodeSearchSettings = {
+      pos: { x: event.clientX, y: event.clientY },
+      boxes: $boxes,
     };
   }
   function addNode(e) {
     const node = {...e.detail};
     nodes.update((n) => {
-      node.position = screenToFlowPosition({x: nodeSearchPos.left, y: nodeSearchPos.top});
+      node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});
       const title = node.data.title;
       let i = 1;
       node.id = `${title} ${i}`;
       while (n.find((x) => x.id === node.id)) {
         i += 1;
         node.id = `${title} ${i}`;
+      }
+      node.parentNode = nodeSearchSettings.parentNode;
+      if (node.parentNode) {
+        node.extent = 'parent';
+        const parent = n.find((x) => x.id === node.parentNode);
+        node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
       }
       return [...n, node]
     });
@@ -79,7 +89,11 @@
   }
   getBoxes();
 
-  let nodeSearchPos: XYPosition | undefined = undefined;
+  let nodeSearchSettings: {
+    pos: XYPosition,
+    boxes: any[],
+    parentNode: string,
+  };
 
   const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
   let backendWorkspace: string;
@@ -120,20 +134,36 @@
       return edges.filter((e) => e.source === connection.source || e.target !== connection.target);
     });
   }
+  function nodeClick(e) {
+    const node = e.detail.node;
+    const meta = $boxes.find(m => m.data.title === node.data.title);
+    if (!meta) return;
+    const sub_nodes = meta.sub_nodes;
+    if (!sub_nodes) return;
+    const event = e.detail.event;
+    if (event.target.classList.contains('title')) return;
+    nodeSearchSettings = {
+      pos: { x: event.clientX, y: event.clientY },
+      boxes: sub_nodes,
+      parentNode: node.id,
+    };
+  }
 
 </script>
 
 <div style:height="100%">
   <SvelteFlow {nodes} {edges} {nodeTypes} fitView
     on:paneclick={toggleNodeSearch}
+    on:nodeclick={nodeClick}
     proOptions={{ hideAttribution: true }}
     maxZoom={1.5}
     minZoom={0.3}
     onconnect={onconnect}
     >
-    <Background patternColor="#39bcf3" />
     <Controls />
     <MiniMap />
-    {#if nodeSearchPos}<NodeSearch boxes={$boxes} on:cancel={closeNodeSearch} on:add={addNode} pos={nodeSearchPos} />{/if}
+    {#if nodeSearchSettings}
+      <NodeSearch pos={nodeSearchSettings.pos} boxes={nodeSearchSettings.boxes} on:cancel={closeNodeSearch} on:add={addNode} />
+    {/if}
   </SvelteFlow>
 </div>

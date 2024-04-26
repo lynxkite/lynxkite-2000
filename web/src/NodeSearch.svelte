@@ -30,7 +30,8 @@
   }
   function addSelected() {
     const node = {...hits[selectedIndex].item};
-    node.position = {x: pos.left, y: pos.top};
+    delete node.sub_nodes;
+    node.position = pos;
     dispatch('add', node);
   }
   async function lostFocus(e) {
@@ -41,9 +42,7 @@
 
 </script>
 
-<div class="node-search"
-style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.bottom}px;">
-
+<div class="node-search" style="top: {pos.y}px; left: {pos.x}px;">
   <input
     bind:this={searchBox}
     on:input={onInput}
@@ -83,7 +82,7 @@ style="top: {pos.top}px; left: {pos.left}px; right: {pos.right}px; bottom: {pos.
     border-radius: 4px;
   }
   .node-search {
-    position: absolute;
+    position: fixed;
     width: 300px;
     z-index: 5;
     padding: 4px;

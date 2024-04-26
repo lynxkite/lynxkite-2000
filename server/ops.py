@@ -11,10 +11,11 @@ ALL_OPS = {}
 class Op:
   func: callable
   name: str
-  params: dict
-  inputs: dict
-  outputs: dict
-  type: str
+  params: dict # name -> default
+  inputs: dict # name -> type
+  outputs: dict # name -> type
+  type: str # The UI to use for this operation.
+  sub_nodes: list = None # If set, these nodes can be placed inside the operation's node.
 
   def __call__(self, *inputs, **params):
     # Convert parameters.
@@ -39,20 +40,37 @@ class Op:
     res = self.func(*inputs, **params)
     return res
 
+  def to_json(self):
+    return {
+      'type': self.type,
+      'data': { 'title': self.name, 'params': self.params },
+      'targetPosition': 'left' if self.inputs else None,
+      'sourcePosition': 'right' if self.outputs else None,
+      'sub_nodes': [sub.to_json() for sub in self.sub_nodes.values()] if self.sub_nodes else None,
+    }
+
+
 @dataclasses.dataclass
 class RelationDefinition:
-  df: str
-  source_column: str
-  target_column: str
-  source_table: str
-  target_table: str
-  source_key: str
-  target_key: str
+  '''Defines a set of edges.'''
+  df: str # The DataFrame that contains the edges.
+  source_column: str # The column in the edge DataFrame that contains the source node ID.
+  target_column: str # The column in the edge DataFrame that contains the target node ID.
+  source_table: str # The DataFrame that contains the source nodes.
+  target_table: str # The DataFrame that contains the target nodes.
+  source_key: str # The column in the source table that contains the node ID.
+  target_key: str # The column in the target table that contains the node ID.
 
 @dataclasses.dataclass
 class Bundle:
+  '''A collection of DataFrames and other data.
+
+  Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
+  It can also carry other data, such as a trained model.
+  '''
   dfs: dict
   relations: list[RelationDefinition]
+  other: dict = None
 
   @classmethod
   def from_nx(cls, graph: nx.Graph):
@@ -94,7 +112,7 @@ def nx_node_attribute_func(name):
   return decorator
 
 
-def op(name, *, view='basic'):
+def op(name, *, view='basic', sub_nodes=None):
   '''Decorator for defining an operation.'''
   def decorator(func):
     sig = inspect.signature(func)
@@ -109,6 +127,9 @@ def op(name, *, view='basic'):
       if param.kind == param.KEYWORD_ONLY}
     outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
     op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=view)
+    if sub_nodes is not None:
+      op.sub_nodes = sub_nodes
+      op.type = 'sub_flow'
     ALL_OPS[name] = op
     return func
   return decorator

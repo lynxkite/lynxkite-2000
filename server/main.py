@@ -9,6 +9,7 @@ import traceback
 from . import ops
 from . import basic_ops
 from . import networkx_ops
+from . import pytorch_model_ops
 
 class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
@@ -30,6 +31,7 @@ class WorkspaceNode(BaseConfig):
     type: str
     data: WorkspaceNodeData
     position: Position
+    parentNode: Optional[str] = None
 
 class WorkspaceEdge(BaseConfig):
     id: str
@@ -46,17 +48,11 @@ app = fastapi.FastAPI()
 
 @app.get("/api/catalog")
 def get_catalog():
-    return [
-        {
-          'type': op.type,
-          'data': { 'title': op.name, 'params': op.params },
-          'targetPosition': 'left' if op.inputs else None,
-          'sourcePosition': 'right' if op.outputs else None,
-        }
-        for op in ops.ALL_OPS.values()]
+    return [op.to_json() for op in ops.ALL_OPS.values()]
 
 def execute(ws):
-    nodes = ws.nodes
+    # Nodes are responsible for interpreting/executing their child nodes.
+    nodes = [n for n in ws.nodes if not n.parentNode]
     outputs = {}
     failed = 0
     while len(outputs) + failed < len(nodes):
