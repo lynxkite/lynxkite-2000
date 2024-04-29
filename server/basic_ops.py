@@ -52,12 +52,13 @@ def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = Non
   return v
 
 @ops.op("View tables", view="table_view")
-def view_tables(dfs: ops.Bundle):
+def view_tables(bundle: ops.Bundle):
   v = {
     'dataframes': { name: {
       'columns': [str(c) for c in df.columns],
       'data': df.values.tolist(),
-    } for name, df in dfs.dfs.items() },
-    'relations': dfs.relations,
+    } for name, df in bundle.dfs.items() },
+    'relations': bundle.relations,
+    'other': bundle.other,
   }
   return v

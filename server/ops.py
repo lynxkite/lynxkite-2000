@@ -4,14 +4,33 @@ import functools
 import inspect
 import networkx as nx
 import pandas as pd
+import typing
 
 ALL_OPS = {}
+PARAM_TYPE = type[typing.Any]
+
+@dataclasses.dataclass
+class Parameter:
+  '''Defines a parameter for an operation.'''
+  name: str
+  default: any
+  type: PARAM_TYPE = None
+
+  def __post_init__(self):
+    if self.type is None:
+      self.type = type(self.default)
+  def to_json(self):
+    return {
+      'name': self.name,
+      'default': self.default,
+      'type': str(self.type),
+    }
 
 @dataclasses.dataclass
 class Op:
   func: callable
   name: str
-  params: dict # name -> default
+  params: dict[str, Parameter]
   inputs: dict # name -> type
   outputs: dict # name -> type
   type: str # The UI to use for this operation.
@@ -19,22 +38,17 @@ class Op:
 
   def __call__(self, *inputs, **params):
     # Convert parameters.
-    sig = inspect.signature(self.func)
-    for p in params:
+    for p in params.values():
       if p in self.params:
-        t = sig.parameters[p].annotation
-        if t is inspect._empty:
-          t = type(self.params[p])
-        if t == int:
+        if p.type == int:
           params[p] = int(params[p])
-        elif t == float:
+        elif p.type == float:
           params[p] = float(params[p])
     # Convert inputs.
     inputs = list(inputs)
-    for i, (x, p) in enumerate(zip(inputs, sig.parameters.values())):
-      t = p.annotation
+    for i, (x, t) in enumerate(zip(inputs, self.inputs.values())):
       if t == nx.Graph and isinstance(x, Bundle):
-        inputs[i] = o.to_nx()
+        inputs[i] = x.to_nx()
       elif t == Bundle and isinstance(x, nx.Graph):
         inputs[i] = Bundle.from_nx(x)
     res = self.func(*inputs, **params)
@@ -43,7 +57,7 @@ class Op:
   def to_json(self):
     return {
       'type': self.type,
-      'data': { 'title': self.name, 'params': self.params },
+      'data': { 'title': self.name, 'params': [p.to_json() for p in self.params.values()] },
       'targetPosition': 'left' if self.inputs else None,
       'sourcePosition': 'right' if self.outputs else None,
       'sub_nodes': [sub.to_json() for sub in self.sub_nodes.values()] if self.sub_nodes else None,
@@ -68,8 +82,8 @@ class Bundle:
   Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
   It can also carry other data, such as a trained model.
   '''
-  dfs: dict
-  relations: list[RelationDefinition]
+  dfs: dict = dataclasses.field(default_factory=dict) # name -> DataFrame
+  relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
   other: dict = None
 
   @classmethod
@@ -121,10 +135,15 @@ def op(name, *, view='basic', sub_nodes=None):
       name: param.annotation
       for name, param in sig.parameters.items()
       if param.kind != param.KEYWORD_ONLY}
-    params = {
-      name: param.default if param.default is not inspect._empty else None
-      for name, param in sig.parameters.items()
-      if param.kind == param.KEYWORD_ONLY}
+    params = {}
+    for n, param in sig.parameters.items():
+      if param.kind == param.KEYWORD_ONLY:
+        p = Parameter(n, param.default, param.annotation)
+        if p.default is inspect._empty:
+          p.default = None
+        if p.type is inspect._empty:
+          p.type = type(p.default)
+        params[n] = p
     outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
     op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=view)
     if sub_nodes is not None:
@@ -133,3 +152,13 @@ def op(name, *, view='basic', sub_nodes=None):
     ALL_OPS[name] = op
     return func
   return decorator
+
+def no_op(*args, **kwargs):
+  if args:
+    return args[0]
+  return Bundle()
+
+def register_passive_op(name, inputs={'input': Bundle}, outputs={'output': Bundle}, params=[]):
+  '''A passive operation has no associated code.'''
+  op = Op(no_op, name, params={p.name: p for p in params}, inputs=inputs, outputs=outputs, type='basic')
+  ALL_OPS[name] = op

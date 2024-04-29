@@ -53,6 +53,10 @@ def get_catalog():
 def execute(ws):
     # Nodes are responsible for interpreting/executing their child nodes.
     nodes = [n for n in ws.nodes if not n.parentNode]
+    children = {}
+    for n in ws.nodes:
+        if n.parentNode:
+            children.setdefault(n.parentNode, []).append(n)
     outputs = {}
     failed = 0
     while len(outputs) + failed < len(nodes):
@@ -64,8 +68,14 @@ def execute(ws):
                 inputs = [outputs[input] for input in inputs]
                 data = node.data
                 op = ops.ALL_OPS[data.title]
+                params = {**data.params}
+                if op.sub_nodes:
+                    sub_nodes = children.get(node.id, [])
+                    sub_node_ids = [node.id for node in sub_nodes]
+                    sub_edges = [edge for edge in ws.edges if edge.source in sub_node_ids]
+                    params['sub_flow'] = {'nodes': sub_nodes, 'edges': sub_edges}
                 try:
-                  output = op(*inputs, **data.params)
+                  output = op(*inputs, **params)
                 except Exception as e:
                   traceback.print_exc()
                   data.error = str(e)
