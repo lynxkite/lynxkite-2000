@@ -32,7 +32,7 @@ def register_layer(name):
   return decorator
 
 @register_layer('LayerNorm')
-def normalization():
+def layernorm():
   return 'LayerNorm'
 
 @register_layer('Dropout')

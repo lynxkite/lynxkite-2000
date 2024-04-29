@@ -42,7 +42,6 @@ class Workspace(BaseConfig):
 def execute(ws):
     # Nodes are responsible for interpreting/executing their child nodes.
     nodes = [n for n in ws.nodes if not n.parentNode]
-    print(nodes)
     children = {}
     for n in ws.nodes:
         if n.parentNode:

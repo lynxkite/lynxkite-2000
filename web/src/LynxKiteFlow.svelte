@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { setContext } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import {
     SvelteFlow,
@@ -139,9 +140,13 @@
         || e.targetHandle !== connection.targetHandle);
     });
   }
+  function getMeta(title) {
+    return $boxes.find((m) => m.data.title === title);
+  }
+  setContext('LynxKiteFlow', { getMeta });
   function nodeClick(e) {
     const node = e.detail.node;
-    const meta = $boxes.find(m => m.data.title === node.data.title);
+    const meta = getMeta(node.data.title);
     if (!meta) return;
     const sub_nodes = meta.sub_nodes;
     if (!sub_nodes) return;
