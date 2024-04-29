@@ -22,9 +22,9 @@ def wrapped(func):
 
 
 for (name, func) in nx.__dict__.items():
-  if type(func) == nx.utils.backends._dispatch:
+  if hasattr(func, 'graphs'):
     sig = inspect.signature(func)
-    inputs = {'G': nx.Graph} if 'G' in sig.parameters else {}
+    inputs = {k: nx.Graph for k in func.graphs}
     params = {
       name:
         str(param.default)
