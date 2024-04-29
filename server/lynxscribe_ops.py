@@ -4,7 +4,7 @@ from .ops import register_passive_op, Parameter as P
 register_passive_op('Scrape documents', inputs={}, params=[P('url', '')])
 register_passive_op('Extract graph')
 register_passive_op('Compute embeddings')
-register_passive_op('Vector DB', params=[P('backend', 'FAISS')])
+register_passive_op('Vector DB', params=[P.options('backend', ['FAISS', 'ANN', 'HNSW'])])
 register_passive_op('Chat UI', outputs={})
 register_passive_op('Chat backend', inputs={})
 register_passive_op('WhatsApp', inputs={})

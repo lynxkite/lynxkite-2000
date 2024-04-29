@@ -1,5 +1,6 @@
 '''API for implementing LynxKite operations.'''
 import dataclasses
+import enum
 import functools
 import inspect
 import networkx as nx
@@ -16,14 +17,22 @@ class Parameter:
   default: any
   type: PARAM_TYPE = None
 
+  @staticmethod
+  def options(name, options):
+    return Parameter(name, options[0], enum.Enum(f'OptionsFor{name}', options))
+
   def __post_init__(self):
     if self.type is None:
       self.type = type(self.default)
   def to_json(self):
+    if isinstance(self.type, type) and issubclass(self.type, enum.Enum):
+      t = {'enum': list(self.type.__members__.keys())}
+    else:
+      t = str(self.type)
     return {
       'name': self.name,
       'default': self.default,
-      'type': str(self.type),
+      'type': t,
     }
 
 @dataclasses.dataclass

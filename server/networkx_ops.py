@@ -37,8 +37,6 @@ for (name, func) in nx.__dict__.items():
         # No annotation, no default — we must guess the type.
         if len(k) == 1:
           params[k] = 1
-    if name == 'ladder_graph':
-      print(params)
     name = "NX › " + name.replace('_', ' ').title()
     op = ops.Op(wrapped(func), name, params=params, inputs=inputs, outputs={'output': 'yes'}, type='basic')
     ops.ALL_OPS[name] = op
