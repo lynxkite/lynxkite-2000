@@ -4,4 +4,4 @@ networkx
 numpy
 pandas
 scipy
-uvicorn
+uvicorn[standard]
