@@ -28,7 +28,7 @@ def save(req: SaveRequest):
 @app.post("/api/save")
 def save_and_execute(req: SaveRequest):
     save(req)
-    execute(req.ws)
+    workspace.execute(req.ws)
     save(req)
     return req.ws
 

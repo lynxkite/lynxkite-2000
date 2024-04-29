@@ -29,6 +29,9 @@
   function asPx(n: number) {
     return n ? n + 'px' : undefined;
   }
+  $: inputs = Object.entries(data.inputs || {});
+  $: outputs = Object.entries(data.outputs || {});
+  const handleOffsetDirection = { top: 'left', bottom: 'left', left: 'top', right: 'top' };
 </script>
 
 <div class="node-container" style:width={asPx(width)} style:height={asPx(height)} style={containerStyle}>
@@ -43,12 +46,16 @@
       {/if}
       <slot />
     {/if}
-    {#if sourcePosition}
-      <Handle type="source" position={sourcePosition} />
-    {/if}
-    {#if targetPosition}
-      <Handle type="target" position={targetPosition} />
-    {/if}
+    {#each inputs as [name, input], i}
+      <Handle
+        id={name} type="target" position={targetPosition || 'left'}
+        style="{handleOffsetDirection[targetPosition || 'left']}: {100 * (i + 1) / (inputs.length + 1)}%" />
+    {/each}
+    {#each outputs as [name, output], i}
+      <Handle
+        id={name} type="source" position={sourcePosition || 'right'}
+        style="{handleOffsetDirection[sourcePosition || 'right']}: {100 * (i + 1) / (outputs.length + 1)}%" />
+    {/each}
   </div>
 </div>
 
