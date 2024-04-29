@@ -71,6 +71,9 @@ def execute(ws):
                   data.error = str(e)
                   failed += 1
                   continue
+                if len(op.inputs) == 1 and op.inputs.get('multi') == '*':
+                    # It's a flexible input. Create n+1 handles.
+                    data.inputs = {f'input{i}': None for i in range(len(inputs) + 1)}
                 data.error = None
                 outputs[node.id] = output
                 if op.type == 'graph_view' or op.type == 'table_view':

@@ -133,7 +133,10 @@
   function onconnect(connection: Connection) {
     edges.update((edges) => {
       // Only one source can connect to a given target.
-      return edges.filter((e) => e.source === connection.source || e.target !== connection.target);
+      return edges.filter((e) =>
+        e.source === connection.source
+        || e.target !== connection.target
+        || e.targetHandle !== connection.targetHandle);
     });
   }
   function nodeClick(e) {

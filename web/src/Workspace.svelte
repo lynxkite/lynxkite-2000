@@ -52,7 +52,8 @@
     align-items: center;
   }
   .tools a {
-    color: white;
+    color: #39bcf3;
     font-size: 1.5em;
+    padding: 0 10px;
   }
 </style>

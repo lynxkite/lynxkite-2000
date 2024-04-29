@@ -57,9 +57,12 @@ class Op:
   def to_json(self):
     return {
       'type': self.type,
-      'data': { 'title': self.name, 'params': [p.to_json() for p in self.params.values()] },
-      'targetPosition': 'left' if self.inputs else None,
-      'sourcePosition': 'right' if self.outputs else None,
+      'data': {
+        'title': self.name,
+        'inputs': {i: str(type) for i, type in self.inputs.items()},
+        'outputs': {o: str(type) for o, type in self.outputs.items()},
+        'params': [p.to_json() for p in self.params.values()],
+      },
       'sub_nodes': [sub.to_json() for sub in self.sub_nodes.values()] if self.sub_nodes else None,
     }
 
