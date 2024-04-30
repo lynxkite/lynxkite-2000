@@ -81,7 +81,9 @@ def execute(ws):
 
 def save(ws: Workspace, path: str):
     j = ws.model_dump_json(indent=2)
-    with tempfile.NamedTemporaryFile('w', delete_on_close=False) as f:
+    dirname, basename = os.path.split(path)
+    # Create temp file in the same directory to make sure it's on the same filesystem.
+    with tempfile.NamedTemporaryFile('w', prefix=basename, dir=dirname, delete_on_close=False) as f:
         f.write(j)
         f.close()
         os.replace(f.name, path)

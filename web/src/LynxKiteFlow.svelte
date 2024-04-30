@@ -65,6 +65,7 @@
     const node = {...e.detail};
     nodes.update((n) => {
       node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});
+      node.data = { ...node.data };
       const title = node.data.title;
       node.data.params = Object.fromEntries(
         node.data.params.map((p) => [p.name, p.default]));

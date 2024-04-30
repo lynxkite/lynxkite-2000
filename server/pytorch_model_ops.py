@@ -23,7 +23,7 @@ def register_layer(name):
       for name, param in sig.parameters.items()
       if param.kind != param.KEYWORD_ONLY}
     params = {
-      name: param.default if param.default is not inspect._empty else None
+      name: ops.Parameter(name, param.default, param.annotation)
       for name, param in sig.parameters.items()
       if param.kind == param.KEYWORD_ONLY}
     outputs = {'x': 'tensor'}
