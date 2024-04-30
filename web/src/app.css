@@ -27,5 +27,5 @@ path.svelte-flow__edge-path {
 }
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
-  outline-offset: 5px;
+  outline-offset: 7.5px;
 }
