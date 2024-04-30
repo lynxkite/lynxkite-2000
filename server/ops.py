@@ -22,7 +22,9 @@ class Parameter:
     return Parameter(name, options[0], enum.Enum(f'OptionsFor{name}', options))
 
   def __post_init__(self):
-    if self.type is None:
+    if self.default is inspect._empty:
+      self.default = None
+    if self.type is None or self.type is inspect._empty:
       self.type = type(self.default)
   def to_json(self):
     if isinstance(self.type, type) and issubclass(self.type, enum.Enum):
@@ -47,11 +49,11 @@ class Op:
 
   def __call__(self, *inputs, **params):
     # Convert parameters.
-    for p in params.values():
+    for p in params:
       if p in self.params:
-        if p.type == int:
+        if self.params[p].type == int:
           params[p] = int(params[p])
-        elif p.type == float:
+        elif self.params[p].type == float:
           params[p] = float(params[p])
     # Convert inputs.
     inputs = list(inputs)
@@ -150,12 +152,7 @@ def op(name, *, view='basic', sub_nodes=None):
     params = {}
     for n, param in sig.parameters.items():
       if param.kind == param.KEYWORD_ONLY:
-        p = Parameter(n, param.default, param.annotation)
-        if p.default is inspect._empty:
-          p.default = None
-        if p.type is inspect._empty:
-          p.type = type(p.default)
-        params[n] = p
+        params[n] = Parameter(n, param.default, param.annotation)
     outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
     op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=view)
     if sub_nodes is not None:
