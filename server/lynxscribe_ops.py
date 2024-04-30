@@ -1,14 +1,15 @@
 '''An example of passive ops. Just using LynxKite to describe the configuration of a complex system.'''
-from .ops import register_passive_op, Parameter as P
+from .ops import register_passive_op as reg, Parameter as P
 
-register_passive_op('Scrape documents', inputs={}, params=[P('url', '')])
-register_passive_op('Extract graph')
-register_passive_op('Compute embeddings')
-register_passive_op('Vector DB', params=[P.options('backend', ['FAISS', 'ANN', 'HNSW'])])
-register_passive_op('Chat UI', outputs={})
-register_passive_op('Chat backend', inputs={})
-register_passive_op('WhatsApp', inputs={})
-register_passive_op('PII removal')
-register_passive_op('Intent classification')
-register_passive_op('System prompt', inputs={}, params=[P('prompt', 'You are a heplful chatbot.')])
-register_passive_op('LLM', inputs={'multi': '*'}, params=[P('model', 'gpt4')])
+reg('Scrape documents', inputs={}, params=[P('url', '')])
+reg('Conversation logs', inputs={})
+reg('Extract graph')
+reg('Compute embeddings', params=[P.options('method', ['OpenAI', 'graph', 'Yi-34b']), P('dimensions', 1234)])
+reg('Vector DB', inputs={'multi': '*'}, params=[P.options('backend', ['FAISS', 'ANN', 'HNSW'])])
+reg('Chat UI', outputs={})
+reg('Chat backend', inputs={})
+reg('WhatsApp', inputs={})
+reg('PII removal')
+reg('Intent classification')
+reg('System prompt', inputs={}, params=[P('prompt', 'You are a helpful chatbot.')])
+reg('LLM', inputs={'multi': '*'}, params=[P.options('backend', ['GPT-4', 'Yi-34b', 'Claude 3 Opus', 'Google Gemini'])])

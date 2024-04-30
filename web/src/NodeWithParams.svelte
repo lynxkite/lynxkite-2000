@@ -7,7 +7,7 @@
   export let data: $$Props['data'];
   const { updateNodeData } = useSvelteFlow();
   $: meta = getContext('LynxKiteFlow').getMeta(data.title);
-  $: metaParams = Object.fromEntries(meta.data.params.map((p) => [p.name, p]));
+  $: metaParams = meta && Object.fromEntries(meta.data.params.map((p) => [p.name, p]));
 </script>
 
 <LynxKiteNode {...$$props}>
@@ -15,7 +15,7 @@
     <div class="param">
       <label>
         {name}<br>
-        {#if metaParams[name].type.enum}
+        {#if metaParams?.[name]?.type?.enum}
           <select
             value={value}
             on:change={(evt) => updateNodeData(id, { params: { ...data.params, [name]: evt.currentTarget.value } })}
