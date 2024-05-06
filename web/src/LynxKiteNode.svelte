@@ -26,7 +26,7 @@
     expanded = !expanded;
     onToggle({ expanded });
   }
-  function asPx(n: number) {
+  function asPx(n: number | undefined) {
     return n ? n + 'px' : undefined;
   }
   $: inputs = Object.entries(data.inputs || {});

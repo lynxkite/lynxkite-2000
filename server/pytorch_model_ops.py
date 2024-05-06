@@ -32,11 +32,11 @@ def register_layer(name):
   return decorator
 
 @register_layer('LayerNorm')
-def layernorm():
+def layernorm(x):
   return 'LayerNorm'
 
 @register_layer('Dropout')
-def dropout(*, p=0.5):
+def dropout(x, *, p=0.5):
   return f'Dropout ({p})'
 
 @register_layer('Linear')
@@ -50,7 +50,7 @@ class GraphConv(Enum):
   SAGEConv = 'SAGEConv'
 
 @register_layer('Graph Convolution')
-def graph_convolution(*, type: GraphConv):
+def graph_convolution(x, edges, *, type: GraphConv):
   return 'GraphConv'
 
 class Nonlinearity(Enum):
@@ -59,6 +59,12 @@ class Nonlinearity(Enum):
   Tanh = 'Tanh'
 
 @register_layer('Nonlinearity')
-def nonlinearity(*, type: Nonlinearity):
+def nonlinearity(x, *, type: Nonlinearity):
   return 'ReLU'
 
+def register_area(name, params=[]):
+  '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
+  op = ops.Op(ops.no_op, name, params={p.name: p for p in params}, inputs={}, outputs={}, type='area')
+  LAYERS[name] = op
+
+register_area('Repeat', params=[ops.Parameter('times', 1, int)])

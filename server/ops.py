@@ -171,3 +171,9 @@ def register_passive_op(name, inputs={'input': Bundle}, outputs={'output': Bundl
   '''A passive operation has no associated code.'''
   op = Op(no_op, name, params={p.name: p for p in params}, inputs=inputs, outputs=outputs, type='basic')
   ALL_OPS[name] = op
+  return op
+
+def register_area(name, params=[]):
+  '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
+  op = register_passive_op(name, params=params, inputs={}, outputs={})
+  op.type = 'area'
