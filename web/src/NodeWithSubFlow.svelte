@@ -8,7 +8,6 @@
   let isExpanded = true;
   function onToggle({ expanded }) {
     isExpanded = expanded;
-    console.log('onToggle', expanded, height);
     nodes.update((n) =>
       n.map((node) =>
         node.parentNode === id

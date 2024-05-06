@@ -19,6 +19,7 @@
   import NodeWithGraphView from './NodeWithGraphView.svelte';
   import NodeWithTableView from './NodeWithTableView.svelte';
   import NodeWithSubFlow from './NodeWithSubFlow.svelte';
+  import NodeWithArea from './NodeWithArea.svelte';
   import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
@@ -30,6 +31,7 @@
     graph_view: NodeWithGraphView,
     table_view: NodeWithTableView,
     sub_flow: NodeWithSubFlow,
+    area: NodeWithArea,
   };
 
   export let path = '';
