@@ -26,17 +26,18 @@ for (name, func) in nx.__dict__.items():
     sig = inspect.signature(func)
     inputs = {k: nx.Graph for k in func.graphs}
     params = {
-      name:
-        str(param.default)
+      name: ops.Parameter(
+          name, str(param.default)
         if type(param.default) in [str, int, float]
-        else None
+        else None,
+        param.annotation)
       for name, param in sig.parameters.items()
       if name not in ['G', 'backend', 'backend_kwargs']}
-    for k, v in params.items():
-      if sig.parameters[k].annotation is inspect._empty and v is None:
-        # No annotation, no default — we must guess the type.
-        if len(k) == 1:
-          params[k] = 1
+    for p in params.values():
+      if not p.type:
+        # Guess the type based on the name.
+        if len(p.name) == 1:
+          p.type = int
     name = "NX › " + name.replace('_', ' ').title()
     op = ops.Op(wrapped(func), name, params=params, inputs=inputs, outputs={'output': 'yes'}, type='basic')
     ops.ALL_OPS[name] = op
