@@ -172,6 +172,7 @@
     maxZoom={1.5}
     minZoom={0.3}
     onconnect={onconnect}
+    defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
     >
     <Controls />
     <MiniMap />
