@@ -1,5 +1,10 @@
 // Import all of Bootstrap's CSS
+$form-select-indicator-color: oklch(90% 0.01 55);
 @import "bootstrap/scss/bootstrap";
+:root {
+  --bs-border-color: oklch(90% 0.01 55);
+}
+
 path.svelte-flow__edge-path {
   stroke-width: 2;
   stroke: black;
