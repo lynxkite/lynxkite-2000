@@ -93,21 +93,23 @@
     padding: 8px;
   }
   .handle-name {
-    font-size: 12px;
-    color: oklch(25% 0.2 55);
+    font-size: 10px;
+    color: black;
+    letter-spacing: 0.05em;
     text-align: right;
     white-space: nowrap;
     position: absolute;
     top: -5px;
-    -webkit-text-stroke: 5px white;
-    paint-order: stroke fill;
+    backdrop-filter: blur(10px);
+    padding: 2px 8px;
+    border-radius: 4px;
     visibility: hidden;
   }
   :global(.left) .handle-name {
-    right: 15px;
+    right: 20px;
   }
   :global(.right) .handle-name {
-    left: 15px;
+    left: 20px;
   }
   .node-container:hover .handle-name {
     visibility: visible;
