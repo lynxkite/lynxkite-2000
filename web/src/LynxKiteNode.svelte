@@ -38,7 +38,8 @@
   <div class="lynxkite-node" style={nodeStyle}>
     <div class="title" on:click={titleClicked}>
       {data.title}
-      {#if data.error}<span class="error-sign">⚠️</span>{/if}
+      {#if data.error}<span class="title-icon">⚠️</span>{/if}
+      {#if !expanded}<span class="title-icon">⋯</span>{/if}
     </div>
     {#if expanded}
       {#if data.error}
@@ -49,12 +50,16 @@
     {#each inputs as [name, input], i}
       <Handle
         id={name} type="target" position={targetPosition || 'left'}
-        style="{handleOffsetDirection[targetPosition || 'left']}: {100 * (i + 1) / (inputs.length + 1)}%" />
+        style="{handleOffsetDirection[targetPosition || 'left']}: {100 * (i + 1) / (inputs.length + 1)}%">
+        {#if inputs.length>1}<span class="handle-name">{name.replace("_", " ")}</span>{/if}
+      </Handle>
     {/each}
     {#each outputs as [name, output], i}
       <Handle
         id={name} type="source" position={sourcePosition || 'right'}
-        style="{handleOffsetDirection[sourcePosition || 'right']}: {100 * (i + 1) / (outputs.length + 1)}%" />
+        style="{handleOffsetDirection[sourcePosition || 'right']}: {100 * (i + 1) / (outputs.length + 1)}%">
+        {#if outputs.length>1}<span class="handle-name">{name.replace("_", " ")}</span>{/if}
+      </Handle>
     {/each}
   </div>
 </div>
@@ -65,7 +70,7 @@
     padding: 8px;
     font-size: 12px;
   }
-  .error-sign {
+  .title-icon {
     float: right;
   }
   .node-container {
@@ -85,5 +90,25 @@
     background: #ff8800;
     font-weight: bold;
     padding: 8px;
+  }
+  .handle-name {
+    font-size: 12px;
+    color: #840;
+    text-align: right;
+    white-space: nowrap;
+    position: absolute;
+    top: -5px;
+    -webkit-text-stroke: 5px white;
+    paint-order: stroke fill;
+    visibility: hidden;
+  }
+  :global(.left) .handle-name {
+    right: 15px;
+  }
+  :global(.right) .handle-name {
+    left: 15px;
+  }
+  .node-container:hover .handle-name {
+    visibility: visible;
   }
 </style>

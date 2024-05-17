@@ -5,7 +5,6 @@
 
   type $$Props = NodeProps;
 
-  export let nodeStyle = '';
   export let containerStyle = '';
   export let id: $$Props['id']; id;
   export let data: $$Props['data'];
