@@ -51,14 +51,14 @@
       <Handle
         id={name} type="target" position={targetPosition || 'left'}
         style="{handleOffsetDirection[targetPosition || 'left']}: {100 * (i + 1) / (inputs.length + 1)}%">
-        {#if inputs.length>1}<span class="handle-name">{name.replace("_", " ")}</span>{/if}
+        {#if inputs.length>1}<span class="handle-name">{name.replace(/_/g, " ")}</span>{/if}
       </Handle>
     {/each}
     {#each outputs as [name, output], i}
       <Handle
         id={name} type="source" position={sourcePosition || 'right'}
         style="{handleOffsetDirection[sourcePosition || 'right']}: {100 * (i + 1) / (outputs.length + 1)}%">
-        {#if outputs.length>1}<span class="handle-name">{name.replace("_", " ")}</span>{/if}
+        {#if outputs.length>1}<span class="handle-name">{name.replace(/_/g, " ")}</span>{/if}
       </Handle>
     {/each}
   </div>
@@ -71,6 +71,7 @@
     font-size: 12px;
   }
   .title-icon {
+    margin-left: 5px;
     float: right;
   }
   .node-container {

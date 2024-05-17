@@ -30,7 +30,7 @@
   .top-bar {
     display: flex;
     justify-content: space-between;
-    background: #002a4c;
+    background: oklch(30% 0.13 230);
     color: white;
   }
   .ws-name {
@@ -52,7 +52,7 @@
     align-items: center;
   }
   .tools a {
-    color: #39bcf3;
+    color: oklch(75% 0.13 230);
     font-size: 1.5em;
     padding: 0 10px;
   }
