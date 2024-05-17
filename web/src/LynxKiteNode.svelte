@@ -111,6 +111,12 @@
   :global(.right) .handle-name {
     left: 20px;
   }
+  :global(.top) .handle-name,
+  :global(.bottom) .handle-name {
+    top: -5px;
+    left: 5px;
+    backdrop-filter: none;
+  }
   .node-container:hover .handle-name {
     visibility: visible;
   }
