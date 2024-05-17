@@ -27,7 +27,7 @@ class WorkspaceNode(BaseConfig):
     type: str
     data: WorkspaceNodeData
     position: Position
-    parentNode: Optional[str] = None
+    parentId: Optional[str] = None
 
 class WorkspaceEdge(BaseConfig):
     id: str
@@ -41,11 +41,11 @@ class Workspace(BaseConfig):
 
 def execute(ws):
     # Nodes are responsible for interpreting/executing their child nodes.
-    nodes = [n for n in ws.nodes if not n.parentNode]
+    nodes = [n for n in ws.nodes if not n.parentId]
     children = {}
     for n in ws.nodes:
-        if n.parentNode:
-            children.setdefault(n.parentNode, []).append(n)
+        if n.parentId:
+            children.setdefault(n.parentId, []).append(n)
     outputs = {}
     failed = 0
     while len(outputs) + failed < len(nodes):
