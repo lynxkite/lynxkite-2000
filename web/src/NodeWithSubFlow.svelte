@@ -10,7 +10,7 @@
     isExpanded = expanded;
     nodes.update((n) =>
       n.map((node) =>
-        node.parentNode === id
+        node.parentId === id
         ? { ...node, hidden: !expanded }
         : node));
   }
@@ -18,7 +18,7 @@
     let width = 200;
     let height = 200;
     for (const node of nodes) {
-      if (node.parentNode === id) {
+      if (node.parentId === id) {
         width = Math.max(width, node.position.x + 300);
         height = Math.max(height, node.position.y + 200);
       }

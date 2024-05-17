@@ -77,10 +77,10 @@
         i += 1;
         node.id = `${title} ${i}`;
       }
-      node.parentNode = nodeSearchSettings.parentNode;
-      if (node.parentNode) {
+      node.parentId = nodeSearchSettings.parentId;
+      if (node.parentId) {
         node.extent = 'parent';
-        const parent = n.find((x) => x.id === node.parentNode);
+        const parent = n.find((x) => x.id === node.parentId);
         node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
       }
       return [...n, node]
@@ -98,7 +98,7 @@
   let nodeSearchSettings: {
     pos: XYPosition,
     boxes: any[],
-    parentNode: string,
+    parentId: string,
   };
 
   const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
@@ -158,7 +158,7 @@
     nodeSearchSettings = {
       pos: { x: event.clientX, y: event.clientY },
       boxes: sub_nodes,
-      parentNode: node.id,
+      parentId: node.id,
     };
   }
 
