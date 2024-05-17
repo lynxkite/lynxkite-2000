@@ -24,6 +24,14 @@ path.svelte-flow__edge-path {
   stroke: none;
   fill: black;
 }
+// We want the area node to be above the sub-flow node if its inside the sub-flow.
+// This will need some more thinking for a general solution.
+.svelte-flow__node-sub_flow {
+  z-index: -20 !important;
+}
+.svelte-flow__node-area {
+  z-index: -10 !important;
+}
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
