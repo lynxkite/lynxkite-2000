@@ -1,11 +1,5 @@
-body {
-  margin: 0;
-}
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-}
+// Import all of Bootstrap's CSS
+@import "bootstrap/scss/bootstrap";
 path.svelte-flow__edge-path {
   stroke-width: 2;
   stroke: black;
