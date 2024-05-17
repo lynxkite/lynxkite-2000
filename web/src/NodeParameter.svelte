@@ -7,8 +7,12 @@
 
 <div class="param">
   <label>
-    {name}<br>
-    {#if meta?.type?.enum}
+    <span class="param-name">{name.replace('_', ' ')}</span>
+    {#if meta?.type?.collapsed}
+      <button class="collapsed-param">
+        ⋯
+      </button>
+    {:else if meta?.type?.enum}
       <select
         value={value}
         on:change={(evt) => onChange(evt.currentTarget.value)}
@@ -28,14 +32,31 @@
 
 <style>
   .param {
-    padding: 8px;
+    padding: 0 8px 8px 8px;
   }
   .param label {
     font-size: 12px;
     display: block;
   }
-  .param input,
-  .param select {
+  .param-name {
+    color: #840;
+  }
+  .param input {
     width: calc(100% - 8px);
+  }
+  .param select {
+    width: 100%;
+  }
+  .param input,
+  .param select,
+  .param button {
+      border: 1px solid #840;
+      border-radius: 4px;
+  }
+  .collapsed-param {
+    width: 100%;
+    font-family: auto;
+    font-size: 200%;
+    line-height: 0.5;
   }
 </style>

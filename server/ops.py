@@ -9,6 +9,7 @@ import typing
 
 ALL_OPS = {}
 PARAM_TYPE = type[typing.Any]
+typeof = type # We have some arguments called "type".
 
 @dataclasses.dataclass
 class Parameter:
@@ -18,8 +19,13 @@ class Parameter:
   type: PARAM_TYPE = None
 
   @staticmethod
-  def options(name, options):
-    return Parameter(name, options[0], enum.Enum(f'OptionsFor{name}', options))
+  def options(name, options, default=None):
+    e = enum.Enum(f'OptionsFor_{name}', options)
+    return Parameter(name, e[default or options[0]], e)
+
+  @staticmethod
+  def collapsed(name, default, type=None):
+    return Parameter(name, default, ('collapsed', type or typeof(default)))
 
   def __post_init__(self):
     if self.default is inspect._empty:
@@ -27,13 +33,16 @@ class Parameter:
     if self.type is None or self.type is inspect._empty:
       self.type = type(self.default)
   def to_json(self):
+    t = str(self.type)
+    default = self.default
     if isinstance(self.type, type) and issubclass(self.type, enum.Enum):
       t = {'enum': list(self.type.__members__.keys())}
-    else:
-      t = str(self.type)
+      default = self.default.name if self.default else t['enum'][0]
+    if isinstance(self.type, tuple) and self.type[0] == 'collapsed':
+      t = {'collapsed': str(self.type[1])}
     return {
       'name': self.name,
-      'default': self.default,
+      'default': default,
       'type': t,
     }
 
