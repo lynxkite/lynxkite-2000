@@ -87,13 +87,13 @@
     height: 100%;
   }
   .title {
-    background: #ff8800;
+    background: oklch(75% 0.2 55);
     font-weight: bold;
     padding: 8px;
   }
   .handle-name {
     font-size: 12px;
-    color: #840;
+    color: oklch(25% 0.2 55);
     text-align: right;
     white-space: nowrap;
     position: absolute;

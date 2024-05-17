@@ -46,7 +46,7 @@
 <style>
   .area {
     border-radius: 10px;
-    border: 3px dashed #f80;
+    border: 3px dashed oklch(75% 0.2 55);
     min-width: 400px;
     min-height: 400px;
     max-width: 800px;
@@ -54,7 +54,7 @@
     z-index: 0 !important;
   }
   .title {
-    color: #f80;
+    color: oklch(75% 0.2 55);
     width: 100%;
     text-align: center;
     top: -1.5em;

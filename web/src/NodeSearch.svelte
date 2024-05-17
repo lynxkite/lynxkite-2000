@@ -78,7 +78,7 @@
     cursor: pointer;
   }
   .search-result.selected {
-    background-color: #f80;
+    background-color: oklch(75% 0.2 55);
     border-radius: 4px;
   }
   .node-search {
