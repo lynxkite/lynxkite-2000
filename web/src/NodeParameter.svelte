@@ -9,11 +9,11 @@
   <label>
     <span class="param-name">{name.replace('_', ' ')}</span>
     {#if meta?.type?.collapsed}
-      <button class="collapsed-param">
+      <button class="collapsed-param form-control form-control-sm">
         ⋯
       </button>
     {:else if meta?.type?.enum}
-      <select
+      <select class="form-select form-select-sm"
         value={value}
         on:change={(evt) => onChange(evt.currentTarget.value)}
       >
@@ -22,7 +22,7 @@
         {/each}
       </select>
     {:else}
-      <input
+      <input class="form-control form-control-sm"
       value={value}
       on:input={(evt) => onChange(evt.currentTarget.value)}
       />
@@ -40,23 +40,13 @@
   }
   .param-name {
     color: #840;
-  }
-  .param input {
-    width: calc(100% - 8px);
-  }
-  .param select {
-    width: 100%;
+    letter-spacing: 0.05em;
+    margin-left: 4px;
   }
   .param input,
   .param select,
   .param button {
-      border: 1px solid #840;
-      border-radius: 4px;
   }
   .collapsed-param {
-    width: 100%;
-    font-family: auto;
-    font-size: 200%;
-    line-height: 0.5;
   }
 </style>

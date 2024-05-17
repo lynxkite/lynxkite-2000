@@ -13,6 +13,7 @@
     "@iconify-json/tabler": "^1.1.110",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tsconfig/svelte": "^5.0.4",
+    "sass": "^1.77.2",
     "svelte": "^4.2.12",
     "svelte-check": "^3.6.9",
     "tslib": "^2.6.2",
@@ -21,7 +22,9 @@
     "vite": "^5.2.8"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@xyflow/svelte": "^0.0.41",
+    "bootstrap": "^5.3.3",
     "fuse.js": "^7.0.0",
     "graphology": "^0.25.4",
     "graphology-library": "^0.8.0",
