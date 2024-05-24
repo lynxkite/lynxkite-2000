@@ -75,7 +75,7 @@ def execute(ws):
                     data.inputs = {f'input{i}': None for i in range(len(inputs) + 1)}
                 data.error = None
                 outputs[node.id] = output
-                if op.type == 'graph_view' or op.type == 'table_view':
+                if op.type == 'visualization' or op.type == 'table_view':
                     data.view = output
 
 

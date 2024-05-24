@@ -26,7 +26,7 @@ def _map_color(value):
   rgba = cmap(value)
   return ['#{:02x}{:02x}{:02x}'.format(int(r*255), int(g*255), int(b*255)) for r, g, b in rgba[:, :3]]
 
-@ops.op("Visualize graph", view="graph_view")
+@ops.op("Visualize graph", view="visualization")
 def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = None):
   nodes = graph.dfs['nodes'].copy()
   node_attributes = sorted(nodes.columns)
@@ -35,19 +35,38 @@ def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = Non
   nodes = nodes.to_records()
   edges = graph.dfs['edges'].drop_duplicates(['source', 'target'])
   edges = edges.to_records()
+  pos = nx.spring_layout(graph.to_nx())
   v = {
-    'node_attributes': node_attributes,
-    'attributes': {},
-    'options': {},
-    'nodes': [
+    'animationDuration': 1500,
+    'animationEasingUpdate': 'quinticInOut',
+    'series': [
       {
-        'key': str(n.id),
-        'attributes': {'color': n.color, 'size': 5} if color_nodes_by else {}
-      }
-      for n in nodes],
-    'edges': [
-      {'key': str(r.source) + ' -> ' + str(r.target), 'source': str(r.source), 'target': str(r.target)}
-      for r in edges],
+        'type': 'graph',
+        'roam': True,
+        'lineStyle': {
+          'color': 'gray',
+          'curveness': 0.3,
+        },
+        'emphasis': {
+          'focus': 'adjacency',
+          'lineStyle': {
+            'width': 10,
+          }
+        },
+        'data': [
+          {
+            'id': str(n.id),
+            'x': pos[n.id][0], 'y': pos[n.id][1],
+            # Adjust node size to cover the same area no matter how many nodes there are.
+            'symbolSize': 50 / len(nodes) ** 0.5,
+            'itemStyle': {'color': n.color} if color_nodes_by else {},
+          }
+          for n in nodes],
+        'links': [
+          {'source': str(r.source), 'target': str(r.target)}
+          for r in edges],
+      },
+    ],
   }
   return v
 

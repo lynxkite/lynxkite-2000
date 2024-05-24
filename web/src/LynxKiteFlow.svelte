@@ -16,7 +16,7 @@
   } from '@xyflow/svelte';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithParamsVertical from './NodeWithParamsVertical.svelte';
-  import NodeWithGraphView from './NodeWithGraphView.svelte';
+  import NodeWithVisualization from './NodeWithVisualization.svelte';
   import NodeWithTableView from './NodeWithTableView.svelte';
   import NodeWithSubFlow from './NodeWithSubFlow.svelte';
   import NodeWithArea from './NodeWithArea.svelte';
@@ -28,7 +28,7 @@
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
     vertical: NodeWithParamsVertical,
-    graph_view: NodeWithGraphView,
+    visualization: NodeWithVisualization,
     table_view: NodeWithTableView,
     sub_flow: NodeWithSubFlow,
     area: NodeWithArea,

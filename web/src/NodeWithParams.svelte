@@ -20,4 +20,5 @@
       onChange={(newValue) => updateNodeData(id, { params: { ...data.params, [name]: newValue } })}
       />
   {/each}
+  <slot />
 </LynxKiteNode>
