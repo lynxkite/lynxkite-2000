@@ -14,6 +14,7 @@
     type Connection,
     type NodeTypes,
   } from '@xyflow/svelte';
+  import { useQuery, useMutation, useQueryClient } from '@sveltestack/svelte-query';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithParamsVertical from './NodeWithParamsVertical.svelte';
   import NodeWithVisualization from './NodeWithVisualization.svelte';
@@ -23,7 +24,26 @@
   import NodeSearch from './NodeSearch.svelte';
   import '@xyflow/svelte/dist/style.css';
 
+  export let path = '';
+
   const { screenToFlowPosition } = useSvelteFlow();
+  const queryClient = useQueryClient();
+  const backendWorkspace = useQuery(['workspace', path], async () => {
+    const res = await fetch(`/api/load?path=${path}`);
+    return res.json();
+  }, {staleTime: 10000});
+  const mutation = useMutation(async(update) => {
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(update),
+    });
+    return await res.json();
+  }, {
+    onSuccess: data => queryClient.setQueryData(['workspace', path], data),
+  })
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
@@ -34,20 +54,15 @@
     area: NodeWithArea,
   };
 
-  export let path = '';
   const nodes = writable<Node[]>([]);
   const edges = writable<Edge[]>([]);
-  let workspaceLoaded = false;
-  async function fetchWorkspace(path) {
-    if (!path) return;
-    const res = await fetch(`/api/load?path=${path}`);
-    const j = await res.json();
-    nodes.set(j.nodes);
-    edges.set(j.edges);
-    backendWorkspace = orderedJSON(j);
-    workspaceLoaded = true;
+  let doNotSave = true;
+  $: if ($backendWorkspace.isSuccess) {
+    doNotSave = true; // Change is coming from the backend.
+    nodes.set(JSON.parse(JSON.stringify($backendWorkspace.data?.nodes || [])));
+    edges.set(JSON.parse(JSON.stringify($backendWorkspace.data?.edges || [])));
+    doNotSave = false;
   }
-  $: fetchWorkspace(path);
 
   function closeNodeSearch() {
     nodeSearchSettings = undefined;
@@ -102,7 +117,6 @@
   };
 
   const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
-  let backendWorkspace: string;
   // Like JSON.stringify, but with keys sorted.
   function orderedJSON(obj: any) {
     const allKeys = new Set();
@@ -110,29 +124,18 @@
     return JSON.stringify(obj, Array.from(allKeys).sort());
   }
   graph.subscribe(async (g) => {
-    if (!workspaceLoaded) {
-      return;
-    }
+    if (doNotSave) return;
     const dragging = g.nodes.find((n) => n.dragging);
     if (dragging) return;
     g = JSON.parse(JSON.stringify(g));
     for (const node of g.nodes) {
       delete node.computed;
+      delete node.selected;
     }
     const ws = orderedJSON(g);
-    if (ws === backendWorkspace) return;
-    // console.log('save', '\n' + ws, '\n' + backendWorkspace);
-    backendWorkspace = ws;
-    const res = await fetch('/api/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ path, ws: g }),
-    });
-    const j = await res.json();
-    backendWorkspace = orderedJSON(j);
-    nodes.set(j.nodes);
+    const bd = orderedJSON($backendWorkspace.data);
+    if (ws === bd) return;
+    $mutation.mutate({ path, ws: g });
   });
   function onconnect(connection: Connection) {
     edges.update((edges) => {
@@ -169,7 +172,7 @@
     on:paneclick={toggleNodeSearch}
     on:nodeclick={nodeClick}
     proOptions={{ hideAttribution: true }}
-    maxZoom={1.5}
+    maxZoom={3}
     minZoom={0.3}
     onconnect={onconnect}
     defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}

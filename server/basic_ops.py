@@ -16,7 +16,7 @@ def create_scale_free_graph(*, nodes: int = 10):
 
 @ops.op("Compute PageRank")
 @ops.nx_node_attribute_func('pagerank')
-def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=3):
+def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
   return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
@@ -35,9 +35,9 @@ def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = Non
   nodes = nodes.to_records()
   edges = graph.dfs['edges'].drop_duplicates(['source', 'target'])
   edges = edges.to_records()
-  pos = nx.spring_layout(graph.to_nx())
+  pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000/len(nodes))))
   v = {
-    'animationDuration': 1500,
+    'animationDuration': 500,
     'animationEasingUpdate': 'quinticInOut',
     'series': [
       {
@@ -56,7 +56,7 @@ def visualize_graph(graph: ops.Bundle, *, color_nodes_by: 'node_attribute' = Non
         'data': [
           {
             'id': str(n.id),
-            'x': pos[n.id][0], 'y': pos[n.id][1],
+            'x': float(pos[n.id][0]), 'y': float(pos[n.id][1]),
             # Adjust node size to cover the same area no matter how many nodes there are.
             'symbolSize': 50 / len(nodes) ** 0.5,
             'itemStyle': {'color': n.color} if color_nodes_by else {},
