@@ -1,5 +1,6 @@
 <script lang="ts">
   // This is the whole LynxKite workspace editor page.
+  import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query'
   import { SvelteFlowProvider } from '@xyflow/svelte';
   import ArrowBack from 'virtual:icons/tabler/arrow-back'
   import Backspace from 'virtual:icons/tabler/backspace'
@@ -7,24 +8,27 @@
   import LynxKiteFlow from './LynxKiteFlow.svelte';
   export let path = '';
   $: parent = path.split('/').slice(0, -1).join('/');
+  const queryClient = new QueryClient()
 </script>
 
-<div class="page">
-  <div class="top-bar">
-    <div class="ws-name">
-      <a href><img src="/favicon.ico"></a>
-      {path}
+<QueryClientProvider client={queryClient}>
+  <div class="page">
+    <div class="top-bar">
+      <div class="ws-name">
+        <a href><img src="/favicon.ico"></a>
+        {path}
+      </div>
+      <div class="tools">
+        <a href><Atom /></a>
+        <a href><Backspace /></a>
+        <a href="#dir?path={parent}"><ArrowBack /></a>
+      </div>
     </div>
-    <div class="tools">
-      <a href><Atom /></a>
-      <a href><Backspace /></a>
-      <a href="#dir?path={parent}"><ArrowBack /></a>
-    </div>
+    <SvelteFlowProvider>
+      <LynxKiteFlow path={path} />
+    </SvelteFlowProvider>
   </div>
-  <SvelteFlowProvider>
-    <LynxKiteFlow path={path} />
-  </SvelteFlowProvider>
-</div>
+</QueryClientProvider>
 
 <style>
   .top-bar {

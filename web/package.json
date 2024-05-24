@@ -23,6 +23,7 @@
   "dependencies": {
     "@iconify-json/tabler": "^1.1.110",
     "@popperjs/core": "^2.11.8",
+    "@sveltestack/svelte-query": "^1.6.0",
     "@xyflow/svelte": "^0.1.3",
     "bootstrap": "^5.3.3",
     "echarts": "^5.5.0",
