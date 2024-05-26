@@ -13,7 +13,7 @@
     </button>
   {:else if meta?.type?.enum}
     <select class="form-select form-select-sm"
-      value={value}
+      value={value || meta.type.enum[0]}
       on:change={(evt) => onChange(evt.currentTarget.value)}
     >
       {#each meta.type.enum as option}

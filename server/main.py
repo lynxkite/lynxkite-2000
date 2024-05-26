@@ -13,7 +13,7 @@ app = fastapi.FastAPI()
 
 @app.get("/api/catalog")
 def get_catalog():
-    return [op.model_dump() for op in ops.ALL_OPS.values()]
+    return {op.name: op.model_dump() for op in ops.ALL_OPS.values()}
 
 
 class SaveRequest(workspace.BaseConfig):

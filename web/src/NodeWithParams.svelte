@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
   import { type NodeProps, useSvelteFlow } from '@xyflow/svelte';
   import LynxKiteNode from './LynxKiteNode.svelte';
   import NodeParameter from './NodeParameter.svelte';
@@ -7,8 +6,7 @@
   export let id: $$Props['id'];
   export let data: $$Props['data'];
   const { updateNodeData } = useSvelteFlow();
-  $: meta = getContext('LynxKiteFlow').getMeta(data.title);
-  $: metaParams = meta && Object.fromEntries(meta.data.params.map((p) => [p.name, p]));
+  $: metaParams = data.meta?.params;
 </script>
 
 <LynxKiteNode {...$$props}>
