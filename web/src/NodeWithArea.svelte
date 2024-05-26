@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
   import { type NodeProps, useSvelteFlow } from '@xyflow/svelte';
   import NodeParameter from './NodeParameter.svelte';
 
@@ -25,8 +24,7 @@
     return n ? n + 'px' : undefined;
   }
   const { updateNodeData } = useSvelteFlow();
-  $: meta = getContext('LynxKiteFlow').getMeta(data.title);
-  $: metaParams = meta && Object.fromEntries(meta.data.params.map((p) => [p.name, p]));
+  $: metaParams = data.meta?.params;
 </script>
 
 <div class="area" style:width={asPx(width)} style:height={asPx(height)} style={containerStyle}>

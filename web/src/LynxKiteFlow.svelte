@@ -84,6 +84,7 @@
       const node = {
         type: meta.type,
         data: {
+          meta: meta,
           title: meta.name,
           params: Object.fromEntries(
             Object.values(meta.params).map((p) => [p.name, p.default])),
@@ -153,13 +154,9 @@
         || e.targetHandle !== connection.targetHandle);
     });
   }
-  function getMeta(title) {
-    return $boxes.find((m) => m.data.title === title);
-  }
-  setContext('LynxKiteFlow', { getMeta });
   function nodeClick(e) {
     const node = e.detail.node;
-    const meta = getMeta(node.data.title);
+    const meta = node.data.meta;
     if (!meta) return;
     const sub_nodes = meta.sub_nodes;
     if (!sub_nodes) return;

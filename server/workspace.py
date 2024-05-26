@@ -93,4 +93,34 @@ def load(path: str):
     with open(path) as f:
         j = f.read()
     ws = Workspace.model_validate_json(j)
+    # Metadata is added after loading. This way code changes take effect on old boxes too.
+    _update_metadata(ws)
+    return ws
+
+
+def _update_metadata(ws):
+    nodes = {node.id: node for node in ws.nodes}
+    done = set()
+    while len(done) < len(nodes):
+        for node in ws.nodes:
+            if node.id in done:
+                continue
+            data = node.data
+            if node.parentId is None:
+                op = ops.ALL_OPS.get(data.title)
+            elif node.parentId not in nodes:
+                data.error = f'Parent not found: {node.parentId}'
+                done.add(node.id)
+                continue
+            elif node.parentId in done:
+                op = nodes[node.parentId].data.meta.sub_nodes[data.title]
+            else:
+                continue
+            if op:
+                data.meta = op
+                if data.error == 'Unknown operation.':
+                    data.error = None
+            else:
+                data.error = 'Unknown operation.'
+            done.add(node.id)
     return ws
