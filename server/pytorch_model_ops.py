@@ -23,11 +23,11 @@ def register_layer(name):
       for name, param in sig.parameters.items()
       if param.kind != param.KEYWORD_ONLY}
     params = {
-      name: ops.Parameter(name, param.default, param.annotation)
+      name: ops.Parameter.basic(name, param.default, param.annotation)
       for name, param in sig.parameters.items()
       if param.kind == param.KEYWORD_ONLY}
     outputs = {'x': 'tensor'}
-    LAYERS[name] = ops.Op(func, name, params=params, inputs=inputs, outputs=outputs, type='vertical')
+    LAYERS[name] = ops.Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs, type='vertical')
     return func
   return decorator
 
@@ -64,7 +64,7 @@ def nonlinearity(x, *, type: Nonlinearity):
 
 def register_area(name, params=[]):
   '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
-  op = ops.Op(ops.no_op, name, params={p.name: p for p in params}, inputs={}, outputs={}, type='area')
+  op = ops.Op(func=ops.no_op, name=name, params={p.name: p for p in params}, inputs={}, outputs={}, type='area')
   LAYERS[name] = op
 
-register_area('Repeat', params=[ops.Parameter('times', 1, int)])
+register_area('Repeat', params=[ops.Parameter.basic('times', 1, int)])

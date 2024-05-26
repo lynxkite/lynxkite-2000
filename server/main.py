@@ -3,17 +3,17 @@ import fastapi
 import pathlib
 from . import ops
 from . import workspace
-from . import basic_ops
+from . import lynxkite_ops
 # from . import networkx_ops
-# from . import pytorch_model_ops
-from . import lynxscribe_ops
+from . import pytorch_model_ops
+# from . import lynxscribe_ops
 
 app = fastapi.FastAPI()
 
 
 @app.get("/api/catalog")
 def get_catalog():
-    return [op.to_json() for op in ops.ALL_OPS.values()]
+    return [op.model_dump() for op in ops.ALL_OPS.values()]
 
 
 class SaveRequest(workspace.BaseConfig):

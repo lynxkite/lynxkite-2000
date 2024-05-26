@@ -31,7 +31,7 @@
   const backendWorkspace = useQuery(['workspace', path], async () => {
     const res = await fetch(`/api/load?path=${path}`);
     return res.json();
-  }, {staleTime: 10000});
+  }, {staleTime: 10000, retry: false});
   const mutation = useMutation(async(update) => {
     const res = await fetch('/api/save', {
       method: 'POST',
@@ -79,13 +79,20 @@
     };
   }
   function addNode(e) {
-    const node = {...e.detail};
+    const meta = {...e.detail};
     nodes.update((n) => {
+      const node = {
+        type: meta.type,
+        data: {
+          title: meta.name,
+          params: Object.fromEntries(
+            Object.values(meta.params).map((p) => [p.name, p.default])),
+          inputs: meta.inputs,
+          outputs: meta.outputs,
+        },
+      };
       node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});
-      node.data = { ...node.data };
       const title = node.data.title;
-      node.data.params = Object.fromEntries(
-        node.data.params.map((p) => [p.name, p.default]));
       let i = 1;
       node.id = `${title} ${i}`;
       while (n.find((x) => x.id === node.id)) {

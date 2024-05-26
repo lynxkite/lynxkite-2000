@@ -9,7 +9,7 @@
   let selectedIndex = 0;
   onMount(() => searchBox.focus());
   $: fuse = new Fuse(boxes, {
-    keys: ['data.title']
+    keys: ['name']
   })
   function onInput() {
     hits = fuse.search(searchBox.value);
@@ -58,7 +58,7 @@
         on:click={addSelected}
         class="search-result"
         class:selected={index == selectedIndex}>
-        {box.item.data.title}
+        {box.item.name}
       </div>
     {/each}
   </div>
