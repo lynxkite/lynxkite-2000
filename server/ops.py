@@ -1,60 +1,64 @@
 '''API for implementing LynxKite operations.'''
+from __future__ import annotations
 import dataclasses
 import enum
 import functools
 import inspect
 import networkx as nx
 import pandas as pd
+import pydantic
 import typing
+from typing_extensions import Annotated
 
 ALL_OPS = {}
-PARAM_TYPE = type[typing.Any]
 typeof = type # We have some arguments called "type".
+def type_to_json(t):
+  if isinstance(t, type) and issubclass(t, enum.Enum):
+    return {'enum': list(t.__members__.keys())}
+  if isinstance(t, tuple) and t[0] == 'collapsed':
+    return {'collapsed': str(t[1])}
+  return {'type': str(t)}
+Type = Annotated[
+  typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)
+]
+class BaseConfig(pydantic.BaseModel):
+  model_config = pydantic.ConfigDict(
+    arbitrary_types_allowed=True,
+  )
 
-@dataclasses.dataclass
-class Parameter:
+
+class Parameter(BaseConfig):
   '''Defines a parameter for an operation.'''
   name: str
   default: any
-  type: PARAM_TYPE = None
+  type: Type = None
 
   @staticmethod
   def options(name, options, default=None):
     e = enum.Enum(f'OptionsFor_{name}', options)
-    return Parameter(name, e[default or options[0]], e)
+    return Parameter.basic(name, e[default or options[0]], e)
 
   @staticmethod
   def collapsed(name, default, type=None):
-    return Parameter(name, default, ('collapsed', type or typeof(default)))
+    return Parameter.basic(name, default, ('collapsed', type or typeof(default)))
 
-  def __post_init__(self):
-    if self.default is inspect._empty:
-      self.default = None
-    if self.type is None or self.type is inspect._empty:
-      self.type = type(self.default)
-  def to_json(self):
-    t = str(self.type)
-    default = self.default
-    if isinstance(self.type, type) and issubclass(self.type, enum.Enum):
-      t = {'enum': list(self.type.__members__.keys())}
-      default = self.default.name if self.default else t['enum'][0]
-    if isinstance(self.type, tuple) and self.type[0] == 'collapsed':
-      t = {'collapsed': str(self.type[1])}
-    return {
-      'name': self.name,
-      'default': default,
-      'type': t,
-    }
+  @staticmethod
+  def basic(name, default=None, type=None):
+    if default is inspect._empty:
+      default = None
+    if type is None or type is inspect._empty:
+      type = typeof(default) if default else None
+    return Parameter(name=name, default=default, type=type)
 
-@dataclasses.dataclass
-class Op:
-  func: callable
+
+class Op(BaseConfig):
+  func: callable = pydantic.Field(exclude=True)
   name: str
   params: dict[str, Parameter]
-  inputs: dict # name -> type
-  outputs: dict # name -> type
+  inputs: dict[str, Type] # name -> type
+  outputs: dict[str, Type] # name -> type
   type: str # The UI to use for this operation.
-  sub_nodes: list = None # If set, these nodes can be placed inside the operation's node.
+  sub_nodes: list[Op] = None # If set, these nodes can be placed inside the operation's node.
 
   def __call__(self, *inputs, **params):
     # Convert parameters.
@@ -73,18 +77,6 @@ class Op:
         inputs[i] = Bundle.from_nx(x)
     res = self.func(*inputs, **params)
     return res
-
-  def to_json(self):
-    return {
-      'type': self.type,
-      'data': {
-        'title': self.name,
-        'inputs': {i: str(type) for i, type in self.inputs.items()},
-        'outputs': {o: str(type) for o, type in self.outputs.items()},
-        'params': [p.to_json() for p in self.params.values()],
-      },
-      'sub_nodes': [sub.to_json() for sub in self.sub_nodes.values()] if self.sub_nodes else None,
-    }
 
 
 @dataclasses.dataclass
@@ -105,9 +97,9 @@ class Bundle:
   Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
   It can also carry other data, such as a trained model.
   '''
-  dfs: dict = dataclasses.field(default_factory=dict) # name -> DataFrame
+  dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
   relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
-  other: dict = None
+  other: dict[str, typing.Any] = None
 
   @classmethod
   def from_nx(cls, graph: nx.Graph):
@@ -161,9 +153,9 @@ def op(name, *, view='basic', sub_nodes=None):
     params = {}
     for n, param in sig.parameters.items():
       if param.kind == param.KEYWORD_ONLY:
-        params[n] = Parameter(n, param.default, param.annotation)
+        params[n] = Parameter.basic(n, param.default, param.annotation)
     outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
-    op = Op(func, name, params=params, inputs=inputs, outputs=outputs, type=view)
+    op = Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs, type=view)
     if sub_nodes is not None:
       op.sub_nodes = sub_nodes
       op.type = 'sub_flow'

@@ -26,7 +26,7 @@ for (name, func) in nx.__dict__.items():
     sig = inspect.signature(func)
     inputs = {k: nx.Graph for k in func.graphs}
     params = {
-      name: ops.Parameter(
+      name: ops.Parameter.basic(
           name, str(param.default)
         if type(param.default) in [str, int, float]
         else None,

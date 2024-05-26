@@ -20,6 +20,12 @@ def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
   return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
+@ops.op("Sample graph")
+def create_scale_free_graph(*, nodes: int = 10):
+  '''Creates a scale-free graph with the given number of nodes.'''
+  return nx.scale_free_graph(nodes)
+
+
 def _map_color(value):
   cmap = matplotlib.cm.get_cmap('viridis')
   value = (value - value.min()) / (value.max() - value.min())
