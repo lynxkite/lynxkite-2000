@@ -50,14 +50,30 @@ class Parameter(BaseConfig):
       type = typeof(default) if default else None
     return Parameter(name=name, default=default, type=type)
 
+class Input(BaseConfig):
+  name: str
+  type: Type
+  position: str = 'left'
+
+class Output(BaseConfig):
+  name: str
+  type: Type
+  position: str = 'right'
+
+MULTI_INPUT = Input(name='multi', type='*')
+def basic_inputs(*names):
+  return {name: Input(name=name, type=None) for name in names}
+def basic_outputs(*names):
+  return {name: Output(name=name, type=None) for name in names}
+
 
 class Op(BaseConfig):
   func: callable = pydantic.Field(exclude=True)
   name: str
   params: dict[str, Parameter]
-  inputs: dict[str, Type] # name -> type
-  outputs: dict[str, Type] # name -> type
-  type: str # The UI to use for this operation.
+  inputs: dict[str, Input]
+  outputs: dict[str, Output]
+  type: str = 'basic' # The UI to use for this operation.
   sub_nodes: list[Op] = None # If set, these nodes can be placed inside the operation's node.
 
   def __call__(self, *inputs, **params):
@@ -70,10 +86,10 @@ class Op(BaseConfig):
           params[p] = float(params[p])
     # Convert inputs.
     inputs = list(inputs)
-    for i, (x, t) in enumerate(zip(inputs, self.inputs.values())):
-      if t == nx.Graph and isinstance(x, Bundle):
+    for i, (x, p) in enumerate(zip(inputs, self.inputs.values())):
+      if p.type == nx.Graph and isinstance(x, Bundle):
         inputs[i] = x.to_nx()
-      elif t == Bundle and isinstance(x, nx.Graph):
+      elif p.type == Bundle and isinstance(x, nx.Graph):
         inputs[i] = Bundle.from_nx(x)
     res = self.func(*inputs, **params)
     return res
@@ -147,14 +163,14 @@ def op(name, *, view='basic', sub_nodes=None):
     sig = inspect.signature(func)
     # Positional arguments are inputs.
     inputs = {
-      name: param.annotation
+      name: Input(name=name, type=param.annotation)
       for name, param in sig.parameters.items()
       if param.kind != param.KEYWORD_ONLY}
     params = {}
     for n, param in sig.parameters.items():
       if param.kind == param.KEYWORD_ONLY:
         params[n] = Parameter.basic(n, param.default, param.annotation)
-    outputs = {'output': 'yes'} if view == 'basic' else {} # Maybe more fancy later.
+    outputs = {'output': Output(name='output', type=None)} if view == 'basic' else {} # Maybe more fancy later.
     op = Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs, type=view)
     if sub_nodes is not None:
       op.sub_nodes = sub_nodes
@@ -168,13 +184,22 @@ def no_op(*args, **kwargs):
     return args[0]
   return Bundle()
 
-def register_passive_op(name, inputs={'input': Bundle}, outputs={'output': Bundle}, params=[]):
+def register_passive_op(name, inputs=[], outputs=['output'], params=[]):
   '''A passive operation has no associated code.'''
-  op = Op(no_op, name, params={p.name: p for p in params}, inputs=inputs, outputs=outputs, type='basic')
+  op = Op(
+    func=no_op,
+    name=name,
+    params={p.name: p for p in params},
+    inputs=dict(
+      (i, Input(name=i, type=None)) if isinstance(i, str)
+      else (i.name, i) for i in inputs),
+    outputs=dict(
+      (o, Output(name=o, type=None)) if isinstance(o, str)
+      else (o.name, o) for o in outputs))
   ALL_OPS[name] = op
   return op
 
 def register_area(name, params=[]):
   '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
-  op = register_passive_op(name, params=params, inputs={}, outputs={})
+  op = register_passive_op(name, params=params)
   op.type = 'area'
