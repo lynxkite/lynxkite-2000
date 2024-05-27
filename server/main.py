@@ -5,8 +5,9 @@ from . import ops
 from . import workspace
 from . import lynxkite_ops
 # from . import networkx_ops
-from . import pytorch_model_ops
+# from . import pytorch_model_ops
 # from . import lynxscribe_ops
+from . import llm_ops
 
 app = fastapi.FastAPI()
 

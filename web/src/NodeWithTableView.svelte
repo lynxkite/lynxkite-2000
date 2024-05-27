@@ -1,29 +1,35 @@
 <script lang="ts">
   import { type NodeProps } from '@xyflow/svelte';
+  import { Tabulator } from 'tabulator-tables';
   import LynxKiteNode from './LynxKiteNode.svelte';
   type $$Props = NodeProps;
   export let data: $$Props['data'];
   const open = {};
+  $: single = data.view?.dataframes && Object.keys(data.view.dataframes).length === 1;
 </script>
 
 <LynxKiteNode {...$$props}>
   {#if data.view}
     {#each Object.entries(data.view.dataframes) as [name, df]}
-      <div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>
-      {#if open[name]}
-      <table>
-        <tr>
-          {#each df.columns as column}
-            <th>{column}</th>
-          {/each}
-        </tr>
-        {#each df.data as row}
+      {#if !single}<div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>{/if}
+      {#if single || open[name]}
+      <table class="table table-striped">
+        <thead>
           <tr>
-            {#each row as cell}
-              <td>{cell}</td>
+            {#each df.columns as column}
+              <th>{column}</th>
             {/each}
           </tr>
-        {/each}
+        </thead>
+        <tbody>
+          {#each df.data as row}
+            <tr>
+              {#each row as cell}
+                <td><div class="text-truncate">{cell}</div></td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
       </table>
       {/if}
     {/each}
@@ -43,7 +49,6 @@
     cursor: pointer;
   }
   table {
-    margin: 8px;
-    border-collapse: collapse;
+    table-layout: fixed;
   }
 </style>
