@@ -23,7 +23,7 @@
   {:else}
     <input class="form-control form-control-sm"
     value={value}
-    on:input={(evt) => onChange(evt.currentTarget.value)}
+    on:change={(evt) => onChange(evt.currentTarget.value)}
     />
   {/if}
 </label>
