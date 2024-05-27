@@ -8,7 +8,7 @@
   let hits = Object.values(boxes).map(box => ({item: box}));
   let selectedIndex = 0;
   onMount(() => searchBox.focus());
-  $: fuse = new Fuse(boxes, {
+  $: fuse = new Fuse(Object.values(boxes), {
     keys: ['name']
   })
   function onInput() {

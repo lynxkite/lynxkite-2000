@@ -38,9 +38,7 @@
     font-size: 10px;
     letter-spacing: 0.05em;
     margin-left: 10px;
-    background: oklch(50% 0.13 230);
-    background: oklch(95% 0.2 55);
-    background:var(--bs-border-color);
+    background: var(--bs-border-color);
     width: fit-content;
     padding: 2px 8px;
     border-radius: 4px 4px 0 0;
