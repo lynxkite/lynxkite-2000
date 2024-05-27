@@ -21,6 +21,8 @@ class WorkspaceNodeData(BaseConfig):
     params: dict
     display: Optional[object] = None
     error: Optional[str] = None
+    # Also contains a "meta" field when going out.
+    # This is ignored when coming back from the frontend.
 
 class WorkspaceNode(BaseConfig):
     id: str
@@ -118,6 +120,7 @@ def _update_metadata(ws):
                 continue
             if op:
                 data.meta = op
+                node.type = op.type
                 if data.error == 'Unknown operation.':
                     data.error = None
             else:

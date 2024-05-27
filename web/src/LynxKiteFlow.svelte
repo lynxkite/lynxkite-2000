@@ -16,7 +16,6 @@
   } from '@xyflow/svelte';
   import { useQuery, useMutation, useQueryClient } from '@sveltestack/svelte-query';
   import NodeWithParams from './NodeWithParams.svelte';
-  import NodeWithParamsVertical from './NodeWithParamsVertical.svelte';
   import NodeWithVisualization from './NodeWithVisualization.svelte';
   import NodeWithTableView from './NodeWithTableView.svelte';
   import NodeWithSubFlow from './NodeWithSubFlow.svelte';
@@ -47,7 +46,6 @@
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
-    vertical: NodeWithParamsVertical,
     visualization: NodeWithVisualization,
     table_view: NodeWithTableView,
     sub_flow: NodeWithSubFlow,
@@ -88,8 +86,6 @@
           title: meta.name,
           params: Object.fromEntries(
             Object.values(meta.params).map((p) => [p.name, p.default])),
-          inputs: meta.inputs,
-          outputs: meta.outputs,
         },
       };
       node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});

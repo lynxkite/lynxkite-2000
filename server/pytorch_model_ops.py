@@ -19,15 +19,15 @@ def register_layer(name):
   def decorator(func):
     sig = inspect.signature(func)
     inputs = {
-      name: param.annotation
+      name: ops.Input(name=name, type=param.annotation, position='bottom')
       for name, param in sig.parameters.items()
       if param.kind != param.KEYWORD_ONLY}
     params = {
       name: ops.Parameter.basic(name, param.default, param.annotation)
       for name, param in sig.parameters.items()
       if param.kind == param.KEYWORD_ONLY}
-    outputs = {'x': 'tensor'}
-    LAYERS[name] = ops.Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs, type='vertical')
+    outputs = {'x': ops.Output(name='x', type='tensor', position='top')}
+    LAYERS[name] = ops.Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs)
     return func
   return decorator
 
