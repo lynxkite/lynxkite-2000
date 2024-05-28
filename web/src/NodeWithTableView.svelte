@@ -2,6 +2,7 @@
   import { type NodeProps } from '@xyflow/svelte';
   import { Tabulator } from 'tabulator-tables';
   import LynxKiteNode from './LynxKiteNode.svelte';
+  import Table from './Table.svelte';
   type $$Props = NodeProps;
   export let data: $$Props['data'];
   const open = {};
@@ -13,24 +14,7 @@
     {#each Object.entries(data.view.dataframes) as [name, df]}
       {#if !single}<div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>{/if}
       {#if single || open[name]}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            {#each df.columns as column}
-              <th>{column}</th>
-            {/each}
-          </tr>
-        </thead>
-        <tbody>
-          {#each df.data as row}
-            <tr>
-              {#each row as cell}
-                <td><div class="text-truncate">{cell}</div></td>
-              {/each}
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+        <Table columns={df.columns} data={df.data} />
       {/if}
     {/each}
     {#each Object.entries(data.view.others || {}) as [name, o]}
