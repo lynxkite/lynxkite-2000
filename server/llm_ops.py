@@ -63,3 +63,10 @@ def view(input):
     }}
   }
   return v
+
+@ops.input_position(input="right")
+@ops.output_position(output="left")
+@ops.op("Loop")
+def loop(input, *, max_iterations: int = 10):
+  '''Data can flow back here until it becomes empty or reaches the limit.'''
+  return input
