@@ -176,6 +176,25 @@ def op(name, *, view='basic', sub_nodes=None):
       op.sub_nodes = sub_nodes
       op.type = 'sub_flow'
     ALL_OPS[name] = op
+    func.__op__ = op
+    return func
+  return decorator
+
+def input_position(**kwargs):
+  '''Decorator for specifying unusual positions for the inputs.'''
+  def decorator(func):
+    op = func.__op__
+    for k, v in kwargs.items():
+      op.inputs[k].position = v
+    return func
+  return decorator
+
+def output_position(**kwargs):
+  '''Decorator for specifying unusual positions for the outputs.'''
+  def decorator(func):
+    op = func.__op__
+    for k, v in kwargs.items():
+      op.outputs[k].position = v
     return func
   return decorator
 
