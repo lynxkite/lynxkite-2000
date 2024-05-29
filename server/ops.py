@@ -15,11 +15,20 @@ typeof = type # We have some arguments called "type".
 def type_to_json(t):
   if isinstance(t, type) and issubclass(t, enum.Enum):
     return {'enum': list(t.__members__.keys())}
-  if isinstance(t, tuple) and t[0] == 'collapsed':
-    return {'collapsed': str(t[1])}
+  if getattr(t, '__metadata__', None):
+    return t.__metadata__[0]
   return {'type': str(t)}
 Type = Annotated[
   typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)
+]
+LongStr = Annotated[
+  str, {'format': 'textarea'}
+]
+PathStr = Annotated[
+  str, {'format': 'path'}
+]
+CollapsedStr = Annotated[
+  str, {'format': 'collapsed'}
 ]
 class BaseConfig(pydantic.BaseModel):
   model_config = pydantic.ConfigDict(
@@ -40,7 +49,7 @@ class Parameter(BaseConfig):
 
   @staticmethod
   def collapsed(name, default, type=None):
-    return Parameter.basic(name, default, ('collapsed', type or typeof(default)))
+    return Parameter.basic(name, default, CollapsedStr)
 
   @staticmethod
   def basic(name, default=None, type=None):
