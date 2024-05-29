@@ -15,11 +15,11 @@ def chat(*args, **kwargs):
   return CACHE[key]
 
 @ops.op("Input")
-def input(*, filename: str, key: str):
+def input(*, filename: ops.PathStr, key: str):
   return pd.read_csv(filename).rename(columns={key: 'text'})
 
 @ops.op("Create prompt")
-def create_prompt(input, *, template: str):
+def create_prompt(input, *, template: ops.LongStr):
   assert template, 'Please specify the template. Refer to columns using their names in uppercase.'
   df = input.copy()
   prompts = []

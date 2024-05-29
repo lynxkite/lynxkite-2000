@@ -7,10 +7,15 @@
 
 <label class="param">
   <span class="param-name">{name.replace(/_/g, ' ')}</span>
-  {#if meta?.type?.collapsed}
+  {#if meta?.type?.format === 'collapsed'}
     <button class="collapsed-param form-control form-control-sm">
       ⋯
     </button>
+  {:else if meta?.type?.format === 'textarea'}
+    <textarea class="form-control form-control-sm"
+    value={value}
+    on:change={(evt) => onChange(evt.currentTarget.value)}
+    />
   {:else if meta?.type?.enum}
     <select class="form-select form-select-sm"
       value={value || meta.type.enum[0]}
