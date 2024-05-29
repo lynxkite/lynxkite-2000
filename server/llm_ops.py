@@ -28,7 +28,7 @@ def create_prompt(input, *, template: str):
     for c in df.columns:
       p = p.replace(c.upper(), str(row[c]))
     prompts.append(p)
-  df['prompt'] = p
+  df['prompt'] = prompts
   return df
 
 
@@ -47,7 +47,7 @@ def ask_llm(input, *, model: str, choices: list = None, max_tokens: int = 100):
       model=model,
       max_tokens=max_tokens,
       messages=[
-        {"role": "user", "content": row['text']},
+        {"role": "user", "content": row['prompt']},
       ],
       **g,
     )

@@ -7,10 +7,10 @@
   let tableComponent;
   let tab;
 
-  onMount(() => {
-    console.log(data, columns);
-    // The rows in the data are arrays, but Tabulator expects objects.
-    const objs = [];
+  // The rows in the data are arrays, but Tabulator expects objects.
+  const objs = [];
+  $: {
+    objs.splice();
     for (const row of data) {
       const obj = {};
       for (let i = 0; i < columns.length; i++) {
@@ -18,6 +18,9 @@
       }
       objs.push(obj);
     }
+  }
+
+  onMount(() => {
     tab = new Tabulator(tableComponent, {
       data: objs,
       columns: columns.map(c => ({title: c, field: c, widthGrow: 1})),

@@ -5,3 +5,5 @@ numpy
 pandas
 scipy
 uvicorn[standard]
+# For llm_ops
+openai
