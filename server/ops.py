@@ -39,7 +39,7 @@ class BaseConfig(pydantic.BaseModel):
 class Parameter(BaseConfig):
   '''Defines a parameter for an operation.'''
   name: str
-  default: any
+  default: typing.Any
   type: Type = None
 
   @staticmethod
@@ -77,7 +77,7 @@ def basic_outputs(*names):
 
 
 class Op(BaseConfig):
-  func: callable = pydantic.Field(exclude=True)
+  func: typing.Callable = pydantic.Field(exclude=True)
   name: str
   params: dict[str, Parameter]
   inputs: dict[str, Input]

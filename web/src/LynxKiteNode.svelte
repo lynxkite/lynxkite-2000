@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { Handle, type NodeProps } from '@xyflow/svelte';
+  import { Handle, useSvelteFlow, useUpdateNodeInternals, type NodeProps, NodeResizeControl } from '@xyflow/svelte';
+  import ChevronDownRight from 'virtual:icons/tabler/chevron-down-right';
 
+  const { updateNodeData } = useSvelteFlow();
+  const updateNodeInternals = useUpdateNodeInternals();
   type $$Props = NodeProps;
 
   export let nodeStyle = '';
@@ -21,10 +24,12 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
   export let onToggle = () => {};
 
-  let expanded = true;
+  $: expanded = !data.collapsed;
   function titleClicked() {
-    expanded = !expanded;
+    updateNodeData(id, { collapsed: expanded });
+    data = data;
     onToggle({ expanded });
+    updateNodeInternals();
   }
   function asPx(n: number | undefined) {
     return n ? n + 'px' : undefined;
@@ -34,7 +39,8 @@
   const handleOffsetDirection = { top: 'left', bottom: 'left', left: 'top', right: 'top' };
 </script>
 
-<div class="node-container" style:width={asPx(width)} style:height={asPx(height)} style={containerStyle}>
+<div class="node-container" class:expanded={expanded}
+  style:width={asPx(width)} style:height={asPx(expanded ? height : undefined)} style={containerStyle}>
   <div class="lynxkite-node" style={nodeStyle}>
     <div class="title" on:click={titleClicked}>
       {data.title}
@@ -62,6 +68,17 @@
       </Handle>
     {/each}
   </div>
+  {#if expanded}
+    <NodeResizeControl
+      minWidth={100}
+      minHeight={50}
+      style="background: transparent; border: none;"
+      onResizeStart={() => updateNodeData(id, { beingResized: true })}
+      onResizeEnd={() => updateNodeData(id, { beingResized: false })}
+      >
+      <ChevronDownRight class="node-resizer" />
+    </NodeResizeControl>
+  {/if}
 </div>
 
 <style>
@@ -76,15 +93,15 @@
   }
   .node-container {
     padding: 8px;
-    min-width: 200px;
-    max-width: 400px;
-    max-height: 400px;
+    position: relative;
   }
   .lynxkite-node {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
-    background: white;
-    overflow-y: auto;
     border-radius: 4px;
+    background: white;
+  }
+  .expanded .lynxkite-node {
+    overflow-y: auto;
     height: 100%;
   }
   .title {
@@ -119,5 +136,12 @@
   }
   .node-container:hover .handle-name {
     visibility: visible;
+  }
+  :global(.node-resizer) {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    cursor: nwse-resize;
+    color: var(--bs-border-color);
   }
 </style>

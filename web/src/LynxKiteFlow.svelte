@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext } from 'svelte';
+  import { diff } from 'deep-object-diff';
   import { writable, derived } from 'svelte/store';
   import {
     SvelteFlow,
@@ -131,16 +131,34 @@
     if (doNotSave) return;
     const dragging = g.nodes.find((n) => n.dragging);
     if (dragging) return;
+    const resizing = g.nodes.find((n) => n.data?.beingResized);
+    if (resizing) return;
+    scheduleSave(g);
+  });
+  let saveTimeout;
+  function scheduleSave(g) {
+    // A slight delay, so we don't send a million requests when a node is resized, for example.
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => save(g), 500);
+  }
+  function save(g) {
     g = JSON.parse(JSON.stringify(g));
     for (const node of g.nodes) {
-      delete node.computed;
+      delete node.measured;
+      delete node.selected;
+      delete node.dragging;
+      delete node.beingResized;
+    }
+    for (const node of g.edges) {
+      delete node.markerEnd;
       delete node.selected;
     }
     const ws = orderedJSON(g);
     const bd = orderedJSON($backendWorkspace.data);
     if (ws === bd) return;
+    console.log('changed', JSON.stringify(diff(g, $backendWorkspace.data), null, 2));
     $mutation.mutate({ path, ws: g });
-  });
+  }
   function onconnect(connection: Connection) {
     edges.update((edges) => {
       // Only one source can connect to a given target.
