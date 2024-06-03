@@ -1,8 +1,13 @@
 # LynxKite 2024
 
 This is an experimental rewrite of [LynxKite](https://github.com/lynxkite/lynxkite).
-It is not compatible with the original LynxKite. For the design goals see
-[LynxKite 2024 Roadmap](https://docs.google.com/document/d/12uhjib6M0bgdA9Ch5h4X8eBinmYOnzRa8bPwDWY0jtg/edit).
+It is not compatible with the original LynxKite. The primary goals of this rewrite are:
+- Target GPU clusters instead of Hadoop clusters.
+  We use Python instead of Scala, RAPIDS instead of Apache Spark.
+- More extensible backend. Make it easy to add new LynxKite boxes.
+  Make it easy to use our frontend for other purposes, configuring and executing other pipelines.
+
+Current status: **PROTOTYPE**
 
 ## Installation
 

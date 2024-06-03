@@ -16,7 +16,7 @@ def type_to_json(t):
   if isinstance(t, type) and issubclass(t, enum.Enum):
     return {'enum': list(t.__members__.keys())}
   if getattr(t, '__metadata__', None):
-    return t.__metadata__[0]
+    return t.__metadata__[-1]
   return {'type': str(t)}
 Type = Annotated[
   typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)
