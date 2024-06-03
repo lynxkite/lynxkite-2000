@@ -7,6 +7,8 @@ import pandas as pd
 client = openai.OpenAI(base_url="http://localhost:11434/v1")
 CACHE = {}
 
+op = ops.op_registration('LLM logic')
+
 def chat(*args, **kwargs):
   key = json.dumps({'args': args, 'kwargs': kwargs})
   if key not in CACHE:
@@ -14,11 +16,11 @@ def chat(*args, **kwargs):
     CACHE[key] = [c.message.content for c in completion.choices]
   return CACHE[key]
 
-@ops.op("Input")
+@op("Input")
 def input(*, filename: ops.PathStr, key: str):
   return pd.read_csv(filename).rename(columns={key: 'text'})
 
-@ops.op("Create prompt")
+@op("Create prompt")
 def create_prompt(input, *, template: ops.LongStr):
   assert template, 'Please specify the template. Refer to columns using their names in uppercase.'
   df = input.copy()
@@ -32,15 +34,15 @@ def create_prompt(input, *, template: ops.LongStr):
   return df
 
 
-@ops.op("Ask LLM")
-def ask_llm(input, *, model: str, choices: list = None, max_tokens: int = 100):
+@op("Ask LLM")
+def ask_llm(input, *, model: str, accepted_regex: str = None, max_tokens: int = 100):
   assert model, 'Please specify the model.'
   assert 'prompt' in input.columns, 'Please create the prompt first.'
   df = input.copy()
   g = {}
-  if choices:
+  if accepted_regex:
     g['extra_body'] = {
-      "guided_choice": choices.split()
+      "guided_regex": accepted_regex,
     }
   for i, row in df.iterrows():
     [res] = chat(
@@ -54,7 +56,7 @@ def ask_llm(input, *, model: str, choices: list = None, max_tokens: int = 100):
     df.loc[i, 'response'] = res
   return df
 
-@ops.op("View", view="table_view")
+@op("View", view="table_view")
 def view(input):
   v = {
     'dataframes': { 'df': {
@@ -66,7 +68,7 @@ def view(input):
 
 @ops.input_position(input="right")
 @ops.output_position(output="left")
-@ops.op("Loop")
+@op("Loop")
 def loop(input, *, max_iterations: int = 10):
   '''Data can flow back here until it becomes empty or reaches the limit.'''
   return input
