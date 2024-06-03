@@ -8,7 +8,7 @@ from . import workspace
 from . import lynxkite_ops
 # from . import networkx_ops
 # from . import pytorch_model_ops
-# from . import lynxscribe_ops
+from . import lynxscribe_ops
 from . import llm_ops
 
 app = fastapi.FastAPI()
@@ -16,7 +16,9 @@ app = fastapi.FastAPI()
 
 @app.get("/api/catalog")
 def get_catalog():
-    return {op.name: op.model_dump() for op in ops.ALL_OPS.values()}
+    return {
+        k: {op.name: op.model_dump() for op in v.values()}
+        for k, v in ops.CATALOGS.items()}
 
 
 class SaveRequest(workspace.BaseConfig):

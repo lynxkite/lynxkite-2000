@@ -10,7 +10,9 @@ import pydantic
 import typing
 from typing_extensions import Annotated
 
-ALL_OPS = {}
+CATALOGS = {}
+EXECUTORS = {}
+
 typeof = type # We have some arguments called "type".
 def type_to_json(t):
   if isinstance(t, type) and issubclass(t, enum.Enum):
@@ -166,7 +168,7 @@ def nx_node_attribute_func(name):
   return decorator
 
 
-def op(name, *, view='basic', sub_nodes=None):
+def op(env: str, name: str, *, view='basic', sub_nodes=None):
   '''Decorator for defining an operation.'''
   def decorator(func):
     sig = inspect.signature(func)
@@ -184,7 +186,8 @@ def op(name, *, view='basic', sub_nodes=None):
     if sub_nodes is not None:
       op.sub_nodes = sub_nodes
       op.type = 'sub_flow'
-    ALL_OPS[name] = op
+    CATALOGS.setdefault(env, {})
+    CATALOGS[env][name] = op
     func.__op__ = op
     return func
   return decorator
@@ -212,7 +215,7 @@ def no_op(*args, **kwargs):
     return args[0]
   return Bundle()
 
-def register_passive_op(name, inputs=[], outputs=['output'], params=[]):
+def register_passive_op(env: str, name: str, inputs=[], outputs=['output'], params=[]):
   '''A passive operation has no associated code.'''
   op = Op(
     func=no_op,
@@ -224,10 +227,19 @@ def register_passive_op(name, inputs=[], outputs=['output'], params=[]):
     outputs=dict(
       (o, Output(name=o, type=None)) if isinstance(o, str)
       else (o.name, o) for o in outputs))
-  ALL_OPS[name] = op
+  CATALOGS.setdefault(env, {})
+  CATALOGS[env][name] = op
   return op
 
-def register_area(name, params=[]):
-  '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
-  op = register_passive_op(name, params=params)
-  op.type = 'area'
+def register_executor(env: str):
+  '''Decorator for registering an executor.'''
+  def decorator(func):
+    EXECUTORS[env] = func
+    return func
+  return decorator
+
+def op_registration(env: str):
+  return functools.partial(op, env)
+
+def passive_op_registration(env: str):
+  return functools.partial(register_passive_op, env)

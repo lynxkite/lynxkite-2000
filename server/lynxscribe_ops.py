@@ -1,6 +1,7 @@
 '''An example of passive ops. Just using LynxKite to describe the configuration of a complex system.'''
-from .ops import register_passive_op as reg, Parameter as P, MULTI_INPUT
+from .ops import passive_op_registration, Parameter as P, MULTI_INPUT
 
+reg = passive_op_registration('LynxScribe')
 reg('Scrape documents', params=[P.basic('url', '')])
 reg('Conversation logs')
 reg('Extract graph', inputs=['input'])

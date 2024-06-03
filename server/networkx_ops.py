@@ -5,7 +5,7 @@ import inspect
 import networkx as nx
 
 
-def wrapped(func):
+def wrapped(name: str, func):
   @functools.wraps(func)
   def wrapper(*args, **kwargs):
     for k, v in kwargs.items():
@@ -20,24 +20,27 @@ def wrapped(func):
     return graph
   return wrapper
 
+def register_networkx(env: str):
+  ops.CATALOGS.setdefault(env, {})
+  for (name, func) in nx.__dict__.items():
+    if hasattr(func, 'graphs'):
+      sig = inspect.signature(func)
+      inputs = {k: nx.Graph for k in func.graphs}
+      params = {
+        name: ops.Parameter.basic(
+            name, str(param.default)
+          if type(param.default) in [str, int, float]
+          else None,
+          param.annotation)
+        for name, param in sig.parameters.items()
+        if name not in ['G', 'backend', 'backend_kwargs']}
+      for p in params.values():
+        if not p.type:
+          # Guess the type based on the name.
+          if len(p.name) == 1:
+            p.type = int
+      name = "NX › " + name.replace('_', ' ').title()
+      op = ops.Op(wrapped(name, func), name, params=params, inputs=inputs, outputs={'output': 'yes'}, type='basic')
+      ops.CATALOGS[env][name] = op
 
-for (name, func) in nx.__dict__.items():
-  if hasattr(func, 'graphs'):
-    sig = inspect.signature(func)
-    inputs = {k: nx.Graph for k in func.graphs}
-    params = {
-      name: ops.Parameter.basic(
-          name, str(param.default)
-        if type(param.default) in [str, int, float]
-        else None,
-        param.annotation)
-      for name, param in sig.parameters.items()
-      if name not in ['G', 'backend', 'backend_kwargs']}
-    for p in params.values():
-      if not p.type:
-        # Guess the type based on the name.
-        if len(p.name) == 1:
-          p.type = int
-    name = "NX › " + name.replace('_', ' ').title()
-    op = ops.Op(wrapped(func), name, params=params, inputs=inputs, outputs={'output': 'yes'}, type='basic')
-    ops.ALL_OPS[name] = op
+register_networkx('LynxKite')

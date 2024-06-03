@@ -4,7 +4,6 @@
   import {
     SvelteFlow,
     Controls,
-    Background,
     MiniMap,
     MarkerType,
     useSvelteFlow,
@@ -14,6 +13,9 @@
     type Connection,
     type NodeTypes,
   } from '@xyflow/svelte';
+  import ArrowBack from 'virtual:icons/tabler/arrow-back'
+  import Backspace from 'virtual:icons/tabler/backspace'
+  import Atom from 'virtual:icons/tabler/Atom'
   import { useQuery, useMutation, useQueryClient } from '@sveltestack/svelte-query';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithVisualization from './NodeWithVisualization.svelte';
@@ -21,6 +23,7 @@
   import NodeWithSubFlow from './NodeWithSubFlow.svelte';
   import NodeWithArea from './NodeWithArea.svelte';
   import NodeSearch from './NodeSearch.svelte';
+  import EnvironmentSelector from './EnvironmentSelector.svelte';
   import '@xyflow/svelte/dist/style.css';
 
   export let path = '';
@@ -42,7 +45,7 @@
     return await res.json();
   }, {
     onSuccess: data => queryClient.setQueryData(['workspace', path], data),
-  })
+  });
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
@@ -73,7 +76,7 @@
     event.preventDefault();
     nodeSearchSettings = {
       pos: { x: event.clientX, y: event.clientY },
-      boxes: $boxes,
+      boxes: $catalog.data[$backendWorkspace.data?.env],
     };
   }
   function addNode(e) {
@@ -106,13 +109,10 @@
     });
     closeNodeSearch();
   }
-  const boxes = writable([]);
-  async function getBoxes() {
+  const catalog = useQuery(['catalog'], async () => {
     const res = await fetch('/api/catalog');
-    const j = await res.json();
-    boxes.set(j);
-  }
-  getBoxes();
+    return res.json();
+  }, {staleTime: 60000, retry: false});
 
   let nodeSearchSettings: {
     pos: XYPosition,
@@ -153,6 +153,7 @@
       delete node.markerEnd;
       delete node.selected;
     }
+    g.env = $backendWorkspace.data?.env;
     const ws = orderedJSON(g);
     const bd = orderedJSON($backendWorkspace.data);
     if (ws === bd) return;
@@ -182,23 +183,74 @@
       parentId: node.id,
     };
   }
+  $: parentDir = path.split('/').slice(0, -1).join('/');
 
 </script>
 
-<div style:height="100%">
-  <SvelteFlow {nodes} {edges} {nodeTypes} fitView
-    on:paneclick={toggleNodeSearch}
-    on:nodeclick={nodeClick}
-    proOptions={{ hideAttribution: true }}
-    maxZoom={3}
-    minZoom={0.3}
-    onconnect={onconnect}
-    defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
-    >
-    <Controls />
-    <MiniMap />
-    {#if nodeSearchSettings}
+<div class="page">
+  <div class="top-bar">
+    <div class="ws-name">
+      <a href><img src="/favicon.ico"></a>
+      {path}
+    </div>
+    <div class="tools">
+      <EnvironmentSelector
+        options={Object.keys($catalog.data || {})}
+        value={$backendWorkspace.data?.env}
+        onChange={(env) => $mutation.mutate({ path, ws: { ...$backendWorkspace.data, env } })}
+        />
+      <a href><Atom /></a>
+      <a href><Backspace /></a>
+      <a href="#dir?path={parentDir}"><ArrowBack /></a>
+    </div>
+  </div>
+  <div style:height="100%">
+    <SvelteFlow {nodes} {edges} {nodeTypes} fitView
+      on:paneclick={toggleNodeSearch}
+      on:nodeclick={nodeClick}
+      proOptions={{ hideAttribution: true }}
+      maxZoom={3}
+      minZoom={0.3}
+      onconnect={onconnect}
+      defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
+      >
+      <Controls />
+      <MiniMap />
+      {#if nodeSearchSettings}
       <NodeSearch pos={nodeSearchSettings.pos} boxes={nodeSearchSettings.boxes} on:cancel={closeNodeSearch} on:add={addNode} />
-    {/if}
-  </SvelteFlow>
+      {/if}
+    </SvelteFlow>
+  </div>
 </div>
+
+<style>
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    background: oklch(30% 0.13 230);
+    color: white;
+  }
+  .ws-name {
+    font-size: 1.5em;
+  }
+  .ws-name img {
+    height: 1.5em;
+    vertical-align: middle;
+    margin: 4px;
+  }
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+  }
+  .tools a {
+    color: oklch(75% 0.13 230);
+    font-size: 1.5em;
+    padding: 0 10px;
+  }
+</style>

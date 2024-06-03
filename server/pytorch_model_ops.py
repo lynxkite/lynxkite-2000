@@ -5,12 +5,14 @@ from . import ops
 
 LAYERS = {}
 
-@ops.op("Define PyTorch model", sub_nodes=LAYERS)
+op = ops.op_registration('LynxKite')
+
+@op("Define PyTorch model", sub_nodes=LAYERS)
 def define_pytorch_model(*, sub_flow):
   print('sub_flow:', sub_flow)
   return ops.Bundle(other={'model': str(sub_flow)})
 
-@ops.op("Train PyTorch model")
+@op("Train PyTorch model")
 def train_pytorch_model(model, graph):
   # import torch # Lazy import because it's slow.
   return 'hello ' + str(model)
