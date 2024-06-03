@@ -3,6 +3,8 @@ import fastapi
 import pathlib
 from . import ops
 from . import workspace
+# Which boxes are available is currently configured here.
+# This is not the final solution.
 from . import lynxkite_ops
 # from . import networkx_ops
 # from . import pytorch_model_ops
