@@ -8,8 +8,8 @@
 </script>
 
 <NodeWithParams {...$$props}>
-  {#if data.view}
-    <Chart {init} options={data.view} initOptions={{renderer: 'canvas', width: 250, height: 250}}/>
+  {#if data.display}
+    <Chart {init} options={data.display} initOptions={{renderer: 'canvas', width: 250, height: 250}}/>
   {/if}
 </NodeWithParams>
 <style>

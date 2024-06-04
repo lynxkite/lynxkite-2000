@@ -95,80 +95,12 @@ class Op(BaseConfig):
           params[p] = int(params[p])
         elif self.params[p].type == float:
           params[p] = float(params[p])
-    # Convert inputs.
-    inputs = list(inputs)
-    for i, (x, p) in enumerate(zip(inputs, self.inputs.values())):
-      if p.type == nx.Graph and isinstance(x, Bundle):
-        inputs[i] = x.to_nx()
-      elif p.type == Bundle and isinstance(x, nx.Graph):
-        inputs[i] = Bundle.from_nx(x)
     res = self.func(*inputs, **params)
     return res
 
 
-@dataclasses.dataclass
-class RelationDefinition:
-  '''Defines a set of edges.'''
-  df: str # The DataFrame that contains the edges.
-  source_column: str # The column in the edge DataFrame that contains the source node ID.
-  target_column: str # The column in the edge DataFrame that contains the target node ID.
-  source_table: str # The DataFrame that contains the source nodes.
-  target_table: str # The DataFrame that contains the target nodes.
-  source_key: str # The column in the source table that contains the node ID.
-  target_key: str # The column in the target table that contains the node ID.
 
-@dataclasses.dataclass
-class Bundle:
-  '''A collection of DataFrames and other data.
-
-  Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
-  It can also carry other data, such as a trained model.
-  '''
-  dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
-  relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
-  other: dict[str, typing.Any] = None
-
-  @classmethod
-  def from_nx(cls, graph: nx.Graph):
-    edges = nx.to_pandas_edgelist(graph)
-    d = dict(graph.nodes(data=True))
-    nodes = pd.DataFrame(d.values(), index=d.keys())
-    nodes['id'] = nodes.index
-    return cls(
-      dfs={'edges': edges, 'nodes': nodes},
-      relations=[
-        RelationDefinition(
-          df='edges',
-          source_column='source',
-          target_column='target',
-          source_table='nodes',
-          target_table='nodes',
-          source_key='id',
-          target_key='id',
-        )
-      ]
-    )
-
-  def to_nx(self):
-    graph = nx.from_pandas_edgelist(self.dfs['edges'])
-    nx.set_node_attributes(graph, self.dfs['nodes'].set_index('id').to_dict('index'))
-    return graph
-
-
-def nx_node_attribute_func(name):
-  '''Decorator for wrapping a function that adds a NetworkX node attribute.'''
-  def decorator(func):
-    @functools.wraps(func)
-    def wrapper(graph: nx.Graph, **kwargs):
-      graph = graph.copy()
-      attr = func(graph, **kwargs)
-      nx.set_node_attributes(graph, attr, name)
-      return graph
-    return wrapper
-  return decorator
-
-
-def op(env: str, name: str, *, view='basic', sub_nodes=None):
+def op(env: str, name: str, *, view='basic', sub_nodes=None, outputs=None):
   '''Decorator for defining an operation.'''
   def decorator(func):
     sig = inspect.signature(func)
@@ -179,10 +111,13 @@ def op(env: str, name: str, *, view='basic', sub_nodes=None):
       if param.kind != param.KEYWORD_ONLY}
     params = {}
     for n, param in sig.parameters.items():
-      if param.kind == param.KEYWORD_ONLY:
+      if param.kind == param.KEYWORD_ONLY and not n.startswith('_'):
         params[n] = Parameter.basic(n, param.default, param.annotation)
-    outputs = {'output': Output(name='output', type=None)} if view == 'basic' else {} # Maybe more fancy later.
-    op = Op(func=func, name=name, params=params, inputs=inputs, outputs=outputs, type=view)
+    if outputs:
+      _outputs = {name: Output(name=name, type=None) for name in outputs}
+    else:
+      _outputs = {'output': Output(name='output', type=None)} if view == 'basic' else {}
+    op = Op(func=func, name=name, params=params, inputs=inputs, outputs=_outputs, type=view)
     if sub_nodes is not None:
       op.sub_nodes = sub_nodes
       op.type = 'sub_flow'
@@ -213,7 +148,7 @@ def output_position(**kwargs):
 def no_op(*args, **kwargs):
   if args:
     return args[0]
-  return Bundle()
+  return None
 
 def register_passive_op(env: str, name: str, inputs=[], outputs=['output'], params=[]):
   '''A passive operation has no associated code.'''

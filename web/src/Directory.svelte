@@ -58,7 +58,9 @@
   </div>
   <div class="entry-list">
     {#await list}
-      <div>Loading...</div>
+      <div class="loading spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     {:then list}
       <div class="actions">
         <a href="{newWorkspaceIn(path, list)}"><FilePlus /> New workspace</a>
@@ -167,5 +169,9 @@
   a {
     color: black;
     text-decoration: none;
+  }
+  .loading {
+    color: #39bcf3;
+    margin: 10px;
   }
 </style>

@@ -35,6 +35,8 @@ class WorkspaceEdge(BaseConfig):
     id: str
     source: str
     target: str
+    sourceHandle: str
+    targetHandle: str
 
 class Workspace(BaseConfig):
     env: str = ''
