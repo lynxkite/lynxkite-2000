@@ -6,18 +6,18 @@
   type $$Props = NodeProps;
   export let data: $$Props['data'];
   const open = {};
-  $: single = data.view?.dataframes && Object.keys(data.view.dataframes).length === 1;
+  $: single = data.display?.dataframes && Object.keys(data.display.dataframes).length === 1;
 </script>
 
 <LynxKiteNode {...$$props}>
-  {#if data.view}
-    {#each Object.entries(data.view.dataframes) as [name, df]}
+  {#if data.display}
+    {#each Object.entries(data.display.dataframes) as [name, df]}
       {#if !single}<div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>{/if}
       {#if single || open[name]}
         <Table columns={df.columns} data={df.data} />
       {/if}
     {/each}
-    {#each Object.entries(data.view.others || {}) as [name, o]}
+    {#each Object.entries(data.display.others || {}) as [name, o]}
       <div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>
       {#if open[name]}
       <pre>{o}</pre>

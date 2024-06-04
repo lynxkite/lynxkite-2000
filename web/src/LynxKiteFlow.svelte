@@ -160,15 +160,6 @@
     console.log('changed', JSON.stringify(diff(g, $backendWorkspace.data), null, 2));
     $mutation.mutate({ path, ws: g });
   }
-  function onconnect(connection: Connection) {
-    edges.update((edges) => {
-      // Only one source can connect to a given target.
-      return edges.filter((e) =>
-        e.source === connection.source
-        || e.target !== connection.target
-        || e.targetHandle !== connection.targetHandle);
-    });
-  }
   function nodeClick(e) {
     const node = e.detail.node;
     const meta = node.data.meta;
@@ -211,7 +202,6 @@
       proOptions={{ hideAttribution: true }}
       maxZoom={3}
       minZoom={0.3}
-      onconnect={onconnect}
       defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
       >
       <Controls />
