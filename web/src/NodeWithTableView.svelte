@@ -11,7 +11,7 @@
 
 <LynxKiteNode {...$$props}>
   {#if data.display}
-    {#each Object.entries(data.display.dataframes) as [name, df]}
+    {#each Object.entries(data.display.dataframes || {}) as [name, df]}
       {#if !single}<div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>{/if}
       {#if single || open[name]}
         <Table columns={df.columns} data={df.data} />

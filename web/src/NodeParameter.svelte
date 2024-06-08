@@ -13,6 +13,7 @@
     </button>
   {:else if meta?.type?.format === 'textarea'}
     <textarea class="form-control form-control-sm"
+    rows="6"
     value={value}
     on:change={(evt) => onChange(evt.currentTarget.value)}
     />
