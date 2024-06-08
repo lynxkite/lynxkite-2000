@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {TabulatorFull as Tabulator} from 'tabulator-tables';
   import {onMount} from 'svelte';
 
@@ -14,7 +14,11 @@
     for (const row of data) {
       const obj = {};
       for (let i = 0; i < columns.length; i++) {
-        obj[columns[i]] = row[i];
+        let d = row[i];
+        if (typeof d !== 'string' && typeof d !== 'number') {
+          d = JSON.stringify(d);
+        }
+        obj[columns[i]] = d;
       }
       objs.push(obj);
     }

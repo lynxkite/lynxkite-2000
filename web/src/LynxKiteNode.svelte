@@ -34,8 +34,34 @@
   function asPx(n: number | undefined) {
     return n ? n + 'px' : undefined;
   }
-  $: inputs = Object.values(data.meta?.inputs || {});
-  $: outputs = Object.values(data.meta?.outputs || {});
+  function getHandles(inputs, outputs) {
+    const handles: {
+      position: 'top' | 'bottom' | 'left' | 'right',
+      name: string,
+      index: number,
+      offsetPercentage: number,
+      showLabel: boolean,
+    }[] = [];
+    for (const e of Object.values(inputs)) {
+      handles.push({ ...e, type: 'target' });
+    }
+    for (const e of Object.values(outputs)) {
+      handles.push({ ...e, type: 'source' });
+    }
+    const counts = { top: 0, bottom: 0, left: 0, right: 0 };
+    for (const e of handles) {
+      e.index = counts[e.position];
+      counts[e.position]++;
+    }
+    for (const e of handles) {
+      e.offsetPercentage = 100 * (e.index + 1) / (counts[e.position] + 1);
+      const simpleHorizontal = counts.top === 0 && counts.bottom === 0 && handles.length <= 2;
+      const simpleVertical = counts.left === 0 && counts.right === 0 && handles.length <= 2;
+      e.showLabel = !simpleHorizontal && !simpleVertical;
+    }
+    return handles;
+  }
+  $: handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
   const handleOffsetDirection = { top: 'left', bottom: 'left', left: 'top', right: 'top' };
 </script>
 
@@ -53,18 +79,11 @@
       {/if}
       <slot />
     {/if}
-    {#each inputs as input, i}
+    {#each handles as handle}
       <Handle
-        id={input.name} type="target" position={input.position}
-        style="{handleOffsetDirection[input.position]}: {100 * (i + 1) / (inputs.length + 1)}%">
-        {#if inputs.length>1}<span class="handle-name">{input.name.replace(/_/g, " ")}</span>{/if}
-      </Handle>
-    {/each}
-    {#each outputs as output, i}
-      <Handle
-        id={output.name} type="source" position={output.position}
-        style="{handleOffsetDirection[output.position]}: {100 * (i + 1) / (outputs.length + 1)}%">
-        {#if outputs.length>1}<span class="handle-name">{output.name.replace(/_/g, " ")}</span>{/if}
+        id={handle.name} type={handle.type} position={handle.position}
+        style="{handleOffsetDirection[handle.position]}: {handle.offsetPercentage}%">
+        {#if handle.showLabel}<span class="handle-name">{handle.name.replace(/_/g, " ")}</span>{/if}
       </Handle>
     {/each}
   </div>
