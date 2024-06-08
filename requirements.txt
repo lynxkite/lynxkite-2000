@@ -6,4 +6,6 @@ pandas
 scipy
 uvicorn[standard]
 # For llm_ops
+chromadb
+Jinja2
 openai

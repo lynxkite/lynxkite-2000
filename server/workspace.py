@@ -4,7 +4,6 @@ import dataclasses
 import os
 import pydantic
 import tempfile
-import traceback
 from . import ops
 
 class BaseConfig(pydantic.BaseModel):
