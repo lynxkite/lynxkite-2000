@@ -6,7 +6,7 @@ from . import workspace
 # Which boxes are available is currently configured here.
 # This is not the final solution.
 from . import lynxkite_ops
-# from . import networkx_ops
+from . import networkx_ops
 # from . import pytorch_model_ops
 from . import lynxscribe_ops
 from . import llm_ops
