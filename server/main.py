@@ -1,15 +1,15 @@
 import dataclasses
 import fastapi
 import pathlib
+import pkgutil
 from . import ops
 from . import workspace
-# Which boxes are available is currently configured here.
-# This is not the final solution.
-from . import lynxkite_ops
-from . import networkx_ops
-# from . import pytorch_model_ops
-from . import lynxscribe_ops
-from . import llm_ops
+
+here = pathlib.Path(__file__).parent
+for _, name, _ in pkgutil.iter_modules([str(here)]):
+    if name.endswith('_ops') and not name.startswith('test_'):
+        print(f'Importing {name}')
+        __import__(f'server.{name}')
 
 app = fastapi.FastAPI()
 
