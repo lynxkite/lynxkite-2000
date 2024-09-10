@@ -25,9 +25,16 @@ def has_ctx(op):
   sig = inspect.signature(op.func)
   return '_ctx' in sig.parameters
 
-def register(env: str):
+CACHES = {}
+
+def register(env: str, cache: bool = True):
   '''Registers the one-by-one executor.'''
-  ops.EXECUTORS[env] = execute
+  if cache:
+    CACHES[env] = {}
+    cache = CACHES[env]
+  else:
+    cache = None
+  ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env], cache=cache)
 
 def get_stages(ws, catalog):
   '''Inputs on top are batch inputs. We decompose the graph into a DAG of components along these edges.'''
@@ -93,13 +100,13 @@ def execute(ws, catalog, cache=None):
           inputs = [
             batch_inputs[(n, i.name)] if i.position == 'top' else task
             for i in op.inputs.values()]
-          key = json.dumps(fastapi.encoders.jsonable_encoder((inputs, params)))
           if cache:
+            key = json.dumps(fastapi.encoders.jsonable_encoder((inputs, params)))
             if key not in cache:
               cache[key] = op.func(*inputs, **params)
             result = cache[key]
           else:
-            result = op.func(*inputs, **params)
+            result = op(*inputs, **params)
         except Exception as e:
           traceback.print_exc()
           data.error = str(e)
