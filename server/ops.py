@@ -29,6 +29,12 @@ PathStr = Annotated[
 CollapsedStr = Annotated[
   str, {'format': 'collapsed'}
 ]
+NodeAttribute = Annotated[
+  str, {'format': 'node attribute'}
+]
+EdgeAttribute = Annotated[
+  str, {'format': 'edge attribute'}
+]
 class BaseConfig(pydantic.BaseModel):
   model_config = pydantic.ConfigDict(
     arbitrary_types_allowed=True,

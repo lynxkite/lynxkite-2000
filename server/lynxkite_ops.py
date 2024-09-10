@@ -1,5 +1,6 @@
 '''Some operations. To be split into separate files when we have more.'''
 from . import ops
+from collections import deque
 import dataclasses
 import functools
 import matplotlib
@@ -145,12 +146,26 @@ def create_scale_free_graph(*, nodes: int = 10):
 def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
   return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
+@op("Discard loop edges")
+def discard_loop_edges(graph: nx.Graph):
+  graph = graph.copy()
+  graph.remove_edges_from(nx.selfloop_edges(graph))
+  return graph
 
 @op("Sample graph")
 def sample_graph(graph: nx.Graph, *, nodes: int = 100):
-  '''Takes a subgraph.'''
-  return nx.scale_free_graph(nodes) # TODO: Implement this.
-
+  '''Takes a (preferably connected) subgraph.'''
+  sample = set()
+  to_expand = deque([0])
+  while to_expand and len(sample) < nodes:
+    node = to_expand.pop()
+    for n in graph.neighbors(node):
+      if n not in sample:
+        sample.add(n)
+        to_expand.append(n)
+      if len(sample) == nodes:
+        break
+  return nx.Graph(graph.subgraph(sample))
 
 def _map_color(value):
   cmap = matplotlib.cm.get_cmap('viridis')
@@ -159,7 +174,7 @@ def _map_color(value):
   return ['#{:02x}{:02x}{:02x}'.format(int(r*255), int(g*255), int(b*255)) for r, g, b in rgba[:, :3]]
 
 @op("Visualize graph", view="visualization")
-def visualize_graph(graph: Bundle, *, color_nodes_by: 'node_attribute' = None):
+def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
   nodes = graph.dfs['nodes'].copy()
   if color_nodes_by:
     nodes['color'] = _map_color(nodes[color_nodes_by])

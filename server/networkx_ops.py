@@ -16,7 +16,7 @@ def wrapped(name: str, func):
       return res
     # Otherwise it's a node attribute.
     graph = args[0].copy()
-    nx.set_node_attributes(graph, 'attr', name)
+    nx.set_node_attributes(graph, values=res, name=name)
     return graph
   return wrapper
 
