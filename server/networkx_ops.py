@@ -25,7 +25,7 @@ def register_networkx(env: str):
   for (name, func) in nx.__dict__.items():
     if hasattr(func, 'graphs'):
       sig = inspect.signature(func)
-      inputs = {k: nx.Graph for k in func.graphs}
+      inputs = {k: ops.Input(name=k, type=nx.Graph) for k in func.graphs}
       params = {
         name: ops.Parameter.basic(
             name, str(param.default)
@@ -33,14 +33,21 @@ def register_networkx(env: str):
           else None,
           param.annotation)
         for name, param in sig.parameters.items()
-        if name not in ['G', 'backend', 'backend_kwargs']}
+        if name not in ['G', 'backend', 'backend_kwargs', 'create_using']}
       for p in params.values():
         if not p.type:
           # Guess the type based on the name.
           if len(p.name) == 1:
             p.type = int
       name = "NX › " + name.replace('_', ' ').title()
-      op = ops.Op(wrapped(name, func), name, params=params, inputs=inputs, outputs={'output': 'yes'}, type='basic')
+      op = ops.Op(
+        func=wrapped(name, func),
+        name=name,
+        params=params,
+        inputs=inputs,
+        outputs={'output': ops.Output(name='output', type=nx.Graph)},
+        type='basic',
+      )
       ops.CATALOGS[env][name] = op
 
 register_networkx('LynxKite')
