@@ -9,6 +9,3 @@
 *.sln
 *.sw?
 __pycache__
-
-# LynxKite data directory.
-/data
