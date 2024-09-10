@@ -119,7 +119,7 @@ def execute(ws, catalog, cache=None):
           result = [result]
         results.extend(result)
       else: # Finished all tasks without errors.
-        if op.type == 'visualization' or op.type == 'table_view':
+        if op.type == 'visualization' or op.type == 'table_view' or op.type == 'image':
           data.display = results[0]
         for edge in edges[node.id]:
           t = nodes[edge.target]
