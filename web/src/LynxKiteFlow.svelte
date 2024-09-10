@@ -19,6 +19,7 @@
   import { useQuery, useMutation, useQueryClient } from '@sveltestack/svelte-query';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithVisualization from './NodeWithVisualization.svelte';
+  import NodeWithImage from './NodeWithImage.svelte';
   import NodeWithTableView from './NodeWithTableView.svelte';
   import NodeWithSubFlow from './NodeWithSubFlow.svelte';
   import NodeWithArea from './NodeWithArea.svelte';
@@ -50,6 +51,7 @@
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
     visualization: NodeWithVisualization,
+    image: NodeWithImage,
     table_view: NodeWithTableView,
     sub_flow: NodeWithSubFlow,
     area: NodeWithArea,
