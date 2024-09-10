@@ -181,3 +181,8 @@ def op_registration(env: str):
 
 def passive_op_registration(env: str):
   return functools.partial(register_passive_op, env)
+
+def register_area(env, name, params=[]):
+  '''A node that represents an area. It can contain other nodes, but does not restrict movement in any way.'''
+  op = Op(func=no_op, name=name, params={p.name: p for p in params}, inputs={}, outputs={}, type='area')
+  CATALOGS[env][name] = op
