@@ -19,7 +19,7 @@
           <dl>
           {#each df.columns as c, i}
             <dt>{c}</dt>
-            <dd>{df.data[0][i]}</dd>
+            <dd><pre>{df.data[0][i]}</pre></dd>
           {/each}
           </dl>
         {/if}

@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 from .executors import one_by_one
 
-client = openai.OpenAI(base_url="http://localhost:7997/")
+chat_client = openai.OpenAI(base_url="http://localhost:8080/v1")
+embedding_client = openai.OpenAI(base_url="http://localhost:7997/")
 jinja = jinja2.Environment()
 chroma_client = chromadb.Client()
 LLM_CACHE = {}
@@ -20,14 +21,14 @@ op = ops.op_registration(ENV)
 def chat(*args, **kwargs):
   key = json.dumps({'method': 'chat', 'args': args, 'kwargs': kwargs})
   if key not in LLM_CACHE:
-    completion = client.chat.completions.create(*args, **kwargs)
+    completion = chat_client.chat.completions.create(*args, **kwargs)
     LLM_CACHE[key] = [c.message.content for c in completion.choices]
   return LLM_CACHE[key]
 
 def embedding(*args, **kwargs):
   key = json.dumps({'method': 'embedding', 'args': args, 'kwargs': kwargs})
   if key not in LLM_CACHE:
-    res = client.embeddings.create(*args, **kwargs)
+    res = embedding_client.embeddings.create(*args, **kwargs)
     [data] = res.data
     LLM_CACHE[key] = data.embedding
   return LLM_CACHE[key]

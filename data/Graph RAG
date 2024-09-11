@@ -37,8 +37,8 @@
         }
       },
       "position": {
-        "x": -515.0703612358068,
-        "y": -506.06547454780275
+        "x": -849.9937814890327,
+        "y": -303.5069988257918
       },
       "parentId": null
     },
@@ -213,53 +213,6 @@
       "height": 296
     },
     {
-      "id": "Predict links 1",
-      "type": "basic",
-      "data": {
-        "title": "Predict links",
-        "params": {},
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Predict links",
-          "params": {},
-          "inputs": {
-            "nodes": {
-              "name": "nodes",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            },
-            "edges": {
-              "name": "edges",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        },
-        "collapsed": true
-      },
-      "position": {
-        "x": -53.86764005751337,
-        "y": -37.21387561499284
-      },
-      "parentId": null
-    },
-    {
       "id": "Split document 1",
       "type": "basic",
       "data": {
@@ -305,99 +258,6 @@
       "position": {
         "x": -465.5338722898887,
         "y": -303.0364587440906
-      },
-      "parentId": null
-    },
-    {
-      "id": "Build document graph 1",
-      "type": "basic",
-      "data": {
-        "title": "Build document graph",
-        "params": {},
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Build document graph",
-          "params": {},
-          "inputs": {
-            "input": {
-              "name": "input",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
-      },
-      "position": {
-        "x": -92.52685728742009,
-        "y": -177.9645433826994
-      },
-      "parentId": null
-    },
-    {
-      "id": "Add neighbors 1",
-      "type": "basic",
-      "data": {
-        "title": "Add neighbors",
-        "params": {},
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Add neighbors",
-          "params": {},
-          "inputs": {
-            "nodes": {
-              "name": "nodes",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            },
-            "edges": {
-              "name": "edges",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            },
-            "item": {
-              "name": "item",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "left"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        },
-        "collapsed": false
-      },
-      "position": {
-        "x": -113.7488497864376,
-        "y": 145.42569409180135
       },
       "parentId": null
     },
@@ -452,7 +312,7 @@
         "title": "Create prompt",
         "params": {
           "save_as": "prompt",
-          "template": "{text}"
+          "template": "\n{% for item in rag %}\n---\n{{item}}\n{% endfor %}\n---\nIs the information above sufficient to answer the following question?\n- {{text}}\n\nIf the information is insufficient please say so. Otherwise, provide the answer."
         },
         "display": null,
         "error": null,
@@ -501,61 +361,6 @@
         "y": -9.071826950189632
       },
       "parentId": null
-    },
-    {
-      "id": "View 2",
-      "type": "table_view",
-      "data": {
-        "title": "View",
-        "params": {},
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "text",
-                "rag",
-                "prompt"
-              ],
-              "data": [
-                [
-                  "What's your cheapest drink?",
-                  [
-                    "### 6. **Drinks**",
-                    "| Size               | Price         |\n|--------------------|---------------|\n| 20 oz Bottle       | $1.99         |\n| 2-Liter Bottle     | $3.50         |",
-                    "Available options: Coke, Diet Coke, Sprite, Root Beer, Lemonade."
-                  ],
-                  "{text}"
-                ]
-              ]
-            }
-          }
-        },
-        "error": null,
-        "meta": {
-          "name": "View",
-          "params": {},
-          "inputs": {
-            "input": {
-              "name": "input",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "left"
-            }
-          },
-          "outputs": {},
-          "type": "table_view",
-          "sub_nodes": null
-        },
-        "beingResized": false
-      },
-      "position": {
-        "x": 659.7852850905575,
-        "y": -41.48719521129472
-      },
-      "parentId": null,
-      "width": 492,
-      "height": 391
     },
     {
       "id": "RAG 1",
@@ -688,8 +493,270 @@
         "y": 397.32347851191355
       },
       "parentId": null,
-      "width": 751,
-      "height": 347
+      "width": 296,
+      "height": 228
+    },
+    {
+      "id": "Ask LLM 1",
+      "type": "basic",
+      "data": {
+        "title": "Ask LLM",
+        "params": {
+          "model": "google/gemma-2-2b-it",
+          "accepted_regex": null,
+          "max_tokens": 100
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Ask LLM",
+          "params": {
+            "model": {
+              "name": "model",
+              "default": null,
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "accepted_regex": {
+              "name": "accepted_regex",
+              "default": null,
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "max_tokens": {
+              "name": "max_tokens",
+              "default": 100,
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "inputs": {
+            "input": {
+              "name": "input",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "left"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "right"
+            }
+          },
+          "type": "basic",
+          "sub_nodes": null
+        }
+      },
+      "position": {
+        "x": 649.0730411878703,
+        "y": 29.290926423828694
+      },
+      "parentId": null
+    },
+    {
+      "id": "View 4",
+      "type": "table_view",
+      "data": {
+        "title": "View",
+        "params": {},
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "text",
+                "rag",
+                "prompt",
+                "response"
+              ],
+              "data": [
+                [
+                  "What's your cheapest drink?",
+                  [
+                    "### 6. **Drinks**",
+                    "| Size               | Price         |\n|--------------------|---------------|\n| 20 oz Bottle       | $1.99         |\n| 2-Liter Bottle     | $3.50         |",
+                    "Available options: Coke, Diet Coke, Sprite, Root Beer, Lemonade."
+                  ],
+                  "\n\n---\n### 6. **Drinks**\n\n---\n| Size               | Price         |\n|--------------------|---------------|\n| 20 oz Bottle       | $1.99         |\n| 2-Liter Bottle     | $3.50         |\n\n---\nAvailable options: Coke, Diet Coke, Sprite, Root Beer, Lemonade.\n\n---\nIs the information above sufficient to answer the following question?\n- What's your cheapest drink?\n\nIf the information is insufficient please say so. Otherwise, provide the answer.",
+                  "The information is sufficient to answer the question. \n\n**Answer:** The cheapest drink is the 20 oz bottle of Coke at $1.99. \n"
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "meta": {
+          "name": "View",
+          "params": {},
+          "inputs": {
+            "input": {
+              "name": "input",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "left"
+            }
+          },
+          "outputs": {},
+          "type": "table_view",
+          "sub_nodes": null
+        }
+      },
+      "position": {
+        "x": 927.877424966716,
+        "y": -205.07566047558328
+      },
+      "parentId": null
+    },
+    {
+      "id": "Build document graph 1",
+      "type": "basic",
+      "data": {
+        "title": "Build document graph",
+        "params": {},
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Build document graph",
+          "params": {},
+          "inputs": {
+            "input": {
+              "name": "input",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "right"
+            }
+          },
+          "type": "basic",
+          "sub_nodes": null
+        },
+        "collapsed": true
+      },
+      "position": {
+        "x": -36.39166052931119,
+        "y": -212.34993098590766
+      },
+      "parentId": null
+    },
+    {
+      "id": "Add neighbors 1",
+      "type": "basic",
+      "data": {
+        "title": "Add neighbors",
+        "params": {},
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Add neighbors",
+          "params": {},
+          "inputs": {
+            "nodes": {
+              "name": "nodes",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            },
+            "edges": {
+              "name": "edges",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            },
+            "item": {
+              "name": "item",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "left"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "right"
+            }
+          },
+          "type": "basic",
+          "sub_nodes": null
+        },
+        "collapsed": true
+      },
+      "position": {
+        "x": -2.516468588848724,
+        "y": 167.64180115746848
+      },
+      "parentId": null
+    },
+    {
+      "id": "Predict links 1",
+      "type": "basic",
+      "data": {
+        "title": "Predict links",
+        "params": {},
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Predict links",
+          "params": {},
+          "inputs": {
+            "nodes": {
+              "name": "nodes",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            },
+            "edges": {
+              "name": "edges",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "right"
+            }
+          },
+          "type": "basic",
+          "position": {
+            "x": 656,
+            "y": 179
+          }
+        }
+      },
+      "position": {
+        "x": 34.865308360949726,
+        "y": -37.44504613652989
+      },
+      "parentId": null
     }
   ],
   "edges": [
@@ -708,11 +775,67 @@
       "targetHandle": "input"
     },
     {
+      "id": "xy-edge__Input chat 1output-RAG 1input",
+      "source": "Input chat 1",
+      "target": "RAG 1",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Split document 1output-RAG 1db",
+      "source": "Split document 1",
+      "target": "RAG 1",
+      "sourceHandle": "output",
+      "targetHandle": "db"
+    },
+    {
+      "id": "xy-edge__RAG 1output-View 3input",
+      "source": "RAG 1",
+      "target": "View 3",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Create prompt 1output-Ask LLM 1input",
+      "source": "Create prompt 1",
+      "target": "Ask LLM 1",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Ask LLM 1output-View 4input",
+      "source": "Ask LLM 1",
+      "target": "View 4",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__RAG 1output-Add neighbors 1item",
+      "source": "RAG 1",
+      "target": "Add neighbors 1",
+      "sourceHandle": "output",
+      "targetHandle": "item"
+    },
+    {
+      "id": "xy-edge__Add neighbors 1output-Create prompt 1input",
+      "source": "Add neighbors 1",
+      "target": "Create prompt 1",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
       "id": "xy-edge__Split document 1output-Build document graph 1input",
       "source": "Split document 1",
       "target": "Build document graph 1",
       "sourceHandle": "output",
       "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Split document 1output-Add neighbors 1nodes",
+      "source": "Split document 1",
+      "target": "Add neighbors 1",
+      "sourceHandle": "output",
+      "targetHandle": "nodes"
     },
     {
       "id": "xy-edge__Split document 1output-Predict links 1nodes",
@@ -729,60 +852,11 @@
       "targetHandle": "edges"
     },
     {
-      "id": "xy-edge__Split document 1output-Add neighbors 1nodes",
-      "source": "Split document 1",
-      "target": "Add neighbors 1",
-      "sourceHandle": "output",
-      "targetHandle": "nodes"
-    },
-    {
       "id": "xy-edge__Predict links 1output-Add neighbors 1edges",
       "source": "Predict links 1",
       "target": "Add neighbors 1",
       "sourceHandle": "output",
       "targetHandle": "edges"
-    },
-    {
-      "id": "xy-edge__Add neighbors 1output-Create prompt 1input",
-      "source": "Add neighbors 1",
-      "target": "Create prompt 1",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__Create prompt 1output-View 2input",
-      "source": "Create prompt 1",
-      "target": "View 2",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__Input chat 1output-RAG 1input",
-      "source": "Input chat 1",
-      "target": "RAG 1",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__RAG 1output-Add neighbors 1item",
-      "source": "RAG 1",
-      "target": "Add neighbors 1",
-      "sourceHandle": "output",
-      "targetHandle": "item"
-    },
-    {
-      "id": "xy-edge__Split document 1output-RAG 1db",
-      "source": "Split document 1",
-      "target": "RAG 1",
-      "sourceHandle": "output",
-      "targetHandle": "db"
-    },
-    {
-      "id": "xy-edge__RAG 1output-View 3input",
-      "source": "RAG 1",
-      "target": "View 3",
-      "sourceHandle": "output",
-      "targetHandle": "input"
     }
   ]
 }
