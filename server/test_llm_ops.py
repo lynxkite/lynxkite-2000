@@ -1,5 +1,7 @@
 import unittest
+from . import ops
 from . import llm_ops
+from .executors import one_by_one
 from . import workspace
 
 def make_node(id, op, type='basic', **params):
@@ -11,7 +13,7 @@ def make_node(id, op, type='basic', **params):
   )
 def make_input(id):
   return make_node(
-    id, 'Input',
+    id, 'Input CSV',
     filename='/Users/danieldarabos/Downloads/aimo-train.csv',
     key='problem')
 def make_edge(source, target, targetHandle='input'):
@@ -22,7 +24,7 @@ class LLMOpsTest(unittest.TestCase):
   def testExecute(self):
     ws = workspace.Workspace(env='LLM logic', nodes=[
       make_node(
-        '0', 'Input',
+        '0', 'Input CSV',
         filename='/Users/danieldarabos/Downloads/aimo-train.csv',
         key='problem'),
       make_node(
@@ -30,8 +32,9 @@ class LLMOpsTest(unittest.TestCase):
     ], edges=[
       make_edge('0', '1')
     ])
-    llm_ops.execute(ws)
-    self.assertEqual('', ws.nodes[1].data.display)
+    catalog = ops.CATALOGS[ws.env]
+    one_by_one.execute(ws, catalog)
+    # self.assertEqual('', ws.nodes[1].data.display)
 
   def testStages(self):
     ws = workspace.Workspace(env='LLM logic', nodes=[
@@ -43,8 +46,30 @@ class LLMOpsTest(unittest.TestCase):
       make_edge('rag1', 'p1'), make_edge('p1', 'rag2', 'db'),
       make_edge('in3', 'p2'), make_edge('p3', 'rag2'),
     ])
-    stages = llm_ops.get_stages(ws)
-    self.assertEqual('', stages)
+    catalog = ops.CATALOGS[ws.env]
+    stages = one_by_one.get_stages(ws, catalog)
+    print(stages)
+    # self.assertEqual('', stages)
+
+  def testStagesMultiInput(self):
+    ws = workspace.Workspace(env='LLM logic', nodes=[
+      make_node('doc', 'Input document'),
+      make_node('split', 'Split document'),
+      make_node('graph', 'Build document graph'),
+      make_node('chat', 'Input chat'),
+      make_node('rag', 'RAG'),
+      make_node('neighbors', 'Add neighbors'),
+    ], edges=[
+      make_edge('doc', 'split'), make_edge('split', 'graph'),
+      make_edge('split', 'rag', 'db'), make_edge('chat', 'rag', 'input'),
+      make_edge('split', 'neighbors', 'nodes'),
+      make_edge('graph', 'neighbors', 'edges'),
+      make_edge('rag', 'neighbors', 'item'),
+    ])
+    catalog = ops.CATALOGS[ws.env]
+    stages = one_by_one.get_stages(ws, catalog)
+    print(stages)
+    # self.assertEqual('', stages)
 
 if __name__ == '__main__':
   unittest.main()

@@ -76,12 +76,13 @@ def execute(ws, catalog, cache=None):
   for node in ws.nodes:
     node.data.error = None
     op = catalog[node.data.title]
-    # Start tasks for nodes that have no inputs.
-    if not op.inputs:
+    # Start tasks for nodes that have no non-batch inputs.
+    if all([i.position == 'top' for i in op.inputs.values()]):
       tasks[node.id] = [NO_INPUT]
   batch_inputs = {}
   # Run the rest until we run out of tasks.
-  for stage in get_stages(ws, catalog):
+  stages = get_stages(ws, catalog)
+  for stage in stages:
     next_stage = {}
     while tasks:
       n, ts = tasks.popitem()
