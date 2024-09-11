@@ -1,6 +1,5 @@
 <script lang="ts">
   import { type NodeProps } from '@xyflow/svelte';
-  import { Tabulator } from 'tabulator-tables';
   import LynxKiteNode from './LynxKiteNode.svelte';
   import Table from './Table.svelte';
   type $$Props = NodeProps;
@@ -14,7 +13,16 @@
     {#each Object.entries(data.display.dataframes || {}) as [name, df]}
       {#if !single}<div class="df-head" on:click={() => open[name] = !open[name]}>{name}</div>{/if}
       {#if single || open[name]}
-        <Table columns={df.columns} data={df.data} />
+        {#if df.data.length > 1}
+          <Table columns={df.columns} data={df.data} />
+        {:else}
+          <dl>
+          {#each df.columns as c, i}
+            <dt>{c}</dt>
+            <dd>{df.data[0][i]}</dd>
+          {/each}
+          </dl>
+        {/if}
       {/if}
     {/each}
     {#each Object.entries(data.display.others || {}) as [name, o]}
@@ -34,5 +42,8 @@
   }
   table {
     table-layout: fixed;
+  }
+  dl {
+    margin: 10px;
   }
 </style>

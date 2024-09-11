@@ -54,32 +54,32 @@ def split_document(input, *, delimiter: str = '\\n\\n'):
 @ops.input_position(input="top")
 @op("Build document graph")
 def build_document_graph(input):
-  chunks = input['text']
-  return pd.DataFrame([{'source': i, 'target': i+1} for i in range(len(chunks)-1)]),
+  return [{'source': i, 'target': i+1} for i in range(len(input)-1)]
 
 @ops.input_position(nodes="top", edges="top")
 @op("Predict links")
 def predict_links(nodes, edges):
   '''A placeholder for a real algorithm. For now just adds 2-hop neighbors.'''
-  edges = edges.to_dict(orient='records')
   edge_map = {} # Source -> [Targets]
   for edge in edges:
     edge_map.setdefault(edge['source'], [])
     edge_map[edge['source']].append(edge['target'])
   new_edges = []
-  for source, target in edges.items():
-    for t in edge_map.get(target, []):
-      new_edges.append({'source': source, 'target': t})
-  return pd.DataFrame(edges.append(new_edges))
+  for edge in edges:
+    for t in edge_map.get(edge['target'], []):
+      new_edges.append({'source': edge['source'], 'target': t})
+  return edges + new_edges
 
 @ops.input_position(nodes="top", edges="top")
 @op("Add neighbors")
 def add_neighbors(nodes, edges, item):
+  nodes = pd.DataFrame(nodes)
+  edges = pd.DataFrame(edges)
   matches = item['rag']
   additional_matches = []
   for m in matches:
     node = nodes[nodes['text'] == m].index[0]
-    neighbors = edges[edges['source'] == node]['target']
+    neighbors = edges[edges['source'] == node]['target'].to_list()
     additional_matches.extend(nodes.loc[neighbors, 'text'])
   return {**item, 'rag': matches + additional_matches}
 

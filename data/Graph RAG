@@ -56,10 +56,7 @@
               ],
               "data": [
                 [
-                  "**Date**: September 11, 2024\n**Prepared by**: Operations Team\n**Document Type**: Pricing and Menu Structure Overview"
-                ],
-                [
-                  "---"
+                  "hello"
                 ],
                 [
                   "### 1. **Overview**"
@@ -345,8 +342,8 @@
         }
       },
       "position": {
-        "x": -87.76278050287166,
-        "y": -166.8483642187531
+        "x": -92.52685728742009,
+        "y": -177.9645433826994
       },
       "parentId": null
     },
@@ -357,7 +354,7 @@
         "title": "Add neighbors",
         "params": {},
         "display": null,
-        "error": "('Add neighbors 1', 'edges')",
+        "error": null,
         "meta": {
           "name": "Add neighbors",
           "params": {},
@@ -395,11 +392,12 @@
           },
           "type": "basic",
           "sub_nodes": null
-        }
+        },
+        "collapsed": false
       },
       "position": {
-        "x": -128.04108014008284,
-        "y": 132.7214893330056
+        "x": -113.7488497864376,
+        "y": 145.42569409180135
       },
       "parentId": null
     },
@@ -454,7 +452,7 @@
         "title": "Create prompt",
         "params": {
           "save_as": "prompt",
-          "template": null
+          "template": "{text}"
         },
         "display": null,
         "error": null,
@@ -499,8 +497,8 @@
         }
       },
       "position": {
-        "x": 208.45977258554205,
-        "y": 97.14836709561501
+        "x": 324.81988008998496,
+        "y": -9.071826950189632
       },
       "parentId": null
     },
@@ -510,7 +508,28 @@
       "data": {
         "title": "View",
         "params": {},
-        "display": null,
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "text",
+                "rag",
+                "prompt"
+              ],
+              "data": [
+                [
+                  "What's your cheapest drink?",
+                  [
+                    "### 6. **Drinks**",
+                    "| Size               | Price         |\n|--------------------|---------------|\n| 20 oz Bottle       | $1.99         |\n| 2-Liter Bottle     | $3.50         |",
+                    "Available options: Coke, Diet Coke, Sprite, Root Beer, Lemonade."
+                  ],
+                  "{text}"
+                ]
+              ]
+            }
+          }
+        },
         "error": null,
         "meta": {
           "name": "View",
@@ -527,13 +546,16 @@
           "outputs": {},
           "type": "table_view",
           "sub_nodes": null
-        }
+        },
+        "beingResized": false
       },
       "position": {
-        "x": 605.0792427265845,
-        "y": 293.3800944106007
+        "x": 659.7852850905575,
+        "y": -41.48719521129472
       },
-      "parentId": null
+      "parentId": null,
+      "width": 492,
+      "height": 391
     },
     {
       "id": "RAG 1",
@@ -613,7 +635,7 @@
         }
       },
       "position": {
-        "x": -481.37046820744615,
+        "x": -449.6099563104567,
         "y": 56.69054032617606
       },
       "parentId": null
