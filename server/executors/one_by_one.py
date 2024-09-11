@@ -19,7 +19,7 @@ class Output(ops.BaseConfig):
 
 
 def df_to_list(df):
-  return [dict(zip(df.columns, row)) for row in df.values]
+  return df.to_dict(orient='records')
 
 def has_ctx(op):
   sig = inspect.signature(op.func)

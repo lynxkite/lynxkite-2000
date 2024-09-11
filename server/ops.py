@@ -98,9 +98,10 @@ class Op(BaseConfig):
           params[p] = int(params[p])
         elif self.params[p].type == float:
           params[p] = float(params[p])
+        elif isinstance(self.params[p].type, enum.EnumMeta):
+          params[p] = self.params[p].type[params[p]]
     res = self.func(*inputs, **params)
     return res
-
 
 
 def op(env: str, name: str, *, view='basic', sub_nodes=None, outputs=None):
