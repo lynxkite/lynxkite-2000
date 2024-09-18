@@ -2,10 +2,20 @@
   import { type NodeProps } from '@xyflow/svelte';
   import LynxKiteNode from './LynxKiteNode.svelte';
   import Table from './Table.svelte';
+  import SvelteMarkdown from 'svelte-markdown'
   type $$Props = NodeProps;
   export let data: $$Props['data'];
   const open = {};
   $: single = data.display?.dataframes && Object.keys(data.display.dataframes).length === 1;
+  function toMD(v) {
+    if (typeof v === 'string') {
+      return v;
+    }
+    if (Array.isArray(v)) {
+      return v.map(toMD).join('\n\n');
+    }
+    return JSON.stringify(v);
+  }
 </script>
 
 <LynxKiteNode {...$$props}>
@@ -19,7 +29,7 @@
           <dl>
           {#each df.columns as c, i}
             <dt>{c}</dt>
-            <dd><pre>{df.data[0][i]}</pre></dd>
+            <dd><SvelteMarkdown source={toMD(df.data[0][i])} /></dd>
           {/each}
           </dl>
         {/if}
@@ -39,9 +49,6 @@
     padding: 8px;
     background: #f0f0f0;
     cursor: pointer;
-  }
-  table {
-    table-layout: fixed;
   }
   dl {
     margin: 10px;
