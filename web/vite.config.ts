@@ -9,6 +9,13 @@ export default defineConfig({
     Icons({ compiler: 'svelte', defaultStyle: 'vertical-align: sub;' }),
   ],
   server: {
-    proxy: { '/api': 'http://127.0.0.1:8000' },
+    proxy: {
+      '/api': 'http://127.0.0.1:8000',
+      '/ws': {
+        target: 'ws://127.0.0.1:8000',
+        ws: true,
+        changeOrigin: true,
+      },
+    },
   },
 })

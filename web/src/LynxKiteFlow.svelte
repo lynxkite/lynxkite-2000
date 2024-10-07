@@ -16,7 +16,7 @@
   import ArrowBack from 'virtual:icons/tabler/arrow-back'
   import Backspace from 'virtual:icons/tabler/backspace'
   import Atom from 'virtual:icons/tabler/Atom'
-  import { useQuery, useMutation, useQueryClient } from '@sveltestack/svelte-query';
+  import { useQuery } from '@sveltestack/svelte-query';
   import NodeWithParams from './NodeWithParams.svelte';
   import NodeWithVisualization from './NodeWithVisualization.svelte';
   import NodeWithImage from './NodeWithImage.svelte';
@@ -26,27 +26,28 @@
   import NodeSearch from './NodeSearch.svelte';
   import EnvironmentSelector from './EnvironmentSelector.svelte';
   import '@xyflow/svelte/dist/style.css';
+  import { syncedStore, getYjsDoc } from "@syncedstore/core";
+  import { svelteSyncedStore } from "@syncedstore/svelte";
+  import { WebsocketProvider } from "y-websocket";
+
+  function getCRDTStore(path) {
+    const sstore = syncedStore({ workspace: {} });
+    console.log('ss', sstore.workspace);
+    const doc = getYjsDoc(sstore);
+    console.log('doc', doc.toJSON());
+    const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path, doc);
+    wsProvider.on('sync', function(isSynced: boolean) {
+      console.log('synced', isSynced, 'ydoc', doc.toJSON());
+    });
+    return {store: svelteSyncedStore(sstore), doc};
+  }
+  $: connection = getCRDTStore(path);
+  $: store = connection.store;
+  $: ws = connection.doc?.getMap('workspace');
 
   export let path = '';
 
   const { screenToFlowPosition } = useSvelteFlow();
-  const queryClient = useQueryClient();
-  const backendWorkspace = useQuery(['workspace', path], async () => {
-    const res = await fetch(`/api/load?path=${path}`);
-    return res.json();
-  }, {staleTime: 10000, retry: false});
-  const mutation = useMutation(async(update) => {
-    const res = await fetch('/api/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(update),
-    });
-    return await res.json();
-  }, {
-    onSuccess: data => queryClient.setQueryData(['workspace', path], data),
-  });
 
   const nodeTypes: NodeTypes = {
     basic: NodeWithParams,
@@ -56,16 +57,6 @@
     sub_flow: NodeWithSubFlow,
     area: NodeWithArea,
   };
-
-  const nodes = writable<Node[]>([]);
-  const edges = writable<Edge[]>([]);
-  let doNotSave = true;
-  $: if ($backendWorkspace.isSuccess) {
-    doNotSave = true; // Change is coming from the backend.
-    nodes.set(JSON.parse(JSON.stringify($backendWorkspace.data?.nodes || [])));
-    edges.set(JSON.parse(JSON.stringify($backendWorkspace.data?.edges || [])));
-    doNotSave = false;
-  }
 
   function closeNodeSearch() {
     nodeSearchSettings = undefined;
@@ -78,12 +69,12 @@
     event.preventDefault();
     nodeSearchSettings = {
       pos: { x: event.clientX, y: event.clientY },
-      boxes: $catalog.data[$backendWorkspace.data?.env],
+      boxes: $catalog.data[ws.env],
     };
   }
   function addNode(e) {
     const meta = {...e.detail};
-    nodes.update((n) => {
+    store.update((ws) => {
       const node = {
         type: meta.type,
         data: {
@@ -97,7 +88,7 @@
       const title = node.data.title;
       let i = 1;
       node.id = `${title} ${i}`;
-      while (n.find((x) => x.id === node.id)) {
+      while (ws.nodes.find((x) => x.id === node.id)) {
         i += 1;
         node.id = `${title} ${i}`;
       }
@@ -107,7 +98,7 @@
         const parent = n.find((x) => x.id === node.parentId);
         node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
       }
-      return [...n, node]
+      return {...ws, nodes: [...n, node]};
     });
     closeNodeSearch();
   }
@@ -122,46 +113,6 @@
     parentId: string,
   };
 
-  const graph = derived([nodes, edges], ([nodes, edges]) => ({ nodes, edges }));
-  // Like JSON.stringify, but with keys sorted.
-  function orderedJSON(obj: any) {
-    const allKeys = new Set();
-    JSON.stringify(obj, (key, value) => (allKeys.add(key), value));
-    return JSON.stringify(obj, Array.from(allKeys).sort());
-  }
-  graph.subscribe(async (g) => {
-    if (doNotSave) return;
-    const dragging = g.nodes.find((n) => n.dragging);
-    if (dragging) return;
-    const resizing = g.nodes.find((n) => n.data?.beingResized);
-    if (resizing) return;
-    scheduleSave(g);
-  });
-  let saveTimeout;
-  function scheduleSave(g) {
-    // A slight delay, so we don't send a million requests when a node is resized, for example.
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => save(g), 500);
-  }
-  function save(g) {
-    g = JSON.parse(JSON.stringify(g));
-    for (const node of g.nodes) {
-      delete node.measured;
-      delete node.selected;
-      delete node.dragging;
-      delete node.beingResized;
-    }
-    for (const node of g.edges) {
-      delete node.markerEnd;
-      delete node.selected;
-    }
-    g.env = $backendWorkspace.data?.env;
-    const ws = orderedJSON(g);
-    const bd = orderedJSON($backendWorkspace.data);
-    if (ws === bd) return;
-    console.log('changed', JSON.stringify(diff(g, $backendWorkspace.data), null, 2));
-    $mutation.mutate({ path, ws: g });
-  }
   function nodeClick(e) {
     const node = e.detail.node;
     const meta = node.data.meta;
@@ -181,6 +132,11 @@
 </script>
 
 <div class="page">
+  <br>doc: {JSON.stringify(connection.doc)}
+  <br>w2j: {JSON.parse(JSON.stringify(connection.doc)).workspace}
+  <br>ws: {connection.doc?.getMap("workspace")}
+  {#if ws !== undefined}
+  {{ws}}
   <div class="top-bar">
     <div class="ws-name">
       <a href><img src="/favicon.ico"></a>
@@ -189,8 +145,11 @@
     <div class="tools">
       <EnvironmentSelector
         options={Object.keys($catalog.data || {})}
-        value={$backendWorkspace.data?.env}
-        onChange={(env) => $mutation.mutate({ path, ws: { ...$backendWorkspace.data, env } })}
+        value={$store.workspace.env}
+        onChange={(env) => {
+          console.log('env change', env);
+          $store.workspace.env = env;
+        }}
         />
       <a href><Atom /></a>
       <a href><Backspace /></a>
@@ -198,7 +157,7 @@
     </div>
   </div>
   <div style:height="100%">
-    <SvelteFlow {nodes} {edges} {nodeTypes} fitView
+    <SvelteFlow nodes={ws.nodes} edges={ws.edges} {nodeTypes} fitView
       on:paneclick={toggleNodeSearch}
       on:nodeclick={nodeClick}
       proOptions={{ hideAttribution: true }}
@@ -213,6 +172,7 @@
       {/if}
     </SvelteFlow>
   </div>
+  {/if}
 </div>
 
 <style>
