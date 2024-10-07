@@ -2,6 +2,7 @@ import dataclasses
 import fastapi
 import pathlib
 import pkgutil
+from . import crdt
 from . import ops
 from . import workspace
 
@@ -11,8 +12,8 @@ for _, name, _ in pkgutil.iter_modules([str(here)]):
         print(f'Importing {name}')
         __import__(f'server.{name}')
 
-app = fastapi.FastAPI()
-
+app = fastapi.FastAPI(lifespan=crdt.lifespan)
+app.include_router(crdt.router)
 
 @app.get("/api/catalog")
 def get_catalog():

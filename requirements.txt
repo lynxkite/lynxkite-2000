@@ -5,6 +5,8 @@ numpy
 pandas
 scipy
 uvicorn[standard]
+pycrdt
+pycrdt-websocket
 # For llm_ops
 chromadb
 Jinja2
