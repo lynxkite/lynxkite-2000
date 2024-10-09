@@ -32,18 +32,15 @@
 
   function getCRDTStore(path) {
     const sstore = syncedStore({ workspace: {} });
-    console.log('ss', sstore.workspace);
     const doc = getYjsDoc(sstore);
-    console.log('doc', doc.toJSON());
     const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path, doc);
     wsProvider.on('sync', function(isSynced: boolean) {
       console.log('synced', isSynced, 'ydoc', doc.toJSON());
     });
-    return {store: svelteSyncedStore(sstore), doc};
+    return {store: svelteSyncedStore(sstore), sstore, doc};
   }
   $: connection = getCRDTStore(path);
   $: store = connection.store;
-  $: ws = connection.doc?.getMap('workspace');
 
   export let path = '';
 
@@ -58,6 +55,31 @@
     area: NodeWithArea,
   };
 
+  function substore(store, field) {
+    if (!store) return;
+    const ss = derived(store, (store) => store.workspace[field]?.value);
+    ss.set = (value) => {
+      console.log('set called', field, value);
+      $store.workspace[field] = value;
+    };
+    ss.update = (fn) => {
+      console.log('update called', field);
+      console.log(JSON.stringify($store));
+      console.log(JSON.stringify($store.workspace.nodes));
+      const before = $store.workspace[field];
+      console.log({before});
+      const after = fn(before);
+      console.log({after});
+      $store.workspace[field] = after;
+    };
+    return ss;
+  }
+  $: nodes = substore(store, 'nodes');
+  $: edges = substore(store, 'edges');
+
+  // const nodes = writable<Node[]>([]);
+  // const edges = writable<Edge[]>([]);
+
   function closeNodeSearch() {
     nodeSearchSettings = undefined;
   }
@@ -69,12 +91,14 @@
     event.preventDefault();
     nodeSearchSettings = {
       pos: { x: event.clientX, y: event.clientY },
-      boxes: $catalog.data[ws.env],
+      boxes: $catalog.data[$store.workspace.env],
     };
   }
   function addNode(e) {
     const meta = {...e.detail};
-    store.update((ws) => {
+    console.log(store);
+    nodes.update((nodes) => {
+      console.log({v: nodes});
       const node = {
         type: meta.type,
         data: {
@@ -88,17 +112,18 @@
       const title = node.data.title;
       let i = 1;
       node.id = `${title} ${i}`;
-      while (ws.nodes.find((x) => x.id === node.id)) {
+      console.log({nodes})
+      while (nodes.find((x) => x.id === node.id)) {
         i += 1;
         node.id = `${title} ${i}`;
       }
       node.parentId = nodeSearchSettings.parentId;
       if (node.parentId) {
         node.extent = 'parent';
-        const parent = n.find((x) => x.id === node.parentId);
+        const parent = nodes.find((x) => x.id === node.parentId);
         node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
       }
-      return {...ws, nodes: [...n, node]};
+      return [...nodes, node];
     });
     closeNodeSearch();
   }
@@ -128,15 +153,19 @@
     };
   }
   $: parentDir = path.split('/').slice(0, -1).join('/');
+  $: console.log($store);
+  // <br>{JSON.stringify($store)}
+  // <br>{JSON.stringify($store?.workspace)}
+  // <br>{JSON.stringify($store?.workspace?.nodes)}
+  // <br>{JSON.stringify($store?.workspace?.nodes?.value)}
+  // <br>{$store.workspace?.nodes?.toArray()}
+  // <br>{$store.workspace?.nodes?.length}
 
 </script>
 
 <div class="page">
-  <br>doc: {JSON.stringify(connection.doc)}
-  <br>w2j: {JSON.parse(JSON.stringify(connection.doc)).workspace}
-  <br>ws: {connection.doc?.getMap("workspace")}
-  {#if ws !== undefined}
-  {{ws}}
+  <br>{JSON.stringify($store)}
+  {#if $store.workspace !== undefined}
   <div class="top-bar">
     <div class="ws-name">
       <a href><img src="/favicon.ico"></a>
@@ -157,7 +186,7 @@
     </div>
   </div>
   <div style:height="100%">
-    <SvelteFlow nodes={ws.nodes} edges={ws.edges} {nodeTypes} fitView
+    <SvelteFlow {nodes} {edges} {nodeTypes} fitView
       on:paneclick={toggleNodeSearch}
       on:nodeclick={nodeClick}
       proOptions={{ hideAttribution: true }}
