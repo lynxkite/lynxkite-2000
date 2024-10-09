@@ -56,7 +56,7 @@
               ],
               "data": [
                 [
-                  "Az élet titka sokak számára különböző lehet, és sok tényezőtől függ. Néhány kulcselem, ami segíthet megtalálni az élet értelmét vagy titkát:\n\n- **Kapcsolatok**: A barátok és a család közelsége fontos az érzelmi jólét szempontjából.\n- **Önmegvalósítás**: Mindenkinek más a célja és álma, érdemes dolgozni azon, hogy elérjük őket.\n- **Tanulás**: Folyamatosan fejlődjünk és tanuljunk, hogy jobban megértsük a világot.\n- **Egészség**: A fizikai és mentális egészség megőrzése kulcsfontosságú az életminőség szempontjából.\n- **Kibékülés**: Békélj meg a múltaddal, és tanulj meg megbocsátani önmagadnak és másoknak.\n\nEzek az elemek hozzájárulhatnak ahhoz, hogy az életet gazdagabbnak és értékesebbnek érezd. Van valami konkrét aspektus az élet titkáról, amiről szívesen beszélnél?\n\nPlease visit <a href='https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717' target='_blank'>https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717</a> for further information."
+                  "Az élet titka sok ember számára különböző lehet, és sok tényezőtől függ, mint például a személyes értékek, tapasztalatok és célok. Néhány általános gondolat az élet titkairól:\n\n- **Kapcsolatok**: A szeretet és az emberi kapcsolatok nagyon fontosak, hiszen ezek adhatják az élet értelmét.\n- **Önmegvalósítás**: Az, hogy megtaláljuk a szenvedélyeinket és céljainkat, segíthet abban, hogy boldogan éljünk.\n- **Folyamatos tanulás**: Az élet folyamatos tanulás, amely segít fejlődni és alkalmazkodni a változásokhoz.\n- **Egészség**: A fizikai és mentális egészség megőrzése alapvető az életminőség szempontjából.\n\nEzek persze csak általános nézőpontok, és mindenki másképp találhatja meg a saját életének a titkát. Te mivel kapcsolatban keresed az élet titkát?\n\nPlease visit <a href='https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717' target='_blank'>https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717</a> for further information."
                 ]
               ]
             }
@@ -114,7 +114,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -122,8 +122,8 @@
         }
       },
       "position": {
-        "x": -996.3183837866898,
-        "y": 1329.9037704510513
+        "x": -312.5774211084781,
+        "y": 1093.4019527511366
       },
       "parentId": null
     },
@@ -163,7 +163,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -171,8 +171,8 @@
         }
       },
       "position": {
-        "x": -1076.3726648689906,
-        "y": 1126.1701539825485
+        "x": -549.1300345090008,
+        "y": 1086.4852248156676
       },
       "parentId": null
     },
@@ -217,7 +217,7 @@
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "position": "bottom"
             }
           },
           "outputs": {
@@ -226,7 +226,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -234,7 +234,7 @@
         }
       },
       "position": {
-        "x": -57.80584961387282,
+        "x": -46.94726514341976,
         "y": 235.19823621492515
       },
       "parentId": null
@@ -283,7 +283,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -291,8 +291,8 @@
         }
       },
       "position": {
-        "x": -428.0531718264389,
-        "y": 174.62875974530755
+        "x": 382.20164582795104,
+        "y": 533.2833307141879
       },
       "parentId": null
     },
@@ -303,10 +303,7 @@
         "title": "RAG chatbot",
         "params": {
           "negative_answer": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
-          "min_information": 2,
-          "max_information": 3,
-          "min_summary": 2,
-          "max_summary": 3,
+          "limits_by_type": "{\"information\": [2, 3], \"summary\": [2, 3]}",
           "strict_limits": true,
           "max_results": 5
         },
@@ -322,32 +319,11 @@
                 "type": "<class 'str'>"
               }
             },
-            "min_information": {
-              "name": "min_information",
-              "default": 2,
+            "limits_by_type": {
+              "name": "limits_by_type",
+              "default": "{}",
               "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "max_information": {
-              "name": "max_information",
-              "default": 3,
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "min_summary": {
-              "name": "min_summary",
-              "default": 2,
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "max_summary": {
-              "name": "max_summary",
-              "default": 3,
-              "type": {
-                "type": "<class 'int'>"
+                "type": "<class 'str'>"
               }
             },
             "strict_limits": {
@@ -394,7 +370,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -403,12 +379,12 @@
         "beingResized": false
       },
       "position": {
-        "x": -647.9563055161224,
-        "y": 528.5816378646354
+        "x": -521.6507639530705,
+        "y": 547.294980747757
       },
       "parentId": null,
-      "width": 417,
-      "height": 494
+      "width": 336,
+      "height": 349
     },
     {
       "id": "RAG graph 1",
@@ -443,7 +419,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -451,8 +427,8 @@
         }
       },
       "position": {
-        "x": -1018.3991667849547,
-        "y": 882.7108232430365
+        "x": -817.8208895639339,
+        "y": 1014.836542916127
       },
       "parentId": null
     },
@@ -492,7 +468,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -501,8 +477,8 @@
         "beingResized": false
       },
       "position": {
-        "x": -1992.8382657219915,
-        "y": 898.0883240074281
+        "x": -1053.794625339574,
+        "y": 1347.7711940497127
       },
       "parentId": null,
       "width": 275,
@@ -544,7 +520,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -552,8 +528,8 @@
         }
       },
       "position": {
-        "x": -1601.7383061140106,
-        "y": 1187.790118541483
+        "x": -749.98604638686,
+        "y": 1293.5978526690794
       },
       "parentId": null
     },
@@ -585,7 +561,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -593,8 +569,8 @@
         }
       },
       "position": {
-        "x": -1830.5553990810897,
-        "y": 1406.239623213993
+        "x": -714.2838040349482,
+        "y": 1469.7242636905507
       },
       "parentId": null
     },
@@ -634,7 +610,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -642,8 +618,8 @@
         }
       },
       "position": {
-        "x": -206.839661001107,
-        "y": 954.055575798662
+        "x": 0.08889822620079713,
+        "y": 1044.7639853229612
       },
       "parentId": null
     },
@@ -664,7 +640,7 @@
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "position": "bottom"
             }
           },
           "outputs": {
@@ -673,7 +649,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -784,7 +760,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -792,8 +768,8 @@
         }
       },
       "position": {
-        "x": -202.83662881345157,
-        "y": 1123.8190429357237
+        "x": 233.69759202223884,
+        "y": 1041.6145468043276
       },
       "parentId": null
     },
@@ -849,7 +825,7 @@
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "top"
             }
           },
           "type": "basic",
@@ -857,8 +833,8 @@
         }
       },
       "position": {
-        "x": -192.5486444668937,
-        "y": 1414.696184081429
+        "x": 513.2761671440603,
+        "y": 1034.8547191984255
       },
       "parentId": null
     }

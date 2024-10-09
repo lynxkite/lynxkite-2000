@@ -1,8 +1,8 @@
 from .. import ops
 from .. import workspace
-import fastapi
-import json
+import orjson
 import pandas as pd
+import pydantic
 import traceback
 import inspect
 import typing
@@ -63,6 +63,15 @@ def get_stages(ws, catalog):
   stages.append(set(nodes))
   return stages
 
+
+def _default_serializer(obj):
+  if isinstance(obj, pydantic.BaseModel):
+    return obj.dict()
+  return {"__nonserializable__": id(obj)}
+
+def make_cache_key(obj):
+  return orjson.dumps(obj, default=_default_serializer)
+
 EXECUTOR_OUTPUT_CACHE = {}
 
 def execute(ws, catalog, cache=None):
@@ -101,10 +110,10 @@ def execute(ws, catalog, cache=None):
           inputs = [
             batch_inputs[(n, i.name)] if i.position in 'top or bottom' else task
             for i in op.inputs.values()]
-          if cache:
-            key = json.dumps(fastapi.encoders.jsonable_encoder((inputs, params)))
+          if cache is not None:
+            key = make_cache_key((inputs, params))
             if key not in cache:
-              cache[key] = op.func(*inputs, **params)
+              cache[key] = op(*inputs, **params)
             result = cache[key]
           else:
             result = op(*inputs, **params)

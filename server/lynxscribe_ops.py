@@ -14,22 +14,27 @@ from lynxscribe.components.chat_api import ChatAPI, ChatAPIRequest, ChatAPIRespo
 
 from . import ops
 import asyncio
+import json
 from .executors import one_by_one
 
 ENV = 'LynxScribe'
 one_by_one.register(ENV)
 op = ops.op_registration(ENV)
+output_on_top = ops.output_position(output="top")
 
+@output_on_top
 @op("Vector store")
 def vector_store(*, name='chromadb', collection_name='lynx'):
   vector_store = get_vector_store(name=name, collection_name=collection_name)
   return {'vector_store': vector_store}
 
+@output_on_top
 @op("LLM")
 def llm(*, name='openai'):
   llm = get_llm_engine(name=name)
   return {'llm': llm}
 
+@output_on_top
 @ops.input_position(llm="bottom")
 @op("Text embedder")
 def text_embedder(llm, *, model='text-embedding-ada-002'):
@@ -37,6 +42,7 @@ def text_embedder(llm, *, model='text-embedding-ada-002'):
   text_embedder = TextEmbedder(llm=llm, model=model)
   return {'text_embedder': text_embedder}
 
+@output_on_top
 @ops.input_position(vector_store="bottom", text_embedder="bottom")
 @op("RAG graph")
 def rag_graph(vector_store, text_embedder):
@@ -47,6 +53,7 @@ def rag_graph(vector_store, text_embedder):
     )
     return {'rag_graph': rag_graph}
 
+@output_on_top
 @op("Scenario selector")
 def scenario_selector(*, scenario_file: str, node_types='intent_cluster'):
   scenarios = load_config(scenario_file)
@@ -59,28 +66,31 @@ def scenario_selector(*, scenario_file: str, node_types='intent_cluster'):
 
 DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not contain any information related to your question."
 
+@output_on_top
 @ops.input_position(rag_graph="bottom", scenario_selector="bottom", llm="bottom")
 @op("RAG chatbot")
 def rag_chatbot(
     rag_graph, scenario_selector, llm, *,
     negative_answer=DEFAULT_NEGATIVE_ANSWER,
-    min_information=2, max_information=3,
-    min_summary=2, max_summary=3,
+    limits_by_type='{}',
     strict_limits=True, max_results=5):
   rag_graph = rag_graph[0]['rag_graph']
   scenario_selector = scenario_selector[0]['scenario_selector']
   llm = llm[0]['llm']
+  limits_by_type = json.loads(limits_by_type)
   rag_chatbot = RAGChatbot(
       rag_graph=rag_graph,
       scenario_selector=scenario_selector,
       llm=llm,
       negative_answer=negative_answer,
-      limits_by_type=dict(information=[min_information, max_information], summary=[min_summary, max_summary]),
+      limits_by_type=limits_by_type,
       strict_limits=strict_limits,
       max_results=max_results,
   )
   return {'chatbot': rag_chatbot}
 
+@output_on_top
+@ops.input_position(processor="bottom")
 @op("Chat processor")
 def chat_processor(processor, *, _ctx: one_by_one.Context):
   cfg = _ctx.last_result or {'question_processors': [], 'answer_processors': [], 'masks': []}
@@ -98,10 +108,12 @@ def chat_processor(processor, *, _ctx: one_by_one.Context):
   chat_processor = ChatProcessor(question_processors=question_processors, answer_processors=answer_processors)
   return {'chat_processor': chat_processor, **cfg}
 
+@output_on_top
 @op("Truncate history")
 def truncate_history(*, max_tokens=10000, language='English'):
   return {'question_processor': TruncateHistory(max_tokens=max_tokens, language=language.lower())}
 
+@output_on_top
 @op("Mask")
 def mask(*, name='', regex='', exceptions='', mask_pattern=''):
   exceptions = [e.strip() for e in exceptions.split(',') if e.strip()]
@@ -119,11 +131,13 @@ def test_chat_api(message, chat_api):
 def input_chat(*, chat: str):
   return {'text': chat}
 
-@ops.input_position(chatbot="bottom", chat_processor="bottom")
+@output_on_top
+@ops.input_position(chatbot="bottom", chat_processor="bottom", knowledge_base="bottom")
 @op("Chat API")
 def chat_api(chatbot, chat_processor, knowledge_base, *, model='gpt-4o-mini'):
   chatbot = chatbot[0]['chatbot']
   chat_processor = chat_processor[0]['chat_processor']
+  knowledge_base = knowledge_base[0]
   c = ChatAPI(
       chatbot=chatbot,
       chat_processor=chat_processor,
@@ -134,6 +148,7 @@ def chat_api(chatbot, chat_processor, knowledge_base, *, model='gpt-4o-mini'):
     c.chatbot.scenario_selector.check_compatibility(c.chatbot.rag_graph)
   return {'chat_api': c}
 
+@output_on_top
 @op("Knowledge base")
 def knowledge_base(*, nodes_path='nodes.pickle', edges_path='edges.pickle', template_cluster_path='tempclusters.pickle'):
     return {'nodes_path': nodes_path, 'edges_path': edges_path, 'template_cluster_path': template_cluster_path}
