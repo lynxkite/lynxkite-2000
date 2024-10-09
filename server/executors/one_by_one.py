@@ -140,3 +140,4 @@ def execute(ws, catalog, cache=None):
           else:
             tasks.setdefault(edge.target, []).extend(results)
     tasks = next_stage
+  return contexts

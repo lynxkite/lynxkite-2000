@@ -163,3 +163,38 @@ def view(input):
     }}
   }
   return v
+
+async def api_service(request):
+  '''
+  Serves a chat endpoint that matches LynxScribe's interface.
+  To access it you need to add the "module" and "workspace"
+  parameters.
+  The workspace must contain exactly one "Chat API" node.
+
+    curl -X POST ${LYNXKITE_URL}/api/service \
+      -H "Content-Type: application/json" \
+      -d '{
+        "module": "server.lynxscribe_ops",
+        "workspace": "LynxScribe demo",
+        "session_id": "b43215a0-428f-11ef-9454-0242ac120002",
+        "question": "what does the fox say",
+        "history": [],
+        "user_id": "x",
+        "meta_inputs": {}
+      }'
+  '''
+  import pathlib
+  from . import workspace
+  DATA_PATH = pathlib.Path.cwd() / 'data'
+  path = DATA_PATH / request['workspace']
+  assert path.is_relative_to(DATA_PATH)
+  assert path.exists(), f'Workspace {path} does not exist'
+  ws = workspace.load(path)
+  contexts = ops.EXECUTORS[ENV](ws)
+  nodes = [op for op in ws.nodes if op.data.title == 'Chat API']
+  [node] = nodes
+  context = contexts[node.id]
+  chat_api = context.last_result['chat_api']
+  request = ChatAPIRequest(session_id=request['session_id'], question=request['question'], history=request['history'])
+  response = await chat_api.answer(request)
+  return response
