@@ -1,15 +1,18 @@
 import dataclasses
 import fastapi
+import importlib
 import pathlib
 import pkgutil
 from . import ops
 from . import workspace
 
 here = pathlib.Path(__file__).parent
+lynxkite_modules = {}
 for _, name, _ in pkgutil.iter_modules([str(here)]):
     if name.endswith('_ops') and not name.startswith('test_'):
         print(f'Importing {name}')
-        __import__(f'server.{name}')
+        name = f'server.{name}'
+        lynxkite_modules[name] = importlib.import_module(name)
 
 app = fastapi.FastAPI()
 
@@ -67,3 +70,9 @@ def make_dir(req: dict):
     assert not path.exists()
     path.mkdir()
     return list_dir(path.parent)
+
+@app.post("/api/service")
+async def service(req: dict):
+    '''Executors can provide extra HTTP APIs through the /api/service endpoint.'''
+    module = lynxkite_modules[req['module']]
+    return await module.api_service(req)
