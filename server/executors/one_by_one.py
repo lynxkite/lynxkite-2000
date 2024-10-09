@@ -37,7 +37,7 @@ def register(env: str, cache: bool = True):
   ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env], cache=cache)
 
 def get_stages(ws, catalog):
-  '''Inputs on top are batch inputs. We decompose the graph into a DAG of components along these edges.'''
+  '''Inputs on top/bottom are batch inputs. We decompose the graph into a DAG of components along these edges.'''
   nodes = {n.id: n for n in ws.nodes}
   batch_inputs = {}
   inputs = {}
@@ -46,7 +46,7 @@ def get_stages(ws, catalog):
     node = nodes[edge.target]
     op = catalog[node.data.title]
     i = op.inputs[edge.targetHandle]
-    if i.position == 'top':
+    if i.position in 'top or bottom':
       batch_inputs.setdefault(edge.target, []).append(edge.source)
   stages = []
   for bt, bss in batch_inputs.items():
@@ -77,7 +77,7 @@ def execute(ws, catalog, cache=None):
     node.data.error = None
     op = catalog[node.data.title]
     # Start tasks for nodes that have no non-batch inputs.
-    if all([i.position == 'top' for i in op.inputs.values()]):
+    if all([i.position in 'top or bottom' for i in op.inputs.values()]):
       tasks[node.id] = [NO_INPUT]
   batch_inputs = {}
   # Run the rest until we run out of tasks.
@@ -99,7 +99,7 @@ def execute(ws, catalog, cache=None):
       for task in ts:
         try:
           inputs = [
-            batch_inputs[(n, i.name)] if i.position == 'top' else task
+            batch_inputs[(n, i.name)] if i.position in 'top or bottom' else task
             for i in op.inputs.values()]
           if cache:
             key = json.dumps(fastapi.encoders.jsonable_encoder((inputs, params)))
@@ -126,7 +126,7 @@ def execute(ws, catalog, cache=None):
           t = nodes[edge.target]
           op = catalog[t.data.title]
           i = op.inputs[edge.targetHandle]
-          if i.position == 'top':
+          if i.position in 'top or bottom':
             batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(results)
           else:
             tasks.setdefault(edge.target, []).extend(results)
