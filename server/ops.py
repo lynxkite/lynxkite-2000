@@ -61,7 +61,7 @@ class Parameter(BaseConfig):
     if default is inspect._empty:
       default = None
     if type is None or type is inspect._empty:
-      type = typeof(default) if default else None
+      type = typeof(default) if default is not None else None
     return Parameter(name=name, default=default, type=type)
 
 class Input(BaseConfig):
