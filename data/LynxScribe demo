@@ -7,7 +7,7 @@
       "data": {
         "title": "Input chat",
         "params": {
-          "chat": "mi az elet titka"
+          "chat": "who is the CIO of Lynx?"
         },
         "display": null,
         "error": null,
@@ -37,8 +37,8 @@
         }
       },
       "position": {
-        "x": -292.9043729325095,
-        "y": 59.46898452253504
+        "x": -383.5496596237119,
+        "y": 27.567899191800223
       },
       "parentId": null
     },
@@ -52,11 +52,11 @@
           "dataframes": {
             "df": {
               "columns": [
-                "response"
+                "answer"
               ],
               "data": [
                 [
-                  "Az élet titka sok ember számára különböző lehet, és sok tényezőtől függ, mint például a személyes értékek, tapasztalatok és célok. Néhány általános gondolat az élet titkairól:\n\n- **Kapcsolatok**: A szeretet és az emberi kapcsolatok nagyon fontosak, hiszen ezek adhatják az élet értelmét.\n- **Önmegvalósítás**: Az, hogy megtaláljuk a szenvedélyeinket és céljainkat, segíthet abban, hogy boldogan éljünk.\n- **Folyamatos tanulás**: Az élet folyamatos tanulás, amely segít fejlődni és alkalmazkodni a változásokhoz.\n- **Egészség**: A fizikai és mentális egészség megőrzése alapvető az életminőség szempontjából.\n\nEzek persze csak általános nézőpontok, és mindenki másképp találhatja meg a saját életének a titkát. Te mivel kapcsolatban keresed az élet titkát?\n\nPlease visit <a href='https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717' target='_blank'>https://www.linkedin.com/in/g%c3%a1bor-benedek-95578717</a> for further information."
+                  "The Chief Innovation Officer (CIO) of Lynx Analytics is Gabor Benedek. He is responsible for defining the methodological roadmap for the company's predictive analytics consulting and product development departments. If you need more specific information about his role, feel free to ask!\n\nPlease visit <a href='https://www.lynxanalytics.com/team-leadership' target='_blank'>https://www.lynxanalytics.com/team-leadership</a> for further information."
                 ]
               ]
             }
@@ -81,8 +81,8 @@
         }
       },
       "position": {
-        "x": 472.96030572661607,
-        "y": 44.15182379992555
+        "x": 722.1450069267316,
+        "y": -785.6076562320527
       },
       "parentId": null
     },
@@ -234,8 +234,8 @@
         }
       },
       "position": {
-        "x": -46.94726514341976,
-        "y": 235.19823621492515
+        "x": -22.866663363810787,
+        "y": 258.20943122219336
       },
       "parentId": null
     },
@@ -305,7 +305,7 @@
           "negative_answer": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
           "limits_by_type": "{\"information\": [2, 3], \"summary\": [2, 3]}",
           "strict_limits": true,
-          "max_results": 5
+          "max_results": "5"
         },
         "display": null,
         "error": null,
@@ -379,7 +379,7 @@
         "beingResized": false
       },
       "position": {
-        "x": -521.6507639530705,
+        "x": -533.1301830766971,
         "y": 547.294980747757
       },
       "parentId": null,
@@ -663,52 +663,6 @@
       "parentId": null
     },
     {
-      "id": "Test Chat API 1",
-      "type": "basic",
-      "data": {
-        "title": "Test Chat API",
-        "params": {},
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Test Chat API",
-          "params": {},
-          "inputs": {
-            "message": {
-              "name": "message",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "left"
-            },
-            "chat_api": {
-              "name": "chat_api",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "bottom"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
-      },
-      "position": {
-        "x": 30.070483767962628,
-        "y": 30.871931330853627
-      },
-      "parentId": null
-    },
-    {
       "id": "Mask 1",
       "type": "basic",
       "data": {
@@ -728,28 +682,28 @@
               "name": "name",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "regex": {
               "name": "regex",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "exceptions": {
               "name": "exceptions",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "mask_pattern": {
               "name": "mask_pattern",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             }
           },
@@ -793,28 +747,28 @@
               "name": "name",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "regex": {
               "name": "regex",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "exceptions": {
               "name": "exceptions",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             },
             "mask_pattern": {
               "name": "mask_pattern",
               "default": "",
               "type": {
-                "type": "None"
+                "type": "<class 'str'>"
               }
             }
           },
@@ -835,6 +789,63 @@
       "position": {
         "x": 513.2761671440603,
         "y": 1034.8547191984255
+      },
+      "parentId": null
+    },
+    {
+      "id": "Test Chat API 2",
+      "type": "basic",
+      "data": {
+        "title": "Test Chat API",
+        "params": {
+          "show_details": false
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Test Chat API",
+          "params": {
+            "show_details": {
+              "name": "show_details",
+              "default": false,
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "inputs": {
+            "message": {
+              "name": "message",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "left"
+            },
+            "chat_api": {
+              "name": "chat_api",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "right"
+            }
+          },
+          "type": "basic",
+          "sub_nodes": null
+        },
+        "collapsed": false
+      },
+      "position": {
+        "x": -11.653333595036415,
+        "y": -0.9210389517918429
       },
       "parentId": null
     }
@@ -911,27 +922,6 @@
       "targetHandle": "chat_processor"
     },
     {
-      "id": "xy-edge__Chat API 1output-Test Chat API 1chat_api",
-      "source": "Chat API 1",
-      "target": "Test Chat API 1",
-      "sourceHandle": "output",
-      "targetHandle": "chat_api"
-    },
-    {
-      "id": "xy-edge__Test Chat API 1output-View 1input",
-      "source": "Test Chat API 1",
-      "target": "View 1",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__Input chat 1output-Test Chat API 1message",
-      "source": "Input chat 1",
-      "target": "Test Chat API 1",
-      "sourceHandle": "output",
-      "targetHandle": "message"
-    },
-    {
       "id": "xy-edge__Mask 1output-Chat processor 1processor",
       "source": "Mask 1",
       "target": "Chat processor 1",
@@ -944,6 +934,27 @@
       "target": "Chat processor 1",
       "sourceHandle": "output",
       "targetHandle": "processor"
+    },
+    {
+      "id": "xy-edge__Input chat 1output-Test Chat API 2message",
+      "source": "Input chat 1",
+      "target": "Test Chat API 2",
+      "sourceHandle": "output",
+      "targetHandle": "message"
+    },
+    {
+      "id": "xy-edge__Test Chat API 2output-View 1input",
+      "source": "Test Chat API 2",
+      "target": "View 1",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Chat API 1output-Test Chat API 2chat_api",
+      "source": "Chat API 1",
+      "target": "Test Chat API 2",
+      "sourceHandle": "output",
+      "targetHandle": "chat_api"
     }
   ]
 }

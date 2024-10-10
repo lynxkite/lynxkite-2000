@@ -121,11 +121,14 @@ def mask(*, name='', regex='', exceptions='', mask_pattern=''):
 
 @ops.input_position(chat_api="bottom")
 @op("Test Chat API")
-def test_chat_api(message, chat_api):
+def test_chat_api(message, chat_api, *, show_details=False):
   chat_api = chat_api[0]['chat_api']
   request = ChatAPIRequest(session_id="b43215a0-428f-11ef-9454-0242ac120002", question=message['text'], history=[])
   response = asyncio.run(chat_api.answer(request))
-  return {'response': response.answer}
+  if show_details:
+    return {**response.__dict__}
+  else:
+    return {'answer': response.answer}
 
 @op("Input chat")
 def input_chat(*, chat: str):
