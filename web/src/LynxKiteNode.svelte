@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getContext } from 'svelte';
   import { Handle, useSvelteFlow, useUpdateNodeInternals, type NodeProps, NodeResizeControl } from '@xyflow/svelte';
   import ChevronDownRight from 'virtual:icons/tabler/chevron-down-right';
 
@@ -24,11 +25,14 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
   export let onToggle = () => {};
 
+  $: store = getContext('LynxKite store');
   $: expanded = !data.collapsed;
   function titleClicked() {
-    updateNodeData(id, { collapsed: expanded });
-    data = data;
+    const i = $store.workspace.nodes.findIndex((n) => n.id === id);
+    $store.workspace.nodes[i].data.collapsed = expanded;
     onToggle({ expanded });
+    // Trigger update.
+    data = data;
     updateNodeInternals();
   }
   function asPx(n: number | undefined) {

@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { diff } from 'deep-object-diff';
-  import { writable, derived } from 'svelte/store';
+  import { setContext } from 'svelte';
+  import { writable } from 'svelte/store';
   import {
     SvelteFlow,
     Controls,
     MiniMap,
     MarkerType,
     useSvelteFlow,
+    useUpdateNodeInternals,
     type XYPosition,
     type Node,
     type Edge,
@@ -29,18 +30,23 @@
   import { syncedStore, getYjsDoc } from "@syncedstore/core";
   import { svelteSyncedStore } from "@syncedstore/svelte";
   import { WebsocketProvider } from "y-websocket";
+  const updateNodeInternals = useUpdateNodeInternals();
 
   function getCRDTStore(path) {
     const sstore = syncedStore({ workspace: {} });
     const doc = getYjsDoc(sstore);
     const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path, doc);
-    wsProvider.on('sync', function(isSynced: boolean) {
-      console.log('synced', isSynced, 'ydoc', doc.toJSON());
-    });
     return {store: svelteSyncedStore(sstore), sstore, doc};
   }
   $: connection = getCRDTStore(path);
   $: store = connection.store;
+  $: store.subscribe((value) => {
+    if (!value?.workspace?.edges) return;
+    $nodes = [...value.workspace.nodes];
+    $edges = [...value.workspace.edges];
+    updateNodeInternals();
+  });
+  $: setContext('LynxKite store', store);
 
   export let path = '';
 
@@ -55,30 +61,8 @@
     area: NodeWithArea,
   };
 
-  function substore(store, field) {
-    if (!store) return;
-    const ss = derived(store, (store) => store.workspace[field]?.value);
-    ss.set = (value) => {
-      console.log('set called', field, value);
-      $store.workspace[field] = value;
-    };
-    ss.update = (fn) => {
-      console.log('update called', field);
-      console.log(JSON.stringify($store));
-      console.log(JSON.stringify($store.workspace.nodes));
-      const before = $store.workspace[field];
-      console.log({before});
-      const after = fn(before);
-      console.log({after});
-      $store.workspace[field] = after;
-    };
-    return ss;
-  }
-  $: nodes = substore(store, 'nodes');
-  $: edges = substore(store, 'edges');
-
-  // const nodes = writable<Node[]>([]);
-  // const edges = writable<Edge[]>([]);
+  const nodes = writable<Node[]>([]);
+  const edges = writable<Edge[]>([]);
 
   function closeNodeSearch() {
     nodeSearchSettings = undefined;
@@ -96,35 +80,31 @@
   }
   function addNode(e) {
     const meta = {...e.detail};
-    console.log(store);
-    nodes.update((nodes) => {
-      console.log({v: nodes});
-      const node = {
-        type: meta.type,
-        data: {
-          meta: meta,
-          title: meta.name,
-          params: Object.fromEntries(
-            Object.values(meta.params).map((p) => [p.name, p.default])),
-        },
-      };
-      node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});
-      const title = node.data.title;
-      let i = 1;
+    const node = {
+      type: meta.type,
+      data: {
+        meta: meta,
+        title: meta.name,
+        params: Object.fromEntries(
+          Object.values(meta.params).map((p) => [p.name, p.default])),
+      },
+    };
+    node.position = screenToFlowPosition({x: nodeSearchSettings.pos.x, y: nodeSearchSettings.pos.y});
+    const title = node.data.title;
+    let i = 1;
+    node.id = `${title} ${i}`;
+    const nodes = $store.workspace.nodes;
+    while (nodes.find((x) => x.id === node.id)) {
+      i += 1;
       node.id = `${title} ${i}`;
-      console.log({nodes})
-      while (nodes.find((x) => x.id === node.id)) {
-        i += 1;
-        node.id = `${title} ${i}`;
-      }
-      node.parentId = nodeSearchSettings.parentId;
-      if (node.parentId) {
-        node.extent = 'parent';
-        const parent = nodes.find((x) => x.id === node.parentId);
-        node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
-      }
-      return [...nodes, node];
-    });
+    }
+    node.parentId = nodeSearchSettings.parentId;
+    if (node.parentId) {
+      node.extent = 'parent';
+      const parent = nodes.find((x) => x.id === node.parentId);
+      node.position = { x: node.position.x - parent.position.x, y: node.position.y - parent.position.y };
+    }
+    nodes.push(node);
     closeNodeSearch();
   }
   const catalog = useQuery(['catalog'], async () => {
@@ -152,19 +132,29 @@
       parentId: node.id,
     };
   }
+  function onConnect(params: Connection) {
+    const edge = {
+      id: `${params.source} ${params.target}`,
+      source: params.source,
+      target: params.target,
+    };
+    $store.workspace.edges.push(edge);
+  }
+  function onDelete(params) {
+    const { nodes, edges } = params;
+    for (const node of nodes) {
+      const index = $store.workspace.nodes.findIndex((x) => x.id === node.id);
+      if (index !== -1) $store.workspace.nodes.splice(index, 1);
+    }
+    for (const edge of edges) {
+      const index = $store.workspace.edges.findIndex((x) => x.id === edge.id);
+      if (index !== -1) $store.workspace.edges.splice(index, 1);
+    }
+  }
   $: parentDir = path.split('/').slice(0, -1).join('/');
-  $: console.log($store);
-  // <br>{JSON.stringify($store)}
-  // <br>{JSON.stringify($store?.workspace)}
-  // <br>{JSON.stringify($store?.workspace?.nodes)}
-  // <br>{JSON.stringify($store?.workspace?.nodes?.value)}
-  // <br>{$store.workspace?.nodes?.toArray()}
-  // <br>{$store.workspace?.nodes?.length}
-
 </script>
 
 <div class="page">
-  <br>{JSON.stringify($store)}
   {#if $store.workspace !== undefined}
   <div class="top-bar">
     <div class="ws-name">
@@ -176,7 +166,6 @@
         options={Object.keys($catalog.data || {})}
         value={$store.workspace.env}
         onChange={(env) => {
-          console.log('env change', env);
           $store.workspace.env = env;
         }}
         />
@@ -189,6 +178,8 @@
     <SvelteFlow {nodes} {edges} {nodeTypes} fitView
       on:paneclick={toggleNodeSearch}
       on:nodeclick={nodeClick}
+      onconnect={onConnect}
+      ondelete={onDelete}
       proOptions={{ hideAttribution: true }}
       maxZoom={3}
       minZoom={0.3}

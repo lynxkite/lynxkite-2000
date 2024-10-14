@@ -18,8 +18,8 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         ystore = pycrdt_websocket.ystore.FileYStore(f'crdt_data/{name}.crdt')
         ydoc = pycrdt.Doc()
         ydoc['workspace'] = ws = pycrdt.Map()
-        ws['nodes'] = []
-        ws['edges'] = []
+        ws['nodes'] = pycrdt.Array()
+        ws['edges'] = pycrdt.Array()
         ws['env'] = 'unset'
         # Replay updates from the store.
         try:
