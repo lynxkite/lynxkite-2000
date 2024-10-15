@@ -136,7 +136,9 @@
     const edge = {
       id: `${params.source} ${params.target}`,
       source: params.source,
+      sourceHandle: params.sourceHandle,
       target: params.target,
+      targetHandle: params.targetHandle,
     };
     $store.workspace.edges.push(edge);
   }

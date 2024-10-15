@@ -15,10 +15,11 @@
     $store.workspace.nodes[i].data.params[name] = newValue;
     updateNodeInternals();
   }
+  $: params = data?.params ? Object.entries(data.params) : [];
 </script>
 
 <LynxKiteNode {...$$props}>
-  {#each Object.entries(data.params) as [name, value]}
+  {#each params as [name, value]}
     <NodeParameter
       {name}
       {value}
