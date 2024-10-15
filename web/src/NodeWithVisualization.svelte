@@ -5,7 +5,7 @@
   import { init } from 'echarts';
   type $$Props = NodeProps;
   export let data: $$Props['data'];
-  $: display = JSON.parse(JSON.stringify(data?.display?.value));
+  $: display = data?.display?.value ? JSON.parse(JSON.stringify(data.display.value)) : {};
 </script>
 
 <NodeWithParams {...$$props}>

@@ -11,6 +11,10 @@
   export let containerStyle = '';
   export let id: $$Props['id']; id;
   export let data: $$Props['data'];
+  export let deletable: $$Props['deletable'] = undefined; deletable;
+  export let draggable: $$Props['draggable'] = undefined; draggable;
+  export let parentId: $$Props['parentId'] = undefined; parentId;
+  export let selectable: $$Props['selectable'] = undefined; selectable;
   export let dragHandle: $$Props['dragHandle'] = undefined; dragHandle;
   export let type: $$Props['type']  = undefined; type;
   export let selected: $$Props['selected'] = undefined; selected;
