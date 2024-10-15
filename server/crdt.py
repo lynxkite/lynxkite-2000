@@ -32,6 +32,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
             ws['edges'] = pycrdt.Array()
         if 'env' not in ws:
             ws['env'] = 'unset'
+            try_to_load_workspace(ws, name)
         room = pycrdt_websocket.YRoom(ystore=ystore, ydoc=ydoc)
         room.ws = ws
         def on_change(changes):
@@ -59,38 +60,46 @@ def clean_input(ws_pyd):
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
 
-def crdt_update(crdt_obj, python_obj):
+def crdt_update(crdt_obj, python_obj, boxes=set()):
     if isinstance(python_obj, dict):
         for key, value in python_obj.items():
-            if isinstance(value, dict):
+            if key in boxes:
+                crdt_obj[key] = value
+            elif isinstance(value, dict):
                 if crdt_obj.get(key) is None:
                     crdt_obj[key] = pycrdt.Map()
-                crdt_update(crdt_obj[key], value)
+                crdt_update(crdt_obj[key], value, boxes)
             elif isinstance(value, list):
                 if crdt_obj.get(key) is None:
                     crdt_obj[key] = pycrdt.Array()
-                crdt_update(crdt_obj[key], value)
+                crdt_update(crdt_obj[key], value, boxes)
             else:
-                print('set', key, value)
                 crdt_obj[key] = value
     elif isinstance(python_obj, list):
         for i, value in enumerate(python_obj):
             if isinstance(value, dict):
                 if i >= len(crdt_obj):
                     crdt_obj.append(pycrdt.Map())
-                crdt_update(crdt_obj[i], value)
+                crdt_update(crdt_obj[i], value, boxes)
             elif isinstance(value, list):
                 if i >= len(crdt_obj):
                     crdt_obj.append(pycrdt.Array())
-                crdt_update(crdt_obj[i], value)
+                crdt_update(crdt_obj[i], value, boxes)
             else:
                 if i >= len(crdt_obj):
                     crdt_obj.append(value)
                 else:
-                    print('set', i, value)
                     crdt_obj[i] = value
     else:
         raise ValueError('Invalid type:', python_obj)
+
+
+def try_to_load_workspace(ws, name):
+    from . import workspace
+    json_path = f'data/{name}'
+    if os.path.exists(json_path):
+        ws_pyd = workspace.load(json_path)
+        crdt_update(ws, ws_pyd.model_dump(), boxes={'display'})
 
 async def workspace_changed(e, ws_crdt):
     global last_ws_input
@@ -99,14 +108,14 @@ async def workspace_changed(e, ws_crdt):
     clean_input(ws_pyd)
     if ws_pyd == last_ws_input:
         return
-    print('ws changed')
     last_ws_input = ws_pyd.model_copy(deep=True)
-    workspace.execute(ws_pyd)
+    await workspace.execute(ws_pyd)
     for nc, np in zip(ws_crdt['nodes'], ws_pyd.nodes):
         if 'data' not in nc:
             nc['data'] = pycrdt.Map()
         # Display is added as an opaque Box.
         nc['data']['display'] = np.data.display
+        nc['data']['error'] = np.data.error
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
