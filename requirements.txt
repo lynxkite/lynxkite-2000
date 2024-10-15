@@ -2,6 +2,7 @@ fastapi
 matplotlib
 networkx
 numpy
+orjson
 pandas
 scipy
 uvicorn[standard]
