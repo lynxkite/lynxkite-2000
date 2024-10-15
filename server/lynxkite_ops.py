@@ -83,7 +83,7 @@ def disambiguate_edges(ws):
 
 
 @ops.register_executor('LynxKite')
-def execute(ws):
+async def execute(ws):
     catalog = ops.CATALOGS['LynxKite']
     # Nodes are responsible for interpreting/executing their child nodes.
     nodes = [n for n in ws.nodes if not n.parentId]
