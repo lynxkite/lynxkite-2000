@@ -105,11 +105,6 @@ def execute(ws):
                 data = node.data
                 op = catalog[data.title]
                 params = {**data.params}
-                if op.sub_nodes:
-                    sub_nodes = children.get(node.id, [])
-                    sub_node_ids = [node.id for node in sub_nodes]
-                    sub_edges = [edge for edge in ws.edges if edge.source in sub_node_ids]
-                    params['sub_flow'] = {'nodes': sub_nodes, 'edges': sub_edges}
                 # Convert inputs.
                 for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
                   if p.type == nx.Graph and isinstance(x, Bundle):
