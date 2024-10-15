@@ -74,7 +74,12 @@ def make_cache_key(obj):
 
 EXECUTOR_OUTPUT_CACHE = {}
 
-def execute(ws, catalog, cache=None):
+async def await_if_needed(obj):
+  if inspect.isawaitable(obj):
+    return await obj
+  return obj
+
+async def execute(ws, catalog, cache=None):
   nodes = {n.id: n for n in ws.nodes}
   contexts = {n.id: Context(node=n) for n in ws.nodes}
   edges = {n.id: [] for n in ws.nodes}
@@ -113,10 +118,10 @@ def execute(ws, catalog, cache=None):
           if cache is not None:
             key = make_cache_key((inputs, params))
             if key not in cache:
-              cache[key] = op(*inputs, **params)
+              cache[key] = await await_if_needed(op(*inputs, **params))
             result = cache[key]
           else:
-            result = op(*inputs, **params)
+            result = await await_if_needed(op(*inputs, **params))
         except Exception as e:
           traceback.print_exc()
           data.error = str(e)
