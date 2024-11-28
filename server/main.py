@@ -3,6 +3,7 @@ import fastapi
 import importlib
 import pathlib
 import pkgutil
+from . import crdt
 from . import ops
 from . import workspace
 
@@ -14,8 +15,8 @@ for _, name, _ in pkgutil.iter_modules([str(here)]):
         name = f"server.{name}"
         lynxkite_modules[name] = importlib.import_module(name)
 
-app = fastapi.FastAPI()
-
+app = fastapi.FastAPI(lifespan=crdt.lifespan)
+app.include_router(crdt.router)
 
 
 @app.get("/api/catalog")
@@ -38,9 +39,9 @@ def save(req: SaveRequest):
 
 
 @app.post("/api/save")
-def save_and_execute(req: SaveRequest):
+async def save_and_execute(req: SaveRequest):
     save(req)
-    workspace.execute(req.ws)
+    await workspace.execute(req.ws)
     save(req)
     return req.ws
 

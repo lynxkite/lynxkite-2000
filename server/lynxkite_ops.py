@@ -83,7 +83,7 @@ def disambiguate_edges(ws):
 
 
 @ops.register_executor('LynxKite')
-def execute(ws):
+async def execute(ws):
     catalog = ops.CATALOGS['LynxKite']
     # Nodes are responsible for interpreting/executing their child nodes.
     nodes = [n for n in ws.nodes if not n.parentId]
@@ -105,11 +105,6 @@ def execute(ws):
                 data = node.data
                 op = catalog[data.title]
                 params = {**data.params}
-                if op.sub_nodes:
-                    sub_nodes = children.get(node.id, [])
-                    sub_node_ids = [node.id for node in sub_nodes]
-                    sub_edges = [edge for edge in ws.edges if edge.source in sub_node_ids]
-                    params['sub_flow'] = {'nodes': sub_nodes, 'edges': sub_edges}
                 # Convert inputs.
                 for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
                   if p.type == nx.Graph and isinstance(x, Bundle):
