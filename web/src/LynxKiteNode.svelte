@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getContext } from 'svelte';
   import { Handle, useSvelteFlow, useUpdateNodeInternals, type NodeProps, NodeResizeControl } from '@xyflow/svelte';
   import ChevronDownRight from 'virtual:icons/tabler/chevron-down-right';
 
@@ -10,6 +11,10 @@
   export let containerStyle = '';
   export let id: $$Props['id']; id;
   export let data: $$Props['data'];
+  export let deletable: $$Props['deletable'] = undefined; deletable;
+  export let draggable: $$Props['draggable'] = undefined; draggable;
+  export let parentId: $$Props['parentId'] = undefined; parentId;
+  export let selectable: $$Props['selectable'] = undefined; selectable;
   export let dragHandle: $$Props['dragHandle'] = undefined; dragHandle;
   export let type: $$Props['type']  = undefined; type;
   export let selected: $$Props['selected'] = undefined; selected;
@@ -24,11 +29,14 @@
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = undefined; positionAbsoluteY;
   export let onToggle = () => {};
 
+  $: store = getContext('LynxKite store');
   $: expanded = !data.collapsed;
   function titleClicked() {
-    updateNodeData(id, { collapsed: expanded });
-    data = data;
+    const i = $store.workspace.nodes.findIndex((n) => n.id === id);
+    $store.workspace.nodes[i].data.collapsed = expanded;
     onToggle({ expanded });
+    // Trigger update.
+    data = data;
     updateNodeInternals();
   }
   function asPx(n: number | undefined) {

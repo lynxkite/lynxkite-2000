@@ -43,9 +43,9 @@ class Workspace(BaseConfig):
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
 
 
-def execute(ws: Workspace):
+async def execute(ws: Workspace):
     if ws.env in ops.EXECUTORS:
-        ops.EXECUTORS[ws.env](ws)
+        await ops.EXECUTORS[ws.env](ws)
 
 
 def save(ws: Workspace, path: str):
