@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -23,14 +11,15 @@ body {
 .top-bar {
   display: flex;
   justify-content: space-between;
-  background: oklch(30% 0.13 230);
-  color: white;
+  align-items: center;
 }
 .ws-name {
   font-size: 1.5em;
+  flex: 1;
+  color: white;
 }
-.ws-name img {
-  height: 1.5em;
+.top-bar .logo img {
+  height: 2em;
   vertical-align: middle;
   margin: 4px;
 }
@@ -45,7 +34,87 @@ body {
   align-items: center;
 }
 .tools a {
-  color: oklch(75% 0.13 230);
   font-size: 1.5em;
   padding: 0 10px;
+}
+.error {
+  background: #ffdddd;
+  padding: 8px;
+  font-size: 12px;
+}
+.title-icon {
+  margin-left: 5px;
+  float: right;
+}
+.node-container {
+  padding: 8px;
+  position: relative;
+}
+.lynxkite-node {
+  box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  background: white;
+}
+.expanded .lynxkite-node {
+  overflow-y: auto;
+  height: 100%;
+}
+.lynxkite-node .title {
+  /* background: oklch(75% 0.2 55); */
+  font-weight: bold;
+  padding: 8px;
+}
+.handle-name {
+  font-size: 10px;
+  color: black;
+  letter-spacing: 0.05em;
+  text-align: right;
+  white-space: nowrap;
+  position: absolute;
+  top: -5px;
+  backdrop-filter: blur(10px);
+  padding: 2px 8px;
+  border-radius: 4px;
+  visibility: hidden;
+}
+.left .handle-name {
+  right: 20px;
+}
+.right .handle-name {
+  left: 20px;
+}
+.top .handle-name,
+.bottom .handle-name {
+  top: -5px;
+  left: 5px;
+  backdrop-filter: none;
+}
+.node-container:hover .handle-name {
+  visibility: visible;
+}
+.node-resizer {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  cursor: nwse-resize;
+}
+.lynxkite-node {
+.param {
+  padding: 4px 8px 4px 8px;
+  display: block;
+}
+.param-name {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  margin-left: 10px;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 4px 4px 0 0;
+  ;
+}
+.collapsed-param {
+  min-height: 20px;
+  line-height: 10px;
+}
 }
