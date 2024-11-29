@@ -1,37 +1,40 @@
 {
-  "name": "vite-svelte-flow-template",
+  "name": "lynxkite",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "3.1.2",
-    "@syncedstore/core": "0.6.0",
-    "@syncedstore/svelte": "0.6.0",
-    "@tsconfig/svelte": "5.0.4",
-    "sass": "1.79.5",
-    "svelte": "4.2.19",
-    "svelte-check": "4.0.5",
-    "svelte-markdown": "^0.4.1",
-    "tslib": "2.7.0",
-    "typescript": "5.6.3",
-    "unplugin-icons": "0.19.3",
-    "vite": "5.4.9",
-    "y-websocket": "2.0.4"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@iconify-json/tabler": "1.2.5",
-    "@popperjs/core": "2.11.8",
-    "@sveltestack/svelte-query": "1.6.0",
-    "@xyflow/svelte": "0.1.21",
-    "bootstrap": "5.3.3",
-    "echarts": "5.5.1",
-    "fuse.js": "7.0.0",
-    "svelte-echarts": "^1.0.0-rc3"
+    "@iconify-json/tabler": "^1.2.8",
+    "@syncedstore/core": "^0.6.0",
+    "@syncedstore/react": "^0.6.0",
+    "@xyflow/react": "^12.3.5",
+    "echarts": "^5.5.1",
+    "fuse.js": "^7.0.0",
+    "next": "15.0.3",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "swr": "^2.2.5",
+    "unplugin-icons": "^0.20.1",
+    "y-websocket": "2.0.4",
+    "yjs": "^13.6.20"
+  },
+  "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.14",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5"
   }
 }
