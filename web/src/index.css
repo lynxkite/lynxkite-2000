@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: #002a4c;
+}
+
+img, svg {
+  display: inline-block;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
@@ -9,6 +26,7 @@ body {
 }
 
 .workspace {
+  background: white;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -17,6 +35,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #002a4c;
 
     .ws-name {
       font-size: 1.5em;
@@ -35,6 +54,7 @@ body {
       align-items: center;
 
       a {
+        color: oklch(75% 0.13 230);
         font-size: 1.5em;
         padding: 0 10px;
       }
@@ -227,11 +247,6 @@ body {
 
   .entry-list .entry:last-child {
     border-bottom: none;
-  }
-
-  .directory-page {
-    background: #002a4c;
-    height: 100vh;
   }
 
   a {

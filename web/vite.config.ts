@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import react from '@vitejs/plugin-react-swc'
 import Icons from 'unplugin-icons/vite'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    svelte(),
-    Icons({ compiler: 'svelte', defaultStyle: 'vertical-align: sub;' }),
+    react(),
+    Icons({ compiler: 'jsx', jsx: 'react' }),
   ],
   server: {
     proxy: {
