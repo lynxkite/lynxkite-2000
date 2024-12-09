@@ -6,10 +6,8 @@ import favicon from '../assets/favicon.ico';
 import {
   ReactFlow,
   Controls,
-  MiniMap,
   MarkerType,
   useReactFlow,
-  useUpdateNodeInternals,
   ReactFlowProvider,
   applyEdgeChanges,
   applyNodeChanges,
@@ -50,26 +48,34 @@ export default function (props: any) {
 
 
 function LynxKiteFlow() {
-  const updateNodeInternals = useUpdateNodeInternals();
-  const { screenToFlowPosition } = useReactFlow();
+  const reactFlow = useReactFlow();
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
 
-  const sstore = syncedStore({ workspace: {} });
+  const sstore = syncedStore({ workspace: {} as Workspace });
   const doc = getYjsDoc(sstore);
   const wsProvider = useMemo(() => new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc), [path]);
   wsProvider; // Just to disable the lint warning. The life cycle of this object is a mystery.
-  const state: { workspace: Workspace } = useSyncedStore(sstore);
+  const state = useSyncedStore(sstore);
   const onNodesChange = useCallback(
     (changes: any[]) => {
       setNodes((nds) => applyNodeChanges(changes, nds));
+      const wnodes = state.workspace!.nodes!;
       for (const ch of changes) {
+        const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
+        if (nodeIndex === -1) continue;
+        const node = wnodes[nodeIndex];
+        if (!node) continue;
         if (ch.type === 'position') {
-          const node = state.workspace?.nodes?.find((n) => n.id === ch.id);
-          if (node) {
-            node.position = ch.position;
-          }
+          node.position = ch.position;
+        } else if (ch.type === 'select') {
+        } else if (ch.type === 'dimensions') {
+        } else if (ch.type === 'replace') {
+          node.data.collapsed = ch.item.data.collapsed;
+          node.data.params = { ...ch.item.data.params };
+        } else {
+          console.log('Unknown node change', ch);
         }
       }
     },
@@ -79,6 +85,7 @@ function LynxKiteFlow() {
     (changes: any[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
   );
+
   if (state?.workspace?.nodes && JSON.stringify(nodes) !== JSON.stringify([...state.workspace.nodes as Node[]])) {
     const updated = Object.fromEntries(state.workspace.nodes.map((n) => [n.id, n]));
     const oldNodes = Object.fromEntries(nodes.map((n) => [n.id, n]));
@@ -127,7 +134,7 @@ function LynxKiteFlow() {
         </div>
       </div>
       <div style={{ height: "100%", width: '100vw' }}>
-        <LynxKiteState.Provider value={state.workspace}>
+        <LynxKiteState.Provider value={state}>
           <ReactFlow
             nodes={nodes}
             edges={edges}

@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import { LynxKiteState } from '../LynxKiteState';
-import { Handle, NodeResizeControl } from '@xyflow/react';
+import { useReactFlow, Handle, NodeResizeControl, Position } from '@xyflow/react';
 // @ts-ignore
 import ChevronDownRight from '~icons/tabler/chevron-down-right.jsx';
 
 interface LynxKiteNodeProps {
+  id: string;
   width: number;
   height: number;
   nodeStyle: any;
@@ -12,13 +13,14 @@ interface LynxKiteNodeProps {
   children: any;
 }
 
-function getHandles(inputs, outputs) {
+function getHandles(inputs: object, outputs: object) {
   const handles: {
     position: 'top' | 'bottom' | 'left' | 'right',
     name: string,
     index: number,
     offsetPercentage: number,
     showLabel: boolean,
+    type: 'source' | 'target',
   }[] = [];
   for (const e of Object.values(inputs)) {
     handles.push({ ...e, type: 'target' });
@@ -41,15 +43,17 @@ function getHandles(inputs, outputs) {
 }
 
 export default function LynxKiteNode(props: LynxKiteNodeProps) {
+  const reactFlow = useReactFlow();
   const data = props.data;
   const state = useContext(LynxKiteState);
-  const expanded = true;
+  const expanded = !data.collapsed;
   const handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
   function asPx(n: number | undefined) {
     return (n ? n + 'px' : undefined) || '200px';
   }
-  function titleClicked() { }
-  function updateNodeData() { }
+  function titleClicked() {
+    reactFlow.updateNodeData(props.id, { collapsed: expanded });
+  }
   const handleOffsetDirection = { top: 'left', bottom: 'left', left: 'top', right: 'top' };
 
   return (
@@ -69,7 +73,7 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
           {handles.map(handle => (
             <Handle
               key={handle.name}
-              id={handle.name} type={handle.type} position={handle.position}
+              id={handle.name} type={handle.type} position={Position[handle.position as keyof typeof Position]}
               style={{ [handleOffsetDirection[handle.position]]: handle.offsetPercentage + '%' }}>
               {handle.showLabel && <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>}
             </Handle>
@@ -78,8 +82,8 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
             minWidth={100}
             minHeight={50}
             style={{ 'background': 'transparent', 'border': 'none' }}
-            onResizeStart={() => updateNodeData(id, { beingResized: true })}
-            onResizeEnd={() => updateNodeData(id, { beingResized: false })}
+            onResizeStart={() => reactFlow.updateNodeData(props.id, { beingResized: true })}
+            onResizeEnd={() => reactFlow.updateNodeData(props.id, { beingResized: false })}
           >
             <ChevronDownRight className="node-resizer" />
           </NodeResizeControl>
