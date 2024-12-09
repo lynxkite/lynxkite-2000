@@ -1,7 +1,8 @@
-'use client';
+// The LynxKite workspace editor.
+import { useParams } from "react-router";
 import useSWR from 'swr';
 import { useMemo } from "react";
-import { useSearchParams } from 'next/navigation';
+import favicon from '../assets/favicon.ico';
 import {
   ReactFlow,
   useNodesState,
@@ -36,15 +37,15 @@ import EnvironmentSelector from './EnvironmentSelector';
 import { LynxKiteState } from './LynxKiteState';
 import '@xyflow/react/dist/style.css';
 
-export default function Workspace() {
+export default function () {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const searchParams = useSearchParams();
+  const { path } = useParams();
 
-  let path = searchParams.get('path');
   const sstore = syncedStore({ workspace: {} });
   const doc = getYjsDoc(sstore);
-  const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path, doc);
+  const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc);
+  wsProvider; // Just to disable the lint warning. The life cycle of this object is a mystery.
   const state = useSyncedStore(sstore);
 
   const fetcher = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
@@ -54,10 +55,11 @@ export default function Workspace() {
     basic: NodeWithParams,
     table_view: NodeWithParams,
   }), []);
+  const parentDir = path!.split('/').slice(0, -1).join('/');
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
-        <a className="logo" href=""><img src="/favicon.ico" /></a>
+        <a className="logo" href=""><img src={favicon} /></a>
         <div className="ws-name">
           {path}
         </div>
@@ -69,7 +71,7 @@ export default function Workspace() {
         <div className="tools text-secondary">
           <a href=""><Atom /></a>
           <a href=""><Backspace /></a>
-          <a href="#dir?path={parentDir}"><ArrowBack /></a>
+          <a href={'/dir/' + parentDir}><ArrowBack /></a>
         </div>
       </div>
       <div style={{ height: "100%", width: '100vw' }}>
