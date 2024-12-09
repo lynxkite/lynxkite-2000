@@ -1,16 +1,15 @@
 // The LynxKite workspace editor.
 import { useParams } from "react-router";
 import useSWR from 'swr';
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import favicon from '../assets/favicon.ico';
 import {
   ReactFlow,
-  useNodesState,
-  useEdgesState,
   Controls,
   MiniMap,
   MarkerType,
   useReactFlow,
+  ReactFlowProvider,
   type XYPosition,
   type Node,
   type Edge,
@@ -23,8 +22,8 @@ import ArrowBack from '~icons/tabler/arrow-back.jsx';
 import Backspace from '~icons/tabler/backspace.jsx';
 // @ts-ignore
 import Atom from '~icons/tabler/atom.jsx';
-import { syncedStore, getYjsDoc } from "@syncedstore/core";
-import { useSyncedStore } from "@syncedstore/react";
+// import { syncedStore, getYjsDoc } from "@syncedstore/core";
+// import { useSyncedStore } from "@syncedstore/react";
 import { WebsocketProvider } from "y-websocket";
 import NodeWithParams from './nodes/NodeWithParams';
 // import NodeWithVisualization from './NodeWithVisualization';
@@ -36,17 +35,33 @@ import NodeWithParams from './nodes/NodeWithParams';
 import EnvironmentSelector from './EnvironmentSelector';
 import { LynxKiteState } from './LynxKiteState';
 import '@xyflow/react/dist/style.css';
+import { Workspace } from "../apiTypes.ts";
 
-export default function () {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+import { useShallow } from 'zustand/react/shallow';
+import { useStore, selector, doc } from './store';
+
+export default function (props: any) {
+  return (
+    <ReactFlowProvider>
+      <LynxKiteFlow {...props} />
+    </ReactFlowProvider>
+  );
+}
+
+
+function LynxKiteFlow() {
+  const { screenToFlowPosition } = useReactFlow();
+  const store = useStore(
+    useShallow(selector),
+  );
   const { path } = useParams();
 
-  const sstore = syncedStore({ workspace: {} });
-  const doc = getYjsDoc(sstore);
+  // const sstore = syncedStore({ workspace: {} });
+  // const doc = getYjsDoc(sstore);
   const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc);
   wsProvider; // Just to disable the lint warning. The life cycle of this object is a mystery.
-  const state = useSyncedStore(sstore);
+  // const state: { workspace: Workspace } = useSyncedStore(sstore);
 
   const fetcher = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
   const catalog = useSWR('/api/catalog', fetcher);
@@ -65,8 +80,8 @@ export default function () {
         </div>
         <EnvironmentSelector
           options={Object.keys(catalog.data || {})}
-          value={state.workspace?.env}
-          onChange={(env) => state.workspace.env = env}
+          value={store.env}
+          onChange={(env) => store.setEnv(env)}
         />
         <div className="tools text-secondary">
           <a href=""><Atom /></a>
@@ -75,8 +90,13 @@ export default function () {
         </div>
       </div>
       <div style={{ height: "100%", width: '100vw' }}>
-        <LynxKiteState.Provider value={state}>
-          <ReactFlow nodes={state.workspace?.nodes} edges={state.workspace?.edges} nodeTypes={nodeTypes} fitView
+        <LynxKiteState.Provider value={store}>
+          <ReactFlow
+            nodes={store.nodes as Node[]}
+            edges={store.edges}
+            nodeTypes={nodeTypes} fitView
+            onNodesChange={store.onNodesChange}
+            onEdgesChange={store.onEdgesChange}
             proOptions={{ hideAttribution: true }}
             maxZoom={3}
             minZoom={0.3}
