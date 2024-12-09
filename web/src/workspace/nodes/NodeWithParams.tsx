@@ -1,18 +1,17 @@
 import { useContext } from 'react';
 import { LynxKiteState } from '../LynxKiteState';
 import LynxKiteNode from './LynxKiteNode';
-import { useNodesState } from '@xyflow/react';
+import { useReactFlow } from '@xyflow/react';
 import NodeParameter from './NodeParameter';
 
-function NodeWithParams(props) {
+function NodeWithParams(props: any) {
+  const reactFlow = useReactFlow();
   const metaParams = props.data.meta?.params;
   const state = useContext(LynxKiteState);
-  function setParam(name, newValue) {
-    const i = state.workspace.nodes.findIndex((n) => n.id === props.id);
-    state.workspace.nodes[i].data.params[name] = newValue;
+  function setParam(name: string, newValue: any) {
+    reactFlow.updateNodeData(props.id, { params: { ...props.data.params, [name]: newValue } });
   }
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const params = nodes && props.data?.params ? Object.entries(props.data.params) : [];
+  const params = props.data?.params ? Object.entries(props.data.params) : [];
 
   return (
     <LynxKiteNode {...props}>
@@ -22,7 +21,7 @@ function NodeWithParams(props) {
           key={name}
           value={value}
           meta={metaParams?.[name]}
-          onChange={(value) => setParam(name, value)}
+          onChange={(value: any) => setParam(name, value)}
         />
       )}
     </LynxKiteNode >
