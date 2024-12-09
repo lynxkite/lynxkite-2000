@@ -4,6 +4,7 @@ networkx
 numpy
 orjson
 pandas
+pydantic-to-typescript
 scipy
 uvicorn[standard]
 pycrdt

@@ -13,6 +13,8 @@
     "@iconify-json/tabler": "^1.2.10",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
+    "@syncedstore/core": "^0.6.0",
+    "@syncedstore/react": "^0.6.0",
     "@types/node": "^22.10.1",
     "@xyflow/react": "^12.3.5",
     "daisyui": "^4.12.20",
