@@ -35,6 +35,7 @@ import { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import NodeSearch, { OpsOp, Catalog, Catalogs } from "./NodeSearch.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
+import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 
 export default function (props: any) {
   return (
@@ -139,9 +140,9 @@ function LynxKiteFlow() {
   } | undefined);
   const nodeTypes = useMemo(() => ({
     basic: NodeWithParams,
-    table_view: NodeWithParams,
     visualization: NodeWithVisualization,
     image: NodeWithImage,
+    table_view: NodeWithTableView,
   }), []);
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
