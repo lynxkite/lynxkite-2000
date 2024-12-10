@@ -24,7 +24,6 @@ export interface WorkspaceNode {
   type: string;
   data: WorkspaceNodeData;
   position: Position;
-  parentId?: string | null;
   [k: string]: unknown;
 }
 export interface WorkspaceNodeData {
