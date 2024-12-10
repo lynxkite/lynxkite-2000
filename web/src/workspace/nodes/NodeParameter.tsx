@@ -42,7 +42,8 @@ export default function NodeParameter({ name, value, meta, onChange }) {
         <ParamName name={name} />
         <input className="input input-bordered w-full max-w-xs"
           value={value || ""}
-          onChange={(evt) => onChange(evt.currentTarget.value)}
+          onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
+          onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
         />
       </>
       }

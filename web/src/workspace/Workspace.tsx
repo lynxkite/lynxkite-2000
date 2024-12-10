@@ -92,12 +92,20 @@ function LynxKiteFlow() {
       if (!node) continue;
       // Position events sometimes come with NaN values. Ignore them.
       if (ch.type === 'position' && !isNaN(ch.position.x) && !isNaN(ch.position.y)) {
-        Object.assign(node.position, ch.position);
+        getYjsDoc(state).transact(() => {
+          Object.assign(node.position, ch.position);
+        });
       } else if (ch.type === 'select') {
       } else if (ch.type === 'dimensions') {
       } else if (ch.type === 'replace') {
-        node.data.collapsed = ch.item.data.collapsed;
-        node.data.params = { ...ch.item.data.params };
+        // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
+        getYjsDoc(state).transact(() => {
+          Object.assign(node.data, {
+            collapsed: ch.item.data.collapsed,
+            params: { ...ch.item.data.params },
+            __execution_delay: ch.item.data.__execution_delay,
+          });
+        });
       } else {
         console.log('Unknown node change', ch);
       }
