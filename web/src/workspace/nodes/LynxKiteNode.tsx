@@ -73,17 +73,15 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
           {handles.map(handle => (
             <Handle
               key={handle.name}
-              id={handle.name} type={handle.type} position={Position[handle.position as keyof typeof Position]}
+              id={handle.name} type={handle.type} position={handle.position as Position}
               style={{ [handleOffsetDirection[handle.position]]: handle.offsetPercentage + '%' }}>
               {handle.showLabel && <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>}
-            </Handle>
+            </Handle >
           ))}
           <NodeResizeControl
             minWidth={100}
             minHeight={50}
             style={{ 'background': 'transparent', 'border': 'none' }}
-            onResizeStart={() => reactFlow.updateNodeData(props.id, { beingResized: true })}
-            onResizeEnd={() => reactFlow.updateNodeData(props.id, { beingResized: false })}
           >
             <ChevronDownRight className="node-resizer" />
           </NodeResizeControl>
