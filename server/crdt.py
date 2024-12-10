@@ -50,7 +50,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         room.ws = ws
 
         def on_change(changes):
-            asyncio.create_task(workspace_changed(changes, ws))
+            asyncio.create_task(workspace_changed(name, changes, ws))
 
         ws.observe_deep(on_change)
         return room
@@ -69,6 +69,7 @@ last_ws_input = None
 def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
+        node.data.error = None
         node.position.x = 0
         node.position.y = 0
         if node.model_extra:
@@ -121,15 +122,39 @@ def try_to_load_workspace(ws, name):
         crdt_update(ws, ws_pyd.model_dump(), boxes={"display"})
 
 
-async def workspace_changed(e, ws_crdt):
-    global last_ws_input
+last_known_versions = {}
+delayed_executions = {}
+
+
+async def workspace_changed(name, changes, ws_crdt):
     from . import workspace
 
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
     clean_input(ws_pyd)
-    if ws_pyd == last_ws_input:
+    if ws_pyd == last_known_versions.get(name):
         return
-    last_ws_input = ws_pyd.model_copy(deep=True)
+    last_known_versions[name] = ws_pyd.model_copy(deep=True)
+    if name in delayed_executions:
+        delayed_executions[name].cancel()
+    delay = min(
+        change.keys.get("__execution_delay", {}).get("newValue", 0)
+        for change in changes
+    )
+    if delay > 0:
+        task = asyncio.create_task(execute(ws_crdt, ws_pyd, delay))
+        delayed_executions[name] = task
+    else:
+        await execute(ws_crdt, ws_pyd)
+
+
+async def execute(ws_crdt, ws_pyd, delay=0):
+    from . import workspace
+
+    if delay:
+        try:
+            await asyncio.sleep(delay)
+        except asyncio.CancelledError:
+            return
     await workspace.execute(ws_pyd)
     for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
         if "data" not in nc:
@@ -147,7 +172,7 @@ async def lifespan(app):
     )
     async with websocket_server:
         yield
-    print("closing websocket server for some reason")
+    print("closing websocket server")
 
 
 def sanitize_path(path):
