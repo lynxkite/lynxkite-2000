@@ -199,6 +199,19 @@ body {
       overflow-y: auto;
     }
   }
+
+  .react-flow__node-table_view {
+    .df-head {
+      font-weight: bold;
+      padding: 8px;
+      background: #f0f0f0;
+      cursor: pointer;
+    }
+
+    dl {
+      margin: 10px;
+    }
+  }
 }
 
 .directory {
