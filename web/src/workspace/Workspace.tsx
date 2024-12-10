@@ -1,7 +1,7 @@
 // The LynxKite workspace editor.
 import { useParams } from "react-router";
-import useSWR from 'swr';
-import { useEffect, useMemo, useCallback, useState } from "react";
+import useSWR, { Fetcher } from 'swr';
+import { useEffect, useMemo, useCallback, useState, MouseEvent } from "react";
 import favicon from '../assets/favicon.ico';
 import {
   ReactFlow,
@@ -16,6 +16,8 @@ import {
   type Edge,
   type Connection,
   type NodeTypes,
+  useReactFlow,
+  MiniMap,
 } from '@xyflow/react';
 // @ts-ignore
 import ArrowBack from '~icons/tabler/arrow-back.jsx';
@@ -35,7 +37,8 @@ import NodeWithParams from './nodes/NodeWithParams';
 import EnvironmentSelector from './EnvironmentSelector';
 import { LynxKiteState } from './LynxKiteState';
 import '@xyflow/react/dist/style.css';
-import { Workspace } from "../apiTypes.ts";
+import { Workspace, WorkspaceNode } from "../apiTypes.ts";
+import NodeSearch, { OpsOp, Catalog, Catalogs } from "./NodeSearch.tsx";
 
 export default function (props: any) {
   return (
@@ -48,6 +51,7 @@ export default function (props: any) {
 
 function LynxKiteFlow() {
   const updateNodeInternals = useUpdateNodeInternals()
+  const reactFlow = useReactFlow();
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
@@ -57,13 +61,14 @@ function LynxKiteFlow() {
     setState(state);
     const doc = getYjsDoc(state);
     const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc);
-    const onChange = (update: any, origin: any, doc: any, tr: any) => {
+    const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.
         // This is only necessary because ReactFlow keeps secret internal copies of our stuff.
         if (!state.workspace) return;
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
+        console.log('update', JSON.parse(JSON.stringify(state.workspace)));
         setNodes([...state.workspace.nodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
         for (const node of state.workspace.nodes) {
@@ -98,6 +103,8 @@ function LynxKiteFlow() {
       } else if (ch.type === 'select') {
       } else if (ch.type === 'dimensions') {
         getYjsDoc(state).transact(() => Object.assign(node, ch.dimensions));
+      } else if (ch.type === 'remove') {
+        wnodes.splice(nodeIndex, 1);
       } else if (ch.type === 'replace') {
         // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
         const u = {
@@ -116,13 +123,79 @@ function LynxKiteFlow() {
     setEdges((eds) => applyEdgeChanges(changes, eds));
   };
 
-  const fetcher = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
+  const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
   const catalog = useSWR('/api/catalog', fetcher);
 
   const nodeTypes = useMemo(() => ({
     basic: NodeWithParams,
     table_view: NodeWithParams,
   }), []);
+  function closeNodeSearch() {
+    setNodeSearchSettings(undefined);
+  }
+  function toggleNodeSearch(event: MouseEvent) {
+    if (nodeSearchSettings) {
+      closeNodeSearch();
+      return;
+    }
+    event.preventDefault();
+    setNodeSearchSettings({
+      pos: { x: event.clientX, y: event.clientY },
+      boxes: catalog.data![state.workspace.env!],
+    });
+  }
+  function addNode(meta: OpsOp) {
+    const node: Partial<WorkspaceNode> = {
+      type: meta.type,
+      data: {
+        meta: meta,
+        title: meta.name,
+        params: Object.fromEntries(
+          Object.values(meta.params).map((p) => [p.name, p.default])),
+      },
+    };
+    const nss = nodeSearchSettings!;
+    node.position = reactFlow.screenToFlowPosition({ x: nss.pos.x, y: nss.pos.y });
+    const title = meta.name;
+    let i = 1;
+    node.id = `${title} ${i}`;
+    const wnodes = state.workspace.nodes!;
+    while (wnodes.find((x) => x.id === node.id)) {
+      i += 1;
+      node.id = `${title} ${i}`;
+    }
+    wnodes.push(node as WorkspaceNode);
+    setNodes([...nodes, node as WorkspaceNode]);
+    closeNodeSearch();
+  }
+  const [nodeSearchSettings, setNodeSearchSettings] = useState(undefined as {
+    pos: XYPosition,
+    boxes: Catalog,
+  } | undefined);
+
+  function nodeClick(e: any) {
+    const node = e.detail.node;
+    const meta = node.data.meta;
+    if (!meta) return;
+    const sub_nodes = meta.sub_nodes;
+    if (!sub_nodes) return;
+    const event = e.detail.event;
+    if (event.target.classList.contains('title')) return;
+    setNodeSearchSettings({
+      pos: { x: event.clientX, y: event.clientY },
+      boxes: sub_nodes,
+    });
+  }
+  function onConnect(params: Connection) {
+    // const edge = {
+    //   id: `${params.source} ${params.target}`,
+    //   source: params.source,
+    //   sourceHandle: params.sourceHandle,
+    //   target: params.target,
+    //   targetHandle: params.targetHandle,
+    // };
+    // state.workspace.edges!.push(edge);
+  }
   const parentDir = path!.split('/').slice(0, -1).join('/');
   return (
     <div className="workspace">
@@ -150,15 +223,19 @@ function LynxKiteFlow() {
             nodeTypes={nodeTypes} fitView
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onPaneClick={toggleNodeSearch}
+            onNodeClick={nodeClick}
+            onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
             maxZoom={3}
             minZoom={0.3}
             defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
           >
             <Controls />
-            {/* {#if nodeSearchSettings}
-          <NodeSearch pos={nodeSearchSettings.pos} boxes={nodeSearchSettings.boxes} on:cancel={closeNodeSearch} on:add={addNode} />
-          {/if} */}
+            <MiniMap />
+            {nodeSearchSettings &&
+              <NodeSearch pos={nodeSearchSettings.pos} boxes={nodeSearchSettings.boxes} onCancel={closeNodeSearch} onAdd={addNode} />
+            }
           </ReactFlow>
         </LynxKiteState.Provider>
       </div>

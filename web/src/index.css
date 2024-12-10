@@ -109,17 +109,22 @@ body {
     visibility: hidden;
   }
 
-  .left .handle-name {
+  .react-flow__handle-left .handle-name {
     right: 20px;
   }
 
-  .right .handle-name {
+  .react-flow__handle-right .handle-name {
     left: 20px;
   }
 
-  .top .handle-name,
-  .bottom .handle-name {
-    top: -5px;
+  .react-flow__handle-top .handle-name {
+    top: -20px;
+    left: 5px;
+    backdrop-filter: none;
+  }
+
+  .react-flow__handle-bottom .handle-name {
+    top: 0px;
     left: 5px;
     backdrop-filter: none;
   }
