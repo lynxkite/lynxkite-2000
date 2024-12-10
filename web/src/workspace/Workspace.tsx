@@ -15,7 +15,6 @@ import {
   type Node,
   type Edge,
   type Connection,
-  type NodeTypes,
   useReactFlow,
   MiniMap,
 } from '@xyflow/react';
@@ -28,17 +27,14 @@ import Atom from '~icons/tabler/atom.jsx';
 import { syncedStore, getYjsDoc } from "@syncedstore/core";
 import { WebsocketProvider } from "y-websocket";
 import NodeWithParams from './nodes/NodeWithParams';
-// import NodeWithVisualization from './NodeWithVisualization';
-// import NodeWithImage from './NodeWithImage';
 // import NodeWithTableView from './NodeWithTableView';
-// import NodeWithSubFlow from './NodeWithSubFlow';
-// import NodeWithArea from './NodeWithArea';
-// import NodeSearch from './NodeSearch';
 import EnvironmentSelector from './EnvironmentSelector';
 import { LynxKiteState } from './LynxKiteState';
 import '@xyflow/react/dist/style.css';
 import { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import NodeSearch, { OpsOp, Catalog, Catalogs } from "./NodeSearch.tsx";
+import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+import NodeWithImage from "./nodes/NodeWithImage.tsx";
 
 export default function (props: any) {
   return (
@@ -144,6 +140,8 @@ function LynxKiteFlow() {
   const nodeTypes = useMemo(() => ({
     basic: NodeWithParams,
     table_view: NodeWithParams,
+    visualization: NodeWithVisualization,
+    image: NodeWithImage,
   }), []);
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
@@ -160,7 +158,7 @@ function LynxKiteFlow() {
       pos: { x: event.clientX, y: event.clientY },
       boxes: catalog.data![state.workspace.env!],
     });
-  }, [setNodeSearchSettings, suppressSearchUntil]);
+  }, [catalog, state, setNodeSearchSettings, suppressSearchUntil]);
   const addNode = useCallback((meta: OpsOp) => {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
@@ -184,7 +182,7 @@ function LynxKiteFlow() {
     wnodes.push(node as WorkspaceNode);
     setNodes([...nodes, node as WorkspaceNode]);
     closeNodeSearch();
-  }, [state, reactFlow, setNodes]);
+  }, [nodeSearchSettings, state, reactFlow, setNodes]);
 
   const onConnect = useCallback((connection: Connection) => {
     setSuppressSearchUntil(Date.now() + 200);

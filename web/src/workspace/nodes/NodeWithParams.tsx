@@ -23,6 +23,7 @@ function NodeWithParams(props: any) {
           onChange={(value: any, opts?: UpdateOptions) => setParam(name, value, opts || {})}
         />
       )}
+      {props.children}
     </LynxKiteNode >
   );
 }
