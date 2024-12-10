@@ -97,15 +97,16 @@ function LynxKiteFlow() {
         });
       } else if (ch.type === 'select') {
       } else if (ch.type === 'dimensions') {
+        getYjsDoc(state).transact(() => Object.assign(node, ch.dimensions));
       } else if (ch.type === 'replace') {
         // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
-        getYjsDoc(state).transact(() => {
-          Object.assign(node.data, {
-            collapsed: ch.item.data.collapsed,
-            params: { ...ch.item.data.params },
-            __execution_delay: ch.item.data.__execution_delay,
-          });
-        });
+        const u = {
+          collapsed: ch.item.data.collapsed,
+          // The "..." expansion on a Y.map returns an empty object. Copying with fromEntries/entries instead.
+          params: { ...Object.fromEntries(Object.entries(ch.item.data.params)) },
+          __execution_delay: ch.item.data.__execution_delay,
+        };
+        getYjsDoc(state).transact(() => Object.assign(node.data, u));
       } else {
         console.log('Unknown node change', ch);
       }
