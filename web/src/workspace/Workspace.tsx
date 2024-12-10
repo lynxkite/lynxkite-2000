@@ -84,7 +84,7 @@ function LynxKiteFlow() {
     }
   }, [path]);
 
-  const onNodesChange = (changes: any[]) => {
+  const onNodesChange = useCallback((changes: any[]) => {
     // An update from the UI. Apply it to the local state...
     setNodes((nds) => applyNodeChanges(changes, nds));
     // ...and to the CRDT state. (Which could be the same, except for ReactFlow's internal copies.)
@@ -118,22 +118,39 @@ function LynxKiteFlow() {
         console.log('Unknown node change', ch);
       }
     }
-  };
-  const onEdgesChange = (changes: any[]) => {
+  }, [state]);
+  const onEdgesChange = useCallback((changes: any[]) => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
-  };
+    const wedges = state.workspace?.edges;
+    if (!wedges) return;
+    for (const ch of changes) {
+      console.log('edge change', ch);
+      const edgeIndex = wedges.findIndex((e) => e.id === ch.id);
+      if (ch.type === 'remove') {
+        wedges.splice(edgeIndex, 1);
+      } else {
+        console.log('Unknown edge change', ch);
+      }
+    }
+  }, [state]);
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
   const catalog = useSWR('/api/catalog', fetcher);
-
+  const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
+  const [nodeSearchSettings, setNodeSearchSettings] = useState(undefined as {
+    pos: XYPosition,
+    boxes: Catalog,
+  } | undefined);
   const nodeTypes = useMemo(() => ({
     basic: NodeWithParams,
     table_view: NodeWithParams,
   }), []);
-  function closeNodeSearch() {
+  const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
-  }
-  function toggleNodeSearch(event: MouseEvent) {
+    setSuppressSearchUntil(Date.now() + 200);
+  }, [setNodeSearchSettings, setSuppressSearchUntil]);
+  const toggleNodeSearch = useCallback((event: MouseEvent) => {
+    if (suppressSearchUntil > Date.now()) return;
     if (nodeSearchSettings) {
       closeNodeSearch();
       return;
@@ -143,8 +160,8 @@ function LynxKiteFlow() {
       pos: { x: event.clientX, y: event.clientY },
       boxes: catalog.data![state.workspace.env!],
     });
-  }
-  function addNode(meta: OpsOp) {
+  }, [setNodeSearchSettings, suppressSearchUntil]);
+  const addNode = useCallback((meta: OpsOp) => {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
       data: {
@@ -167,35 +184,21 @@ function LynxKiteFlow() {
     wnodes.push(node as WorkspaceNode);
     setNodes([...nodes, node as WorkspaceNode]);
     closeNodeSearch();
-  }
-  const [nodeSearchSettings, setNodeSearchSettings] = useState(undefined as {
-    pos: XYPosition,
-    boxes: Catalog,
-  } | undefined);
+  }, [state, reactFlow, setNodes]);
 
-  function nodeClick(e: any) {
-    const node = e.detail.node;
-    const meta = node.data.meta;
-    if (!meta) return;
-    const sub_nodes = meta.sub_nodes;
-    if (!sub_nodes) return;
-    const event = e.detail.event;
-    if (event.target.classList.contains('title')) return;
-    setNodeSearchSettings({
-      pos: { x: event.clientX, y: event.clientY },
-      boxes: sub_nodes,
-    });
-  }
-  function onConnect(params: Connection) {
-    // const edge = {
-    //   id: `${params.source} ${params.target}`,
-    //   source: params.source,
-    //   sourceHandle: params.sourceHandle,
-    //   target: params.target,
-    //   targetHandle: params.targetHandle,
-    // };
-    // state.workspace.edges!.push(edge);
-  }
+  const onConnect = useCallback((connection: Connection) => {
+    setSuppressSearchUntil(Date.now() + 200);
+    const edge = {
+      id: `${connection.source} ${connection.target}`,
+      source: connection.source,
+      sourceHandle: connection.sourceHandle!,
+      target: connection.target,
+      targetHandle: connection.targetHandle!,
+    };
+    console.log(JSON.stringify(edge));
+    state.workspace.edges!.push(edge);
+    setEdges((oldEdges) => [...oldEdges, edge]);
+  }, [state, setEdges]);
   const parentDir = path!.split('/').slice(0, -1).join('/');
   return (
     <div className="workspace">
@@ -224,7 +227,6 @@ function LynxKiteFlow() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onPaneClick={toggleNodeSearch}
-            onNodeClick={nodeClick}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
             maxZoom={3}

@@ -141,7 +141,7 @@ async def workspace_changed(name, changes, ws_crdt):
     if name in delayed_executions:
         delayed_executions[name].cancel()
     delay = min(
-        change.keys.get("__execution_delay", {}).get("newValue", 0)
+        getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
         for change in changes
     )
     if delay:
@@ -160,12 +160,13 @@ async def execute(ws_crdt, ws_pyd, delay=0):
         except asyncio.CancelledError:
             return
     await workspace.execute(ws_pyd)
-    for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
-        if "data" not in nc:
-            nc["data"] = pycrdt.Map()
-        # Display is added as an opaque Box.
-        nc["data"]["display"] = np.data.display
-        nc["data"]["error"] = np.data.error
+    with ws_crdt.doc.transaction():
+        for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
+            if "data" not in nc:
+                nc["data"] = pycrdt.Map()
+            # Display is added as an opaque Box.
+            nc["data"]["display"] = np.data.display
+            nc["data"]["error"] = np.data.error
 
 
 @contextlib.asynccontextmanager
