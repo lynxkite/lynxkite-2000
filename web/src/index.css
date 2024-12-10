@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: #002a4c;
+}
+
+img,
+svg {
+  display: inline-block;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.workspace {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #002a4c;
+
+    .ws-name {
+      font-size: 1.5em;
+      flex: 1;
+      color: white;
+    }
+
+    .logo img {
+      height: 2em;
+      vertical-align: middle;
+      margin: 4px;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+
+      a {
+        color: oklch(75% 0.13 230);
+        font-size: 1.5em;
+        padding: 0 10px;
+      }
+    }
+  }
+
+  .error {
+    background: #ffdddd;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .title-icon {
+    margin-left: 5px;
+    float: right;
+  }
+
+  .node-container {
+    padding: 8px;
+    position: relative;
+  }
+
+  .lynxkite-node {
+    box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    background: white;
+  }
+
+  .expanded .lynxkite-node {
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .lynxkite-node .title {
+    /* background: oklch(75% 0.2 55); */
+    font-weight: bold;
+    padding: 8px;
+  }
+
+  .handle-name {
+    font-size: 10px;
+    color: black;
+    letter-spacing: 0.05em;
+    text-align: right;
+    white-space: nowrap;
+    position: absolute;
+    top: -5px;
+    backdrop-filter: blur(10px);
+    padding: 2px 8px;
+    border-radius: 4px;
+    visibility: hidden;
+  }
+
+  .react-flow__handle-left .handle-name {
+    right: 20px;
+  }
+
+  .react-flow__handle-right .handle-name {
+    left: 20px;
+  }
+
+  .react-flow__handle-top .handle-name {
+    top: -20px;
+    left: 5px;
+    backdrop-filter: none;
+  }
+
+  .react-flow__handle-bottom .handle-name {
+    top: 0px;
+    left: 5px;
+    backdrop-filter: none;
+  }
+
+  .node-container:hover .handle-name {
+    visibility: visible;
+  }
+
+  .node-resizer {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    cursor: nwse-resize;
+  }
+
+  .lynxkite-node {
+    .param {
+      padding: 4px 8px 4px 8px;
+      display: block;
+    }
+
+    .param-name {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      margin-left: 10px;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 4px 4px 0 0;
+      ;
+    }
+
+    .collapsed-param {
+      min-height: 20px;
+      line-height: 10px;
+    }
+  }
+
+  .node-search {
+    position: fixed;
+    width: 300px;
+    z-index: 5;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #888;
+    background-color: white;
+    max-height: -webkit-fill-available;
+    max-height: -moz-available;
+    display: flex;
+    flex-direction: column;
+
+    input {
+      width: calc(100% - 26px);
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #eee;
+      margin: 4px;
+    }
+
+    .search-result {
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .search-result.selected {
+      background-color: oklch(75% 0.2 55);
+      border-radius: 4px;
+    }
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
+
+  .react-flow__node-table_view {
+    .df-head {
+      font-weight: bold;
+      padding: 8px;
+      background: #f0f0f0;
+      cursor: pointer;
+    }
+
+    dl {
+      margin: 10px;
+    }
+  }
+}
+
+.directory {
+  .entry-list {
+    width: 100%;
+    margin: 10px auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px;
+    padding: 0 0 10px 0;
+  }
+
+  @media (min-width: 768px) {
+    .entry-list {
+      width: 768px;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .entry-list {
+      width: 80%;
+    }
+  }
+
+  .logo {
+    margin: 0;
+    padding-top: 50px;
+    text-align: center;
+  }
+
+  .logo-image {
+    max-width: 50%;
+  }
+
+  .tagline {
+    color: #39bcf3;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  @media (min-width: 1400px) {
+    .tagline {
+      font-size: 18px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 5px;
+  }
+
+  .actions a {
+    padding: 2px 10px;
+    border-radius: 5px;
+  }
+
+  .actions a:hover {
+    background: #39bcf3;
+    color: white;
+  }
+
+  .breadcrumbs {
+    padding-left: 10px;
+    font-size: 20px;
+    background: #002a4c20;
+  }
+
+  .breadcrumbs a:hover {
+    color: #39bcf3;
+  }
+
+  .entry-list .entry {
+    display: block;
+    border-bottom: 1px solid whitesmoke;
+    padding-left: 10px;
+    color: #004165;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  .entry-list .open .entry,
+  .entry-list .entry:hover,
+  .entry-list .entry:focus {
+    background: #39bcf3;
+    color: white;
+  }
+
+  .entry-list .entry:last-child {
+    border-bottom: none;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  .loading {
+    color: #39bcf3;
+    margin: 10px;
+  }
+}
+
+
+path.react-flow__edge-path {
+  stroke-width: 2;
+  stroke: black;
+}
+
+.react-flow__edge.selected path.react-flow__edge-path {
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 10px;
+  border-radius: 1px;
+}
+
+.react-flow__handle {
+  border-color: black;
+  background: white;
+  width: 10px;
+  height: 10px;
+}
+
+.react-flow__arrowhead * {
+  stroke: none;
+  fill: black;
+}
+
+.react-flow__node-area {
+  z-index: -10 !important;
+}
+
+.selected .lynxkite-node {
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 7.5px;
+}
