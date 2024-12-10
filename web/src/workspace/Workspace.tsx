@@ -1,16 +1,16 @@
 // The LynxKite workspace editor.
 import { useParams } from "react-router";
 import useSWR from 'swr';
-import { useMemo, useCallback, useState } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import favicon from '../assets/favicon.ico';
 import {
   ReactFlow,
   Controls,
   MarkerType,
-  useReactFlow,
   ReactFlowProvider,
   applyEdgeChanges,
   applyNodeChanges,
+  useUpdateNodeInternals,
   type XYPosition,
   type Node,
   type Edge,
@@ -24,7 +24,6 @@ import Backspace from '~icons/tabler/backspace.jsx';
 // @ts-ignore
 import Atom from '~icons/tabler/atom.jsx';
 import { syncedStore, getYjsDoc } from "@syncedstore/core";
-import { useSyncedStore } from "@syncedstore/react";
 import { WebsocketProvider } from "y-websocket";
 import NodeWithParams from './nodes/NodeWithParams';
 // import NodeWithVisualization from './NodeWithVisualization';
@@ -48,64 +47,65 @@ export default function (props: any) {
 
 
 function LynxKiteFlow() {
-  const reactFlow = useReactFlow();
+  const updateNodeInternals = useUpdateNodeInternals()
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
-
-  const sstore = syncedStore({ workspace: {} as Workspace });
-  const doc = getYjsDoc(sstore);
-  const wsProvider = useMemo(() => new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc), [path]);
-  wsProvider; // Just to disable the lint warning. The life cycle of this object is a mystery.
-  const state = useSyncedStore(sstore);
-  const onNodesChange = useCallback(
-    (changes: any[]) => {
-      setNodes((nds) => applyNodeChanges(changes, nds));
-      const wnodes = state.workspace!.nodes!;
-      for (const ch of changes) {
-        const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
-        if (nodeIndex === -1) continue;
-        const node = wnodes[nodeIndex];
-        if (!node) continue;
-        if (ch.type === 'position') {
-          node.position = ch.position;
-        } else if (ch.type === 'select') {
-        } else if (ch.type === 'dimensions') {
-        } else if (ch.type === 'replace') {
-          node.data.collapsed = ch.item.data.collapsed;
-          node.data.params = { ...ch.item.data.params };
-        } else {
-          console.log('Unknown node change', ch);
+  const [state, setState] = useState({ workspace: {} as Workspace });
+  useEffect(() => {
+    const state = syncedStore({ workspace: {} as Workspace });
+    setState(state);
+    const doc = getYjsDoc(state);
+    const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc);
+    const onChange = (update: any, origin: any, doc: any, tr: any) => {
+      if (origin === wsProvider) {
+        // An update from the CRDT. Apply it to the local state.
+        // This is only necessary because ReactFlow keeps secret internal copies of our stuff.
+        if (!state.workspace) return;
+        if (!state.workspace.nodes) return;
+        if (!state.workspace.edges) return;
+        setNodes([...state.workspace.nodes] as Node[]);
+        setEdges([...state.workspace.edges] as Edge[]);
+        for (const node of state.workspace.nodes) {
+          // Make sure the internal copies are updated.
+          updateNodeInternals(node.id);
         }
       }
-    },
-    [],
-  );
-  const onEdgesChange = useCallback(
-    (changes: any[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
+    };
+    doc.on('update', onChange);
+    return () => {
+      doc.destroy();
+      wsProvider.destroy();
+    }
+  }, [path]);
 
-  if (state?.workspace?.nodes && JSON.stringify(nodes) !== JSON.stringify([...state.workspace.nodes as Node[]])) {
-    const updated = Object.fromEntries(state.workspace.nodes.map((n) => [n.id, n]));
-    const oldNodes = Object.fromEntries(nodes.map((n) => [n.id, n]));
-    const updatedNodes = nodes.filter(n => updated[n.id]).map((n) => ({ ...n, ...updated[n.id] })) as Node[];
-    const newNodes = state.workspace.nodes.filter((n) => !oldNodes[n.id]);
-    const allNodes = [...updatedNodes, ...newNodes];
-    if (JSON.stringify(allNodes) !== JSON.stringify(nodes)) {
-      setNodes(allNodes as Node[]);
+  const onNodesChange = (changes: any[]) => {
+    // An update from the UI. Apply it to the local state...
+    setNodes((nds) => applyNodeChanges(changes, nds));
+    // ...and to the CRDT state. (Which could be the same, except for ReactFlow's internal copies.)
+    const wnodes = state.workspace?.nodes;
+    if (!wnodes) return;
+    for (const ch of changes) {
+      const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
+      if (nodeIndex === -1) continue;
+      const node = wnodes[nodeIndex];
+      if (!node) continue;
+      // Position events sometimes come with NaN values. Ignore them.
+      if (ch.type === 'position' && !isNaN(ch.position.x) && !isNaN(ch.position.y)) {
+        Object.assign(node.position, ch.position);
+      } else if (ch.type === 'select') {
+      } else if (ch.type === 'dimensions') {
+      } else if (ch.type === 'replace') {
+        node.data.collapsed = ch.item.data.collapsed;
+        node.data.params = { ...ch.item.data.params };
+      } else {
+        console.log('Unknown node change', ch);
+      }
     }
-  }
-  if (state?.workspace?.edges && JSON.stringify(edges) !== JSON.stringify([...state.workspace.edges as Edge[]])) {
-    const updated = Object.fromEntries(state.workspace.edges.map((e) => [e.id, e]));
-    const oldEdges = Object.fromEntries(edges.map((e) => [e.id, e]));
-    const updatedEdges = edges.filter(e => updated[e.id]).map((e) => ({ ...e, ...updated[e.id] })) as Edge[];
-    const newEdges = state.workspace.edges.filter((e) => !oldEdges[e.id]);
-    const allEdges = [...updatedEdges, ...newEdges];
-    if (JSON.stringify(allEdges) !== JSON.stringify(edges)) {
-      setEdges(allEdges as Edge[]);
-    }
-  }
+  };
+  const onEdgesChange = (changes: any[]) => {
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+  };
 
   const fetcher = (resource: string, init?: RequestInit) => fetch(resource, init).then(res => res.json());
   const catalog = useSWR('/api/catalog', fetcher);
