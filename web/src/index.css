@@ -259,3 +259,36 @@ body {
     margin: 10px;
   }
 }
+
+
+path.react-flow__edge-path {
+  stroke-width: 2;
+  stroke: black;
+}
+.react-flow__edge.selected path.react-flow__edge-path {
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 10px;
+  border-radius: 1px;
+}
+.react-flow__handle {
+  border-color: black;
+  background: white;
+  width: 10px;
+  height: 10px;
+}
+.react-flow__arrowhead * {
+  stroke: none;
+  fill: black;
+}
+// We want the area node to be above the sub-flow node if its inside the sub-flow.
+// This will need some more thinking for a general solution.
+.react-flow__node-sub_flow {
+  z-index: -20 !important;
+}
+.react-flow__node-area {
+  z-index: -10 !important;
+}
+.selected .lynxkite-node {
+  outline: var(--xy-selection-border, var(--xy-selection-border-default));
+  outline-offset: 7.5px;
+}
