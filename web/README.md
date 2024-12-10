@@ -1,27 +1,7 @@
-# Vite Svelte Flow Template
+To set up:
 
-This template creates a very basic [Svelte Flow](https://svelteflow.dev) app with [Vite](https://vite.dev).
+    npm i
 
-## Get it!
+To start dev server:
 
-```sh
-npx degit xyflow/vite-svelte-flow-template app-name
-```
-
-## Installation
-
-```sh
-npm install
-```
-
-## Development
-
-```sh
-npm run dev
-```
-
-## Build
-
-```sh
-npm run build
-```
+    npm run dev
