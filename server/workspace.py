@@ -1,4 +1,5 @@
-'''For working with LynxKite workspaces.'''
+"""For working with LynxKite workspaces."""
+
 from typing import Optional
 import dataclasses
 import os
@@ -6,14 +7,17 @@ import pydantic
 import tempfile
 from . import ops
 
+
 class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
-        extra='allow',
+        extra="allow",
     )
+
 
 class Position(BaseConfig):
     x: float
     y: float
+
 
 class WorkspaceNodeData(BaseConfig):
     title: str
@@ -23,12 +27,13 @@ class WorkspaceNodeData(BaseConfig):
     # Also contains a "meta" field when going out.
     # This is ignored when coming back from the frontend.
 
+
 class WorkspaceNode(BaseConfig):
     id: str
     type: str
     data: WorkspaceNodeData
     position: Position
-    parentId: Optional[str] = None
+
 
 class WorkspaceEdge(BaseConfig):
     id: str
@@ -37,8 +42,9 @@ class WorkspaceEdge(BaseConfig):
     sourceHandle: str
     targetHandle: str
 
+
 class Workspace(BaseConfig):
-    env: str = ''
+    env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
 
@@ -52,7 +58,9 @@ def save(ws: Workspace, path: str):
     j = ws.model_dump_json(indent=2)
     dirname, basename = os.path.split(path)
     # Create temp file in the same directory to make sure it's on the same filesystem.
-    with tempfile.NamedTemporaryFile('w', prefix=f'.{basename}.', dir=dirname, delete_on_close=False) as f:
+    with tempfile.NamedTemporaryFile(
+        "w", prefix=f".{basename}.", dir=dirname, delete_on_close=False
+    ) as f:
         f.write(j)
         f.close()
         os.replace(f.name, path)
@@ -76,22 +84,13 @@ def _update_metadata(ws):
             if node.id in done:
                 continue
             data = node.data
-            if node.parentId is None:
-                op = catalog.get(data.title)
-            elif node.parentId not in nodes:
-                data.error = f'Parent not found: {node.parentId}'
-                done.add(node.id)
-                continue
-            elif node.parentId in done:
-                op = nodes[node.parentId].data.meta.sub_nodes[data.title]
-            else:
-                continue
+            op = catalog.get(data.title)
             if op:
                 data.meta = op
                 node.type = op.type
-                if data.error == 'Unknown operation.':
+                if data.error == "Unknown operation.":
                     data.error = None
             else:
-                data.error = 'Unknown operation.'
+                data.error = "Unknown operation."
             done.add(node.id)
     return ws

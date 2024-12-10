@@ -15,7 +15,8 @@
   background: #002a4c;
 }
 
-img, svg {
+img,
+svg {
   display: inline-block;
 }
 
@@ -156,6 +157,43 @@ body {
       line-height: 10px;
     }
   }
+
+  .node-search {
+    position: fixed;
+    width: 300px;
+    z-index: 5;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #888;
+    background-color: white;
+    max-height: -webkit-fill-available;
+    max-height: -moz-available;
+    display: flex;
+    flex-direction: column;
+
+    input {
+      width: calc(100% - 26px);
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #eee;
+      margin: 4px;
+    }
+
+    .search-result {
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .search-result.selected {
+      background-color: oklch(75% 0.2 55);
+      border-radius: 4px;
+    }
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
 }
 
 .directory {
@@ -265,29 +303,29 @@ path.react-flow__edge-path {
   stroke-width: 2;
   stroke: black;
 }
+
 .react-flow__edge.selected path.react-flow__edge-path {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 10px;
   border-radius: 1px;
 }
+
 .react-flow__handle {
   border-color: black;
   background: white;
   width: 10px;
   height: 10px;
 }
+
 .react-flow__arrowhead * {
   stroke: none;
   fill: black;
 }
-// We want the area node to be above the sub-flow node if its inside the sub-flow.
-// This will need some more thinking for a general solution.
-.react-flow__node-sub_flow {
-  z-index: -20 !important;
-}
+
 .react-flow__node-area {
   z-index: -10 !important;
 }
+
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
