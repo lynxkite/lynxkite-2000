@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import { LynxKiteState } from '../LynxKiteState';
 import { useReactFlow, Handle, NodeResizeControl, Position } from '@xyflow/react';
 // @ts-ignore
 import ChevronDownRight from '~icons/tabler/chevron-down-right.jsx';
@@ -45,7 +43,6 @@ function getHandles(inputs: object, outputs: object) {
 export default function LynxKiteNode(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
-  const state = useContext(LynxKiteState);
   const expanded = !data.collapsed;
   const handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
   function asPx(n: number | undefined) {
