@@ -7,15 +7,20 @@ import fastapi
 import os.path
 import pycrdt
 import pycrdt_websocket
-
 import pycrdt_websocket.ystore
+import uvicorn
+import builtins
 
 router = fastapi.APIRouter()
 
 
 def ws_exception_handler(exception, log):
-    print("exception", exception)
-    log.exception(exception)
+    if isinstance(exception, builtins.ExceptionGroup):
+        for ex in exception.exceptions:
+            if not isinstance(ex, uvicorn.protocols.utils.ClientDisconnected):
+                log.exception(ex)
+    else:
+        log.exception(exception)
     return True
 
 
@@ -39,7 +44,9 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         if "env" not in ws:
             ws["env"] = "unset"
             try_to_load_workspace(ws, name)
-        room = pycrdt_websocket.YRoom(ystore=ystore, ydoc=ydoc)
+        room = pycrdt_websocket.YRoom(
+            ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
+        )
         room.ws = ws
 
         def on_change(changes):
@@ -55,12 +62,6 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         await self.start_room(room)
         return room
 
-
-websocket_server = WebsocketServer(
-    # exception_handler=ws_exception_handler,
-    auto_clean_rooms=False,
-)
-asgi_server = pycrdt_websocket.ASGIServer(websocket_server)
 
 last_ws_input = None
 
@@ -140,8 +141,13 @@ async def workspace_changed(e, ws_crdt):
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
+    global websocket_server
+    websocket_server = WebsocketServer(
+        auto_clean_rooms=False,
+    )
     async with websocket_server:
         yield
+    print("closing websocket server for some reason")
 
 
 def sanitize_path(path):
@@ -151,4 +157,5 @@ def sanitize_path(path):
 @router.websocket("/ws/crdt/{room_name}")
 async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    await asgi_server({"path": room_name}, websocket._receive, websocket._send)
+    server = pycrdt_websocket.ASGIServer(websocket_server)
+    await server({"path": room_name}, websocket._receive, websocket._send)
