@@ -45,9 +45,6 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
   const data = props.data;
   const expanded = !data.collapsed;
   const handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
-  function asPx(n: number | undefined) {
-    return (n ? n + 'px' : undefined) || '200px';
-  }
   function titleClicked() {
     reactFlow.updateNodeData(props.id, { collapsed: expanded });
   }
@@ -55,7 +52,7 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
 
   return (
     <div className={'node-container ' + (expanded ? 'expanded' : 'collapsed')}
-      style={{ width: asPx(props.width), height: asPx(expanded ? props.height : undefined) }}>
+      style={{ width: props.width || 200, height: expanded ? props.height || 200 : undefined }}>
       <div className="lynxkite-node" style={props.nodeStyle}>
         <div className="title bg-primary" onClick={titleClicked}>
           {data.title}
@@ -67,14 +64,6 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
             <div className="error">{data.error}</div>
           }
           {props.children}
-          {handles.map(handle => (
-            <Handle
-              key={handle.name}
-              id={handle.name} type={handle.type} position={handle.position as Position}
-              style={{ [handleOffsetDirection[handle.position]]: handle.offsetPercentage + '%' }}>
-              {handle.showLabel && <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>}
-            </Handle >
-          ))}
           <NodeResizeControl
             minWidth={100}
             minHeight={50}
@@ -83,6 +72,14 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
             <ChevronDownRight className="node-resizer" />
           </NodeResizeControl>
         </>}
+        {handles.map(handle => (
+          <Handle
+            key={handle.name}
+            id={handle.name} type={handle.type} position={handle.position as Position}
+            style={{ [handleOffsetDirection[handle.position]]: handle.offsetPercentage + '%' }}>
+            {handle.showLabel && <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>}
+          </Handle >
+        ))}
       </div>
     </div>
   );

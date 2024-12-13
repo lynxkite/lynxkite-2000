@@ -1,5 +1,6 @@
-"""Some operations. To be split into separate files when we have more."""
+"""Graph analytics operations. To be split into separate files when we have more."""
 
+import os
 from . import ops
 from collections import deque
 import dataclasses
@@ -7,6 +8,7 @@ import functools
 import matplotlib
 import networkx as nx
 import pandas as pd
+import polars as pl
 import traceback
 import typing
 
@@ -63,12 +65,26 @@ class Bundle:
             ],
         )
 
+    @classmethod
+    def from_df(cls, df: pd.DataFrame):
+        return cls(dfs={"df": df})
+
     def to_nx(self):
+        # TODO: Use relations.
         graph = nx.from_pandas_edgelist(self.dfs["edges"])
-        nx.set_node_attributes(
-            graph, self.dfs["nodes"].set_index("id").to_dict("index")
-        )
+        if "nodes" in self.dfs:
+            nx.set_node_attributes(
+                graph, self.dfs["nodes"].set_index("id").to_dict("index")
+            )
         return graph
+
+    def copy(self):
+        """Returns a medium depth copy of the bundle. The Bundle is completely new, but the DataFrames and RelationDefinitions are shared."""
+        return Bundle(
+            dfs=dict(self.dfs),
+            relations=list(self.relations),
+            other=dict(self.other) if self.other else None,
+        )
 
 
 def nx_node_attribute_func(name):
@@ -99,7 +115,6 @@ def disambiguate_edges(ws):
 @ops.register_executor("LynxKite")
 async def execute(ws):
     catalog = ops.CATALOGS["LynxKite"]
-    # Nodes are responsible for interpreting/executing their child nodes.
     disambiguate_edges(ws)
     outputs = {}
     failed = 0
@@ -115,12 +130,14 @@ async def execute(ws):
                 op = catalog[data.title]
                 params = {**data.params}
                 # Convert inputs.
-                for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
-                    if p.type == nx.Graph and isinstance(x, Bundle):
-                        inputs[i] = x.to_nx()
-                    elif p.type == Bundle and isinstance(x, nx.Graph):
-                        inputs[i] = Bundle.from_nx(x)
                 try:
+                    for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
+                        if p.type == nx.Graph and isinstance(x, Bundle):
+                            inputs[i] = x.to_nx()
+                        elif p.type == Bundle and isinstance(x, nx.Graph):
+                            inputs[i] = Bundle.from_nx(x)
+                        elif p.type == Bundle and isinstance(x, pd.DataFrame):
+                            inputs[i] = Bundle.from_df(x)
                     output = op(*inputs, **params)
                 except Exception as e:
                     traceback.print_exc()
@@ -142,8 +159,22 @@ async def execute(ws):
 
 @op("Import Parquet")
 def import_parquet(*, filename: str):
-    """Imports a parquet file."""
+    """Imports a Parquet file."""
     return pd.read_parquet(filename)
+
+
+@op("Import CSV")
+def import_csv(
+    *, filename: str, columns: str = "<from file>", separator: str = "<auto>"
+):
+    """Imports a CSV file."""
+    return pd.read_csv(
+        filename,
+        names=pd.api.extensions.no_default
+        if columns == "<from file>"
+        else columns.split(","),
+        sep=pd.api.extensions.no_default if separator == "<auto>" else separator,
+    )
 
 
 @op("Create scale-free graph")
@@ -158,11 +189,46 @@ def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
     return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
+@op("Compute betweenness centrality")
+@nx_node_attribute_func("betweenness_centrality")
+def compute_betweenness_centrality(graph: nx.Graph, *, k=10):
+    return nx.betweenness_centrality(graph, k=k, backend="cugraph")
+
+
 @op("Discard loop edges")
 def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
+
+
+@op("SQL")
+def sql(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
+    """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
+    bundle = bundle.copy()
+    if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
+        with pl.Config() as cfg:
+            cfg.set_verbose(True)
+            res = (
+                pl.SQLContext(bundle.dfs)
+                .execute(query)
+                .collect(engine="gpu")
+                .to_pandas()
+            )
+            # TODO: Currently `collect()` moves the data from cuDF to Polars. Then we convert it to Pandas,
+            # which (hopefully) puts it back into cuDF. Hopefully we will be able to keep it in cuDF.
+    else:
+        res = pl.SQLContext(bundle.dfs).execute(query)
+    bundle.dfs[save_as] = res
+    return bundle
+
+
+@op("Organize bundle")
+def organize_bundle(bundle: Bundle, *, code: ops.LongStr):
+    """Lets you rename/copy/delete DataFrames, and modify relations. TODO: Use a declarative solution instead of Python code. Add UI."""
+    bundle = bundle.copy()
+    exec(code, globals(), {"bundle": bundle})
+    return bundle
 
 
 @op("Sample graph")
@@ -237,13 +303,21 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
     return v
 
 
+def collect(df: pd.DataFrame):
+    if isinstance(df, pl.LazyFrame):
+        df = df.collect()
+    if isinstance(df, pl.DataFrame):
+        return [[d[c] for c in df.columns] for d in df.to_dicts()]
+    return df.values.tolist()
+
+
 @op("View tables", view="table_view")
 def view_tables(bundle: Bundle):
     v = {
         "dataframes": {
             name: {
                 "columns": [str(c) for c in df.columns],
-                "data": df.values.tolist(),
+                "data": collect(df),
             }
             for name, df in bundle.dfs.items()
         },

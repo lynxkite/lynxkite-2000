@@ -1,15 +1,24 @@
+# Dependencies for basic operation.
 fastapi
-matplotlib
-networkx
-numpy
 orjson
-pandas
 pydantic-to-typescript
-scipy
 uvicorn[standard]
 pycrdt
 pycrdt-websocket
-# For llm_ops
+
+# For lynxkite_ops.
+matplotlib
+networkx
+numpy
+pandas
+scipy
+
+# GPU-accelerated graph analytics.
+cugraph-cu12
+cudf-cu12
+nx-cugraph-cu12 
+
+# For llm_ops.
 chromadb
 Jinja2
 openai
