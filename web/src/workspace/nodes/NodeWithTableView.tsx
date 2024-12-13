@@ -22,12 +22,12 @@ export default function NodeWithTableView(props: any) {
     <LynxKiteNode {...props}>
       {display && [
         Object.entries(display.dataframes || {}).map(([name, df]: [string, any]) => <React.Fragment key={name}>
-          {!single && <div key={name} className="df-head" onClick={() => setOpen({ ...open, [name]: !open[name] })}>{name}</div>}
+          {!single && <div key={name + '-header'} className="df-head" onClick={() => setOpen({ ...open, [name]: !open[name] })}>{name}</div>}
           {(single || open[name]) &&
             (df.data.length > 1 ?
-              <Table key={name} columns={df.columns} data={df.data} />
+              <Table key={name + '-table'} columns={df.columns} data={df.data} />
               :
-              <dl key={name}>
+              <dl key={name + '-dl'}>
                 {df.columns.map((c: string, i: number) =>
                   <React.Fragment key={name + '-' + c}>
                     <dt>{c}</dt>
