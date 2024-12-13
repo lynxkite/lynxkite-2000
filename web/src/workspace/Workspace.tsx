@@ -57,7 +57,7 @@ function LynxKiteFlow() {
     const state = syncedStore({ workspace: {} as Workspace });
     setState(state);
     const doc = getYjsDoc(state);
-    const wsProvider = new WebsocketProvider("ws://localhost:8000/ws/crdt", path!, doc);
+    const wsProvider = new WebsocketProvider("ws://localhost:5173/ws/crdt", path!, doc);
     const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.
@@ -125,6 +125,7 @@ function LynxKiteFlow() {
       const edgeIndex = wedges.findIndex((e) => e.id === ch.id);
       if (ch.type === 'remove') {
         wedges.splice(edgeIndex, 1);
+      } else if (ch.type === 'select') {
       } else {
         console.log('Unknown edge change', ch);
       }
