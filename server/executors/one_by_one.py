@@ -127,12 +127,13 @@ async def execute(ws, catalog, cache=None):
             results = []
             for task in ts:
                 try:
-                    inputs = [
-                        batch_inputs[(n, i.name)]
-                        if i.position in "top or bottom"
-                        else task
-                        for i in op.inputs.values()
-                    ]
+                    inputs = []
+                    for i in op.inputs.values():
+                        if i.position in "top or bottom":
+                            assert (n, i.name) in batch_inputs, f"{i.name} is missing"
+                            inputs.append(batch_inputs[(n, i.name)])
+                        else:
+                            inputs.append(task)
                     if cache is not None:
                         key = make_cache_key((inputs, params))
                         if key not in cache:
