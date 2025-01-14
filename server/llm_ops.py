@@ -13,7 +13,7 @@ from .executors import one_by_one
 chat_client = openai.OpenAI(base_url="http://localhost:8080/v1")
 embedding_client = openai.OpenAI(base_url="http://localhost:7997/")
 jinja = jinja2.Environment()
-chroma_client = chromadb.Client()
+chroma_client = None
 LLM_CACHE = {}
 ENV = "LLM logic"
 one_by_one.register(ENV)
@@ -178,12 +178,15 @@ def rag(
     num_matches: int = 10,
     _ctx: one_by_one.Context,
 ):
+    global chroma_client
     if engine == RagEngine.Chroma:
         last = _ctx.last_result
         if last:
             collection = last["_collection"]
         else:
             collection_name = _ctx.node.id.replace(" ", "_")
+            if chroma_client is None:
+                chroma_client = chromadb.Client()
             for c in chroma_client.list_collections():
                 if c.name == collection_name:
                     chroma_client.delete_collection(name=collection_name)

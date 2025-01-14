@@ -1,3 +1,6 @@
+# TODO: Make this conditional. Until then just comment/uncomment it to use cuDF Pandas.
+# import cudf.pandas
+# cudf.pandas.install()
 import dataclasses
 import fastapi
 import importlib
@@ -87,8 +90,15 @@ def make_dir(req: dict):
     return list_dir(path.parent)
 
 
-@app.post("/api/service")
-async def service(req: dict):
+@app.get("/api/service/{module_path:path}")
+async def service_get(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
-    module = lynxkite_modules[req["module"]]
-    return await module.api_service(req)
+    module = lynxkite_modules[module_path.split("/")[0]]
+    return await module.api_service_get(req)
+
+
+@app.post("/api/service/{module_path:path}")
+async def service_post(req: fastapi.Request, module_path: str):
+    """Executors can provide extra HTTP APIs through the /api/service endpoint."""
+    module = lynxkite_modules[module_path.split("/")[0]]
+    return await module.api_service_post(req)
