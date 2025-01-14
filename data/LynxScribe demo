@@ -580,8 +580,7 @@
       "data": {
         "title": "Truncate history",
         "params": {
-          "max_tokens": 10000,
-          "language": "English"
+          "max_tokens": 10000
         },
         "display": null,
         "error": null,
@@ -593,13 +592,6 @@
               "default": 10000,
               "type": {
                 "type": "<class 'int'>"
-              }
-            },
-            "language": {
-              "name": "language",
-              "default": "English",
-              "type": {
-                "type": "<class 'str'>"
               }
             }
           },
