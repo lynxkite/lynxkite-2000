@@ -5,19 +5,18 @@ LynxScribe configuration and testing in LynxKite.
 from lynxscribe.core.llm.base import get_llm_engine
 from lynxscribe.core.vector_store.base import get_vector_store
 from lynxscribe.common.config import load_config
-from lynxscribe.components.text_embedder import TextEmbedder
+from lynxscribe.components.text.embedder import TextEmbedder
 from lynxscribe.components.rag.rag_graph import RAGGraph
 from lynxscribe.components.rag.knowledge_base_graph import PandasKnowledgeBaseGraph
 from lynxscribe.components.rag.rag_chatbot import Scenario, ScenarioSelector, RAGChatbot
-from lynxscribe.components.chat_processor.base import ChatProcessor
-from lynxscribe.components.chat_processor.processors import (
+from lynxscribe.components.chat.processors import (
+    ChatProcessor,
     MaskTemplate,
     TruncateHistory,
 )
-from lynxscribe.components.chat_api import ChatAPI, ChatAPIRequest, ChatAPIResponse
+from lynxscribe.components.chat.api import ChatAPI, ChatAPIRequest, ChatAPIResponse
 
 from . import ops
-import asyncio
 import json
 from .executors import one_by_one
 
@@ -134,12 +133,8 @@ def chat_processor(processor, *, _ctx: one_by_one.Context):
 
 @output_on_top
 @op("Truncate history")
-def truncate_history(*, max_tokens=10000, language="English"):
-    return {
-        "question_processor": TruncateHistory(
-            max_tokens=max_tokens, language=language.lower()
-        )
-    }
+def truncate_history(*, max_tokens=10000):
+    return {"question_processor": TruncateHistory(max_tokens=max_tokens)}
 
 
 @output_on_top
@@ -224,42 +219,102 @@ def view(input):
     return v
 
 
-async def api_service(request):
+async def get_chat_api(ws):
+    import pathlib
+    from . import workspace
+
+    DATA_PATH = pathlib.Path.cwd() / "data"
+    path = DATA_PATH / ws
+    assert path.is_relative_to(DATA_PATH)
+    assert path.exists(), f"Workspace {path} does not exist"
+    ws = workspace.load(path)
+    contexts = await ops.EXECUTORS[ENV](ws)
+    nodes = [op for op in ws.nodes if op.data.title == "Chat API"]
+    [node] = nodes
+    context = contexts[node.id]
+    return context.last_result["chat_api"]
+
+
+async def stream_chat_api_response(request):
+    chat_api = await get_chat_api(request["model"])
+    chat_api_request = ChatAPIRequest(
+        session_id=request.get("session_id", "00000000-0000-0000-0000-000000000000"),
+        history=request["messages"][:-1],
+        question=request["messages"][-1]["content"],
+    )
+    response = await chat_api.answer(chat_api_request)
+    response = response.model_dump()
+    yield json.dumps(
+        {
+            **response,
+            "id": "asd",
+            "object": "chat.completion.chunk",
+            "model": request["model"],
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": {"role": "assistant", "content": response["answer"]},
+                }
+            ],
+        }
+    )
+
+
+async def api_service_post(request):
     """
     Serves a chat endpoint that matches LynxScribe's interface.
     To access it you need to add the "module" and "workspace"
     parameters.
     The workspace must contain exactly one "Chat API" node.
 
-      curl -X POST ${LYNXKITE_URL}/api/service \
+      curl -X POST ${LYNXKITE_URL}/api/service/server.lynxkite_ops \
         -H "Content-Type: application/json" \
         -d '{
-          "module": "server.lynxscribe_ops",
-          "workspace": "LynxScribe demo",
-          "session_id": "b43215a0-428f-11ef-9454-0242ac120002",
-          "question": "what does the fox say",
-          "history": [],
-          "user_id": "x",
-          "meta_inputs": {}
+          "model": "LynxScribe demo",
+          "messages": [{"role": "user", "content": "what does the fox say"}]
         }'
-  """
+    """
+    path = "/".join(request.url.path.split("/")[4:])
+    request = await request.json()
+    if path == "chat/completions":
+        from sse_starlette.sse import EventSourceResponse
+
+        return EventSourceResponse(stream_chat_api_response(request))
+    return {"error": "Not found"}
+
+
+async def api_service_get(request):
+    path = "/".join(request.url.path.split("/")[4:])
+    if path == "models":
+        return {
+            "object": "list",
+            "data": [
+                {
+                    "id": ws,
+                    "object": "model",
+                    "created": 0,
+                    "owned_by": "lynxkite",
+                    "meta": {"profile_image_url": "https://lynxkite.com/favicon.png"},
+                }
+                for ws in get_lynxscribe_workspaces()
+            ],
+        }
+    return {"error": "Not found"}
+
+
+def get_lynxscribe_workspaces():
     import pathlib
     from . import workspace
 
-    DATA_PATH = pathlib.Path.cwd() / "data"
-    path = DATA_PATH / request["workspace"]
-    assert path.is_relative_to(DATA_PATH)
-    assert path.exists(), f"Workspace {path} does not exist"
-    ws = workspace.load(path)
-    contexts = ops.EXECUTORS[ENV](ws)
-    nodes = [op for op in ws.nodes if op.data.title == "Chat API"]
-    [node] = nodes
-    context = contexts[node.id]
-    chat_api = context.last_result["chat_api"]
-    request = ChatAPIRequest(
-        session_id=request["session_id"],
-        question=request["question"],
-        history=request["history"],
-    )
-    response = await chat_api.answer(request)
-    return response
+    DATA_DIR = pathlib.Path.cwd() / "data"
+    workspaces = []
+    for p in DATA_DIR.glob("**/*"):
+        if p.is_file():
+            try:
+                ws = workspace.load(p)
+                if ws.env == ENV:
+                    workspaces.append(p.relative_to(DATA_DIR))
+            except Exception:
+                pass  # Ignore files that are not valid workspaces.
+    workspaces.sort()
+    return workspaces
