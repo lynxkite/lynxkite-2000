@@ -3,6 +3,7 @@
 import asyncio
 import contextlib
 import enum
+import pathlib
 import fastapi
 import os.path
 import pycrdt
@@ -12,6 +13,8 @@ import uvicorn
 import builtins
 
 router = fastapi.APIRouter()
+DATA_PATH = pathlib.Path.cwd() / "data"
+CRDT_PATH = pathlib.Path.cwd() / "crdt_data"
 
 
 def ws_exception_handler(exception, log):
@@ -26,7 +29,9 @@ def ws_exception_handler(exception, log):
 
 class WebsocketServer(pycrdt_websocket.WebsocketServer):
     async def init_room(self, name):
-        ystore = pycrdt_websocket.ystore.FileYStore(f"crdt_data/{name}.crdt")
+        path = CRDT_PATH / f"{name}.crdt"
+        assert path.is_relative_to(CRDT_PATH)
+        ystore = pycrdt_websocket.ystore.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
         # Replay updates from the store.
@@ -145,13 +150,13 @@ async def workspace_changed(name, changes, ws_crdt):
         for change in changes
     )
     if delay:
-        task = asyncio.create_task(execute(ws_crdt, ws_pyd, delay))
+        task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay))
         delayed_executions[name] = task
     else:
-        await execute(ws_crdt, ws_pyd)
+        await execute(name, ws_crdt, ws_pyd)
 
 
-async def execute(ws_crdt, ws_pyd, delay=0):
+async def execute(name, ws_crdt, ws_pyd, delay=0):
     from . import workspace
 
     if delay:
@@ -159,7 +164,11 @@ async def execute(ws_crdt, ws_pyd, delay=0):
             await asyncio.sleep(delay)
         except asyncio.CancelledError:
             return
+    path = DATA_PATH / name
+    assert path.is_relative_to(DATA_PATH)
+    workspace.save(ws_pyd, path)
     await workspace.execute(ws_pyd)
+    workspace.save(ws_pyd, path)
     with ws_crdt.doc.transaction():
         for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
             if "data" not in nc:
