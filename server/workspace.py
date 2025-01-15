@@ -59,11 +59,11 @@ def save(ws: Workspace, path: str):
     dirname, basename = os.path.split(path)
     # Create temp file in the same directory to make sure it's on the same filesystem.
     with tempfile.NamedTemporaryFile(
-        "w", prefix=f".{basename}.", dir=dirname, delete_on_close=False
+        "w", prefix=f".{basename}.", dir=dirname, delete=False
     ) as f:
+        temp_name = f.name
         f.write(j)
-        f.close()
-        os.replace(f.name, path)
+    os.replace(temp_name, path)
 
 
 def load(path: str):
