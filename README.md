@@ -7,25 +7,34 @@ original LynxKite. The primary goals of this rewrite are:
 - More extensible backend. Make it easy to add new LynxKite boxes. Make it easy to use our frontend for other purposes,
   configuring and executing other pipelines.
 
-## Installation
+## Structure
 
-To run the backend:
+- `lynxkite-core`: Core types and utilities. Depend on this lightweight package if you are writing LynxKite plugins.
+- `lynxkite-app`: The LynxKite web application. Install some plugins then run this to use LynxKite.
+- `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
+- `lynxkite-pillow`: A simple example plugin.
+- `lynxkite-lynxscribe`: A plugin for building and running LynxScribe applications.
+
+## Development
+
+Install everything like this:
 
 ```bash
-PYTHONPATH=. uv run pydantic2ts --module server.workspace --output ./web/src/apiTypes.ts --json2ts-cmd "npm exec --prefix web json2ts"
-uv run fastapi run server/main.py --reload
+uv venv
+source .venv/bin/activate
+uv pip install -e lynxkite-core/ lynxkite-app/ lynxkite-graph-analytics/ lynxkite-lynxscribe/ lynxkite-pillow-example/
 ```
 
-To run the frontend:
+This also builds the frontend, hopefully very quickly. To run it:
 
 ```bash
-cd web
-npm i
+cd lynxkite-app # just because the "data" directory with the examples is here
+LYNXKITE_RELOAD=1 lynxkite
+```
+
+If you also want to make changes to the frontend with hot reloading:
+
+```bash
+cd lynxkite-app/web
 npm run dev
-```
-
-To run a chat UI for LynxScribe workspaces:
-
-```bash
-WEBUI_AUTH=false OPENAI_API_BASE_URL=http://localhost:8000/api/service/server.lynxscribe_ops uvx open-webui serve
 ```
