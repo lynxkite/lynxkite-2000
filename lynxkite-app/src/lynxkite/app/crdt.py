@@ -134,10 +134,11 @@ async def workspace_changed(name, changes, ws_crdt):
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
-    clean_input(ws_pyd)
-    if ws_pyd == last_known_versions.get(name):
+    ws_simple = ws_pyd.model_copy(deep=True)
+    clean_input(ws_simple)
+    if ws_simple == last_known_versions.get(name):
         return
-    last_known_versions[name] = ws_pyd.model_copy(deep=True)
+    last_known_versions[name] = ws_simple
     # Frontend changes that result from typing are delayed to avoid
     # rerunning the workspace for every keystroke.
     if name in delayed_executions:
