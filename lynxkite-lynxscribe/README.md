@@ -9,3 +9,9 @@ WEBUI_AUTH=false OPENAI_API_BASE_URL=http://localhost:8000/api/service/server.ly
 ```
 
 Or use [Lynx WebUI](https://github.com/biggraph/lynx-webui/) instead of Open WebUI.
+
+Run tests with:
+
+```bash
+uv run pytest
+```

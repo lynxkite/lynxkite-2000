@@ -1,17 +1,19 @@
-"""For specifying an LLM agent logic flow."""
+"""For specifying an LLM agent logic flow.
 
-from . import ops
-import chromadb
+This is very much a prototype. It might end up merged into LynxScribe
+as an "agentic logic flow". It might just get deleted.
+
+(This is why the dependencies are left hanging.)
+"""
+
+from lynxkite.core import ops
 import enum
 import jinja2
 import json
-import openai
 import numpy as np
 import pandas as pd
-from .executors import one_by_one
+from lynxkite.core.executors import one_by_one
 
-chat_client = openai.OpenAI(base_url="http://localhost:8080/v1")
-embedding_client = openai.OpenAI(base_url="http://localhost:7997/")
 jinja = jinja2.Environment()
 chroma_client = None
 LLM_CACHE = {}
@@ -21,6 +23,9 @@ op = ops.op_registration(ENV)
 
 
 def chat(*args, **kwargs):
+    import openai
+
+    chat_client = openai.OpenAI(base_url="http://localhost:8080/v1")
     key = json.dumps({"method": "chat", "args": args, "kwargs": kwargs})
     if key not in LLM_CACHE:
         completion = chat_client.chat.completions.create(*args, **kwargs)
@@ -29,6 +34,9 @@ def chat(*args, **kwargs):
 
 
 def embedding(*args, **kwargs):
+    import openai
+
+    embedding_client = openai.OpenAI(base_url="http://localhost:7997/")
     key = json.dumps({"method": "embedding", "args": args, "kwargs": kwargs})
     if key not in LLM_CACHE:
         res = embedding_client.embeddings.create(*args, **kwargs)
@@ -97,9 +105,9 @@ def add_neighbors(nodes, edges, item):
 
 @op("Create prompt")
 def create_prompt(input, *, save_as="prompt", template: ops.LongStr):
-    assert (
-        template
-    ), "Please specify the template. Refer to columns using the Jinja2 syntax."
+    assert template, (
+        "Please specify the template. Refer to columns using the Jinja2 syntax."
+    )
     t = jinja.from_string(template)
     prompt = t.render(**input)
     return {**input, save_as: prompt}
@@ -186,6 +194,8 @@ def rag(
         else:
             collection_name = _ctx.node.id.replace(" ", "_")
             if chroma_client is None:
+                import chromadb
+
                 chroma_client = chromadb.Client()
             for c in chroma_client.list_collections():
                 if c.name == collection_name:

@@ -221,7 +221,7 @@ def view(input):
 
 async def get_chat_api(ws):
     import pathlib
-    from . import workspace
+    from lynxkite.core import workspace
 
     DATA_PATH = pathlib.Path.cwd() / "data"
     path = DATA_PATH / ws
@@ -304,7 +304,7 @@ async def api_service_get(request):
 
 def get_lynxscribe_workspaces():
     import pathlib
-    from . import workspace
+    from lynxkite.core import workspace
 
     DATA_DIR = pathlib.Path.cwd() / "data"
     workspaces = []

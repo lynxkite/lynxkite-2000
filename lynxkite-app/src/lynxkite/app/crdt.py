@@ -11,6 +11,7 @@ import pycrdt_websocket
 import pycrdt_websocket.ystore
 import uvicorn
 import builtins
+from lynxkite.core import workspace
 
 router = fastapi.APIRouter()
 DATA_PATH = pathlib.Path.cwd() / "data"
@@ -119,8 +120,6 @@ def crdt_update(crdt_obj, python_obj, boxes=set()):
 
 
 def try_to_load_workspace(ws, name):
-    from . import workspace
-
     json_path = f"data/{name}"
     if os.path.exists(json_path):
         ws_pyd = workspace.load(json_path)
@@ -132,8 +131,6 @@ delayed_executions = {}
 
 
 async def workspace_changed(name, changes, ws_crdt):
-    from . import workspace
-
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
@@ -157,8 +154,6 @@ async def workspace_changed(name, changes, ws_crdt):
 
 
 async def execute(name, ws_crdt, ws_pyd, delay=0):
-    from . import workspace
-
     if delay:
         try:
             await asyncio.sleep(delay)
