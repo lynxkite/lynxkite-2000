@@ -16,9 +16,9 @@ from lynxscribe.components.chat.processors import (
 )
 from lynxscribe.components.chat.api import ChatAPI, ChatAPIRequest, ChatAPIResponse
 
-from . import ops
+from lynxkite.core import ops
 import json
-from .executors import one_by_one
+from lynxkite.core.executors import one_by_one
 
 ENV = "LynxScribe"
 one_by_one.register(ENV)
