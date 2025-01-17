@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "lynxkite-core",
+    "matplotlib>=3.10.0",
     "networkx>=3.4.2",
     "pandas>=2.2.3",
     "polars[gpu]>=1.14.0",
