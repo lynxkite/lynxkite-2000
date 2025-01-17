@@ -12,13 +12,26 @@ from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt
 
-here = pathlib.Path(__file__).parent
-lynxkite_modules = {}
-for _, name, _ in pkgutil.iter_modules([str(here)]):
-    if name.endswith("_ops") and not name.startswith("test_"):
+
+def detect_plugins():
+    try:
+        import lynxkite_plugins
+    except ImportError:
+        print("No modules found in lynxkite_plugins. Be sure to install some plugins.")
+        return {}
+
+    print(list(pkgutil.iter_modules(lynxkite_plugins.__path__)))
+    plugins = {}
+    for _, name, _ in pkgutil.iter_modules(lynxkite_plugins.__path__):
+        name = f"lynxkite_plugins.{name}"
         print(f"Importing {name}")
-        name = f"server.{name}"
-        lynxkite_modules[name] = importlib.import_module(name)
+        plugins[name] = importlib.import_module(name)
+    if not plugins:
+        print("No modules found in lynxkite_plugins. Be sure to install some plugins.")
+    return plugins
+
+
+lynxkite_plugins = detect_plugins()
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
@@ -95,14 +108,14 @@ def make_dir(req: dict):
 @app.get("/api/service/{module_path:path}")
 async def service_get(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
-    module = lynxkite_modules[module_path.split("/")[0]]
+    module = lynxkite_plugins[module_path.split("/")[0]]
     return await module.api_service_get(req)
 
 
 @app.post("/api/service/{module_path:path}")
 async def service_post(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
-    module = lynxkite_modules[module_path.split("/")[0]]
+    module = lynxkite_plugins[module_path.split("/")[0]]
     return await module.api_service_post(req)
 
 

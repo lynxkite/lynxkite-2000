@@ -1,7 +1,7 @@
 """Graph analytics operations. To be split into separate files when we have more."""
 
 import os
-from . import ops
+from lynxkite.core import ops
 from collections import deque
 import dataclasses
 import functools

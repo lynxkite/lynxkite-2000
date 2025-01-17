@@ -14,3 +14,27 @@ original LynxKite. The primary goals of this rewrite are:
 - `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
 - `lynxkite-pillow`: A simple example plugin.
 - `lynxkite-lynxscribe`: A plugin for building and running LynxScribe applications.
+
+## Development
+
+Install everything like this:
+
+```bash
+uv venv
+source .venv/bin/activate
+uv pip install -e lynxkite-core/ lynxkite-app/ lynxkite-graph-analytics/ lynxkite-lynxscribe/ lynxkite-pillow-example/
+```
+
+This also builds the frontend, hopefully very quickly. To run it:
+
+```bash
+cd lynxkite-app # just because the "data" directory with the examples is here
+LYNXKITE_RELOAD=1 lynxkite
+```
+
+If you also want to make changes to the frontend with hot reloading:
+
+```bash
+cd lynxkite-app/web
+npm run dev
+```

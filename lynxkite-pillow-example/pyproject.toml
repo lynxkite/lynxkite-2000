@@ -1,5 +1,5 @@
 [project]
-name = "lynxkite-pillow"
+name = "lynxkite-pillow-example"
 version = "0.1.0"
 description = "An example LynxKite plugin that wraps some Pillow image processing features in LynxKite operations"
 readme = "README.md"
