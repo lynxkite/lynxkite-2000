@@ -5,11 +5,11 @@ description = "The graph analytics executor and boxes for LynxKite"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "lynxkite-ops",
+    "lynxkite-core",
     "networkx>=3.4.2",
     "pandas>=2.2.3",
     "polars[gpu]>=1.14.0",
 ]
 
 [tool.uv.sources]
-lynxkite-ops = { path = "../lynxkite-ops" }
+lynxkite-core = { path = "../lynxkite-core" }

@@ -79,7 +79,7 @@ name = "lynxkite-graph-analytics"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "lynxkite-ops" },
+    { name = "lynxkite-core" },
     { name = "networkx" },
     { name = "pandas" },
     { name = "polars", extra = ["gpu"] },
@@ -87,16 +87,16 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "lynxkite-ops", virtual = "../lynxkite-ops" },
+    { name = "lynxkite-core", virtual = "../lynxkite-core" },
     { name = "networkx", specifier = ">=3.4.2" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "polars", extras = ["gpu"], specifier = ">=1.14.0" },
 ]
 
 [[package]]
-name = "lynxkite-ops"
+name = "lynxkite-core"
 version = "0.1.0"
-source = { virtual = "../lynxkite-ops" }
+source = { virtual = "../lynxkite-core" }
 
 [[package]]
 name = "networkx"
