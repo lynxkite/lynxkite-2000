@@ -1,0 +1,967 @@
+{
+  "env": "LynxScribe",
+  "nodes": [
+    {
+      "id": "Input chat 1",
+      "type": "basic",
+      "data": {
+        "title": "Input chat",
+        "params": {
+          "chat": "who is the CIO of Lynx?"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "position": "right",
+              "name": "output"
+            }
+          },
+          "inputs": {},
+          "params": {
+            "chat": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "chat",
+              "default": null
+            }
+          },
+          "name": "Input chat",
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": -493.5496596237119,
+        "y": 20.90123252513356
+      },
+      "height": 186.0,
+      "parentId": null,
+      "width": 259.0
+    },
+    {
+      "id": "View 1",
+      "type": "table_view",
+      "data": {
+        "title": "View",
+        "params": {},
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "answer"
+              ],
+              "data": [
+                [
+                  "The Chief Innovation Officer (CIO) of Lynx Analytics is Gabor Benedek. He is responsible for defining the methodological roadmap for Lynx's predictive analytics consulting and product development departments. If you need more specific information or have follow-up questions, feel free to ask!\n\nPlease visit https://www.lynxanalytics.com/team-leadership for further information."
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "meta": {
+          "type": "table_view",
+          "outputs": {},
+          "params": {},
+          "name": "View",
+          "inputs": {
+            "input": {
+              "position": "left",
+              "name": "input",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          }
+        }
+      },
+      "position": {
+        "x": 722.1450069267316,
+        "y": -785.6076562320527
+      },
+      "height": 950.0,
+      "parentId": null,
+      "width": 1256.0
+    },
+    {
+      "id": "LLM 1",
+      "type": "basic",
+      "data": {
+        "title": "LLM",
+        "params": {
+          "name": "openai"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "type": "basic",
+          "name": "LLM",
+          "params": {
+            "name": {
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "openai"
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": -312.5774211084781,
+        "y": 1093.4019527511366
+      },
+      "height": 200.0,
+      "width": 200.0,
+      "parentId": null
+    },
+    {
+      "id": "Scenario selector 1",
+      "type": "basic",
+      "data": {
+        "title": "Scenario selector",
+        "params": {
+          "node_types": "intent_cluster",
+          "scenario_file": "/home/darabos/nvme/lynxscribe/examples/chat_api/scenarios.yaml"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "type": "basic",
+          "name": "Scenario selector",
+          "inputs": {},
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "position": "top",
+              "name": "output"
+            }
+          },
+          "params": {
+            "scenario_file": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": null,
+              "name": "scenario_file"
+            },
+            "node_types": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "node_types",
+              "default": "intent_cluster"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": -549.1300345090008,
+        "y": 1086.4852248156676
+      },
+      "width": 200.0,
+      "height": 200.0,
+      "parentId": null
+    },
+    {
+      "id": "Chat API 1",
+      "type": "basic",
+      "data": {
+        "title": "Chat API",
+        "params": {
+          "model": "gpt-4o-mini"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Chat API",
+          "outputs": {
+            "output": {
+              "position": "top",
+              "name": "output",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "gpt-4o-mini",
+              "name": "model"
+            }
+          },
+          "inputs": {
+            "knowledge_base": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "name": "knowledge_base",
+              "position": "bottom"
+            },
+            "chatbot": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom",
+              "name": "chatbot"
+            },
+            "chat_processor": {
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "name": "chat_processor"
+            }
+          },
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": -22.866663363810787,
+        "y": 258.20943122219336
+      },
+      "parentId": null,
+      "height": 200.0,
+      "width": 200.0
+    },
+    {
+      "id": "Knowledge base 1",
+      "type": "basic",
+      "data": {
+        "title": "Knowledge base",
+        "params": {
+          "nodes_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/nodes.pickle",
+          "edges_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/edges.pickle",
+          "template_cluster_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/tempclusters.pickle"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "params": {
+            "nodes_path": {
+              "name": "nodes_path",
+              "default": "nodes.pickle",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "edges_path": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "edges_path",
+              "default": "edges.pickle"
+            },
+            "template_cluster_path": {
+              "name": "template_cluster_path",
+              "default": "tempclusters.pickle",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "name": "Knowledge base",
+          "inputs": {},
+          "type": "basic",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": 598.8683124946176,
+        "y": 609.9499973808545
+      },
+      "height": 320.0,
+      "parentId": null,
+      "width": 336.0
+    },
+    {
+      "id": "RAG chatbot 1",
+      "type": "basic",
+      "data": {
+        "title": "RAG chatbot",
+        "params": {
+          "limits_by_type": "{\"information\": [2, 3], \"summary\": [2, 3]}",
+          "negative_answer": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
+          "max_results": "5",
+          "strict_limits": true
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "params": {
+            "negative_answer": {
+              "default": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
+              "name": "negative_answer",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "max_results": {
+              "name": "max_results",
+              "type": {
+                "type": "<class 'int'>"
+              },
+              "default": 5.0
+            },
+            "strict_limits": {
+              "default": true,
+              "name": "strict_limits",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            "limits_by_type": {
+              "name": "limits_by_type",
+              "default": "{}",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "position": "top",
+              "name": "output"
+            }
+          },
+          "type": "basic",
+          "name": "RAG chatbot",
+          "inputs": {
+            "rag_graph": {
+              "name": "rag_graph",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            },
+            "scenario_selector": {
+              "name": "scenario_selector",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            },
+            "llm": {
+              "name": "llm",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            }
+          }
+        },
+        "beingResized": false
+      },
+      "position": {
+        "x": -533.1301830766971,
+        "y": 547.294980747757
+      },
+      "width": 339.0,
+      "parentId": null,
+      "height": 399.0
+    },
+    {
+      "id": "RAG graph 1",
+      "type": "basic",
+      "data": {
+        "title": "RAG graph",
+        "params": {},
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "RAG graph",
+          "inputs": {
+            "vector_store": {
+              "name": "vector_store",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            },
+            "text_embedder": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom",
+              "name": "text_embedder"
+            }
+          },
+          "params": {},
+          "outputs": {
+            "output": {
+              "position": "top",
+              "name": "output",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": -817.8208895639339,
+        "y": 1014.836542916127
+      },
+      "height": 200.0,
+      "width": 200.0,
+      "parentId": null
+    },
+    {
+      "id": "Vector store 1",
+      "type": "basic",
+      "data": {
+        "title": "Vector store",
+        "params": {
+          "name": "chromadb",
+          "collection_name": "lynx"
+        },
+        "display": null,
+        "error": null,
+        "beingResized": false,
+        "meta": {
+          "params": {
+            "collection_name": {
+              "default": "lynx",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "collection_name"
+            },
+            "name": {
+              "default": "chromadb",
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "name": "Vector store",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          },
+          "type": "basic",
+          "inputs": {}
+        }
+      },
+      "position": {
+        "x": -1053.794625339574,
+        "y": 1347.7711940497127
+      },
+      "height": 227.0,
+      "parentId": null,
+      "width": 275.0
+    },
+    {
+      "id": "Text embedder 2",
+      "type": "basic",
+      "data": {
+        "title": "Text embedder",
+        "params": {
+          "model": "text-embedding-ada-002"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "type": "basic",
+          "params": {
+            "model": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "model",
+              "default": "text-embedding-ada-002"
+            }
+          },
+          "inputs": {
+            "llm": {
+              "name": "llm",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Text embedder",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": -719.98604638686,
+        "y": 1343.5978526690794
+      },
+      "width": 200.0,
+      "parentId": null,
+      "height": 200.0
+    },
+    {
+      "id": "LLM 2",
+      "type": "basic",
+      "data": {
+        "title": "LLM",
+        "params": {
+          "name": "openai"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "type": "basic",
+          "params": {
+            "name": {
+              "name": "name",
+              "default": "openai",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          },
+          "name": "LLM"
+        }
+      },
+      "position": {
+        "x": -727.6171373682814,
+        "y": 1649.7242636905507
+      },
+      "height": 200.0,
+      "width": 200.0,
+      "parentId": null
+    },
+    {
+      "id": "Truncate history 1",
+      "type": "basic",
+      "data": {
+        "title": "Truncate history",
+        "params": {
+          "max_tokens": 10000.0
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Truncate history",
+          "inputs": {},
+          "type": "basic",
+          "params": {
+            "max_tokens": {
+              "type": {
+                "type": "<class 'int'>"
+              },
+              "default": 10000.0,
+              "name": "max_tokens"
+            }
+          },
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "name": "output",
+              "position": "top"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": 0.08889822620079713,
+        "y": 1044.7639853229612
+      },
+      "height": 200.0,
+      "parentId": null,
+      "width": 200.0
+    },
+    {
+      "id": "Chat processor 1",
+      "type": "basic",
+      "data": {
+        "title": "Chat processor",
+        "params": {},
+        "display": null,
+        "error": null,
+        "collapsed": true,
+        "__execution_delay": null,
+        "meta": {
+          "inputs": {
+            "processor": {
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "name": "processor"
+            }
+          },
+          "params": {},
+          "name": "Chat processor",
+          "outputs": {
+            "output": {
+              "position": "top",
+              "name": "output",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": 182.89729246405872,
+        "y": 778.546274223181
+      },
+      "width": 200.0,
+      "parentId": null,
+      "height": 200.0
+    },
+    {
+      "id": "Mask 1",
+      "type": "basic",
+      "data": {
+        "title": "Mask",
+        "params": {
+          "exceptions": "info@lynxanalytics.com,marketing@lynxanalytics.com,hr@lynxanalytics.com,lynxkite@lynxkite.com",
+          "regex": "([a-z0-9!#$%&'*+\\/=?^_`{|.}~-]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)",
+          "mask_pattern": "masked_email_address_{}",
+          "name": "email"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "position": "top",
+              "type": {
+                "type": "None"
+              },
+              "name": "output"
+            }
+          },
+          "params": {
+            "name": {
+              "default": "",
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "exceptions": {
+              "name": "exceptions",
+              "default": "",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "mask_pattern": {
+              "default": "",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "mask_pattern"
+            },
+            "regex": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "regex",
+              "default": ""
+            }
+          },
+          "type": "basic",
+          "inputs": {},
+          "name": "Mask"
+        }
+      },
+      "position": {
+        "x": 233.69759202223884,
+        "y": 1041.6145468043276
+      },
+      "width": 200.0,
+      "parentId": null,
+      "height": 200.0
+    },
+    {
+      "id": "Mask 2",
+      "type": "basic",
+      "data": {
+        "title": "Mask",
+        "params": {
+          "mask_pattern": "masked_credit_card_number_{}",
+          "exceptions": "",
+          "regex": "((?:(?:\\\\d{4}[- ]?){3}\\\\d{4}|\\\\d{15,16}))(?![\\\\d])",
+          "name": "credit_card"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Mask",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "type": {
+                "type": "None"
+              },
+              "position": "top"
+            }
+          },
+          "type": "basic",
+          "inputs": {},
+          "params": {
+            "mask_pattern": {
+              "default": "",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "mask_pattern"
+            },
+            "name": {
+              "default": "",
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "exceptions": {
+              "default": "",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "exceptions"
+            },
+            "regex": {
+              "default": "",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "regex"
+            }
+          }
+        }
+      },
+      "position": {
+        "x": 513.2761671440603,
+        "y": 1034.8547191984255
+      },
+      "height": 200.0,
+      "parentId": null,
+      "width": 200.0
+    },
+    {
+      "id": "Test Chat API 2",
+      "type": "basic",
+      "data": {
+        "title": "Test Chat API",
+        "params": {
+          "show_details": false
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "position": "right",
+              "type": {
+                "type": "None"
+              },
+              "name": "output"
+            }
+          },
+          "type": "basic",
+          "inputs": {
+            "chat_api": {
+              "name": "chat_api",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "bottom"
+            },
+            "message": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "name": "message",
+              "position": "left"
+            }
+          },
+          "name": "Test Chat API",
+          "params": {
+            "show_details": {
+              "type": {
+                "type": "<class 'bool'>"
+              },
+              "name": "show_details",
+              "default": false
+            }
+          }
+        },
+        "__execution_delay": 0.0,
+        "collapsed": false
+      },
+      "position": {
+        "x": -57.377776548056346,
+        "y": -16.924593985348814
+      },
+      "width": 376.0,
+      "parentId": null,
+      "height": 225.0
+    }
+  ],
+  "edges": [
+    {
+      "id": "xy-edge__Knowledge base 1output-Chat API 1knowledge_base",
+      "source": "Knowledge base 1",
+      "target": "Chat API 1",
+      "sourceHandle": "output",
+      "targetHandle": "knowledge_base"
+    },
+    {
+      "id": "xy-edge__RAG chatbot 1output-Chat API 1chatbot",
+      "source": "RAG chatbot 1",
+      "target": "Chat API 1",
+      "sourceHandle": "output",
+      "targetHandle": "chatbot"
+    },
+    {
+      "id": "xy-edge__LLM 1output-RAG chatbot 1llm",
+      "source": "LLM 1",
+      "target": "RAG chatbot 1",
+      "sourceHandle": "output",
+      "targetHandle": "llm"
+    },
+    {
+      "id": "xy-edge__Scenario selector 1output-RAG chatbot 1scenario_selector",
+      "source": "Scenario selector 1",
+      "target": "RAG chatbot 1",
+      "sourceHandle": "output",
+      "targetHandle": "scenario_selector"
+    },
+    {
+      "id": "xy-edge__RAG graph 1output-RAG chatbot 1rag_graph",
+      "source": "RAG graph 1",
+      "target": "RAG chatbot 1",
+      "sourceHandle": "output",
+      "targetHandle": "rag_graph"
+    },
+    {
+      "id": "xy-edge__Vector store 1output-RAG graph 1vector_store",
+      "source": "Vector store 1",
+      "target": "RAG graph 1",
+      "sourceHandle": "output",
+      "targetHandle": "vector_store"
+    },
+    {
+      "id": "xy-edge__Text embedder 2output-RAG graph 1text_embedder",
+      "source": "Text embedder 2",
+      "target": "RAG graph 1",
+      "sourceHandle": "output",
+      "targetHandle": "text_embedder"
+    },
+    {
+      "id": "xy-edge__LLM 2output-Text embedder 2llm",
+      "source": "LLM 2",
+      "target": "Text embedder 2",
+      "sourceHandle": "output",
+      "targetHandle": "llm"
+    },
+    {
+      "id": "xy-edge__Truncate history 1output-Chat processor 1processor",
+      "source": "Truncate history 1",
+      "target": "Chat processor 1",
+      "sourceHandle": "output",
+      "targetHandle": "processor"
+    },
+    {
+      "id": "xy-edge__Chat processor 1output-Chat API 1chat_processor",
+      "source": "Chat processor 1",
+      "target": "Chat API 1",
+      "sourceHandle": "output",
+      "targetHandle": "chat_processor"
+    },
+    {
+      "id": "xy-edge__Mask 1output-Chat processor 1processor",
+      "source": "Mask 1",
+      "target": "Chat processor 1",
+      "sourceHandle": "output",
+      "targetHandle": "processor"
+    },
+    {
+      "id": "xy-edge__Mask 2output-Chat processor 1processor",
+      "source": "Mask 2",
+      "target": "Chat processor 1",
+      "sourceHandle": "output",
+      "targetHandle": "processor"
+    },
+    {
+      "id": "xy-edge__Input chat 1output-Test Chat API 2message",
+      "source": "Input chat 1",
+      "target": "Test Chat API 2",
+      "sourceHandle": "output",
+      "targetHandle": "message"
+    },
+    {
+      "id": "xy-edge__Test Chat API 2output-View 1input",
+      "source": "Test Chat API 2",
+      "target": "View 1",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Chat API 1output-Test Chat API 2chat_api",
+      "source": "Chat API 1",
+      "target": "Test Chat API 2",
+      "sourceHandle": "output",
+      "targetHandle": "chat_api"
+    }
+  ]
+}
