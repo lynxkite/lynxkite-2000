@@ -14,7 +14,8 @@ from lynxscribe.components.chat.processors import (
     MaskTemplate,
     TruncateHistory,
 )
-from lynxscribe.components.chat.api import ChatAPI, ChatAPIRequest, ChatAPIResponse
+from lynxscribe.components.chat.api import ChatAPI
+from lynxscribe.core.models.prompts import ChatCompletionPrompt
 
 from lynxkite.core import ops
 import json
@@ -155,16 +156,15 @@ def mask(*, name="", regex="", exceptions="", mask_pattern=""):
 @op("Test Chat API")
 async def test_chat_api(message, chat_api, *, show_details=False):
     chat_api = chat_api[0]["chat_api"]
-    request = ChatAPIRequest(
-        session_id="b43215a0-428f-11ef-9454-0242ac120002",
-        question=message["text"],
-        history=[],
+    request = ChatCompletionPrompt(
+        model="",
+        messages=[{"role": "user", "content": message["text"]}],
     )
     response = await chat_api.answer(request)
     if show_details:
         return {**response.__dict__}
     else:
-        return {"answer": response.answer}
+        return {"answer": response.choices[0].message.content}
 
 
 @op("Input chat")
@@ -237,12 +237,7 @@ async def get_chat_api(ws):
 
 async def stream_chat_api_response(request):
     chat_api = await get_chat_api(request["model"])
-    chat_api_request = ChatAPIRequest(
-        session_id=request.get("session_id", "00000000-0000-0000-0000-000000000000"),
-        history=request["messages"][:-1],
-        question=request["messages"][-1]["content"],
-    )
-    response = await chat_api.answer(chat_api_request)
+    response = await chat_api.answer(request)
     response = response.model_dump()
     yield json.dumps(
         {
