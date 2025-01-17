@@ -20,7 +20,6 @@ def detect_plugins():
         print("No modules found in lynxkite_plugins. Be sure to install some plugins.")
         return {}
 
-    print(list(pkgutil.iter_modules(lynxkite_plugins.__path__)))
     plugins = {}
     for _, name, _ in pkgutil.iter_modules(lynxkite_plugins.__path__):
         name = f"lynxkite_plugins.{name}"
