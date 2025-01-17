@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import NodeWithParams from './NodeWithParams';
-import * as echarts from 'echarts';
+const echarts = await import('echarts');
 
 const NodeWithVisualization = (props: any) => {
   const chartsRef = React.useRef<HTMLDivElement>(null);

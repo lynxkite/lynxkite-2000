@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "npx vite",
+    "build": "npx tsc -b && npx vite build",
+    "lint": "npx eslint .",
+    "preview": "npx vite preview"
   },
   "dependencies": {
     "@esbuild/linux-x64": "^0.24.0",

@@ -6,9 +6,11 @@ import fastapi
 import importlib
 import pathlib
 import pkgutil
+from fastapi.staticfiles import StaticFiles
+import starlette
+from lynxkite import ops
+from lynxkite import workspace
 from . import crdt
-from . import ops
-from . import workspace
 
 here = pathlib.Path(__file__).parent
 lynxkite_modules = {}
@@ -102,3 +104,23 @@ async def service_post(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
     module = lynxkite_modules[module_path.split("/")[0]]
     return await module.api_service_post(req)
+
+
+class SPAStaticFiles(StaticFiles):
+    """Route everything to index.html. https://stackoverflow.com/a/73552966/3318517"""
+
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except (
+            fastapi.HTTPException,
+            starlette.exceptions.HTTPException,
+        ) as ex:
+            if ex.status_code == 404:
+                return await super().get_response(".", scope)
+            else:
+                raise ex
+
+
+static_dir = SPAStaticFiles(packages=[("lynxkite", "web_assets")], html=True)
+app.mount("/", static_dir, name="web_assets")

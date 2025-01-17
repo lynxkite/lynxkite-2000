@@ -57,7 +57,7 @@ function LynxKiteFlow() {
     const state = syncedStore({ workspace: {} as Workspace });
     setState(state);
     const doc = getYjsDoc(state);
-    const wsProvider = new WebsocketProvider("ws://localhost:5173/ws/crdt", path!, doc);
+    const wsProvider = new WebsocketProvider(`ws://${location.host}/ws/crdt`, path!, doc);
     const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.

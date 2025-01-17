@@ -1,3 +1,5 @@
+"""A LynxKite executor that assumes most operations operate on their input one by one."""
+
 from .. import ops
 from .. import workspace
 import orjson

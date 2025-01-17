@@ -4,6 +4,15 @@ import Icons from 'unplugin-icons/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    chunkSizeWarningLimit: 2048,
+  },
+  esbuild: {
+    supported: {
+      // For dynamic imports.
+      'top-level-await': true,
+    },
+  },
   plugins: [
     react(),
     Icons({ compiler: 'jsx', jsx: 'react' }),

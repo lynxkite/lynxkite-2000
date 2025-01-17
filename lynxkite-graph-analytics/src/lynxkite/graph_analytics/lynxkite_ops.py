@@ -12,7 +12,7 @@ import polars as pl
 import traceback
 import typing
 
-op = ops.op_registration("LynxKite")
+op = ops.op_registration("LynxKite Graph Analytics")
 
 
 @dataclasses.dataclass

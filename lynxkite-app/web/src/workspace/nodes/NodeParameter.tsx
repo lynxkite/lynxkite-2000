@@ -1,10 +1,17 @@
 const BOOLEAN = "<class 'bool'>";
 
-function ParamName({ name }) {
+function ParamName({ name }: { name: string }) {
   return <span className="param-name bg-base-200">{name.replace(/_/g, ' ')}</span>;
 }
 
-export default function NodeParameter({ name, value, meta, onChange }) {
+interface NodeParameterProps {
+  name: string;
+  value: any;
+  meta: any;
+  onChange: (value: any, options?: { delay: number }) => void;
+}
+
+export default function NodeParameter({ name, value, meta, onChange }: NodeParameterProps) {
   return (
     <label className="param">
       {meta?.type?.format === 'collapsed' ? <>
@@ -25,7 +32,7 @@ export default function NodeParameter({ name, value, meta, onChange }) {
           value={value || meta.type.enum[0]}
           onChange={(evt) => onChange(evt.currentTarget.value)}
         >
-          {meta.type.enum.map(option =>
+          {meta.type.enum.map((option: string) =>
             <option key={option} value={option}>{option}</option>
           )}
         </select>
