@@ -1,0 +1,12 @@
+[project]
+name = "lynxkite-lynxscribe"
+version = "0.1.0"
+description = "LynxKite operations for LynxScribe chat applications"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lynxkite-ops",
+]
+
+[tool.uv.sources]
+lynxkite-ops = { path = "../lynxkite-ops" }
