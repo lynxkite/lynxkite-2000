@@ -9,7 +9,7 @@ original LynxKite. The primary goals of this rewrite are:
 
 ## Structure
 
-- `lynxkite-ops`: Core types and utilities. Depend on this lightweight package if you are writing LynxKite plugins.
+- `lynxkite-core`: Core types and utilities. Depend on this lightweight package if you are writing LynxKite plugins.
 - `lynxkite-app`: The LynxKite web application. Install some plugins then run this to use LynxKite.
 - `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
 - `lynxkite-pillow`: A simple example plugin.

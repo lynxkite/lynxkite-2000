@@ -1,5 +1,5 @@
 [project]
-name = "lynxkite-ops"
+name = "lynxkite-core"
 version = "0.1.0"
 description = "A lightweight dependency for authoring LynxKite operations and executors"
 readme = "README.md"

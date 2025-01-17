@@ -8,8 +8,8 @@ import pathlib
 import pkgutil
 from fastapi.staticfiles import StaticFiles
 import starlette
-from lynxkite import ops
-from lynxkite import workspace
+from lynxkite.core import ops
+from lynxkite.core import workspace
 from . import crdt
 
 here = pathlib.Path(__file__).parent
@@ -122,5 +122,5 @@ class SPAStaticFiles(StaticFiles):
                 raise ex
 
 
-static_dir = SPAStaticFiles(packages=[("lynxkite", "web_assets")], html=True)
+static_dir = SPAStaticFiles(packages=[("lynxkite.app", "web_assets")], html=True)
 app.mount("/", static_dir, name="web_assets")

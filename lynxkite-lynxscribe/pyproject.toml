@@ -5,8 +5,8 @@ description = "LynxKite operations for LynxScribe chat applications"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "lynxkite-ops",
+    "lynxkite-core",
 ]
 
 [tool.uv.sources]
-lynxkite-ops = { path = "../lynxkite-ops" }
+lynxkite-core = { path = "../lynxkite-core" }

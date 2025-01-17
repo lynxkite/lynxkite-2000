@@ -5,9 +5,9 @@ description = "An example LynxKite plugin that wraps some Pillow image processin
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "lynxkite-ops",
+    "lynxkite-core",
     "pillow>=11.1.0",
 ]
 
 [tool.uv.sources]
-lynxkite-ops = { path = "../lynxkite-ops" }
+lynxkite-core = { path = "../lynxkite-core" }
