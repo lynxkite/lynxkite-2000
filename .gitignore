@@ -1,4 +1,3 @@
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -9,3 +8,7 @@
 *.sln
 *.sw?
 __pycache__
+node_modules
+dist
+build
+*.egg-info

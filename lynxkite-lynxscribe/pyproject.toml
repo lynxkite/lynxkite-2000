@@ -1,0 +1,13 @@
+[project]
+name = "lynxkite-lynxscribe"
+version = "0.1.0"
+description = "LynxKite operations for LynxScribe chat applications"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lynxkite-core",
+    "lynxscribe[openai] @ git+ssh://git@github.com/biggraph/lynxscribe@main",
+]
+
+[tool.uv.sources]
+lynxkite-core = { path = "../lynxkite-core" }
