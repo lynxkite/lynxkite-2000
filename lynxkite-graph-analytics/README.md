@@ -9,3 +9,5 @@ Then "LynxKite Graph Analytics" will show up as one of the workspace types in Ly
 ```bash
 pip install lynxkite lynxkite-graph-analytics
 ```
+
+Run LynxKite with `NX_CUGRAPH_AUTOCONFIG=True` to enable GPU-accelerated graph data science operations.
