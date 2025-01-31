@@ -212,7 +212,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
-    { name = "lynxkite-ops" },
+    { name = "lynxkite-core" },
     { name = "orjson" },
     { name = "pycrdt-websocket" },
     { name = "pydantic-to-typescript" },
@@ -222,7 +222,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.6" },
-    { name = "lynxkite-ops", virtual = "../lynxkite-ops" },
+    { name = "lynxkite-core", virtual = "../lynxkite-core" },
     { name = "orjson", specifier = ">=3.10.13" },
     { name = "pycrdt-websocket", specifier = ">=0.15.3" },
     { name = "pydantic-to-typescript", specifier = ">=2.0.0" },
@@ -230,9 +230,9 @@ requires-dist = [
 ]
 
 [[package]]
-name = "lynxkite-ops"
+name = "lynxkite-core"
 version = "0.1.0"
-source = { virtual = "../lynxkite-ops" }
+source = { virtual = "../lynxkite-core" }
 
 [[package]]
 name = "markdown-it-py"

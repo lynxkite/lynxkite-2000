@@ -8,7 +8,6 @@ const NodeWithVisualization = (props: any) => {
   useEffect(() => {
     const opts = props.data?.display?.value;
     if (!opts || !chartsRef.current) return;
-    console.log(chartsRef.current);
     chartsInstanceRef.current = echarts.init(chartsRef.current, null, { renderer: 'canvas', width: 250, height: 250 });
     chartsInstanceRef.current.setOption(opts);
     const onResize = () => chartsInstanceRef.current?.resize();
@@ -20,7 +19,7 @@ const NodeWithVisualization = (props: any) => {
   }, [props.data?.display?.value]);
   return (
     <NodeWithParams {...props}>
-      <div className="box" draggable={false} ref={chartsRef} />;
+      <div className="box" draggable={false} ref={chartsRef} />
     </NodeWithParams>
   );
 };
