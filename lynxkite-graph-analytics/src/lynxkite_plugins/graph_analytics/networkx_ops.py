@@ -5,6 +5,8 @@ import functools
 import inspect
 import networkx as nx
 
+ENV = "LynxKite Graph Analytics"
+
 
 def wrapped(name: str, func):
     @functools.wraps(func)
@@ -24,7 +26,7 @@ def wrapped(name: str, func):
 
 
 def register_networkx(env: str):
-    ops.CATALOGS.setdefault(env, {})
+    cat = ops.CATALOGS.setdefault(env, {})
     for name, func in nx.__dict__.items():
         if hasattr(func, "graphs"):
             sig = inspect.signature(func)
@@ -54,7 +56,7 @@ def register_networkx(env: str):
                 outputs={"output": ops.Output(name="output", type=nx.Graph)},
                 type="basic",
             )
-            ops.CATALOGS[env][name] = op
+            cat[name] = op
 
 
-register_networkx("LynxKite")
+register_networkx(ENV)

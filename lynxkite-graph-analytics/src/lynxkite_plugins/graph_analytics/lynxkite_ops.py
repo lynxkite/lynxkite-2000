@@ -12,7 +12,8 @@ import polars as pl
 import traceback
 import typing
 
-op = ops.op_registration("LynxKite Graph Analytics")
+ENV = "LynxKite Graph Analytics"
+op = ops.op_registration(ENV)
 
 
 @dataclasses.dataclass
@@ -112,9 +113,9 @@ def disambiguate_edges(ws):
         seen.add((edge.target, edge.targetHandle))
 
 
-@ops.register_executor("LynxKite")
+@ops.register_executor(ENV)
 async def execute(ws):
-    catalog = ops.CATALOGS["LynxKite"]
+    catalog = ops.CATALOGS[ENV]
     disambiguate_edges(ws)
     outputs = {}
     failed = 0
