@@ -65,7 +65,6 @@ function LynxKiteFlow() {
         if (!state.workspace) return;
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
-        console.log('update', JSON.parse(JSON.stringify(state.workspace)));
         setNodes([...state.workspace.nodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
         for (const node of state.workspace.nodes) {
@@ -121,7 +120,6 @@ function LynxKiteFlow() {
     const wedges = state.workspace?.edges;
     if (!wedges) return;
     for (const ch of changes) {
-      console.log('edge change', ch);
       const edgeIndex = wedges.findIndex((e) => e.id === ch.id);
       if (ch.type === 'remove') {
         wedges.splice(edgeIndex, 1);
@@ -195,7 +193,6 @@ function LynxKiteFlow() {
       target: connection.target,
       targetHandle: connection.targetHandle!,
     };
-    console.log(JSON.stringify(edge));
     state.workspace.edges!.push(edge);
     setEdges((oldEdges) => [...oldEdges, edge]);
   }, [state, setEdges]);
