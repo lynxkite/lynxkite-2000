@@ -249,13 +249,22 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
 
 
 def _map_color(value):
-    cmap = matplotlib.cm.get_cmap("viridis")
-    value = (value - value.min()) / (value.max() - value.min())
-    rgba = cmap(value)
-    return [
-        "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-        for r, g, b in rgba[:, :3]
-    ]
+    if pd.api.types.is_numeric_dtype(value):
+        cmap = matplotlib.cm.get_cmap("viridis")
+        value = (value - value.min()) / (value.max() - value.min())
+        rgba = cmap(value)
+        return [
+            "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+            for r, g, b in rgba[:, :3]
+        ]
+    else:
+        cmap = matplotlib.cm.get_cmap("Paired")
+        categories = pd.Index(value.unique())
+        colors = cmap.colors[: len(categories)]
+        return [
+            "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+            for r, g, b in [colors[categories.get_loc(v)] for v in value]
+        ]
 
 
 @op("Visualize graph", view="visualization")
