@@ -5,6 +5,7 @@ description = "The graph analytics executor and boxes for LynxKite"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "grand-cypher>=0.12.0",
     "lynxkite-core",
     "matplotlib>=3.10.0",
     "networkx>=3.4.2",

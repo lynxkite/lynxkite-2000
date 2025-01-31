@@ -5,6 +5,7 @@ from lynxkite.core import ops
 from collections import deque
 import dataclasses
 import functools
+import grandcypher
 import matplotlib
 import networkx as nx
 import pandas as pd
@@ -224,9 +225,22 @@ def sql(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
+@op("Cypher")
+def cypher(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
+    """Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame."""
+    bundle = bundle.copy()
+    graph = bundle.to_nx()
+    res = grandcypher.GrandCypher(graph).run(query)
+    bundle.dfs[save_as] = pd.DataFrame(res)
+    return bundle
+
+
 @op("Organize bundle")
 def organize_bundle(bundle: Bundle, *, code: ops.LongStr):
-    """Lets you rename/copy/delete DataFrames, and modify relations. TODO: Use a declarative solution instead of Python code. Add UI."""
+    """Lets you rename/copy/delete DataFrames, and modify relations.
+
+    TODO: Use a declarative solution instead of Python code. Add UI.
+    """
     bundle = bundle.copy()
     exec(code, globals(), {"bundle": bundle})
     return bundle
