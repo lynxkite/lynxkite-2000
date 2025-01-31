@@ -12,8 +12,8 @@ original LynxKite. The primary goals of this rewrite are:
 To run the backend:
 
 ```bash
-PYTHONPATH=. uv run pydantic2ts --module server.workspace --output ./web/src/apiTypes.ts --json2ts-cmd "npm exec --prefix web json2ts"
-uv run fastapi run server/main.py --reload
+uv pip install -e .
+LYNXKITE_RELOAD=1 lynxkite
 ```
 
 To run the frontend:
