@@ -30,7 +30,6 @@ import NodeWithParams from './nodes/NodeWithParams';
 // import NodeWithTableView from './NodeWithTableView';
 import EnvironmentSelector from './EnvironmentSelector';
 import { LynxKiteState } from './LynxKiteState';
-import '@xyflow/react/dist/style.css';
 import { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import NodeSearch, { OpsOp, Catalog, Catalogs } from "./NodeSearch.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
