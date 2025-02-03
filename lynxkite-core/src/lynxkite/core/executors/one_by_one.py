@@ -46,17 +46,19 @@ def register(env: str, cache: bool = True):
     ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env], cache=cache)
 
 
-def get_stages(ws, catalog):
+def get_stages(ws: workspace.Workspace, catalog: dict[str, ops.Op]):
     """Inputs on top/bottom are batch inputs. We decompose the graph into a DAG of components along these edges."""
     nodes = {n.id: n for n in ws.nodes}
     batch_inputs = {}
     inputs = {}
+    # For each edge in the workspacce, we record the inputs (sources)
+    # required for each node (target).
     for edge in ws.edges:
         inputs.setdefault(edge.target, []).append(edge.source)
         node = nodes[edge.target]
         op = catalog[node.data.title]
         i = op.inputs[edge.targetHandle]
-        if i.position in "top or bottom":
+        if i.side in [ops.Side.TOP, ops.Side.BOTTOM]:
             batch_inputs.setdefault(edge.target, []).append(edge.source)
     stages = []
     for bt, bss in batch_inputs.items():
@@ -93,7 +95,7 @@ async def await_if_needed(obj):
     return obj
 
 
-async def execute(ws, catalog, cache=None):
+async def execute(ws: workspace.Workspace, catalog: dict[str, ops.Op], cache=None):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -108,7 +110,12 @@ async def execute(ws, catalog, cache=None):
             node.data.error = f'Operation "{node.data.title}" not found.'
             continue
         # Start tasks for nodes that have no non-batch inputs.
-        if all([i.position in "top or bottom" for i in op.inputs.values()]):
+        if all(
+            [
+                i.side in [ops.Side.TOP, ops.Side.BOTTOM]
+                for i in op.inputs.values()
+            ]
+        ):
             tasks[node.id] = [NO_INPUT]
     batch_inputs = {}
     # Run the rest until we run out of tasks.
@@ -131,7 +138,7 @@ async def execute(ws, catalog, cache=None):
                 try:
                     inputs = []
                     for i in op.inputs.values():
-                        if i.position in "top or bottom":
+                        if i.side in [ops.Side.TOP, ops.Side.BOTTOM]:
                             assert (n, i.name) in batch_inputs, f"{i.name} is missing"
                             inputs.append(batch_inputs[(n, i.name)])
                         else:
@@ -156,16 +163,16 @@ async def execute(ws, catalog, cache=None):
                 results.extend(result)
             else:  # Finished all tasks without errors.
                 if (
-                    op.type == "visualization"
-                    or op.type == "table_view"
-                    or op.type == "image"
+                    op.view_type == ops.ViewType.VISUALIZATION
+                    or op.view_type == ops.ViewType.TABLE_VIEW
+                    or op.view_type == ops.ViewType.IMAGE
                 ):
                     data.display = results[0]
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.title]
                     i = op.inputs[edge.targetHandle]
-                    if i.position in "top or bottom":
+                    if i.side in [ops.Side.TOP, ops.Side.BOTTOM]:
                         batch_inputs.setdefault(
                             (edge.target, edge.targetHandle), []
                         ).extend(results)

@@ -1,7 +1,7 @@
 """Graph analytics operations. To be split into separate files when we have more."""
 
 import os
-from lynxkite.core import ops
+from lynxkite.core import ops, workspace
 from collections import deque
 import dataclasses
 import functools
@@ -34,6 +34,7 @@ class RelationDefinition:
     target_key: str  # The column in the target table that contains the node ID.
 
 
+# TODO: Convert this to Pydantic
 @dataclasses.dataclass
 class Bundle:
     """A collection of DataFrames and other data.
@@ -115,32 +116,50 @@ def disambiguate_edges(ws):
 
 
 @ops.register_executor(ENV)
-async def execute(ws):
-    catalog = ops.CATALOGS[ENV]
+async def execute(ws: workspace.Workspace):
+    catalog: dict[str, ops.Op] = ops.CATALOGS[ENV]
     disambiguate_edges(ws)
-    outputs = {}
+    computed_outputs = {}
     failed = 0
-    while len(outputs) + failed < len(ws.nodes):
+    while len(computed_outputs) + failed < len(ws.nodes):
         for node in ws.nodes:
-            if node.id in outputs:
+            if node.id in computed_outputs:
                 continue
             # TODO: Take the input/output handles into account.
-            inputs = [edge.source for edge in ws.edges if edge.target == node.id]
-            if all(input in outputs for input in inputs):
-                inputs = [outputs[input] for input in inputs]
+            operation_inputs = [
+                edge.source for edge in ws.edges if edge.target == node.id
+            ]
+            if all(input in computed_outputs for input in operation_inputs):
+                # All inputs for this node are ready, we can compute the output.
+                operation_inputs = [
+                    computed_outputs[input] for input in operation_inputs
+                ]
                 data = node.data
-                op = catalog[data.title]
                 params = {**data.params}
-                # Convert inputs.
                 try:
-                    for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
-                        if p.type == nx.Graph and isinstance(x, Bundle):
-                            inputs[i] = x.to_nx()
-                        elif p.type == Bundle and isinstance(x, nx.Graph):
-                            inputs[i] = Bundle.from_nx(x)
-                        elif p.type == Bundle and isinstance(x, pd.DataFrame):
-                            inputs[i] = Bundle.from_df(x)
-                    output = op(*inputs, **params)
+                    op = catalog[data.title]
+                    # Convert inputs types  to match operation signature.
+                    for i, (input_value, input_signature) in enumerate(
+                        zip(operation_inputs, op.inputs.values())
+                    ):
+                        if input_signature.type == nx.Graph and isinstance(
+                            input_value, Bundle
+                        ):
+                            operation_inputs[i] = input_value.to_nx()
+                        elif input_signature.type == Bundle and isinstance(
+                            input_value, nx.Graph
+                        ):
+                            operation_inputs[i] = Bundle.from_nx(input_value)
+                        elif input_signature.type == Bundle and isinstance(
+                            input_value, pd.DataFrame
+                        ):
+                            operation_inputs[i] = Bundle.from_df(input_value)
+                    output = op(*operation_inputs, **params)
+                except KeyError:
+                    traceback.print_exc()
+                    data.error = "Operation not found in catalog"
+                    failed += 1
+                    continue
                 except Exception as e:
                     traceback.print_exc()
                     data.error = str(e)
@@ -148,13 +167,16 @@ async def execute(ws):
                     continue
                 if len(op.inputs) == 1 and op.inputs.get("multi") == "*":
                     # It's a flexible input. Create n+1 handles.
-                    data.inputs = {f"input{i}": None for i in range(len(inputs) + 1)}
+                    # TODO: How is this used? Why we define the inputs in the WorkspaceNodeData?
+                    data.inputs = {
+                        f"input{i}": None for i in range(len(operation_inputs) + 1)
+                    }
                 data.error = None
-                outputs[node.id] = output
+                computed_outputs[node.id] = output
                 if (
-                    op.type == "visualization"
-                    or op.type == "table_view"
-                    or op.type == "image"
+                    op.view_type == ops.ViewType.VISUALIZATION
+                    or op.view_type == ops.ViewType.TABLE_VIEW
+                    or op.view_type == ops.ViewType.IMAGE
                 ):
                     data.display = output
 
@@ -188,6 +210,7 @@ def create_scale_free_graph(*, nodes: int = 10):
 @op("Compute PageRank")
 @nx_node_attribute_func("pagerank")
 def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
+    # TODO: This requires scipy to be installed.
     return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
@@ -281,7 +304,7 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization")
+@op("Visualize graph", view=ops.ViewType.VISUALIZATION)
 def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
     nodes = graph.dfs["nodes"].copy()
     if color_nodes_by:
@@ -335,7 +358,7 @@ def collect(df: pd.DataFrame):
     return df.values.tolist()
 
 
-@op("View tables", view="table_view")
+@op("View tables", view=ops.ViewType.TABLE_VIEW)
 def view_tables(bundle: Bundle):
     v = {
         "dataframes": {
