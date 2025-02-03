@@ -14,6 +14,7 @@ original LynxKite. The primary goals of this rewrite are:
 - `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
 - `lynxkite-pillow`: A simple example plugin.
 - `lynxkite-lynxscribe`: A plugin for building and running LynxScribe applications.
+- `docs`: User-facing documentation. It's shared between all packages.
 
 ## Development
 
@@ -37,4 +38,13 @@ If you also want to make changes to the frontend with hot reloading:
 ```bash
 cd lynxkite-app/web
 npm run dev
+```
+
+## Documentation
+
+To work on the documentation:
+
+```bash
+uv pip install mkdocs-material mkdocstrings[python]
+mkdocs serve
 ```
