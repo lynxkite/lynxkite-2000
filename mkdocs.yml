@@ -1,7 +1,21 @@
 site_name: "LynxKite"
+repo_url: https://github.com/lynxkite/lynxkite
+repo_name: lynxkite/lynxkite
 
 theme:
   name: "material"
+  palette:
+    scheme: lynxkite
+  logo: "assets/lynxkite-icon-white.png"
+  favicon: "assets/lynxkite-icon-white.png"
+  features:
+    - navigation.tabs
+    - navigation.path
+    - navigation.instant
+    - navigation.instant.prefetch
+
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
 - search
