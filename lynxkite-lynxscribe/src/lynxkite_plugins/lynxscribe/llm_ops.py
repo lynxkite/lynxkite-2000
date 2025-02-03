@@ -68,13 +68,13 @@ def split_document(input, *, delimiter: str = "\\n\\n"):
     return pd.DataFrame(chunks, columns=["text"])
 
 
-@ops.input_position(input="top")
+@ops.input_side(input=ops.Side.TOP)
 @op("Build document graph")
 def build_document_graph(input):
     return [{"source": i, "target": i + 1} for i in range(len(input) - 1)]
 
 
-@ops.input_position(nodes="top", edges="top")
+@ops.input_side(nodes=ops.Side.TOP, edges=ops.Side.TOP)
 @op("Predict links")
 def predict_links(nodes, edges):
     """A placeholder for a real algorithm. For now just adds 2-hop neighbors."""
@@ -89,7 +89,7 @@ def predict_links(nodes, edges):
     return edges + new_edges
 
 
-@ops.input_position(nodes="top", edges="top")
+@ops.input_side(nodes=ops.Side.TOP, edges=ops.Side.TOP)
 @op("Add neighbors")
 def add_neighbors(nodes, edges, item):
     nodes = pd.DataFrame(nodes)
@@ -133,7 +133,7 @@ def ask_llm(input, *, model: str, accepted_regex: str = None, max_tokens: int = 
     return [{**input, "response": r} for r in results]
 
 
-@op("View", view="table_view")
+@op("View", view=ops.ViewType.TABLE_VIEW)
 def view(input, *, _ctx: one_by_one.Context):
     v = _ctx.last_result
     if v:
@@ -152,8 +152,8 @@ def view(input, *, _ctx: one_by_one.Context):
     return v
 
 
-@ops.input_position(input="right")
-@ops.output_position(output="left")
+@ops.input_side(input=ops.Side.RIGHT)
+@ops.output_side(output=ops.Side.LEFT)
 @op("Loop")
 def loop(input, *, max_iterations: int = 3, _ctx: one_by_one.Context):
     """Data can flow back here max_iterations-1 times."""
@@ -174,7 +174,7 @@ class RagEngine(enum.Enum):
     Custom = "Custom"
 
 
-@ops.input_position(db="top")
+@ops.input_side(db=ops.Side.TOP)
 @op("RAG")
 def rag(
     input,
