@@ -27,14 +27,17 @@ export default function NodeWithTableView(props: any) {
             (df.data.length > 1 ?
               <Table key={name + '-table'} columns={df.columns} data={df.data} />
               :
-              <dl key={name + '-dl'}>
-                {df.columns.map((c: string, i: number) =>
-                  <React.Fragment key={name + '-' + c}>
-                    <dt>{c}</dt>
-                    <dd><Markdown>{toMD(df.data[0][i])}</Markdown></dd>
-                  </React.Fragment>)
-                }
-              </dl>)}
+              df.data.length ?
+                <dl key={name + '-dl'}>
+                  {df.columns.map((c: string, i: number) =>
+                    <React.Fragment key={name + '-' + c}>
+                      <dt>{c}</dt>
+                      <dd><Markdown>{toMD(df.data[0][i])}</Markdown></dd>
+                    </React.Fragment>)
+                  }
+                </dl>
+                :
+                JSON.stringify(df.data))}
         </React.Fragment>),
         Object.entries(display.others || {}).map(([name, o]) => <>
           <div className="df-head" onClick={() => setOpen({ ...open, [name]: !open[name] })}>{name}</div>
