@@ -13,10 +13,10 @@ def reg(name, inputs=[], outputs=None, params=[]):
         ENV,
         name,
         inputs=[
-            ops.Input(name=name, side=ops.Side.BOTTOM, type="tensor") for name in inputs
+            ops.Input(name=name, position="bottom", type="tensor") for name in inputs
         ],
         outputs=[
-            ops.Output(name=name, side=ops.Side.TOP, type="tensor") for name in outputs
+            ops.Output(name=name, position="top", type="tensor") for name in outputs
         ],
         params=params,
     )
@@ -65,3 +65,5 @@ reg(
         P.basic("lr", 0.001),
     ],
 )
+
+ops.register_area(ENV, "Repeat", params=[ops.Parameter.basic("times", 1, int)])

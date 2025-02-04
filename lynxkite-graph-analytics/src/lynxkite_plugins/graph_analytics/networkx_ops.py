@@ -54,7 +54,7 @@ def register_networkx(env: str):
                 params=params,
                 inputs=inputs,
                 outputs={"output": ops.Output(name="output", type=nx.Graph)},
-                view_type=ops.ViewType.BASIC,
+                type="basic",
             )
             cat[name] = op
 

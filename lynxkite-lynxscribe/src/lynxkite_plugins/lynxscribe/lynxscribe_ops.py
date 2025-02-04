@@ -24,7 +24,7 @@ from lynxkite.core.executors import one_by_one
 ENV = "LynxScribe"
 one_by_one.register(ENV)
 op = ops.op_registration(ENV)
-output_on_top = ops.output_side(output=ops.Side.TOP)
+output_on_top = ops.output_position(output="top")
 
 
 @output_on_top
@@ -42,7 +42,7 @@ def llm(*, name="openai"):
 
 
 @output_on_top
-@ops.input_side(llm=ops.Side.BOTTOM)
+@ops.input_position(llm="bottom")
 @op("Text embedder")
 def text_embedder(llm, *, model="text-embedding-ada-002"):
     llm = llm[0]["llm"]
@@ -51,7 +51,7 @@ def text_embedder(llm, *, model="text-embedding-ada-002"):
 
 
 @output_on_top
-@ops.input_side(vector_store=ops.Side.BOTTOM, text_embedder=ops.Side.BOTTOM)
+@ops.input_position(vector_store="bottom", text_embedder="bottom")
 @op("RAG graph")
 def rag_graph(vector_store, text_embedder):
     vector_store = vector_store[0]["vector_store"]
@@ -78,7 +78,7 @@ DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not
 
 
 @output_on_top
-@ops.input_side(rag_graph=ops.Side.BOTTOM, scenario_selector=ops.Side.BOTTOM, llm=ops.Side.BOTTOM)
+@ops.input_position(rag_graph="bottom", scenario_selector="bottom", llm="bottom")
 @op("RAG chatbot")
 def rag_chatbot(
     rag_graph,
@@ -107,7 +107,7 @@ def rag_chatbot(
 
 
 @output_on_top
-@ops.input_side(processor=ops.Side.BOTTOM)
+@ops.input_position(processor="bottom")
 @op("Chat processor")
 def chat_processor(processor, *, _ctx: one_by_one.Context):
     cfg = _ctx.last_result or {
@@ -152,7 +152,7 @@ def mask(*, name="", regex="", exceptions="", mask_pattern=""):
     }
 
 
-@ops.input_side(chat_api=ops.Side.BOTTOM)
+@ops.input_position(chat_api="bottom")
 @op("Test Chat API")
 async def test_chat_api(message, chat_api, *, show_details=False):
     chat_api = chat_api[0]["chat_api"]
@@ -173,7 +173,7 @@ def input_chat(*, chat: str):
 
 
 @output_on_top
-@ops.input_side(chatbot=ops.Side.BOTTOM, chat_processor=ops.Side.BOTTOM, knowledge_base=ops.Side.BOTTOM)
+@ops.input_position(chatbot="bottom", chat_processor="bottom", knowledge_base="bottom")
 @op("Chat API")
 def chat_api(chatbot, chat_processor, knowledge_base, *, model="gpt-4o-mini"):
     chatbot = chatbot[0]["chatbot"]
@@ -205,7 +205,7 @@ def knowledge_base(
     }
 
 
-@op("View", view=ops.ViewType.TABLE_VIEW)
+@op("View", view="table_view")
 def view(input):
     columns = [str(c) for c in input.keys() if not str(c).startswith("_")]
     v = {
