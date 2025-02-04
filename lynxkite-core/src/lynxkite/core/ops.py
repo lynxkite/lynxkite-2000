@@ -61,23 +61,16 @@ class Parameter(BaseConfig):
         return Parameter(name=name, default=default, type=type)
 
 
-class Side(enum.StrEnum):
-    LEFT = "left"
-    RIGHT = "right"
-    TOP = "top"
-    BOTTOM = "bottom"
-
-
 class Input(BaseConfig):
     name: str
     type: Type
-    side: Side = Side.LEFT
+    position: str = "left"
 
 
 class Output(BaseConfig):
     name: str
     type: Type
-    side: Side = Side.RIGHT
+    position: str = "right"
 
 
 MULTI_INPUT = Input(name="multi", type="*")
@@ -91,22 +84,13 @@ def basic_outputs(*names):
     return {name: Output(name=name, type=None) for name in names}
 
 
-class ViewType(enum.StrEnum):
-    """Represents the visualization options for an operation."""
-
-    BASIC = "basic"
-    VISUALIZATION = "visualization"
-    IMAGE = "image"
-    TABLE_VIEW = "table_view"
-
-
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     name: str
     params: dict[str, Parameter]
     inputs: dict[str, Input]
     outputs: dict[str, Output]
-    view_type: ViewType = ViewType.BASIC  # The UI to use for this operation.
+    type: str = "basic"  # The UI to use for this operation.
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -149,7 +133,7 @@ def op(env: str, name: str, *, view="basic", outputs=None):
             params=params,
             inputs=inputs,
             outputs=_outputs,
-            view_type=view,
+            type=view,
         )
         CATALOGS.setdefault(env, {})
         CATALOGS[env][name] = op
@@ -159,25 +143,25 @@ def op(env: str, name: str, *, view="basic", outputs=None):
     return decorator
 
 
-def input_side(**kwargs):
-    """Decorator for specifying unusual sides for the inputs."""
+def input_position(**kwargs):
+    """Decorator for specifying unusual positions for the inputs."""
 
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.inputs[k].side = v
+            op.inputs[k].position = v
         return func
 
     return decorator
 
 
-def output_side(**kwargs):
-    """Decorator for specifying unusual sides for the outputs."""
+def output_position(**kwargs):
+    """Decorator for specifying unusual positions for the outputs."""
 
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.outputs[k].side = v
+            op.outputs[k].position = v
         return func
 
     return decorator
@@ -189,13 +173,7 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(
-    env: str,
-    name: str,
-    inputs: list[Input] = [],
-    outputs: list[Output] = ["output"],
-    params: list[Parameter] = [],
-):
+def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[]):
     """A passive operation has no associated code."""
     op = Op(
         func=no_op,
@@ -231,3 +209,16 @@ def op_registration(env: str):
 
 def passive_op_registration(env: str):
     return functools.partial(register_passive_op, env)
+
+
+def register_area(env, name, params=[]):
+    """A node that represents an area. It can contain other nodes, but does not restrict movement in any way."""
+    op = Op(
+        func=no_op,
+        name=name,
+        params={p.name: p for p in params},
+        inputs={},
+        outputs={},
+        type="area",
+    )
+    CATALOGS[env][name] = op

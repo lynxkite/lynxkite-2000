@@ -56,7 +56,7 @@ def to_grayscale(image: Image):
     return image.convert("L")
 
 
-@op("View image", view=ops.ViewType.IMAGE)
+@op("View image", view="image")
 def view_image(image: Image):
     buffered = io.BytesIO()
     image.save(buffered, format="JPEG")
