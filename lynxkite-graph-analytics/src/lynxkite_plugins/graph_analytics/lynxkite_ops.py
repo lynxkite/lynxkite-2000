@@ -339,12 +339,12 @@ def collect(df: pd.DataFrame):
 
 
 @op("View tables", view="table_view")
-def view_tables(bundle: Bundle):
+def view_tables(bundle: Bundle, *, limit: int = 100):
     v = {
         "dataframes": {
             name: {
                 "columns": [str(c) for c in df.columns],
-                "data": collect(df),
+                "data": collect(df)[:limit],
             }
             for name, df in bundle.dfs.items()
         },
