@@ -8,7 +8,7 @@ def make_node(id, op, type="basic", **params):
     return workspace.WorkspaceNode(
         id=id,
         type=type,
-        position=workspace.NodePosition(x=0, y=0),
+        position=workspace.Position(x=0, y=0),
         data=workspace.WorkspaceNodeData(title=op, params=params),
     )
 
@@ -43,7 +43,7 @@ class LLMOpsTest(unittest.IsolatedAsyncioTestCase):
                     filename="/Users/danieldarabos/Downloads/aimo-train.csv",
                     key="problem",
                 ),
-                make_node("1", "View", type=ops.ViewType.TABLE_VIEW),
+                make_node("1", "View", type="table_view"),
             ],
             edges=[make_edge("0", "1")],
         )
