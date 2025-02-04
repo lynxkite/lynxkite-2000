@@ -73,11 +73,14 @@ class Bundle:
 
     def to_nx(self):
         # TODO: Use relations.
-        graph = nx.from_pandas_edgelist(self.dfs["edges"])
+        graph = nx.DiGraph()
         if "nodes" in self.dfs:
-            nx.set_node_attributes(
-                graph, self.dfs["nodes"].set_index("id").to_dict("index")
+            graph.add_nodes_from(
+                self.dfs["nodes"].set_index("id").to_dict("index").items()
             )
+        graph.add_edges_from(
+            self.dfs["edges"][["source", "target"]].itertuples(index=False, name=None)
+        )
         return graph
 
     def copy(self):
