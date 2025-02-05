@@ -201,8 +201,7 @@ def import_graphml(*, filename: str):
             else:
                 raise ValueError("No GraphML file found in the ZIP archive.")
     else:
-        with z.open(filename) as f:
-            G = nx.read_graphml(f)
+        G = nx.read_graphml(filename)
     return G
 
 
@@ -317,7 +316,9 @@ def _map_color(value):
         colors = cmap.colors[: len(categories)]
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-            for r, g, b in [colors[categories.get_loc(v)] for v in value]
+            for r, g, b in [
+                colors[min(len(colors) - 1, categories.get_loc(v))] for v in value
+            ]
         ]
 
 
@@ -326,17 +327,27 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
     nodes = graph.dfs["nodes"].copy()
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
-    if (
-        "x" in nodes.columns
-        and nodes["x"].dtype == "float64"
-        and "y" in nodes.columns
-        and nodes["y"].dtype == "float64"
-    ):
-        pos = {
-            node_id: (row["x"] * 1000, row["y"] * 1000)
-            for node_id, row in nodes.iterrows()
-        }
-        curveness = 0  # Street maps are better with straight streets.
+    for cols in ["x y", "long lat"]:
+        x, y = cols.split()
+        if (
+            x in nodes.columns
+            and nodes[x].dtype == "float64"
+            and y in nodes.columns
+            and nodes[y].dtype == "float64"
+        ):
+            cx, cy = nodes[x].mean(), nodes[y].mean()
+            dx, dy = nodes[x].std(), nodes[y].std()
+            # Scale up to avoid float precision issues and because eCharts omits short edges.
+            scale_x = 100 / max(dx, dy)
+            scale_y = scale_x
+            if y == "lat":
+                scale_y *= -1
+            pos = {
+                node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
+                for node_id, row in nodes.iterrows()
+            }
+            curveness = 0  # Street maps are better with straight streets.
+            break
     else:
         pos = nx.spring_layout(
             graph.to_nx(), iterations=max(1, int(10000 / len(nodes)))
