@@ -73,11 +73,14 @@ class Bundle:
 
     def to_nx(self):
         # TODO: Use relations.
-        graph = nx.from_pandas_edgelist(self.dfs["edges"])
+        graph = nx.DiGraph()
         if "nodes" in self.dfs:
-            nx.set_node_attributes(
-                graph, self.dfs["nodes"].set_index("id").to_dict("index")
+            graph.add_nodes_from(
+                self.dfs["nodes"].set_index("id").to_dict("index").items()
             )
+        graph.add_edges_from(
+            self.dfs["edges"][["source", "target"]].itertuples(index=False, name=None)
+        )
         return graph
 
     def copy(self):
@@ -250,7 +253,7 @@ def organize_bundle(bundle: Bundle, *, code: ops.LongStr):
 def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     """Takes a (preferably connected) subgraph."""
     sample = set()
-    to_expand = deque([0])
+    to_expand = deque([next(graph.nodes.keys().__iter__())])
     while to_expand and len(sample) < nodes:
         node = to_expand.pop()
         for n in graph.neighbors(node):
@@ -336,12 +339,12 @@ def collect(df: pd.DataFrame):
 
 
 @op("View tables", view="table_view")
-def view_tables(bundle: Bundle):
+def view_tables(bundle: Bundle, *, limit: int = 100):
     v = {
         "dataframes": {
             name: {
                 "columns": [str(c) for c in df.columns],
-                "data": collect(df),
+                "data": collect(df)[:limit],
             }
             for name, df in bundle.dfs.items()
         },

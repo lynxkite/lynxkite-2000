@@ -1,6 +1,9 @@
-# TODO: Make this conditional. Until then just comment/uncomment it to use cuDF Pandas.
-# import cudf.pandas
-# cudf.pandas.install()
+import os
+
+if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
+    import cudf.pandas
+
+    cudf.pandas.install()
 import dataclasses
 import fastapi
 import importlib

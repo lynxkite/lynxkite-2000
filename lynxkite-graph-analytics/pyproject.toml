@@ -13,5 +13,10 @@ dependencies = [
     "polars[gpu]>=1.14.0",
 ]
 
+[project.optional-dependencies]
+gpu = [
+    "nx-cugraph-cu12>=24.12.0",
+]
+
 [tool.uv.sources]
 lynxkite-core = { path = "../lynxkite-core" }
