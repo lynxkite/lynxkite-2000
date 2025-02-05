@@ -55,7 +55,8 @@ class Bundle:
         d = dict(graph.nodes(data=True))
         nodes = pd.DataFrame(d.values(), index=d.keys())
         nodes["id"] = nodes.index
-        nodes.drop(columns=["index"], inplace=True)
+        if "index" in nodes.columns:
+            nodes.drop(columns=["index"], inplace=True)
         return cls(
             dfs={"edges": edges, "nodes": nodes},
             relations=[
@@ -205,6 +206,14 @@ def import_graphml(*, filename: str):
     return G
 
 
+@op("Graph from OSM")
+@mem.cache
+def import_osm(*, location: str):
+    import osmnx as ox
+
+    return ox.graph.graph_from_place(location, network_type="drive")
+
+
 @op("Create scale-free graph")
 def create_scale_free_graph(*, nodes: int = 10):
     """Creates a scale-free graph with the given number of nodes."""
@@ -317,10 +326,25 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
     nodes = graph.dfs["nodes"].copy()
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
+    if (
+        "x" in nodes.columns
+        and nodes["x"].dtype == "float64"
+        and "y" in nodes.columns
+        and nodes["y"].dtype == "float64"
+    ):
+        pos = {
+            node_id: (row["x"] * 1000, row["y"] * 1000)
+            for node_id, row in nodes.iterrows()
+        }
+        curveness = 0  # Street maps are better with straight streets.
+    else:
+        pos = nx.spring_layout(
+            graph.to_nx(), iterations=max(1, int(10000 / len(nodes)))
+        )
+        curveness = 0.3
     nodes = nodes.to_records()
     edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
     edges = edges.to_records()
-    pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
@@ -330,7 +354,7 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
                 "roam": True,
                 "lineStyle": {
                     "color": "gray",
-                    "curveness": 0.3,
+                    "curveness": curveness,
                 },
                 "emphasis": {
                     "focus": "adjacency",
