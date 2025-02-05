@@ -24,7 +24,8 @@ export default function NodeParameter({ name, value, meta, onChange }: NodeParam
         <textarea className="textarea textarea-bordered w-full max-w-xs"
           rows={6}
           value={value}
-          onChange={(evt) => onChange(evt.currentTarget.value)}
+          onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
+          onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
         />
       </> : meta?.type?.enum ? <>
         <ParamName name={name} />
