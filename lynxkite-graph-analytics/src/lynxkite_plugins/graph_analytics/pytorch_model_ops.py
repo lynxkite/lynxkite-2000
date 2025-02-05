@@ -66,4 +66,10 @@ reg(
     ],
 )
 
-ops.register_area(ENV, "Repeat", params=[ops.Parameter.basic("times", 1, int)])
+ops.register_passive_op(
+    ENV,
+    "Repeat",
+    inputs=[ops.Input(name="input", position="top", type="tensor")],
+    outputs=[ops.Output(name="output", position="bottom", type="tensor")],
+    params=[ops.Parameter.basic("times", 1, int)],
+)
