@@ -51,6 +51,8 @@ def get_stages(ws, catalog):
     nodes = {n.id: n for n in ws.nodes}
     batch_inputs = {}
     inputs = {}
+    # For each edge in the workspacce, we record the inputs (sources)
+    # required for each node (target).
     for edge in ws.edges:
         inputs.setdefault(edge.target, []).append(edge.source)
         node = nodes[edge.target]
@@ -93,7 +95,7 @@ async def await_if_needed(obj):
     return obj
 
 
-async def execute(ws, catalog, cache=None):
+async def execute(ws: workspace.Workspace, catalog, cache=None):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}

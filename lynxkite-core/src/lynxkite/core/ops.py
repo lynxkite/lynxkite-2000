@@ -64,6 +64,7 @@ class Parameter(BaseConfig):
 class Input(BaseConfig):
     name: str
     type: Type
+    # TODO: Make position an enum with the possible values.
     position: str = "left"
 
 
@@ -90,6 +91,7 @@ class Op(BaseConfig):
     params: dict[str, Parameter]
     inputs: dict[str, Input]
     outputs: dict[str, Output]
+    # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
 
     def __call__(self, *inputs, **params):
@@ -209,16 +211,3 @@ def op_registration(env: str):
 
 def passive_op_registration(env: str):
     return functools.partial(register_passive_op, env)
-
-
-def register_area(env, name, params=[]):
-    """A node that represents an area. It can contain other nodes, but does not restrict movement in any way."""
-    op = Op(
-        func=no_op,
-        name=name,
-        params={p.name: p for p in params},
-        inputs={},
-        outputs={},
-        type="area",
-    )
-    CATALOGS[env][name] = op
