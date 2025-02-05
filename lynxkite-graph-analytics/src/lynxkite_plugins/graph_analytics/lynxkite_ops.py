@@ -6,6 +6,7 @@ from collections import deque
 import dataclasses
 import functools
 import grandcypher
+import joblib
 import matplotlib
 import networkx as nx
 import pandas as pd
@@ -14,6 +15,7 @@ import traceback
 import typing
 import zipfile
 
+mem = joblib.Memory("../joblib-cache")
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
 
@@ -185,6 +187,7 @@ def import_csv(
 
 
 @op("Import GraphML")
+@mem.cache
 def import_graphml(*, filename: str):
     """Imports a GraphML file."""
     if filename.endswith(".zip"):
@@ -225,6 +228,11 @@ def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
+
+
+@op("Discard parallel edges")
+def discard_parallel_edges(graph: nx.Graph):
+    return nx.DiGraph(graph)
 
 
 @op("SQL")
