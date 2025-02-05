@@ -1,0 +1,44 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+            enable-cache: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          eval `ssh-agent -s`
+          ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
+          uv pip install -e lynxkite-core/[dev] lynxkite-app/[dev] lynxkite-graph-analytics/[dev] lynxkite-lynxscribe/ lynxkite-pillow-example/
+        env:
+            UV_SYSTEM_PYTHON: 1
+
+      - name: Run core tests
+        run: |
+          cd lynxkite-core
+          pytest
+
+      - name: Run app tests
+        run: |
+            cd lynxkite-app
+            pytest
+    
+      - name: Run graph analytics tests  
+        run: |
+            cd lynxkite-graph-analytics
+            pytest
