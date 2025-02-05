@@ -65,5 +65,3 @@ reg(
         P.basic("lr", 0.001),
     ],
 )
-
-ops.register_area(ENV, "Repeat", params=[ops.Parameter.basic("times", 1, int)])
