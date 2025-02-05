@@ -12,6 +12,7 @@ import pandas as pd
 import polars as pl
 import traceback
 import typing
+import zipfile
 
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
@@ -52,6 +53,7 @@ class Bundle:
         d = dict(graph.nodes(data=True))
         nodes = pd.DataFrame(d.values(), index=d.keys())
         nodes["id"] = nodes.index
+        nodes.drop(columns=["index"], inplace=True)
         return cls(
             dfs={"edges": edges, "nodes": nodes},
             relations=[
@@ -180,6 +182,24 @@ def import_csv(
         else columns.split(","),
         sep=pd.api.extensions.no_default if separator == "<auto>" else separator,
     )
+
+
+@op("Import GraphML")
+def import_graphml(*, filename: str):
+    """Imports a GraphML file."""
+    if filename.endswith(".zip"):
+        with zipfile.ZipFile(filename, "r") as z:
+            for fn in z.namelist():
+                if fn.endswith(".graphml"):
+                    with z.open(fn) as f:
+                        G = nx.read_graphml(f)
+                        break
+            else:
+                raise ValueError("No GraphML file found in the ZIP archive.")
+    else:
+        with z.open(filename) as f:
+            G = nx.read_graphml(f)
+    return G
 
 
 @op("Create scale-free graph")
