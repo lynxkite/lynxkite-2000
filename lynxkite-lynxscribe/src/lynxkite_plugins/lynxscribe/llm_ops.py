@@ -212,7 +212,7 @@ def rag(
         results = [db[int(r)] for r in results["ids"][0]]
         return {**input, "rag": results, "_collection": collection}
     if engine == RagEngine.Custom:
-        model = "google/gemma-2-2b-it"
+        model = "michaelfeil/bge-small-en-v1.5"
         chat = input[input_field]
         embeddings = [embedding(input=[r[db_field]], model=model) for r in db]
         q = embedding(input=[chat], model=model)
