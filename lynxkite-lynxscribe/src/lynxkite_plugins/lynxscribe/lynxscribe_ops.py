@@ -160,11 +160,12 @@ async def test_chat_api(message, chat_api, *, show_details=False):
         model="",
         messages=[{"role": "user", "content": message["text"]}],
     )
-    response = await chat_api.answer(request)
+    response = await chat_api.answer(request, stream=False)
+    answer = response.choices[0].message.content
     if show_details:
-        return {**response.__dict__}
+        return {"answer": answer, **response.__dict__}
     else:
-        return {"answer": response.choices[0].message.content}
+        return {"answer": answer}
 
 
 @op("Input chat")
@@ -237,22 +238,9 @@ async def get_chat_api(ws):
 
 async def stream_chat_api_response(request):
     chat_api = await get_chat_api(request["model"])
-    response = await chat_api.answer(request)
-    response = response.model_dump()
-    yield json.dumps(
-        {
-            **response,
-            "id": "asd",
-            "object": "chat.completion.chunk",
-            "model": request["model"],
-            "choices": [
-                {
-                    "index": 0,
-                    "delta": {"role": "assistant", "content": response["answer"]},
-                }
-            ],
-        }
-    )
+    request = ChatCompletionPrompt(**request)
+    async for chunk in await chat_api.answer(request, stream=True):
+        yield chunk.model_dump_json()
 
 
 async def api_service_post(request):
