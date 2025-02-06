@@ -120,7 +120,7 @@ def ask_llm(input, *, model: str, accepted_regex: str = None, max_tokens: int = 
     options = {}
     if accepted_regex:
         options["extra_body"] = {
-            "guided_regex": accepted_regex,
+            "regex": accepted_regex,
         }
     results = chat(
         model=model,
