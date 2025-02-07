@@ -11,25 +11,28 @@
         "error": null,
         "meta": {
           "name": "Input: features",
-          "params": {},
-          "inputs": {},
+          "type": "basic",
           "outputs": {
             "x": {
+              "position": "top",
               "name": "x",
               "type": {
                 "type": "tensor"
-              },
-              "position": "top"
+              }
             }
           },
-          "type": "basic",
-          "sub_nodes": null
-        }
+          "params": {},
+          "inputs": {}
+        },
+        "collapsed": true,
+        "__execution_delay": null
       },
       "position": {
         "x": -108.60604658638658,
         "y": 63.96065124378427
       },
+      "width": 200.0,
+      "height": 200.0,
       "parentId": null
     },
     {
@@ -40,10 +43,13 @@
         "params": {},
         "display": null,
         "error": null,
+        "__execution_delay": null,
+        "collapsed": true,
         "meta": {
           "name": "Input: graph edges",
-          "params": {},
           "inputs": {},
+          "params": {},
+          "type": "basic",
           "outputs": {
             "edges": {
               "name": "edges",
@@ -52,16 +58,16 @@
               },
               "position": "top"
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
         "x": 180.7373888617958,
         "y": 58.54904654355781
       },
-      "parentId": null
+      "width": 200.0,
+      "parentId": null,
+      "height": 200.0
     },
     {
       "id": "Linear 1",
@@ -74,43 +80,44 @@
         "display": null,
         "error": null,
         "meta": {
-          "name": "Linear",
-          "params": {
-            "output_dim": {
-              "name": "output_dim",
-              "default": "same",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
           "inputs": {
             "x": {
-              "name": "x",
               "type": {
                 "type": "tensor"
               },
-              "position": "bottom"
-            }
-          },
-          "outputs": {
-            "x": {
-              "name": "x",
-              "type": {
-                "type": "tensor"
-              },
-              "position": "top"
+              "position": "bottom",
+              "name": "x"
             }
           },
           "type": "basic",
-          "sub_nodes": null
+          "name": "Linear",
+          "outputs": {
+            "x": {
+              "type": {
+                "type": "tensor"
+              },
+              "position": "top",
+              "name": "x"
+            }
+          },
+          "params": {
+            "output_dim": {
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "same"
+            }
+          }
         }
       },
       "position": {
-        "x": 56.938816909128036,
-        "y": -573.5634543506885
+        "x": 78.37881963123723,
+        "y": -528.3012263817914
       },
-      "parentId": null
+      "parentId": null,
+      "width": 204.0,
+      "height": 140.0
     },
     {
       "id": "Activation 1",
@@ -123,11 +130,30 @@
         "display": null,
         "error": null,
         "meta": {
+          "outputs": {
+            "x": {
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              },
+              "name": "x"
+            }
+          },
           "name": "Activation",
+          "type": "basic",
+          "inputs": {
+            "x": {
+              "position": "bottom",
+              "name": "x",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
           "params": {
             "type": {
+              "default": "OptionsFor_type.ReLU",
               "name": "type",
-              "default": 1,
               "type": {
                 "enum": [
                   "ReLU",
@@ -137,34 +163,16 @@
                 ]
               }
             }
-          },
-          "inputs": {
-            "x": {
-              "name": "x",
-              "type": {
-                "type": "tensor"
-              },
-              "position": "bottom"
-            }
-          },
-          "outputs": {
-            "x": {
-              "name": "x",
-              "type": {
-                "type": "tensor"
-              },
-              "position": "top"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
-        "x": 84.15324804216073,
-        "y": -729.2300004316357
+        "x": 98.44658319023353,
+        "y": -741.1411130550297
       },
-      "parentId": null
+      "height": 154.0,
+      "parentId": null,
+      "width": 173.0
     },
     {
       "id": "Dropout 1",
@@ -177,16 +185,7 @@
         "display": null,
         "error": null,
         "meta": {
-          "name": "Dropout",
-          "params": {
-            "p": {
-              "name": "p",
-              "default": 0.5,
-              "type": {
-                "type": "<class 'float'>"
-              }
-            }
-          },
+          "type": "basic",
           "inputs": {
             "x": {
               "name": "x",
@@ -196,59 +195,34 @@
               "position": "bottom"
             }
           },
+          "name": "Dropout",
+          "params": {
+            "p": {
+              "default": 0.5,
+              "type": {
+                "type": "<class 'float'>"
+              },
+              "name": "p"
+            }
+          },
           "outputs": {
             "x": {
+              "position": "top",
               "name": "x",
               "type": {
                 "type": "tensor"
-              },
-              "position": "top"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
-      },
-      "position": {
-        "x": 56.938816909128036,
-        "y": -889.4846386414522
-      },
-      "parentId": null
-    },
-    {
-      "id": "Repeat 1",
-      "type": "area",
-      "data": {
-        "title": "Repeat",
-        "params": {
-          "times": "3"
-        },
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Repeat",
-          "params": {
-            "times": {
-              "name": "times",
-              "default": 1,
-              "type": {
-                "type": "<class 'int'>"
               }
             }
-          },
-          "inputs": {},
-          "outputs": {},
-          "type": "area",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
-        "x": -48.6249442834993,
-        "y": -970.0583599108166
+        "x": 73.61437458187964,
+        "y": -929.9824215609918
       },
+      "width": 207.0,
       "parentId": null,
-      "width": 400,
-      "height": 600
+      "height": 159.0
     },
     {
       "id": "Graph conv 1",
@@ -261,11 +235,21 @@
         "display": null,
         "error": null,
         "meta": {
+          "outputs": {
+            "x": {
+              "type": {
+                "type": "tensor"
+              },
+              "name": "x",
+              "position": "top"
+            }
+          },
+          "type": "basic",
           "name": "Graph conv",
           "params": {
             "type": {
               "name": "type",
-              "default": 1,
+              "default": "OptionsFor_type.GCNConv",
               "type": {
                 "enum": [
                   "GCNConv",
@@ -278,10 +262,10 @@
           },
           "inputs": {
             "x": {
-              "name": "x",
               "type": {
                 "type": "tensor"
               },
+              "name": "x",
               "position": "bottom"
             },
             "edges": {
@@ -291,60 +275,16 @@
               },
               "position": "bottom"
             }
-          },
-          "outputs": {
-            "x": {
-              "name": "x",
-              "type": {
-                "type": "tensor"
-              },
-              "position": "top"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
         "x": 64.08886242755246,
         "y": -269.43023573181557
       },
+      "height": 200.0,
+      "width": 200.0,
       "parentId": null
-    },
-    {
-      "id": "Repeat 2",
-      "type": "area",
-      "data": {
-        "title": "Repeat",
-        "params": {
-          "times": "5"
-        },
-        "display": null,
-        "error": null,
-        "meta": {
-          "name": "Repeat",
-          "params": {
-            "times": {
-              "name": "times",
-              "default": 1,
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
-          "inputs": {},
-          "outputs": {},
-          "type": "area",
-          "sub_nodes": null
-        }
-      },
-      "position": {
-        "x": -46.21033706832179,
-        "y": -326.2712248181098
-      },
-      "parentId": null,
-      "width": 400,
-      "height": 200
     },
     {
       "id": "Supervised loss 1",
@@ -354,19 +294,22 @@
         "params": {},
         "display": null,
         "error": null,
+        "collapsed": true,
+        "__execution_delay": null,
         "meta": {
-          "name": "Supervised loss",
+          "type": "basic",
           "params": {},
+          "name": "Supervised loss",
           "inputs": {
-            "x": {
-              "name": "x",
+            "y": {
+              "name": "y",
               "type": {
                 "type": "tensor"
               },
               "position": "bottom"
             },
-            "y": {
-              "name": "y",
+            "x": {
+              "name": "x",
               "type": {
                 "type": "tensor"
               },
@@ -375,22 +318,22 @@
           },
           "outputs": {
             "loss": {
-              "name": "loss",
+              "position": "top",
               "type": {
                 "type": "tensor"
               },
-              "position": "top"
+              "name": "loss"
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
         "x": 110.53693593362718,
         "y": -1123.9976567905628
       },
-      "parentId": null
+      "parentId": null,
+      "height": 80.0,
+      "width": 204.0
     },
     {
       "id": "Input: label 1",
@@ -400,27 +343,30 @@
         "params": {},
         "display": null,
         "error": null,
+        "collapsed": true,
+        "__execution_delay": null,
         "meta": {
-          "name": "Input: label",
-          "params": {},
           "inputs": {},
           "outputs": {
             "y": {
-              "name": "y",
               "type": {
                 "type": "tensor"
               },
-              "position": "top"
+              "position": "top",
+              "name": "y"
             }
           },
+          "name": "Input: label",
           "type": "basic",
-          "sub_nodes": null
+          "params": {}
         }
       },
       "position": {
         "x": 666.110498676668,
         "y": -898.6721561114967
       },
+      "width": 200.0,
+      "height": 73.0,
       "parentId": null
     },
     {
@@ -429,17 +375,23 @@
       "data": {
         "title": "Optimizer",
         "params": {
-          "type": "AdamW",
-          "lr": 0.001
+          "lr": 0.001,
+          "type": "AdamW"
         },
         "display": null,
         "error": null,
         "meta": {
           "name": "Optimizer",
+          "outputs": {},
           "params": {
+            "lr": {
+              "default": 0.001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
             "type": {
-              "name": "type",
-              "default": 1,
               "type": {
                 "enum": [
                   "AdamW",
@@ -450,35 +402,136 @@
                   "Paged AdamW",
                   "Galore AdamW"
                 ]
-              }
-            },
-            "lr": {
-              "name": "lr",
-              "default": 0.001,
-              "type": {
-                "type": "<class 'float'>"
-              }
+              },
+              "name": "type",
+              "default": "OptionsFor_type.AdamW"
             }
           },
           "inputs": {
             "loss": {
+              "type": {
+                "type": "tensor"
+              },
               "name": "loss",
+              "position": "bottom"
+            }
+          },
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": 115.25730958703494,
+        "y": -1431.5320892753364
+      },
+      "width": 200.0,
+      "height": 233.0,
+      "parentId": null
+    },
+    {
+      "id": "Repeat 3",
+      "type": "basic",
+      "data": {
+        "title": "Repeat",
+        "params": {
+          "times": 1.0
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "type": "basic",
+          "position": {
+            "y": 340.0,
+            "x": 371.0
+          },
+          "outputs": {
+            "output": {
+              "name": "output",
               "type": {
                 "type": "tensor"
               },
               "position": "bottom"
             }
           },
-          "outputs": {},
-          "type": "basic",
-          "sub_nodes": null
+          "name": "Repeat",
+          "params": {
+            "times": {
+              "name": "times",
+              "default": 1.0,
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "inputs": {
+            "input": {
+              "type": {
+                "type": "tensor"
+              },
+              "position": "top",
+              "name": "input"
+            }
+          }
         }
       },
       "position": {
-        "x": 165.28398260528976,
-        "y": -1338.6254108128633
+        "x": -245.1288628776232,
+        "y": -276.90661040974317
       },
-      "parentId": null
+      "width": 200.0,
+      "height": 200.0
+    },
+    {
+      "id": "Repeat 1",
+      "type": "basic",
+      "data": {
+        "title": "Repeat",
+        "params": {
+          "times": 1.0
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              },
+              "name": "output"
+            }
+          },
+          "params": {
+            "times": {
+              "default": 1.0,
+              "type": {
+                "type": "<class 'int'>"
+              },
+              "name": "times"
+            }
+          },
+          "position": {
+            "x": 387.0,
+            "y": 337.0
+          },
+          "type": "basic",
+          "name": "Repeat",
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          }
+        }
+      },
+      "position": {
+        "x": -258.0088683218416,
+        "y": -737.3822225246788
+      },
+      "width": 200.0,
+      "height": 200.0
     }
   ],
   "edges": [
@@ -537,6 +590,34 @@
       "target": "Optimizer 1",
       "sourceHandle": "loss",
       "targetHandle": "loss"
+    },
+    {
+      "id": "Graph conv 1 Repeat 3",
+      "source": "Graph conv 1",
+      "target": "Repeat 3",
+      "sourceHandle": "x",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Repeat 3 Graph conv 1",
+      "source": "Repeat 3",
+      "target": "Graph conv 1",
+      "sourceHandle": "output",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Dropout 1 Repeat 1",
+      "source": "Dropout 1",
+      "target": "Repeat 1",
+      "sourceHandle": "x",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Repeat 1 Linear 1",
+      "source": "Repeat 1",
+      "target": "Linear 1",
+      "sourceHandle": "output",
+      "targetHandle": "x"
     }
   ]
 }
