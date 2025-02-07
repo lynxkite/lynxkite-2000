@@ -23,7 +23,8 @@ Install everything like this:
 ```bash
 uv venv
 source .venv/bin/activate
-uv pip install -e lynxkite-core/ lynxkite-app/ lynxkite-graph-analytics/ lynxkite-lynxscribe/ lynxkite-pillow-example/
+# The [dev] tag is only needed if you intend on running tests
+uv pip install -e lynxkite-core/[dev] lynxkite-app/[dev] lynxkite-graph-analytics/[dev] lynxkite-lynxscribe/ lynxkite-pillow-example/
 ```
 
 This also builds the frontend, hopefully very quickly. To run it:
@@ -38,6 +39,16 @@ If you also want to make changes to the frontend with hot reloading:
 ```bash
 cd lynxkite-app/web
 npm run dev
+```
+
+## Executing tests
+
+Just go into each directory and execute `pytest`.
+
+```bash
+# Same thing for lynxkite-core and lynxkite-graph-analytics
+$ cd lynxkite-app
+$ pytest
 ```
 
 ## Documentation

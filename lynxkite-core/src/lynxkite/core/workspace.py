@@ -29,6 +29,8 @@ class WorkspaceNodeData(BaseConfig):
 
 
 class WorkspaceNode(BaseConfig):
+    # The naming of these attributes matches the ones for the NodeBase type in React flow
+    # modyfing them will break the frontend.
     id: str
     type: str
     data: WorkspaceNodeData
@@ -44,6 +46,13 @@ class WorkspaceEdge(BaseConfig):
 
 
 class Workspace(BaseConfig):
+    """A workspace is a representation of a computational graph that consists of nodes and edges.
+
+    Each node represents an operation or task, and the edges represent the flow of data between
+    the nodes. Each workspace is associated with an environment, which determines the operations
+    that can be performed in the workspace and the execution method for the operations.
+    """
+
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
@@ -55,6 +64,7 @@ async def execute(ws: Workspace):
 
 
 def save(ws: Workspace, path: str):
+    """Persist a workspace to a local file in JSON format."""
     j = ws.model_dump_json(indent=2)
     dirname, basename = os.path.split(path)
     # Create temp file in the same directory to make sure it's on the same filesystem.
@@ -66,7 +76,17 @@ def save(ws: Workspace, path: str):
     os.replace(temp_name, path)
 
 
-def load(path: str):
+def load(path: str) -> Workspace:
+    """Load a workspace from a file.
+
+    After loading the workspace, the metadata of the workspace is updated.
+
+    Args:
+        path (str): The path to the file to load the workspace from.
+
+    Returns:
+        Workspace: The loaded workspace object, with updated metadata.
+    """
     with open(path) as f:
         j = f.read()
     ws = Workspace.model_validate_json(j)
@@ -75,13 +95,26 @@ def load(path: str):
     return ws
 
 
-def _update_metadata(ws):
+def _update_metadata(ws: Workspace) -> Workspace:
+    """Update the metadata of the given workspace object.
+
+    The metadata is the information about the operations that the nodes in the workspace represent,
+    like the parameters and their possible values.
+    This information comes from the catalog of operations for the environment of the workspace.
+
+    Args:
+        ws: The workspace object to update.
+
+    Returns:
+        Workspace: The updated workspace object.
+    """
     catalog = ops.CATALOGS.get(ws.env, {})
     nodes = {node.id: node for node in ws.nodes}
     done = set()
     while len(done) < len(nodes):
         for node in ws.nodes:
             if node.id in done:
+                # TODO: Can nodes with the same ID reference different operations?
                 continue
             data = node.data
             op = catalog.get(data.title)

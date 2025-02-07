@@ -1,7 +1,7 @@
 """Graph analytics operations. To be split into separate files when we have more."""
 
 import os
-from lynxkite.core import ops
+from lynxkite.core import ops, workspace
 from collections import deque
 import dataclasses
 import functools
@@ -124,7 +124,7 @@ def disambiguate_edges(ws):
 
 @ops.register_executor(ENV)
 async def execute(ws):
-    catalog = ops.CATALOGS[ENV]
+    catalog: dict[str, ops.Op] = ops.CATALOGS[ENV]
     disambiguate_edges(ws)
     outputs = {}
     failed = 0
@@ -135,12 +135,17 @@ async def execute(ws):
             # TODO: Take the input/output handles into account.
             inputs = [edge.source for edge in ws.edges if edge.target == node.id]
             if all(input in outputs for input in inputs):
+                # All inputs for this node are ready, we can compute the output.
                 inputs = [outputs[input] for input in inputs]
                 data = node.data
-                op = catalog[data.title]
                 params = {**data.params}
-                # Convert inputs.
+                op = catalog.get(data.title)
+                if not op:
+                    data.error = "Operation not found in catalog"
+                    failed += 1
+                    continue
                 try:
+                    # Convert inputs types  to match operation signature.
                     for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
                         if p.type == nx.Graph and isinstance(x, Bundle):
                             inputs[i] = x.to_nx()
@@ -222,6 +227,7 @@ def create_scale_free_graph(*, nodes: int = 10):
 @op("Compute PageRank")
 @nx_node_attribute_func("pagerank")
 def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
+    # TODO: This requires scipy to be installed.
     return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
