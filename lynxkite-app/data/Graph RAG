@@ -7,22 +7,24 @@
       "data": {
         "title": "Input document",
         "params": {
-          "filename": "/Users/danieldarabos/lynxkite-2000/example-pizza.md"
+          "filename": "data/example-pizza.md"
         },
         "display": null,
         "error": null,
+        "__execution_delay": 0.0,
         "meta": {
-          "name": "Input document",
+          "type": "basic",
           "params": {
             "filename": {
-              "name": "filename",
-              "default": null,
               "type": {
                 "format": "path"
-              }
+              },
+              "name": "filename",
+              "default": null
             }
           },
           "inputs": {},
+          "name": "Input document",
           "outputs": {
             "output": {
               "name": "output",
@@ -31,16 +33,17 @@
               },
               "position": "right"
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
+          }
+        },
+        "collapsed": null
       },
       "position": {
-        "x": -849.9937814890327,
-        "y": -303.5069988257918
+        "x": -1138.7178641442829,
+        "y": -307.0280242240266
       },
-      "parentId": null
+      "parentId": null,
+      "width": 290.0,
+      "height": 217.0
     },
     {
       "id": "View 1",
@@ -188,7 +191,6 @@
         "error": null,
         "meta": {
           "name": "View",
-          "params": {},
           "inputs": {
             "input": {
               "name": "input",
@@ -199,8 +201,8 @@
             }
           },
           "outputs": {},
-          "type": "table_view",
-          "sub_nodes": null
+          "params": {},
+          "type": "table_view"
         },
         "beingResized": false
       },
@@ -209,8 +211,8 @@
         "y": -562.3096858852143
       },
       "parentId": null,
-      "width": 539,
-      "height": 296
+      "width": 909.0,
+      "height": 367.0
     },
     {
       "id": "Split document 1",
@@ -223,25 +225,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "name": "Split document",
           "params": {
             "delimiter": {
               "name": "delimiter",
-              "default": "\\n\\n",
               "type": {
                 "type": "<class 'str'>"
-              }
+              },
+              "default": "\\n\\n"
             }
           },
+          "type": "basic",
           "inputs": {
             "input": {
-              "name": "input",
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "position": "left",
+              "name": "input"
             }
           },
+          "name": "Split document",
           "outputs": {
             "output": {
               "name": "output",
@@ -250,16 +253,16 @@
               },
               "position": "right"
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         }
       },
       "position": {
-        "x": -465.5338722898887,
-        "y": -303.0364587440906
+        "x": -671.5138580866221,
+        "y": -394.5831190981944
       },
-      "parentId": null
+      "parentId": null,
+      "height": 200.0,
+      "width": 200.0
     },
     {
       "id": "Input chat 1",
@@ -271,7 +274,9 @@
         },
         "display": null,
         "error": null,
+        "__execution_delay": 0.0,
         "meta": {
+          "type": "basic",
           "name": "Input chat",
           "params": {
             "chat": {
@@ -285,25 +290,24 @@
           "inputs": {},
           "outputs": {
             "output": {
-              "name": "output",
+              "position": "right",
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "name": "output"
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         },
+        "collapsed": null,
         "beingResized": false
       },
       "position": {
-        "x": -857.4114014537504,
-        "y": 146.20705074522004
+        "x": -1169.0221491975267,
+        "y": 142.6860253469853
       },
       "parentId": null,
-      "width": 346,
-      "height": 120
+      "width": 347.0,
+      "height": 197.0
     },
     {
       "id": "Create prompt 1",
@@ -311,56 +315,59 @@
       "data": {
         "title": "Create prompt",
         "params": {
-          "save_as": "prompt",
-          "template": "\n{% for item in rag %}\n---\n{{item}}\n{% endfor %}\n---\nIs the information above sufficient to answer the following question?\n- {{text}}\n\nIf the information is insufficient please say so. Otherwise, provide the answer."
+          "template": "\n{% for item in rag %}\n---\n{{item}}\n{% endfor %}\n---\nIs the information above sufficient to answer the following question?\n- {{text}}\n\nIf the information is insufficient please say so. Otherwise, provide the answer.",
+          "save_as": "prompt"
         },
         "display": null,
         "error": null,
+        "collapsed": null,
+        "__execution_delay": 0.0,
         "meta": {
           "name": "Create prompt",
-          "params": {
-            "save_as": {
-              "name": "save_as",
-              "default": "prompt",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "template": {
-              "name": "template",
-              "default": null,
-              "type": {
-                "format": "textarea"
-              }
-            }
-          },
           "inputs": {
             "input": {
-              "name": "input",
+              "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "name": "input"
             }
           },
           "outputs": {
             "output": {
               "name": "output",
+              "position": "right",
               "type": {
                 "type": "None"
-              },
-              "position": "right"
+              }
             }
           },
-          "type": "basic",
-          "sub_nodes": null
+          "params": {
+            "save_as": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "prompt",
+              "name": "save_as"
+            },
+            "template": {
+              "default": null,
+              "type": {
+                "format": "textarea"
+              },
+              "name": "template"
+            }
+          },
+          "type": "basic"
         }
       },
       "position": {
         "x": 324.81988008998496,
         "y": -9.071826950189632
       },
-      "parentId": null
+      "height": 362.0,
+      "parentId": null,
+      "width": 270.0
     },
     {
       "id": "RAG 1",
@@ -369,8 +376,8 @@
         "title": "RAG",
         "params": {
           "engine": "Custom",
-          "input_field": "text",
           "db_field": "text",
+          "input_field": "text",
           "num_matches": "1"
         },
         "display": null,
@@ -378,16 +385,6 @@
         "meta": {
           "name": "RAG",
           "params": {
-            "engine": {
-              "name": "engine",
-              "default": "Chroma",
-              "type": {
-                "enum": [
-                  "Chroma",
-                  "Custom"
-                ]
-              }
-            },
             "input_field": {
               "name": "input_field",
               "default": "text",
@@ -402,28 +399,22 @@
                 "type": "<class 'str'>"
               }
             },
+            "engine": {
+              "type": {
+                "enum": [
+                  "Chroma",
+                  "Custom"
+                ]
+              },
+              "name": "engine",
+              "default": "RagEngine.Chroma"
+            },
             "num_matches": {
-              "name": "num_matches",
-              "default": 10,
               "type": {
                 "type": "<class 'int'>"
-              }
-            }
-          },
-          "inputs": {
-            "input": {
-              "name": "input",
-              "type": {
-                "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
-            },
-            "db": {
-              "name": "db",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
+              "name": "num_matches",
+              "default": 10.0
             }
           },
           "outputs": {
@@ -435,15 +426,32 @@
               "position": "right"
             }
           },
-          "type": "basic",
-          "sub_nodes": null
+          "inputs": {
+            "input": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "name": "input",
+              "position": "left"
+            },
+            "db": {
+              "name": "db",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
+              "position": "top"
+            }
+          },
+          "type": "basic"
         }
       },
       "position": {
-        "x": -449.6099563104567,
-        "y": 56.69054032617606
+        "x": -645.0268659124858,
+        "y": 44.3669514323544
       },
-      "parentId": null
+      "parentId": null,
+      "width": 423.0,
+      "height": 424.0
     },
     {
       "id": "View 3",
@@ -470,31 +478,30 @@
           }
         },
         "error": null,
+        "beingResized": false,
         "meta": {
           "name": "View",
           "params": {},
           "inputs": {
             "input": {
-              "name": "input",
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "position": "left",
+              "name": "input"
             }
           },
           "outputs": {},
-          "type": "table_view",
-          "sub_nodes": null
-        },
-        "beingResized": false
+          "type": "table_view"
+        }
       },
       "position": {
-        "x": -557.8656197388839,
-        "y": 397.32347851191355
+        "x": -43.795911596608875,
+        "y": 457.1809102819045
       },
       "parentId": null,
-      "width": 296,
-      "height": 228
+      "width": 296.0,
+      "height": 228.0
     },
     {
       "id": "Ask LLM 1",
@@ -502,63 +509,66 @@
       "data": {
         "title": "Ask LLM",
         "params": {
-          "model": "google/gemma-2-2b-it",
-          "accepted_regex": null,
-          "max_tokens": 100
+          "max_tokens": 100.0,
+          "accepted_regex": "",
+          "model": "SultanR/SmolTulu-1.7b-Instruct"
         },
         "display": null,
         "error": null,
+        "collapsed": null,
+        "__execution_delay": 0.0,
         "meta": {
-          "name": "Ask LLM",
-          "params": {
-            "model": {
-              "name": "model",
-              "default": null,
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "accepted_regex": {
-              "name": "accepted_regex",
-              "default": null,
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "max_tokens": {
-              "name": "max_tokens",
-              "default": 100,
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
           "inputs": {
             "input": {
+              "position": "left",
               "name": "input",
               "type": {
                 "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "params": {
+            "accepted_regex": {
+              "type": {
+                "type": "<class 'str'>"
               },
-              "position": "left"
+              "default": null,
+              "name": "accepted_regex"
+            },
+            "max_tokens": {
+              "name": "max_tokens",
+              "default": 100.0,
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "model": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": null,
+              "name": "model"
             }
           },
           "outputs": {
             "output": {
-              "name": "output",
               "type": {
                 "type": "None"
               },
-              "position": "right"
+              "position": "right",
+              "name": "output"
             }
           },
-          "type": "basic",
-          "sub_nodes": null
+          "name": "Ask LLM",
+          "type": "basic"
         }
       },
       "position": {
         "x": 649.0730411878703,
         "y": 29.290926423828694
       },
+      "height": 329.0,
+      "width": 249.0,
       "parentId": null
     },
     {
@@ -585,7 +595,7 @@
                     "Available options: Coke, Diet Coke, Sprite, Root Beer, Lemonade."
                   ],
                   "\n\n---\n### 6. **Drinks**\n\n---\n| Size               | Price         |\n|--------------------|---------------|\n| 20 oz Bottle       | $1.99         |\n| 2-Liter Bottle     | $3.50         |\n\n---\nAvailable options: Coke, Diet Coke, Sprite, Root Beer, Lemonade.\n\n---\nIs the information above sufficient to answer the following question?\n- What's your cheapest drink?\n\nIf the information is insufficient please say so. Otherwise, provide the answer.",
-                  "The information is sufficient to answer the question. \n\n**Answer:** The cheapest drink is the 20 oz bottle of Coke at $1.99. \n"
+                  "The provided information is sufficient to answer the question:\n\n- **Cheapest Drink:** \n\nThe cheapest drink is the 20 oz Bottle of Coke, which costs $1.99.\n\n**Why?**\n- The 20 oz Bottle of Coke is the only option listed with a price of $1.99, making it the most cost-effective option among the given drink sizes and prices."
                 ]
               ]
             }
@@ -593,27 +603,28 @@
         },
         "error": null,
         "meta": {
-          "name": "View",
+          "outputs": {},
+          "type": "table_view",
           "params": {},
           "inputs": {
             "input": {
-              "name": "input",
+              "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
-              "position": "left"
+              "name": "input"
             }
           },
-          "outputs": {},
-          "type": "table_view",
-          "sub_nodes": null
+          "name": "View"
         }
       },
       "position": {
-        "x": 927.877424966716,
-        "y": -205.07566047558328
+        "x": 1017.4149773467798,
+        "y": -71.64715104646865
       },
-      "parentId": null
+      "height": 644.0,
+      "parentId": null,
+      "width": 502.0
     },
     {
       "id": "Build document graph 1",
@@ -623,37 +634,38 @@
         "params": {},
         "display": null,
         "error": null,
+        "collapsed": true,
         "meta": {
           "name": "Build document graph",
           "params": {},
-          "inputs": {
-            "input": {
-              "name": "input",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            }
-          },
           "outputs": {
             "output": {
               "name": "output",
+              "position": "right",
               "type": {
                 "type": "None"
-              },
-              "position": "right"
+              }
             }
           },
-          "type": "basic",
-          "sub_nodes": null
-        },
-        "collapsed": true
+          "inputs": {
+            "input": {
+              "position": "top",
+              "name": "input",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "type": "basic"
+        }
       },
       "position": {
         "x": -36.39166052931119,
         "y": -212.34993098590766
       },
-      "parentId": null
+      "width": 200.0,
+      "parentId": null,
+      "height": 80.0
     },
     {
       "id": "Add neighbors 1",
@@ -664,42 +676,41 @@
         "display": null,
         "error": null,
         "meta": {
-          "name": "Add neighbors",
-          "params": {},
+          "type": "basic",
           "inputs": {
             "nodes": {
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              },
               "name": "nodes",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
-            },
-            "edges": {
-              "name": "edges",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              },
               "position": "top"
             },
             "item": {
+              "position": "left",
               "name": "item",
               "type": {
                 "type": "<class 'inspect._empty'>"
-              },
-              "position": "left"
+              }
+            },
+            "edges": {
+              "name": "edges",
+              "position": "top",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
             }
           },
+          "params": {},
+          "name": "Add neighbors",
           "outputs": {
             "output": {
+              "position": "right",
               "name": "output",
               "type": {
                 "type": "None"
-              },
-              "position": "right"
+              }
             }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          }
         },
         "collapsed": true
       },
@@ -707,7 +718,9 @@
         "x": -2.516468588848724,
         "y": 167.64180115746848
       },
-      "parentId": null
+      "parentId": null,
+      "height": 56.0,
+      "width": 200.0
     },
     {
       "id": "Predict links 1",
@@ -717,25 +730,26 @@
         "params": {},
         "display": null,
         "error": null,
+        "__execution_delay": null,
         "meta": {
           "name": "Predict links",
-          "params": {},
           "inputs": {
-            "nodes": {
-              "name": "nodes",
+            "edges": {
               "type": {
                 "type": "<class 'inspect._empty'>"
               },
+              "name": "edges",
               "position": "top"
             },
-            "edges": {
-              "name": "edges",
+            "nodes": {
+              "name": "nodes",
+              "position": "top",
               "type": {
                 "type": "<class 'inspect._empty'>"
-              },
-              "position": "top"
+              }
             }
           },
+          "type": "basic",
           "outputs": {
             "output": {
               "name": "output",
@@ -745,17 +759,16 @@
               "position": "right"
             }
           },
-          "type": "basic",
-          "position": {
-            "x": 656,
-            "y": 179
-          }
-        }
+          "params": {}
+        },
+        "collapsed": true
       },
       "position": {
         "x": 34.865308360949726,
         "y": -37.44504613652989
       },
+      "height": 200.0,
+      "width": 200.0,
       "parentId": null
     }
   ],

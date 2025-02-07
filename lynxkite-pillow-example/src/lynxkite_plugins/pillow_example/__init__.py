@@ -4,6 +4,7 @@ from lynxkite.core import ops
 from lynxkite.core.executors import one_by_one
 from PIL import Image, ImageFilter
 import base64
+import fsspec
 import io
 
 ENV = "Pillow"
@@ -13,12 +14,15 @@ one_by_one.register(ENV, cache=False)
 
 @op("Open image")
 def open_image(*, filename: str):
-    return Image.open(filename)
+    with fsspec.open(filename, "rb") as f:
+        data = io.BytesIO(f.read())
+    return Image.open(data)
 
 
 @op("Save image")
 def save_image(image: Image, *, filename: str):
-    image.save(filename)
+    with fsspec.open(filename, "wb") as f:
+        image.save(f)
 
 
 @op("Crop")
@@ -59,7 +63,7 @@ def to_grayscale(image: Image):
 @op("View image", view="image")
 def view_image(image: Image):
     buffered = io.BytesIO()
-    image.save(buffered, format="JPEG")
+    image.save(buffered, format="webp")
     b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
     data_url = "data:image/jpeg;base64," + b64
     return data_url

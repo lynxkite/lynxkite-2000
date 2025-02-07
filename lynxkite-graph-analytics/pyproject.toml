@@ -6,9 +6,11 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "grand-cypher>=0.12.0",
+    "joblib>=1.4.2",
     "lynxkite-core",
     "matplotlib>=3.10.0",
     "networkx>=3.4.2",
+    "osmnx>=2.0.1",
     "pandas>=2.2.3",
     "polars[gpu]>=1.14.0",
 ]
