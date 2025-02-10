@@ -8,6 +8,8 @@ dependencies = [
     "fsspec>=2025.2.0",
     "lynxkite-core",
     "pillow>=11.1.0",
+    "requests",
+    "aiohttp",
 ]
 
 [tool.uv.sources]
