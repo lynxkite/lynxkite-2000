@@ -285,13 +285,15 @@ body {
   }
 
   .entry-list .entry {
-    display: block;
+    display: flex;
     border-bottom: 1px solid whitesmoke;
     padding-left: 10px;
     color: #004165;
     cursor: pointer;
     user-select: none;
     text-decoration: none;
+    justify-content: space-between;
+    padding-right: 10px;
   }
 
   .entry-list .open .entry,

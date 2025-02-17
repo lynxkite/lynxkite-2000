@@ -1,5 +1,5 @@
 import os
-
+import shutil
 if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
     import cudf.pandas
 
@@ -66,6 +66,16 @@ async def save_and_execute(req: SaveRequest):
     return req.ws
 
 
+@app.post("/api/delete")
+async def delete_workspace(req: dict):
+    json_path: pathlib.Path = DATA_PATH / req["path"]
+    crdt_path: pathlib.Path = CRDT_PATH / f"{req["path"]}.crdt"
+    assert json_path.is_relative_to(DATA_PATH)
+    assert crdt_path.is_relative_to(CRDT_PATH)
+    json_path.unlink()
+    crdt_path.unlink()
+
+
 @app.get("/api/load")
 def load(path: str):
     path = DATA_PATH / path
@@ -76,7 +86,7 @@ def load(path: str):
 
 
 DATA_PATH = pathlib.Path.cwd() / "data"
-
+CRDT_PATH = pathlib.Path.cwd() / "crdt_data"
 
 @dataclasses.dataclass(order=True)
 class DirectoryEntry:
@@ -104,6 +114,18 @@ def make_dir(req: dict):
     assert path.is_relative_to(DATA_PATH)
     assert not path.exists()
     path.mkdir()
+    return list_dir(path.parent)
+
+
+@app.post("/api/dir/delete")
+def delete_dir(req: dict):
+    path: pathlib.Path = DATA_PATH / req["path"]
+    assert all([
+        path.is_relative_to(DATA_PATH),
+        path.exists(),
+        path.is_dir()
+    ])
+    shutil.rmtree(path)
     return list_dir(path.parent)
 
 
