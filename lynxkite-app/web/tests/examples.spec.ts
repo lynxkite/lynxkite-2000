@@ -42,6 +42,14 @@ test.fail('RAG chatbot app', async ({ page }) => {
 });
 
 
+test.fail('night demo', async ({ page }) => {
+    // airlines.graphml file not found
+    // requires cugraph
+    const ws = await Workspace.open(page, "night demo");
+    expect(await ws.isErrorFree()).toBeTruthy();
+});
+
+
 test('Pillow example', async ({ page }) => {
     const ws = await Workspace.open(page, "Image processing");
     expect(await ws.isErrorFree()).toBeTruthy();
