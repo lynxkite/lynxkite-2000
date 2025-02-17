@@ -1,6 +1,6 @@
 // Test uploading a file in an import box.
 import { test, expect } from '@playwright/test';
-import { Workspace } from './lynxkite';
+import { Splash, Workspace } from './lynxkite';
 import { join, dirname  } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -9,9 +9,14 @@ let workspace: Workspace;
 
 
 test.beforeEach(async ({ browser }) => {
-  workspace = await Workspace.empty(await browser.newPage());
-  await workspace.setEnv('PyTorch model'); // Workaround until we fix the default environment
-  await workspace.setEnv('LynxKite Graph Analytics');
+  workspace = await Workspace.empty(await browser.newPage(), 'upload_spec_test');
+});
+
+test.afterEach(async ({ }) => {
+  await workspace.close();
+  const splash = await new Splash(workspace.page);
+  splash.page.on('dialog', async dialog => { await dialog.accept(); });
+  await splash.deleteEntry('upload_spec_test');
 });
 
 

@@ -13,15 +13,17 @@ export const ROOT = 'automated-tests';
 
 export class Workspace {
   readonly page: Page;
+  name: string;
 
-  constructor(page: Page) {
+  constructor(page: Page, workspaceName: string) {
     this.page = page;
+    this.name = workspaceName;
   }
 
   // Starts with a brand new workspace.
   static async empty(page: Page, workspaceName?: string): Promise<Workspace> {
     const splash = await Splash.open(page);
-    return await splash.openNewWorkspace(workspaceName ?? 'test-example');
+    return await splash.createWorkspace(workspaceName);
   }
 
   static async open(page: Page, workspaceName: string): Promise<Workspace> {
@@ -31,7 +33,7 @@ export class Workspace {
     await ws.expectCurrentWorkspaceIs(workspaceName);
     return ws
   }
-  
+
   async getEnvs() {
     // Return all available workspace environments
     return await this.page.locator('select[name="workspace-env"] option').allInnerTexts();
@@ -66,7 +68,7 @@ export class Workspace {
     
     // Some x,y offset, otherwise the box handle may fall outside the viewport.
     await this.page.locator('.react-flow__pane').click({ position: { x: 20, y: 20 }});
-    await this.page.getByText(boxName).click();
+    await this.page.locator('.node-search').getByText(boxName).click();
     await this.page.keyboard.press('Escape');
     // Workaround to wait for the deselection animation after choosing a box. Otherwise, the next box will not be added.
     await new Promise(resolve => setTimeout(resolve, 200));
@@ -138,6 +140,10 @@ export class Workspace {
     }
     return true;
   }
+
+  async close() { 
+    await this.page.locator('a[href="/dir/"]').click();
+  }
 }
 
 
@@ -166,15 +172,53 @@ export class Splash {
     return this.page.getByRole('link', { name: name });
   }
 
-  async openNewWorkspace(name: string) {
-    // TODO: Support workspace naming
-    await this.page.getByRole('link', { name: 'New workspace' }).click();
-    const ws = new Workspace(this.page);
+  getEntry(name: string) {
+    return this.page.locator('.entry').filter({ hasText: name }).first();
+  }
+
+  async createWorkspace(name?: string) {
+    await this.page.getByRole('button', { name: 'New workspace' }).click();
+    await this.page.locator('input[name="workspaceName"]').click();
+    let workspaceName: string;
+    if (name) {
+      workspaceName = name;
+      await this.page.locator('input[name="workspaceName"]').fill(name);
+    } else {
+      workspaceName = await this.page.locator('input[name="workspaceName"]').inputValue();
+    }
+    await this.page.locator('input[name="workspaceName"]').press('Enter');
+    const ws = new Workspace(this.page, workspaceName);
+    // Workaround until we fix the default environment
+    await ws.setEnv('PyTorch model'); 
+    await ws.setEnv('LynxKite Graph Analytics');
     return ws;
   }
 
   async openWorkspace(name: string) {
     await this.workspace(name).click();
-    return new Workspace(this.page);
+    return new Workspace(this.page, name);
   }
+
+  async createFolder(folderName?: string) {
+    await this.page.getByRole('button', { name: 'New folder' }).click();
+    await this.page.locator('input[name="folderName"]').click();
+    if (folderName) {
+      await this.page.locator('input[name="folderName"]').fill(folderName);
+    }
+    await this.page.locator('input[name="folderName"]').press('Enter');
+  }
+
+  async deleteEntry(entryName: string) {
+    await this.getEntry(entryName).locator('button').click();
+    await this.page.reload();
+  }
+
+  currentFolder() {
+    return this.page.locator('.current-folder');
+  }
+
+  async goHome() {
+    await this.page.locator('a[href="/dir/"]').click();
+  }
+
 }
