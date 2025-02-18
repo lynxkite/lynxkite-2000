@@ -25,7 +25,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function () {
   const { path } = useParams();
   const encodedPath = encodeURIComponent(path || '');
-  let list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher);
+  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher);
   const navigate = useNavigate();
   const [isCreatingDir, setIsCreatingDir] = useState(false);
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
@@ -70,7 +70,6 @@ export default function () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path: pathSlash + name }),
     });
-    list = await res.json();
     if (res.ok) {
       navigate(`/dir/${pathSlash}${name}`);
     } else {
@@ -83,12 +82,11 @@ export default function () {
     const pathSlash = path ? `${path}/` : "";
 
     const apiPath = item.type === "directory" ? `/api/dir/delete`: `/api/delete`;
-    const res = await fetch(apiPath, {
+    await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: pathSlash + item.name }),
     });
-    list = await res.json();
   }
 
   return (

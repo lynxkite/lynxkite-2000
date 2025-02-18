@@ -29,19 +29,20 @@ export class Workspace {
   static async open(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
     const ws = await splash.openWorkspace(workspaceName);
-    await ws.waitForNodesToLoad()
+    await ws.waitForNodesToLoad();
     await ws.expectCurrentWorkspaceIs(workspaceName);
     return ws
   }
 
   async getEnvs() {
     // Return all available workspace environments
-    return await this.page.locator('select[name="workspace-env"] option').allInnerTexts();
+    const envs =  this.page.locator('select[name="workspace-env"] option');
+    await expect(envs).not.toHaveCount(0);
+    return await envs.allInnerTexts();
   }
 
   async setEnv(env: string) {
     await this.page.locator('select[name="workspace-env"]').selectOption(env);
-    // await this.page.getByRole('combobox', {'name': 'workspace-env'}).selectOption(env);
   }
 
   async expectCurrentWorkspaceIs(name) {
@@ -50,11 +51,8 @@ export class Workspace {
 
   async waitForNodesToLoad() {
     // This method should be used only on non empty workspaces
-    await this.page.locator('.react-flow__nodes').waitFor({state: 'visible'});
-    let nodes: Locator[] = [];
-    while (nodes.length === 0) {
-      nodes = await this.getBoxes();
-    } 
+    await this.page.locator('.react-flow__nodes').waitFor();
+    await this.page.locator('.react-flow__node').first().waitFor();
   }
 
   async addBox(boxName) {
@@ -131,7 +129,10 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
-  async isErrorFree(): Promise<boolean> {
+  async isErrorFree(executionWaitTime?): Promise<boolean> {
+    // TODO: Workaround, to account for workspace execution. Once
+    // we have a load indicator we can use that instead.
+    await new Promise(resolve => setTimeout(resolve, executionWaitTime? executionWaitTime : 500));
     const boxes = await this.getBoxes();
     for (const box of boxes) {
       if (await box.locator('.error').isVisible()) {
@@ -188,8 +189,6 @@ export class Splash {
     }
     await this.page.locator('input[name="workspaceName"]').press('Enter');
     const ws = new Workspace(this.page, workspaceName);
-    // Workaround until we fix the default environment
-    await ws.setEnv('PyTorch model'); 
     await ws.setEnv('LynxKite Graph Analytics');
     return ws;
   }
