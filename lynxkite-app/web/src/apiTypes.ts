@@ -6,13 +6,13 @@
 */
 
 export interface DirectoryEntry {
-	name: string;
-	type: string;
+  name: string;
+  type: string;
 }
 export interface SaveRequest {
-	path: string;
-	ws: Workspace;
-	[k: string]: unknown;
+  path: string;
+  ws: Workspace;
+  [k: string]: unknown;
 }
 /**
  * A workspace is a representation of a computational graph that consists of nodes and edges.
@@ -22,37 +22,37 @@ export interface SaveRequest {
  * that can be performed in the workspace and the execution method for the operations.
  */
 export interface Workspace {
-	env?: string;
-	nodes?: WorkspaceNode[];
-	edges?: WorkspaceEdge[];
-	[k: string]: unknown;
+  env?: string;
+  nodes?: WorkspaceNode[];
+  edges?: WorkspaceEdge[];
+  [k: string]: unknown;
 }
 export interface WorkspaceNode {
-	id: string;
-	type: string;
-	data: WorkspaceNodeData;
-	position: Position;
-	[k: string]: unknown;
+  id: string;
+  type: string;
+  data: WorkspaceNodeData;
+  position: Position;
+  [k: string]: unknown;
 }
 export interface WorkspaceNodeData {
-	title: string;
-	params: {
-		[k: string]: unknown;
-	};
-	display?: unknown;
-	error?: string | null;
-	[k: string]: unknown;
+  title: string;
+  params: {
+    [k: string]: unknown;
+  };
+  display?: unknown;
+  error?: string | null;
+  [k: string]: unknown;
 }
 export interface Position {
-	x: number;
-	y: number;
-	[k: string]: unknown;
+  x: number;
+  y: number;
+  [k: string]: unknown;
 }
 export interface WorkspaceEdge {
-	id: string;
-	source: string;
-	target: string;
-	sourceHandle: string;
-	targetHandle: string;
-	[k: string]: unknown;
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle: string;
+  targetHandle: string;
+  [k: string]: unknown;
 }

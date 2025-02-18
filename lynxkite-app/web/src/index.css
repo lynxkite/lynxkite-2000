@@ -154,7 +154,6 @@ body {
       width: fit-content;
       padding: 2px 8px;
       border-radius: 4px 4px 0 0;
-      ;
     }
 
     .collapsed-param {
@@ -316,7 +315,6 @@ body {
     margin: 10px;
   }
 }
-
 
 path.react-flow__edge-path {
   stroke-width: 2;
