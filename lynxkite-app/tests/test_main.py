@@ -1,6 +1,6 @@
 import uuid
 from fastapi.testclient import TestClient
-from lynxkite.app.main import app, detect_plugins, DATA_PATH
+from lynxkite_app.main import app, detect_plugins, DATA_PATH
 import os
 
 

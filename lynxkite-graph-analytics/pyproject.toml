@@ -17,8 +17,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
-    "pytest-asyncio",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.3",
 ]
 gpu = [
     "nx-cugraph-cu12>=24.12.0",
