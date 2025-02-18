@@ -11,7 +11,7 @@ import pycrdt_websocket
 import pycrdt_websocket.ystore
 import uvicorn
 import builtins
-from lynxkite.core import workspace
+from lynxkite.core import workspace, ops
 
 router = fastapi.APIRouter()
 DATA_PATH = pathlib.Path.cwd() / "data"
@@ -52,7 +52,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         if "edges" not in ws:
             ws["edges"] = pycrdt.Array()
         if "env" not in ws:
-            ws["env"] = "unset"
+            ws["env"] = next(iter(ops.CATALOGS), 'unset') 
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
             try_to_load_workspace(ws, name)

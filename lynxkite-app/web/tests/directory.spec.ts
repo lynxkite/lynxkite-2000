@@ -20,7 +20,6 @@ test.describe("Directory operations", () => {
     // Not checking for exact match, since there may be pre-existing "Untitled" workspaces
     expect(workspace.name).toContain('Untitled');
     await workspace.close();
-    await splash.deleteEntry(workspace.name);
   });
 
   test('Create & delete workspace', async () => {

@@ -5,7 +5,7 @@ import { Workspace } from './lynxkite';
 
 test('LynxKite Graph Analytics example', async ({ page }) => {
     const ws = await Workspace.open(page, "NetworkX demo");
-    expect(await ws.isErrorFree()).toBeTruthy();
+    expect(await ws.isErrorFree(process.env.CI? 2000: 1000)).toBeTruthy();
 });
 
 
@@ -31,7 +31,7 @@ test.fail('LynxScribe example', async ({ page }) => {
 test.fail('Graph RAG', async ({ page }) => {
     // Fails due to some issue with ChromaDB
     const ws = await Workspace.open(page, "Graph RAG");
-    expect(await ws.isErrorFree()).toBeTruthy();
+    expect(await ws.isErrorFree(process.env.CI? 2000: 500)).toBeTruthy();
 });
 
 
@@ -46,7 +46,7 @@ test.fail('night demo', async ({ page }) => {
     // airlines.graphml file not found
     // requires cugraph
     const ws = await Workspace.open(page, "night demo");
-    expect(await ws.isErrorFree()).toBeTruthy();
+    expect(await ws.isErrorFree(process.env.CI? 10000: 500)).toBeTruthy();
 });
 
 
