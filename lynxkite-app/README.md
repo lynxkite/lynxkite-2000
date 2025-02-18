@@ -23,3 +23,9 @@ cd web
 npm i
 npm run dev
 ```
+
+To update the frontend types with the backend types:
+
+```bash
+$ uv run pydantic2ts --module lynxkite_app.main --output ./web/src/apiTypes.ts --json2ts-cmd "npx json-schema-to-typescript"
+```
