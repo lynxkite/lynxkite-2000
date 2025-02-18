@@ -1,5 +1,8 @@
+"""The FastAPI server for serving the LynxKite application."""
+
 import os
 import shutil
+
 if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
     import cudf.pandas
 
@@ -17,19 +20,13 @@ from . import crdt
 
 
 def detect_plugins():
-    try:
-        import lynxkite_plugins
-    except ImportError:
-        print("No modules found in lynxkite_plugins. Be sure to install some plugins.")
-        return {}
-
     plugins = {}
-    for _, name, _ in pkgutil.iter_modules(lynxkite_plugins.__path__):
-        name = f"lynxkite_plugins.{name}"
-        print(f"Importing {name}")
-        plugins[name] = importlib.import_module(name)
+    for _, name, _ in pkgutil.iter_modules():
+        if name.startswith("lynxkite_"):
+            print(f"Importing {name}")
+            plugins[name] = importlib.import_module(name)
     if not plugins:
-        print("No modules found in lynxkite_plugins. Be sure to install some plugins.")
+        print("No LynxKite plugins found. Be sure to install some!")
     return plugins
 
 
@@ -69,7 +66,7 @@ async def save_and_execute(req: SaveRequest):
 @app.post("/api/delete")
 async def delete_workspace(req: dict):
     json_path: pathlib.Path = DATA_PATH / req["path"]
-    crdt_path: pathlib.Path = CRDT_PATH / f"{req["path"]}.crdt"
+    crdt_path: pathlib.Path = CRDT_PATH / f"{req['path']}.crdt"
     assert json_path.is_relative_to(DATA_PATH)
     assert crdt_path.is_relative_to(CRDT_PATH)
     json_path.unlink()
@@ -85,8 +82,9 @@ def load(path: str):
     return workspace.load(path)
 
 
-DATA_PATH = pathlib.Path.cwd() / "data"
-CRDT_PATH = pathlib.Path.cwd() / "crdt_data"
+DATA_PATH = pathlib.Path(os.environ.get("LYNXKITE_DATA", "lynxkite_data"))
+CRDT_PATH = pathlib.Path(os.environ.get("LYNXKITE_CRDT_DATA", "lynxkite_crdt_data"))
+
 
 @dataclasses.dataclass(order=True)
 class DirectoryEntry:
@@ -120,11 +118,7 @@ def make_dir(req: dict):
 @app.post("/api/dir/delete")
 def delete_dir(req: dict):
     path: pathlib.Path = DATA_PATH / req["path"]
-    assert all([
-        path.is_relative_to(DATA_PATH),
-        path.exists(),
-        path.is_dir()
-    ])
+    assert all([path.is_relative_to(DATA_PATH), path.exists(), path.is_dir()])
     shutil.rmtree(path)
     return list_dir(path.parent)
 
@@ -159,5 +153,5 @@ class SPAStaticFiles(StaticFiles):
                 raise ex
 
 
-static_dir = SPAStaticFiles(packages=[("lynxkite.app", "web_assets")], html=True)
+static_dir = SPAStaticFiles(packages=[("lynxkite_app", "web_assets")], html=True)
 app.mount("/", static_dir, name="web_assets")

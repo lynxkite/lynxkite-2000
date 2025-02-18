@@ -206,8 +206,10 @@ def register_executor(env: str):
 
 
 def op_registration(env: str):
+    """Returns a decorator that can be used for registering functions as operations."""
     return functools.partial(op, env)
 
 
 def passive_op_registration(env: str):
+    """Returns a function that can be used to register operations without associated code."""
     return functools.partial(register_passive_op, env)

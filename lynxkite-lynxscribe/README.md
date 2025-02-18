@@ -5,7 +5,7 @@ LynxKite UI for building LynxScribe chat applications. Also runs the chat applic
 To run a chat UI for LynxScribe workspaces:
 
 ```bash
-WEBUI_AUTH=false OPENAI_API_BASE_URL=http://localhost:8000/api/service/server.lynxscribe_ops uvx open-webui serve
+WEBUI_AUTH=false OPENAI_API_BASE_URL=http://localhost:8000/api/service/lynxscribe/lynxscribe_ops uvx open-webui serve
 ```
 
 Or use [Lynx WebUI](https://github.com/biggraph/lynx-webui/) instead of Open WebUI.
