@@ -29,8 +29,8 @@ export default function () {
   const navigate = useNavigate();
   const [isCreatingDir, setIsCreatingDir] = useState(false);
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
-  
-  
+
+
   function link(item: any) {
     if (item.type === 'directory') {
       return `/dir/${item.name}`;
@@ -38,7 +38,7 @@ export default function () {
       return `/edit/${item.name}`;
     }
   }
-  
+
   function shortName(item: any) {
     return item.name.split('/').pop();
   }
@@ -53,18 +53,18 @@ export default function () {
       i++;
     }
   }
-  
+
   function newWorkspaceIn(path: string, list: any[], workspaceName?: string) {
     const pathSlash = path ? `${path}/` : "";
     const name = workspaceName || newName(list);
-    navigate(`/edit/${pathSlash}${name}`, {replace: true});
+    navigate(`/edit/${pathSlash}${name}`, { replace: true });
   }
-  
+
 
   async function newFolderIn(path: string, list: any[], folderName?: string) {
     const name = folderName || newName(list, "New Folder");
     const pathSlash = path ? `${path}/` : "";
-  
+
     const res = await fetch(`/api/dir/mkdir`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -76,12 +76,12 @@ export default function () {
       alert("Failed to create folder.");
     }
   }
-  
+
   async function deleteItem(item: any) {
     if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return;
     const pathSlash = path ? `${path}/` : "";
 
-    const apiPath = item.type === "directory" ? `/api/dir/delete`: `/api/delete`;
+    const apiPath = item.type === "directory" ? `/api/dir/delete` : `/api/delete`;
     await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -109,39 +109,39 @@ export default function () {
         {list.data && (
           <>
             <div className="actions">
-                <div className="new-workspace">
-                  {isCreatingWorkspace && 
-                    // @ts-ignore
-                    <form onSubmit={(e) => {e.preventDefault(); newWorkspaceIn(path || "", list.data, e.target.workspaceName.value.trim())}}>
-                      <input
-                        type="text"
-                        name="workspaceName"
-                        defaultValue={newName(list.data)}
-                        placeholder={newName(list.data)}
-                      />
-                    </form>
-                  }
-                  <button type="button" onClick={() => setIsCreatingWorkspace(true)}>
-                    <FolderPlus /> New workspace
-                  </button>
-                </div>
+              <div className="new-workspace">
+                {isCreatingWorkspace &&
+                  // @ts-ignore
+                  <form onSubmit={(e) => { e.preventDefault(); newWorkspaceIn(path || "", list.data, e.target.workspaceName.value.trim()) }}>
+                    <input
+                      type="text"
+                      name="workspaceName"
+                      defaultValue={newName(list.data)}
+                      placeholder={newName(list.data)}
+                    />
+                  </form>
+                }
+                <button type="button" onClick={() => setIsCreatingWorkspace(true)}>
+                  <FolderPlus /> New workspace
+                </button>
+              </div>
 
-                <div className="new-folder">
-                  {isCreatingDir && 
-                    // @ts-ignore
-                    <form onSubmit={(e) =>{e.preventDefault(); newFolderIn(path || "", list.data, e.target.folderName.value.trim())}}>
-                      <input
-                        type="text"
-                        name="folderName"
-                        defaultValue={newName(list.data)}
-                        placeholder={newName(list.data)}
-                      />
-                    </form>
-                  }
-                  <button type="button" onClick={() => setIsCreatingDir(true)}>
-                    <FolderPlus /> New folder
-                  </button>
-                </div>
+              <div className="new-folder">
+                {isCreatingDir &&
+                  // @ts-ignore
+                  <form onSubmit={(e) => { e.preventDefault(); newFolderIn(path || "", list.data, e.target.folderName.value.trim()) }}>
+                    <input
+                      type="text"
+                      name="folderName"
+                      defaultValue={newName(list.data)}
+                      placeholder={newName(list.data)}
+                    />
+                  </form>
+                }
+                <button type="button" onClick={() => setIsCreatingDir(true)}>
+                  <FolderPlus /> New folder
+                </button>
+              </div>
             </div>
 
             {path && (
@@ -155,7 +155,7 @@ export default function () {
 
             {list.data.map((item: any) => (
               <div key={item.name} className="entry">
-                <a key={link(item)} className="entry" href={link(item)}>
+                <a key={link(item)} href={link(item)}>
                   {item.type === 'directory' ? <Folder /> : <File />}
                   {shortName(item)}
                 </a>

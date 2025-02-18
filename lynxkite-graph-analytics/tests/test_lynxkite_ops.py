@@ -3,7 +3,7 @@ import pytest
 import networkx as nx
 
 from lynxkite.core import workspace
-from lynxkite_plugins.graph_analytics.lynxkite_ops import Bundle, execute, op
+from lynxkite_graph_analytics.lynxkite_ops import Bundle, execute, op
 
 
 async def test_execute_operation_not_in_catalog():
