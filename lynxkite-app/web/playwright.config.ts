@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 60000,
+  timeout: 30000,
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -26,6 +26,6 @@ export default defineConfig({
   webServer: {
     command: 'cd .. && lynxkite',
     url: 'http://127.0.0.1:8000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 });

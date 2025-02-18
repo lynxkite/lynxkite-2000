@@ -10,7 +10,7 @@ test.beforeEach(async ({ browser }) => {
   workspace = await Workspace.empty(await browser.newPage(), 'basic_spec_test');
 });
 
-test.afterEach(async ({ }) => {
+test.afterEach(async () => {
   await workspace.close();
   const splash = await new Splash(workspace.page);
   splash.page.on('dialog', async dialog => { await dialog.accept(); });
