@@ -2,12 +2,7 @@
 
 import os
 import shutil
-
-if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
-    import cudf.pandas
-
-    cudf.pandas.install()
-import dataclasses
+import pydantic
 import fastapi
 import importlib
 import pathlib
@@ -17,6 +12,11 @@ import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt
+
+if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
+    import cudf.pandas
+
+    cudf.pandas.install()
 
 
 def detect_plugins():
@@ -86,8 +86,7 @@ DATA_PATH = pathlib.Path(os.environ.get("LYNXKITE_DATA", "lynxkite_data"))
 CRDT_PATH = pathlib.Path(os.environ.get("LYNXKITE_CRDT_DATA", "lynxkite_crdt_data"))
 
 
-@dataclasses.dataclass(order=True)
-class DirectoryEntry:
+class DirectoryEntry(pydantic.BaseModel):
     name: str
     type: str
 
