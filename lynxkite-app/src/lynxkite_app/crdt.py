@@ -12,10 +12,9 @@ import pycrdt_websocket.ystore
 import uvicorn
 import builtins
 from lynxkite.core import workspace, ops
+from . import config
 
 router = fastapi.APIRouter()
-DATA_PATH = pathlib.Path.cwd() / "data"
-CRDT_PATH = pathlib.Path.cwd() / "crdt_data"
 
 
 def ws_exception_handler(exception, log):
@@ -34,8 +33,8 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
 
         The workspace is loaded from "crdt_data" if it exists there, or from "data", or a new workspace is created.
         """
-        path = CRDT_PATH / f"{name}.crdt"
-        assert path.is_relative_to(CRDT_PATH)
+        path = config.CRDT_PATH / f"{name}.crdt"
+        assert path.is_relative_to(config.CRDT_PATH)
         ystore = pycrdt_websocket.ystore.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
@@ -52,7 +51,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         if "edges" not in ws:
             ws["edges"] = pycrdt.Array()
         if "env" not in ws:
-            ws["env"] = next(iter(ops.CATALOGS), 'unset') 
+            ws["env"] = next(iter(ops.CATALOGS), "unset")
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
             try_to_load_workspace(ws, name)
@@ -222,8 +221,8 @@ async def execute(
             await asyncio.sleep(delay)
         except asyncio.CancelledError:
             return
-    path = DATA_PATH / name
-    assert path.is_relative_to(DATA_PATH),"Provided workspace path is invalid"
+    path = config.DATA_PATH / name
+    assert path.is_relative_to(config.DATA_PATH), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
     await workspace.execute(ws_pyd)
