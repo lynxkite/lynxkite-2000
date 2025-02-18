@@ -1,12 +1,15 @@
 {
-	"editor.formatOnSave": true,
-	"ruff.enable": true,
-	"html.format.enable": true,
-	"css.format.enable": true,
-	"typescript.format.enable": true,
-	"files.insertFinalNewline": true,
-	"files.trimTrailingWhitespace": true,
-	"[python]": {
-		"editor.defaultFormatter": "charliermarsh.ruff"
-	}
+  "editor.formatOnSave": true,
+  "ruff.enable": true,
+  "html.format.enable": true,
+  "css.format.enable": true,
+  "typescript.format.enable": true,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }
