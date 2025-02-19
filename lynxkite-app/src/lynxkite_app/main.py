@@ -94,11 +94,12 @@ def list_dir(path: str):
     return sorted(
         [
             DirectoryEntry(
-                p.relative_to(config.DATA_PATH),
-                "directory" if p.is_dir() else "workspace",
+                name=str(p.relative_to(config.DATA_PATH)),
+                type="directory" if p.is_dir() else "workspace",
             )
             for p in path.iterdir()
-        ]
+        ],
+        key=lambda x: x.name,
     )
 
 
