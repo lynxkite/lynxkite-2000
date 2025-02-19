@@ -229,7 +229,7 @@ def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
 @op("Compute betweenness centrality")
 @nx_node_attribute_func("betweenness_centrality")
 def compute_betweenness_centrality(graph: nx.Graph, *, k=10):
-    return nx.betweenness_centrality(graph, k=k, backend="cugraph")
+    return nx.betweenness_centrality(graph, k=k)
 
 
 @op("Discard loop edges")
