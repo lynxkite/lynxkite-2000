@@ -7,7 +7,7 @@
       "data": {
         "title": "Input document",
         "params": {
-          "filename": "data/example-pizza.md"
+          "filename": "examples/example-pizza.md"
         },
         "display": null,
         "error": null,

@@ -161,7 +161,7 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
         ws: CRDT object to udpate with the workspace contents.
         name: Name of the workspace to load.
     """
-    json_path = f"data/{name}"
+    json_path = f"{config.DATA_PATH}/{name}"
     if os.path.exists(json_path):
         ws_pyd = workspace.load(json_path)
         # We treat the display field as a black box, since it is a large
