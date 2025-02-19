@@ -9,12 +9,12 @@ dependencies = [
     "lynxkite-core",
     "orjson>=3.10.13",
     "pycrdt-websocket>=0.15.3",
-    "pydantic-to-typescript>=2.0.0",
     "sse-starlette>=2.2.1",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "pydantic-to-typescript>=2.0.0",
     "pytest>=8.3.4",
 ]
 

@@ -1,7 +1,8 @@
 """Graph analytics operations. To be split into separate files when we have more."""
 
 import os
-from lynxkite.core import ops, workspace
+import fsspec
+from lynxkite.core import ops
 from collections import deque
 import dataclasses
 import functools
@@ -13,7 +14,6 @@ import pandas as pd
 import polars as pl
 import traceback
 import typing
-import zipfile
 
 mem = joblib.Memory("../joblib-cache")
 ENV = "LynxKite Graph Analytics"
@@ -178,6 +178,7 @@ def import_parquet(*, filename: str):
     return pd.read_parquet(filename)
 
 
+@mem.cache
 @op("Import CSV")
 def import_csv(
     *, filename: str, columns: str = "<from file>", separator: str = "<auto>"
@@ -192,26 +193,20 @@ def import_csv(
     )
 
 
-@op("Import GraphML")
 @mem.cache
+@op("Import GraphML")
 def import_graphml(*, filename: str):
     """Imports a GraphML file."""
-    if filename.endswith(".zip"):
-        with zipfile.ZipFile(filename, "r") as z:
-            for fn in z.namelist():
-                if fn.endswith(".graphml"):
-                    with z.open(fn) as f:
-                        G = nx.read_graphml(f)
-                        break
-            else:
-                raise ValueError("No GraphML file found in the ZIP archive.")
-    else:
-        G = nx.read_graphml(filename)
-    return G
+    files = fsspec.open_files(filename, compression="infer")
+    for f in files:
+        if ".graphml" in f.path:
+            with f as f:
+                return nx.read_graphml(f)
+    raise ValueError(f"No .graphml file found at {filename}")
 
 
-@op("Graph from OSM")
 @mem.cache
+@op("Graph from OSM")
 def import_osm(*, location: str):
     import osmnx as ox
 
@@ -234,7 +229,7 @@ def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
 @op("Compute betweenness centrality")
 @nx_node_attribute_func("betweenness_centrality")
 def compute_betweenness_centrality(graph: nx.Graph, *, k=10):
-    return nx.betweenness_centrality(graph, k=k, backend="cugraph")
+    return nx.betweenness_centrality(graph, k=k)
 
 
 @op("Discard loop edges")

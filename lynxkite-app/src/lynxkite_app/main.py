@@ -2,12 +2,7 @@
 
 import os
 import shutil
-
-if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
-    import cudf.pandas
-
-    cudf.pandas.install()
-import dataclasses
+import pydantic
 import fastapi
 import importlib
 import pathlib
@@ -17,6 +12,11 @@ import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt, config
+
+if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
+    import cudf.pandas
+
+    cudf.pandas.install()
 
 
 def detect_plugins():
@@ -82,8 +82,7 @@ def load(path: str):
     return workspace.load(path)
 
 
-@dataclasses.dataclass(order=True)
-class DirectoryEntry:
+class DirectoryEntry(pydantic.BaseModel):
     name: str
     type: str
 
@@ -95,11 +94,12 @@ def list_dir(path: str):
     return sorted(
         [
             DirectoryEntry(
-                p.relative_to(config.DATA_PATH),
-                "directory" if p.is_dir() else "workspace",
+                name=str(p.relative_to(config.DATA_PATH)),
+                type="directory" if p.is_dir() else "workspace",
             )
             for p in path.iterdir()
-        ]
+        ],
+        key=lambda x: x.name,
     )
 
 

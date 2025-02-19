@@ -1,0 +1,24 @@
+{
+  "formatter": {
+    "ignore": ["**/node_modules/**", "**/dist/**"],
+    "indentStyle": "space"
+  },
+  "linter": {
+    "ignore": ["**/node_modules/**", "**/dist/**"],
+    "rules": {
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "useValidAnchor": "off",
+        "useButtonType": "off",
+        "noNoninteractiveTabindex": "off"
+      }
+    }
+  }
+}

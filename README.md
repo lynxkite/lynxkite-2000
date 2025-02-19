@@ -23,6 +23,7 @@ Install everything like this:
 ```bash
 uv venv
 source .venv/bin/activate
+uvx pre-commit install
 # The [dev] tag is only needed if you intend on running tests
 uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-lynxscribe/ -e lynxkite-pillow-example/
 ```
