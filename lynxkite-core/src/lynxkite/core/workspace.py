@@ -65,7 +65,7 @@ async def execute(ws: Workspace):
 
 def save(ws: Workspace, path: str):
     """Persist a workspace to a local file in JSON format."""
-    j = ws.model_dump_json(indent=2)
+    j = ws.model_dump_json(indent=2) + "\n"
     dirname, basename = os.path.split(path)
     os.makedirs(dirname, exist_ok=True)
     # Create temp file in the same directory to make sure it's on the same filesystem.
