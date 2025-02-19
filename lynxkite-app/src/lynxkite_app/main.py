@@ -107,7 +107,7 @@ def list_dir(path: str):
 def make_dir(req: dict):
     path = config.DATA_PATH / req["path"]
     assert path.is_relative_to(config.DATA_PATH)
-    assert not path.exists()
+    assert not path.exists(), f"{path} already exists"
     path.mkdir()
 
 
@@ -116,7 +116,6 @@ def delete_dir(req: dict):
     path: pathlib.Path = config.DATA_PATH / req["path"]
     assert all([path.is_relative_to(config.DATA_PATH), path.exists(), path.is_dir()])
     shutil.rmtree(path)
-    return list_dir(path.parent)
 
 
 @app.get("/api/service/{module_path:path}")
