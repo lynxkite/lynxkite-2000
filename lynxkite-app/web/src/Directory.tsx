@@ -122,7 +122,9 @@ export default function () {
                       newWorkspaceIn(
                         path || "",
                         list.data,
-                        e.target.workspaceName.value.trim(),
+                        (
+                          e.target as HTMLFormElement
+                        ).workspaceName.value.trim(),
                       );
                     }}
                   >
@@ -151,7 +153,7 @@ export default function () {
                       newFolderIn(
                         path || "",
                         list.data,
-                        e.target.folderName.value.trim(),
+                        (e.target as HTMLFormElement).folderName.value.trim(),
                       );
                     }}
                   >
