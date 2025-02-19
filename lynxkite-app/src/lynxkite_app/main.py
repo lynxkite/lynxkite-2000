@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
-from . import crdt
+from . import crdt, config
 
 if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
     import cudf.pandas
@@ -50,8 +50,8 @@ class SaveRequest(workspace.BaseConfig):
 
 
 def save(req: SaveRequest):
-    path = DATA_PATH / req.path
-    assert path.is_relative_to(DATA_PATH)
+    path = config.DATA_PATH / req.path
+    assert path.is_relative_to(config.DATA_PATH)
     workspace.save(req.ws, path)
 
 
@@ -65,25 +65,21 @@ async def save_and_execute(req: SaveRequest):
 
 @app.post("/api/delete")
 async def delete_workspace(req: dict):
-    json_path: pathlib.Path = DATA_PATH / req["path"]
-    crdt_path: pathlib.Path = CRDT_PATH / f"{req['path']}.crdt"
-    assert json_path.is_relative_to(DATA_PATH)
-    assert crdt_path.is_relative_to(CRDT_PATH)
+    json_path: pathlib.Path = config.DATA_PATH / req["path"]
+    crdt_path: pathlib.Path = config.CRDT_PATH / f"{req['path']}.crdt"
+    assert json_path.is_relative_to(config.DATA_PATH)
+    assert crdt_path.is_relative_to(config.CRDT_PATH)
     json_path.unlink()
     crdt_path.unlink()
 
 
 @app.get("/api/load")
 def load(path: str):
-    path = DATA_PATH / path
-    assert path.is_relative_to(DATA_PATH)
+    path = config.DATA_PATH / path
+    assert path.is_relative_to(config.DATA_PATH)
     if not path.exists():
         return workspace.Workspace()
     return workspace.load(path)
-
-
-DATA_PATH = pathlib.Path(os.environ.get("LYNXKITE_DATA", "lynxkite_data"))
-CRDT_PATH = pathlib.Path(os.environ.get("LYNXKITE_CRDT_DATA", "lynxkite_crdt_data"))
 
 
 class DirectoryEntry(pydantic.BaseModel):
@@ -93,12 +89,13 @@ class DirectoryEntry(pydantic.BaseModel):
 
 @app.get("/api/dir/list")
 def list_dir(path: str):
-    path = DATA_PATH / path
-    assert path.is_relative_to(DATA_PATH)
+    path = config.DATA_PATH / path
+    assert path.is_relative_to(config.DATA_PATH)
     return sorted(
         [
             DirectoryEntry(
-                p.relative_to(DATA_PATH), "directory" if p.is_dir() else "workspace"
+                p.relative_to(config.DATA_PATH),
+                "directory" if p.is_dir() else "workspace",
             )
             for p in path.iterdir()
         ]
@@ -107,19 +104,17 @@ def list_dir(path: str):
 
 @app.post("/api/dir/mkdir")
 def make_dir(req: dict):
-    path = DATA_PATH / req["path"]
-    assert path.is_relative_to(DATA_PATH)
-    assert not path.exists()
+    path = config.DATA_PATH / req["path"]
+    assert path.is_relative_to(config.DATA_PATH)
+    assert not path.exists(), f"{path} already exists"
     path.mkdir()
-    return list_dir(path.parent)
 
 
 @app.post("/api/dir/delete")
 def delete_dir(req: dict):
-    path: pathlib.Path = DATA_PATH / req["path"]
-    assert all([path.is_relative_to(DATA_PATH), path.exists(), path.is_dir()])
+    path: pathlib.Path = config.DATA_PATH / req["path"]
+    assert all([path.is_relative_to(config.DATA_PATH), path.exists(), path.is_dir()])
     shutil.rmtree(path)
-    return list_dir(path.parent)
 
 
 @app.get("/api/service/{module_path:path}")

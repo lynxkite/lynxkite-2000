@@ -1,0 +1,1 @@
+"""More frontend build artifacts."""
