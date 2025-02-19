@@ -1,12 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import '@xyflow/react/dist/style.css';
-import './index.css'
-import Directory from './Directory.tsx'
-import Workspace from './workspace/Workspace.tsx'
-import { BrowserRouter, Routes, Route } from "react-router";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "@xyflow/react/dist/style.css";
+import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router";
+import Directory from "./Directory.tsx";
+import Workspace from "./workspace/Workspace.tsx";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
@@ -17,4 +17,4 @@ createRoot(document.getElementById('root')!).render(
       </Routes>
     </BrowserRouter>
   </StrictMode>,
-)
+);
