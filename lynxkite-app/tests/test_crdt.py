@@ -1,7 +1,7 @@
 from enum import Enum
 import pycrdt
 import pytest
-from lynxkite.app.crdt import crdt_update
+from lynxkite_app.crdt import crdt_update
 
 
 @pytest.fixture

@@ -15,7 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
+    "pytest>=8.3.4",
 ]
 
 [tool.uv.sources]
@@ -30,8 +30,8 @@ namespaces = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-"lynxkite.app.web_assets" = ["*"]
-"lynxkite.app.web_assets.assets" = ["*"]
+"lynxkite_app.web_assets" = ["*"]
+"lynxkite_app.web_assets.assets" = ["*"]
 
 [tool.setuptools]
 py-modules = ["build_frontend"]
@@ -41,4 +41,4 @@ include-package-data = true
 build_py = "build_frontend.build_py"
 
 [project.scripts]
-lynxkite = "lynxkite.app.__main__:main"
+lynxkite = "lynxkite_app.__main__:main"
