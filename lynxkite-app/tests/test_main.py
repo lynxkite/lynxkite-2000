@@ -1,6 +1,7 @@
 import uuid
 from fastapi.testclient import TestClient
-from lynxkite.app.main import app, detect_plugins, DATA_PATH
+from lynxkite_app.main import app, detect_plugins
+from lynxkite_app.config import DATA_PATH
 import os
 
 
@@ -13,9 +14,9 @@ def test_detect_plugins_with_plugins():
     assert all(
         plugin in plugins.keys()
         for plugin in [
-            "lynxkite_plugins.graph_analytics",
-            "lynxkite_plugins.lynxscribe",
-            "lynxkite_plugins.pillow_example",
+            "lynxkite_graph_analytics",
+            "lynxkite_lynxscribe",
+            "lynxkite_pillow_example",
         ]
     )
 
@@ -57,7 +58,7 @@ def test_save_and_load():
 def test_list_dir():
     test_dir = str(uuid.uuid4())
     test_dir_full_path = DATA_PATH / test_dir
-    test_dir_full_path.mkdir(exist_ok=True)
+    test_dir_full_path.mkdir(parents=True, exist_ok=True)
     test_file = test_dir_full_path / "test_file.txt"
     test_file.touch()
     response = client.get(f"/api/dir/list?path={str(test_dir)}")

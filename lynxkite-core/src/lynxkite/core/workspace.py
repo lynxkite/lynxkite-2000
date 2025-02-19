@@ -67,6 +67,7 @@ def save(ws: Workspace, path: str):
     """Persist a workspace to a local file in JSON format."""
     j = ws.model_dump_json(indent=2)
     dirname, basename = os.path.split(path)
+    os.makedirs(dirname, exist_ok=True)
     # Create temp file in the same directory to make sure it's on the same filesystem.
     with tempfile.NamedTemporaryFile(
         "w", prefix=f".{basename}.", dir=dirname, delete=False
