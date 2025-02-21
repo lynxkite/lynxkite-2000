@@ -1,0 +1,24 @@
+[project]
+name = "lynxkite-bio"
+version = "0.1.0"
+description = "Additional boxes for LynxKite Graph Analytics that add algorithms for biology."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fsspec>=2025.2.0",
+    "joblib>=1.4.2",
+    "lynxkite-core",
+    "lynxkite-graph-analytics",
+    "pandas>=2.2.3",
+    "rdkit>=2024.9.5",
+    "scipy>=1.15.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.4",
+]
+
+[tool.uv.sources]
+lynxkite-core = { path = "../lynxkite-core" }
+lynxkite-graph-analytics = { path = "../lynxkite-graph-analytics" }
