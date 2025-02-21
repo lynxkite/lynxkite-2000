@@ -80,9 +80,10 @@ class Bundle:
         # TODO: Use relations.
         graph = nx.DiGraph()
         if "nodes" in self.dfs:
-            graph.add_nodes_from(
-                self.dfs["nodes"].set_index("id").to_dict("index").items()
-            )
+            df = self.dfs["nodes"]
+            if df.index.name != "id":
+                df = df.set_index("id")
+            graph.add_nodes_from(df.to_dict("index").items())
         graph.add_edges_from(
             self.dfs["edges"][["source", "target"]].itertuples(index=False, name=None)
         )
