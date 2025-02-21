@@ -325,7 +325,13 @@ def _map_color(value):
 
 
 @op("Visualize graph", view="visualization")
-def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
+def visualize_graph(
+    graph: Bundle,
+    *,
+    color_nodes_by: ops.NodeAttribute = None,
+    label_by: ops.NodeAttribute = None,
+    color_edges_by: ops.EdgeAttribute = None,
+):
     nodes = graph.dfs["nodes"].copy()
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
@@ -357,14 +363,18 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
         curveness = 0.3
     nodes = nodes.to_records()
     edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
+    if color_edges_by:
+        edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
+        "tooltip": {"show": True},
         "series": [
             {
                 "type": "graph",
-                "roam": True,
+                # Mouse zoom/panning is disabled for now. It interacts badly with ReactFlow.
+                # "roam": True,
                 "lineStyle": {
                     "color": "gray",
                     "curveness": curveness,
@@ -375,6 +385,7 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
                         "width": 10,
                     },
                 },
+                "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
                         "id": str(n.id),
@@ -383,11 +394,24 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
                         # Adjust node size to cover the same area no matter how many nodes there are.
                         "symbolSize": 50 / len(nodes) ** 0.5,
                         "itemStyle": {"color": n.color} if color_nodes_by else {},
+                        "label": {"show": label_by is not None},
+                        "name": getattr(n, label_by, None) if label_by else None,
+                        "value": getattr(n, color_nodes_by, None)
+                        if color_nodes_by
+                        else None,
                     }
                     for n in nodes
                 ],
                 "links": [
-                    {"source": str(r.source), "target": str(r.target)} for r in edges
+                    {
+                        "source": str(r.source),
+                        "target": str(r.target),
+                        "lineStyle": {"color": r.color} if color_edges_by else {},
+                        "value": getattr(r, color_edges_by, None)
+                        if color_edges_by
+                        else None,
+                    }
+                    for r in edges
                 ],
             },
         ],
