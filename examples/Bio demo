@@ -1,0 +1,461 @@
+{
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "id": "Import CSV 1",
+      "type": "basic",
+      "data": {
+        "title": "Import CSV",
+        "params": {
+          "columns": "<from file>",
+          "separator": "<auto>",
+          "filename": "examples/drug_target_data_sample.csv"
+        },
+        "display": null,
+        "error": null,
+        "collapsed": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "position": "right",
+              "name": "output",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filename": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": null,
+              "name": "filename"
+            },
+            "columns": {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "separator": {
+              "name": "separator",
+              "default": "<auto>",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "inputs": {},
+          "type": "basic",
+          "name": "Import CSV"
+        },
+        "__execution_delay": 0.0
+      },
+      "position": {
+        "x": -91.52295913245543,
+        "y": 933.9762681038399
+      },
+      "width": 200.0,
+      "height": 200.0
+    },
+    {
+      "id": "Parse SMILES 1",
+      "type": "basic",
+      "data": {
+        "title": "Parse SMILES",
+        "params": {
+          "table": "df",
+          "save_as": "mols",
+          "smiles_column": "SMILES"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "name": "Parse SMILES",
+          "params": {
+            "table": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "df",
+              "name": "table"
+            },
+            "smiles_column": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "smiles_column",
+              "default": "SMILES"
+            },
+            "save_as": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "save_as",
+              "default": "mols"
+            }
+          },
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
+              },
+              "position": "left"
+            }
+          },
+          "outputs": {
+            "output": {
+              "position": "right",
+              "name": "output",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "type": "basic"
+        }
+      },
+      "position": {
+        "x": 381.1847590729871,
+        "y": 945.0
+      },
+      "height": 200.0,
+      "width": 200.0
+    },
+    {
+      "id": "Graph from molecule similarity 1",
+      "type": "basic",
+      "data": {
+        "title": "Graph from molecule similarity",
+        "params": {
+          "table": "df",
+          "mols_column": "mols",
+          "average_degree": "3"
+        },
+        "display": null,
+        "error": null,
+        "collapsed": null,
+        "meta": {
+          "params": {
+            "mols_column": {
+              "name": "mols_column",
+              "default": "mols",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "table": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "df",
+              "name": "table"
+            },
+            "average_degree": {
+              "name": "average_degree",
+              "default": 10.0,
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "inputs": {
+            "bundle": {
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
+              },
+              "name": "bundle"
+            }
+          },
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "position": "right",
+              "name": "output"
+            }
+          },
+          "name": "Graph from molecule similarity",
+          "type": "basic"
+        },
+        "__execution_delay": 0.0
+      },
+      "position": {
+        "x": 926.4337192214458,
+        "y": 1014.4451876264845
+      },
+      "height": 200.0,
+      "width": 200.0
+    },
+    {
+      "id": "Visualize graph 1",
+      "type": "visualization",
+      "data": {
+        "title": "Visualize graph",
+        "params": {
+          "color_edges_by": "similarity",
+          "color_nodes_by": "ORGANISM",
+          "label_by": "DRUG_NAME"
+        },
+        "display": {
+          "animationDuration": 500,
+          "animationEasingUpdate": "quinticInOut",
+          "tooltip": {
+            "show": true
+          },
+          "series": [
+            {
+              "type": "graph",
+              "lineStyle": {
+                "color": "gray",
+                "curveness": 0.3
+              },
+              "emphasis": {
+                "focus": "adjacency",
+                "lineStyle": {
+                  "width": 10
+                }
+              },
+              "label": {
+                "position": "top",
+                "formatter": "{b}"
+              },
+              "data": [
+                {
+                  "id": "0",
+                  "x": 0.10802749422637721,
+                  "y": 0.08231702235365293,
+                  "symbolSize": 22.360679774997894,
+                  "itemStyle": {
+                    "color": "#a6cee3"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "phencyclidine",
+                  "value": "Torpedo californica"
+                },
+                {
+                  "id": "1",
+                  "x": -0.21409593978467548,
+                  "y": -0.41899519488061593,
+                  "symbolSize": 22.360679774997894,
+                  "itemStyle": {
+                    "color": "#1f78b4"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "triazolam",
+                  "value": "Homo sapiens"
+                },
+                {
+                  "id": "2",
+                  "x": -0.026230797767347148,
+                  "y": 0.7208227030460969,
+                  "symbolSize": 22.360679774997894,
+                  "itemStyle": {
+                    "color": "#1f78b4"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "gentian violet",
+                  "value": "Homo sapiens"
+                },
+                {
+                  "id": "3",
+                  "x": -0.8677007566744104,
+                  "y": -0.1866160281519609,
+                  "symbolSize": 22.360679774997894,
+                  "itemStyle": {
+                    "color": "#1f78b4"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "ipratropium",
+                  "value": "Homo sapiens"
+                },
+                {
+                  "id": "4",
+                  "x": 1.0,
+                  "y": -0.19752850236718,
+                  "symbolSize": 22.360679774997894,
+                  "itemStyle": {
+                    "color": "#1f78b4"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "deoxycholic acid",
+                  "value": "Homo sapiens"
+                }
+              ],
+              "links": [
+                {
+                  "source": "3",
+                  "target": "4",
+                  "lineStyle": {
+                    "color": "#440154"
+                  },
+                  "value": 0.8481012658227848
+                },
+                {
+                  "source": "0",
+                  "target": "1",
+                  "lineStyle": {
+                    "color": "#3a538b"
+                  },
+                  "value": 0.8813559322033898
+                },
+                {
+                  "source": "0",
+                  "target": "4",
+                  "lineStyle": {
+                    "color": "#3a538b"
+                  },
+                  "value": 0.8813559322033898
+                },
+                {
+                  "source": "0",
+                  "target": "3",
+                  "lineStyle": {
+                    "color": "#26818e"
+                  },
+                  "value": 0.9047619047619048
+                },
+                {
+                  "source": "1",
+                  "target": "2",
+                  "lineStyle": {
+                    "color": "#23898d"
+                  },
+                  "value": 0.9090909090909091
+                },
+                {
+                  "source": "1",
+                  "target": "3",
+                  "lineStyle": {
+                    "color": "#1ea087"
+                  },
+                  "value": 0.921875
+                },
+                {
+                  "source": "0",
+                  "target": "2",
+                  "lineStyle": {
+                    "color": "#3ebc73"
+                  },
+                  "value": 0.9375
+                },
+                {
+                  "source": "1",
+                  "target": "4",
+                  "lineStyle": {
+                    "color": "#4fc369"
+                  },
+                  "value": 0.9420289855072463
+                },
+                {
+                  "source": "2",
+                  "target": "4",
+                  "lineStyle": {
+                    "color": "#9fd938"
+                  },
+                  "value": 0.9589041095890412
+                },
+                {
+                  "source": "2",
+                  "target": "3",
+                  "lineStyle": {
+                    "color": "#fde724"
+                  },
+                  "value": 0.9775280898876404
+                }
+              ]
+            }
+          ]
+        },
+        "error": null,
+        "__execution_delay": 0.0,
+        "meta": {
+          "inputs": {
+            "graph": {
+              "name": "graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
+              }
+            }
+          },
+          "outputs": {},
+          "type": "visualization",
+          "params": {
+            "color_edges_by": {
+              "name": "color_edges_by",
+              "default": null,
+              "type": {
+                "format": "edge attribute"
+              }
+            },
+            "color_nodes_by": {
+              "default": null,
+              "type": {
+                "format": "node attribute"
+              },
+              "name": "color_nodes_by"
+            },
+            "label_by": {
+              "name": "label_by",
+              "default": null,
+              "type": {
+                "format": "node attribute"
+              }
+            }
+          },
+          "position": {
+            "x": 883.0,
+            "y": 167.0
+          },
+          "name": "Visualize graph"
+        },
+        "collapsed": null
+      },
+      "position": {
+        "x": 1530.0,
+        "y": 915.0
+      },
+      "width": 407.0,
+      "height": 314.0
+    }
+  ],
+  "edges": [
+    {
+      "id": "Import CSV 1 Parse SMILES 1",
+      "source": "Import CSV 1",
+      "target": "Parse SMILES 1",
+      "sourceHandle": "output",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Parse SMILES 1 Graph from molecule similarity 1",
+      "source": "Parse SMILES 1",
+      "target": "Graph from molecule similarity 1",
+      "sourceHandle": "output",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Graph from molecule similarity 1 Visualize graph 1",
+      "source": "Graph from molecule similarity 1",
+      "target": "Visualize graph 1",
+      "sourceHandle": "output",
+      "targetHandle": "graph"
+    }
+  ]
+}
