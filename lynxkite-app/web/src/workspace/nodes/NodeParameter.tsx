@@ -31,7 +31,7 @@ export default function NodeParameter({
         <>
           <ParamName name={name} />
           <textarea
-            className="textarea textarea-bordered w-full max-w-xs"
+            className="textarea textarea-bordered w-full"
             rows={6}
             value={value}
             onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
@@ -42,7 +42,7 @@ export default function NodeParameter({
         <>
           <ParamName name={name} />
           <select
-            className="select select-bordered w-full max-w-xs"
+            className="select select-bordered w-full"
             value={value || meta.type.enum[0]}
             onChange={(evt) => onChange(evt.currentTarget.value)}
           >
@@ -69,7 +69,7 @@ export default function NodeParameter({
         <>
           <ParamName name={name} />
           <input
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             value={value || ""}
             onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
             onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
