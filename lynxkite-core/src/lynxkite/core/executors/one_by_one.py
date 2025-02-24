@@ -141,28 +141,27 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                     if cache is not None:
                         key = make_cache_key((inputs, params))
                         if key not in cache:
-                            cache[key] = await await_if_needed(op(*inputs, **params))
-                        result = cache[key]
+                            result: ops.Result = op(*inputs, **params)
+                            output = await await_if_needed(result.output)
+                            cache[key] = output
+                        output = cache[key]
                     else:
-                        result = await await_if_needed(op(*inputs, **params))
+                        result = op(*inputs, **params)
+                        output = await await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
                     data.error = str(e)
                     break
-                contexts[node.id].last_result = result
+                contexts[node.id].last_result = output
                 # Returned lists and DataFrames are considered multiple tasks.
-                if isinstance(result, pd.DataFrame):
-                    result = df_to_list(result)
-                elif not isinstance(result, list):
-                    result = [result]
-                results.extend(result)
+                if isinstance(output, pd.DataFrame):
+                    output = df_to_list(output)
+                elif not isinstance(output, list):
+                    output = [output]
+                results.extend(output)
             else:  # Finished all tasks without errors.
-                if (
-                    op.type == "visualization"
-                    or op.type == "table_view"
-                    or op.type == "image"
-                ):
-                    data.display = results[0]
+                if result.display:
+                    data.display = await await_if_needed(result.display)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.title]
