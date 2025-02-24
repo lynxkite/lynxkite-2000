@@ -45,6 +45,7 @@ import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 
 export default function (props: any) {
   return (
@@ -175,6 +176,7 @@ function LynxKiteFlow() {
       visualization: NodeWithVisualization,
       image: NodeWithImage,
       table_view: NodeWithTableView,
+      graph_creation_view: NodeWithGraphCreationView,
     }),
     [],
   );
