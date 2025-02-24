@@ -7,14 +7,38 @@
       "data": {
         "title": "Import CSV",
         "params": {
-          "columns": "<from file>",
+          "filename": "examples/drug_target_data_sample.csv",
           "separator": "<auto>",
-          "filename": "examples/drug_target_data_sample.csv"
+          "columns": "<from file>"
         },
         "display": null,
         "error": null,
+        "__execution_delay": 0.0,
         "collapsed": null,
         "meta": {
+          "params": {
+            "separator": {
+              "default": "<auto>",
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "separator"
+            },
+            "filename": {
+              "default": null,
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "name": "filename"
+            },
+            "columns": {
+              "name": "columns",
+              "default": "<from file>",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
           "outputs": {
             "output": {
               "position": "right",
@@ -24,38 +48,14 @@
               }
             }
           },
-          "params": {
-            "filename": {
-              "type": {
-                "type": "<class 'str'>"
-              },
-              "default": null,
-              "name": "filename"
-            },
-            "columns": {
-              "default": "<from file>",
-              "name": "columns",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "separator": {
-              "name": "separator",
-              "default": "<auto>",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "inputs": {},
           "type": "basic",
+          "inputs": {},
           "name": "Import CSV"
-        },
-        "__execution_delay": 0.0
+        }
       },
       "position": {
-        "x": -91.52295913245543,
-        "y": 933.9762681038399
+        "x": 300.92214591096035,
+        "y": 1018.8292637889027
       },
       "width": 200.0,
       "height": 200.0
@@ -66,34 +66,35 @@
       "data": {
         "title": "Parse SMILES",
         "params": {
+          "smiles_column": "SMILES",
           "table": "df",
-          "save_as": "mols",
-          "smiles_column": "SMILES"
+          "save_as": "mols"
         },
         "display": null,
         "error": null,
         "meta": {
           "name": "Parse SMILES",
+          "type": "basic",
           "params": {
             "table": {
+              "default": "df",
+              "name": "table",
               "type": {
                 "type": "<class 'str'>"
-              },
-              "default": "df",
-              "name": "table"
+              }
             },
             "smiles_column": {
+              "name": "smiles_column",
+              "default": "SMILES",
               "type": {
                 "type": "<class 'str'>"
-              },
-              "name": "smiles_column",
-              "default": "SMILES"
+              }
             },
             "save_as": {
+              "name": "save_as",
               "type": {
                 "type": "<class 'str'>"
               },
-              "name": "save_as",
               "default": "mols"
             }
           },
@@ -109,21 +110,20 @@
           "outputs": {
             "output": {
               "position": "right",
-              "name": "output",
               "type": {
                 "type": "None"
-              }
+              },
+              "name": "output"
             }
-          },
-          "type": "basic"
+          }
         }
       },
       "position": {
-        "x": 381.1847590729871,
-        "y": 945.0
+        "x": 580.5892989328847,
+        "y": 1012.8823965480503
       },
-      "height": 200.0,
-      "width": 200.0
+      "width": 200.0,
+      "height": 200.0
     },
     {
       "id": "Graph from molecule similarity 1",
@@ -132,43 +132,19 @@
         "title": "Graph from molecule similarity",
         "params": {
           "table": "df",
-          "mols_column": "mols",
-          "average_degree": "3"
+          "average_degree": "3",
+          "mols_column": "mols"
         },
         "display": null,
         "error": null,
-        "collapsed": null,
         "meta": {
-          "params": {
-            "mols_column": {
-              "name": "mols_column",
-              "default": "mols",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "table": {
-              "type": {
-                "type": "<class 'str'>"
-              },
-              "default": "df",
-              "name": "table"
-            },
-            "average_degree": {
-              "name": "average_degree",
-              "default": 10.0,
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
           "inputs": {
             "bundle": {
               "position": "left",
+              "name": "bundle",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
-              },
-              "name": "bundle"
+              }
             }
           },
           "outputs": {
@@ -180,9 +156,33 @@
               "name": "output"
             }
           },
+          "type": "basic",
           "name": "Graph from molecule similarity",
-          "type": "basic"
+          "params": {
+            "average_degree": {
+              "default": 10.0,
+              "type": {
+                "type": "<class 'int'>"
+              },
+              "name": "average_degree"
+            },
+            "table": {
+              "default": "df",
+              "name": "table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "mols_column": {
+              "default": "mols",
+              "name": "mols_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          }
         },
+        "collapsed": null,
         "__execution_delay": 0.0
       },
       "position": {
@@ -198,9 +198,9 @@
       "data": {
         "title": "Visualize graph",
         "params": {
-          "color_edges_by": "similarity",
           "color_nodes_by": "ORGANISM",
-          "label_by": "DRUG_NAME"
+          "label_by": "DRUG_NAME",
+          "color_edges_by": "similarity"
         },
         "display": {
           "animationDuration": 500,
@@ -228,8 +228,8 @@
               "data": [
                 {
                   "id": "0",
-                  "x": 0.10802749422637721,
-                  "y": 0.08231702235365293,
+                  "x": -0.13734854736037372,
+                  "y": 0.0003840689616843064,
                   "symbolSize": 22.360679774997894,
                   "itemStyle": {
                     "color": "#a6cee3"
@@ -242,8 +242,8 @@
                 },
                 {
                   "id": "1",
-                  "x": -0.21409593978467548,
-                  "y": -0.41899519488061593,
+                  "x": 0.4859426303201164,
+                  "y": -0.09785193844993345,
                   "symbolSize": 22.360679774997894,
                   "itemStyle": {
                     "color": "#1f78b4"
@@ -256,8 +256,8 @@
                 },
                 {
                   "id": "2",
-                  "x": -0.026230797767347148,
-                  "y": 0.7208227030460969,
+                  "x": -0.36490537596845657,
+                  "y": 0.655747709585604,
                   "symbolSize": 22.360679774997894,
                   "itemStyle": {
                     "color": "#1f78b4"
@@ -270,8 +270,8 @@
                 },
                 {
                   "id": "3",
-                  "x": -0.8677007566744104,
-                  "y": -0.1866160281519609,
+                  "x": 0.8039553347691868,
+                  "y": 0.44172015990267444,
                   "symbolSize": 22.360679774997894,
                   "itemStyle": {
                     "color": "#1f78b4"
@@ -284,8 +284,8 @@
                 },
                 {
                   "id": "4",
-                  "x": 1.0,
-                  "y": -0.19752850236718,
+                  "x": -0.7876440417604583,
+                  "y": -1.0,
                   "symbolSize": 22.360679774997894,
                   "itemStyle": {
                     "color": "#1f78b4"
@@ -384,55 +384,437 @@
         },
         "error": null,
         "__execution_delay": 0.0,
+        "collapsed": null,
         "meta": {
+          "params": {
+            "label_by": {
+              "type": {
+                "format": "node attribute"
+              },
+              "name": "label_by",
+              "default": null
+            },
+            "color_nodes_by": {
+              "type": {
+                "format": "node attribute"
+              },
+              "name": "color_nodes_by",
+              "default": null
+            },
+            "color_edges_by": {
+              "name": "color_edges_by",
+              "type": {
+                "format": "edge attribute"
+              },
+              "default": null
+            }
+          },
           "inputs": {
             "graph": {
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
+              },
               "name": "graph",
+              "position": "left"
+            }
+          },
+          "outputs": {},
+          "position": {
+            "y": 167.0,
+            "x": 883.0
+          },
+          "type": "visualization",
+          "name": "Visualize graph"
+        }
+      },
+      "position": {
+        "x": 1254.2277640235457,
+        "y": 931.9705991370125
+      },
+      "height": 314.0,
+      "width": 407.0
+    },
+    {
+      "id": "Cypher 1",
+      "type": "basic",
+      "data": {
+        "title": "Cypher",
+        "params": {
+          "save_as": "result",
+          "query": "MATCH\n  (a {ORGANISM: \"Homo sapiens\"})\n  -[r]->\n  (b {ORGANISM: \"Homo sapiens\"})\nWHERE\n  r.similarity > 0.9\nRETURN a.DRUG_NAME, b.DRUG_NAME"
+        },
+        "display": null,
+        "error": null,
+        "meta": {
+          "outputs": {
+            "output": {
+              "type": {
+                "type": "None"
+              },
+              "name": "output",
+              "position": "right"
+            }
+          },
+          "inputs": {
+            "bundle": {
+              "position": "left",
+              "name": "bundle",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
+              }
+            }
+          },
+          "name": "Cypher",
+          "params": {
+            "query": {
+              "default": null,
+              "name": "query",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            "save_as": {
+              "type": {
+                "type": "<class 'str'>"
+              },
+              "default": "result",
+              "name": "save_as"
+            }
+          },
+          "type": "basic",
+          "position": {
+            "x": 638.0,
+            "y": 577.0
+          }
+        },
+        "collapsed": null,
+        "__execution_delay": 0.0
+      },
+      "position": {
+        "x": 1209.2024653849007,
+        "y": 1567.9825632648467
+      },
+      "height": 267.0,
+      "width": 434.0
+    },
+    {
+      "id": "View tables 1",
+      "type": "table_view",
+      "data": {
+        "title": "View tables",
+        "params": {
+          "limit": 100.0
+        },
+        "display": {
+          "dataframes": {
+            "edges": {
+              "columns": [
+                "source",
+                "target",
+                "similarity"
+              ],
+              "data": [
+                [
+                  3.0,
+                  4.0,
+                  0.8481012658227848
+                ],
+                [
+                  0.0,
+                  1.0,
+                  0.8813559322033898
+                ],
+                [
+                  0.0,
+                  4.0,
+                  0.8813559322033898
+                ],
+                [
+                  0.0,
+                  3.0,
+                  0.9047619047619048
+                ],
+                [
+                  1.0,
+                  2.0,
+                  0.9090909090909091
+                ],
+                [
+                  1.0,
+                  3.0,
+                  0.921875
+                ],
+                [
+                  0.0,
+                  2.0,
+                  0.9375
+                ],
+                [
+                  1.0,
+                  4.0,
+                  0.9420289855072463
+                ],
+                [
+                  2.0,
+                  4.0,
+                  0.9589041095890412
+                ],
+                [
+                  2.0,
+                  3.0,
+                  0.9775280898876404
+                ]
+              ]
+            },
+            "nodes": {
+              "columns": [
+                "Unnamed: 0",
+                "DRUG_NAME",
+                "STRUCT_ID",
+                "TARGET_NAME",
+                "TARGET_CLASS",
+                "ACCESSION",
+                "GENE",
+                "SWISSPROT",
+                "ACT_VALUE",
+                "ACT_UNIT",
+                "ACT_TYPE",
+                "ACT_COMMENT",
+                "ACT_SOURCE",
+                "RELATION",
+                "MOA",
+                "MOA_SOURCE",
+                "ACT_SOURCE_URL",
+                "MOA_SOURCE_URL",
+                "ACTION_TYPE",
+                "TDL",
+                "ORGANISM",
+                "SMILES",
+                "InChI",
+                "InChIKey",
+                "INN",
+                "mols"
+              ],
+              "data": [
+                [
+                  9737,
+                  "phencyclidine",
+                  2121,
+                  "Acetylcholine receptor subunit alpha",
+                  "Ion channel",
+                  "P02710",
+                  "CHRNA1",
+                  "ACHA_TORCA",
+                  6.66,
+                  null,
+                  "IC50",
+                  "Displacement of [3H]PCP from nAChR in Torpedo nobiliana electric organs membranes in presence of 100 uM carbachol by scintillation counting method",
+                  "CHEMBL",
+                  "=",
+                  null,
+                  "nan",
+                  null,
+                  "nan",
+                  "nan",
+                  "nan",
+                  "Torpedo californica",
+                  "C1CCN(CC1)C1(CCCCC1)C1=CC=CC=C1",
+                  "InChI=1S/C17H25N/c1-4-10-16(11-5-1)17(12-6-2-7-13-17)18-14-8-3-9-15-18/h1,4-5,10-11H,2-3,6-9,12-15H2",
+                  "JTJMJGYZQZDUJJ-UHFFFAOYSA-N",
+                  "phencyclidine",
+                  "<rdkit.Chem.rdchem.Mol object at 0x74d424169e70>"
+                ],
+                [
+                  12934,
+                  "triazolam",
+                  2729,
+                  "GABA A receptor alpha-3/beta-2/gamma-2",
+                  "Ion channel",
+                  "P18507|P34903|P47870",
+                  "GABRG2|GABRA3|GABRB2",
+                  "GBRG2_HUMAN|GBRA3_HUMAN|GBRB2_HUMAN",
+                  8.876,
+                  null,
+                  "Ki",
+                  "nan",
+                  "WOMBAT-PK",
+                  "=",
+                  1.0,
+                  "CHEMBL",
+                  null,
+                  "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL646",
+                  "POSITIVE ALLOSTERIC MODULATOR",
+                  "Tclin|Tclin|Tclin|Tclin|Tclin|Tclin|Tclin|Tclin|Tclin",
+                  "Homo sapiens",
+                  "CC1=NN=C2CN=C(C3=CC(Cl)=CC=C3N12)C1=C(Cl)C=CC=C1",
+                  "InChI=1S/C17H12Cl2N4/c1-10-21-22-16-9-20-17(12-4-2-3-5-14(12)19)13-8-11(18)6-7-15(13)23(10)16/h2-8H,9H2,1H3",
+                  "JOFWLTCLBGQGBO-UHFFFAOYSA-N",
+                  "triazolam",
+                  "<rdkit.Chem.rdchem.Mol object at 0x74d42416ab20>"
+                ],
+                [
+                  15266,
+                  "gentian violet",
+                  4138,
+                  "D(2) dopamine receptor",
+                  "GPCR",
+                  "P14416",
+                  "DRD2",
+                  "DRD2_HUMAN",
+                  5.975,
+                  null,
+                  "Ki",
+                  "DRUGMATRIX: Dopamine D2L radioligand binding (ligand: [3H] Spiperone)",
+                  "DRUG MATRIX",
+                  "=",
+                  null,
+                  "nan",
+                  null,
+                  "nan",
+                  "nan",
+                  "Tclin",
+                  "Homo sapiens",
+                  "CN(C)C1=CC=C(C=C1)C(C1=CC=C(C=C1)N(C)C)=C1C=CC(C=C1)=[N+](C)C",
+                  "InChI=1S/C25H30N3/c1-26(2)22-13-7-19(8-14-22)25(20-9-15-23(16-10-20)27(3)4)21-11-17-24(18-12-21)28(5)6/h7-18H,1-6H3/q+1",
+                  "LGLFFNDHMLKUMI-UHFFFAOYSA-N",
+                  "gentian violet",
+                  "<rdkit.Chem.rdchem.Mol object at 0x74d424169070>"
+                ],
+                [
+                  6488,
+                  "ipratropium",
+                  1475,
+                  "Muscarinic acetylcholine receptor M1",
+                  "GPCR",
+                  "P11229",
+                  "CHRM1",
+                  "ACM1_HUMAN",
+                  9.31,
+                  null,
+                  "Ki",
+                  "nan",
+                  "WOMBAT-PK",
+                  "=",
+                  null,
+                  "nan",
+                  null,
+                  "nan",
+                  "nan",
+                  "Tclin",
+                  "Homo sapiens",
+                  "CC(C)[N+]1(C)[C@H]2CC[C@@H]1C[C@@H](C2)OC(=O)C(CO)C1=CC=CC=C1",
+                  "InChI=1S/C20H30NO3/c1-14(2)21(3)16-9-10-17(21)12-18(11-16)24-20(23)19(13-22)15-7-5-4-6-8-15/h4-8,14,16-19,22H,9-13H2,1-3H3/q+1/t16-,17+,18+,19?,21?",
+                  "OEXHQOGQTVQTAT-BHIXFJMTSA-N",
+                  "ipratropium",
+                  "<rdkit.Chem.rdchem.Mol object at 0x74d42416a7a0>"
+                ],
+                [
+                  17453,
+                  "deoxycholic acid",
+                  4988,
+                  "G-protein coupled bile acid receptor 1",
+                  "GPCR",
+                  "Q8TDU6",
+                  "GPBAR1",
+                  "GPBAR_HUMAN",
+                  6.2,
+                  null,
+                  "EC50",
+                  "nan",
+                  "IUPHAR",
+                  "=",
+                  null,
+                  "nan",
+                  null,
+                  "nan",
+                  "AGONIST",
+                  "Tchem",
+                  "Homo sapiens",
+                  "C[C@H](CCC(O)=O)[C@H]1CC[C@H]2[C@@H]3CC[C@@H]4C[C@H](O)CC[C@]4(C)[C@H]3C[C@H](O)[C@]12C",
+                  "InChI=1S/C24H40O4/c1-14(4-9-22(27)28)18-7-8-19-17-6-5-15-12-16(25)10-11-23(15,2)20(17)13-21(26)24(18,19)3/h14-21,25-26H,4-13H2,1-3H3,(H,27,28)/t14-,15-,16-,17+,18-,19+,20+,21+,23+,24-/m1/s1",
+                  "KXGVEGMKQFWNSR-LLQZFEROSA-N",
+                  "deoxycholic acid",
+                  "<rdkit.Chem.rdchem.Mol object at 0x74d424168890>"
+                ]
+              ]
+            },
+            "result": {
+              "columns": [
+                "a.DRUG_NAME",
+                "b.DRUG_NAME"
+              ],
+              "data": [
+                [
+                  "triazolam",
+                  "gentian violet"
+                ],
+                [
+                  "triazolam",
+                  "ipratropium"
+                ],
+                [
+                  "triazolam",
+                  "deoxycholic acid"
+                ],
+                [
+                  "gentian violet",
+                  "deoxycholic acid"
+                ],
+                [
+                  "gentian violet",
+                  "ipratropium"
+                ]
+              ]
+            }
+          },
+          "relations": [
+            {
+              "df": "edges",
+              "source_column": "source",
+              "target_column": "target",
+              "source_table": "nodes",
+              "target_table": "nodes",
+              "source_key": "id",
+              "target_key": "id"
+            }
+          ],
+          "other": null
+        },
+        "error": null,
+        "meta": {
+          "params": {
+            "limit": {
+              "default": 100.0,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.Bundle'>"
               }
             }
           },
-          "outputs": {},
-          "type": "visualization",
-          "params": {
-            "color_edges_by": {
-              "name": "color_edges_by",
-              "default": null,
-              "type": {
-                "format": "edge attribute"
-              }
-            },
-            "color_nodes_by": {
-              "default": null,
-              "type": {
-                "format": "node attribute"
-              },
-              "name": "color_nodes_by"
-            },
-            "label_by": {
-              "name": "label_by",
-              "default": null,
-              "type": {
-                "format": "node attribute"
-              }
-            }
-          },
           "position": {
-            "x": 883.0,
-            "y": 167.0
+            "x": 1183.0,
+            "y": 534.0
           },
-          "name": "Visualize graph"
-        },
-        "collapsed": null
+          "name": "View tables",
+          "outputs": {},
+          "type": "table_view"
+        }
       },
       "position": {
-        "x": 1530.0,
-        "y": 915.0
+        "x": 1817.1767094971015,
+        "y": 1459.025582190881
       },
-      "width": 407.0,
-      "height": 314.0
+      "width": 322.0,
+      "height": 295.0
     }
   ],
   "edges": [
@@ -456,6 +838,20 @@
       "target": "Visualize graph 1",
       "sourceHandle": "output",
       "targetHandle": "graph"
+    },
+    {
+      "id": "Graph from molecule similarity 1 Cypher 1",
+      "source": "Graph from molecule similarity 1",
+      "target": "Cypher 1",
+      "sourceHandle": "output",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Cypher 1 View tables 1",
+      "source": "Cypher 1",
+      "target": "View tables 1",
+      "sourceHandle": "output",
+      "targetHandle": "bundle"
     }
   ]
 }
