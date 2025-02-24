@@ -77,6 +77,9 @@ function LynxKiteFlow() {
         if (!state.workspace) return;
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
+        for (const n of state.workspace.nodes) {
+          n.dragHandle = ".bg-primary";
+        }
         setNodes([...state.workspace.nodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
         for (const node of state.workspace.nodes) {
