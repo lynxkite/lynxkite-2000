@@ -76,7 +76,9 @@ def test_op_decorator_with_complex_types():
     assert complex_op.__op__.inputs == {
         "color": ops.Input(name="color", type=Color, position="left"),
         "color_list": ops.Input(name="color_list", type=list[Color], position="left"),
-        "color_dict": ops.Input(name="color_dict", type=dict[str, Color], position="left"),
+        "color_dict": ops.Input(
+            name="color_dict", type=dict[str, Color], position="left"
+        ),
     }
     assert complex_op.__op__.type == "basic"
     assert complex_op.__op__.outputs == {
