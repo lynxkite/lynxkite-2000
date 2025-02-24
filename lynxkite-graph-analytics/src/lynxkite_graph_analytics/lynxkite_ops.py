@@ -432,6 +432,11 @@ def collect(df: pd.DataFrame):
         df = df.collect()
     if isinstance(df, pl.DataFrame):
         return [[d[c] for c in df.columns] for d in df.to_dicts()]
+    # Convert non-numeric columns to strings.
+    df = df.copy()
+    for c in df.columns:
+        if not pd.api.types.is_numeric_dtype(df[c]):
+            df[c] = df[c].astype(str)
     return df.values.tolist()
 
 
