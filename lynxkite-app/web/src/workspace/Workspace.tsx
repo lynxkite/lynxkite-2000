@@ -282,7 +282,18 @@ function LynxKiteFlow() {
             proOptions={{ hideAttribution: true }}
             maxZoom={3}
             minZoom={0.3}
-            defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
+            defaultEdgeOptions={{
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                color: "black",
+                width: 15,
+                height: 15,
+              },
+              style: {
+                strokeWidth: 2,
+                stroke: "black",
+              },
+            }}
           >
             <Controls />
             <MiniMap />
