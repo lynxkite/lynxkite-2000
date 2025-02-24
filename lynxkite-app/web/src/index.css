@@ -347,3 +347,85 @@ path.react-flow__edge-path {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
 }
+
+.graph-creation-view {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.graph-tables, .graph-relations {
+    flex: 1;
+    padding-left: 10px;
+    padding-right: 10px; 
+}
+
+.graph-table-header{
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  text-align: left;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-bottom: 2px solid #222;
+  font-size: 16px;
+}
+
+.graph-creation-view .df-head {
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ccc; /* Adds a separator between rows */
+}
+
+/* Alternating background colors for table-like effect */
+.graph-creation-view .df-head:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.graph-creation-view .df-head:nth-child(even) {
+  background-color: #e0e0e0;
+}
+
+.graph-relation-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adds space between each label-input pair */
+  width: 100%;
+}
+
+.graph-relation-attributes label {
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 2px;
+  color: #666;  /* Lighter text for labels */
+}
+
+.graph-relation-attributes input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.graph-relation-attributes input:focus {
+  border-color: #007bff; /* Highlight input on focus */
+}
+
+.add-relationship-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.add-relationship-button:hover {
+  background-color: #218838;
+}

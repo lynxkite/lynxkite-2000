@@ -6,6 +6,7 @@ import functools
 import inspect
 import pydantic
 import typing
+from dataclasses import dataclass
 from typing_extensions import Annotated
 
 CATALOGS = {}
@@ -28,6 +29,16 @@ PathStr = Annotated[str, {"format": "path"}]
 CollapsedStr = Annotated[str, {"format": "collapsed"}]
 NodeAttribute = Annotated[str, {"format": "node attribute"}]
 EdgeAttribute = Annotated[str, {"format": "edge attribute"}]
+# https://github.com/python/typing/issues/182#issuecomment-1320974824
+ReadOnlyJSON: typing.TypeAlias = (
+    typing.Mapping[str, "ReadOnlyJSON"]
+    | typing.Sequence["ReadOnlyJSON"]
+    | str
+    | int
+    | float
+    | bool
+    | None
+)
 
 
 class BaseConfig(pydantic.BaseModel):
@@ -74,6 +85,19 @@ class Output(BaseConfig):
     position: str = "right"
 
 
+@dataclass
+class Result:
+    """Represents the result of an operation.
+
+    The `output` attribute is what will be used as input for other operations.
+    The `display` attribute is used to send data to display on the UI. The value has to be
+    JSON-serializable.
+    """
+
+    output: typing.Any
+    display: ReadOnlyJSON | None = None
+
+
 MULTI_INPUT = Input(name="multi", type="*")
 
 
@@ -105,6 +129,18 @@ class Op(BaseConfig):
                 elif isinstance(self.params[p].type, enum.EnumMeta):
                     params[p] = self.params[p].type[params[p]]
         res = self.func(*inputs, **params)
+        if not isinstance(res, Result):
+            # Automatically wrap the result in a Result object, if it isn't already.
+            res = Result(output=res)
+            if self.type in [
+                "visualization",
+                "table_view",
+                "graph_creation_view",
+                "image",
+            ]:
+                # If the operation is some kind of visualization, we use the output as the
+                # value to display by default.
+                res.display = res.output
         return res
 
 

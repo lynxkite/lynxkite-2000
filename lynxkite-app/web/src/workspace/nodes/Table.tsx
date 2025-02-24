@@ -1,6 +1,6 @@
 export default function Table(props: any) {
   return (
-    <table>
+    <table id={props.name || "table"}>
       <thead>
         <tr>
           {props.columns.map((column: string) => (
