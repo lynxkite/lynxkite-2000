@@ -41,11 +41,11 @@ import NodeSearch, {
   type Catalog,
   type Catalogs,
 } from "./NodeSearch.tsx";
+import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
-import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 
 export default function (props: any) {
   return (

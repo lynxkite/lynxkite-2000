@@ -355,13 +355,14 @@ body {
   margin-top: 10px;
 }
 
-.graph-tables, .graph-relations {
-    flex: 1;
-    padding-left: 10px;
-    padding-right: 10px; 
+.graph-tables,
+.graph-relations {
+  flex: 1;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-.graph-table-header{
+.graph-table-header {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
@@ -401,7 +402,7 @@ body {
   font-weight: bold;
   display: block;
   margin-bottom: 2px;
-  color: #666;  /* Lighter text for labels */
+  color: #666; /* Lighter text for labels */
 }
 
 .graph-relation-attributes input {
