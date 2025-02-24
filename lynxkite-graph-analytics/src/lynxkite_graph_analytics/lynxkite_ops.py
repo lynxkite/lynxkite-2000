@@ -340,7 +340,7 @@ def visualize_graph(
     label_by: ops.NodeAttribute = None,
     color_edges_by: ops.EdgeAttribute = None,
 ):
-    nodes = graph.dfs["nodes"].copy()
+    nodes = df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
     for cols in ["x y", "long lat"]:
@@ -370,7 +370,9 @@ def visualize_graph(
         )
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
+    edges = df_for_frontend(
+        graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000
+    )
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
@@ -403,8 +405,8 @@ def visualize_graph(
                         "symbolSize": 50 / len(nodes) ** 0.5,
                         "itemStyle": {"color": n.color} if color_nodes_by else {},
                         "label": {"show": label_by is not None},
-                        "name": getattr(n, label_by, None) if label_by else None,
-                        "value": getattr(n, color_nodes_by, None)
+                        "name": str(getattr(n, label_by, "")) if label_by else None,
+                        "value": str(getattr(n, color_nodes_by, ""))
                         if color_nodes_by
                         else None,
                     }
@@ -415,7 +417,7 @@ def visualize_graph(
                         "source": str(r.source),
                         "target": str(r.target),
                         "lineStyle": {"color": r.color} if color_edges_by else {},
-                        "value": getattr(r, color_edges_by, None)
+                        "value": str(getattr(r, color_edges_by, ""))
                         if color_edges_by
                         else None,
                     }
@@ -427,17 +429,18 @@ def visualize_graph(
     return v
 
 
-def collect(df: pd.DataFrame):
+def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
+    """Returns a DataFrame with values that are safe to send to the frontend."""
+    df = df[:limit]
     if isinstance(df, pl.LazyFrame):
         df = df.collect()
     if isinstance(df, pl.DataFrame):
-        return [[d[c] for c in df.columns] for d in df.to_dicts()]
+        df = df.to_pandas()
     # Convert non-numeric columns to strings.
-    df = df.copy()
     for c in df.columns:
         if not pd.api.types.is_numeric_dtype(df[c]):
             df[c] = df[c].astype(str)
-    return df.values.tolist()
+    return df
 
 
 @op("View tables", view="table_view")
@@ -446,7 +449,7 @@ def view_tables(bundle: Bundle, *, limit: int = 100):
         "dataframes": {
             name: {
                 "columns": [str(c) for c in df.columns],
-                "data": collect(df)[:limit],
+                "data": df_for_frontend(df, limit).values.tolist(),
             }
             for name, df in bundle.dfs.items()
         },
