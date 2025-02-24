@@ -24,7 +24,7 @@ jobs:
         run: |
           eval `ssh-agent -s`
           ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
-          uv pip install -e lynxkite-core/[dev] lynxkite-app/[dev] lynxkite-graph-analytics/[dev] lynxkite-lynxscribe/ lynxkite-pillow-example/
+          uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-bio -e lynxkite-lynxscribe/ -e lynxkite-pillow-example/
         env:
             UV_SYSTEM_PYTHON: 1
 
