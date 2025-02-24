@@ -57,8 +57,9 @@ export class Workspace {
     const allBoxes = await this.getBoxes();
     if (allBoxes) {
       // Avoid overlapping with existing nodes
-      const numNodes = allBoxes.length;
-      await this.page.mouse.wheel(0, numNodes * 500);
+      const numNodes = allBoxes.length || 1;
+      await this.page.mouse.wheel(0, numNodes * 400);
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
     // Some x,y offset, otherwise the box handle may fall outside the viewport.
@@ -97,7 +98,12 @@ export class Workspace {
     return this.page.locator(".react-flow__node").all();
   }
 
-  getBoxHandle(boxId: string) {
+  getBoxHandle(boxId: string, pos?: string) {
+    if (pos) {
+      return this.page.locator(
+        `[data-id="${boxId}"] [data-handlepos="${pos}"]`,
+      );
+    }
     return this.page.getByTestId(boxId);
   }
 
@@ -130,8 +136,8 @@ export class Workspace {
   }
 
   async connectBoxes(sourceId: string, targetId: string) {
-    const sourceHandle = this.getBoxHandle(sourceId);
-    const targetHandle = this.getBoxHandle(targetId);
+    const sourceHandle = this.getBoxHandle(sourceId, "right");
+    const targetHandle = this.getBoxHandle(targetId, "left");
     await sourceHandle.hover();
     await this.page.mouse.down();
     await targetHandle.hover();
