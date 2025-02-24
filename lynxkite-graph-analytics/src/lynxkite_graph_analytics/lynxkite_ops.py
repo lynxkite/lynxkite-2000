@@ -14,6 +14,8 @@ import pandas as pd
 import polars as pl
 import traceback
 import typing
+import json
+
 
 mem = joblib.Memory("../joblib-cache")
 ENV = "LynxKite Graph Analytics"
@@ -35,6 +37,7 @@ class RelationDefinition:
     target_table: str  # The DataFrame that contains the target nodes.
     source_key: str  # The column in the source table that contains the node ID.
     target_key: str  # The column in the target table that contains the node ID.
+    name: str | None = None  # Descriptive name for the relation.
 
 
 @dataclasses.dataclass
@@ -96,6 +99,19 @@ class Bundle:
             other=dict(self.other) if self.other else None,
         )
 
+    def to_dict(self, limit: int = 100):
+        return {
+            "dataframes": {
+                name: {
+                    "columns": [str(c) for c in df.columns],
+                    "data": collect(df)[:limit],
+                }
+                for name, df in self.dfs.items()
+            },
+            "relations": [dataclasses.asdict(relation) for relation in self.relations],
+            "other": self.other,
+        }
+
 
 def nx_node_attribute_func(name):
     """Decorator for wrapping a function that adds a NetworkX node attribute."""
@@ -153,7 +169,7 @@ async def execute(ws):
                             inputs[i] = Bundle.from_nx(x)
                         elif p.type == Bundle and isinstance(x, pd.DataFrame):
                             inputs[i] = Bundle.from_df(x)
-                    output = op(*inputs, **params)
+                    result = op(*inputs, **params)
                 except Exception as e:
                     traceback.print_exc()
                     data.error = str(e)
@@ -163,13 +179,9 @@ async def execute(ws):
                     # It's a flexible input. Create n+1 handles.
                     data.inputs = {f"input{i}": None for i in range(len(inputs) + 1)}
                 data.error = None
-                outputs[node.id] = output
-                if (
-                    op.type == "visualization"
-                    or op.type == "table_view"
-                    or op.type == "image"
-                ):
-                    data.display = output
+                outputs[node.id] = result.output
+                if result.display:
+                    data.display = result.display
 
 
 @op("Import Parquet")
@@ -404,15 +416,33 @@ def collect(df: pd.DataFrame):
 
 @op("View tables", view="table_view")
 def view_tables(bundle: Bundle, *, limit: int = 100):
-    v = {
-        "dataframes": {
-            name: {
-                "columns": [str(c) for c in df.columns],
-                "data": collect(df)[:limit],
-            }
-            for name, df in bundle.dfs.items()
-        },
-        "relations": bundle.relations,
-        "other": bundle.other,
-    }
-    return v
+    return bundle.to_dict(limit=limit)
+
+
+@op(
+    "Create graph",
+    view="graph_creation_view",
+    outputs=["output"],
+)
+def create_graph(bundle: Bundle, *, relations: str = None) -> Bundle:
+    """Replace relations of the given bundle
+
+    relations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)
+    are not currently supported in the UI.
+
+    Args:
+        bundle: Bundle to modify
+        relations (str, optional): Set of relations to set for the bundle. The parameter
+            should be a JSON object where the keys are relation names and the values are
+            a dictionary representation of a `RelationDefinition`.
+        Defaults to None.
+
+    Returns:
+        Bundle: The input bundle with the new relations set.
+    """
+    bundle = bundle.copy()
+    if not (relations is None or relations.strip() == ""):
+        bundle.relations = [
+            RelationDefinition(**r) for r in json.loads(relations).values()
+        ]
+    return ops.Result(output=bundle, display=bundle.to_dict(limit=100))

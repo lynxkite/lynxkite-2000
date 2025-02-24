@@ -1,4 +1,4 @@
-// Tests some basic operations like box creation, deletion, and dragging.
+// Tests the basic directory operations, such as creating and deleting folders and workspaces.
 import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
