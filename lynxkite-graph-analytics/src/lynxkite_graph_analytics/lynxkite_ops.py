@@ -84,8 +84,16 @@ class Bundle:
             if df.index.name != "id":
                 df = df.set_index("id")
             graph.add_nodes_from(df.to_dict("index").items())
+        edges = self.dfs["edges"]
         graph.add_edges_from(
-            self.dfs["edges"][["source", "target"]].itertuples(index=False, name=None)
+            [
+                (
+                    e["source"],
+                    e["target"],
+                    {k: e[k] for k in edges.columns if k not in ["source", "target"]},
+                )
+                for e in edges.to_records()
+            ]
         )
         return graph
 
