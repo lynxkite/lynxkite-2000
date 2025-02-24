@@ -19,7 +19,7 @@ export default function NodeWithTableView(props: any) {
   const display = props.data.display?.value;
   const single =
     display?.dataframes && Object.keys(display?.dataframes).length === 1;
-  const dfs = Object.entries(display.dataframes || {});
+  const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();
   return (
     <LynxKiteNode {...props}>
