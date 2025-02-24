@@ -322,11 +322,6 @@ body {
   }
 }
 
-path.react-flow__edge-path {
-  stroke-width: 2;
-  stroke: black;
-}
-
 .react-flow__edge.selected path.react-flow__edge-path {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 10px;
