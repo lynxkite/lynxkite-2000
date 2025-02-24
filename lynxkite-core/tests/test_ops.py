@@ -85,3 +85,35 @@ def test_op_decorator_with_complex_types():
         "result": ops.Output(name="result", type=None, position="right")
     }
     assert ops.CATALOGS["test"]["color_op"] == complex_op.__op__
+
+
+def test_operation_can_return_non_result_instance():
+    @ops.op(env="test", name="subtract", view="basic", outputs=["result"])
+    def subtract(a, b):
+        return a - b
+
+    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    assert isinstance(result, ops.Result)
+    assert result.output == 2
+    assert result.display is None
+
+
+def test_operation_can_return_result_instance():
+    @ops.op(env="test", name="subtract", view="basic", outputs=["result"])
+    def subtract(a, b):
+        return ops.Result(output=a - b, display=None)
+
+    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    assert isinstance(result, ops.Result)
+    assert result.output == 2
+    assert result.display is None
+
+
+def test_visualization_operations_display_is_populated_automatically():
+    @ops.op(env="test", name="display_op", view="visualization", outputs=["result"])
+    def display_op():
+        return {"display_value": 1}
+
+    result = ops.CATALOGS["test"]["display_op"]()
+    assert isinstance(result, ops.Result)
+    assert result.output == result.display == {"display_value": 1}

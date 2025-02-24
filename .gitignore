@@ -15,4 +15,4 @@ build
 joblib-cache
 *.egg-info
 
-lynxkite-app/crdt_data
+lynxkite_crdt_data
