@@ -197,9 +197,10 @@ function LynxKiteFlow() {
         });
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
+    // TODO: Switch to keydown once https://github.com/xyflow/xyflow/pull/5055 is merged.
+    document.addEventListener("keyup", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyDown);
     };
   }, [catalog.data, nodeSearchSettings, state.workspace.env]);
 
