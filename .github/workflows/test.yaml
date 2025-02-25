@@ -36,6 +36,7 @@ jobs:
 
       - name: Run pre-commits
         run: |
+          uv pip install pre-commit
           pre-commit run --all-files
 
       - name: Run core tests
