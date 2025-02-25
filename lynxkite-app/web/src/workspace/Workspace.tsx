@@ -180,6 +180,39 @@ function LynxKiteFlow() {
     }),
     [],
   );
+
+  // Global keyboard shortcuts.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Show the node search dialog on "/".
+      if (
+        event.key === "/" &&
+        !nodeSearchSettings &&
+        !isTypingInFormElement()
+      ) {
+        event.preventDefault();
+        setNodeSearchSettings({
+          pos: { x: 100, y: 100 },
+          boxes: catalog.data![state.workspace.env!],
+        });
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [catalog.data, nodeSearchSettings, state.workspace.env]);
+
+  function isTypingInFormElement() {
+    const activeElement = document.activeElement;
+    return (
+      activeElement &&
+      (activeElement.tagName === "INPUT" ||
+        activeElement.tagName === "TEXTAREA" ||
+        (activeElement as HTMLElement).isContentEditable)
+    );
+  }
+
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
     setSuppressSearchUntil(Date.now() + 200);
