@@ -38,6 +38,8 @@ jobs:
         run: |
           uv pip install pre-commit
           pre-commit run --all-files
+        env:
+            UV_SYSTEM_PYTHON: 1
 
       - name: Run core tests
         run: |
@@ -58,6 +60,8 @@ jobs:
         run: |
           uv pip install mkdocs-material mkdocstrings[python]
           mkdocs build
+        env:
+            UV_SYSTEM_PYTHON: 1
 
       - uses: actions/setup-node@v4
         with:
