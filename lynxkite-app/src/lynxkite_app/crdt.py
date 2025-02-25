@@ -3,7 +3,6 @@
 import asyncio
 import contextlib
 import enum
-import pathlib
 import fastapi
 import os.path
 import pycrdt

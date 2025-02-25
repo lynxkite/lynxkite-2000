@@ -41,11 +41,11 @@ import NodeSearch, {
   type Catalog,
   type Catalogs,
 } from "./NodeSearch.tsx";
+import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
-import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 
 export default function (props: any) {
   return (
@@ -78,6 +78,9 @@ function LynxKiteFlow() {
         if (!state.workspace) return;
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
+        for (const n of state.workspace.nodes) {
+          n.dragHandle = ".bg-primary";
+        }
         setNodes([...state.workspace.nodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
         for (const node of state.workspace.nodes) {
@@ -284,7 +287,18 @@ function LynxKiteFlow() {
             proOptions={{ hideAttribution: true }}
             maxZoom={3}
             minZoom={0.3}
-            defaultEdgeOptions={{ markerEnd: { type: MarkerType.Arrow } }}
+            defaultEdgeOptions={{
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                color: "black",
+                width: 15,
+                height: 15,
+              },
+              style: {
+                strokeWidth: 2,
+                stroke: "black",
+              },
+            }}
           >
             <Controls />
             <MiniMap />
