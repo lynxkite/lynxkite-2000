@@ -113,7 +113,7 @@ export class Workspace {
     targetPosition?: { x: number; y: number },
   ) {
     // Move a box around, it is a best effort operation, the exact target position may not be reached
-    const box = await this.getBox(boxId).boundingBox();
+    const box = await this.getBox(boxId).locator(".title").boundingBox();
     if (!box) {
       return;
     }

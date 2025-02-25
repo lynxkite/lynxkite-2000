@@ -83,12 +83,26 @@ class Bundle:
         # TODO: Use relations.
         graph = nx.DiGraph()
         if "nodes" in self.dfs:
-            graph.add_nodes_from(
-                self.dfs["nodes"].set_index("id").to_dict("index").items()
+            df = self.dfs["nodes"]
+            if df.index.name != "id":
+                df = df.set_index("id")
+            graph.add_nodes_from(df.to_dict("index").items())
+        if "edges" in self.dfs:
+            edges = self.dfs["edges"]
+            graph.add_edges_from(
+                [
+                    (
+                        e["source"],
+                        e["target"],
+                        {
+                            k: e[k]
+                            for k in edges.columns
+                            if k not in ["source", "target"]
+                        },
+                    )
+                    for e in edges.to_records()
+                ]
             )
-        graph.add_edges_from(
-            self.dfs["edges"][["source", "target"]].itertuples(index=False, name=None)
-        )
         return graph
 
     def copy(self):
@@ -104,7 +118,7 @@ class Bundle:
             "dataframes": {
                 name: {
                     "columns": [str(c) for c in df.columns],
-                    "data": collect(df)[:limit],
+                    "data": df_for_frontend(df, limit).values.tolist(),
                 }
                 for name, df in self.dfs.items()
             },
@@ -336,8 +350,14 @@ def _map_color(value):
 
 
 @op("Visualize graph", view="visualization")
-def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
-    nodes = graph.dfs["nodes"].copy()
+def visualize_graph(
+    graph: Bundle,
+    *,
+    color_nodes_by: ops.NodeAttribute = None,
+    label_by: ops.NodeAttribute = None,
+    color_edges_by: ops.EdgeAttribute = None,
+):
+    nodes = df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
     for cols in ["x y", "long lat"]:
@@ -367,15 +387,21 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
         )
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
+    edges = df_for_frontend(
+        graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000
+    )
+    if color_edges_by:
+        edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
+        "tooltip": {"show": True},
         "series": [
             {
                 "type": "graph",
-                "roam": True,
+                # Mouse zoom/panning is disabled for now. It interacts badly with ReactFlow.
+                # "roam": True,
                 "lineStyle": {
                     "color": "gray",
                     "curveness": curveness,
@@ -386,6 +412,7 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
                         "width": 10,
                     },
                 },
+                "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
                         "id": str(n.id),
@@ -394,11 +421,24 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
                         # Adjust node size to cover the same area no matter how many nodes there are.
                         "symbolSize": 50 / len(nodes) ** 0.5,
                         "itemStyle": {"color": n.color} if color_nodes_by else {},
+                        "label": {"show": label_by is not None},
+                        "name": str(getattr(n, label_by, "")) if label_by else None,
+                        "value": str(getattr(n, color_nodes_by, ""))
+                        if color_nodes_by
+                        else None,
                     }
                     for n in nodes
                 ],
                 "links": [
-                    {"source": str(r.source), "target": str(r.target)} for r in edges
+                    {
+                        "source": str(r.source),
+                        "target": str(r.target),
+                        "lineStyle": {"color": r.color} if color_edges_by else {},
+                        "value": str(getattr(r, color_edges_by, ""))
+                        if color_edges_by
+                        else None,
+                    }
+                    for r in edges
                 ],
             },
         ],
@@ -406,12 +446,18 @@ def visualize_graph(graph: Bundle, *, color_nodes_by: ops.NodeAttribute = None):
     return v
 
 
-def collect(df: pd.DataFrame):
+def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
+    """Returns a DataFrame with values that are safe to send to the frontend."""
+    df = df[:limit]
     if isinstance(df, pl.LazyFrame):
         df = df.collect()
     if isinstance(df, pl.DataFrame):
-        return [[d[c] for c in df.columns] for d in df.to_dicts()]
-    return df.values.tolist()
+        df = df.to_pandas()
+    # Convert non-numeric columns to strings.
+    for c in df.columns:
+        if not pd.api.types.is_numeric_dtype(df[c]):
+            df[c] = df[c].astype(str)
+    return df
 
 
 @op("View tables", view="table_view")
