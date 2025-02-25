@@ -63,9 +63,8 @@ export class Workspace {
     }
 
     // Some x,y offset, otherwise the box handle may fall outside the viewport.
-    await this.page
-      .locator(".react-flow__pane")
-      .click({ position: { x: 20, y: 20 } });
+    await this.page.locator(".ws-name").click();
+    await this.page.keyboard.press("/");
     await this.page.locator(".node-search").getByText(boxName).click();
     await this.page.keyboard.press("Escape");
     // Workaround to wait for the deselection animation after choosing a box. Otherwise, the next box will not be added.
