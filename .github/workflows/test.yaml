@@ -24,9 +24,19 @@ jobs:
         run: |
           eval `ssh-agent -s`
           ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
-          uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-bio -e lynxkite-lynxscribe/ -e lynxkite-pillow-example/
+          uv pip install \
+            -e lynxkite-core/[dev] \
+            -e lynxkite-app/[dev] \
+            -e lynxkite-graph-analytics/[dev] \
+            -e lynxkite-bio \
+            -e lynxkite-lynxscribe/ \
+            -e lynxkite-pillow-example/
         env:
             UV_SYSTEM_PYTHON: 1
+
+      - name: Run pre-commits
+        run: |
+          pre-commit run --all-files
 
       - name: Run core tests
         run: |
@@ -42,6 +52,11 @@ jobs:
         run: |
           cd lynxkite-graph-analytics
           pytest
+
+      - name: Try building the documentation
+        run: |
+          uv pip install mkdocs-material mkdocstrings[python]
+          mkdocs build
 
       - uses: actions/setup-node@v4
         with:
