@@ -26,6 +26,7 @@ class WorkspaceNodeData(BaseConfig):
     params: dict
     display: Optional[object] = None
     error: Optional[str] = None
+    in_progress: bool = False
     # Also contains a "meta" field when going out.
     # This is ignored when coming back from the frontend.
 
@@ -44,6 +45,7 @@ class WorkspaceNode(BaseConfig):
         with self._crdt.doc.transaction():
             self._crdt["data"]["display"] = result.display
             self._crdt["data"]["error"] = result.error
+            self._crdt["data"]["in_progress"] = False
 
     def publish_error(self, error: Exception | str):
         self.publish_result(ops.Result(error=str(error)))
