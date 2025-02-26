@@ -21,6 +21,9 @@ test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
   for (const env of envs) {
     await workspace.setEnv(env);
+    // TODO: Opening the catalog immediately after setting the env can fail.
+    // Let's fix this!
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const catalog = await workspace.getCatalog();
     expect(catalog).not.toHaveLength(0);
     const op = catalog[0];

@@ -54,7 +54,7 @@ export class Workspace {
 
   async addBox(boxName) {
     //TODO: Support passing box parameters (id, position, etc.)
-    const allBoxes = await this.getBoxes();
+    const allBoxes = await this.getBoxes().all();
     if (allBoxes) {
       // Avoid overlapping with existing nodes
       const numNodes = allBoxes.length || 1;
@@ -63,13 +63,10 @@ export class Workspace {
     }
 
     // Some x,y offset, otherwise the box handle may fall outside the viewport.
-    await this.page
-      .locator(".react-flow__pane")
-      .click({ position: { x: 20, y: 20 } });
+    await this.page.locator(".ws-name").click();
+    await this.page.keyboard.press("/");
     await this.page.locator(".node-search").getByText(boxName).click();
-    await this.page.keyboard.press("Escape");
-    // Workaround to wait for the deselection animation after choosing a box. Otherwise, the next box will not be added.
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
   async getCatalog() {
@@ -79,14 +76,22 @@ export class Workspace {
       .allInnerTexts();
     // Dismiss the catalog menu
     await this.page.keyboard.press("Escape");
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await expect(this.page.locator(".node-search")).not.toBeVisible();
     return catalog;
+  }
+
+  async selectBox(boxId: string) {
+    const box = this.getBox(boxId);
+    // Click on the resizer, so we don't click on any parameters by accident.
+    await box.locator(".react-flow__resize-control").click();
+    await expect(box).toHaveClass(/selected/);
   }
 
   async deleteBoxes(boxIds: string[]) {
     for (const boxId of boxIds) {
-      await this.getBoxHandle(boxId).first().click();
+      await this.selectBox(boxId);
       await this.page.keyboard.press("Backspace");
+      await expect(this.getBox(boxId)).not.toBeVisible();
     }
   }
 
@@ -95,7 +100,7 @@ export class Workspace {
   }
 
   getBoxes() {
-    return this.page.locator(".react-flow__node").all();
+    return this.page.locator(".react-flow__node");
   }
 
   getBoxHandle(boxId: string, pos?: string) {
@@ -144,19 +149,13 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
-  async isErrorFree(executionWaitTime?): Promise<boolean> {
+  async expectErrorFree(executionWaitTime?) {
     // TODO: Workaround, to account for workspace execution. Once
     // we have a load indicator we can use that instead.
     await new Promise((resolve) =>
       setTimeout(resolve, executionWaitTime ? executionWaitTime : 500),
     );
-    const boxes = await this.getBoxes();
-    for (const box of boxes) {
-      if (await box.locator(".error").isVisible()) {
-        return false;
-      }
-    }
-    return true;
+    await expect(this.getBoxes().locator(".error")).not.toBeVisible();
   }
 
   async close() {
