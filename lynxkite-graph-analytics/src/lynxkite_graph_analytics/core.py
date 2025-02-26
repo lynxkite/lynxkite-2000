@@ -158,11 +158,10 @@ async def execute(ws):
             if all(input in outputs for input in inputs):
                 # All inputs for this node are ready, we can compute the output.
                 inputs = [outputs[input] for input in inputs]
-                data = node.data
-                params = {**data.params}
-                op = catalog.get(data.title)
+                params = {**node.data.params}
+                op = catalog.get(node.data.title)
                 if not op:
-                    data.error = "Operation not found in catalog"
+                    node.publish_error("Operation not found in catalog")
                     failed += 1
                     continue
                 try:
@@ -177,16 +176,11 @@ async def execute(ws):
                     result = op(*inputs, **params)
                 except Exception as e:
                     traceback.print_exc()
-                    data.error = str(e)
+                    node.publish_error(e)
                     failed += 1
                     continue
-                if len(op.inputs) == 1 and op.inputs.get("multi") == "*":
-                    # It's a flexible input. Create n+1 handles.
-                    data.inputs = {f"input{i}": None for i in range(len(inputs) + 1)}
-                data.error = None
                 outputs[node.id] = result.output
-                if result.display:
-                    data.display = result.display
+                node.publish_result(result)
 
 
 def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:

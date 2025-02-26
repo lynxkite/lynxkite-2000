@@ -94,8 +94,9 @@ class Result:
     JSON-serializable.
     """
 
-    output: typing.Any
+    output: typing.Any = None
     display: ReadOnlyJSON | None = None
+    error: str | None = None
 
 
 MULTI_INPUT = Input(name="multi", type="*")

@@ -224,17 +224,16 @@ async def execute(
     assert path.is_relative_to(config.DATA_PATH), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
+    add_crdt_bindings(ws_pyd, ws_crdt)
     await workspace.execute(ws_pyd)
     workspace.save(ws_pyd, path)
-    # Execution happened on the Python object, we need to replicate
-    # the results to the CRDT object.
-    with ws_crdt.doc.transaction():
-        for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
-            if "data" not in nc:
-                nc["data"] = pycrdt.Map()
-            # Display is added as a non collaborative field.
-            nc["data"]["display"] = np.data.display
-            nc["data"]["error"] = np.data.error
+
+
+def add_crdt_bindings(ws_pyd: workspace.Workspace, ws_crdt: pycrdt.Map):
+    for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
+        if "data" not in nc:
+            nc["data"] = pycrdt.Map()
+        np._crdt = nc
 
 
 @contextlib.asynccontextmanager
