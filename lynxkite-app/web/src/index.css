@@ -90,9 +90,12 @@ body {
   }
 
   .lynxkite-node .title {
-    /* background: oklch(75% 0.2 55); */
     font-weight: bold;
     padding: 8px;
+  }
+
+  .lynxkite-node .title.in-progress {
+    background: yellow;
   }
 
   .handle-name {

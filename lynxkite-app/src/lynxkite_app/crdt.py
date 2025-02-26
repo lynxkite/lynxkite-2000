@@ -86,6 +86,7 @@ def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.error = None
+        node.data.in_progress = False
         node.position.x = 0
         node.position.y = 0
         if node.model_extra:
@@ -175,7 +176,6 @@ delayed_executions = {}
 async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
-
     Args:
         name: Name of the workspace.
         changes: Changes performed to the workspace.
@@ -224,16 +224,15 @@ async def execute(
     assert path.is_relative_to(config.DATA_PATH), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
-    add_crdt_bindings(ws_pyd, ws_crdt)
+    with ws_crdt.doc.transaction():
+        for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
+            if "data" not in nc:
+                nc["data"] = pycrdt.Map()
+            nc["data"]["in_progress"] = True
+            # Nodes get a reference to their CRDT maps, so they can update them as the results come in.
+            np._crdt = nc
     await workspace.execute(ws_pyd)
     workspace.save(ws_pyd, path)
-
-
-def add_crdt_bindings(ws_pyd: workspace.Workspace, ws_crdt: pycrdt.Map):
-    for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
-        if "data" not in nc:
-            nc["data"] = pycrdt.Map()
-        np._crdt = nc
 
 
 @contextlib.asynccontextmanager
