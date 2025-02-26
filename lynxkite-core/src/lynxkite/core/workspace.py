@@ -4,6 +4,7 @@ import json
 from typing import Optional
 import dataclasses
 import os
+import pycrdt
 import pydantic
 import tempfile
 from . import ops
@@ -36,6 +37,16 @@ class WorkspaceNode(BaseConfig):
     type: str
     data: WorkspaceNodeData
     position: Position
+    _crdt: pycrdt.Map
+
+    def publish_result(self, result: ops.Result):
+        """Sends the result to the frontend. Call this in an executor when the result is available."""
+        with self._crdt.doc.transaction():
+            self._crdt["data"]["display"] = result.display
+            self._crdt["data"]["error"] = result.error
+
+    def publish_error(self, error: Exception | str):
+        self.publish_result(ops.Result(error=str(error)))
 
 
 class WorkspaceEdge(BaseConfig):
