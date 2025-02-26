@@ -152,7 +152,7 @@ def _map_color(value):
     if pd.api.types.is_numeric_dtype(value):
         cmap = matplotlib.cm.get_cmap("viridis")
         value = (value - value.min()) / (value.max() - value.min())
-        rgba = cmap(value)
+        rgba = cmap(value.values)
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
             for r, g, b in rgba[:, :3]

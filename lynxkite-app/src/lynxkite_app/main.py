@@ -5,6 +5,7 @@ import shutil
 import pydantic
 import fastapi
 import importlib
+import pandas as pd
 import pathlib
 import pkgutil
 from fastapi.staticfiles import StaticFiles
@@ -17,6 +18,8 @@ if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
     import cudf.pandas
 
     cudf.pandas.install()
+
+pd.options.mode.copy_on_write = True  # Prepare for Pandas 3.0.
 
 
 def detect_plugins():
