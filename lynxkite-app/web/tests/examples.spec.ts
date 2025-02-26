@@ -9,7 +9,7 @@ test("LynxKite Graph Analytics example", async ({ page }) => {
 
 test("Bio example", async ({ page }) => {
   const ws = await Workspace.open(page, "Bio demo");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test("Pytorch example", async ({ page }) => {
