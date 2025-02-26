@@ -4,49 +4,49 @@ import { Workspace } from "./lynxkite";
 
 test("LynxKite Graph Analytics example", async ({ page }) => {
   const ws = await Workspace.open(page, "NetworkX demo");
-  expect(await ws.isErrorFree(process.env.CI ? 2000 : 1000)).toBeTruthy();
+  await ws.expectErrorFree(process.env.CI ? 2000 : 1000);
 });
 
 test("Bio example", async ({ page }) => {
   const ws = await Workspace.open(page, "Bio demo");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test("Pytorch example", async ({ page }) => {
   const ws = await Workspace.open(page, "PyTorch demo");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test.fail("AIMO example", async ({ page }) => {
   // Fails because of missing OPENAI_API_KEY
   const ws = await Workspace.open(page, "AIMO");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test.fail("LynxScribe example", async ({ page }) => {
   // Fails because of missing OPENAI_API_KEY
   const ws = await Workspace.open(page, "LynxScribe demo");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test.fail("Graph RAG", async ({ page }) => {
   // Fails due to some issue with ChromaDB
   const ws = await Workspace.open(page, "Graph RAG");
-  expect(await ws.isErrorFree(process.env.CI ? 2000 : 500)).toBeTruthy();
+  await ws.expectErrorFree(process.env.CI ? 2000 : 500);
 });
 
 test.fail("RAG chatbot app", async ({ page }) => {
   // Fail due to all operation being unknown
   const ws = await Workspace.open(page, "RAG chatbot app");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
 
 test("Airlines demo", async ({ page }) => {
   const ws = await Workspace.open(page, "Airlines demo");
-  expect(await ws.isErrorFree(process.env.CI ? 10000 : 500)).toBeTruthy();
+  await ws.expectErrorFree(process.env.CI ? 10000 : 500);
 });
 
 test("Pillow example", async ({ page }) => {
   const ws = await Workspace.open(page, "Image processing");
-  expect(await ws.isErrorFree()).toBeTruthy();
+  await ws.expectErrorFree();
 });
