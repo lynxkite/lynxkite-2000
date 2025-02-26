@@ -16,3 +16,9 @@ joblib-cache
 *.egg-info
 
 lynxkite_crdt_data
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
