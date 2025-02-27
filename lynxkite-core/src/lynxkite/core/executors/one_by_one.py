@@ -146,7 +146,6 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                             cache[key] = output
                         output = cache[key]
                     else:
-                        op.publish_started()
                         result = op(*inputs, **params)
                         output = await await_if_needed(result.output)
                 except Exception as e:
@@ -173,6 +172,6 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                         ).extend(results)
                     else:
                         tasks.setdefault(edge.target, []).extend(results)
-                op.publish_result(result)
+                node.publish_result(result)
         tasks = next_stage
     return contexts

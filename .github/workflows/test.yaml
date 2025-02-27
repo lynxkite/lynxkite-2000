@@ -56,6 +56,11 @@ jobs:
           cd lynxkite-graph-analytics
           pytest
 
+      - name: Run LynxScribe tests
+        run: |
+          cd lynxkite-lynxscribe
+          pytest
+
       - name: Try building the documentation
         run: |
           uv pip install mkdocs-material mkdocstrings[python]
