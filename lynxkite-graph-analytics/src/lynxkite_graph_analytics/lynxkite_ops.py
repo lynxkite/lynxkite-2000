@@ -1,201 +1,21 @@
-"""Graph analytics operations. To be split into separate files when we have more."""
+"""Graph analytics operations."""
 
 import os
 import fsspec
 from lynxkite.core import ops
 from collections import deque
-import dataclasses
-import functools
+from . import core
 import grandcypher
 import joblib
 import matplotlib
 import networkx as nx
 import pandas as pd
 import polars as pl
-import traceback
-import typing
 import json
 
 
 mem = joblib.Memory("../joblib-cache")
-ENV = "LynxKite Graph Analytics"
-op = ops.op_registration(ENV)
-
-
-@dataclasses.dataclass
-class RelationDefinition:
-    """Defines a set of edges."""
-
-    df: str  # The DataFrame that contains the edges.
-    source_column: (
-        str  # The column in the edge DataFrame that contains the source node ID.
-    )
-    target_column: (
-        str  # The column in the edge DataFrame that contains the target node ID.
-    )
-    source_table: str  # The DataFrame that contains the source nodes.
-    target_table: str  # The DataFrame that contains the target nodes.
-    source_key: str  # The column in the source table that contains the node ID.
-    target_key: str  # The column in the target table that contains the node ID.
-    name: str | None = None  # Descriptive name for the relation.
-
-
-@dataclasses.dataclass
-class Bundle:
-    """A collection of DataFrames and other data.
-
-    Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
-    It can also carry other data, such as a trained model.
-    """
-
-    dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
-    relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
-    other: dict[str, typing.Any] = None
-
-    @classmethod
-    def from_nx(cls, graph: nx.Graph):
-        edges = nx.to_pandas_edgelist(graph)
-        d = dict(graph.nodes(data=True))
-        nodes = pd.DataFrame(d.values(), index=d.keys())
-        nodes["id"] = nodes.index
-        if "index" in nodes.columns:
-            nodes.drop(columns=["index"], inplace=True)
-        return cls(
-            dfs={"edges": edges, "nodes": nodes},
-            relations=[
-                RelationDefinition(
-                    df="edges",
-                    source_column="source",
-                    target_column="target",
-                    source_table="nodes",
-                    target_table="nodes",
-                    source_key="id",
-                    target_key="id",
-                )
-            ],
-        )
-
-    @classmethod
-    def from_df(cls, df: pd.DataFrame):
-        return cls(dfs={"df": df})
-
-    def to_nx(self):
-        # TODO: Use relations.
-        graph = nx.DiGraph()
-        if "nodes" in self.dfs:
-            df = self.dfs["nodes"]
-            if df.index.name != "id":
-                df = df.set_index("id")
-            graph.add_nodes_from(df.to_dict("index").items())
-        if "edges" in self.dfs:
-            edges = self.dfs["edges"]
-            graph.add_edges_from(
-                [
-                    (
-                        e["source"],
-                        e["target"],
-                        {
-                            k: e[k]
-                            for k in edges.columns
-                            if k not in ["source", "target"]
-                        },
-                    )
-                    for e in edges.to_records()
-                ]
-            )
-        return graph
-
-    def copy(self):
-        """Returns a medium depth copy of the bundle. The Bundle is completely new, but the DataFrames and RelationDefinitions are shared."""
-        return Bundle(
-            dfs=dict(self.dfs),
-            relations=list(self.relations),
-            other=dict(self.other) if self.other else None,
-        )
-
-    def to_dict(self, limit: int = 100):
-        return {
-            "dataframes": {
-                name: {
-                    "columns": [str(c) for c in df.columns],
-                    "data": df_for_frontend(df, limit).values.tolist(),
-                }
-                for name, df in self.dfs.items()
-            },
-            "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": self.other,
-        }
-
-
-def nx_node_attribute_func(name):
-    """Decorator for wrapping a function that adds a NetworkX node attribute."""
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(graph: nx.Graph, **kwargs):
-            graph = graph.copy()
-            attr = func(graph, **kwargs)
-            nx.set_node_attributes(graph, attr, name)
-            return graph
-
-        return wrapper
-
-    return decorator
-
-
-def disambiguate_edges(ws):
-    """If an input plug is connected to multiple edges, keep only the last edge."""
-    seen = set()
-    for edge in reversed(ws.edges):
-        if (edge.target, edge.targetHandle) in seen:
-            ws.edges.remove(edge)
-        seen.add((edge.target, edge.targetHandle))
-
-
-@ops.register_executor(ENV)
-async def execute(ws):
-    catalog: dict[str, ops.Op] = ops.CATALOGS[ENV]
-    disambiguate_edges(ws)
-    outputs = {}
-    failed = 0
-    while len(outputs) + failed < len(ws.nodes):
-        for node in ws.nodes:
-            if node.id in outputs:
-                continue
-            # TODO: Take the input/output handles into account.
-            inputs = [edge.source for edge in ws.edges if edge.target == node.id]
-            if all(input in outputs for input in inputs):
-                # All inputs for this node are ready, we can compute the output.
-                inputs = [outputs[input] for input in inputs]
-                data = node.data
-                params = {**data.params}
-                op = catalog.get(data.title)
-                if not op:
-                    data.error = "Operation not found in catalog"
-                    failed += 1
-                    continue
-                try:
-                    # Convert inputs types  to match operation signature.
-                    for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
-                        if p.type == nx.Graph and isinstance(x, Bundle):
-                            inputs[i] = x.to_nx()
-                        elif p.type == Bundle and isinstance(x, nx.Graph):
-                            inputs[i] = Bundle.from_nx(x)
-                        elif p.type == Bundle and isinstance(x, pd.DataFrame):
-                            inputs[i] = Bundle.from_df(x)
-                    result = op(*inputs, **params)
-                except Exception as e:
-                    traceback.print_exc()
-                    data.error = str(e)
-                    failed += 1
-                    continue
-                if len(op.inputs) == 1 and op.inputs.get("multi") == "*":
-                    # It's a flexible input. Create n+1 handles.
-                    data.inputs = {f"input{i}": None for i in range(len(inputs) + 1)}
-                data.error = None
-                outputs[node.id] = result.output
-                if result.display:
-                    data.display = result.display
+op = ops.op_registration(core.ENV)
 
 
 @op("Import Parquet")
@@ -246,14 +66,14 @@ def create_scale_free_graph(*, nodes: int = 10):
 
 
 @op("Compute PageRank")
-@nx_node_attribute_func("pagerank")
+@core.nx_node_attribute_func("pagerank")
 def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
     # TODO: This requires scipy to be installed.
     return nx.pagerank(graph, alpha=damping, max_iter=iterations)
 
 
 @op("Compute betweenness centrality")
-@nx_node_attribute_func("betweenness_centrality")
+@core.nx_node_attribute_func("betweenness_centrality")
 def compute_betweenness_centrality(graph: nx.Graph, *, k=10):
     return nx.betweenness_centrality(graph, k=k)
 
@@ -271,7 +91,7 @@ def discard_parallel_edges(graph: nx.Graph):
 
 
 @op("SQL")
-def sql(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
+def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
     if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
@@ -292,7 +112,7 @@ def sql(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
 
 
 @op("Cypher")
-def cypher(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
+def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
     graph = bundle.to_nx()
@@ -302,7 +122,7 @@ def cypher(bundle: Bundle, *, query: ops.LongStr, save_as: str = "result"):
 
 
 @op("Organize bundle")
-def organize_bundle(bundle: Bundle, *, code: ops.LongStr):
+def organize_bundle(bundle: core.Bundle, *, code: ops.LongStr):
     """Lets you rename/copy/delete DataFrames, and modify relations.
 
     TODO: Use a declarative solution instead of Python code. Add UI.
@@ -332,7 +152,7 @@ def _map_color(value):
     if pd.api.types.is_numeric_dtype(value):
         cmap = matplotlib.cm.get_cmap("viridis")
         value = (value - value.min()) / (value.max() - value.min())
-        rgba = cmap(value)
+        rgba = cmap(value.values)
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
             for r, g, b in rgba[:, :3]
@@ -351,13 +171,13 @@ def _map_color(value):
 
 @op("Visualize graph", view="visualization")
 def visualize_graph(
-    graph: Bundle,
+    graph: core.Bundle,
     *,
     color_nodes_by: ops.NodeAttribute = None,
     label_by: ops.NodeAttribute = None,
     color_edges_by: ops.EdgeAttribute = None,
 ):
-    nodes = df_for_frontend(graph.dfs["nodes"], 10_000)
+    nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
     for cols in ["x y", "long lat"]:
@@ -387,7 +207,7 @@ def visualize_graph(
         )
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = df_for_frontend(
+    edges = core.df_for_frontend(
         graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000
     )
     if color_edges_by:
@@ -446,22 +266,8 @@ def visualize_graph(
     return v
 
 
-def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
-    """Returns a DataFrame with values that are safe to send to the frontend."""
-    df = df[:limit]
-    if isinstance(df, pl.LazyFrame):
-        df = df.collect()
-    if isinstance(df, pl.DataFrame):
-        df = df.to_pandas()
-    # Convert non-numeric columns to strings.
-    for c in df.columns:
-        if not pd.api.types.is_numeric_dtype(df[c]):
-            df[c] = df[c].astype(str)
-    return df
-
-
 @op("View tables", view="table_view")
-def view_tables(bundle: Bundle, *, limit: int = 100):
+def view_tables(bundle: core.Bundle, *, limit: int = 100):
     return bundle.to_dict(limit=limit)
 
 
@@ -470,7 +276,7 @@ def view_tables(bundle: Bundle, *, limit: int = 100):
     view="graph_creation_view",
     outputs=["output"],
 )
-def create_graph(bundle: Bundle, *, relations: str = None) -> Bundle:
+def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     """Replace relations of the given bundle
 
     relations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)
@@ -489,6 +295,6 @@ def create_graph(bundle: Bundle, *, relations: str = None) -> Bundle:
     bundle = bundle.copy()
     if not (relations is None or relations.strip() == ""):
         bundle.relations = [
-            RelationDefinition(**r) for r in json.loads(relations).values()
+            core.RelationDefinition(**r) for r in json.loads(relations).values()
         ]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
