@@ -49,9 +49,12 @@ class WorkspaceNode(BaseConfig):
 
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
+        self.data.error = None
         self.data.status = NodeStatus.active
         if hasattr(self, "_crdt"):
-            self._crdt["data"]["status"] = NodeStatus.active
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["error"] = None
+                self._crdt["data"]["status"] = NodeStatus.active
 
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
@@ -64,8 +67,10 @@ class WorkspaceNode(BaseConfig):
                 self._crdt["data"]["error"] = result.error
                 self._crdt["data"]["status"] = NodeStatus.done
 
-    def publish_error(self, error: Exception | str):
-        self.publish_result(ops.Result(error=str(error)))
+    def publish_error(self, error: Exception | str | None):
+        """Can be called with None to clear the error state."""
+        result = ops.Result(error=str(error) if error else None)
+        self.publish_result(result)
 
 
 class WorkspaceEdge(BaseConfig):

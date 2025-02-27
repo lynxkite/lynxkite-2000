@@ -104,11 +104,11 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
     tasks = {}
     NO_INPUT = object()  # Marker for initial tasks.
     for node in ws.nodes:
-        node.data.error = None
         op = catalog.get(node.data.title)
         if op is None:
-            node.data.error = f'Operation "{node.data.title}" not found.'
+            node.publish_error(f'Operation "{node.data.title}" not found.')
             continue
+        node.publish_error(None)
         # Start tasks for nodes that have no non-batch inputs.
         if all([i.position in "top or bottom" for i in op.inputs.values()]):
             tasks[node.id] = [NO_INPUT]
@@ -123,12 +123,12 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                 next_stage.setdefault(n, []).extend(ts)
                 continue
             node = nodes[n]
-            data = node.data
-            op = catalog[data.title]
-            params = {**data.params}
+            op = catalog[node.data.title]
+            params = {**node.data.params}
             if has_ctx(op):
                 params["_ctx"] = contexts[node.id]
             results = []
+            node.publish_started()
             for task in ts:
                 try:
                     inputs = []
@@ -146,11 +146,12 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                             cache[key] = output
                         output = cache[key]
                     else:
+                        op.publish_started()
                         result = op(*inputs, **params)
                         output = await await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
-                    data.error = str(e)
+                    node.publish_error(e)
                     break
                 contexts[node.id].last_result = output
                 # Returned lists and DataFrames are considered multiple tasks.
@@ -161,7 +162,7 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                 results.extend(output)
             else:  # Finished all tasks without errors.
                 if result.display:
-                    data.display = await await_if_needed(result.display)
+                    result.display = await await_if_needed(result.display)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.title]
@@ -172,5 +173,6 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                         ).extend(results)
                     else:
                         tasks.setdefault(edge.target, []).extend(results)
+                op.publish_result(result)
         tasks = next_stage
     return contexts

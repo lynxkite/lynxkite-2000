@@ -9,6 +9,9 @@ import typing
 from dataclasses import dataclass
 from typing_extensions import Annotated
 
+if typing.TYPE_CHECKING:
+    from . import workspace
+
 CATALOGS = {}
 EXECUTORS = {}
 
@@ -233,9 +236,15 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
 
 
 def register_executor(env: str):
-    """Decorator for registering an executor."""
+    """Decorator for registering an executor.
 
-    def decorator(func):
+    The executor is a function that takes a workspace and executes the operations in it.
+    When it starts executing an operation, it should call `node.publish_started()` to indicate
+    the status on the UI. When the execution is finished, it should call `node.publish_result()`.
+    This will update the UI with the result of the operation.
+    """
+
+    def decorator(func: typing.Callable[[workspace.Workspace], typing.Any]):
         EXECUTORS[env] = func
         return func
 
