@@ -3,7 +3,9 @@
 import json
 from typing import Optional
 import dataclasses
+import enum
 import os
+import pycrdt
 import pydantic
 import tempfile
 from . import ops
@@ -20,11 +22,18 @@ class Position(BaseConfig):
     y: float
 
 
+class NodeStatus(str, enum.Enum):
+    planned = "planned"
+    active = "active"
+    done = "done"
+
+
 class WorkspaceNodeData(BaseConfig):
     title: str
     params: dict
     display: Optional[object] = None
     error: Optional[str] = None
+    status: NodeStatus = NodeStatus.done
     # Also contains a "meta" field when going out.
     # This is ignored when coming back from the frontend.
 
@@ -36,6 +45,32 @@ class WorkspaceNode(BaseConfig):
     type: str
     data: WorkspaceNodeData
     position: Position
+    _crdt: pycrdt.Map
+
+    def publish_started(self):
+        """Notifies the frontend that work has started on this node."""
+        self.data.error = None
+        self.data.status = NodeStatus.active
+        if hasattr(self, "_crdt"):
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["error"] = None
+                self._crdt["data"]["status"] = NodeStatus.active
+
+    def publish_result(self, result: ops.Result):
+        """Sends the result to the frontend. Call this in an executor when the result is available."""
+        self.data.display = result.display
+        self.data.error = result.error
+        self.data.status = NodeStatus.done
+        if hasattr(self, "_crdt"):
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["display"] = result.display
+                self._crdt["data"]["error"] = result.error
+                self._crdt["data"]["status"] = NodeStatus.done
+
+    def publish_error(self, error: Exception | str | None):
+        """Can be called with None to clear the error state."""
+        result = ops.Result(error=str(error) if error else None)
+        self.publish_result(result)
 
 
 class WorkspaceEdge(BaseConfig):

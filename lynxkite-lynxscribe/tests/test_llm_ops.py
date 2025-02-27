@@ -1,5 +1,5 @@
 import unittest
-from lynxscribe.lynxkite import llm_ops  # noqa: F401
+from lynxkite_lynxscribe import llm_ops  # noqa: F401
 from lynxkite.core.executors import one_by_one
 from lynxkite.core import ops, workspace
 

@@ -41,6 +41,7 @@ export interface WorkspaceNodeData {
   };
   display?: unknown;
   error?: string | null;
+  in_progress?: boolean;
   [k: string]: unknown;
 }
 export interface Position {

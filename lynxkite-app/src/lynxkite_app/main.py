@@ -1,6 +1,5 @@
 """The FastAPI server for serving the LynxKite application."""
 
-import os
 import shutil
 import pydantic
 import fastapi
@@ -12,11 +11,6 @@ import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt, config
-
-if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
-    import cudf.pandas
-
-    cudf.pandas.install()
 
 
 def detect_plugins():
