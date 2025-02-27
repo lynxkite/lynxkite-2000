@@ -42,10 +42,14 @@ class WorkspaceNode(BaseConfig):
 
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
-        with self._crdt.doc.transaction():
-            self._crdt["data"]["display"] = result.display
-            self._crdt["data"]["error"] = result.error
-            self._crdt["data"]["in_progress"] = False
+        self.data.display = result.display
+        self.data.error = result.error
+        self.data.in_progress = False
+        if hasattr(self, "_crdt"):
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["display"] = result.display
+                self._crdt["data"]["error"] = result.error
+                self._crdt["data"]["in_progress"] = False
 
     def publish_error(self, error: Exception | str):
         self.publish_result(ops.Result(error=str(error)))
