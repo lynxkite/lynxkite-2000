@@ -72,7 +72,7 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
         <div
-          className={`title bg-primary ${data.in_progress ? "in-progress" : ""}`}
+          className={`title bg-primary ${data.status}`}
           onClick={titleClicked}
         >
           {data.title}
