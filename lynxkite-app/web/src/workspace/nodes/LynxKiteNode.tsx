@@ -71,7 +71,10 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
       }}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
-        <div className="title bg-primary" onClick={titleClicked}>
+        <div
+          className={`title bg-primary ${data.status}`}
+          onClick={titleClicked}
+        >
           {data.title}
           {data.error && <span className="title-icon">⚠️</span>}
           {expanded || <span className="title-icon">⋯</span>}

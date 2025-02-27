@@ -90,9 +90,33 @@ body {
   }
 
   .lynxkite-node .title {
-    /* background: oklch(75% 0.2 55); */
     font-weight: bold;
     padding: 8px;
+    background-image: linear-gradient(
+      to right,
+      var(--status-color-1),
+      var(--status-color-2),
+      var(--status-color-3)
+    );
+    background-size: 180% 180%;
+    --status-color-1: oklch(75% 0.2 55);
+    --status-color-2: oklch(75% 0.2 55);
+    --status-color-3: oklch(75% 0.2 55);
+    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3
+      0.3s;
+  }
+
+  .lynxkite-node .title.active {
+    --status-color-1: oklch(75% 0.2 55);
+    --status-color-2: oklch(90% 0.2 55);
+    --status-color-3: oklch(75% 0.1 55);
+    /* animation: active-node-gradient-animation 2s ease-in-out infinite; */
+  }
+
+  .lynxkite-node .title.planned {
+    --status-color-1: oklch(75% 0.1 55);
+    --status-color-2: oklch(75% 0.1 55);
+    --status-color-3: oklch(75% 0.1 55);
   }
 
   .handle-name {
@@ -322,6 +346,38 @@ body {
   }
 }
 
+@keyframes active-node-gradient-animation {
+  0% {
+    background-position-x: 100%;
+  }
+
+  50% {
+    background-position-x: 0%;
+  }
+
+  100% {
+    background-position-x: 100%;
+  }
+}
+
+@property --status-color-1 {
+  syntax: "<color>";
+  initial-value: red;
+  inherits: false;
+}
+
+@property --status-color-2 {
+  syntax: "<color>";
+  initial-value: red;
+  inherits: false;
+}
+
+@property --status-color-3 {
+  syntax: "<color>";
+  initial-value: red;
+  inherits: false;
+}
+
 .react-flow__edge.selected path.react-flow__edge-path {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 10px;
@@ -379,13 +435,15 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 8px 12px;
-  border-bottom: 1px solid #ccc; /* Adds a separator between rows */
+  /* Adds a separator between rows */
+  border-bottom: 1px solid #ccc;
 }
 
 /* Alternating background colors for table-like effect */
 .graph-creation-view .df-head:nth-child(odd) {
   background-color: #f9f9f9;
 }
+
 .graph-creation-view .df-head:nth-child(even) {
   background-color: #e0e0e0;
 }
@@ -393,7 +451,8 @@ body {
 .graph-relation-attributes {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Adds space between each label-input pair */
+  /* Adds space between each label-input pair */
+  gap: 10px;
   width: 100%;
 }
 
@@ -402,7 +461,8 @@ body {
   font-weight: bold;
   display: block;
   margin-bottom: 2px;
-  color: #666; /* Lighter text for labels */
+  /* Lighter text for labels */
+  color: #666;
 }
 
 .graph-relation-attributes input {
@@ -415,7 +475,8 @@ body {
 }
 
 .graph-relation-attributes input:focus {
-  border-color: #007bff; /* Highlight input on focus */
+  /* Highlight input on focus */
+  border-color: #007bff;
 }
 
 .add-relationship-button {

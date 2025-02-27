@@ -2,12 +2,12 @@ import pandas as pd
 import pytest
 import networkx as nx
 
-from lynxkite.core import workspace
-from lynxkite_graph_analytics.lynxkite_ops import Bundle, execute, op
+from lynxkite.core import workspace, ops
+from lynxkite_graph_analytics.core import Bundle, execute, ENV
 
 
 async def test_execute_operation_not_in_catalog():
-    ws = workspace.Workspace(env="test")
+    ws = workspace.Workspace(env=ENV)
     ws.nodes.append(
         workspace.WorkspaceNode(
             id="1",
@@ -22,6 +22,8 @@ async def test_execute_operation_not_in_catalog():
 
 async def test_execute_operation_inputs_correct_cast():
     # Test that the automatic casting of operation inputs works correctly.
+
+    op = ops.op_registration("test")
 
     @op("Create Bundle")
     def create_bundle() -> Bundle:
