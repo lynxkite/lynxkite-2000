@@ -1,11 +1,9 @@
 """The FastAPI server for serving the LynxKite application."""
 
-import os
 import shutil
 import pydantic
 import fastapi
 import importlib
-import pandas as pd
 import pathlib
 import pkgutil
 from fastapi.staticfiles import StaticFiles
@@ -13,13 +11,6 @@ import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt, config
-
-if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
-    import cudf.pandas
-
-    cudf.pandas.install()
-
-pd.options.mode.copy_on_write = True  # Prepare for Pandas 3.0.
 
 
 def detect_plugins():
