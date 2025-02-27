@@ -164,6 +164,7 @@ async def execute(ws):
                     node.publish_error("Operation not found in catalog")
                     failed += 1
                     continue
+                node.publish_started()
                 try:
                     # Convert inputs types  to match operation signature.
                     for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
