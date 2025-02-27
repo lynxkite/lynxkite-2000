@@ -86,7 +86,7 @@ def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.error = None
-        node.data.in_progress = False
+        node.data.status = workspace.NodeStatus.done
         node.position.x = 0
         node.position.y = 0
         if node.model_extra:
@@ -228,7 +228,7 @@ async def execute(
         for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
             if "data" not in nc:
                 nc["data"] = pycrdt.Map()
-            nc["data"]["in_progress"] = True
+            nc["data"]["status"] = "planned"
             # Nodes get a reference to their CRDT maps, so they can update them as the results come in.
             np._crdt = nc
     await workspace.execute(ws_pyd)
