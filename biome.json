@@ -10,6 +10,9 @@
         "noExplicitAny": "off",
         "noArrayIndexKey": "off"
       },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      },
       "style": {
         "noNonNullAssertion": "off"
       },

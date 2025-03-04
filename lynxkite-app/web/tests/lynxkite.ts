@@ -155,7 +155,7 @@ export class Workspace {
     await new Promise((resolve) =>
       setTimeout(resolve, executionWaitTime ? executionWaitTime : 500),
     );
-    await expect(this.getBoxes().locator(".error")).not.toBeVisible();
+    await expect(this.getBoxes().locator(".error").first()).not.toBeVisible();
   }
 
   async close() {

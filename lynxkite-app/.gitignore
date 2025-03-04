@@ -2,3 +2,4 @@
 !/src/lynxkite_app/web_assets/__init__.py
 !/src/lynxkite_app/web_assets/assets/__init__.py
 data/
+!/web/tests/data

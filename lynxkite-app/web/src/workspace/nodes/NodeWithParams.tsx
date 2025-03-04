@@ -1,5 +1,6 @@
 import { useReactFlow } from "@xyflow/react";
 import LynxKiteNode from "./LynxKiteNode";
+import NodeGroupParameter from "./NodeGroupParameter";
 import NodeParameter from "./NodeParameter";
 
 export type UpdateOptions = { delay?: number };
@@ -7,9 +8,22 @@ export type UpdateOptions = { delay?: number };
 function NodeWithParams(props: any) {
   const reactFlow = useReactFlow();
   const metaParams = props.data.meta?.params;
+
   function setParam(name: string, newValue: any, opts: UpdateOptions) {
+    reactFlow.updateNodeData(props.id, (prevData: any) => ({
+      ...prevData,
+      params: { ...prevData.data.params, [name]: newValue },
+      __execution_delay: opts.delay || 0,
+    }));
+  }
+
+  function deleteParam(name: string, opts: UpdateOptions) {
+    if (props.data.params[name] === undefined) {
+      return;
+    }
+    delete props.data.params[name];
     reactFlow.updateNodeData(props.id, {
-      params: { ...props.data.params, [name]: newValue },
+      params: { ...props.data.params },
       __execution_delay: opts.delay || 0,
     });
   }
@@ -17,17 +31,31 @@ function NodeWithParams(props: any) {
 
   return (
     <LynxKiteNode {...props}>
-      {params.map(([name, value]) => (
-        <NodeParameter
-          name={name}
-          key={name}
-          value={value}
-          meta={metaParams?.[name]}
-          onChange={(value: any, opts?: UpdateOptions) =>
-            setParam(name, value, opts || {})
-          }
-        />
-      ))}
+      {params.map(([name, value]) =>
+        metaParams?.[name]?.type === "group" ? (
+          <NodeGroupParameter
+            key={name}
+            value={value}
+            meta={metaParams?.[name]}
+            setParam={(name: string, value: any, opts?: UpdateOptions) =>
+              setParam(name, value, opts || {})
+            }
+            deleteParam={(name: string, opts?: UpdateOptions) =>
+              deleteParam(name, opts || {})
+            }
+          />
+        ) : (
+          <NodeParameter
+            name={name}
+            key={name}
+            value={value}
+            meta={metaParams?.[name]}
+            onChange={(value: any, opts?: UpdateOptions) =>
+              setParam(name, value, opts || {})
+            }
+          />
+        ),
+      )}
       {props.children}
     </LynxKiteNode>
   );
