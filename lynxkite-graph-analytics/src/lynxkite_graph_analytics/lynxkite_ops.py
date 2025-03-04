@@ -1,5 +1,6 @@
 """Graph analytics operations."""
 
+import enum
 import os
 import fsspec
 from lynxkite.core import ops
@@ -16,6 +17,68 @@ import json
 
 mem = joblib.Memory("../joblib-cache")
 op = ops.op_registration(core.ENV)
+
+
+class FileFormat(enum.StrEnum):
+    csv = "csv"
+    parquet = "parquet"
+    json = "json"
+    excel = "excel"
+
+
+@op(
+    "Import file",
+    params={
+        "file_format": ops.ParameterGroup(
+            name="file_format",
+            selector=ops.Parameter(
+                name="file_format", type=FileFormat, default=FileFormat.csv
+            ),
+            groups={
+                "csv": [
+                    ops.Parameter.basic("columns", type=str, default="<from file>"),
+                    ops.Parameter.basic("separator", type=str, default="<auto>"),
+                ],
+                "parquet": [],
+                "json": [],
+                "excel": [
+                    ops.Parameter.basic("sheet_name", type=str, default="Sheet1")
+                ],
+            },
+            default=FileFormat.csv,
+        ),
+    },
+)
+def import_file(
+    *, file_path: str, table_name: str, file_format: FileFormat, **kwargs
+) -> core.Bundle:
+    """Read the contents of the a file into a `Bundle`.
+
+    Args:
+        file_path: Path to the file to import.
+        table_name: Name to use for identifying the table in the bundle.
+        file_format: Format of the file. Has to be one of the values in the `FileFormat` enum.
+
+    Returns:
+        Bundle: Bundle with a single table with the contents of the file.
+    """
+    if file_format == "csv":
+        names = kwargs.pop("columns", "<from file>")
+        names = (
+            pd.api.extensions.no_default if names == "<from file>" else names.split(",")
+        )
+        sep = kwargs.pop("separator", "<auto>")
+        sep = pd.api.extensions.no_default if sep == "<auto>" else sep
+        df = pd.read_csv(file_path, names=names, sep=sep, **kwargs)
+    elif file_format == "json":
+        df = pd.read_json(file_path, **kwargs)
+    elif file_format == "parquet":
+        df = pd.read_parquet(file_path, **kwargs)
+    elif file_format == "excel":
+        df = pd.read_excel(file_path, **kwargs)
+    else:
+        df = ValueError(f"Unsupported file format: {file_format}")
+    return core.Bundle(dfs={table_name: df})
 
 
 @op("Import Parquet")
