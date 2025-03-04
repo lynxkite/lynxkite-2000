@@ -75,6 +75,16 @@ class Parameter(BaseConfig):
         return Parameter(name=name, default=default, type=type)
 
 
+class ParameterGroup(BaseConfig):
+    """Defines a group of parameters for an operation."""
+
+    name: str
+    selector: Parameter
+    default: typing.Any
+    groups: dict[str, list[Parameter]]
+    type: str = "group"
+
+
 class Input(BaseConfig):
     name: str
     type: Type
@@ -116,7 +126,7 @@ def basic_outputs(*names):
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     name: str
-    params: dict[str, Parameter]
+    params: dict[str, Parameter | ParameterGroup]
     inputs: dict[str, Input]
     outputs: dict[str, Output]
     # TODO: Make type an enum with the possible values.
@@ -148,7 +158,7 @@ class Op(BaseConfig):
         return res
 
 
-def op(env: str, name: str, *, view="basic", outputs=None):
+def op(env: str, name: str, *, view="basic", outputs=None, params=None):
     """Decorator for defining an operation."""
 
     def decorator(func):
@@ -157,12 +167,14 @@ def op(env: str, name: str, *, view="basic", outputs=None):
         inputs = {
             name: Input(name=name, type=param.annotation)
             for name, param in sig.parameters.items()
-            if param.kind != param.KEYWORD_ONLY
+            if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
         }
-        params = {}
+        _params = {}
         for n, param in sig.parameters.items():
             if param.kind == param.KEYWORD_ONLY and not n.startswith("_"):
-                params[n] = Parameter.basic(n, param.default, param.annotation)
+                _params[n] = Parameter.basic(n, param.default, param.annotation)
+        if params:
+            _params.update(params)
         if outputs:
             _outputs = {name: Output(name=name, type=None) for name in outputs}
         else:
@@ -172,7 +184,7 @@ def op(env: str, name: str, *, view="basic", outputs=None):
         op = Op(
             func=func,
             name=name,
-            params=params,
+            params=_params,
             inputs=inputs,
             outputs=_outputs,
             type=view,
