@@ -1,10 +1,13 @@
 """Automatically wraps all NetworkX functions as LynxKite operations."""
 
+import collections
 from lynxkite.core import ops
 import functools
 import inspect
 import networkx as nx
 import re
+
+import pandas as pd
 
 ENV = "LynxKite Graph Analytics"
 
@@ -156,10 +159,22 @@ def wrapped(name: str, func):
         res = func(*args, **kwargs)
         if isinstance(res, nx.Graph):
             return res
-        # Otherwise it's a node attribute.
-        graph = args[0].copy()
-        nx.set_node_attributes(graph, values=res, name=name)
-        return graph
+        # Figure out what the returned value is.
+        if isinstance(res, nx.Graph):
+            return res
+        if isinstance(res, collections.abc.Sized):
+            for a in args:
+                if isinstance(a, nx.Graph):
+                    if a.number_of_nodes() == len(res):
+                        graph = a.copy()
+                        nx.set_node_attributes(graph, values=res, name=name)
+                        return graph
+                    if a.number_of_edges() == len(res):
+                        graph = a.copy()
+                        nx.set_edge_attributes(graph, values=res, name=name)
+                        return graph
+            return pd.DataFrame({name: res})
+        return pd.DataFrame({name: [res]})
 
     return wrapper
 
@@ -193,7 +208,7 @@ def register_networkx(env: str):
                 for name, param in sig.parameters.items()
                 if name in types and types[name] not in [nx.Graph, nx.DiGraph]
             }
-            nicename = name.replace("_", " ").title()
+            nicename = "NX › " + name.replace("_", " ").title()
             op = ops.Op(
                 func=wrapped(name, func),
                 name=nicename,
