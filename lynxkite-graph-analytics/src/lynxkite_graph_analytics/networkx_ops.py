@@ -1,6 +1,7 @@
 """Automatically wraps all NetworkX functions as LynxKite operations."""
 
 import collections
+import types
 from lynxkite.core import ops
 import functools
 import inspect
@@ -12,9 +13,12 @@ import pandas as pd
 ENV = "LynxKite Graph Analytics"
 
 
-class UnsupportedType(Exception):
+class UnsupportedParameterType(Exception):
     pass
 
+
+_UNSUPPORTED = object()
+_SKIP = object()
 
 nx.ladder_graph
 
@@ -23,12 +27,12 @@ def doc_to_type(name: str, t: str) -> type:
     t = t.lower()
     t = re.sub("[(][^)]+[)]", "", t).strip().strip(".")
     if " " in name or "http" in name:
-        return None  # Not a parameter type.
+        return _UNSUPPORTED  # Not a parameter type.
     if t.endswith(", optional"):
         w = doc_to_type(name, t.removesuffix(", optional").strip())
-        if w is None:
-            return None
-        return w | None
+        if w is _UNSUPPORTED:
+            return _SKIP
+        return w if w is _SKIP else w | None
     if t in [
         "a digraph or multidigraph",
         "a graph g",
@@ -52,15 +56,15 @@ def doc_to_type(name: str, t: str) -> type:
     ]:
         return nx.DiGraph
     elif t == "node":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == '"node (optional)"':
-        return None
+        return _SKIP
     elif t == '"edge"':
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == '"edge (optional)"':
-        return None
+        return _SKIP
     elif t in ["class", "data type"]:
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t in ["string", "str", "node label"]:
         return str
     elif t in ["string or none", "none or string", "string, or none"]:
@@ -70,27 +74,27 @@ def doc_to_type(name: str, t: str) -> type:
     elif t in ["bool", "boolean"]:
         return bool
     elif t == "tuple":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "set":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "list of floats":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "list of floats or float":
         return float
     elif t in ["dict", "dictionary"]:
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "scalar or dictionary":
         return float
     elif t == "none or dict":
-        return None
+        return _SKIP
     elif t in ["function", "callable"]:
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t in [
         "collection",
         "container of nodes",
         "list of nodes",
     ]:
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t in [
         "container",
         "generator",
@@ -102,13 +106,13 @@ def doc_to_type(name: str, t: str) -> type:
         "list or tuple",
         "list",
     ]:
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "generator of sets":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "dict or a set of 2 or 3 tuples":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "set of 2 or 3 tuples":
-        raise UnsupportedType(t)
+        return _UNSUPPORTED
     elif t == "none, string or function":
         return str | None
     elif t == "string or function" and name == "weight":
@@ -133,8 +137,8 @@ def doc_to_type(name: str, t: str) -> type:
     elif name == "weight":
         return str
     elif t == "object":
-        raise UnsupportedType(t)
-    return None
+        return _UNSUPPORTED
+    return _SKIP
 
 
 def types_from_doc(doc: str) -> dict[str, type]:
@@ -144,9 +148,7 @@ def types_from_doc(doc: str) -> dict[str, type]:
             a, b = line.split(":", 1)
             for a in a.split(","):
                 a = a.strip()
-                t = doc_to_type(a, b)
-                if t is not None:
-                    types[a] = t
+                types[a] = doc_to_type(a, b)
     return types
 
 
@@ -157,12 +159,19 @@ def wrapped(name: str, func):
             if v == "None":
                 kwargs[k] = None
         res = func(*args, **kwargs)
-        if isinstance(res, nx.Graph):
-            return res
         # Figure out what the returned value is.
         if isinstance(res, nx.Graph):
             return res
+        if isinstance(res, types.GeneratorType):
+            res = list(res)
+        if name in ["articulation_points"]:
+            graph = args[0].copy()
+            nx.set_node_attributes(graph, 0, name=name)
+            nx.set_node_attributes(graph, {r: 1 for r in res}, name=name)
+            return graph
         if isinstance(res, collections.abc.Sized):
+            if len(res) == 0:
+                return pd.DataFrame()
             for a in args:
                 if isinstance(a, nx.Graph):
                     if a.number_of_nodes() == len(res):
@@ -179,36 +188,78 @@ def wrapped(name: str, func):
     return wrapper
 
 
+def _get_params(func) -> dict | None:
+    sig = inspect.signature(func)
+    # Get types from docstring.
+    types = types_from_doc(func.__doc__)
+    # Always hide these.
+    for k in ["backend", "backend_kwargs", "create_using"]:
+        types[k] = _SKIP
+    # Add in types based on signature.
+    for k, param in sig.parameters.items():
+        if k in types:
+            continue
+        if param.annotation is not param.empty:
+            types[k] = param.annotation
+        if k in ["i", "j", "n"]:
+            types[k] = int
+    params = {}
+    for name, param in sig.parameters.items():
+        _type = types.get(name, _UNSUPPORTED)
+        if _type is _UNSUPPORTED:
+            raise UnsupportedParameterType(name)
+        if _type is _SKIP or _type in [nx.Graph, nx.DiGraph]:
+            continue
+        params[name] = ops.Parameter.basic(
+            name=name,
+            default=str(param.default)
+            if type(param.default) in [str, int, float]
+            else None,
+            type=_type,
+        )
+    return params
+
+
+_REPLACEMENTS = [
+    ("Barabasi Albert", "Barabasi–Albert"),
+    ("Bellman Ford", "Bellman–Ford"),
+    ("Bethe Hessian", "Bethe–Hessian"),
+    ("Bfs", "BFS"),
+    ("Dag ", "DAG "),
+    ("Dfs", "DFS"),
+    ("Dorogovtsev Goltsev Mendes", "Dorogovtsev–Goltsev–Mendes"),
+    ("Erdos Renyi", "Erdos–Renyi"),
+    ("Floyd Warshall", "Floyd–Warshall"),
+    ("Gnc", "G(n,c)"),
+    ("Gnm", "G(n,m)"),
+    ("Gnp", "G(n,p)"),
+    ("Gnr", "G(n,r)"),
+    ("Havel Hakimi", "Havel–Hakimi"),
+    ("Hkn", "H(k,n)"),
+    ("Hnm", "H(n,m)"),
+    ("Kl ", "KL "),
+    ("Moebius Kantor", "Moebius–Kantor"),
+    ("Pagerank", "PageRank"),
+    ("Scale Free", "Scale-Free"),
+    ("Vf2Pp", "VF2++"),
+    ("Watts Strogatz", "Watts–Strogatz"),
+    ("Weisfeiler Lehman", "Weisfeiler–Lehman"),
+]
+
+
 def register_networkx(env: str):
     cat = ops.CATALOGS.setdefault(env, {})
     counter = 0
     for name, func in nx.__dict__.items():
         if hasattr(func, "graphs"):
-            sig = inspect.signature(func)
             try:
-                types = types_from_doc(func.__doc__)
-            except UnsupportedType:
+                params = _get_params(func)
+            except UnsupportedParameterType:
                 continue
-            for k, param in sig.parameters.items():
-                if k in types:
-                    continue
-                if param.annotation is not param.empty:
-                    types[k] = param.annotation
-                if k in ["i", "j", "n"]:
-                    types[k] = int
             inputs = {k: ops.Input(name=k, type=nx.Graph) for k in func.graphs}
-            params = {
-                name: ops.Parameter.basic(
-                    name=name,
-                    default=str(param.default)
-                    if type(param.default) in [str, int, float]
-                    else None,
-                    type=types[name],
-                )
-                for name, param in sig.parameters.items()
-                if name in types and types[name] not in [nx.Graph, nx.DiGraph]
-            }
             nicename = "NX › " + name.replace("_", " ").title()
+            for a, b in _REPLACEMENTS:
+                nicename = nicename.replace(a, b)
             op = ops.Op(
                 func=wrapped(name, func),
                 name=nicename,
