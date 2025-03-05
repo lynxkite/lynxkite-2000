@@ -136,9 +136,9 @@ def _param_to_type(name, value, type):
         return type[value]
     if isinstance(type, types.UnionType):
         match type.__args__:
-            case (None, type):
+            case (types.NoneType, type):
                 return None if value == "" else _param_to_type(name, value, type)
-            case (type, None):
+            case (type, types.NoneType):
                 return None if value == "" else _param_to_type(name, value, type)
     return value
 

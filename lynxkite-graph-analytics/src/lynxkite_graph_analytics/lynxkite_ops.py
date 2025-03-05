@@ -122,25 +122,6 @@ def import_osm(*, location: str):
     return ox.graph.graph_from_place(location, network_type="drive")
 
 
-@op("Create scale-free graph")
-def create_scale_free_graph(*, nodes: int = 10):
-    """Creates a scale-free graph with the given number of nodes."""
-    return nx.scale_free_graph(nodes)
-
-
-@op("Compute PageRank")
-@core.nx_node_attribute_func("pagerank")
-def compute_pagerank(graph: nx.Graph, *, damping=0.85, iterations=100):
-    # TODO: This requires scipy to be installed.
-    return nx.pagerank(graph, alpha=damping, max_iter=iterations)
-
-
-@op("Compute betweenness centrality")
-@core.nx_node_attribute_func("betweenness_centrality")
-def compute_betweenness_centrality(graph: nx.Graph, *, k=10):
-    return nx.betweenness_centrality(graph, k=k)
-
-
 @op("Discard loop edges")
 def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
