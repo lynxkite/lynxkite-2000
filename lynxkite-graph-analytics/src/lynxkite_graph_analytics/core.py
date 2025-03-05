@@ -135,12 +135,15 @@ def nx_node_attribute_func(name):
     return decorator
 
 
-def disambiguate_edges(ws):
+def disambiguate_edges(ws: workspace.Workspace):
     """If an input plug is connected to multiple edges, keep only the last edge."""
     seen = set()
     for edge in reversed(ws.edges):
         if (edge.target, edge.targetHandle) in seen:
-            ws.edges.remove(edge)
+            i = ws.edges.index(edge)
+            del ws.edges[i]
+            if hasattr(ws, "_crdt"):
+                del ws._crdt["edges"][i]
         seen.add((edge.target, edge.targetHandle))
 
 
