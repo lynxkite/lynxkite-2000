@@ -22,7 +22,7 @@ const NodeWithVisualization = (props: any) => {
     };
   }, [props.data?.display?.value]);
   return (
-    <NodeWithParams {...props}>
+    <NodeWithParams collapsed {...props}>
       <div className="box" draggable={false} ref={chartsRef} />
     </NodeWithParams>
   );
