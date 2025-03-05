@@ -54,6 +54,10 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
             try_to_load_workspace(ws, name)
+        ws_simple = workspace.Workspace.model_validate(ws.to_py())
+        clean_input(ws_simple)
+        # Set the last known version to the current state, so we don't trigger a change event.
+        last_known_versions[name] = ws_simple
         room = pycrdt_websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
