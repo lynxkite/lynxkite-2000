@@ -126,7 +126,6 @@ def basic_outputs(*names):
 
 def _param_to_type(name, value, type):
     value = value or ""
-    print(f'Converting "{name}" {value} to {type}')
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
@@ -158,7 +157,6 @@ class Op(BaseConfig):
         for p in params:
             if p in self.params:
                 params[p] = _param_to_type(p, params[p], self.params[p].type)
-                print(self.name, p, params[p])
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
