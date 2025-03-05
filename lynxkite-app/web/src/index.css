@@ -242,6 +242,20 @@ body {
   }
 }
 
+.params-expander {
+  font-size: 15px;
+  padding: 4px;
+  color: #000a;
+}
+
+.flippy {
+  transition: transform 0.5s;
+}
+
+.flippy.flippy-90 {
+  transform: rotate(-90deg);
+}
+
 .directory {
   .entry-list {
     width: 100%;
