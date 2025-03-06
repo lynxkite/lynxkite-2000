@@ -35,9 +35,9 @@ test("Box creation & deletion per env", async () => {
 });
 
 test("Delete multi-handle boxes", async () => {
-  await workspace.addBox("Compute PageRank");
-  await workspace.deleteBoxes(["Compute PageRank 1"]);
-  await expect(workspace.getBox("Compute PageRank 1")).not.toBeVisible();
+  await workspace.addBox("NX › PageRank");
+  await workspace.deleteBoxes(["NX › PageRank 1"]);
+  await expect(workspace.getBox("NX › PageRank 1")).not.toBeVisible();
 });
 
 test("Drag box", async () => {
