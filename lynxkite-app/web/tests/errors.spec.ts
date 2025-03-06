@@ -23,7 +23,7 @@ test("missing parameter", async () => {
   await workspace.addBox("NX › Scale-Free Graph");
   const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
   await expect(graphBox.locator(".error")).toHaveText("n is unset.");
-  await graphBox.getByLabel("n").fill("10");
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
   await expect(graphBox.locator(".error")).not.toBeVisible();
 });
 
@@ -31,6 +31,8 @@ test("unknown operation", async () => {
   // Test that the correct error is displayed when the operation does not belong to
   // the current environment.
   await workspace.addBox("NX › Scale-Free Graph");
+  const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.setEnv("LynxScribe");
   const csvBox = workspace.getBox("NX › Scale-Free Graph 1");
   await expect(csvBox.locator(".error")).toHaveText(
