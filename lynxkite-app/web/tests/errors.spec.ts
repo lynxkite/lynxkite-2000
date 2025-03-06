@@ -20,24 +20,24 @@ test.afterEach(async () => {
 test("missing parameter", async () => {
   // Test the correct error message is displayed when a required parameter is missing,
   // and that the error message is removed when the parameter is filled.
-  await workspace.addBox("Create scale-free graph");
-  const graphBox = workspace.getBox("Create scale-free graph 1");
-  await graphBox.locator("input").fill("");
-  expect(await graphBox.locator(".error").innerText()).toBe(
-    "invalid literal for int() with base 10: ''",
-  );
-  await graphBox.locator("input").fill("10");
+  await workspace.addBox("NX › Scale-Free Graph");
+  const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await expect(graphBox.locator(".error")).toHaveText("n is unset.");
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
   await expect(graphBox.locator(".error")).not.toBeVisible();
 });
 
 test("unknown operation", async () => {
   // Test that the correct error is displayed when the operation does not belong to
   // the current environment.
-  await workspace.addBox("Create scale-free graph");
+  await workspace.addBox("NX › Scale-Free Graph");
+  const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.setEnv("LynxScribe");
-  const csvBox = workspace.getBox("Create scale-free graph 1");
-  const errorText = await csvBox.locator(".error").innerText();
-  expect(errorText).toBe('Operation "Create scale-free graph" not found.');
+  const csvBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await expect(csvBox.locator(".error")).toHaveText(
+    'Operation "NX › Scale-Free Graph" not found.',
+  );
   await workspace.setEnv("LynxKite Graph Analytics");
   await expect(csvBox.locator(".error")).not.toBeVisible();
 });

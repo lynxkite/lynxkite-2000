@@ -65,7 +65,10 @@ export class Workspace {
     // Some x,y offset, otherwise the box handle may fall outside the viewport.
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    await this.page.locator(".node-search").getByText(boxName).click();
+    await this.page
+      .locator(".node-search")
+      .getByText(boxName, { exact: true })
+      .click();
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
