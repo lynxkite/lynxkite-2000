@@ -77,13 +77,13 @@ async def test_execute_operation_inputs_correct_cast():
     )
     ws.edges = [
         workspace.WorkspaceEdge(
-            id="1", source="1", target="2", sourceHandle="1", targetHandle="2"
+            id="1", source="1", target="2", sourceHandle="output", targetHandle="graph"
         ),
         workspace.WorkspaceEdge(
-            id="2", source="2", target="3", sourceHandle="2", targetHandle="3"
+            id="2", source="2", target="3", sourceHandle="output", targetHandle="bundle"
         ),
         workspace.WorkspaceEdge(
-            id="3", source="3", target="4", sourceHandle="3", targetHandle="4"
+            id="3", source="3", target="4", sourceHandle="output", targetHandle="bundle"
         ),
     ]
 
