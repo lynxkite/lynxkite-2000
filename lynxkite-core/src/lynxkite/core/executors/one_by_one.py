@@ -142,12 +142,12 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                         key = make_cache_key((inputs, params))
                         if key not in cache:
                             result: ops.Result = op(*inputs, **params)
-                            output = await await_if_needed(result.output)
-                            cache[key] = output
-                        output = cache[key]
+                            result.output = await await_if_needed(result.output)
+                            cache[key] = result
+                        result = cache[key]
                     else:
                         result = op(*inputs, **params)
-                        output = await await_if_needed(result.output)
+                    output = await await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
                     node.publish_error(e)

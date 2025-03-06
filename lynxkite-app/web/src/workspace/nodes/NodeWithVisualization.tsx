@@ -10,20 +10,28 @@ const NodeWithVisualization = (props: any) => {
     if (!opts || !chartsRef.current) return;
     chartsInstanceRef.current = echarts.init(chartsRef.current, null, {
       renderer: "canvas",
-      width: 800,
-      height: 800,
+      width: "auto",
+      height: "auto",
     });
     chartsInstanceRef.current.setOption(opts);
-    const onResize = () => chartsInstanceRef.current?.resize();
-    window.addEventListener("resize", onResize);
+    const resizeObserver = new ResizeObserver(() => {
+      const e = chartsRef.current!;
+      e.style.padding = "1px";
+      chartsInstanceRef.current?.resize();
+      e.style.padding = "0";
+    });
+    const observed = chartsRef.current;
+    resizeObserver.observe(observed);
     return () => {
-      window.removeEventListener("resize", onResize);
+      resizeObserver.unobserve(observed);
       chartsInstanceRef.current?.dispose();
     };
   }, [props.data?.display?.value]);
+  const nodeStyle = { display: "flex", flexDirection: "column" };
+  const vizStyle = { flex: 1 };
   return (
-    <NodeWithParams {...props}>
-      <div className="box" draggable={false} ref={chartsRef} />
+    <NodeWithParams nodeStyle={nodeStyle} collapsed {...props}>
+      <div style={vizStyle} ref={chartsRef} />
     </NodeWithParams>
   );
 };

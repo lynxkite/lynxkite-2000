@@ -4,6 +4,7 @@ from __future__ import annotations
 import enum
 import functools
 import inspect
+import types
 import pydantic
 import typing
 from dataclasses import dataclass
@@ -123,6 +124,25 @@ def basic_outputs(*names):
     return {name: Output(name=name, type=None) for name in names}
 
 
+def _param_to_type(name, value, type):
+    value = value or ""
+    if type is int:
+        assert value != "", f"{name} is unset."
+        return int(value)
+    if type is float:
+        assert value != "", f"{name} is unset."
+        return float(value)
+    if isinstance(type, enum.EnumMeta):
+        return type[value]
+    if isinstance(type, types.UnionType):
+        match type.__args__:
+            case (types.NoneType, type):
+                return None if value == "" else _param_to_type(name, value, type)
+            case (type, types.NoneType):
+                return None if value == "" else _param_to_type(name, value, type)
+    return value
+
+
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     name: str
@@ -136,12 +156,7 @@ class Op(BaseConfig):
         # Convert parameters.
         for p in params:
             if p in self.params:
-                if self.params[p].type is int:
-                    params[p] = int(params[p])
-                elif self.params[p].type is float:
-                    params[p] = float(params[p])
-                elif isinstance(self.params[p].type, enum.EnumMeta):
-                    params[p] = self.params[p].type[params[p]]
+                params[p] = _param_to_type(p, params[p], self.params[p].type)
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.

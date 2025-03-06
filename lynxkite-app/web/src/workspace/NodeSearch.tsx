@@ -25,9 +25,14 @@ export default function (props: {
       }),
     [props.boxes],
   );
+  const allOps = useMemo(() => {
+    const boxes = Object.values(props.boxes).map((box) => ({ item: box }));
+    boxes.sort((a, b) => a.item.name.localeCompare(b.item.name));
+    return boxes;
+  }, [props.boxes]);
   const hits: { item: OpsOp }[] = searchText
     ? fuse.search<OpsOp>(searchText)
-    : Object.values(props.boxes).map((box) => ({ item: box }));
+    : allOps;
   const [selectedIndex, setSelectedIndex] = useState(0);
   useEffect(() => searchBox.current.focus());
   function typed(text: string) {

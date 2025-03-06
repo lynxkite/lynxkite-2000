@@ -73,6 +73,10 @@ export default function NodeParameter({
             value={value || ""}
             onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
             onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
+            onKeyDown={(evt) =>
+              evt.code === "Enter" &&
+              onChange(evt.currentTarget.value, { delay: 0 })
+            }
           />
         </>
       )}
