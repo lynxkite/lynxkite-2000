@@ -20,20 +20,18 @@ class UnsupportedParameterType(Exception):
 _UNSUPPORTED = object()
 _SKIP = object()
 
-nx.ladder_graph
 
-
-def doc_to_type(name: str, t: str) -> type:
-    t = t.lower()
-    t = re.sub("[(][^)]+[)]", "", t).strip().strip(".")
+def doc_to_type(name: str, type_hint: str) -> type:
+    type_hint = type_hint.lower()
+    type_hint = re.sub("[(][^)]+[)]", "", type_hint).strip().strip(".")
     if " " in name or "http" in name:
         return _UNSUPPORTED  # Not a parameter type.
-    if t.endswith(", optional"):
-        w = doc_to_type(name, t.removesuffix(", optional").strip())
+    if type_hint.endswith(", optional"):
+        w = doc_to_type(name, type_hint.removesuffix(", optional").strip())
         if w is _UNSUPPORTED:
             return _SKIP
         return w if w is _SKIP else w | None
-    if t in [
+    if type_hint in [
         "a digraph or multidigraph",
         "a graph g",
         "graph",
@@ -44,9 +42,9 @@ def doc_to_type(name: str, t: str) -> type:
         "nx.graph",
         "undirected graph",
         "undirected networkx graph",
-    ] or t.startswith("networkx graph"):
+    ] or type_hint.startswith("networkx graph"):
         return nx.Graph
-    elif t in [
+    elif type_hint in [
         "digraph-like",
         "digraph",
         "directed graph",
@@ -55,47 +53,47 @@ def doc_to_type(name: str, t: str) -> type:
         "nx.digraph",
     ]:
         return nx.DiGraph
-    elif t == "node":
+    elif type_hint == "node":
         return _UNSUPPORTED
-    elif t == '"node (optional)"':
+    elif type_hint == '"node (optional)"':
         return _SKIP
-    elif t == '"edge"':
+    elif type_hint == '"edge"':
         return _UNSUPPORTED
-    elif t == '"edge (optional)"':
+    elif type_hint == '"edge (optional)"':
         return _SKIP
-    elif t in ["class", "data type"]:
+    elif type_hint in ["class", "data type"]:
         return _UNSUPPORTED
-    elif t in ["string", "str", "node label"]:
+    elif type_hint in ["string", "str", "node label"]:
         return str
-    elif t in ["string or none", "none or string", "string, or none"]:
+    elif type_hint in ["string or none", "none or string", "string, or none"]:
         return str | None
-    elif t in ["int", "integer"]:
+    elif type_hint in ["int", "integer"]:
         return int
-    elif t in ["bool", "boolean"]:
+    elif type_hint in ["bool", "boolean"]:
         return bool
-    elif t == "tuple":
+    elif type_hint == "tuple":
         return _UNSUPPORTED
-    elif t == "set":
+    elif type_hint == "set":
         return _UNSUPPORTED
-    elif t == "list of floats":
+    elif type_hint == "list of floats":
         return _UNSUPPORTED
-    elif t == "list of floats or float":
+    elif type_hint == "list of floats or float":
         return float
-    elif t in ["dict", "dictionary"]:
+    elif type_hint in ["dict", "dictionary"]:
         return _UNSUPPORTED
-    elif t == "scalar or dictionary":
+    elif type_hint == "scalar or dictionary":
         return float
-    elif t == "none or dict":
+    elif type_hint == "none or dict":
         return _SKIP
-    elif t in ["function", "callable"]:
+    elif type_hint in ["function", "callable"]:
         return _UNSUPPORTED
-    elif t in [
+    elif type_hint in [
         "collection",
         "container of nodes",
         "list of nodes",
     ]:
         return _UNSUPPORTED
-    elif t in [
+    elif type_hint in [
         "container",
         "generator",
         "iterable",
@@ -107,19 +105,19 @@ def doc_to_type(name: str, t: str) -> type:
         "list",
     ]:
         return _UNSUPPORTED
-    elif t == "generator of sets":
+    elif type_hint == "generator of sets":
         return _UNSUPPORTED
-    elif t == "dict or a set of 2 or 3 tuples":
+    elif type_hint == "dict or a set of 2 or 3 tuples":
         return _UNSUPPORTED
-    elif t == "set of 2 or 3 tuples":
+    elif type_hint == "set of 2 or 3 tuples":
         return _UNSUPPORTED
-    elif t == "none, string or function":
+    elif type_hint == "none, string or function":
         return str | None
-    elif t == "string or function" and name == "weight":
+    elif type_hint == "string or function" and name == "weight":
         return str
-    elif t == "integer, float, or none":
+    elif type_hint == "integer, float, or none":
         return float | None
-    elif t in [
+    elif type_hint in [
         "float",
         "int or float",
         "integer or float",
@@ -130,13 +128,13 @@ def doc_to_type(name: str, t: str) -> type:
         "scalar",
     ]:
         return float
-    elif t in ["integer or none", "int or none"]:
+    elif type_hint in ["integer or none", "int or none"]:
         return int | None
     elif name == "seed":
         return int | None
     elif name == "weight":
         return str
-    elif t == "object":
+    elif type_hint == "object":
         return _UNSUPPORTED
     return _SKIP
 
