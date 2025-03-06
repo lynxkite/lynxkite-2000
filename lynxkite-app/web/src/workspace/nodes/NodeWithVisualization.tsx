@@ -10,8 +10,8 @@ const NodeWithVisualization = (props: any) => {
     if (!opts || !chartsRef.current) return;
     chartsInstanceRef.current = echarts.init(chartsRef.current, null, {
       renderer: "canvas",
-      width: 250,
-      height: 250,
+      width: 800,
+      height: 800,
     });
     chartsInstanceRef.current.setOption(opts);
     const onResize = () => chartsInstanceRef.current?.resize();

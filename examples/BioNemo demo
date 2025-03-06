@@ -1,0 +1,985 @@
+{
+  "edges": [
+    {
+      "id": "BioNeMo > Import H5AD file 1 BioNeMo > Get labels 1",
+      "source": "BioNeMo > Import H5AD file 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Get labels 1",
+      "targetHandle": "adata"
+    },
+    {
+      "id": "BioNeMo > Download CELLxGENE dataset 1 BioNeMo > Infer 1",
+      "source": "BioNeMo > Download CELLxGENE dataset 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Infer 1",
+      "targetHandle": "dataset_path"
+    },
+    {
+      "id": "BioNeMo > Download model 2 BioNeMo > Infer 1",
+      "source": "BioNeMo > Download model 2",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Infer 1",
+      "targetHandle": "model_path"
+    },
+    {
+      "id": "BioNeMo > Download CELLxGENE dataset 1 BioNeMo > Infer 2",
+      "source": "BioNeMo > Download CELLxGENE dataset 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Infer 2",
+      "targetHandle": "dataset_path"
+    },
+    {
+      "id": "BioNeMo > Download model 1 BioNeMo > Infer 2",
+      "source": "BioNeMo > Download model 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Infer 2",
+      "targetHandle": "model_path"
+    },
+    {
+      "id": "BioNeMo > Infer 2 BioNeMo > Load results 1",
+      "source": "BioNeMo > Infer 2",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Load results 1",
+      "targetHandle": "results_path"
+    },
+    {
+      "id": "BioNeMo > Load results 1 BioNeMo > Run benchmark 1",
+      "source": "BioNeMo > Load results 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Run benchmark 1",
+      "targetHandle": "data"
+    },
+    {
+      "id": "BioNeMo > Get labels 1 BioNeMo > Run benchmark 1",
+      "source": "BioNeMo > Get labels 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Run benchmark 1",
+      "targetHandle": "labels"
+    },
+    {
+      "id": "BioNeMo > Infer 1 BioNeMo > Load results 2",
+      "source": "BioNeMo > Infer 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Load results 2",
+      "targetHandle": "results_path"
+    },
+    {
+      "id": "BioNeMo > Load results 2 BioNeMo > Run benchmark 2",
+      "source": "BioNeMo > Load results 2",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Run benchmark 2",
+      "targetHandle": "data"
+    },
+    {
+      "id": "BioNeMo > Get labels 1 BioNeMo > Run benchmark 2",
+      "source": "BioNeMo > Get labels 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Run benchmark 2",
+      "targetHandle": "labels"
+    },
+    {
+      "id": "BioNeMo > Run benchmark 2 BioNeMo > Plot f1 comparison 1",
+      "source": "BioNeMo > Run benchmark 2",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Plot f1 comparison 1",
+      "targetHandle": "benchmark_output10m"
+    },
+    {
+      "id": "BioNeMo > Run benchmark 1 BioNeMo > Plot f1 comparison 1",
+      "source": "BioNeMo > Run benchmark 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Plot f1 comparison 1",
+      "targetHandle": "benchmark_output100m"
+    },
+    {
+      "id": "BioNeMo > Run benchmark 2 BioNeMo > Plot accuracy comparison 1",
+      "source": "BioNeMo > Run benchmark 2",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Plot accuracy comparison 1",
+      "targetHandle": "benchmark_output10m"
+    },
+    {
+      "id": "BioNeMo > Run benchmark 1 BioNeMo > Plot accuracy comparison 1",
+      "source": "BioNeMo > Run benchmark 1",
+      "sourceHandle": "output",
+      "target": "BioNeMo > Plot accuracy comparison 1",
+      "targetHandle": "benchmark_output100m"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "BioNeMo > Import H5AD file",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "file_path": {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 504.0,
+            "y": 355.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "file_path": "hs-celltype-bench.h5ad"
+        },
+        "status": "done",
+        "title": "BioNeMo > Import H5AD file"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 347.0,
+      "id": "BioNeMo > Import H5AD file 1",
+      "position": {
+        "x": 975.3920617976814,
+        "y": 246.19491328410817
+      },
+      "type": "basic",
+      "width": 295.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "adata": {
+              "name": "adata",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Get labels",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 389.0,
+            "y": 633.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "BioNeMo > Get labels"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Get labels 1",
+      "position": {
+        "x": 1330.5731290863628,
+        "y": 322.77821619446473
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "BioNeMo > Download model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_name": {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1026.0,
+            "y": 839.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_name": "geneformer_100m"
+        },
+        "status": "done",
+        "title": "BioNeMo > Download model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Download model 1",
+      "position": {
+        "x": 551.1714527812203,
+        "y": 629.2951247275757
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "BioNeMo > Download model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_name": {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 939.0,
+            "y": 523.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_name": "geneformer_10m"
+        },
+        "status": "done",
+        "title": "BioNeMo > Download model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Download model 2",
+      "position": {
+        "x": 556.2267014450949,
+        "y": 313.55564323889297
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "BioNeMo > Download CELLxGENE dataset",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "census_version": {
+              "default": "2023-12-15",
+              "name": "census_version",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "max_workers": {
+              "default": 1.0,
+              "name": "max_workers",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "organism": {
+              "default": "Homo sapiens",
+              "name": "organism",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_path": {
+              "default": null,
+              "name": "save_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "use_mp": {
+              "default": false,
+              "name": "use_mp",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            "value_filter": {
+              "default": "dataset_id==\"8e47ed12-c658-4252-b126-381df8d52a3d\"",
+              "name": "value_filter",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1020.0,
+            "y": 262.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "census_version": "2023-12-15",
+          "max_workers": 1.0,
+          "organism": "Homo sapiens",
+          "save_path": "celltype-bench-dataset",
+          "use_mp": false,
+          "value_filter": "dataset_id==\"8e47ed12-c658-4252-b126-381df8d52a3d\""
+        },
+        "status": "done",
+        "title": "BioNeMo > Download CELLxGENE dataset"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 421.0,
+      "id": "BioNeMo > Download CELLxGENE dataset 1",
+      "position": {
+        "x": 414.9692093497506,
+        "y": -221.8644693915577
+      },
+      "type": "basic",
+      "width": 240.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "dataset_path": {
+              "name": "dataset_path",
+              "position": "left",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_path": {
+              "name": "model_path",
+              "position": "left",
+              "type": {
+                "type": "str | None"
+              }
+            }
+          },
+          "name": "BioNeMo > Infer",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "results_path": {
+              "default": null,
+              "name": "results_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1544.0,
+            "y": 356.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "results_path": "results_10m"
+        },
+        "status": "done",
+        "title": "BioNeMo > Infer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Infer 1",
+      "position": {
+        "x": 1039.04712219626,
+        "y": -43.33924107744772
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "dataset_path": {
+              "name": "dataset_path",
+              "position": "left",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_path": {
+              "name": "model_path",
+              "position": "left",
+              "type": {
+                "type": "str | None"
+              }
+            }
+          },
+          "name": "BioNeMo > Infer",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "results_path": {
+              "default": null,
+              "name": "results_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1256.0,
+            "y": 1005.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "results_path": "results_100m"
+        },
+        "status": "done",
+        "title": "BioNeMo > Infer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Infer 2",
+      "position": {
+        "x": 1030.3289199948294,
+        "y": 636.5914302771178
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "results_path": {
+              "name": "results_path",
+              "position": "left",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Load results",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 1506.0,
+            "y": 804.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "BioNeMo > Load results"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Load results 1",
+      "position": {
+        "x": 1316.753212112243,
+        "y": 588.3511253627433
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "data": {
+              "name": "data",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "labels": {
+              "name": "labels",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Run benchmark",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "use_pca": {
+              "default": false,
+              "name": "use_pca",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1698.0,
+            "y": 929.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "use_pca": false
+        },
+        "status": "done",
+        "title": "BioNeMo > Run benchmark"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 254.0,
+      "id": "BioNeMo > Run benchmark 1",
+      "position": {
+        "x": 1717.5260843687468,
+        "y": 601.9085109739857
+      },
+      "type": "basic",
+      "width": 218.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "results_path": {
+              "name": "results_path",
+              "position": "left",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Load results",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 1314.0,
+            "y": 286.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "BioNeMo > Load results"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Load results 2",
+      "position": {
+        "x": 1371.1643035406682,
+        "y": -38.628856650688306
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "data": {
+              "name": "data",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "labels": {
+              "name": "labels",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Run benchmark",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "use_pca": {
+              "default": false,
+              "name": "use_pca",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1576.0,
+            "y": 395.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "use_pca": false
+        },
+        "status": "done",
+        "title": "BioNeMo > Run benchmark"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Run benchmark 2",
+      "position": {
+        "x": 1740.0,
+        "y": 120.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "grid": {
+            "bottom": "10%",
+            "height": "70%",
+            "left": "20%",
+            "right": "10%",
+            "top": "10%",
+            "width": "70%"
+          },
+          "series": [
+            {
+              "data": [
+                0.7020536292780548,
+                0.843335333719808
+              ],
+              "itemStyle": {
+                "color": "#440154"
+              },
+              "name": "F1 Score",
+              "type": "bar"
+            },
+            {
+              "data": [
+                [
+                  0.6853106016807672,
+                  0.7187966568753424
+                ],
+                [
+                  0.8270726644727397,
+                  0.8595980029668762
+                ]
+              ],
+              "itemStyle": {
+                "color": "#1f77b4"
+              },
+              "name": "Error Bars",
+              "type": "errorbar"
+            }
+          ],
+          "title": {
+            "left": "center",
+            "text": "F1 Score Comparison",
+            "textStyle": {
+              "fontSize": 20,
+              "fontWeight": "bold"
+            }
+          },
+          "tooltip": {
+            "axisPointer": {
+              "type": "shadow"
+            },
+            "trigger": "axis"
+          },
+          "xAxis": {
+            "axisLabel": {
+              "align": "right",
+              "rotate": 45,
+              "textStyle": {
+                "fontSize": 14,
+                "fontWeight": "bold"
+              }
+            },
+            "data": [
+              "10M parameters",
+              "106M parameters"
+            ],
+            "type": "category"
+          },
+          "yAxis": {
+            "axisLabel": {
+              "textStyle": {
+                "fontSize": 14,
+                "fontWeight": "bold"
+              }
+            },
+            "interval": 0.1,
+            "max": 1,
+            "min": 0,
+            "name": "F1 Score",
+            "type": "value"
+          }
+        },
+        "error": null,
+        "meta": {
+          "inputs": {
+            "benchmark_output100m": {
+              "name": "benchmark_output100m",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "benchmark_output10m": {
+              "name": "benchmark_output10m",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Plot f1 comparison",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1716.0,
+            "y": 309.0
+          },
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "BioNeMo > Plot f1 comparison"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 863.0,
+      "id": "BioNeMo > Plot f1 comparison 1",
+      "position": {
+        "x": 2091.687426186124,
+        "y": -368.096892874947
+      },
+      "type": "visualization",
+      "width": 1034.0
+    },
+    {
+      "data": {
+        "display": {
+          "grid": {
+            "bottom": "10%",
+            "height": "70%",
+            "left": "20%",
+            "right": "10%",
+            "top": "10%",
+            "width": "70%"
+          },
+          "series": [
+            {
+              "data": [
+                0.8385031821273431,
+                0.9053958718388249
+              ],
+              "itemStyle": {
+                "color": "#440154"
+              },
+              "name": "Accuracy",
+              "type": "bar"
+            },
+            {
+              "data": [
+                [
+                  0.8221974395834195,
+                  0.8548089246712667
+                ],
+                [
+                  0.8901141406971089,
+                  0.9206776029805408
+                ]
+              ],
+              "itemStyle": {
+                "color": "#1f77b4"
+              },
+              "name": "Error Bars",
+              "type": "errorbar"
+            }
+          ],
+          "title": {
+            "left": "center",
+            "text": "Accuracy Comparison",
+            "textStyle": {
+              "fontSize": 20,
+              "fontWeight": "bold"
+            }
+          },
+          "tooltip": {
+            "axisPointer": {
+              "type": "shadow"
+            },
+            "trigger": "axis"
+          },
+          "xAxis": {
+            "axisLabel": {
+              "align": "right",
+              "rotate": 45,
+              "textStyle": {
+                "fontSize": 14,
+                "fontWeight": "bold"
+              }
+            },
+            "data": [
+              "10M parameters",
+              "106M parameters"
+            ],
+            "type": "category"
+          },
+          "yAxis": {
+            "axisLabel": {
+              "textStyle": {
+                "fontSize": 14,
+                "fontWeight": "bold"
+              }
+            },
+            "interval": 0.1,
+            "max": 1,
+            "min": 0,
+            "name": "Accuracy",
+            "type": "value"
+          }
+        },
+        "error": null,
+        "meta": {
+          "inputs": {
+            "benchmark_output100m": {
+              "name": "benchmark_output100m",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "benchmark_output10m": {
+              "name": "benchmark_output10m",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "BioNeMo > Plot accuracy comparison",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1574.0,
+            "y": 720.0
+          },
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "BioNeMo > Plot accuracy comparison"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "BioNeMo > Plot accuracy comparison 1",
+      "position": {
+        "x": 2160.0,
+        "y": 915.0
+      },
+      "type": "visualization",
+      "width": 200.0
+    }
+  ]
+}
