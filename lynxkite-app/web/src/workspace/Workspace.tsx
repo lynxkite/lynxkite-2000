@@ -26,11 +26,11 @@ import { useParams } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
 // @ts-ignore
-import ArrowBack from "~icons/tabler/arrow-back.jsx";
-// @ts-ignore
 import Atom from "~icons/tabler/atom.jsx";
 // @ts-ignore
 import Backspace from "~icons/tabler/backspace.jsx";
+// @ts-ignore
+import Close from "~icons/tabler/x.jsx";
 import type { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 // import NodeWithTableView from './NodeWithTableView';
@@ -303,7 +303,7 @@ function LynxKiteFlow() {
             <Backspace />
           </a>
           <a href={`/dir/${parentDir}`}>
-            <ArrowBack />
+            <Close />
           </a>
         </div>
       </div>

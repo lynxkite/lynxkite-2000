@@ -92,6 +92,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
+    _crdt: pycrdt.Map
 
 
 async def execute(ws: Workspace):

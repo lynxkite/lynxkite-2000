@@ -54,6 +54,10 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
             try_to_load_workspace(ws, name)
+        ws_simple = workspace.Workspace.model_validate(ws.to_py())
+        clean_input(ws_simple)
+        # Set the last known version to the current state, so we don't trigger a change event.
+        last_known_versions[name] = ws_simple
         room = pycrdt_websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
@@ -197,7 +201,6 @@ async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
         for change in changes
     )
-    print(f"Running {name} in {ws_pyd.env}...")
     if delay:
         task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay))
         delayed_executions[name] = task
@@ -221,10 +224,12 @@ async def execute(
             await asyncio.sleep(delay)
         except asyncio.CancelledError:
             return
+    print(f"Running {name} in {ws_pyd.env}...")
     path = config.DATA_PATH / name
     assert path.is_relative_to(config.DATA_PATH), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
+    ws_pyd._crdt = ws_crdt
     with ws_crdt.doc.transaction():
         for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
             if "data" not in nc:
@@ -234,6 +239,7 @@ async def execute(
             np._crdt = nc
     await workspace.execute(ws_pyd)
     workspace.save(ws_pyd, path)
+    print(f"Finished running {name} in {ws_pyd.env}.")
 
 
 @contextlib.asynccontextmanager
