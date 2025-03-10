@@ -1,3 +1,12 @@
+---
+title: LynxKite 2000:MM
+emoji: 🪁
+colorFrom: purple
+colorTo: gray
+sdk: docker
+app_port: 7860
+---
+
 # LynxKite 2024
 
 This is an experimental rewrite of [LynxKite](https://github.com/lynxkite/lynxkite). It is not compatible with the
