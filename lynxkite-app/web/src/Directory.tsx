@@ -1,6 +1,6 @@
 import { useState } from "react";
 // The directory browser.
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import useSWR from "swr";
 import type { DirectoryEntry } from "./apiTypes.ts";
 
@@ -173,19 +173,19 @@ export default function () {
 
             {path && (
               <div className="breadcrumbs">
-                <a href="/dir/">
+                <Link to="/dir/">
                   <Home />
-                </a>{" "}
+                </Link>{" "}
                 <span className="current-folder">{path}</span>
               </div>
             )}
 
             {list.data.map((item: DirectoryEntry) => (
               <div key={item.name} className="entry">
-                <a key={link(item)} href={link(item)}>
+                <Link key={link(item)} to={link(item)}>
                   {item.type === "directory" ? <Folder /> : <File />}
                   {shortName(item)}
-                </a>
+                </Link>
                 <button
                   type="button"
                   onClick={() => {
