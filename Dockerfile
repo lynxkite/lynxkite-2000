@@ -1,14 +1,10 @@
 FROM node:22
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN apt-get update && apt-get install -y git
-# ADD pyproject.toml /repo/pyproject.toml
-# ADD lynxkite-app/pyproject.toml /repo/lynxkite-app/pyproject.toml
-# ADD lynxkite-core/pyproject.toml /repo/lynxkite-core/pyproject.toml
-# ADD lynxkite-graph-analytics/pyproject.toml /repo/lynxkite-graph-analytics/pyproject.toml
-# ADD lynxkite-bio/pyproject.toml /repo/lynxkite-bio/pyproject.toml
-# ADD lynxkite-pillow-example/pyproject.toml /repo/lynxkite-pillow-example/pyproject.toml
-ADD . /repo
-WORKDIR /repo
+USER node
+ENV HOME=/home/node PATH=/home/node/.local/bin:$PATH
+WORKDIR $HOME/app
+COPY --chown=node . $HOME/app
 RUN uv venv && uv pip install \
   -e lynxkite-core \
   -e lynxkite-app \
@@ -17,4 +13,4 @@ RUN uv venv && uv pip install \
   -e lynxkite-pillow-example
 ENV LYNXKITE_DATA=examples
 ENV PORT=7860
-CMD ["uv", "run", "--no-sync", "lynxkite"]
+CMD ["uv", "run", "lynxkite"]
