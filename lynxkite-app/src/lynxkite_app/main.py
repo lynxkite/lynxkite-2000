@@ -7,6 +7,7 @@ import importlib
 import pathlib
 import pkgutil
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
 import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
@@ -28,6 +29,7 @@ lynxkite_plugins = detect_plugins()
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
+app.add_middleware(GZipMiddleware)
 
 
 @app.get("/api/catalog")
