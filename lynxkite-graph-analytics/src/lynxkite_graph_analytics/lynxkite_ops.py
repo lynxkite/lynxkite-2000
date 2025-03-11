@@ -15,7 +15,7 @@ import polars as pl
 import json
 
 
-mem = joblib.Memory("../joblib-cache")
+mem = joblib.Memory("joblib-cache")
 op = ops.op_registration(core.ENV)
 
 
