@@ -23,7 +23,9 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function () {
   const { path } = useParams();
   const encodedPath = encodeURIComponent(path || "");
-  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher);
+  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
+    dedupingInterval: 0,
+  });
   const navigate = useNavigate();
   const [isCreatingDir, setIsCreatingDir] = useState(false);
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
