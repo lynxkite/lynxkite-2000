@@ -128,6 +128,18 @@ async def service_post(req: fastapi.Request, module_path: str):
     return await module.api_service_post(req)
 
 
+@app.post("/api/upload")
+async def upload(req: fastapi.Request):
+    """Receives file uploads and stores them in DATA_PATH."""
+    form = await req.form()
+    for file in form.values():
+        file_path = config.DATA_PATH / file.filename
+        assert file_path.is_relative_to(config.DATA_PATH), "Invalid file path"
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    return {"status": "ok"}
+
+
 class SPAStaticFiles(StaticFiles):
     """Route everything to index.html. https://stackoverflow.com/a/73552966/3318517"""
 
