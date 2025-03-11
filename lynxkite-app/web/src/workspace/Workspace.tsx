@@ -66,8 +66,9 @@ function LynxKiteFlow() {
     const state = syncedStore({ workspace: {} as Workspace });
     setState(state);
     const doc = getYjsDoc(state);
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const wsProvider = new WebsocketProvider(
-      `ws://${location.host}/ws/crdt`,
+      `${proto}//${location.host}/ws/crdt`,
       path!,
       doc,
     );
