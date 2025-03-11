@@ -322,7 +322,7 @@ function LynxKiteFlow() {
             onPaneClick={toggleNodeSearch}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
-            maxZoom={3}
+            maxZoom={1}
             minZoom={0.3}
             defaultEdgeOptions={{
               markerEnd: {
