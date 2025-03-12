@@ -243,7 +243,7 @@ function LynxKiteFlow() {
     state: { workspace: Workspace },
     nodes: Node[],
   ) {
-    const title = node.title;
+    const title = node.data.title;
     let i = 1;
     node.id = `${title} ${i}`;
     const wnodes = state.workspace.nodes!;
