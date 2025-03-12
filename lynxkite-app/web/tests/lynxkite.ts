@@ -62,7 +62,6 @@ export class Workspace {
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
-    // Some x,y offset, otherwise the box handle may fall outside the viewport.
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
     await this.page
@@ -73,7 +72,8 @@ export class Workspace {
   }
 
   async getCatalog() {
-    await this.page.locator(".react-flow__pane").click();
+    await this.page.locator(".ws-name").click();
+    await this.page.keyboard.press("/");
     const catalog = await this.page
       .locator(".node-search .matches .search-result")
       .allInnerTexts();
