@@ -240,6 +240,22 @@ body {
     background: transparent;
     color: #39bcf3;
   }
+
+  .workspace-message {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    box-shadow: 0 5px 50px 0px #8008;
+    padding: 10px 40px 10px 20px;
+    border-radius: 5px;
+
+    .close {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+    }
+  }
 }
 
 .params-expander {

@@ -7,7 +7,7 @@
       "data": {
         "title": "Import CSV",
         "params": {
-          "filename": "examples/drug_target_data_sample.csv",
+          "filename": "uploads/drug_target_data_sample.csv",
           "separator": "<auto>",
           "columns": "<from file>"
         },
