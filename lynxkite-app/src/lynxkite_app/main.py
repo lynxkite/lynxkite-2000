@@ -11,7 +11,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 import starlette
 from lynxkite.core import ops
 from lynxkite.core import workspace
-from . import crdt, config
+from . import crdt
 
 
 def detect_plugins():
@@ -45,9 +45,12 @@ class SaveRequest(workspace.BaseConfig):
     ws: workspace.Workspace
 
 
+data_path = pathlib.Path()
+
+
 def save(req: SaveRequest):
-    path = config.DATA_PATH / req.path
-    assert path.is_relative_to(config.DATA_PATH)
+    path = data_path / req.path
+    assert path.is_relative_to(data_path)
     workspace.save(req.ws, path)
 
 
@@ -61,18 +64,17 @@ async def save_and_execute(req: SaveRequest):
 
 @app.post("/api/delete")
 async def delete_workspace(req: dict):
-    json_path: pathlib.Path = config.DATA_PATH / req["path"]
-    crdt_path: pathlib.Path = config.CRDT_PATH / f"{req['path']}.crdt"
-    assert json_path.is_relative_to(config.DATA_PATH)
-    assert crdt_path.is_relative_to(config.CRDT_PATH)
+    json_path: pathlib.Path = data_path / req["path"]
+    crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
+    assert json_path.is_relative_to(data_path)
     json_path.unlink()
     crdt_path.unlink()
 
 
 @app.get("/api/load")
 def load(path: str):
-    path = config.DATA_PATH / path
-    assert path.is_relative_to(config.DATA_PATH)
+    path = data_path / path
+    assert path.is_relative_to(data_path)
     if not path.exists():
         return workspace.Workspace()
     return workspace.load(path)
@@ -85,15 +87,16 @@ class DirectoryEntry(pydantic.BaseModel):
 
 @app.get("/api/dir/list")
 def list_dir(path: str):
-    path = config.DATA_PATH / path
-    assert path.is_relative_to(config.DATA_PATH)
+    path = data_path / path
+    assert path.is_relative_to(data_path)
     return sorted(
         [
             DirectoryEntry(
-                name=str(p.relative_to(config.DATA_PATH)),
+                name=str(p.relative_to(data_path)),
                 type="directory" if p.is_dir() else "workspace",
             )
             for p in path.iterdir()
+            if not p.name.startswith(".")
         ],
         key=lambda x: x.name,
     )
@@ -101,16 +104,16 @@ def list_dir(path: str):
 
 @app.post("/api/dir/mkdir")
 def make_dir(req: dict):
-    path = config.DATA_PATH / req["path"]
-    assert path.is_relative_to(config.DATA_PATH)
+    path = data_path / req["path"]
+    assert path.is_relative_to(data_path)
     assert not path.exists(), f"{path} already exists"
     path.mkdir()
 
 
 @app.post("/api/dir/delete")
 def delete_dir(req: dict):
-    path: pathlib.Path = config.DATA_PATH / req["path"]
-    assert all([path.is_relative_to(config.DATA_PATH), path.exists(), path.is_dir()])
+    path: pathlib.Path = data_path / req["path"]
+    assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()])
     shutil.rmtree(path)
 
 
@@ -133,8 +136,8 @@ async def upload(req: fastapi.Request):
     """Receives file uploads and stores them in DATA_PATH."""
     form = await req.form()
     for file in form.values():
-        file_path = config.DATA_PATH / file.filename
-        assert file_path.is_relative_to(config.DATA_PATH), "Invalid file path"
+        file_path = data_path / "uploads" / file.filename
+        assert file_path.is_relative_to(data_path), "Invalid file path"
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     return {"status": "ok"}
