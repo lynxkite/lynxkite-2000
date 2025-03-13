@@ -1,7 +1,7 @@
+import pathlib
 import uuid
 from fastapi.testclient import TestClient
 from lynxkite_app.main import app, detect_plugins
-from lynxkite_app.config import DATA_PATH
 import os
 
 
@@ -56,10 +56,9 @@ def test_save_and_load():
 
 
 def test_list_dir():
-    test_dir = str(uuid.uuid4())
-    test_dir_full_path = DATA_PATH / test_dir
-    test_dir_full_path.mkdir(parents=True, exist_ok=True)
-    test_file = test_dir_full_path / "test_file.txt"
+    test_dir = pathlib.Path() / str(uuid.uuid4())
+    test_dir.mkdir(parents=True, exist_ok=True)
+    test_file = test_dir / "test_file.txt"
     test_file.touch()
     response = client.get(f"/api/dir/list?path={str(test_dir)}")
     assert response.status_code == 200
@@ -67,12 +66,12 @@ def test_list_dir():
     assert response.json()[0]["name"] == f"{test_dir}/test_file.txt"
     assert response.json()[0]["type"] == "workspace"
     test_file.unlink()
-    test_dir_full_path.rmdir()
+    test_dir.rmdir()
 
 
 def test_make_dir():
     dir_name = str(uuid.uuid4())
     response = client.post("/api/dir/mkdir", json={"path": dir_name})
     assert response.status_code == 200
-    assert os.path.exists(DATA_PATH / dir_name)
-    os.rmdir(DATA_PATH / dir_name)
+    assert os.path.exists(dir_name)
+    os.rmdir(dir_name)

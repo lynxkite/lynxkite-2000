@@ -59,10 +59,8 @@ export class Workspace {
       // Avoid overlapping with existing nodes
       const numNodes = allBoxes.length || 1;
       await this.page.mouse.wheel(0, numNodes * 400);
-      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
-    // Some x,y offset, otherwise the box handle may fall outside the viewport.
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
     await this.page
@@ -73,10 +71,11 @@ export class Workspace {
   }
 
   async getCatalog() {
-    await this.page.locator(".react-flow__pane").click();
-    const catalog = await this.page
-      .locator(".node-search .matches .search-result")
-      .allInnerTexts();
+    await this.page.locator(".ws-name").click();
+    await this.page.keyboard.press("/");
+    const results = this.page.locator(".node-search .matches .search-result");
+    await expect(results.first()).toBeVisible();
+    const catalog = await results.allInnerTexts();
     // Dismiss the catalog menu
     await this.page.keyboard.press("Escape");
     await expect(this.page.locator(".node-search")).not.toBeVisible();
@@ -153,11 +152,6 @@ export class Workspace {
   }
 
   async expectErrorFree(executionWaitTime?) {
-    // TODO: Workaround, to account for workspace execution. Once
-    // we have a load indicator we can use that instead.
-    await new Promise((resolve) =>
-      setTimeout(resolve, executionWaitTime ? executionWaitTime : 500),
-    );
     await expect(this.getBoxes().locator(".error").first()).not.toBeVisible();
   }
 
@@ -188,7 +182,7 @@ export class Splash {
   }
 
   workspace(name: string) {
-    return this.page.getByRole("link", { name: name });
+    return this.page.getByRole("link", { name: name, exact: true });
   }
 
   getEntry(name: string) {
