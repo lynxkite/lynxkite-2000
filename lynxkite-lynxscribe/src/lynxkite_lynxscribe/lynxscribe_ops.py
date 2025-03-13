@@ -2,7 +2,6 @@
 LynxScribe configuration and testing in LynxKite.
 """
 
-import os
 import pathlib
 from lynxscribe.core.llm.base import get_llm_engine
 from lynxscribe.core.vector_store.base import get_vector_store
@@ -222,11 +221,12 @@ def view(input):
     return v
 
 
-async def get_chat_api(ws):
+async def get_chat_api(ws: str):
     from lynxkite.core import workspace
 
-    path = DATA_PATH / ws
-    assert path.is_relative_to(DATA_PATH)
+    cwd = pathlib.Path()
+    path = cwd / ws
+    assert path.is_relative_to(cwd)
     assert path.exists(), f"Workspace {path} does not exist"
     ws = workspace.load(path)
     contexts = await ops.EXECUTORS[ENV](ws)
@@ -285,19 +285,16 @@ async def api_service_get(request):
     return {"error": "Not found"}
 
 
-DATA_PATH = pathlib.Path(os.environ.get("LYNXKITE_DATA", "lynxkite_data"))
-
-
 def get_lynxscribe_workspaces():
     from lynxkite.core import workspace
 
     workspaces = []
-    for p in DATA_PATH.glob("**/*"):
+    for p in pathlib.Path().glob("**/*"):
         if p.is_file():
             try:
                 ws = workspace.load(p)
                 if ws.env == ENV:
-                    workspaces.append(p.relative_to(DATA_PATH))
+                    workspaces.append(p)
             except Exception:
                 pass  # Ignore files that are not valid workspaces.
     workspaces.sort()
