@@ -243,7 +243,7 @@ function LynxKiteFlow() {
     state: { workspace: Workspace },
     nodes: Node[],
   ) {
-    const title = node.data.title;
+    const title = node.data?.title;
     let i = 1;
     node.id = `${title} ${i}`;
     const wnodes = state.workspace.nodes!;
@@ -325,6 +325,15 @@ function LynxKiteFlow() {
         y: e.clientY,
       });
       node.data!.params.file_path = file.name;
+      if (file.name.includes(".csv")) {
+        node.data!.params.file_format = "csv";
+      } else if (file.name.includes(".parquet")) {
+        node.data!.params.file_format = "parquet";
+      } else if (file.name.includes(".json")) {
+        node.data!.params.file_format = "json";
+      } else if (file.name.includes(".xls")) {
+        node.data!.params.file_format = "excel";
+      }
       addNode(node, state, nodes);
     } catch (error) {
       setMessage("File upload failed.");
