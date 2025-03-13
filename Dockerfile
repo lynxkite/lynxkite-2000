@@ -11,6 +11,6 @@ RUN uv venv && uv pip install \
   -e lynxkite-graph-analytics \
   -e lynxkite-bio \
   -e lynxkite-pillow-example
-ENV LYNXKITE_DATA=examples
+WORKDIR $HOME/app/examples
 ENV PORT=7860
 CMD ["uv", "run", "lynxkite"]

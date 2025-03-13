@@ -324,7 +324,7 @@ function LynxKiteFlow() {
         x: e.clientX,
         y: e.clientY,
       });
-      node.data!.params.file_path = file.name;
+      node.data!.params.file_path = `uploads/${file.name}`;
       if (file.name.includes(".csv")) {
         node.data!.params.file_format = "csv";
       } else if (file.name.includes(".parquet")) {
