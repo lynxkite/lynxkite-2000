@@ -14,6 +14,7 @@ import {
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
+import axios from "axios";
 import {
   type MouseEvent,
   useCallback,
@@ -62,6 +63,7 @@ function LynxKiteFlow() {
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
   const [state, setState] = useState({ workspace: {} as Workspace });
+  const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
     const state = syncedStore({ workspace: {} as Workspace });
     setState(state);
@@ -80,7 +82,9 @@ function LynxKiteFlow() {
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
         for (const n of state.workspace.nodes) {
-          n.dragHandle = ".bg-primary";
+          if (n.dragHandle !== ".bg-primary") {
+            n.dragHandle = ".bg-primary";
+          }
         }
         setNodes([...state.workspace.nodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
@@ -234,33 +238,44 @@ function LynxKiteFlow() {
     },
     [catalog, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
-  const addNode = useCallback(
+  function addNode(
+    node: Partial<WorkspaceNode>,
+    state: { workspace: Workspace },
+    nodes: Node[],
+  ) {
+    const title = node.data?.title;
+    let i = 1;
+    node.id = `${title} ${i}`;
+    const wnodes = state.workspace.nodes!;
+    while (wnodes.find((x) => x.id === node.id)) {
+      i += 1;
+      node.id = `${title} ${i}`;
+    }
+    wnodes.push(node as WorkspaceNode);
+    setNodes([...nodes, node as WorkspaceNode]);
+  }
+  function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
+    const node: Partial<WorkspaceNode> = {
+      type: meta.type,
+      data: {
+        meta: meta,
+        title: meta.name,
+        params: Object.fromEntries(
+          Object.values(meta.params).map((p) => [p.name, p.default]),
+        ),
+      },
+    };
+    return node;
+  }
+  const addNodeFromSearch = useCallback(
     (meta: OpsOp) => {
-      const node: Partial<WorkspaceNode> = {
-        type: meta.type,
-        data: {
-          meta: meta,
-          title: meta.name,
-          params: Object.fromEntries(
-            Object.values(meta.params).map((p) => [p.name, p.default]),
-          ),
-        },
-      };
+      const node = nodeFromMeta(meta);
       const nss = nodeSearchSettings!;
       node.position = reactFlow.screenToFlowPosition({
         x: nss.pos.x,
         y: nss.pos.y,
       });
-      const title = meta.name;
-      let i = 1;
-      node.id = `${title} ${i}`;
-      const wnodes = state.workspace.nodes!;
-      while (wnodes.find((x) => x.id === node.id)) {
-        i += 1;
-        node.id = `${title} ${i}`;
-      }
-      wnodes.push(node as WorkspaceNode);
-      setNodes([...nodes, node as WorkspaceNode]);
+      addNode(node, state, nodes);
       closeNodeSearch();
     },
     [nodeSearchSettings, state, reactFlow, nodes, closeNodeSearch],
@@ -282,6 +297,48 @@ function LynxKiteFlow() {
     [state],
   );
   const parentDir = path!.split("/").slice(0, -1).join("/");
+  function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  async function onDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      await axios.post("/api/upload", formData, {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (100 * progressEvent.loaded) / progressEvent.total!,
+          );
+          if (percentCompleted === 100) setMessage("Processing file...");
+          else setMessage(`Uploading ${percentCompleted}%`);
+        },
+      });
+      setMessage(null);
+      const cat = catalog.data![state.workspace.env!];
+      const node = nodeFromMeta(cat["Import file"]);
+      node.position = reactFlow.screenToFlowPosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+      node.data!.params.file_path = `uploads/${file.name}`;
+      if (file.name.includes(".csv")) {
+        node.data!.params.file_format = "csv";
+      } else if (file.name.includes(".parquet")) {
+        node.data!.params.file_format = "parquet";
+      } else if (file.name.includes(".json")) {
+        node.data!.params.file_format = "json";
+      } else if (file.name.includes(".xls")) {
+        node.data!.params.file_format = "excel";
+      }
+      addNode(node, state, nodes);
+    } catch (error) {
+      setMessage("File upload failed.");
+    }
+  }
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -308,7 +365,11 @@ function LynxKiteFlow() {
           </a>
         </div>
       </div>
-      <div style={{ height: "100%", width: "100vw" }}>
+      <div
+        style={{ height: "100%", width: "100vw" }}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+      >
         <LynxKiteState.Provider value={state}>
           <ReactFlow
             nodes={nodes}
@@ -320,7 +381,7 @@ function LynxKiteFlow() {
             onPaneClick={toggleNodeSearch}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
-            maxZoom={3}
+            maxZoom={1}
             minZoom={0.3}
             defaultEdgeOptions={{
               markerEnd: {
@@ -342,11 +403,19 @@ function LynxKiteFlow() {
                 pos={nodeSearchSettings.pos}
                 boxes={nodeSearchSettings.boxes}
                 onCancel={closeNodeSearch}
-                onAdd={addNode}
+                onAdd={addNodeFromSearch}
               />
             )}
           </ReactFlow>
         </LynxKiteState.Provider>
+        {message && (
+          <div className="workspace-message">
+            <span className="close" onClick={() => setMessage(null)}>
+              <Close />
+            </span>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );

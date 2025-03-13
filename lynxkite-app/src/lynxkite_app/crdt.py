@@ -3,6 +3,7 @@
 import asyncio
 import contextlib
 import enum
+import pathlib
 import fastapi
 import os.path
 import pycrdt
@@ -11,7 +12,6 @@ import pycrdt_websocket.ystore
 import uvicorn
 import builtins
 from lynxkite.core import workspace, ops
-from . import config
 
 router = fastapi.APIRouter()
 
@@ -32,8 +32,9 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
 
         The workspace is loaded from "crdt_data" if it exists there, or from "data", or a new workspace is created.
         """
-        path = config.CRDT_PATH / f"{name}.crdt"
-        assert path.is_relative_to(config.CRDT_PATH)
+        crdt_path = pathlib.Path(".crdt")
+        path = crdt_path / f"{name}.crdt"
+        assert path.is_relative_to(crdt_path)
         ystore = pycrdt_websocket.ystore.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
@@ -165,9 +166,8 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
         ws: CRDT object to udpate with the workspace contents.
         name: Name of the workspace to load.
     """
-    json_path = f"{config.DATA_PATH}/{name}"
-    if os.path.exists(json_path):
-        ws_pyd = workspace.load(json_path)
+    if os.path.exists(name):
+        ws_pyd = workspace.load(name)
         # We treat the display field as a black box, since it is a large
         # dictionary that is meant to change as a whole.
         crdt_update(ws, ws_pyd.model_dump(), non_collaborative_fields={"display"})
@@ -225,8 +225,9 @@ async def execute(
         except asyncio.CancelledError:
             return
     print(f"Running {name} in {ws_pyd.env}...")
-    path = config.DATA_PATH / name
-    assert path.is_relative_to(config.DATA_PATH), "Provided workspace path is invalid"
+    cwd = pathlib.Path()
+    path = cwd / name
+    assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
     ws_pyd._crdt = ws_crdt
