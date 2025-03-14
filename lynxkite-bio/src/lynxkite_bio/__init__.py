@@ -10,7 +10,7 @@ import rdkit.Chem.rdFingerprintGenerator
 import rdkit.Chem.Fingerprints.ClusterMols
 import scipy
 
-mem = joblib.Memory("../joblib-cache")
+mem = joblib.Memory("joblib-cache")
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
 

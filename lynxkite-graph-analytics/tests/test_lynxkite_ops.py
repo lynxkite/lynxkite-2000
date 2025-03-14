@@ -77,19 +77,87 @@ async def test_execute_operation_inputs_correct_cast():
     )
     ws.edges = [
         workspace.WorkspaceEdge(
-            id="1", source="1", target="2", sourceHandle="1", targetHandle="2"
+            id="1", source="1", target="2", sourceHandle="output", targetHandle="graph"
         ),
         workspace.WorkspaceEdge(
-            id="2", source="2", target="3", sourceHandle="2", targetHandle="3"
+            id="2", source="2", target="3", sourceHandle="output", targetHandle="bundle"
         ),
         workspace.WorkspaceEdge(
-            id="3", source="3", target="4", sourceHandle="3", targetHandle="4"
+            id="3", source="3", target="4", sourceHandle="output", targetHandle="bundle"
         ),
     ]
 
     await execute(ws)
 
     assert all([node.data.error is None for node in ws.nodes])
+
+
+async def test_multiple_inputs():
+    """Make sure each input goes to the right argument."""
+    op = ops.op_registration("test")
+
+    @op("One")
+    def one():
+        return 1
+
+    @op("Two")
+    def two():
+        return 2
+
+    @op("Smaller?", view="visualization")
+    def is_smaller(a, b):
+        return a < b
+
+    ws = workspace.Workspace(env="test")
+    ws.nodes.append(
+        workspace.WorkspaceNode(
+            id="one",
+            type="cool",
+            data=workspace.WorkspaceNodeData(title="One", params={}),
+            position=workspace.Position(x=0, y=0),
+        )
+    )
+    ws.nodes.append(
+        workspace.WorkspaceNode(
+            id="two",
+            type="cool",
+            data=workspace.WorkspaceNodeData(title="Two", params={}),
+            position=workspace.Position(x=100, y=0),
+        )
+    )
+    ws.nodes.append(
+        workspace.WorkspaceNode(
+            id="smaller",
+            type="cool",
+            data=workspace.WorkspaceNodeData(title="Smaller?", params={}),
+            position=workspace.Position(x=200, y=0),
+        )
+    )
+    ws.edges = [
+        workspace.WorkspaceEdge(
+            id="one",
+            source="one",
+            target="smaller",
+            sourceHandle="output",
+            targetHandle="a",
+        ),
+        workspace.WorkspaceEdge(
+            id="two",
+            source="two",
+            target="smaller",
+            sourceHandle="output",
+            targetHandle="b",
+        ),
+    ]
+
+    await execute(ws)
+
+    assert ws.nodes[-1].data.display is True
+    # Flip the inputs.
+    ws.edges[0].targetHandle = "b"
+    ws.edges[1].targetHandle = "a"
+    await execute(ws)
+    assert ws.nodes[-1].data.display is False
 
 
 if __name__ == "__main__":

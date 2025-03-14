@@ -13,7 +13,7 @@ To run the backend:
 
 ```bash
 uv pip install -e .
-LYNXKITE_DATA=../examples LYNXKITE_RELOAD=1 lynxkite
+cd ../examples && LYNXKITE_RELOAD=1 lynxkite
 ```
 
 To run the frontend:

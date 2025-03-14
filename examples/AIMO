@@ -786,7 +786,7 @@
       "data": {
         "title": "Input CSV",
         "params": {
-          "filename": "data/aimo-examples.csv",
+          "filename": "uploads/aimo-examples.csv",
           "key": "problem"
         },
         "display": null,

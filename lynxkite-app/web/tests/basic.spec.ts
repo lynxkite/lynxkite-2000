@@ -21,9 +21,6 @@ test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
   for (const env of envs) {
     await workspace.setEnv(env);
-    // TODO: Opening the catalog immediately after setting the env can fail.
-    // Let's fix this!
-    await new Promise((resolve) => setTimeout(resolve, 500));
     const catalog = await workspace.getCatalog();
     expect(catalog).not.toHaveLength(0);
     const op = catalog[0];
@@ -35,9 +32,9 @@ test("Box creation & deletion per env", async () => {
 });
 
 test("Delete multi-handle boxes", async () => {
-  await workspace.addBox("Compute PageRank");
-  await workspace.deleteBoxes(["Compute PageRank 1"]);
-  await expect(workspace.getBox("Compute PageRank 1")).not.toBeVisible();
+  await workspace.addBox("NX › PageRank");
+  await workspace.deleteBoxes(["NX › PageRank 1"]);
+  await expect(workspace.getBox("NX › PageRank 1")).not.toBeVisible();
 });
 
 test("Drag box", async () => {

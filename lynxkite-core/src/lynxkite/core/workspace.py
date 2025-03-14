@@ -92,6 +92,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
+    _crdt: pycrdt.Map
 
 
 async def execute(ws: Workspace):
@@ -104,7 +105,8 @@ def save(ws: Workspace, path: str):
     j = ws.model_dump()
     j = json.dumps(j, indent=2, sort_keys=True) + "\n"
     dirname, basename = os.path.split(path)
-    os.makedirs(dirname, exist_ok=True)
+    if dirname:
+        os.makedirs(dirname, exist_ok=True)
     # Create temp file in the same directory to make sure it's on the same filesystem.
     with tempfile.NamedTemporaryFile(
         "w", prefix=f".{basename}.", dir=dirname, delete=False
