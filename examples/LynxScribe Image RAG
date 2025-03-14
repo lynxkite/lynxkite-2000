@@ -20,6 +20,20 @@
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Builder 1",
       "targetHandle": "image_urls"
+    },
+    {
+      "id": "LynxScribe Image RAG Builder 1 LynxScribe Image RAG Query 1",
+      "source": "LynxScribe Image RAG Builder 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image RAG Query 1",
+      "targetHandle": "rag_graph"
+    },
+    {
+      "id": "Input chat 1 LynxScribe Image RAG Query 1",
+      "source": "Input chat 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image RAG Query 1",
+      "targetHandle": "text"
     }
   ],
   "env": "LynxScribe",
@@ -95,6 +109,8 @@
     },
     {
       "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
         "meta": {
@@ -280,9 +296,7 @@
           },
           "type": "basic"
         },
-        "params": {
-          "image_rag_out_path": "image_test_rag_graph.pickle"
-        },
+        "params": {},
         "status": "done",
         "title": "LynxScribe Image RAG Builder"
       },
@@ -295,6 +309,117 @@
       },
       "type": "basic",
       "width": 479.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input chat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "chat": {
+              "default": null,
+              "name": "chat",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1336.0,
+            "y": 378.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "chat": "Show me two cyclists!"
+        },
+        "status": "done",
+        "title": "Input chat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 214.0,
+      "id": "Input chat 1",
+      "position": {
+        "x": -310.1420152146455,
+        "y": -139.39548490290966
+      },
+      "type": "basic",
+      "width": 387.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "rag_graph": {
+              "name": "rag_graph",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "text": {
+              "name": "text",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Image RAG Query",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "top_k": {
+              "default": 3.0,
+              "name": "top_k",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1419.0,
+            "y": 371.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "top_k": 3.0
+        },
+        "status": "done",
+        "title": "LynxScribe Image RAG Query"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "LynxScribe Image RAG Query 1",
+      "position": {
+        "x": 908.9211080204011,
+        "y": -132.3031800030364
+      },
+      "type": "basic",
+      "width": 200.0
     }
   ]
 }

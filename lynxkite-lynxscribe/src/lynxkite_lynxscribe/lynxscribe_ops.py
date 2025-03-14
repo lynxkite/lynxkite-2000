@@ -6,6 +6,7 @@ from google.cloud import storage
 from copy import deepcopy
 import asyncio
 import pandas as pd
+import os
 
 from lynxscribe.core.llm.base import get_llm_engine
 from lynxscribe.core.vector_store.base import get_vector_store
@@ -27,6 +28,11 @@ from lynxscribe.core.models.prompts import ChatCompletionPrompt
 from lynxkite.core import ops
 import json
 from lynxkite.core.executors import one_by_one
+
+# logger
+# import logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
 ENV = "LynxScribe"
 one_by_one.register(ENV)
@@ -64,13 +70,17 @@ def ls_rag_graph(
     collection_name: str = "lynx",
     text_embedder_interface: str = "openai",
     text_embedder_model_name_or_path: str = "text-embedding-3-large",
+    api_key_name: str = "OPENAI_API_KEY",
 ):
     """
     Returns with a vector store instance.
     """
 
     # getting the text embedder instance
-    llm = get_llm_engine(name=text_embedder_interface)
+    llm_params = {"name": text_embedder_interface}
+    if api_key_name:
+        llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
     text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
 
     # getting the vector store
@@ -95,15 +105,20 @@ def ls_image_describer(
     *,
     llm_interface: str = "openai",
     llm_visual_model: str = "gpt-4o",
-    llm_prompt_path: str = "/Users/mszel/git/lynxscribe-demos/component_tutorials/04_image_search/image_description_prompts.yaml",
+    llm_prompt_path: str = "lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
     llm_prompt_name: str = "cot_picture_descriptor",
+    api_key_name: str = "OPENAI_API_KEY",
 ):
     """
     Returns with an image describer instance.
     TODO: adding a relative path to the prompt path + adding model kwargs
     """
 
-    llm = get_llm_engine(name=llm_interface)
+    llm_params = {"name": llm_interface}
+    if api_key_name:
+        llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
+
     prompt_base = load_config(llm_prompt_path)[llm_prompt_name]
 
     return {
@@ -135,7 +150,7 @@ async def ls_image_rag_builder(
 
     # handling inputs
     image_describer = image_describer[0]["image_describer"]
-    image_urls = image_urls[0]["image_urls"]
+    image_urls = image_urls["image_urls"]
     rag_graph = rag_graph[0]["rag_graph"]
 
     # generate prompts from inputs
@@ -215,10 +230,47 @@ async def ls_image_rag_builder(
     # adding the embeddings to the RAG graph
     rag_graph.kg_base.vector_store.upsert(embedding_list)
 
-    # saving the RAG graph
-    rag_graph.kg_base.save(image_rag_out_path)
+    # # saving the RAG graph
+    # rag_graph.kg_base.save(image_rag_out_path)
 
-    return {"image_rag_path": image_rag_out_path}  # TODO: do we need an output?
+    return {"knowledge_base": rag_graph}
+
+
+@op("LynxScribe RAG Graph Saver")
+def ls_save_rag_graph(
+    knowledge_base,
+    *,
+    image_rag_out_path: str = "image_test_rag_graph.pickle",
+):
+    """
+    Saves the RAG graph to a pickle file.
+    """
+
+    knowledge_base.kg_base.save(image_rag_out_path)
+    return None
+
+
+@ops.input_position(rag_graph="bottom")
+@op("LynxScribe Image RAG Query")
+async def search_context(rag_graph, text, *, top_k=3):
+    # get all similarities
+    emb_similarities = await rag_graph.search_context(
+        text, max_results=top_k, unique_metadata_key="image_url"
+    )
+
+    # get the image urls, scores and descriptions
+    result_list = []
+
+    for emb_sim in emb_similarities:
+        image_url = emb_sim.embedding.metadata["image_url"]
+        score = emb_sim.score
+        description = emb_sim.embedding.document
+        result_list.append(
+            {"image_url": image_url, "score": score, "description": description}
+        )
+
+    print(result_list)
+    return {"embedding_similarities": result_list}
 
 
 @output_on_top
