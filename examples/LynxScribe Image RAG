@@ -77,7 +77,7 @@
         "params": {
           "llm_interface": "openai",
           "llm_prompt_name": "cot_picture_descriptor",
-          "llm_prompt_path": "/Users/mszel/git/lynxscribe-demos/component_tutorials/04_image_search/image_description_prompts.yaml",
+          "llm_prompt_path": "lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
           "llm_visual_model": "gpt-4o"
         },
         "status": "done",
