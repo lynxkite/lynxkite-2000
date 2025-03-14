@@ -66,7 +66,7 @@ def gcp_image_loader(
 
 @output_on_top
 @op("LynxScribe RAG Vector Store")
-# @mem.cache
+@mem.cache
 def ls_rag_graph(
     *,
     name: str = "faiss",
@@ -74,7 +74,7 @@ def ls_rag_graph(
     collection_name: str = "lynx",
     text_embedder_interface: str = "openai",
     text_embedder_model_name_or_path: str = "text-embedding-3-large",
-    api_key_name: str = "OPENAI_API_KEY",
+    # api_key_name: str = "OPENAI_API_KEY",
 ):
     """
     Returns with a vector store instance.
@@ -82,8 +82,8 @@ def ls_rag_graph(
 
     # getting the text embedder instance
     llm_params = {"name": text_embedder_interface}
-    if api_key_name:
-        llm_params["api_key"] = os.getenv(api_key_name)
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
     llm = get_llm_engine(**llm_params)
     text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
 
@@ -105,14 +105,14 @@ def ls_rag_graph(
 
 @output_on_top
 @op("LynxScribe Image Describer")
-# @mem.cache
+@mem.cache
 def ls_image_describer(
     *,
     llm_interface: str = "openai",
     llm_visual_model: str = "gpt-4o",
-    llm_prompt_path: str = "lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
+    llm_prompt_path: str = "../lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
     llm_prompt_name: str = "cot_picture_descriptor",
-    api_key_name: str = "OPENAI_API_KEY",
+    # api_key_name: str = "OPENAI_API_KEY",
 ):
     """
     Returns with an image describer instance.
@@ -120,8 +120,8 @@ def ls_image_describer(
     """
 
     llm_params = {"name": llm_interface}
-    if api_key_name:
-        llm_params["api_key"] = os.getenv(api_key_name)
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
     llm = get_llm_engine(**llm_params)
 
     prompt_base = load_config(llm_prompt_path)[llm_prompt_name]
@@ -137,7 +137,7 @@ def ls_image_describer(
 
 @ops.input_position(image_describer="bottom", rag_graph="bottom")
 @op("LynxScribe Image RAG Builder")
-# @mem.cache
+@mem.cache
 async def ls_image_rag_builder(
     image_urls,
     image_describer,
