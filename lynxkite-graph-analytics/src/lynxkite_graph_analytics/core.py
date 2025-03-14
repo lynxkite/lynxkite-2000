@@ -1,6 +1,7 @@
 """Graph analytics executor and data types."""
 
-from lynxkite.core import ops
+import os
+from lynxkite.core import ops, workspace
 import dataclasses
 import functools
 import networkx as nx
@@ -134,54 +135,73 @@ def nx_node_attribute_func(name):
     return decorator
 
 
-def disambiguate_edges(ws):
+def disambiguate_edges(ws: workspace.Workspace):
     """If an input plug is connected to multiple edges, keep only the last edge."""
     seen = set()
     for edge in reversed(ws.edges):
         if (edge.target, edge.targetHandle) in seen:
-            ws.edges.remove(edge)
+            i = ws.edges.index(edge)
+            del ws.edges[i]
+            if hasattr(ws, "_crdt"):
+                del ws._crdt["edges"][i]
         seen.add((edge.target, edge.targetHandle))
 
 
 @ops.register_executor(ENV)
-async def execute(ws):
+async def execute(ws: workspace.Workspace):
     catalog: dict[str, ops.Op] = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
     outputs = {}
-    failed = 0
-    while len(outputs) + failed < len(ws.nodes):
-        for node in ws.nodes:
-            if node.id in outputs:
-                continue
-            # TODO: Take the input/output handles into account.
-            inputs = [edge.source for edge in ws.edges if edge.target == node.id]
-            if all(input in outputs for input in inputs):
+    nodes = {node.id: node for node in ws.nodes}
+    todo = set(nodes.keys())
+    progress = True
+    while progress:
+        progress = False
+        for id in list(todo):
+            node = nodes[id]
+            input_nodes = [edge.source for edge in ws.edges if edge.target == id]
+            if all(input in outputs for input in input_nodes):
                 # All inputs for this node are ready, we can compute the output.
-                inputs = [outputs[input] for input in inputs]
-                params = {**node.data.params}
-                op = catalog.get(node.data.title)
-                if not op:
-                    node.publish_error("Operation not found in catalog")
-                    failed += 1
-                    continue
-                node.publish_started()
-                try:
-                    # Convert inputs types  to match operation signature.
-                    for i, (x, p) in enumerate(zip(inputs, op.inputs.values())):
-                        if p.type == nx.Graph and isinstance(x, Bundle):
-                            inputs[i] = x.to_nx()
-                        elif p.type == Bundle and isinstance(x, nx.Graph):
-                            inputs[i] = Bundle.from_nx(x)
-                        elif p.type == Bundle and isinstance(x, pd.DataFrame):
-                            inputs[i] = Bundle.from_df(x)
-                    result = op(*inputs, **params)
-                except Exception as e:
-                    traceback.print_exc()
-                    node.publish_error(e)
-                    failed += 1
-                    continue
-                outputs[node.id] = result.output
-                node.publish_result(result)
+                todo.remove(id)
+                progress = True
+                _execute_node(node, ws, catalog, outputs)
+
+
+def _execute_node(node, ws, catalog, outputs):
+    params = {**node.data.params}
+    op = catalog.get(node.data.title)
+    if not op:
+        node.publish_error("Operation not found in catalog")
+        return
+    node.publish_started()
+    input_map = {
+        edge.targetHandle: outputs[edge.source]
+        for edge in ws.edges
+        if edge.target == node.id
+    }
+    try:
+        # Convert inputs types to match operation signature.
+        inputs = []
+        for p in op.inputs.values():
+            if p.name not in input_map:
+                node.publish_error(f"Missing input: {p.name}")
+                return
+            x = input_map[p.name]
+            if p.type == nx.Graph and isinstance(x, Bundle):
+                x = x.to_nx()
+            elif p.type == Bundle and isinstance(x, nx.Graph):
+                x = Bundle.from_nx(x)
+            elif p.type == Bundle and isinstance(x, pd.DataFrame):
+                x = Bundle.from_df(x)
+            inputs.append(x)
+        result = op(*inputs, **params)
+    except Exception as e:
+        if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
+            traceback.print_exc()
+        node.publish_error(e)
+        return
+    outputs[node.id] = result.output
+    node.publish_result(result)
 
 
 def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:

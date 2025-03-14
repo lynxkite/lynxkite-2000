@@ -40,7 +40,7 @@ from bionemo.scdl.io.single_cell_collection import SingleCellCollection
 import scanpy
 
 
-mem = joblib.Memory("../joblib-cache")
+mem = joblib.Memory("joblib-cache")
 op = ops.op_registration(core.ENV)
 DATA_PATH = Path("/workspace")
 

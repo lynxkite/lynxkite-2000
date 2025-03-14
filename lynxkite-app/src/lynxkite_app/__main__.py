@@ -12,6 +12,7 @@ def main():
         port=port,
         reload=reload,
         loop="asyncio",
+        proxy_headers=True,
     )
 
 

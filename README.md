@@ -1,3 +1,12 @@
+---
+title: LynxKite 2000:MM
+emoji: 🪁
+colorFrom: purple
+colorTo: gray
+sdk: docker
+app_port: 7860
+---
+
 # LynxKite 2024
 
 This is an experimental rewrite of [LynxKite](https://github.com/lynxkite/lynxkite). It is not compatible with the
@@ -32,7 +41,7 @@ uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-an
 This also builds the frontend, hopefully very quickly. To run it:
 
 ```bash
-LYNXKITE_DATA=examples LYNXKITE_RELOAD=1 lynxkite
+cd examples && LYNXKITE_RELOAD=1 lynxkite
 ```
 
 If you also want to make changes to the frontend with hot reloading:

@@ -15,3 +15,7 @@ RUN uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-grap
 
 # bionemo cellxgene_census needs this version of numpy
 RUN uv pip install numpy==1.26.4
+
+ENV LYNXKITE_DATA=examples
+
+CMD ["lynxkite"]

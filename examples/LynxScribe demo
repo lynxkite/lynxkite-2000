@@ -138,7 +138,7 @@
       "data": {
         "title": "Scenario selector",
         "params": {
-          "scenario_file": "/home/darabos/nvme/lynxscribe/examples/chat_api/scenarios.yaml",
+          "scenario_file": "uploads/chat_api/scenarios.yaml",
           "node_types": "intent_cluster"
         },
         "display": null,
@@ -252,9 +252,9 @@
       "data": {
         "title": "Knowledge base",
         "params": {
-          "template_cluster_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/tempclusters.pickle",
-          "edges_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/edges.pickle",
-          "nodes_path": "/home/darabos/nvme/lynxscribe/examples/chat_api/data/lynx/nodes.pickle"
+          "template_cluster_path": "uploads/chat_api/data/lynx/tempclusters.pickle",
+          "edges_path": "uploads/chat_api/data/lynx/edges.pickle",
+          "nodes_path": "uploads/chat_api/data/lynx/nodes.pickle"
         },
         "display": null,
         "error": null,

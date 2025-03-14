@@ -1,6 +1,6 @@
 import { useState } from "react";
 // The directory browser.
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import useSWR from "swr";
 import type { DirectoryEntry } from "./apiTypes.ts";
 
@@ -23,7 +23,9 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function () {
   const { path } = useParams();
   const encodedPath = encodeURIComponent(path || "");
-  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher);
+  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
+    dedupingInterval: 0,
+  });
   const navigate = useNavigate();
   const [isCreatingDir, setIsCreatingDir] = useState(false);
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
@@ -173,19 +175,19 @@ export default function () {
 
             {path && (
               <div className="breadcrumbs">
-                <a href="/dir/">
+                <Link to="/dir/">
                   <Home />
-                </a>{" "}
+                </Link>{" "}
                 <span className="current-folder">{path}</span>
               </div>
             )}
 
             {list.data.map((item: DirectoryEntry) => (
               <div key={item.name} className="entry">
-                <a key={link(item)} href={link(item)}>
+                <Link key={link(item)} to={link(item)}>
                   {item.type === "directory" ? <Folder /> : <File />}
                   {shortName(item)}
-                </a>
+                </Link>
                 <button
                   type="button"
                   onClick={() => {

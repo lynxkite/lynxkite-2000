@@ -17,28 +17,21 @@ test("Pytorch example", async ({ page }) => {
   await ws.expectErrorFree();
 });
 
-test.fail("AIMO example", async ({ page }) => {
-  // Fails because of missing OPENAI_API_KEY
+test("AIMO example", async ({ page }) => {
   const ws = await Workspace.open(page, "AIMO");
   await ws.expectErrorFree();
 });
 
-test.fail("LynxScribe example", async ({ page }) => {
+test("LynxScribe example", async ({ page }) => {
   // Fails because of missing OPENAI_API_KEY
   const ws = await Workspace.open(page, "LynxScribe demo");
   await ws.expectErrorFree();
 });
 
-test.fail("Graph RAG", async ({ page }) => {
+test("Graph RAG", async ({ page }) => {
   // Fails due to some issue with ChromaDB
   const ws = await Workspace.open(page, "Graph RAG");
   await ws.expectErrorFree(process.env.CI ? 2000 : 500);
-});
-
-test.fail("RAG chatbot app", async ({ page }) => {
-  // Fail due to all operation being unknown
-  const ws = await Workspace.open(page, "RAG chatbot app");
-  await ws.expectErrorFree();
 });
 
 test("Airlines demo", async ({ page }) => {

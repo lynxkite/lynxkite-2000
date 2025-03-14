@@ -28,12 +28,11 @@ To build the image:
 ```bash
 # in lynxkite-graph-analytics folder
 $ docker build -f Dockerfile.bionemo -t lynxkite-bionemo ..
+$ docker run --name bionemo -d -p8000:8000 --gpus=all lynxkite-bionemo
 ```
 
 Take into account that this Dockerfile does not include the lynxkite-lynxscribe package. If you want to include it you will
 need to set up git credentials inside the container.
-
-Then, inside the image you can start LynxKite as usual.
 
 If you want to do some development, then it is recommend to use the [devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
 vscode extension. The following is a basic configuration to get started:

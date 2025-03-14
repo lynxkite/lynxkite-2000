@@ -9,9 +9,13 @@ test.beforeEach(async ({ browser }) => {
     await browser.newPage(),
     "graph_creation_spec_test",
   );
-  await workspace.addBox("Create scale-free graph");
+  await workspace.addBox("NX › Scale-Free Graph");
+  await workspace
+    .getBox("NX › Scale-Free Graph 1")
+    .getByLabel("n", { exact: true })
+    .fill("10");
   await workspace.addBox("Create graph");
-  await workspace.connectBoxes("Create scale-free graph 1", "Create graph 1");
+  await workspace.connectBoxes("NX › Scale-Free Graph 1", "Create graph 1");
 });
 
 test.afterEach(async () => {
