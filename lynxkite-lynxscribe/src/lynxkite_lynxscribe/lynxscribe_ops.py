@@ -2,10 +2,17 @@
 LynxScribe configuration and testing in LynxKite.
 """
 
+from google.cloud import storage
+from copy import deepcopy
+import asyncio
+import pandas as pd
+
 from lynxscribe.core.llm.base import get_llm_engine
 from lynxscribe.core.vector_store.base import get_vector_store
 from lynxscribe.common.config import load_config
 from lynxscribe.components.text.embedder import TextEmbedder
+from lynxscribe.core.models.embedding import Embedding
+
 from lynxscribe.components.rag.rag_graph import RAGGraph
 from lynxscribe.components.rag.knowledge_base_graph import PandasKnowledgeBaseGraph
 from lynxscribe.components.rag.rag_chatbot import Scenario, ScenarioSelector, RAGChatbot
@@ -25,6 +32,193 @@ ENV = "LynxScribe"
 one_by_one.register(ENV)
 op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
+
+
+@op("GCP Image Loader")
+def gcp_image_loader(
+    *,
+    gcp_bucket: str = "lynxkite_public_data",
+    prefix: str = "lynxscribe-images/image-rag-test",
+):
+    """
+    Gives back the list of URLs of all the images in the GCP storage.
+    """
+
+    client = storage.Client()
+    bucket = client.bucket(gcp_bucket)
+    blobs = bucket.list_blobs(prefix=prefix)
+    image_urls = [
+        blob.public_url
+        for blob in blobs
+        if blob.name.endswith((".jpg", ".jpeg", ".png"))
+    ]
+    return {"image_urls": image_urls}
+
+
+@output_on_top
+@op("LynxScribe RAG Vector Store")
+def ls_rag_graph(
+    *,
+    name: str = "faiss",
+    num_dimensions: int = 3072,
+    collection_name: str = "lynx",
+    text_embedder_interface: str = "openai",
+    text_embedder_model_name_or_path: str = "text-embedding-3-large",
+):
+    """
+    Returns with a vector store instance.
+    """
+
+    # getting the text embedder instance
+    llm = get_llm_engine(name=text_embedder_interface)
+    text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
+
+    # getting the vector store
+    if name == "chromadb":
+        vector_store = get_vector_store(name=name, collection_name=collection_name)
+    elif name == "faiss":
+        vector_store = get_vector_store(name=name, num_dimensions=num_dimensions)
+    else:
+        raise ValueError(f"Vector store name '{name}' is not supported.")
+
+    # building up the RAG graph
+    rag_graph = RAGGraph(
+        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+    )
+
+    return {"rag_graph": rag_graph}
+
+
+@output_on_top
+@op("LynxScribe Image Describer")
+def ls_image_describer(
+    *,
+    llm_interface: str = "openai",
+    llm_visual_model: str = "gpt-4o",
+    llm_prompt_path: str = "/Users/mszel/git/lynxscribe-demos/component_tutorials/04_image_search/image_description_prompts.yaml",
+    llm_prompt_name: str = "cot_picture_descriptor",
+):
+    """
+    Returns with an image describer instance.
+    TODO: adding a relative path to the prompt path + adding model kwargs
+    """
+
+    llm = get_llm_engine(name=llm_interface)
+    prompt_base = load_config(llm_prompt_path)[llm_prompt_name]
+
+    return {
+        "image_describer": {
+            "llm": llm,
+            "prompt_base": prompt_base,
+            "model": llm_visual_model,
+        }
+    }
+
+
+@ops.input_position(image_describer="bottom", rag_graph="bottom")
+@op("LynxScribe Image RAG Builder")
+async def ls_image_rag_builder(
+    image_urls,
+    image_describer,
+    rag_graph,
+    *,
+    image_rag_out_path: str = "image_test_rag_graph.pickle",
+):
+    """
+    Based on an input image folder (currently only supports GCP storage),
+    the function builds up an image RAG graph, where the nodes are the
+    descriptions of the images (and of all image objects).
+
+    In a later phase, synthetic questions and "named entities" will also
+    be added to the graph.
+    """
+
+    # handling inputs
+    image_describer = image_describer[0]["image_describer"]
+    image_urls = image_urls[0]["image_urls"]
+    rag_graph = rag_graph[0]["rag_graph"]
+
+    # generate prompts from inputs
+    prompt_list = []
+    for i in range(len(image_urls)):
+        image = image_urls[i]
+
+        _prompt = deepcopy(image_describer["prompt_base"])
+        for message in _prompt:
+            if isinstance(message["content"], list):
+                for _message_part in message["content"]:
+                    if "image_url" in _message_part:
+                        _message_part["image_url"] = {"url": image}
+
+        prompt_list.append(_prompt)
+    ch_prompt_list = [
+        ChatCompletionPrompt(model=image_describer["model"], messages=prompt)
+        for prompt in prompt_list
+    ]
+
+    # get the image descriptions
+    llm = image_describer["llm"]
+    tasks = [
+        llm.acreate_completion(completion_prompt=_prompt) for _prompt in ch_prompt_list
+    ]
+    out_completions = await asyncio.gather(*tasks)
+    results = [
+        dictionary_corrector(result.choices[0].message.content)
+        for result in out_completions
+    ]
+
+    # generate combination of descriptions and embed them
+    text_embedder = rag_graph.kg_base.text_embedder
+
+    dict_list_df = []
+    for _i, _result in enumerate(results):
+        url_res = image_urls[_i]
+
+        if "overall description" in _result:
+            dict_list_df.append(
+                {
+                    "image_url": url_res,
+                    "description": _result["overall description"],
+                    "source": "overall description",
+                }
+            )
+
+        if "details" in _result:
+            for dkey in _result["details"].keys():
+                text = f"The picture's description is: {_result['overall description']}\n\nThe description of the {dkey} is: {_result['details'][dkey]}"
+                dict_list_df.append(
+                    {"image_url": url_res, "description": text, "source": "details"}
+                )
+
+    pdf_descriptions = pd.DataFrame(dict_list_df)
+    pdf_descriptions["embedding_values"] = await text_embedder.acreate_embedding(
+        pdf_descriptions["description"].to_list()
+    )
+    pdf_descriptions["id"] = "im_" + pdf_descriptions.index.astype(str)
+
+    # adding the embeddings to the RAG graph with metadata
+    pdf_descriptions["embedding"] = pdf_descriptions.apply(
+        lambda row: Embedding(
+            id=row["id"],
+            value=row["embedding_values"],
+            metadata={
+                "image_url": row["image_url"],
+                "image_part": row["source"],
+                "type": "image_description",
+            },
+            document=row["description"],
+        ),
+        axis=1,
+    )
+    embedding_list = pdf_descriptions["embedding"].tolist()
+
+    # adding the embeddings to the RAG graph
+    rag_graph.kg_base.vector_store.upsert(embedding_list)
+
+    # saving the RAG graph
+    rag_graph.kg_base.save(image_rag_out_path)
+
+    return {"image_rag_path": image_rag_out_path}  # TODO: do we need an output?
 
 
 @output_on_top
@@ -301,3 +495,43 @@ def get_lynxscribe_workspaces():
                 pass  # Ignore files that are not valid workspaces.
     workspaces.sort()
     return workspaces
+
+
+def dictionary_corrector(dict_string: str, expected_keys: list | None = None) -> dict:
+    """
+    Processing LLM outputs: when the LLM returns with a dictionary (in a string format). It optionally
+    crosschecks the input with the expected keys and return a dictionary with the expected keys and their
+    values ('unknown' if not present). If there is an error during the processing, it will return with
+    a dictionary of the expected keys, all with 'error' as a value (or with an empty dictionary).
+
+    Currently the function does not delete the extra key-value pairs.
+    """
+
+    out_dict = {}
+
+    if len(dict_string) == 0:
+        return out_dict
+
+    # deleting the optional text before the first and after the last curly brackets
+    dstring_prc = dict_string
+    if dstring_prc[0] != "{":
+        dstring_prc = "{" + "{".join(dstring_prc.split("{")[1:])
+    if dstring_prc[-1] != "}":
+        dstring_prc = "}".join(dstring_prc.split("}")[:-1]) + "}"
+
+    try:
+        trf_dict = eval(dstring_prc)
+        if expected_keys:
+            for _key in expected_keys:
+                if _key in trf_dict:
+                    out_dict[_key] = trf_dict[_key]
+                else:
+                    out_dict[_key] = "unknown"
+        else:
+            out_dict = trf_dict
+    except Exception:
+        if expected_keys:
+            for _key in expected_keys:
+                out_dict[_key] = "error"
+
+    return out_dict
