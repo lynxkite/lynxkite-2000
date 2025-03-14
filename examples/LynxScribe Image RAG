@@ -154,8 +154,8 @@
       "height": 225.0,
       "id": "GCP Image Loader 1",
       "position": {
-        "x": -311.53709682624634,
-        "y": 246.80608993170358
+        "x": -316.75434318246107,
+        "y": 245.50177834264986
       },
       "type": "basic",
       "width": 282.0
@@ -361,6 +361,8 @@
     },
     {
       "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
         "meta": {
@@ -406,7 +408,7 @@
           "type": "basic"
         },
         "params": {
-          "top_k": 3.0
+          "top_k": "3"
         },
         "status": "done",
         "title": "LynxScribe Image RAG Query"
