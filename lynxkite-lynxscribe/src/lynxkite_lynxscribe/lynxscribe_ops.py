@@ -7,6 +7,7 @@ from copy import deepcopy
 import asyncio
 import pandas as pd
 import os
+import joblib
 
 from lynxscribe.core.llm.base import get_llm_engine
 from lynxscribe.core.vector_store.base import get_vector_store
@@ -36,6 +37,8 @@ from lynxkite.core.executors import one_by_one
 
 ENV = "LynxScribe"
 one_by_one.register(ENV)
+os.makedirs("../joblib-cache", exist_ok=True)
+mem = joblib.Memory("../joblib-cache")
 op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
 
@@ -49,7 +52,6 @@ def gcp_image_loader(
     """
     Gives back the list of URLs of all the images in the GCP storage.
     """
-
     client = storage.Client()
     bucket = client.bucket(gcp_bucket)
     blobs = bucket.list_blobs(prefix=prefix)
@@ -63,6 +65,7 @@ def gcp_image_loader(
 
 @output_on_top
 @op("LynxScribe RAG Vector Store")
+# @mem.cache
 def ls_rag_graph(
     *,
     name: str = "faiss",
@@ -101,6 +104,7 @@ def ls_rag_graph(
 
 @output_on_top
 @op("LynxScribe Image Describer")
+# @mem.cache
 def ls_image_describer(
     *,
     llm_interface: str = "openai",
@@ -132,6 +136,7 @@ def ls_image_describer(
 
 @ops.input_position(image_describer="bottom", rag_graph="bottom")
 @op("LynxScribe Image RAG Builder")
+# @mem.cache
 async def ls_image_rag_builder(
     image_urls,
     image_describer,
@@ -253,9 +258,12 @@ def ls_save_rag_graph(
 @ops.input_position(rag_graph="bottom")
 @op("LynxScribe Image RAG Query")
 async def search_context(rag_graph, text, *, top_k=3):
+    message = text["text"]
+    rag_graph = rag_graph[0]["knowledge_base"]
+
     # get all similarities
     emb_similarities = await rag_graph.search_context(
-        text, max_results=top_k, unique_metadata_key="image_url"
+        message, max_results=top_k, unique_metadata_key="image_url"
     )
 
     # get the image urls, scores and descriptions
@@ -271,6 +279,15 @@ async def search_context(rag_graph, text, *, top_k=3):
 
     print(result_list)
     return {"embedding_similarities": result_list}
+
+
+@op("View image", view="image")
+def view_image(embedding_similarities):
+    """
+    Plotting the selected image.
+    """
+    embedding_similarities = embedding_similarities["embedding_similarities"]
+    return embedding_similarities[0]["image_url"]
 
 
 @output_on_top
