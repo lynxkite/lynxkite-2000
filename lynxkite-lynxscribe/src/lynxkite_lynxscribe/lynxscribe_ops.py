@@ -30,6 +30,8 @@ from lynxkite.core import ops
 import json
 from lynxkite.core.executors import one_by_one
 
+DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not contain any information related to your question."
+
 # logger
 # import logging
 # logging.basicConfig(level=logging.INFO)
@@ -42,11 +44,12 @@ op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
 
 
-@op("Cloud-sourced Image Loader")
-def cloud_image_loader(
+@op("Cloud-sourced File Loader")
+def cloud_file_loader(
     *,
     cloud_provider: str = "gcp",
     folder_URL: str = "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
+    accepted_file_types: str = ".jpg, .jpeg, .png",
 ):
     """
     Gives back the list of URLs of all the images from a cloud-based folder.
@@ -54,6 +57,8 @@ def cloud_image_loader(
     """
     if folder_URL[-1].endswith("/"):
         folder_URL = folder_URL[:-1]
+
+    accepted_file_types = tuple([t.strip() for t in accepted_file_types.split(",")])
 
     if cloud_provider == "gcp":
         client = storage.Client()
@@ -66,18 +71,16 @@ def cloud_image_loader(
 
         bucket = client.bucket(bucket_name)
         blobs = bucket.list_blobs(prefix=prefix)
-        image_urls = [
-            blob.public_url
-            for blob in blobs
-            if blob.name.endswith((".jpg", ".jpeg", ".png"))
+        file_urls = [
+            blob.public_url for blob in blobs if blob.name.endswith(accepted_file_types)
         ]
-        return {"image_urls": image_urls}
+        return {"file_urls": file_urls}
     else:
         raise ValueError(f"Cloud provider '{cloud_provider}' is not supported.")
 
 
 @output_on_top
-@op("LynxScribe RAG Vector Store")
+@op("LynxScribe RAG Graph Vector Store")
 @mem.cache
 def ls_rag_graph(
     *,
@@ -151,7 +154,7 @@ def ls_image_describer(
 @op("LynxScribe Image RAG Builder")
 @mem.cache
 async def ls_image_rag_builder(
-    image_urls,
+    file_urls,
     image_describer,
     rag_graph,
 ):
@@ -166,7 +169,7 @@ async def ls_image_rag_builder(
 
     # handling inputs
     image_describer = image_describer[0]["image_describer"]
-    image_urls = image_urls["image_urls"]
+    image_urls = file_urls["file_urls"]
     rag_graph = rag_graph[0]["rag_graph"]
 
     # generate prompts from inputs
@@ -300,83 +303,207 @@ def view_image(embedding_similarities):
     return embedding_similarities[0]["image_url"]
 
 
-@output_on_top
-@op("Vector store")
-def vector_store(*, name="chromadb", collection_name="lynx"):
-    vector_store = get_vector_store(name=name, collection_name=collection_name)
-    return {"vector_store": vector_store}
+# @output_on_top
+# @op("Vector store")
+# def vector_store(*, name="chromadb", collection_name="lynx"):
+#     vector_store = get_vector_store(name=name, collection_name=collection_name)
+#     return {"vector_store": vector_store}
+
+
+# @output_on_top
+# @op("LLM")
+# def llm(*, name="openai"):
+#     llm = get_llm_engine(name=name)
+#     return {"llm": llm}
+
+
+# @output_on_top
+# @ops.input_position(llm="bottom")
+# @op("Text embedder")
+# def text_embedder(llm, *, model="text-embedding-ada-002"):
+#     llm = llm[0]["llm"]
+#     text_embedder = TextEmbedder(llm=llm, model=model)
+#     return {"text_embedder": text_embedder}
+
+
+# @output_on_top
+# @ops.input_position(vector_store="bottom", text_embedder="bottom")
+# @op("RAG graph")
+# def rag_graph(vector_store, text_embedder):
+#     vector_store = vector_store[0]["vector_store"]
+#     text_embedder = text_embedder[0]["text_embedder"]
+#     rag_graph = RAGGraph(
+#         PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+#     )
+#     return {"rag_graph": rag_graph}
 
 
 @output_on_top
-@op("LLM")
-def llm(*, name="openai"):
-    llm = get_llm_engine(name=name)
-    return {"llm": llm}
+@ops.input_position(rag_graph="bottom")
+@op("LynxScribe RAG Graph Chatbot Builder")
+@mem.cache
+def ls_rag_chatbot_builder(
+    file_urls,
+    rag_graph,
+    *,
+    scenario_file: str = "uploads/lynx_chatbot_scenario_selector.yaml",
+    node_types: str = "intent_cluster",
+    input_type: str = "v1",
+):
+    """
+    Builds up a RAG Graph-based chatbot. It could load the chatbot from
+    an existing folder (v1 or v2).
 
+    TODO: Later, we should not use these saved files, but we should build
+    up the chatbot from scratch - will be added soon). That time we will
+    add the summarizer-related parameters (LLM interface and model).
 
-@output_on_top
-@ops.input_position(llm="bottom")
-@op("Text embedder")
-def text_embedder(llm, *, model="text-embedding-ada-002"):
-    llm = llm[0]["llm"]
-    text_embedder = TextEmbedder(llm=llm, model=model)
-    return {"text_embedder": text_embedder}
+    TODO: Later, the scenario selector can be built up synthetically from
+    the input documents - or semi-automated.
 
+    TODO: Currently, we do not affected by the embedder, as the files are
+    pre-loaded, so the text embedder should have the same model as the
+    one used in the files...
+    """
 
-@output_on_top
-@ops.input_position(vector_store="bottom", text_embedder="bottom")
-@op("RAG graph")
-def rag_graph(vector_store, text_embedder):
-    vector_store = vector_store[0]["vector_store"]
-    text_embedder = text_embedder[0]["text_embedder"]
-    rag_graph = RAGGraph(
-        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
-    )
-    return {"rag_graph": rag_graph}
-
-
-@output_on_top
-@op("Scenario selector")
-def scenario_selector(*, scenario_file: str, node_types="intent_cluster"):
     scenarios = load_config(scenario_file)
     node_types = [t.strip() for t in node_types.split(",")]
+
+    # handling inputs
+    file_urls = file_urls["file_urls"]
+    rag_graph = rag_graph[0]["rag_graph"]
+
+    # loading v1 knowledge base (shitty solution, but temporary)
+    if input_type == "v1":
+        node_file = [f for f in file_urls if "nodes.p" in f][0]
+        edge_file = [f for f in file_urls if "edges.p" in f][0]
+        tempcluster_file = [f for f in file_urls if "clusters.p" in f][0]
+        rag_graph.kg_base.load_v1_knowledge_base(
+            nodes_path=node_file,
+            edges_path=edge_file,
+            template_cluster_path=tempcluster_file,
+        )
+    elif input_type == "v2":
+        raise ValueError("Currently only v1 input type is supported.")
+    else:
+        raise ValueError(f"Input type '{input_type}' is not supported.")
+
+    # loading the scenarios
     scenario_selector = ScenarioSelector(
         scenarios=[Scenario(**scenario) for scenario in scenarios],
         node_types=node_types,
     )
-    return {"scenario_selector": scenario_selector}
+
+    # TODO: later we should unify this "knowledge base" object across the functions
+    # this could be always an input of a RAG Chatbot, but also for other apps.
+    return {
+        "knowledge_base": {
+            "rag_graph": rag_graph,
+            "scenario_selector": scenario_selector,
+        }
+    }
 
 
-DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not contain any information related to your question."
+# @output_on_top
+# @op("Scenario selector")
+# def scenario_selector(*, scenario_file: str, node_types="intent_cluster"):
+#     scenarios = load_config(scenario_file)
+#     node_types = [t.strip() for t in node_types.split(",")]
+#     scenario_selector = ScenarioSelector(
+#         scenarios=[Scenario(**scenario) for scenario in scenarios],
+#         node_types=node_types,
+#     )
+#     return {"scenario_selector": scenario_selector}
 
 
 @output_on_top
-@ops.input_position(rag_graph="bottom", scenario_selector="bottom", llm="bottom")
-@op("RAG chatbot")
-def rag_chatbot(
-    rag_graph,
-    scenario_selector,
-    llm,
+@ops.input_position(knowledge_base="bottom", chat_processor="bottom")
+@op("LynxScribe RAG Graph Chatbot Backend")
+def ls_rag_chatbot_backend(
+    knowledge_base,
+    chat_processor,
     *,
     negative_answer=DEFAULT_NEGATIVE_ANSWER,
-    limits_by_type="{}",
-    strict_limits=True,
-    max_results=5,
+    retriever_limits_by_type="{}",
+    retriever_strict_limits=True,
+    retriever_overall_chunk_limit=20,
+    retriever_overall_token_limit=3000,
+    retriever_max_iterations=3,
+    llm_interface: str = "openai",
+    llm_model_name: str = "gpt-4o",
+    # api_key_name: str = "OPENAI_API_KEY",
 ):
-    rag_graph = rag_graph[0]["rag_graph"]
-    scenario_selector = scenario_selector[0]["scenario_selector"]
-    llm = llm[0]["llm"]
-    limits_by_type = json.loads(limits_by_type)
+    """
+    Returns with a chatbot instance.
+    """
+
+    # handling_inputs
+    rag_graph = knowledge_base[0]["knowledge_base"]["rag_graph"]
+    scenario_selector = knowledge_base[0]["knowledge_base"]["scenario_selector"]
+    chat_processor = chat_processor[0]["chat_processor"]
+    limits_by_type = json.loads(retriever_limits_by_type)
+
+    # connecting to the LLM
+    llm_params = {"name": llm_interface}
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
+
+    # setting the parameters
+    params = {
+        "limits_by_type": limits_by_type,
+        "strict_limits": retriever_strict_limits,
+        "max_results": retriever_overall_chunk_limit,
+        "token_limit": retriever_overall_token_limit,
+        "max_iterations": retriever_max_iterations,
+    }
+
+    # generating the RAG Chatbot
     rag_chatbot = RAGChatbot(
         rag_graph=rag_graph,
         scenario_selector=scenario_selector,
         llm=llm,
         negative_answer=negative_answer,
-        limits_by_type=limits_by_type,
-        strict_limits=strict_limits,
-        max_results=max_results,
+        **params,
     )
-    return {"chatbot": rag_chatbot}
+
+    # generating the chatbot back-end
+    c = ChatAPI(
+        chatbot=rag_chatbot,
+        chat_processor=chat_processor,
+        model=llm_model_name,
+    )
+
+    return {"chat_api": c}
+
+
+# @output_on_top
+# @ops.input_position(rag_graph="bottom", scenario_selector="bottom", llm="bottom")
+# @op("RAG chatbot")
+# def rag_chatbot(
+#     rag_graph,
+#     scenario_selector,
+#     llm,
+#     *,
+#     negative_answer=DEFAULT_NEGATIVE_ANSWER,
+#     limits_by_type="{}",
+#     strict_limits=True,
+#     max_results=5,
+# ):
+#     rag_graph = rag_graph[0]["rag_graph"]
+#     scenario_selector = scenario_selector[0]["scenario_selector"]
+#     llm = llm[0]["llm"]
+#     limits_by_type = json.loads(limits_by_type)
+#     rag_chatbot = RAGChatbot(
+#         rag_graph=rag_graph,
+#         scenario_selector=scenario_selector,
+#         llm=llm,
+#         negative_answer=negative_answer,
+#         limits_by_type=limits_by_type,
+#         strict_limits=strict_limits,
+#         max_results=max_results,
+#     )
+#     return {"chatbot": rag_chatbot}
 
 
 @output_on_top
@@ -446,37 +573,37 @@ def input_chat(*, chat: str):
     return {"text": chat}
 
 
-@output_on_top
-@ops.input_position(chatbot="bottom", chat_processor="bottom", knowledge_base="bottom")
-@op("Chat API")
-def chat_api(chatbot, chat_processor, knowledge_base, *, model="gpt-4o-mini"):
-    chatbot = chatbot[0]["chatbot"]
-    chat_processor = chat_processor[0]["chat_processor"]
-    knowledge_base = knowledge_base[0]
-    c = ChatAPI(
-        chatbot=chatbot,
-        chat_processor=chat_processor,
-        model=model,
-    )
-    if knowledge_base:
-        c.chatbot.rag_graph.kg_base.load_v1_knowledge_base(**knowledge_base)
-        c.chatbot.scenario_selector.check_compatibility(c.chatbot.rag_graph)
-    return {"chat_api": c}
+# @output_on_top
+# @ops.input_position(chatbot="bottom", chat_processor="bottom", knowledge_base="bottom")
+# @op("Chat API")
+# def chat_api(chatbot, chat_processor, knowledge_base, *, model="gpt-4o-mini"):
+#     chatbot = chatbot[0]["chatbot"]
+#     chat_processor = chat_processor[0]["chat_processor"]
+#     knowledge_base = knowledge_base[0]
+#     c = ChatAPI(
+#         chatbot=chatbot,
+#         chat_processor=chat_processor,
+#         model=model,
+#     )
+#     if knowledge_base:
+#         c.chatbot.rag_graph.kg_base.load_v1_knowledge_base(**knowledge_base)
+#         c.chatbot.scenario_selector.check_compatibility(c.chatbot.rag_graph)
+#     return {"chat_api": c}
 
 
-@output_on_top
-@op("Knowledge base")
-def knowledge_base(
-    *,
-    nodes_path="nodes.pickle",
-    edges_path="edges.pickle",
-    template_cluster_path="tempclusters.pickle",
-):
-    return {
-        "nodes_path": nodes_path,
-        "edges_path": edges_path,
-        "template_cluster_path": template_cluster_path,
-    }
+# @output_on_top
+# @op("Knowledge base")
+# def knowledge_base(
+#     *,
+#     nodes_path="nodes.pickle",
+#     edges_path="edges.pickle",
+#     template_cluster_path="tempclusters.pickle",
+# ):
+#     return {
+#         "nodes_path": nodes_path,
+#         "edges_path": edges_path,
+#         "template_cluster_path": template_cluster_path,
+#     }
 
 
 @op("View", view="table_view")
