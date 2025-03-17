@@ -29,7 +29,11 @@ reg("Input: graph edges", outputs=["edges"])
 reg("Input: label", outputs=["y"])
 reg("Input: positive sample", outputs=["x_pos"])
 reg("Input: negative sample", outputs=["x_neg"])
+reg("Input: sequential", outputs=["y"])
+reg("Input: zeros", outputs=["x"])
 
+reg("LSTM", inputs=["x", "h"], outputs=["x", "h"])
+reg("Neural ODE", inputs=["x"])
 reg("Attention", inputs=["q", "k", "v"], outputs=["x", "weights"])
 reg("LayerNorm", inputs=["x"])
 reg("Dropout", inputs=["x"], params=[P.basic("p", 0.5)])
@@ -80,6 +84,14 @@ ops.register_passive_op(
     inputs=[ops.Input(name="input", position="top", type="tensor")],
     outputs=[ops.Output(name="output", position="bottom", type="tensor")],
     params=[ops.Parameter.basic("times", 1, int)],
+)
+
+ops.register_passive_op(
+    ENV,
+    "Recurrent chain",
+    inputs=[ops.Input(name="input", position="top", type="tensor")],
+    outputs=[ops.Output(name="output", position="bottom", type="tensor")],
+    params=[],
 )
 
 
