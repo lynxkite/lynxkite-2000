@@ -6,7 +6,6 @@ from google.cloud import storage
 from copy import deepcopy
 import asyncio
 import pandas as pd
-import os
 import joblib
 
 import pathlib
@@ -38,30 +37,43 @@ from lynxkite.core.executors import one_by_one
 
 ENV = "LynxScribe"
 one_by_one.register(ENV)
-os.makedirs("../joblib-cache", exist_ok=True)
-mem = joblib.Memory("../joblib-cache")
+mem = joblib.Memory("joblib-cache")
 op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
 
 
-@op("GCP Image Loader")
-def gcp_image_loader(
+@op("Cloud-sourced Image Loader")
+def cloud_image_loader(
     *,
-    gcp_bucket: str = "lynxkite_public_data",
-    prefix: str = "lynxscribe-images/image-rag-test",
+    cloud_provider: str = "gcp",
+    folder_URL: str = "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
 ):
     """
-    Gives back the list of URLs of all the images in the GCP storage.
+    Gives back the list of URLs of all the images from a cloud-based folder.
+    Currently only supports GCP storage.
     """
-    client = storage.Client()
-    bucket = client.bucket(gcp_bucket)
-    blobs = bucket.list_blobs(prefix=prefix)
-    image_urls = [
-        blob.public_url
-        for blob in blobs
-        if blob.name.endswith((".jpg", ".jpeg", ".png"))
-    ]
-    return {"image_urls": image_urls}
+    if folder_URL[-1].endswith("/"):
+        folder_URL = folder_URL[:-1]
+
+    if cloud_provider == "gcp":
+        client = storage.Client()
+        url_useful_part = folder_URL.split(".com/")[-1]
+        bucket_name = url_useful_part.split("/")[0]
+        if bucket_name == url_useful_part:
+            prefix = ""
+        else:
+            prefix = url_useful_part.split(bucket_name + "/")[-1]
+
+        bucket = client.bucket(bucket_name)
+        blobs = bucket.list_blobs(prefix=prefix)
+        image_urls = [
+            blob.public_url
+            for blob in blobs
+            if blob.name.endswith((".jpg", ".jpeg", ".png"))
+        ]
+        return {"image_urls": image_urls}
+    else:
+        raise ValueError(f"Cloud provider '{cloud_provider}' is not supported.")
 
 
 @output_on_top
@@ -142,8 +154,6 @@ async def ls_image_rag_builder(
     image_urls,
     image_describer,
     rag_graph,
-    *,
-    image_rag_out_path: str = "image_test_rag_graph.pickle",
 ):
     """
     Based on an input image folder (currently only supports GCP storage),
@@ -278,7 +288,6 @@ async def search_context(rag_graph, text, *, top_k=3):
             {"image_url": image_url, "score": score, "description": description}
         )
 
-    print(result_list)
     return {"embedding_similarities": result_list}
 
 

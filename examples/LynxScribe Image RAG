@@ -1,13 +1,6 @@
 {
   "edges": [
     {
-      "id": "GCP Image Loader 1 LynxScribe Image RAG Builder 1",
-      "source": "GCP Image Loader 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Image RAG Builder 1",
-      "targetHandle": "image_urls"
-    },
-    {
       "id": "LynxScribe Image RAG Builder 1 LynxScribe Image RAG Query 1",
       "source": "LynxScribe Image RAG Builder 1",
       "sourceHandle": "output",
@@ -41,63 +34,17 @@
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Builder 1",
       "targetHandle": "rag_graph"
+    },
+    {
+      "id": "Cloud-sourced Image Loader 1 LynxScribe Image RAG Builder 1",
+      "source": "Cloud-sourced Image Loader 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image RAG Builder 1",
+      "targetHandle": "image_urls"
     }
   ],
   "env": "LynxScribe",
   "nodes": [
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {},
-          "name": "GCP Image Loader",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "gcp_bucket": {
-              "default": "lynxkite_public_data",
-              "name": "gcp_bucket",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "prefix": {
-              "default": "lynxscribe-images/image-rag-test",
-              "name": "prefix",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "gcp_bucket": "lynxkite_public_data",
-          "prefix": "lynxscribe-images/image-rag-test"
-        },
-        "status": "done",
-        "title": "GCP Image Loader"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 225.0,
-      "id": "GCP Image Loader 1",
-      "position": {
-        "x": -316.75434318246107,
-        "y": 245.50177834264986
-      },
-      "type": "basic",
-      "width": 282.0
-    },
     {
       "data": {
         "__execution_delay": 0.0,
@@ -193,7 +140,7 @@
           "type": "basic"
         },
         "params": {
-          "chat": "Show me a picture about healthy life"
+          "chat": "Show me a picture about meditation"
         },
         "status": "done",
         "title": "Input chat"
@@ -272,7 +219,7 @@
       "data": {
         "__execution_delay": null,
         "collapsed": false,
-        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/food-405521_1280.jpg",
+        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/yoga-3053487_1280.jpg",
         "error": null,
         "meta": {
           "inputs": {
@@ -452,6 +399,61 @@
       },
       "type": "basic",
       "width": 442.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Cloud-sourced Image Loader",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "cloud_provider": {
+              "default": "gcp",
+              "name": "cloud_provider",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "folder_URL": {
+              "default": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
+              "name": "folder_URL",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 141.0,
+            "y": 421.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "cloud_provider": "gcp",
+          "folder_URL": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test"
+        },
+        "status": "done",
+        "title": "Cloud-sourced Image Loader"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 267.0,
+      "id": "Cloud-sourced Image Loader 1",
+      "position": {
+        "x": -451.2626989986675,
+        "y": 225.06333310959974
+      },
+      "type": "basic",
+      "width": 437.0
     }
   ]
 }
