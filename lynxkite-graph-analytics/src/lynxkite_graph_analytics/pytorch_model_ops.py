@@ -33,7 +33,29 @@ reg("Input: sequential", outputs=["y"])
 reg("Input: zeros", outputs=["x"])
 
 reg("LSTM", inputs=["x", "h"], outputs=["x", "h"])
-reg("Neural ODE", inputs=["x"])
+reg(
+    "Neural ODE",
+    inputs=["x"],
+    params=[
+        P.basic("relative_tolerance"),
+        P.basic("absolute_tolerance"),
+        P.options(
+            "method",
+            [
+                "dopri8",
+                "dopri5",
+                "bosh3",
+                "fehlberg2",
+                "adaptive_heun",
+                "euler",
+                "midpoint",
+                "rk4",
+                "explicit_adams",
+                "implicit_adams",
+            ],
+        ),
+    ],
+)
 reg("Attention", inputs=["q", "k", "v"], outputs=["x", "weights"])
 reg("LayerNorm", inputs=["x"])
 reg("Dropout", inputs=["x"], params=[P.basic("p", 0.5)])

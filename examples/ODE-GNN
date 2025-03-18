@@ -78,20 +78,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Concatenate 1 Neural ODE 1",
-      "source": "Concatenate 1",
-      "sourceHandle": "x",
-      "target": "Neural ODE 1",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Neural ODE 1 MSE loss 1",
-      "source": "Neural ODE 1",
-      "sourceHandle": "x",
-      "target": "MSE loss 1",
-      "targetHandle": "x"
-    },
-    {
       "id": "Input: label 1 MSE loss 1",
       "source": "Input: label 1",
       "sourceHandle": "y",
@@ -104,6 +90,20 @@
       "sourceHandle": "loss",
       "target": "Optimizer 1",
       "targetHandle": "loss"
+    },
+    {
+      "id": "Concatenate 1 Neural ODE 2",
+      "source": "Concatenate 1",
+      "sourceHandle": "x",
+      "target": "Neural ODE 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Neural ODE 2 MSE loss 1",
+      "source": "Neural ODE 2",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -165,7 +165,7 @@
       "height": 200.0,
       "id": "Graph conv 1",
       "position": {
-        "x": 360.0,
+        "x": 350.98078368755864,
         "y": 195.0
       },
       "type": "basic",
@@ -173,6 +173,8 @@
     },
     {
       "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
         "meta": {
@@ -207,7 +209,7 @@
           "type": "basic"
         },
         "params": {
-          "times": 1.0
+          "times": "5"
         },
         "status": "planned",
         "title": "Repeat"
@@ -582,49 +584,6 @@
               "type": {
                 "type": "tensor"
               }
-            }
-          },
-          "name": "Neural ODE",
-          "outputs": {
-            "x": {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {},
-          "type": "basic"
-        },
-        "params": {},
-        "status": "planned",
-        "title": "Neural ODE"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Neural ODE 1",
-      "position": {
-        "x": 475.11029083619064,
-        "y": -633.1862788850791
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "__execution_delay": null,
-        "collapsed": true,
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {
-            "x": {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
             },
             "y": {
               "name": "y",
@@ -645,10 +604,6 @@
             }
           },
           "params": {},
-          "position": {
-            "x": 783.0,
-            "y": 101.0
-          },
           "type": "basic"
         },
         "params": {},
@@ -684,10 +639,6 @@
             }
           },
           "params": {},
-          "position": {
-            "x": 893.0,
-            "y": 369.0
-          },
           "type": "basic"
         },
         "params": {},
@@ -729,7 +680,7 @@
               }
             },
             "type": {
-              "default": 1.0,
+              "default": "1",
               "name": "type",
               "type": {
                 "enum": [
@@ -743,10 +694,6 @@
                 ]
               }
             }
-          },
-          "position": {
-            "x": 986.0,
-            "y": 165.0
           },
           "type": "basic"
         },
@@ -766,6 +713,84 @@
       },
       "type": "basic",
       "width": 190.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Neural ODE",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "absolute_tolerance": {
+              "default": null,
+              "name": "absolute_tolerance",
+              "type": {
+                "type": "None"
+              }
+            },
+            "method": {
+              "default": "1",
+              "name": "method",
+              "type": {
+                "enum": [
+                  "dopri8",
+                  "dopri5",
+                  "bosh3",
+                  "fehlberg2",
+                  "adaptive_heun",
+                  "euler",
+                  "midpoint",
+                  "rk4",
+                  "explicit_adams",
+                  "implicit_adams"
+                ]
+              }
+            },
+            "relative_tolerance": {
+              "default": null,
+              "name": "relative_tolerance",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "absolute_tolerance": null,
+          "method": 1.0,
+          "relative_tolerance": null
+        },
+        "status": "planned",
+        "title": "Neural ODE"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Neural ODE 2",
+      "position": {
+        "x": 342.3226409443945,
+        "y": -687.1882072175634
+      },
+      "type": "basic",
+      "width": 200.0
     }
   ]
 }
