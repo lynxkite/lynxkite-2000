@@ -342,3 +342,41 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
             core.RelationDefinition(**r) for r in json.loads(relations).values()
         ]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
+
+
+@op("Define model")
+def define_model(*, model_workspace: str, save_as: str = "model"):
+    """Reads a PyTorch model workspace and returns it as a model in a bundle."""
+    return None
+
+
+@op("Biomedical foundation graph (PLACEHOLDER)")
+def biomedical_foundation_graph(*, filter_nodes: str):
+    """Loads the gigantic Lynx-maintained knowledge graph. Includes drugs, diseases, genes, proteins, etc."""
+    return None
+
+
+@op("Train model")
+def train_model(
+    bundle: core.Bundle, *, model_name: str, model_mapping: str, epochs: int = 1
+):
+    """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
+    return None
+
+
+@op("Model inference")
+def model_inference(
+    bundle: core.Bundle,
+    *,
+    model_name: str,
+    model_mapping: str,
+    save_output_as: str = "prediction",
+):
+    """Executes a trained model."""
+    return None
+
+
+@op("Train/test split")
+def train_test_split(bundle: core.Bundle, *, table_name: str, test_ratio: float = 0.1):
+    """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
+    return None
