@@ -1,0 +1,466 @@
+{
+  "edges": [
+    {
+      "id": "Import CSV 1 Train/test split 1",
+      "source": "Import CSV 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train/test split 1 Create graph 1",
+      "source": "Train/test split 1",
+      "sourceHandle": "output",
+      "target": "Create graph 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Biomedical foundation graph (PLACEHOLDER) 1 Create graph 1",
+      "source": "Biomedical foundation graph (PLACEHOLDER) 1",
+      "sourceHandle": "output",
+      "target": "Create graph 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define model 1 Create graph 1",
+      "source": "Define model 1",
+      "sourceHandle": "output",
+      "target": "Create graph 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Create graph 1 Train model 1",
+      "source": "Create graph 1",
+      "sourceHandle": "output",
+      "target": "Train model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 1 Model inference 1",
+      "source": "Train model 1",
+      "sourceHandle": "output",
+      "target": "Model inference 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Biomedical foundation graph (PLACEHOLDER)",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filter_nodes": {
+              "default": null,
+              "name": "filter_nodes",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "filter_nodes": "drug,gene,disease"
+        },
+        "status": "done",
+        "title": "Biomedical foundation graph (PLACEHOLDER)"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Biomedical foundation graph (PLACEHOLDER) 1",
+      "position": {
+        "x": 230.1082040835347,
+        "y": 643.2454063689602
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": "Missing input: bundle",
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train/test split",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "test_ratio": {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "table_name": null,
+          "test_ratio": 0.1
+        },
+        "status": "planned",
+        "title": "Train/test split"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Train/test split 1",
+      "position": {
+        "x": 313.3745540124723,
+        "y": 412.5466021460861
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": "[Errno 2] No such file or directory: ''",
+        "meta": {
+          "inputs": {},
+          "name": "Import CSV",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "columns": {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "filename": {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "separator": {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "columns": "<from file>",
+          "filename": null,
+          "separator": "<auto>"
+        },
+        "status": "done",
+        "title": "Import CSV"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Import CSV 1",
+      "position": {
+        "x": -2.1743215714344757,
+        "y": 346.06014722935214
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Missing input: bundle",
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_mapping": {
+              "default": null,
+              "name": "model_mapping",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_name": {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_output_as": {
+              "default": "prediction",
+              "name": "save_output_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_mapping": "input: data_test",
+          "model_name": "model",
+          "save_output_as": "prediction"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 339.0,
+      "id": "Model inference 1",
+      "position": {
+        "x": 1736.5697434242886,
+        "y": 357.0743204289906
+      },
+      "type": "basic",
+      "width": 281.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": "Missing input: bundle",
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.core.Bundle]"
+              }
+            }
+          },
+          "name": "Create graph",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "relations": {
+              "default": null,
+              "name": "relations",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "graph_creation_view"
+        },
+        "params": {
+          "relations": null
+        },
+        "status": "planned",
+        "title": "Create graph"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 322.0,
+      "id": "Create graph 1",
+      "position": {
+        "x": 846.6882598271658,
+        "y": 480.6258932907771
+      },
+      "type": "graph_creation_view",
+      "width": 313.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Define model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 286.0,
+            "y": 208.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_workspace": "ODE-GNN",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Define model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Define model 1",
+      "position": {
+        "x": 311.976524267066,
+        "y": 146.99006795914332
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Missing input: bundle",
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "epochs": {
+              "default": 1.0,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "model_mapping": {
+              "default": null,
+              "name": "model_mapping",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_name": {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 995.0,
+            "y": 350.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "epochs": 1.0,
+          "model_mapping": "input: data_train",
+          "model_name": "model"
+        },
+        "status": "planned",
+        "title": "Train model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 342.0,
+      "id": "Train model 1",
+      "position": {
+        "x": 1358.7213662492159,
+        "y": 352.03096133771896
+      },
+      "type": "basic",
+      "width": 296.0
+    }
+  ]
+}
