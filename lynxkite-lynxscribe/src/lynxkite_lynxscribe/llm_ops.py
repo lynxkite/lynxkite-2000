@@ -25,7 +25,7 @@ op = ops.op_registration(ENV)
 def chat(*args, **kwargs):
     import openai
 
-    chat_client = openai.OpenAI(base_url="http://localhost:8080/v1")
+    chat_client = openai.OpenAI()
     key = json.dumps({"method": "chat", "args": args, "kwargs": kwargs})
     if key not in LLM_CACHE:
         completion = chat_client.chat.completions.create(*args, **kwargs)
@@ -36,7 +36,7 @@ def chat(*args, **kwargs):
 def embedding(*args, **kwargs):
     import openai
 
-    embedding_client = openai.OpenAI(base_url="http://localhost:7997/")
+    embedding_client = openai.OpenAI()
     key = json.dumps({"method": "embedding", "args": args, "kwargs": kwargs})
     if key not in LLM_CACHE:
         res = embedding_client.embeddings.create(*args, **kwargs)
