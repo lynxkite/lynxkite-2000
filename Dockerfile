@@ -5,12 +5,9 @@ USER node
 ENV HOME=/home/node PATH=/home/node/.local/bin:$PATH
 WORKDIR $HOME/app
 COPY --chown=node . $HOME/app
+ENV GIT_SSH_COMMAND="ssh -i /run/secrets/LYNXSCRIBE_DEPLOY_KEY -o StrictHostKeyChecking=no"
 RUN --mount=type=secret,id=LYNXSCRIBE_DEPLOY_KEY,mode=0444,required=true \
-  eval `ssh-agent -s` \
-  && mkdir -p ~/.ssh \
-  && ssh-keyscan github.com >> ~/.ssh/known_hosts \
-  && cat /run/secrets/LYNXSCRIBE_DEPLOY_KEY | tr -d '\r' | ssh-add - \
-  && uv venv && uv pip install \
+  uv venv && uv pip install \
   -e lynxkite-core \
   -e lynxkite-app \
   -e lynxkite-graph-analytics \
