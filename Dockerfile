@@ -13,7 +13,8 @@ RUN --mount=type=secret,id=LYNXSCRIBE_DEPLOY_KEY,mode=0444,required=true \
   -e lynxkite-graph-analytics \
   -e lynxkite-bio \
   -e lynxkite-lynxscribe \
-  -e lynxkite-pillow-example
+  -e lynxkite-pillow-example \
+  chromadb openai
 WORKDIR $HOME/app/examples
 ENV PORT=7860
 CMD ["uv", "run", "lynxkite"]
