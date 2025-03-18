@@ -510,8 +510,7 @@
         "title": "Ask LLM",
         "params": {
           "max_tokens": 100.0,
-          "accepted_regex": "",
-          "model": "SultanR/SmolTulu-1.7b-Instruct"
+          "accepted_regex": ""
         },
         "display": null,
         "error": null,
@@ -541,13 +540,6 @@
               "type": {
                 "type": "<class 'int'>"
               }
-            },
-            "model": {
-              "type": {
-                "type": "<class 'str'>"
-              },
-              "default": null,
-              "name": "model"
             }
           },
           "outputs": {
