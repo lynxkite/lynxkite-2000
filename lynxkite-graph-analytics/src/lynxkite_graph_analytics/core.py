@@ -137,8 +137,15 @@ def nx_node_attribute_func(name):
 
 def disambiguate_edges(ws: workspace.Workspace):
     """If an input plug is connected to multiple edges, keep only the last edge."""
+    catalog = ops.CATALOGS[ws.env]
+    nodes = {node.id: node for node in ws.nodes}
     seen = set()
     for edge in reversed(ws.edges):
+        dst_node = nodes[edge.target]
+        op = catalog.get(dst_node.data.title)
+        if op.inputs[edge.targetHandle].type == list[Bundle]:
+            # Takes multiple bundles as an input. No need to disambiguate.
+            continue
         if (edge.target, edge.targetHandle) in seen:
             i = ws.edges.index(edge)
             del ws.edges[i]
@@ -174,6 +181,7 @@ def _execute_node(node, ws, catalog, outputs):
         node.publish_error("Operation not found in catalog")
         return
     node.publish_started()
+    # TODO: Handle multi-inputs.
     input_map = {
         edge.targetHandle: outputs[edge.source]
         for edge in ws.edges
