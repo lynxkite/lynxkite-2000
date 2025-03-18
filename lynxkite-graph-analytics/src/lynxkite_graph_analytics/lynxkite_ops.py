@@ -15,7 +15,7 @@ import polars as pl
 import json
 
 
-mem = joblib.Memory("joblib-cache")
+mem = joblib.Memory(".joblib-cache")
 op = ops.op_registration(core.ENV)
 
 
@@ -87,8 +87,8 @@ def import_parquet(*, filename: str):
     return pd.read_parquet(filename)
 
 
-@mem.cache
 @op("Import CSV")
+@mem.cache
 def import_csv(
     *, filename: str, columns: str = "<from file>", separator: str = "<auto>"
 ):
@@ -102,8 +102,8 @@ def import_csv(
     )
 
 
-@mem.cache
 @op("Import GraphML")
+@mem.cache
 def import_graphml(*, filename: str):
     """Imports a GraphML file."""
     files = fsspec.open_files(filename, compression="infer")
@@ -114,8 +114,8 @@ def import_graphml(*, filename: str):
     raise ValueError(f"No .graphml file found at {filename}")
 
 
-@mem.cache
 @op("Graph from OSM")
+@mem.cache
 def import_osm(*, location: str):
     import osmnx as ox
 
