@@ -6,6 +6,7 @@ as an "agentic logic flow". It might just get deleted.
 (This is why the dependencies are left hanging.)
 """
 
+import os
 from lynxkite.core import ops
 import enum
 import jinja2
@@ -20,13 +21,20 @@ LLM_CACHE = {}
 ENV = "LLM logic"
 one_by_one.register(ENV)
 op = ops.op_registration(ENV)
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", None)
+EMBEDDING_BASE_URL = os.environ.get("EMBEDDING_BASE_URL", None)
+LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini-2024-07-18")
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 
 
 def chat(*args, **kwargs):
     import openai
 
-    chat_client = openai.OpenAI()
-    key = json.dumps({"method": "chat", "args": args, "kwargs": kwargs})
+    chat_client = openai.OpenAI(base_url=LLM_BASE_URL)
+    kwargs.setdefault("model", LLM_MODEL)
+    key = json.dumps(
+        {"method": "chat", "base_url": LLM_BASE_URL, "args": args, "kwargs": kwargs}
+    )
     if key not in LLM_CACHE:
         completion = chat_client.chat.completions.create(*args, **kwargs)
         LLM_CACHE[key] = [c.message.content for c in completion.choices]
@@ -36,8 +44,16 @@ def chat(*args, **kwargs):
 def embedding(*args, **kwargs):
     import openai
 
-    embedding_client = openai.OpenAI()
-    key = json.dumps({"method": "embedding", "args": args, "kwargs": kwargs})
+    embedding_client = openai.OpenAI(base_url=EMBEDDING_BASE_URL)
+    kwargs.setdefault("model", EMBEDDING_MODEL)
+    key = json.dumps(
+        {
+            "method": "embedding",
+            "base_url": EMBEDDING_BASE_URL,
+            "args": args,
+            "kwargs": kwargs,
+        }
+    )
     if key not in LLM_CACHE:
         res = embedding_client.embeddings.create(*args, **kwargs)
         [data] = res.data
