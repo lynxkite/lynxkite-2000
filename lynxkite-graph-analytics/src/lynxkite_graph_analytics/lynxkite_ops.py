@@ -320,7 +320,7 @@ def view_tables(bundle: core.Bundle, *, limit: int = 100):
     view="graph_creation_view",
     outputs=["output"],
 )
-def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
+def create_graph(bundle: list[core.Bundle], *, relations: str = None) -> core.Bundle:
     """Replace relations of the given bundle
 
     relations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)
