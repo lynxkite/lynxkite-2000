@@ -130,8 +130,7 @@ def create_prompt(input, *, save_as="prompt", template: ops.LongStr):
 
 
 @op("Ask LLM")
-def ask_llm(input, *, model: str, accepted_regex: str = None, max_tokens: int = 100):
-    assert model, "Please specify the model."
+def ask_llm(input, *, accepted_regex: str = None, max_tokens: int = 100):
     assert "prompt" in input, "Please create the prompt first."
     options = {}
     if accepted_regex:
@@ -139,7 +138,6 @@ def ask_llm(input, *, model: str, accepted_regex: str = None, max_tokens: int = 
             "regex": accepted_regex,
         }
     results = chat(
-        model=model,
         max_tokens=max_tokens,
         messages=[
             {"role": "user", "content": input["prompt"]},
@@ -228,10 +226,9 @@ def rag(
         results = [db[int(r)] for r in results["ids"][0]]
         return {**input, "rag": results, "_collection": collection}
     if engine == RagEngine.Custom:
-        model = "michaelfeil/bge-small-en-v1.5"
         chat = input[input_field]
-        embeddings = [embedding(input=[r[db_field]], model=model) for r in db]
-        q = embedding(input=[chat], model=model)
+        embeddings = [embedding(input=[r[db_field]]) for r in db]
+        q = embedding(input=[chat])
 
         def cosine_similarity(a, b):
             return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
