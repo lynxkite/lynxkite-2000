@@ -295,7 +295,7 @@
               }
             }
           },
-          "name": "Create graph",
+          "name": "Organize",
           "outputs": {
             "output": {
               "name": "output",
@@ -320,7 +320,7 @@
           "relations": null
         },
         "status": "planned",
-        "title": "Create graph"
+        "title": "Organize"
       },
       "dragHandle": ".bg-primary",
       "height": 322.0,
