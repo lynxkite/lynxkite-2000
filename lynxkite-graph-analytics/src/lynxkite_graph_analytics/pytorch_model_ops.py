@@ -130,69 +130,11 @@ def build_model(ws: workspace.Workspace, inputs: dict):
     for e in ws.edges:
         inputs[e.target].append(e.source)
     layers = []
-
-
-def build_model(cfg, device, dropout=None):
-    F.triplet_margin_loss
-    layers.append((pyg.nn.Linear(E, H), "x -> x"))
-    layers.append((torch.nn.LayerNorm(H), "x -> x"))
-    for i in range(cfg.attention_layers):
-        layers.append(
-            (torch.nn.MultiheadAttention(H, 1, batch_first=True), "x, x, x -> x")
-        )
-    # Pick values, not weights.
-    layers.append(lambda res: res[0])
-    layers.append(torch.nn.LayerNorm(H))
-    # Just take the first token embedding after attention?
-    layers.append(lambda res: res[:, 0, :])
-    encoder = pyg.nn.Sequential("x", layers).to(device)
-    for i in range(cfg.gnn_layers):
-        layers.append((cfg.conv(E, H), "x, edge_index -> x"))
-        if dropout:
-            layers.append(torch.nn.Dropout(dropout))
-        layers.append(cfg.activation())
-    for i in range(cfg.mlp_layers - 1):
-        layers.append((pyg.nn.Linear(E, H), "x -> x"))
-        if dropout:
-            layers.append(torch.nn.Dropout(dropout))
-        layers.append(cfg.activation())
-    layers.append((pyg.nn.Linear(E, H), "x -> x"))
-    if cfg.predict == "remaining_steps":
-        assert cfg.loss_fn != F.triplet_margin_loss, (
-            "Triplet loss is only for embedding outputs."
-        )
-        layers.append((pyg.nn.Linear(E, 1), "x -> x"))
-    elif cfg.predict == "tactics":
-        assert cfg.loss_fn == F.cross_entropy, (
-            "Use cross entropy for tactic prediction."
-        )
-        layers.append((pyg.nn.Linear(E, len(TACTICS)), "x -> x"))
-    elif cfg.predict == "link_likelihood_for_states":
-        pass  # Just output the embedding.
-    elif cfg.embedding["method"] != "learned":
-        layers.append((pyg.nn.Linear(E, E), "x -> x"))
-    m = pyg.nn.Sequential("x, edge_index", layers).to(device)
-    if cfg.predict == "link_likelihood_for_states":
-        # The comparator takes two embeddings (state and theorem) and predicts the link.
-        layers = []
-        layers.append(
-            (
-                lambda state, theorem: torch.cat([state, theorem], dim=1),
-                "state, theorem -> x",
-            )
-        )
-        for i in range(cfg.comparator_layers):
-            layers.append((pyg.nn.Linear(E, H), "x -> x"))
-            if dropout:
-                layers.append(torch.nn.Dropout(dropout))
-            layers.append(cfg.activation())
-        assert cfg.loss_fn != F.triplet_margin_loss, (
-            "Triplet loss is only for embedding outputs."
-        )
-        layers.append((pyg.nn.Linear(E, 1), "x -> x"))
-        # Sigmoid activation at the end to get a probability.
-        layers.append((torch.nn.Sigmoid(), "x -> x"))
-        m.comparator = pyg.nn.Sequential("state, theorem", layers).to(device)
-    if encoder and cfg.predict in ["nodes", "links", "links_for_states"]:
-        m.encoder = encoder
+    # TODO: Create layers based on the workspace.
+    sizes = {}
+    for k, v in inputs.items():
+        sizes[k] = v.size
+    layers.append((pyg.nn.Linear(sizes["x"], 1024), "x -> x"))
+    layers.append((torch.nn.LayerNorm(1024), "x -> x"))
+    m = pyg.nn.Sequential("x, edge_index", layers)
     return m

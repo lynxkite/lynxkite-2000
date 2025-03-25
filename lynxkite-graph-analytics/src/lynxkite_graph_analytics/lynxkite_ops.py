@@ -165,11 +165,11 @@ def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
-@op("Organize bundle")
-def organize_bundle(bundle: core.Bundle, *, code: ops.LongStr):
+@op("Organize")
+def organize(bundle: list[core.Bundle], *, code: ops.LongStr) -> core.Bundle:
     """Lets you rename/copy/delete DataFrames, and modify relations.
 
-    TODO: Use a declarative solution instead of Python code. Add UI.
+    TODO: Merge this with "Create graph".
     """
     bundle = bundle.copy()
     exec(code, globals(), {"bundle": bundle})
@@ -320,7 +320,7 @@ def view_tables(bundle: core.Bundle, *, limit: int = 100):
     view="graph_creation_view",
     outputs=["output"],
 )
-def create_graph(bundle: list[core.Bundle], *, relations: str = None) -> core.Bundle:
+def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     """Replace relations of the given bundle
 
     relations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)
