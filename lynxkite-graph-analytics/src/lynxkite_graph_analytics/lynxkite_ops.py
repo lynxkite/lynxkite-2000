@@ -2,10 +2,14 @@
 
 import enum
 import os
+import pathlib
 import fsspec
 from lynxkite.core import ops
 from collections import deque
-from . import core
+
+from tqdm import tqdm
+from . import core, pytorch_model_ops
+from lynxkite.core import workspace
 import grandcypher
 import joblib
 import matplotlib
@@ -344,10 +348,13 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
 
 
-@op("Define model")
-def define_model(*, model_workspace: str, save_as: str = "model"):
-    """Reads a PyTorch model workspace and returns it as a model in a bundle."""
-    return None
+def load_ws(model_workspace: str):
+    cwd = pathlib.Path()
+    path = cwd / model_workspace
+    assert path.is_relative_to(cwd)
+    assert path.exists(), f"Workspace {path} does not exist"
+    ws = workspace.load(path)
+    return ws
 
 
 @op("Biomedical foundation graph (PLACEHOLDER)")
@@ -358,25 +365,54 @@ def biomedical_foundation_graph(*, filter_nodes: str):
 
 @op("Train model")
 def train_model(
-    bundle: core.Bundle, *, model_name: str, model_mapping: str, epochs: int = 1
+    bundle: core.Bundle,
+    *,
+    model_workspace: str,
+    input_mapping: str,
+    epochs: int = 1,
+    save_as: str = "model",
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
-    return None
+    ws = load_ws(model_workspace)
+    input_mapping = json.loads(input_mapping)
+    inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
+    m = pytorch_model_ops.build_model(ws, inputs)
+    t = tqdm(range(epochs), desc="Training model")
+    for _ in t:
+        loss = m.train(inputs)
+        t.set_postfix({"loss": loss})
+    bundle = bundle.copy()
+    bundle.other[save_as] = m
+    return bundle
 
 
 @op("Model inference")
 def model_inference(
     bundle: core.Bundle,
     *,
-    model_name: str,
-    model_mapping: str,
-    save_output_as: str = "prediction",
+    model_name: str = "model",
+    input_mapping: str = "",
+    output_mapping: str = "",
 ):
     """Executes a trained model."""
-    return None
+    m = bundle.other[model_name]
+    input_mapping = json.loads(input_mapping)
+    output_mapping = json.loads(output_mapping)
+    inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
+    outputs = m.inference(inputs)
+    bundle = bundle.copy()
+    for k, v in output_mapping.items():
+        bundle.dfs[v["df"]][v["column"]] = outputs[k].detach().numpy().tolist()
+    return bundle
 
 
 @op("Train/test split")
 def train_test_split(bundle: core.Bundle, *, table_name: str, test_ratio: float = 0.1):
     """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
-    return None
+    df = bundle.dfs[table_name]
+    test = df.sample(frac=test_ratio)
+    train = df.drop(test.index)
+    bundle = bundle.copy()
+    bundle.dfs[f"{table_name}_train"] = train
+    bundle.dfs[f"{table_name}_test"] = test
+    return bundle

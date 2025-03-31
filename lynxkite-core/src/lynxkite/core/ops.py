@@ -61,7 +61,7 @@ class Parameter(BaseConfig):
     @staticmethod
     def options(name, options, default=None):
         e = enum.Enum(f"OptionsFor_{name}", options)
-        return Parameter.basic(name, e[default or options[0]], e)
+        return Parameter.basic(name, default or options[0], e)
 
     @staticmethod
     def collapsed(name, default, type=None):
@@ -154,9 +154,7 @@ class Op(BaseConfig):
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
-        for p in params:
-            if p in self.params:
-                params[p] = _param_to_type(p, params[p], self.params[p].type)
+        params = self.convert_params(params)
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
@@ -170,6 +168,15 @@ class Op(BaseConfig):
                 # If the operation is some kind of visualization, we use the output as the
                 # value to display by default.
                 res.display = res.output
+        return res
+
+    def convert_params(self, params):
+        """Returns the parameters converted to the expected type."""
+        res = {}
+        for p in params:
+            res[p] = params[p]
+            if p in self.params:
+                res[p] = _param_to_type(p, params[p], self.params[p].type)
         return res
 
 

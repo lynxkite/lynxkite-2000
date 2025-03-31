@@ -1,0 +1,288 @@
+{
+  "edges": [
+    {
+      "id": "Import Parquet 1 Train/test split 1",
+      "source": "Import Parquet 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train/test split 1 Train model 3",
+      "source": "Train/test split 1",
+      "sourceHandle": "output",
+      "target": "Train model 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 3 Model inference 1",
+      "source": "Train model 3",
+      "sourceHandle": "output",
+      "target": "Model inference 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train/test split",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "test_ratio": {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "table_name": "df",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "title": "Train/test split"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 282.0,
+      "id": "Train/test split 1",
+      "position": {
+        "x": 345.0,
+        "y": 139.0
+      },
+      "type": "basic",
+      "width": 259.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Import Parquet",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filename": {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "filename": "uploads/plus-one-dataset.parquet"
+        },
+        "status": "done",
+        "title": "Import Parquet"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 403.0,
+      "id": "Import Parquet 1",
+      "position": {
+        "x": -166.0,
+        "y": 112.0
+      },
+      "type": "basic",
+      "width": 371.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "epochs": {
+              "default": 1.0,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 675.0,
+            "y": 144.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "epochs": "1000",
+          "input_mapping": "{\"Input__embedding_1_x\": {\"df\": \"df_train\", \"column\": \"x\"}, \"Input__label_1_y\": {\"df\": \"df_train\", \"column\": \"y\"  }}",
+          "model_workspace": "Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Train model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 519.0,
+      "id": "Train model 3",
+      "position": {
+        "x": 687.3818749999999,
+        "y": -34.16902777777775
+      },
+      "type": "basic",
+      "width": 640.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "input_mapping": {
+              "default": "",
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "output_mapping": {
+              "default": "",
+              "name": "output_mapping",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 506.0,
+            "y": 115.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "input_mapping": "{\"Input__embedding_1_x\": {\"df\": \"df_test\", \"column\": \"x\"}}",
+          "model_name": "model",
+          "output_mapping": "{\"Activation_2_x\": {\"df\": \"df_test\", \"column\": \"predicted\"}}"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 429.0,
+      "id": "Model inference 1",
+      "position": {
+        "x": 1445.5664910683593,
+        "y": 12.075943590382515
+      },
+      "type": "basic",
+      "width": 410.0
+    }
+  ]
+}
