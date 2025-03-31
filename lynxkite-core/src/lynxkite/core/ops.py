@@ -112,6 +112,13 @@ class Result:
     display: ReadOnlyJSON | None = None
     error: str | None = None
 
+    def default_display(self) -> ReadOnlyJSON | None:
+        """Automatically extracts basic data from the output."""
+        if hasattr(self.output, "default_display"):
+            return self.output.default_display()
+        else:
+            return None
+
 
 MULTI_INPUT = Input(name="multi", type="*")
 
@@ -140,6 +147,11 @@ def _param_to_type(name, value, type):
                 return None if value == "" else _param_to_type(name, value, type)
             case (type, types.NoneType):
                 return None if value == "" else _param_to_type(name, value, type)
+    if issubclass(type, pydantic.BaseModel):
+        try:
+            return type.model_validate_json(value)
+        except pydantic.ValidationError:
+            return None
     return value
 
 
@@ -174,9 +186,10 @@ class Op(BaseConfig):
         """Returns the parameters converted to the expected type."""
         res = {}
         for p in params:
-            res[p] = params[p]
             if p in self.params:
                 res[p] = _param_to_type(p, params[p], self.params[p].type)
+            else:
+                res[p] = params[p]
         return res
 
 
