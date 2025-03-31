@@ -6,6 +6,7 @@ from lynxkite.core.ops import Parameter as P
 import torch
 import torch_geometric as pyg
 from dataclasses import dataclass
+from . import core
 
 ENV = "PyTorch model"
 
@@ -162,11 +163,18 @@ class ModelConfig:
         self.optimizer.step()
         return loss.item()
 
+    def copy(self):
+        """Returns a copy of the model."""
+        c = super().copy()
+        c.model = self.model.copy()
+        return c
+
 
 def build_model(
     ws: workspace.Workspace, inputs: dict[str, torch.Tensor]
 ) -> ModelConfig:
     """Builds the model described in the workspace."""
+    catalog = ops.CATALOGS[ENV]
     optimizers = []
     nodes = {}
     for node in ws.nodes:
@@ -197,7 +205,8 @@ def build_model(
     for node_id in ts.static_order():
         node = nodes[node_id]
         t = node.data.title
-        p = node.data.params
+        op = catalog[t]
+        p = op.convert_params(node.data.params)
         for b in dependencies[node_id]:
             if b in in_loss:
                 in_loss.add(node_id)
@@ -216,7 +225,9 @@ def build_model(
                 [(ib, ih)] = edges[node_id, "x"]
                 i = _to_id(ib) + "_" + ih
                 used_inputs.add(i)
-                f = getattr(torch.nn.functional, p["type"].lower().replace(" ", "_"))
+                f = getattr(
+                    torch.nn.functional, p["type"].name.lower().replace(" ", "_")
+                )
                 ls.append((f, f"{i} -> {nid}_x"))
                 sizes[f"{nid}_x"] = sizes[i]
             case "MSE loss":
@@ -248,7 +259,18 @@ def build_model(
         f"loss should have no parameters: {list(cfg['loss'].parameters())}"
     )
     # Create optimizer.
-    p = nodes[optimizer].data.params
-    o = getattr(torch.optim, p["type"])
+    op = catalog["Optimizer"]
+    p = op.convert_params(nodes[optimizer].data.params)
+    o = getattr(torch.optim, p["type"].name)
     cfg["optimizer"] = o(cfg["model"].parameters(), lr=p["lr"])
     return ModelConfig(**cfg)
+
+
+def to_tensors(b: core.Bundle, m: dict[str, dict]) -> dict[str, torch.Tensor]:
+    """Converts a tensor to the correct type for PyTorch."""
+    tensors = {}
+    for k, v in m.items():
+        tensors[k] = torch.tensor(
+            b.dfs[v["df"]][v["column"]].to_list(), dtype=torch.float32
+        )
+    return tensors

@@ -42,7 +42,7 @@ class Bundle:
 
     dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
     relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
-    other: dict[str, typing.Any] = None
+    other: dict[str, typing.Any] = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_nx(cls, graph: nx.Graph):
@@ -102,7 +102,7 @@ class Bundle:
         return Bundle(
             dfs=dict(self.dfs),
             relations=list(self.relations),
-            other=dict(self.other) if self.other else None,
+            other=dict(self.other),
         )
 
     def to_dict(self, limit: int = 100):
