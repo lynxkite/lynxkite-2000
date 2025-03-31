@@ -368,21 +368,26 @@ def train_model(
     bundle: core.Bundle,
     *,
     model_workspace: str,
-    input_mapping: str,
+    input_mapping: pytorch_model_ops.ModelMapping,
     epochs: int = 1,
     save_as: str = "model",
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
+    assert model_workspace, "Model workspace is unset."
+    print(f"input_mapping: {input_mapping}")
     ws = load_ws(model_workspace)
-    input_mapping = json.loads(input_mapping)
-    inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
+    inputs = (
+        pytorch_model_ops.to_tensors(bundle, input_mapping) if input_mapping else {}
+    )
     m = pytorch_model_ops.build_model(ws, inputs)
+    bundle = bundle.copy()
+    bundle.other[save_as] = m
+    if input_mapping is None:
+        return ops.Result(bundle, error="Mapping is unset.")
     t = tqdm(range(epochs), desc="Training model")
     for _ in t:
         loss = m.train(inputs)
         t.set_postfix({"loss": loss})
-    bundle = bundle.copy()
-    bundle.other[save_as] = m
     return bundle
 
 
@@ -391,18 +396,18 @@ def model_inference(
     bundle: core.Bundle,
     *,
     model_name: str = "model",
-    input_mapping: str = "",
-    output_mapping: str = "",
+    input_mapping: pytorch_model_ops.ModelMapping,
+    output_mapping: pytorch_model_ops.ModelMapping,
 ):
     """Executes a trained model."""
+    if input_mapping is None or output_mapping is None:
+        return ops.Result(bundle, error="Mapping is unset.")
     m = bundle.other[model_name]
-    input_mapping = json.loads(input_mapping)
-    output_mapping = json.loads(output_mapping)
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
     outputs = m.inference(inputs)
     bundle = bundle.copy()
-    for k, v in output_mapping.items():
-        bundle.dfs[v["df"]][v["column"]] = outputs[k].detach().numpy().tolist()
+    for k, v in output_mapping.map.items():
+        bundle.dfs[v.df][v.column] = outputs[k].detach().numpy().tolist()
     return bundle
 
 

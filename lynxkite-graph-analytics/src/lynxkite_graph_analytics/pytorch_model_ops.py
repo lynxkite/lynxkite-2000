@@ -1,6 +1,8 @@
 """Boxes for defining PyTorch models."""
 
 import graphlib
+
+import pydantic
 from lynxkite.core import ops, workspace
 from lynxkite.core.ops import Parameter as P
 import torch
@@ -128,6 +130,15 @@ def _to_id(s: str) -> str:
     return "".join(c if c.isalnum() else "_" for c in s)
 
 
+class ColumnSpec(pydantic.BaseModel):
+    df: str
+    column: str
+
+
+class ModelMapping(pydantic.BaseModel):
+    map: dict[str, ColumnSpec]
+
+
 @dataclass
 class ModelConfig:
     model: torch.nn.Module
@@ -168,6 +179,16 @@ class ModelConfig:
         c = super().copy()
         c.model = self.model.copy()
         return c
+
+    def default_display(self):
+        return {
+            "type": "model",
+            "model": {
+                "inputs": self.model_inputs,
+                "outputs": self.model_outputs,
+                "loss_inputs": self.loss_inputs,
+            },
+        }
 
 
 def build_model(
@@ -241,9 +262,9 @@ def build_model(
                 loss_layers.append(
                     (torch.nn.functional.mse_loss, f"{xi}, {yi} -> {nid}_loss")
                 )
-    cfg["model_inputs"] = used_inputs & inputs.keys()
-    cfg["model_outputs"] = loss_inputs - inputs.keys()
-    cfg["loss_inputs"] = loss_inputs
+    cfg["model_inputs"] = list(used_inputs & inputs.keys())
+    cfg["model_outputs"] = list(loss_inputs - inputs.keys())
+    cfg["loss_inputs"] = list(loss_inputs)
     # Make sure the trained output is output from the last model layer.
     outputs = ", ".join(cfg["model_outputs"])
     layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
@@ -266,11 +287,9 @@ def build_model(
     return ModelConfig(**cfg)
 
 
-def to_tensors(b: core.Bundle, m: dict[str, dict]) -> dict[str, torch.Tensor]:
+def to_tensors(b: core.Bundle, m: ModelMapping) -> dict[str, torch.Tensor]:
     """Converts a tensor to the correct type for PyTorch."""
     tensors = {}
-    for k, v in m.items():
-        tensors[k] = torch.tensor(
-            b.dfs[v["df"]][v["column"]].to_list(), dtype=torch.float32
-        )
+    for k, v in m.map.items():
+        tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
     return tensors

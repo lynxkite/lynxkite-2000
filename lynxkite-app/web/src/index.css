@@ -256,6 +256,14 @@ body {
       cursor: pointer;
     }
   }
+
+  .model-mapping-param {
+    border: 1px solid var(--fallback-bc, oklch(var(--bc) / 0.2));
+    border-collapse: separate;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 100%;
+  }
 }
 
 .params-expander {

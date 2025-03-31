@@ -106,6 +106,7 @@ class Bundle:
         )
 
     def to_dict(self, limit: int = 100):
+        """JSON-serializable representation of the bundle, including some data."""
         return {
             "dataframes": {
                 name: {
@@ -115,7 +116,23 @@ class Bundle:
                 for name, df in self.dfs.items()
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": self.other,
+            "other": {k: str(v) for k, v in self.other.items()},
+        }
+
+    def default_display(self):
+        """JSON-serializable information about the bundle, metadata only."""
+        return {
+            "dataframes": {
+                name: {
+                    "columns": sorted(str(c) for c in df.columns),
+                }
+                for name, df in self.dfs.items()
+            },
+            "relations": [dataclasses.asdict(relation) for relation in self.relations],
+            "other": {
+                k: getattr(v, "default_display", lambda: {})()
+                for k, v in self.other.items()
+            },
         }
 
 

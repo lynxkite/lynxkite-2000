@@ -62,6 +62,7 @@ function NodeWithParams(props: any) {
               name={name}
               key={name}
               value={value}
+              data={props.data}
               meta={metaParams?.[name]}
               onChange={(value: any, opts?: UpdateOptions) =>
                 setParam(name, value, opts || {})
