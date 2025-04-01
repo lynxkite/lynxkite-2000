@@ -37,6 +37,7 @@ def test_save_and_load():
                     "type": "basic",
                     "data": {
                         "display": None,
+                        "input_metadata": None,
                         "error": "Unknown operation.",
                         "title": "Test node",
                         "params": {"param1": "value"},

@@ -24,6 +24,7 @@ interface GroupsType {
 interface NodeGroupParameterProps {
   meta: { selector: SelectorType; groups: GroupsType };
   value: any;
+  data: any;
   setParam: (name: string, value: any, options?: { delay: number }) => void;
   deleteParam: (name: string, options?: { delay: number }) => void;
 }
@@ -31,6 +32,7 @@ interface NodeGroupParameterProps {
 export default function NodeGroupParameter({
   meta,
   value,
+  data,
   setParam,
   deleteParam,
 }: NodeGroupParameterProps) {
@@ -60,6 +62,7 @@ export default function NodeGroupParameter({
       name={selector.name}
       key={selector.name}
       value={selectedValue}
+      data={data}
       meta={selector}
       onChange={handleSelectorChange}
     />

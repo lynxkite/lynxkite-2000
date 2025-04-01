@@ -52,11 +52,14 @@ function getModelBindings(
     }
   }
   const bindings = new Set<string>();
-  const other = data?.display?.other ?? data?.display?.value?.other ?? {};
-  for (const e of Object.values(other) as any[]) {
-    if (e.type === "model") {
-      for (const b of bindingsOfModel(e.model)) {
-        bindings.add(b);
+  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
+  for (const input of inputs) {
+    const other = input.other ?? {};
+    for (const e of Object.values(other) as any[]) {
+      if (e.type === "model") {
+        for (const b of bindingsOfModel(e.model)) {
+          bindings.add(b);
+        }
       }
     }
   }
@@ -78,15 +81,20 @@ function parseJsonOrEmpty(json: string): object {
 function ModelMapping({ value, onChange, data, variant }: any) {
   const v: any = parseJsonOrEmpty(value);
   v.map ??= {};
-  const dfs =
-    data?.display?.dataframes ?? data?.display?.value?.dataframes ?? {};
+  const dfs: { [df: string]: string[] } = {};
+  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
+  for (const input of inputs) {
+    const dataframes = input.dataframes as {
+      [df: string]: { columns: string[] };
+    };
+    for (const [df, { columns }] of Object.entries(dataframes)) {
+      dfs[df] = columns;
+    }
+  }
   const bindings = getModelBindings(data, variant);
   return (
     <table className="model-mapping-param">
       <tbody>
-        <tr>
-          <td>mm</td>
-        </tr>
         {bindings.length > 0 ? (
           bindings.map((binding: string) => (
             <tr key={binding}>
@@ -105,7 +113,7 @@ function ModelMapping({ value, onChange, data, variant }: any) {
                       onChange(JSON.stringify({ map }));
                     } else {
                       const columnSpec = {
-                        column: dfs[df].columns[0],
+                        column: dfs[df][0],
                         ...(v.map?.[binding] || {}),
                         df,
                       };
@@ -149,7 +157,7 @@ function ModelMapping({ value, onChange, data, variant }: any) {
                       onChange(JSON.stringify({ map }));
                     }}
                   >
-                    {dfs[v.map?.[binding]?.df]?.columns.map((col: string) => (
+                    {dfs[v.map?.[binding]?.df]?.map((col: string) => (
                       <option key={col} value={col}>
                         {col}
                       </option>
@@ -221,13 +229,13 @@ export default function NodeParameter({
       ) : meta?.type?.type === BOOLEAN ? (
         <div className="form-control">
           <label className="label cursor-pointer">
+            {name.replace(/_/g, " ")}
             <input
               className="checkbox"
               type="checkbox"
               checked={value}
               onChange={(evt) => onChange(evt.currentTarget.checked)}
             />
-            {name.replace(/_/g, " ")}
           </label>
         </div>
       ) : meta?.type?.type === MODEL_TRAINING_INPUT_MAPPING ? (

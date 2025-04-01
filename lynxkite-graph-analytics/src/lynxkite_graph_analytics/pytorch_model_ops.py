@@ -184,7 +184,7 @@ class ModelConfig:
         c.model = copy.deepcopy(self.model)
         return c
 
-    def default_display(self):
+    def metadata(self):
         return {
             "type": "model",
             "model": {
