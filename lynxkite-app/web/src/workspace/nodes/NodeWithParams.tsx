@@ -49,6 +49,7 @@ function NodeWithParams(props: any) {
             <NodeGroupParameter
               key={name}
               value={value}
+              data={props.data}
               meta={metaParams?.[name]}
               setParam={(name: string, value: any, opts?: UpdateOptions) =>
                 setParam(name, value, opts || {})
@@ -62,6 +63,7 @@ function NodeWithParams(props: any) {
               name={name}
               key={name}
               value={value}
+              data={props.data}
               meta={metaParams?.[name]}
               onChange={(value: any, opts?: UpdateOptions) =>
                 setParam(name, value, opts || {})

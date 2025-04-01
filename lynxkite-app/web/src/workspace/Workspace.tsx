@@ -383,6 +383,8 @@ function LynxKiteFlow() {
             proOptions={{ hideAttribution: true }}
             maxZoom={1}
             minZoom={0.3}
+            zoomOnScroll={false}
+            preventScrolling={false}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,

@@ -1,0 +1,334 @@
+{
+  "edges": [
+    {
+      "id": "Input: embedding 1 Linear 1",
+      "source": "Input: embedding 1",
+      "sourceHandle": "x",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: label 1 MSE loss 1",
+      "source": "Input: label 1",
+      "sourceHandle": "y",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "Linear 1 Activation 2",
+      "source": "Linear 1",
+      "sourceHandle": "x",
+      "target": "Activation 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 2 MSE loss 1",
+      "source": "Activation 2",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "MSE loss 1 Optimizer 2",
+      "source": "MSE loss 1",
+      "sourceHandle": "loss",
+      "target": "Optimizer 2",
+      "targetHandle": "loss"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: embedding",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: embedding"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: embedding 1",
+      "position": {
+        "x": 91.0,
+        "y": 266.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Linear",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "output_dim": {
+              "default": "same",
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "output_dim": "same"
+        },
+        "status": "planned",
+        "title": "Linear"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Linear 1",
+      "position": {
+        "x": 86.0,
+        "y": 33.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "y": {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "MSE loss",
+          "outputs": {
+            "loss": {
+              "name": "loss",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "position": {
+        "x": 315.0,
+        "y": -510.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: label",
+          "outputs": {
+            "y": {
+              "name": "y",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: label"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: label 1",
+      "position": {
+        "x": 615.0,
+        "y": -165.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Activation",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "type": {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 419.0,
+            "y": 396.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "type": "Leaky ReLU"
+        },
+        "status": "planned",
+        "title": "Activation"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Activation 2",
+      "position": {
+        "x": 93.61643829835265,
+        "y": -229.04087132886406
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "loss": {
+              "name": "loss",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Optimizer",
+          "outputs": {},
+          "params": {
+            "lr": {
+              "default": 0.001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            "type": {
+              "default": "AdamW",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "AdamW",
+                  "Adafactor",
+                  "Adagrad",
+                  "SGD",
+                  "Lion",
+                  "Paged AdamW",
+                  "Galore AdamW"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 526.0,
+            "y": 116.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "lr": "0.1",
+          "type": "SGD"
+        },
+        "status": "planned",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Optimizer 2",
+      "position": {
+        "x": 305.6132943499785,
+        "y": -804.0094318451224
+      },
+      "type": "basic",
+      "width": 200.0
+    }
+  ]
+}
