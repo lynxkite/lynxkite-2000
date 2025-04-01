@@ -1,0 +1,873 @@
+{
+  "edges": [
+    {
+      "id": "Import file 2 Query GenMol 1",
+      "source": "Import file 2",
+      "sourceHandle": "output",
+      "target": "Query GenMol 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import file 1 MSA-search 1",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "MSA-search 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Query GenMol 1 Query DiffDock 1",
+      "source": "Query GenMol 1",
+      "sourceHandle": "output",
+      "target": "Query DiffDock 1",
+      "targetHandle": "ligands"
+    },
+    {
+      "id": "Query DiffDock 1 View molecules 1",
+      "source": "Query DiffDock 1",
+      "sourceHandle": "output",
+      "target": "View molecules 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "MSA-search 1 Query OpenFold2 1",
+      "source": "MSA-search 1",
+      "sourceHandle": "output",
+      "target": "Query OpenFold2 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Query OpenFold2 1 View molecules 3",
+      "source": "Query OpenFold2 1",
+      "sourceHandle": "output",
+      "target": "View molecules 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Query OpenFold2 1 Query DiffDock 1",
+      "source": "Query OpenFold2 1",
+      "sourceHandle": "output",
+      "target": "Query DiffDock 1",
+      "targetHandle": "proteins"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Import file",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "file_format": {
+              "default": "csv",
+              "groups": {
+                "csv": [
+                  {
+                    "default": "<from file>",
+                    "name": "columns",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  },
+                  {
+                    "default": "<auto>",
+                    "name": "separator",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "excel": [
+                  {
+                    "default": "Sheet1",
+                    "name": "sheet_name",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "json": [],
+                "parquet": []
+              },
+              "name": "file_format",
+              "selector": {
+                "default": "csv",
+                "name": "file_format",
+                "type": {
+                  "enum": [
+                    "csv",
+                    "parquet",
+                    "json",
+                    "excel"
+                  ]
+                }
+              },
+              "type": "group"
+            },
+            "file_path": {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "columns": "<from file>",
+          "file_format": "csv",
+          "file_path": "uploads/protein.csv",
+          "separator": "<auto>",
+          "table_name": ""
+        },
+        "status": "done",
+        "title": "Import file"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 487.0,
+      "id": "Import file 1",
+      "position": {
+        "x": -755.0582906538923,
+        "y": 543.770372030674
+      },
+      "type": "basic",
+      "width": 439.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Import file",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "file_format": {
+              "default": "csv",
+              "groups": {
+                "csv": [
+                  {
+                    "default": "<from file>",
+                    "name": "columns",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  },
+                  {
+                    "default": "<auto>",
+                    "name": "separator",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "excel": [
+                  {
+                    "default": "Sheet1",
+                    "name": "sheet_name",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "json": [],
+                "parquet": []
+              },
+              "name": "file_format",
+              "selector": {
+                "default": "csv",
+                "name": "file_format",
+                "type": {
+                  "enum": [
+                    "csv",
+                    "parquet",
+                    "json",
+                    "excel"
+                  ]
+                }
+              },
+              "type": "group"
+            },
+            "file_path": {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "columns": "<from file>",
+          "file_format": "csv",
+          "file_path": "uploads/molecules.csv",
+          "separator": "<auto>",
+          "table_name": null
+        },
+        "status": "done",
+        "title": "Import file"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 436.0,
+      "id": "Import file 2",
+      "position": {
+        "x": 62.887657256500006,
+        "y": 1380.6697994924546
+      },
+      "type": "basic",
+      "width": 311.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Query GenMol",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "molecule_column": {
+              "default": null,
+              "name": "molecule_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "molecule_table": {
+              "default": null,
+              "name": "molecule_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "noise": {
+              "default": 0.2,
+              "name": "noise",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            "num_molecules": {
+              "default": 5.0,
+              "name": "num_molecules",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "scoring": {
+              "default": "QED",
+              "name": "scoring",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "step_size": {
+              "default": 4.0,
+              "name": "step_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "temperature": {
+              "default": 1.0,
+              "name": "temperature",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "position": {
+            "x": 594.0,
+            "y": 633.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "molecule_column": null,
+          "molecule_table": null,
+          "noise": 0.2,
+          "num_molecules": 5.0,
+          "scoring": "QED",
+          "step_size": 4.0,
+          "temperature": 1.0
+        },
+        "status": "done",
+        "title": "Query GenMol"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 601.0,
+      "id": "Query GenMol 1",
+      "position": {
+        "x": 663.3333333333335,
+        "y": 1283.3333333333335
+      },
+      "type": "basic",
+      "width": 358.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "MSA-search",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "databases": {
+              "default": "[\"Uniref30_2302\", \"colabfold_envdb_202108\", \"PDB70_220313\"]",
+              "name": "databases",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "e_value": {
+              "default": 0.0001,
+              "name": "e_value",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            "iterations": {
+              "default": 1.0,
+              "name": "iterations",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "output_alignment_formats": {
+              "default": [
+                "fasta",
+                "a3m"
+              ],
+              "name": "output_alignment_formats",
+              "type": {
+                "type": "list[lynxkite_bio.nims.AlignmentFormats]"
+              }
+            },
+            "protein_column": {
+              "default": null,
+              "name": "protein_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "protein_table": {
+              "default": null,
+              "name": "protein_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "search_type": {
+              "default": "ALPHAFOLD2",
+              "name": "search_type",
+              "type": {
+                "enum": [
+                  "ALPHAFOLD2",
+                  "ESM2"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 576.0,
+            "y": 228.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "databases": "[\"Uniref30_2302\", \"colabfold_envdb_202108\", \"PDB70_220313\"]",
+          "e_value": 0.0001,
+          "iterations": 1.0,
+          "output_alignment_formats": [
+            "fasta",
+            "a3m"
+          ],
+          "protein_column": null,
+          "protein_table": null,
+          "search_type": "ALPHAFOLD2"
+        },
+        "status": "done",
+        "title": "MSA-search"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 550.0,
+      "id": "MSA-search 1",
+      "position": {
+        "x": -45.0,
+        "y": 570.0
+      },
+      "type": "basic",
+      "width": 531.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "ligands": {
+              "name": "ligands",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            },
+            "proteins": {
+              "name": "proteins",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Query DiffDock",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "ligand_column": {
+              "default": null,
+              "name": "ligand_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "ligand_table": {
+              "default": null,
+              "name": "ligand_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "num_poses": {
+              "default": 10.0,
+              "name": "num_poses",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "num_steps": {
+              "default": 18.0,
+              "name": "num_steps",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "protein_column": {
+              "default": null,
+              "name": "protein_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "protein_table": {
+              "default": null,
+              "name": "protein_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "time_divisions": {
+              "default": 20.0,
+              "name": "time_divisions",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 852.0,
+            "y": 432.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "ligand_column": null,
+          "ligand_table": null,
+          "num_poses": 10.0,
+          "num_steps": 18.0,
+          "protein_column": null,
+          "protein_table": null,
+          "time_divisions": 20.0
+        },
+        "status": "done",
+        "title": "Query DiffDock"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 635.0,
+      "id": "Query DiffDock 1",
+      "position": {
+        "x": 1543.010053920781,
+        "y": 1167.386382170133
+      },
+      "type": "basic",
+      "width": 408.0
+    },
+    {
+      "data": {
+        "display": {
+          "series": [
+            {
+              "data": [
+                {
+                  "name": "Hydrogen",
+                  "value": 2
+                },
+                {
+                  "name": "Sulfur",
+                  "value": 1
+                },
+                {
+                  "name": "Oxygen",
+                  "value": 4
+                }
+              ],
+              "itemStyle": {
+                "borderColor": "#fff",
+                "borderRadius": 10,
+                "borderWidth": 2
+              },
+              "radius": [
+                "40%",
+                "70%"
+              ],
+              "type": "pie"
+            }
+          ]
+        },
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View molecules",
+          "outputs": {},
+          "params": {
+            "color": {
+              "default": "spectrum",
+              "name": "color",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "molecule_column": {
+              "default": null,
+              "name": "molecule_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "molecule_table": {
+              "default": null,
+              "name": "molecule_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1009.0,
+            "y": 124.0
+          },
+          "type": "visualization"
+        },
+        "params": {
+          "color": "spectrum",
+          "molecule_column": null,
+          "molecule_table": null
+        },
+        "status": "done",
+        "title": "View molecules"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View molecules 3",
+      "position": {
+        "x": 1545.0,
+        "y": 585.0
+      },
+      "type": "visualization",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "series": [
+            {
+              "data": [
+                {
+                  "name": "Hydrogen",
+                  "value": 2
+                },
+                {
+                  "name": "Sulfur",
+                  "value": 1
+                },
+                {
+                  "name": "Oxygen",
+                  "value": 4
+                }
+              ],
+              "itemStyle": {
+                "borderColor": "#fff",
+                "borderRadius": 10,
+                "borderWidth": 2
+              },
+              "radius": [
+                "40%",
+                "70%"
+              ],
+              "type": "pie"
+            }
+          ]
+        },
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View molecules",
+          "outputs": {},
+          "params": {
+            "color": {
+              "default": "spectrum",
+              "name": "color",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "molecule_column": {
+              "default": null,
+              "name": "molecule_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "molecule_table": {
+              "default": null,
+              "name": "molecule_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 859.0,
+            "y": 225.0
+          },
+          "type": "visualization"
+        },
+        "params": {
+          "color": "spectrum",
+          "molecule_column": null,
+          "molecule_table": null
+        },
+        "status": "done",
+        "title": "View molecules"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View molecules 1",
+      "position": {
+        "x": 2230.0,
+        "y": 1598.3333333333333
+      },
+      "type": "visualization",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Query OpenFold2",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "alignment_column": {
+              "default": null,
+              "name": "alignment_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "alignment_table": {
+              "default": null,
+              "name": "alignment_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "databases": {
+              "default": "[\"Uniref30_2302\", \"colabfold_envdb_202108\", \"PDB70_220313\"]",
+              "name": "databases",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "protein_column": {
+              "default": null,
+              "name": "protein_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "protein_table": {
+              "default": null,
+              "name": "protein_table",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "relaxed_prediction": {
+              "default": false,
+              "name": "relaxed_prediction",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            "use_templates": {
+              "default": false,
+              "name": "use_templates",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "position": {
+            "x": 628.0,
+            "y": 184.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "alignment_column": null,
+          "alignment_table": null,
+          "databases": "[\"Uniref30_2302\", \"colabfold_envdb_202108\", \"PDB70_220313\"]",
+          "protein_column": null,
+          "protein_table": null,
+          "relaxed_prediction": false,
+          "use_templates": false
+        },
+        "status": "done",
+        "title": "Query OpenFold2"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 653.0,
+      "id": "Query OpenFold2 1",
+      "position": {
+        "x": 750.0,
+        "y": 480.0
+      },
+      "type": "basic",
+      "width": 523.0
+    }
+  ]
+}
