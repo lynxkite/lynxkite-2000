@@ -61,7 +61,7 @@ class Parameter(BaseConfig):
     @staticmethod
     def options(name, options, default=None):
         e = enum.Enum(f"OptionsFor_{name}", options)
-        return Parameter.basic(name, e[default or options[0]], e)
+        return Parameter.basic(name, default or options[0], e)
 
     @staticmethod
     def collapsed(name, default, type=None):
@@ -106,11 +106,13 @@ class Result:
     The `output` attribute is what will be used as input for other operations.
     The `display` attribute is used to send data to display on the UI. The value has to be
     JSON-serializable.
+    `input_metadata` is a list of JSON objects describing each input.
     """
 
     output: typing.Any = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
+    input_metadata: ReadOnlyJSON | None = None
 
 
 MULTI_INPUT = Input(name="multi", type="*")
@@ -140,6 +142,11 @@ def _param_to_type(name, value, type):
                 return None if value == "" else _param_to_type(name, value, type)
             case (type, types.NoneType):
                 return None if value == "" else _param_to_type(name, value, type)
+    if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
+        try:
+            return type.model_validate_json(value)
+        except pydantic.ValidationError:
+            return None
     return value
 
 
@@ -154,9 +161,7 @@ class Op(BaseConfig):
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
-        for p in params:
-            if p in self.params:
-                params[p] = _param_to_type(p, params[p], self.params[p].type)
+        params = self.convert_params(params)
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
@@ -170,6 +175,16 @@ class Op(BaseConfig):
                 # If the operation is some kind of visualization, we use the output as the
                 # value to display by default.
                 res.display = res.output
+        return res
+
+    def convert_params(self, params):
+        """Returns the parameters converted to the expected type."""
+        res = {}
+        for p in params:
+            if p in self.params:
+                res[p] = _param_to_type(p, params[p], self.params[p].type)
+            else:
+                res[p] = params[p]
         return res
 
 
