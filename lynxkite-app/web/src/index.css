@@ -110,7 +110,7 @@ body {
     --status-color-1: oklch(75% 0.2 55);
     --status-color-2: oklch(90% 0.2 55);
     --status-color-3: oklch(75% 0.1 55);
-    /* animation: active-node-gradient-animation 2s ease-in-out infinite; */
+    animation: active-node-gradient-animation 2s ease-in-out infinite;
   }
 
   .lynxkite-node .title.planned {
