@@ -2,17 +2,54 @@
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 
 const BOOLEAN = "<class 'bool'>";
-const MODEL_MAPPING =
-  "<class 'lynxkite_graph_analytics.pytorch_model_ops.ModelMapping'>";
+const MODEL_TRAINING_INPUT_MAPPING =
+  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelTrainingInputMapping'>";
+const MODEL_INFERENCE_INPUT_MAPPING =
+  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>";
+const MODEL_OUTPUT_MAPPING =
+  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>";
 function ParamName({ name }: { name: string }) {
   return (
     <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>
   );
 }
 
-function getModelBindings(data: any): string[] {
+function Input({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string, options?: { delay: number }) => void;
+}) {
+  return (
+    <input
+      className="input input-bordered w-full"
+      value={value || ""}
+      onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
+      onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
+      onKeyDown={(evt) =>
+        evt.code === "Enter" && onChange(evt.currentTarget.value, { delay: 0 })
+      }
+    />
+  );
+}
+
+function getModelBindings(
+  data: any,
+  variant: "training input" | "inference input" | "output",
+): string[] {
   function bindingsOfModel(m: any): string[] {
-    return [...m.inputs, ...m.outputs, ...m.loss_inputs];
+    switch (variant) {
+      case "training input":
+        return [
+          ...m.inputs,
+          ...m.loss_inputs.filter((i: string) => !m.outputs.includes(i)),
+        ];
+      case "inference input":
+        return m.inputs;
+      case "output":
+        return m.outputs;
+    }
   }
   const bindings = new Set<string>();
   const other = data?.display?.other ?? data?.display?.value?.other ?? {};
@@ -31,19 +68,19 @@ function getModelBindings(data: any): string[] {
 function parseJsonOrEmpty(json: string): object {
   try {
     const j = JSON.parse(json);
-    if (typeof j === "object") {
+    if (j !== null && typeof j === "object") {
       return j;
     }
   } catch (e) {}
   return {};
 }
 
-function ModelMapping({ value, onChange, data }: any) {
+function ModelMapping({ value, onChange, data, variant }: any) {
   const v: any = parseJsonOrEmpty(value);
   v.map ??= {};
   const dfs =
     data?.display?.dataframes ?? data?.display?.value?.dataframes ?? {};
-  const bindings = getModelBindings(data);
+  const bindings = getModelBindings(data, variant);
   return (
     <table className="model-mapping-param">
       <tbody>
@@ -63,12 +100,12 @@ function ModelMapping({ value, onChange, data }: any) {
                   value={v.map?.[binding]?.df}
                   onChange={(evt) => {
                     const df = evt.currentTarget.value;
-                    if (df === "unbound") {
+                    if (df === "") {
                       const map = { ...v.map, [binding]: undefined };
                       onChange(JSON.stringify({ map }));
                     } else {
                       const columnSpec = {
-                        column: dfs[df][0],
+                        column: dfs[df].columns[0],
                         ...(v.map?.[binding] || {}),
                         df,
                       };
@@ -77,9 +114,7 @@ function ModelMapping({ value, onChange, data }: any) {
                     }
                   }}
                 >
-                  <option key="unbound" value="unbound">
-                    unbound
-                  </option>
+                  <option key="" value="" />
                   {Object.keys(dfs).map((df: string) => (
                     <option key={df} value={df}>
                       {df}
@@ -88,22 +123,39 @@ function ModelMapping({ value, onChange, data }: any) {
                 </select>
               </td>
               <td>
-                <select
-                  className="select select-ghost"
-                  value={v.map?.[binding]?.column}
-                  onChange={(evt) => {
-                    const column = evt.currentTarget.value;
-                    const columnSpec = { ...(v.map?.[binding] || {}), column };
-                    const map = { ...v.map, [binding]: columnSpec };
-                    onChange(JSON.stringify({ map }));
-                  }}
-                >
-                  {dfs[v.map?.[binding]?.df]?.columns.map((col: string) => (
-                    <option key={col} value={col}>
-                      {col}
-                    </option>
-                  ))}
-                </select>
+                {variant === "output" ? (
+                  <Input
+                    value={v.map?.[binding]?.column}
+                    onChange={(column, options) => {
+                      const columnSpec = {
+                        ...(v.map?.[binding] || {}),
+                        column,
+                      };
+                      const map = { ...v.map, [binding]: columnSpec };
+                      onChange(JSON.stringify({ map }), options);
+                    }}
+                  />
+                ) : (
+                  <select
+                    className="select select-ghost"
+                    value={v.map?.[binding]?.column}
+                    onChange={(evt) => {
+                      const column = evt.currentTarget.value;
+                      const columnSpec = {
+                        ...(v.map?.[binding] || {}),
+                        column,
+                      };
+                      const map = { ...v.map, [binding]: columnSpec };
+                      onChange(JSON.stringify({ map }));
+                    }}
+                  >
+                    {dfs[v.map?.[binding]?.df]?.columns.map((col: string) => (
+                      <option key={col} value={col}>
+                        {col}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </td>
             </tr>
           ))
@@ -178,24 +230,40 @@ export default function NodeParameter({
             {name.replace(/_/g, " ")}
           </label>
         </div>
-      ) : meta?.type?.type === MODEL_MAPPING ? (
+      ) : meta?.type?.type === MODEL_TRAINING_INPUT_MAPPING ? (
         <>
           <ParamName name={name} />
-          <ModelMapping value={value} data={data} onChange={onChange} />
+          <ModelMapping
+            value={value}
+            data={data}
+            variant="training input"
+            onChange={onChange}
+          />
+        </>
+      ) : meta?.type?.type === MODEL_INFERENCE_INPUT_MAPPING ? (
+        <>
+          <ParamName name={name} />
+          <ModelMapping
+            value={value}
+            data={data}
+            variant="inference input"
+            onChange={onChange}
+          />
+        </>
+      ) : meta?.type?.type === MODEL_OUTPUT_MAPPING ? (
+        <>
+          <ParamName name={name} />
+          <ModelMapping
+            value={value}
+            data={data}
+            variant="output"
+            onChange={onChange}
+          />
         </>
       ) : (
         <>
           <ParamName name={name} />
-          <input
-            className="input input-bordered w-full"
-            value={value || ""}
-            onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
-            onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
-            onKeyDown={(evt) =>
-              evt.code === "Enter" &&
-              onChange(evt.currentTarget.value, { delay: 0 })
-            }
-          />
+          <Input value={value} onChange={onChange} />
         </>
       )}
     </label>

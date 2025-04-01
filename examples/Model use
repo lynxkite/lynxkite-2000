@@ -8,10 +8,24 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Train/test split 1 Train model 3",
+      "id": "Train/test split 1 Define model 1",
       "source": "Train/test split 1",
       "sourceHandle": "output",
-      "target": "Train model 3",
+      "target": "Define model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define model 1 Train model 2",
+      "source": "Define model 1",
+      "sourceHandle": "output",
+      "target": "Train model 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 2 Model inference 1",
+      "source": "Train model 2",
+      "sourceHandle": "output",
+      "target": "Model inference 1",
       "targetHandle": "bundle"
     },
     {
@@ -19,20 +33,6 @@
       "source": "Model inference 1",
       "sourceHandle": "output",
       "target": "View tables 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Train/test split 1 Train model 1",
-      "source": "Train/test split 1",
-      "sourceHandle": "output",
-      "target": "Train model 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Train model 1 Model inference 1",
-      "source": "Train model 1",
-      "sourceHandle": "output",
-      "target": "Model inference 1",
       "targetHandle": "bundle"
     }
   ],
@@ -166,199 +166,6 @@
       },
       "type": "basic",
       "width": 371.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "x",
-                "y"
-              ]
-            },
-            "df_test": {
-              "columns": [
-                "x",
-                "y"
-              ]
-            },
-            "df_train": {
-              "columns": [
-                "x",
-                "y"
-              ]
-            }
-          },
-          "other": {
-            "model": {
-              "model": {
-                "inputs": [
-                  "Input__embedding_1_x"
-                ],
-                "loss_inputs": [
-                  "Activation_2_x",
-                  "Input__label_1_y"
-                ],
-                "outputs": [
-                  "Activation_2_x"
-                ]
-              },
-              "type": "model"
-            }
-          },
-          "relations": []
-        },
-        "error": null,
-        "meta": {
-          "inputs": {
-            "bundle": {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          },
-          "name": "Train model",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "epochs": {
-              "default": 1.0,
-              "name": "epochs",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "input_mapping": {
-              "default": null,
-              "name": "input_mapping",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "model_workspace": {
-              "default": null,
-              "name": "model_workspace",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "save_as": {
-              "default": "model",
-              "name": "save_as",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "position": {
-            "x": 675.0,
-            "y": 144.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "epochs": "1000",
-          "input_mapping": "{\"map\": {\"Input__embedding_1_x\": {\"df\": \"df_train\", \"column\": \"x\"}, \"Input__label_1_y\": {\"df\": \"df_train\", \"column\": \"y\"  }}}",
-          "model_workspace": "Model definition",
-          "save_as": "model"
-        },
-        "status": "done",
-        "title": "Train model"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 519.0,
-      "id": "Train model 3",
-      "position": {
-        "x": 722.5912720951791,
-        "y": -784.0614755260641
-      },
-      "type": "basic",
-      "width": 640.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": "'Input__embedding_1_x'",
-        "meta": {
-          "inputs": {
-            "bundle": {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          },
-          "name": "Model inference",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "input_mapping": {
-              "default": "",
-              "name": "input_mapping",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "model_name": {
-              "default": "model",
-              "name": "model_name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "output_mapping": {
-              "default": "",
-              "name": "output_mapping",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "position": {
-            "x": 506.0,
-            "y": 115.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "input_mapping": "{\"map\": {\"Input__embedding_1_x\": {\"df\": \"df_test\", \"column\": \"x\"}}}",
-          "model_name": "model",
-          "output_mapping": "{\"map\": {\"Activation_2_x\": {\"df\": \"df_test\", \"column\": \"predicted\"}}}"
-        },
-        "status": "done",
-        "title": "Model inference"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 429.0,
-      "id": "Model inference 1",
-      "position": {
-        "x": 1445.5664910683593,
-        "y": 12.075943590382515
-      },
-      "type": "basic",
-      "width": 410.0
     },
     {
       "data": {
@@ -780,54 +587,54 @@
               ],
               "data": [
                 [
+                  "[0.4827103  0.10563457 0.98858833 0.82286644]",
+                  "[1.48271036 1.10563457 1.98858833 1.82286644]",
+                  "[1.4503304958343506, 1.1575173139572144, 1.996051549911499, 1.8715994358062744]"
+                ],
+                [
+                  "[0.54914117 0.03810108 0.87531954 0.73044223]",
+                  "[1.54914117 1.03810108 1.87531948 1.73044229]",
+                  "[1.5054945945739746, 1.0799291133880615, 1.8784711360931396, 1.7745399475097656]"
+                ],
+                [
+                  "[0.26661873 0.45946234 0.13510543 0.81294441]",
+                  "[1.26661873 1.4594624  1.13510537 1.81294441]",
+                  "[1.2893636226654053, 1.4012629985809326, 1.1273266077041626, 1.7483277320861816]"
+                ],
+                [
+                  "[0.9630242  0.76359051 0.24853623 0.76881069]",
+                  "[1.96302414 1.76359057 1.24853623 1.76881075]",
+                  "[1.9627504348754883, 1.808237075805664, 1.2652870416641235, 1.7989287376403809]"
+                ],
+                [
                   "[0.52046251 0.45887971 0.72169858 0.29517919]",
                   "[1.52046251 1.45887971 1.72169852 1.29517913]",
-                  "[1.5168578624725342, 1.450861930847168, 1.7133464813232422, 1.3041404485702515]"
+                  "[1.4980013370513916, 1.4540209770202637, 1.7123804092407227, 1.3061636686325073]"
                 ],
                 [
-                  "[0.78956431 0.87284744 0.06880784 0.03455889]",
-                  "[1.78956437 1.87284744 1.06880784 1.03455889]",
-                  "[1.7899272441864014, 1.829580307006836, 1.0702992677688599, 1.0265709161758423]"
+                  "[0.62569475 0.9881897  0.83639616 0.9828859 ]",
+                  "[1.62569475 1.9881897  1.83639622 1.98288584]",
+                  "[1.6632444858551025, 2.0650277137756348, 1.8643897771835327, 2.032055377960205]"
                 ],
                 [
-                  "[0.49607176 0.1922397  0.46640229 0.78321403]",
-                  "[1.49607182 1.19223976 1.46640229 1.78321409]",
-                  "[1.4901000261306763, 1.193819284439087, 1.4632138013839722, 1.7822779417037964]"
+                  "[0.95928186 0.84273899 0.71514636 0.38619852]",
+                  "[1.95928192 1.84273899 1.7151463  1.38619852]",
+                  "[1.943433403968811, 1.905775785446167, 1.727120280265808, 1.4508745670318604]"
                 ],
                 [
-                  "[0.49691743 0.61873293 0.90698647 0.94486356]",
-                  "[1.49691749 1.61873293 1.90698647 1.94486356]",
-                  "[1.4999868869781494, 1.6656270027160645, 1.9074199199676514, 1.9556759595870972]"
+                  "[0.94516498 0.08422136 0.5608117  0.07652664]",
+                  "[1.94516492 1.08422136 1.56081176 1.07652664]",
+                  "[1.8603894710540771, 1.0990982055664062, 1.5473597049713135, 1.1221177577972412]"
                 ],
                 [
-                  "[0.59812403 0.78395379 0.0291847  0.81814629]",
-                  "[1.59812403 1.78395379 1.0291847  1.81814623]",
-                  "[1.6044235229492188, 1.7707669734954834, 1.0426081418991089, 1.7988944053649902]"
+                  "[0.32225502 0.16999388 0.05823922 0.9628762 ]",
+                  "[1.32225502 1.16999388 1.05823922 1.9628762 ]",
+                  "[1.3253933191299438, 1.1194703578948975, 1.0517100095748901, 1.903820514678955]"
                 ],
                 [
-                  "[0.67447788 0.6125319  0.98007888 0.65968603]",
-                  "[1.67447782 1.6125319  1.98007894 1.65968609]",
-                  "[1.6721093654632568, 1.6624714136123657, 1.9726766347885132, 1.6813924312591553]"
-                ],
-                [
-                  "[0.18720162 0.74115586 0.98626411 0.30355608]",
-                  "[1.18720162 1.74115586 1.98626411 1.30355608]",
-                  "[1.1961991786956787, 1.723442792892456, 1.9852817058563232, 1.3066248893737793]"
-                ],
-                [
-                  "[0.74064726 0.4155122  0.09800029 0.49930882]",
-                  "[1.74064732 1.4155122  1.09800029 1.49930882]",
-                  "[1.7340764999389648, 1.3968157768249512, 1.0968588590621948, 1.493086814880371]"
-                ],
-                [
-                  "[0.70167565 0.26930219 0.5660674  0.61194974]",
-                  "[1.70167565 1.26930213 1.56606746 1.61194968]",
-                  "[1.691997766494751, 1.2865687608718872, 1.5571787357330322, 1.622729778289795]"
-                ],
-                [
-                  "[0.90817457 0.89270043 0.38583666 0.66566533]",
-                  "[1.90817451 1.89270043 1.3858366  1.66566539]",
-                  "[1.9086859226226807, 1.924757719039917, 1.3887461423873901, 1.6714670658111572]"
+                  "[0.91730917 0.22574073 0.09591609 0.33056474]",
+                  "[1.91730917 1.22574067 1.09591603 1.33056474]",
+                  "[1.8627445697784424, 1.2110977172851562, 1.085142731666565, 1.3327856063842773]"
                 ]
               ]
             },
@@ -870,10 +677,6 @@
                   "[1.42709172 1.48990917 1.69229746 1.00025761]"
                 ],
                 [
-                  "[0.32225502 0.16999388 0.05823922 0.9628762 ]",
-                  "[1.32225502 1.16999388 1.05823922 1.9628762 ]"
-                ],
-                [
                   "[0.50783676 0.04156506 0.21984279 0.8454656 ]",
                   "[1.50783682 1.04156506 1.21984279 1.84546566]"
                 ],
@@ -914,16 +717,16 @@
                   "[1.24388778 1.07268476 1.68350863 1.73431659]"
                 ],
                 [
-                  "[0.62569475 0.9881897  0.83639616 0.9828859 ]",
-                  "[1.62569475 1.9881897  1.83639622 1.98288584]"
-                ],
-                [
                   "[0.56922203 0.98222166 0.76851749 0.28615737]",
                   "[1.56922197 1.9822216  1.76851749 1.28615737]"
                 ],
                 [
                   "[0.88776821 0.51636773 0.30333066 0.32230979]",
                   "[1.88776827 1.51636767 1.30333066 1.32230973]"
+                ],
+                [
+                  "[0.90817457 0.89270043 0.38583666 0.66566533]",
+                  "[1.90817451 1.89270043 1.3858366  1.66566539]"
                 ],
                 [
                   "[0.48507756 0.80808765 0.77162558 0.47834778]",
@@ -950,14 +753,6 @@
                   "[1.23942459 1.90487361 1.69337189 1.65089428]"
                 ],
                 [
-                  "[0.94516498 0.08422136 0.5608117  0.07652664]",
-                  "[1.94516492 1.08422136 1.56081176 1.07652664]"
-                ],
-                [
-                  "[0.26661873 0.45946234 0.13510543 0.81294441]",
-                  "[1.26661873 1.4594624  1.13510537 1.81294441]"
-                ],
-                [
                   "[0.30754459 0.77694583 0.09278506 0.38326019]",
                   "[1.30754459 1.77694583 1.09278512 1.38326025]"
                 ],
@@ -966,12 +761,16 @@
                   "[1.27845025 1.32472348 1.82203603 1.77107549]"
                 ],
                 [
-                  "[0.4827103  0.10563457 0.98858833 0.82286644]",
-                  "[1.48271036 1.10563457 1.98858833 1.82286644]"
-                ],
-                [
                   "[0.98033333 0.97656083 0.38939917 0.81491041]",
                   "[1.98033333 1.97656083 1.38939917 1.81491041]"
+                ],
+                [
+                  "[0.74064726 0.4155122  0.09800029 0.49930882]",
+                  "[1.74064732 1.4155122  1.09800029 1.49930882]"
+                ],
+                [
+                  "[0.78956431 0.87284744 0.06880784 0.03455889]",
+                  "[1.78956437 1.87284744 1.06880784 1.03455889]"
                 ],
                 [
                   "[0.94221359 0.57740951 0.98649532 0.40934443]",
@@ -1022,6 +821,10 @@
                   "[1.08107257 1.2602725  1.18861127 1.44833231]"
                 ],
                 [
+                  "[0.59812403 0.78395379 0.0291847  0.81814629]",
+                  "[1.59812403 1.78395379 1.0291847  1.81814623]"
+                ],
+                [
                   "[0.93488538 0.73882395 0.37345302 0.0274905 ]",
                   "[1.93488538 1.73882389 1.37345302 1.0274905 ]"
                 ],
@@ -1030,12 +833,12 @@
                   "[1.30631399 1.48311198 1.87847519 1.67559886]"
                 ],
                 [
-                  "[0.85566247 0.83362883 0.48424995 0.25265992]",
-                  "[1.85566247 1.83362889 1.48424995 1.25265992]"
+                  "[0.18720162 0.74115586 0.98626411 0.30355608]",
+                  "[1.18720162 1.74115586 1.98626411 1.30355608]"
                 ],
                 [
-                  "[0.95928186 0.84273899 0.71514636 0.38619852]",
-                  "[1.95928192 1.84273899 1.7151463  1.38619852]"
+                  "[0.85566247 0.83362883 0.48424995 0.25265992]",
+                  "[1.85566247 1.83362889 1.48424995 1.25265992]"
                 ],
                 [
                   "[0.32565445 0.90939188 0.07488042 0.13730896]",
@@ -1048,10 +851,6 @@
                 [
                   "[0.79905868 0.89367443 0.75429088 0.3190186 ]",
                   "[1.79905868 1.89367437 1.75429082 1.3190186 ]"
-                ],
-                [
-                  "[0.54914117 0.03810108 0.87531954 0.73044223]",
-                  "[1.54914117 1.03810108 1.87531948 1.73044229]"
                 ],
                 [
                   "[0.67418337 0.79634351 0.23229051 0.71345252]",
@@ -1090,12 +889,12 @@
                   "[1.60809326 1.5656302  1.32107437 1.72599435]"
                 ],
                 [
-                  "[0.47963417 0.81818312 0.48720706 0.49339259]",
-                  "[1.47963417 1.81818318 1.48720706 1.49339259]"
+                  "[0.67447788 0.6125319  0.98007888 0.65968603]",
+                  "[1.67447782 1.6125319  1.98007894 1.65968609]"
                 ],
                 [
-                  "[0.9630242  0.76359051 0.24853623 0.76881069]",
-                  "[1.96302414 1.76359057 1.24853623 1.76881075]"
+                  "[0.47963417 0.81818312 0.48720706 0.49339259]",
+                  "[1.47963417 1.81818318 1.48720706 1.49339259]"
                 ],
                 [
                   "[0.60609657 0.96257663 0.19292736 0.95702219]",
@@ -1104,6 +903,10 @@
                 [
                   "[0.80654246 0.08253473 0.74478531 0.71257162]",
                   "[1.8065424  1.08253479 1.74478531 1.71257162]"
+                ],
+                [
+                  "[0.70167565 0.26930219 0.5660674  0.61194974]",
+                  "[1.70167565 1.26930213 1.56606746 1.61194968]"
                 ],
                 [
                   "[0.76933283 0.86241865 0.44114518 0.65644735]",
@@ -1122,8 +925,8 @@
                   "[1.12024069 1.21342516 1.56858408 1.58644271]"
                 ],
                 [
-                  "[0.91730917 0.22574073 0.09591609 0.33056474]",
-                  "[1.91730917 1.22574067 1.09591603 1.33056474]"
+                  "[0.49691743 0.61873293 0.90698647 0.94486356]",
+                  "[1.49691749 1.61873293 1.90698647 1.94486356]"
                 ],
                 [
                   "[0.6032477  0.83361369 0.18538666 0.19108021]",
@@ -1136,6 +939,10 @@
                 [
                   "[0.37959969 0.42820001 0.10690689 0.96353984]",
                   "[1.37959969 1.42820001 1.10690689 1.96353984]"
+                ],
+                [
+                  "[0.49607176 0.1922397  0.46640229 0.78321403]",
+                  "[1.49607182 1.19223976 1.46640229 1.78321409]"
                 ],
                 [
                   "[0.40234613 0.54987347 0.49542785 0.54153186]",
@@ -1201,7 +1008,7 @@
             }
           },
           "other": {
-            "model": "ModelConfig(model=Sequential(\n  (0) - Linear(in_features=4, out_features=4, bias=True): Input__embedding_1_x -> Linear_1_x\n  (1) - <function leaky_relu at 0x710fc8f0fba0>: Linear_1_x -> Activation_2_x\n  (2) - Identity(): Activation_2_x -> Activation_2_x\n), model_inputs=['Input__embedding_1_x'], model_outputs=['Activation_2_x'], loss_inputs=['Activation_2_x', 'Input__label_1_y'], loss=Sequential(\n  (0) - <function mse_loss at 0x710fc8f316c0>: Activation_2_x, Input__label_1_y -> MSE_loss_1_loss\n  (1) - Identity(): MSE_loss_1_loss -> loss\n), optimizer=SGD (\nParameter Group 0\n    dampening: 0\n    differentiable: False\n    foreach: None\n    fused: None\n    lr: 0.1\n    maximize: False\n    momentum: 0\n    nesterov: False\n    weight_decay: 0\n))"
+            "model": "ModelConfig(model=Sequential(\n  (0) - Linear(in_features=4, out_features=4, bias=True): Input__embedding_1_x -> Linear_1_x\n  (1) - <function leaky_relu at 0x731d1381bba0>: Linear_1_x -> Activation_2_x\n  (2) - Identity(): Activation_2_x -> Activation_2_x\n), model_inputs=['Input__embedding_1_x'], model_outputs=['Activation_2_x'], loss_inputs=['Input__label_1_y', 'Activation_2_x'], loss=Sequential(\n  (0) - <function mse_loss at 0x731d138216c0>: Activation_2_x, Input__label_1_y -> MSE_loss_1_loss\n  (1) - Identity(): MSE_loss_1_loss -> loss\n), optimizer=SGD (\nParameter Group 0\n    dampening: 0\n    differentiable: False\n    foreach: None\n    fused: None\n    lr: 0.1\n    maximize: False\n    momentum: 0\n    nesterov: False\n    weight_decay: 0\n), source_workspace=None, trained=True)"
           },
           "relations": []
         },
@@ -1227,27 +1034,23 @@
               }
             }
           },
-          "position": {
-            "x": 471.0,
-            "y": 424.0
-          },
           "type": "table_view"
         },
         "params": {
           "limit": 100.0
         },
-        "status": "planned",
+        "status": "done",
         "title": "View tables"
       },
       "dragHandle": ".bg-primary",
-      "height": 600.0,
+      "height": 711.0,
       "id": "View tables 1",
       "position": {
-        "x": 2017.4630208327735,
-        "y": -223.54449620081252
+        "x": 2900.3734843758352,
+        "y": -128.41609608842867
       },
       "type": "table_view",
-      "width": 582.0
+      "width": 836.0
     },
     {
       "data": {
@@ -1277,22 +1080,125 @@
           "other": {
             "model": {
               "model": {
-                "inputs": [],
+                "inputs": [
+                  "Input__embedding_1_x"
+                ],
                 "loss_inputs": [
-                  "Activation_2_x",
-                  "Input__label_1_y"
+                  "Input__label_1_y",
+                  "Activation_2_x"
                 ],
                 "outputs": [
-                  "Activation_2_x",
-                  "Input__label_1_y"
-                ]
+                  "Activation_2_x"
+                ],
+                "trained": false
               },
               "type": "model"
             }
           },
           "relations": []
         },
-        "error": "Mapping is unset.",
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Define model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_workspace": "Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Define model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 537.0,
+      "id": "Define model 1",
+      "position": {
+        "x": 795.0,
+        "y": -45.0
+      },
+      "type": "basic",
+      "width": 498.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "x",
+                "y"
+              ]
+            },
+            "df_test": {
+              "columns": [
+                "x",
+                "y"
+              ]
+            },
+            "df_train": {
+              "columns": [
+                "x",
+                "y"
+              ]
+            }
+          },
+          "other": {
+            "model": {
+              "model": {
+                "inputs": [
+                  "Input__embedding_1_x"
+                ],
+                "loss_inputs": [
+                  "Input__label_1_y",
+                  "Activation_2_x"
+                ],
+                "outputs": [
+                  "Activation_2_x"
+                ],
+                "trained": true
+              },
+              "type": "model"
+            }
+          },
+          "relations": []
+        },
+        "error": null,
         "meta": {
           "inputs": {
             "bundle": {
@@ -1325,48 +1231,154 @@
               "default": null,
               "name": "input_mapping",
               "type": {
-                "type": "<class 'lynxkite_graph_analytics.pytorch_model_ops.ModelMapping'>"
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelTrainingInputMapping'>"
               }
             },
-            "model_workspace": {
-              "default": null,
-              "name": "model_workspace",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "save_as": {
+            "model_name": {
               "default": "model",
-              "name": "save_as",
+              "name": "model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
           },
           "position": {
-            "x": 723.0,
-            "y": 370.0
+            "x": 666.0,
+            "y": 492.0
           },
           "type": "basic"
         },
         "params": {
-          "epochs": "2",
-          "input_mapping": "{\"map\":{\"Activation_2_x\":{\"df\":\"df_train\"},\"Input__label_1_y\":{\"df\":\"df_train\",\"column\":\"y\"}}}",
-          "model_workspace": "Model definition",
-          "save_as": "model"
+          "epochs": "1000",
+          "input_mapping": "{\"map\":{\"Input__embedding_1_x\":{\"column\":\"x\",\"df\":\"df_train\"},\"Input__label_1_y\":{\"column\":\"y\",\"df\":\"df_train\"}}}",
+          "model_name": "model"
         },
         "status": "done",
         "title": "Train model"
       },
       "dragHandle": ".bg-primary",
-      "height": 473.0,
-      "id": "Train model 1",
+      "height": 604.0,
+      "id": "Train model 2",
       "position": {
-        "x": 712.1212754578014,
-        "y": 42.33722689912529
+        "x": 1399.5245787239226,
+        "y": -19.196202428593544
       },
       "type": "basic",
-      "width": 577.0
+      "width": 586.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "x",
+                "y"
+              ]
+            },
+            "df_test": {
+              "columns": [
+                "predicted",
+                "x",
+                "y"
+              ]
+            },
+            "df_train": {
+              "columns": [
+                "x",
+                "y"
+              ]
+            }
+          },
+          "other": {
+            "model": {
+              "model": {
+                "inputs": [
+                  "Input__embedding_1_x"
+                ],
+                "loss_inputs": [
+                  "Input__label_1_y",
+                  "Activation_2_x"
+                ],
+                "outputs": [
+                  "Activation_2_x"
+                ],
+                "trained": true
+              },
+              "type": "model"
+            }
+          },
+          "relations": []
+        },
+        "error": null,
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "output_mapping": {
+              "default": null,
+              "name": "output_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>"
+              }
+            }
+          },
+          "position": {
+            "x": 934.0,
+            "y": 167.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "input_mapping": "{\"map\":{\"Input__embedding_1_x\":{\"column\":\"x\",\"df\":\"df_test\"}}}",
+          "model_name": "model",
+          "output_mapping": "{\"map\":{\"Activation_2_x\":{\"column\":\"predicted\",\"df\":\"df_test\"}}}"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 893.0,
+      "id": "Model inference 1",
+      "position": {
+        "x": 2181.718373860645,
+        "y": -69.44701793295484
+      },
+      "type": "basic",
+      "width": 529.0
     }
   ]
 }
