@@ -106,18 +106,13 @@ class Result:
     The `output` attribute is what will be used as input for other operations.
     The `display` attribute is used to send data to display on the UI. The value has to be
     JSON-serializable.
+    `input_metadata` is a list of JSON objects describing each input.
     """
 
     output: typing.Any = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
-
-    def default_display(self) -> ReadOnlyJSON | None:
-        """Automatically extracts basic data from the output."""
-        if hasattr(self.output, "default_display"):
-            return self.output.default_display()
-        else:
-            return None
+    input_metadata: ReadOnlyJSON | None = None
 
 
 MULTI_INPUT = Input(name="multi", type="*")
@@ -147,7 +142,7 @@ def _param_to_type(name, value, type):
                 return None if value == "" else _param_to_type(name, value, type)
             case (type, types.NoneType):
                 return None if value == "" else _param_to_type(name, value, type)
-    if issubclass(type, pydantic.BaseModel):
+    if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
         try:
             return type.model_validate_json(value)
         except pydantic.ValidationError:

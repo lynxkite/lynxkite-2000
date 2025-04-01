@@ -119,7 +119,7 @@ class Bundle:
             "other": {k: str(v) for k, v in self.other.items()},
         }
 
-    def default_display(self):
+    def metadata(self):
         """JSON-serializable information about the bundle, metadata only."""
         return {
             "dataframes": {
@@ -130,8 +130,7 @@ class Bundle:
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
             "other": {
-                k: getattr(v, "default_display", lambda: {})()
-                for k, v in self.other.items()
+                k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()
             },
         }
 
@@ -231,13 +230,16 @@ def _execute_node(node, ws, catalog, outputs):
         if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
             traceback.print_exc()
         result = ops.Result(error=str(e))
-        # On error, just output the first input. This helps reduce the errors on the frontend,
-        # and it lets boxes easily access things from their inputs on the UI, even in error state.
-        if inputs:
-            result.output = inputs[0]
+    result.input_metadata = [_get_metadata(i) for i in inputs]
     if result.output is not None:
         outputs[node.id] = result.output
     node.publish_result(result)
+
+
+def _get_metadata(x):
+    if hasattr(x, "metadata"):
+        return x.metadata()
+    return {}
 
 
 def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
