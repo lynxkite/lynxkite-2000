@@ -111,9 +111,7 @@ def save(ws: Workspace, path: str):
     if dirname:
         os.makedirs(dirname, exist_ok=True)
     # Create temp file in the same directory to make sure it's on the same filesystem.
-    with tempfile.NamedTemporaryFile(
-        "w", prefix=f".{basename}.", dir=dirname, delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile("w", prefix=f".{basename}.", dir=dirname, delete=False) as f:
         temp_name = f.name
         f.write(j)
     os.replace(temp_name, path)

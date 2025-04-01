@@ -1,6 +1,7 @@
 {
   "formatter": {
     "ignore": ["**/node_modules/**", "**/dist/**"],
+    "lineWidth": 100,
     "indentStyle": "space"
   },
   "linter": {

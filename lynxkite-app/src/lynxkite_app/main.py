@@ -34,10 +34,7 @@ app.add_middleware(GZipMiddleware)
 
 @app.get("/api/catalog")
 def get_catalog():
-    return {
-        k: {op.name: op.model_dump() for op in v.values()}
-        for k, v in ops.CATALOGS.items()
-    }
+    return {k: {op.name: op.model_dump() for op in v.values()} for k, v in ops.CATALOGS.items()}
 
 
 class SaveRequest(workspace.BaseConfig):

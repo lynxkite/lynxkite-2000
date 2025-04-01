@@ -52,21 +52,13 @@ export default function () {
     }
   }
 
-  function newWorkspaceIn(
-    path: string,
-    list: DirectoryEntry[],
-    workspaceName?: string,
-  ) {
+  function newWorkspaceIn(path: string, list: DirectoryEntry[], workspaceName?: string) {
     const pathSlash = path ? `${path}/` : "";
     const name = workspaceName || newName(list);
     navigate(`/edit/${pathSlash}${name}`, { replace: true });
   }
 
-  async function newFolderIn(
-    path: string,
-    list: DirectoryEntry[],
-    folderName?: string,
-  ) {
+  async function newFolderIn(path: string, list: DirectoryEntry[], folderName?: string) {
     const name = folderName || newName(list, "New Folder");
     const pathSlash = path ? `${path}/` : "";
 
@@ -83,12 +75,10 @@ export default function () {
   }
 
   async function deleteItem(item: DirectoryEntry) {
-    if (!window.confirm(`Are you sure you want to delete "${item.name}"?`))
-      return;
+    if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return;
     const pathSlash = path ? `${path}/` : "";
 
-    const apiPath =
-      item.type === "directory" ? "/api/dir/delete" : "/api/delete";
+    const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
     await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -124,9 +114,7 @@ export default function () {
                       newWorkspaceIn(
                         path || "",
                         list.data,
-                        (
-                          e.target as HTMLFormElement
-                        ).workspaceName.value.trim(),
+                        (e.target as HTMLFormElement).workspaceName.value.trim(),
                       );
                     }}
                   >
@@ -138,10 +126,7 @@ export default function () {
                     />
                   </form>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setIsCreatingWorkspace(true)}
-                >
+                <button type="button" onClick={() => setIsCreatingWorkspace(true)}>
                   <FolderPlus /> New workspace
                 </button>
               </div>

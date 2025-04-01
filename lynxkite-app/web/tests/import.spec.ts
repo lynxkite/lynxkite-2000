@@ -7,10 +7,7 @@ import { Splash, Workspace } from "./lynxkite";
 let workspace: Workspace;
 
 test.beforeEach(async ({ browser }) => {
-  workspace = await Workspace.empty(
-    await browser.newPage(),
-    "import_spec_test",
-  );
+  workspace = await Workspace.empty(await browser.newPage(), "import_spec_test");
 });
 
 test.afterEach(async () => {
@@ -22,11 +19,7 @@ test.afterEach(async () => {
   await splash.deleteEntry("import_spec_test");
 });
 
-async function validateImport(
-  workspace: Workspace,
-  fileName: string,
-  fileFormat: string,
-) {
+async function validateImport(workspace: Workspace, fileName: string, fileFormat: string) {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const filePath = join(__dirname, "data", fileName);

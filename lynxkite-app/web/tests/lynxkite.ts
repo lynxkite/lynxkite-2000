@@ -63,10 +63,7 @@ export class Workspace {
 
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    await this.page
-      .locator(".node-search")
-      .getByText(boxName, { exact: true })
-      .click();
+    await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
@@ -107,9 +104,7 @@ export class Workspace {
 
   getBoxHandle(boxId: string, pos?: string) {
     if (pos) {
-      return this.page.locator(
-        `[data-id="${boxId}"] [data-handlepos="${pos}"]`,
-      );
+      return this.page.locator(`[data-id="${boxId}"] [data-handlepos="${pos}"]`);
     }
     return this.page.getByTestId(boxId);
   }
@@ -133,11 +128,9 @@ export class Workspace {
     } else if (offset) {
       // Without steps the movement is too fast and the box is not dragged. The more steps,
       // the better the movement is captured
-      await this.page.mouse.move(
-        boxCenterX + offset.offsetX,
-        boxCenterY + offset.offsetY,
-        { steps: 5 },
-      );
+      await this.page.mouse.move(boxCenterX + offset.offsetX, boxCenterY + offset.offsetY, {
+        steps: 5,
+      });
     }
     await this.page.mouse.up();
   }
@@ -197,9 +190,7 @@ export class Splash {
       workspaceName = name;
       await this.page.locator('input[name="workspaceName"]').fill(name);
     } else {
-      workspaceName = await this.page
-        .locator('input[name="workspaceName"]')
-        .inputValue();
+      workspaceName = await this.page.locator('input[name="workspaceName"]').inputValue();
     }
     await this.page.locator('input[name="workspaceName"]').press("Enter");
     const ws = new Workspace(this.page, workspaceName);
