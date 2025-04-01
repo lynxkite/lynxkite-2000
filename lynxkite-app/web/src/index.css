@@ -102,8 +102,7 @@ body {
     --status-color-1: oklch(75% 0.2 55);
     --status-color-2: oklch(75% 0.2 55);
     --status-color-3: oklch(75% 0.2 55);
-    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3
-      0.3s;
+    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3 0.3s;
   }
 
   .lynxkite-node .title.active {

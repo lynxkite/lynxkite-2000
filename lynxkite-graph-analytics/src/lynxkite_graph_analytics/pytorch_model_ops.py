@@ -21,12 +21,8 @@ def reg(name, inputs=[], outputs=None, params=[]):
     return ops.register_passive_op(
         ENV,
         name,
-        inputs=[
-            ops.Input(name=name, position="bottom", type="tensor") for name in inputs
-        ],
-        outputs=[
-            ops.Output(name=name, position="top", type="tensor") for name in outputs
-        ],
+        inputs=[ops.Input(name=name, position="bottom", type="tensor") for name in inputs],
+        outputs=[ops.Output(name=name, position="top", type="tensor") for name in outputs],
         params=params,
     )
 
@@ -196,9 +192,7 @@ class ModelConfig:
         }
 
 
-def build_model(
-    ws: workspace.Workspace, inputs: dict[str, torch.Tensor]
-) -> ModelConfig:
+def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> ModelConfig:
     """Builds the model described in the workspace."""
     catalog = ops.CATALOGS[ENV]
     optimizers = []
@@ -272,9 +266,7 @@ def build_model(
                 ls.append((torch.nn.Linear(isize, osize), f"{inputs.x} -> {outputs.x}"))
                 sizes[outputs.x] = osize
             case "Activation":
-                f = getattr(
-                    torch.nn.functional, p["type"].name.lower().replace(" ", "_")
-                )
+                f = getattr(torch.nn.functional, p["type"].name.lower().replace(" ", "_"))
                 ls.append((f, f"{inputs.x} -> {outputs.x}"))
                 sizes[outputs.x] = sizes.get(inputs.x, 1)
             case "MSE loss":
@@ -316,7 +308,5 @@ def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor
     tensors = {}
     for k, v in m.map.items():
         if v.df in b.dfs and v.column in b.dfs[v.df]:
-            tensors[k] = torch.tensor(
-                b.dfs[v.df][v.column].to_list(), dtype=torch.float32
-            )
+            tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
     return tensors

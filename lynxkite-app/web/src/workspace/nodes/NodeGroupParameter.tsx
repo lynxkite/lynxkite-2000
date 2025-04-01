@@ -38,9 +38,7 @@ export default function NodeGroupParameter({
 }: NodeGroupParameterProps) {
   const selector = meta.selector;
   const groups = meta.groups;
-  const [selectedValue, setSelectedValue] = useState<string>(
-    value || selector.default,
-  );
+  const [selectedValue, setSelectedValue] = useState<string>(value || selector.default);
 
   const handleSelectorChange = (value: any, opts?: { delay: number }) => {
     setSelectedValue(value);
@@ -49,9 +47,7 @@ export default function NodeGroupParameter({
 
   useEffect(() => {
     // Clean possible previous parameters first
-    Object.values(groups).flatMap((group) =>
-      group.map((entry) => deleteParam(entry.name)),
-    );
+    Object.values(groups).flatMap((group) => group.map((entry) => deleteParam(entry.name)));
     for (const param of groups[selectedValue]) {
       setParam(param.name, param.default);
     }

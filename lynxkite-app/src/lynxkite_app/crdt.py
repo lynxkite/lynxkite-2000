@@ -40,9 +40,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         ydoc["workspace"] = ws = pycrdt.Map()
         # Replay updates from the store.
         try:
-            for update, timestamp in [
-                (item[0], item[-1]) async for item in ystore.read()
-            ]:
+            for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
                 ydoc.apply_update(update)
         except pycrdt_websocket.ystore.YDocNotFound:
             pass
@@ -212,9 +210,7 @@ async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt
         await execute(name, ws_crdt, ws_pyd)
 
 
-async def execute(
-    name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, delay: int = 0
-):
+async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, delay: int = 0):
     """Execute the workspace and update the CRDT object with the results.
 
     Args:

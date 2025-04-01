@@ -17,8 +17,7 @@ function toMD(v: any): string {
 export default function NodeWithTableView(props: any) {
   const [open, setOpen] = useState({} as { [name: string]: boolean });
   const display = props.data.display?.value;
-  const single =
-    display?.dataframes && Object.keys(display?.dataframes).length === 1;
+  const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();
   return (
@@ -37,11 +36,7 @@ export default function NodeWithTableView(props: any) {
             )}
             {(single || open[name]) &&
               (df.data.length > 1 ? (
-                <Table
-                  key={`${name}-table`}
-                  columns={df.columns}
-                  data={df.data}
-                />
+                <Table key={`${name}-table`} columns={df.columns} data={df.data} />
               ) : df.data.length ? (
                 <dl key={`${name}-dl`}>
                   {df.columns.map((c: string, i: number) => (
