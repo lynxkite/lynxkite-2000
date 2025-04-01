@@ -5,15 +5,9 @@ import { Splash, Workspace } from "./lynxkite";
 let workspace: Workspace;
 
 test.beforeEach(async ({ browser }) => {
-  workspace = await Workspace.empty(
-    await browser.newPage(),
-    "graph_creation_spec_test",
-  );
+  workspace = await Workspace.empty(await browser.newPage(), "graph_creation_spec_test");
   await workspace.addBox("NX › Scale-Free Graph");
-  await workspace
-    .getBox("NX › Scale-Free Graph 1")
-    .getByLabel("n", { exact: true })
-    .fill("10");
+  await workspace.getBox("NX › Scale-Free Graph 1").getByLabel("n", { exact: true }).fill("10");
   await workspace.addBox("Create graph");
   await workspace.connectBoxes("NX › Scale-Free Graph 1", "Create graph 1");
 });
@@ -45,9 +39,7 @@ test("Tables are displayed in the Graph creation box", async () => {
 
 test("Adding and removing relationships", async () => {
   const graphBox = await workspace.getBox("Create graph 1");
-  const addRelationshipButton = await graphBox.locator(
-    ".add-relationship-button",
-  );
+  const addRelationshipButton = await graphBox.locator(".add-relationship-button");
   await addRelationshipButton.click();
   const formData: Record<string, string> = {
     name: "relation_1",
@@ -69,10 +61,9 @@ test("Adding and removing relationships", async () => {
   // check that the relationship has been saved in the backend
   await workspace.page.reload();
   const graphBoxAfterReload = await workspace.getBox("Create graph 1");
-  const relationHeader = await graphBoxAfterReload.locator(
-    ".graph-relations .df-head",
-    { hasText: "relation_1" },
-  );
+  const relationHeader = await graphBoxAfterReload.locator(".graph-relations .df-head", {
+    hasText: "relation_1",
+  });
   await expect(relationHeader).toBeVisible();
   await relationHeader.locator("button").click(); // Delete the relationship
   await expect(relationHeader).not.toBeVisible();

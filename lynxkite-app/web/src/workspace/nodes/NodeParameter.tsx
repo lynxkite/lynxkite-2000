@@ -6,12 +6,9 @@ const MODEL_TRAINING_INPUT_MAPPING =
   "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelTrainingInputMapping'>";
 const MODEL_INFERENCE_INPUT_MAPPING =
   "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>";
-const MODEL_OUTPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>";
+const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>";
 function ParamName({ name }: { name: string }) {
-  return (
-    <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>
-  );
+  return <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>;
 }
 
 function Input({
@@ -27,9 +24,7 @@ function Input({
       value={value || ""}
       onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
       onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
-      onKeyDown={(evt) =>
-        evt.code === "Enter" && onChange(evt.currentTarget.value, { delay: 0 })
-      }
+      onKeyDown={(evt) => evt.code === "Enter" && onChange(evt.currentTarget.value, { delay: 0 })}
     />
   );
 }
@@ -41,10 +36,7 @@ function getModelBindings(
   function bindingsOfModel(m: any): string[] {
     switch (variant) {
       case "training input":
-        return [
-          ...m.inputs,
-          ...m.loss_inputs.filter((i: string) => !m.outputs.includes(i)),
-        ];
+        return [...m.inputs, ...m.loss_inputs.filter((i: string) => !m.outputs.includes(i))];
       case "inference input":
         return m.inputs;
       case "output":
@@ -185,13 +177,7 @@ interface NodeParameterProps {
   onChange: (value: any, options?: { delay: number }) => void;
 }
 
-export default function NodeParameter({
-  name,
-  value,
-  meta,
-  data,
-  onChange,
-}: NodeParameterProps) {
+export default function NodeParameter({ name, value, meta, data, onChange }: NodeParameterProps) {
   return (
     // biome-ignore lint/a11y/noLabelWithoutControl: Most of the time there is a control.
     <label className="param">
@@ -241,32 +227,17 @@ export default function NodeParameter({
       ) : meta?.type?.type === MODEL_TRAINING_INPUT_MAPPING ? (
         <>
           <ParamName name={name} />
-          <ModelMapping
-            value={value}
-            data={data}
-            variant="training input"
-            onChange={onChange}
-          />
+          <ModelMapping value={value} data={data} variant="training input" onChange={onChange} />
         </>
       ) : meta?.type?.type === MODEL_INFERENCE_INPUT_MAPPING ? (
         <>
           <ParamName name={name} />
-          <ModelMapping
-            value={value}
-            data={data}
-            variant="inference input"
-            onChange={onChange}
-          />
+          <ModelMapping value={value} data={data} variant="inference input" onChange={onChange} />
         </>
       ) : meta?.type?.type === MODEL_OUTPUT_MAPPING ? (
         <>
           <ParamName name={name} />
-          <ModelMapping
-            value={value}
-            data={data}
-            variant="output"
-            onChange={onChange}
-          />
+          <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
         </>
       ) : (
         <>
