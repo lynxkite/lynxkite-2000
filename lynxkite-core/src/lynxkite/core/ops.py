@@ -208,9 +208,7 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None):
         if outputs:
             _outputs = {name: Output(name=name, type=None) for name in outputs}
         else:
-            _outputs = (
-                {"output": Output(name="output", type=None)} if view == "basic" else {}
-            )
+            _outputs = {"output": Output(name="output", type=None)} if view == "basic" else {}
         op = Op(
             func=func,
             name=name,
@@ -264,12 +262,10 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
         name=name,
         params={p.name: p for p in params},
         inputs=dict(
-            (i, Input(name=i, type=None)) if isinstance(i, str) else (i.name, i)
-            for i in inputs
+            (i, Input(name=i, type=None)) if isinstance(i, str) else (i.name, i) for i in inputs
         ),
         outputs=dict(
-            (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o)
-            for o in outputs
+            (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o) for o in outputs
         ),
     )
     CATALOGS.setdefault(env, {})

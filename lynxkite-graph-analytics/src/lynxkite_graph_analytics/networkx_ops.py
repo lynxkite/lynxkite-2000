@@ -210,9 +210,7 @@ def _get_params(func) -> dict | None:
             continue
         params[name] = ops.Parameter.basic(
             name=name,
-            default=str(param.default)
-            if type(param.default) in [str, int, float]
-            else None,
+            default=str(param.default) if type(param.default) in [str, int, float] else None,
             type=_type,
         )
     return params
