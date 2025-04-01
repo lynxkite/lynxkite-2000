@@ -19,12 +19,8 @@ class RelationDefinition:
     """Defines a set of edges."""
 
     df: str  # The DataFrame that contains the edges.
-    source_column: (
-        str  # The column in the edge DataFrame that contains the source node ID.
-    )
-    target_column: (
-        str  # The column in the edge DataFrame that contains the target node ID.
-    )
+    source_column: str  # The column in the edge DataFrame that contains the source node ID.
+    target_column: str  # The column in the edge DataFrame that contains the target node ID.
     source_table: str  # The DataFrame that contains the source nodes.
     target_table: str  # The DataFrame that contains the target nodes.
     source_key: str  # The column in the source table that contains the node ID.
@@ -86,11 +82,7 @@ class Bundle:
                     (
                         e["source"],
                         e["target"],
-                        {
-                            k: e[k]
-                            for k in edges.columns
-                            if k not in ["source", "target"]
-                        },
+                        {k: e[k] for k in edges.columns if k not in ["source", "target"]},
                     )
                     for e in edges.to_records()
                 ]
@@ -129,9 +121,7 @@ class Bundle:
                 for name, df in self.dfs.items()
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": {
-                k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()
-            },
+            "other": {k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()},
         }
 
 
@@ -199,9 +189,7 @@ def _execute_node(node, ws, catalog, outputs):
     node.publish_started()
     # TODO: Handle multi-inputs.
     input_map = {
-        edge.targetHandle: outputs[edge.source]
-        for edge in ws.edges
-        if edge.target == node.id
+        edge.targetHandle: outputs[edge.source] for edge in ws.edges if edge.target == node.id
     }
     # Convert inputs types to match operation signature.
     try:

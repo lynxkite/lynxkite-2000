@@ -30,9 +30,7 @@ export default function (props: {
     boxes.sort((a, b) => a.item.name.localeCompare(b.item.name));
     return boxes;
   }, [props.boxes]);
-  const hits: { item: OpsOp }[] = searchText
-    ? fuse.search<OpsOp>(searchText)
-    : allOps;
+  const hits: { item: OpsOp }[] = searchText ? fuse.search<OpsOp>(searchText) : allOps;
   const [selectedIndex, setSelectedIndex] = useState(0);
   useEffect(() => searchBox.current.focus());
   function typed(text: string) {
@@ -64,10 +62,7 @@ export default function (props: {
   }
 
   return (
-    <div
-      className="node-search"
-      style={{ top: props.pos.y, left: props.pos.x }}
-    >
+    <div className="node-search" style={{ top: props.pos.y, left: props.pos.x }}>
       <input
         ref={searchBox}
         value={searchText}

@@ -35,9 +35,7 @@ class FileFormat(enum.StrEnum):
     params={
         "file_format": ops.ParameterGroup(
             name="file_format",
-            selector=ops.Parameter(
-                name="file_format", type=FileFormat, default=FileFormat.csv
-            ),
+            selector=ops.Parameter(name="file_format", type=FileFormat, default=FileFormat.csv),
             groups={
                 "csv": [
                     ops.Parameter.basic("columns", type=str, default="<from file>"),
@@ -45,9 +43,7 @@ class FileFormat(enum.StrEnum):
                 ],
                 "parquet": [],
                 "json": [],
-                "excel": [
-                    ops.Parameter.basic("sheet_name", type=str, default="Sheet1")
-                ],
+                "excel": [ops.Parameter.basic("sheet_name", type=str, default="Sheet1")],
             },
             default=FileFormat.csv,
         ),
@@ -68,9 +64,7 @@ def import_file(
     """
     if file_format == "csv":
         names = kwargs.pop("columns", "<from file>")
-        names = (
-            pd.api.extensions.no_default if names == "<from file>" else names.split(",")
-        )
+        names = pd.api.extensions.no_default if names == "<from file>" else names.split(",")
         sep = kwargs.pop("separator", "<auto>")
         sep = pd.api.extensions.no_default if sep == "<auto>" else sep
         df = pd.read_csv(file_path, names=names, sep=sep, **kwargs)
@@ -93,15 +87,11 @@ def import_parquet(*, filename: str):
 
 @op("Import CSV")
 @mem.cache
-def import_csv(
-    *, filename: str, columns: str = "<from file>", separator: str = "<auto>"
-):
+def import_csv(*, filename: str, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
     return pd.read_csv(
         filename,
-        names=pd.api.extensions.no_default
-        if columns == "<from file>"
-        else columns.split(","),
+        names=pd.api.extensions.no_default if columns == "<from file>" else columns.split(","),
         sep=pd.api.extensions.no_default if separator == "<auto>" else separator,
     )
 
@@ -145,12 +135,7 @@ def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
         with pl.Config() as cfg:
             cfg.set_verbose(True)
-            res = (
-                pl.SQLContext(bundle.dfs)
-                .execute(query)
-                .collect(engine="gpu")
-                .to_pandas()
-            )
+            res = pl.SQLContext(bundle.dfs).execute(query).collect(engine="gpu").to_pandas()
             # TODO: Currently `collect()` moves the data from cuDF to Polars. Then we convert it to Pandas,
             # which (hopefully) puts it back into cuDF. Hopefully we will be able to keep it in cuDF.
     else:
@@ -211,9 +196,7 @@ def _map_color(value):
         colors = cmap.colors[: len(categories)]
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-            for r, g, b in [
-                colors[min(len(colors) - 1, categories.get_loc(v))] for v in value
-            ]
+            for r, g, b in [colors[min(len(colors) - 1, categories.get_loc(v))] for v in value]
         ]
 
 
@@ -250,14 +233,10 @@ def visualize_graph(
             curveness = 0  # Street maps are better with straight streets.
             break
     else:
-        pos = nx.spring_layout(
-            graph.to_nx(), iterations=max(1, int(10000 / len(nodes)))
-        )
+        pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = core.df_for_frontend(
-        graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000
-    )
+    edges = core.df_for_frontend(graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
@@ -291,9 +270,7 @@ def visualize_graph(
                         "itemStyle": {"color": n.color} if color_nodes_by else {},
                         "label": {"show": label_by is not None},
                         "name": str(getattr(n, label_by, "")) if label_by else None,
-                        "value": str(getattr(n, color_nodes_by, ""))
-                        if color_nodes_by
-                        else None,
+                        "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
                     }
                     for n in nodes
                 ],
@@ -302,9 +279,7 @@ def visualize_graph(
                         "source": str(r.source),
                         "target": str(r.target),
                         "lineStyle": {"color": r.color} if color_edges_by else {},
-                        "value": str(getattr(r, color_edges_by, ""))
-                        if color_edges_by
-                        else None,
+                        "value": str(getattr(r, color_edges_by, "")) if color_edges_by else None,
                     }
                     for r in edges
                 ],
@@ -342,9 +317,7 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     """
     bundle = bundle.copy()
     if not (relations is None or relations.strip() == ""):
-        bundle.relations = [
-            core.RelationDefinition(**r) for r in json.loads(relations).values()
-        ]
+        bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
 
 

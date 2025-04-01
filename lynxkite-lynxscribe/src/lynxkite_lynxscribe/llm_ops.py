@@ -32,9 +32,7 @@ def chat(*args, **kwargs):
 
     chat_client = openai.OpenAI(base_url=LLM_BASE_URL)
     kwargs.setdefault("model", LLM_MODEL)
-    key = json.dumps(
-        {"method": "chat", "base_url": LLM_BASE_URL, "args": args, "kwargs": kwargs}
-    )
+    key = json.dumps({"method": "chat", "base_url": LLM_BASE_URL, "args": args, "kwargs": kwargs})
     if key not in LLM_CACHE:
         completion = chat_client.chat.completions.create(*args, **kwargs)
         LLM_CACHE[key] = [c.message.content for c in completion.choices]
@@ -121,9 +119,7 @@ def add_neighbors(nodes, edges, item):
 
 @op("Create prompt")
 def create_prompt(input, *, save_as="prompt", template: ops.LongStr):
-    assert template, (
-        "Please specify the template. Refer to columns using the Jinja2 syntax."
-    )
+    assert template, "Please specify the template. Refer to columns using the Jinja2 syntax."
     t = jinja.from_string(template)
     prompt = t.render(**input)
     return {**input, save_as: prompt}

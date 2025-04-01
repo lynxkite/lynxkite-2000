@@ -167,9 +167,9 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                     op = catalog[t.data.title]
                     i = op.inputs[edge.targetHandle]
                     if i.position in "top or bottom":
-                        batch_inputs.setdefault(
-                            (edge.target, edge.targetHandle), []
-                        ).extend(results)
+                        batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(
+                            results
+                        )
                     else:
                         tasks.setdefault(edge.target, []).extend(results)
                 node.publish_result(result)

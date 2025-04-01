@@ -36,9 +36,7 @@ def _get_similarity_matrix(mols):
 
 
 @op("Graph from molecule similarity")
-def graph_from_similarity(
-    bundle: Bundle, *, table="df", mols_column="mols", average_degree=10
-):
+def graph_from_similarity(bundle: Bundle, *, table="df", mols_column="mols", average_degree=10):
     """Creates edges for pairs of molecules that are the most similar."""
     df = bundle.dfs[table]
     mols = df[mols_column]
