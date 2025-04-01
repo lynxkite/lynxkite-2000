@@ -42,7 +42,7 @@ class Bundle:
 
     dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
     relations: list[RelationDefinition] = dataclasses.field(default_factory=list)
-    other: dict[str, typing.Any] = None
+    other: dict[str, typing.Any] = dataclasses.field(default_factory=dict)
 
     @classmethod
     def from_nx(cls, graph: nx.Graph):
@@ -102,10 +102,11 @@ class Bundle:
         return Bundle(
             dfs=dict(self.dfs),
             relations=list(self.relations),
-            other=dict(self.other) if self.other else None,
+            other=dict(self.other),
         )
 
     def to_dict(self, limit: int = 100):
+        """JSON-serializable representation of the bundle, including some data."""
         return {
             "dataframes": {
                 name: {
@@ -115,7 +116,22 @@ class Bundle:
                 for name, df in self.dfs.items()
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": self.other,
+            "other": {k: str(v) for k, v in self.other.items()},
+        }
+
+    def metadata(self):
+        """JSON-serializable information about the bundle, metadata only."""
+        return {
+            "dataframes": {
+                name: {
+                    "columns": sorted(str(c) for c in df.columns),
+                }
+                for name, df in self.dfs.items()
+            },
+            "relations": [dataclasses.asdict(relation) for relation in self.relations],
+            "other": {
+                k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()
+            },
         }
 
 
@@ -137,8 +153,15 @@ def nx_node_attribute_func(name):
 
 def disambiguate_edges(ws: workspace.Workspace):
     """If an input plug is connected to multiple edges, keep only the last edge."""
+    catalog = ops.CATALOGS[ws.env]
+    nodes = {node.id: node for node in ws.nodes}
     seen = set()
     for edge in reversed(ws.edges):
+        dst_node = nodes[edge.target]
+        op = catalog.get(dst_node.data.title)
+        if op.inputs[edge.targetHandle].type == list[Bundle]:
+            # Takes multiple bundles as an input. No need to disambiguate.
+            continue
         if (edge.target, edge.targetHandle) in seen:
             i = ws.edges.index(edge)
             del ws.edges[i]
@@ -174,13 +197,14 @@ def _execute_node(node, ws, catalog, outputs):
         node.publish_error("Operation not found in catalog")
         return
     node.publish_started()
+    # TODO: Handle multi-inputs.
     input_map = {
         edge.targetHandle: outputs[edge.source]
         for edge in ws.edges
         if edge.target == node.id
     }
+    # Convert inputs types to match operation signature.
     try:
-        # Convert inputs types to match operation signature.
         inputs = []
         for p in op.inputs.values():
             if p.name not in input_map:
@@ -194,14 +218,28 @@ def _execute_node(node, ws, catalog, outputs):
             elif p.type == Bundle and isinstance(x, pd.DataFrame):
                 x = Bundle.from_df(x)
             inputs.append(x)
-        result = op(*inputs, **params)
     except Exception as e:
         if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
             traceback.print_exc()
         node.publish_error(e)
         return
-    outputs[node.id] = result.output
+    # Execute op.
+    try:
+        result = op(*inputs, **params)
+    except Exception as e:
+        if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
+            traceback.print_exc()
+        result = ops.Result(error=str(e))
+    result.input_metadata = [_get_metadata(i) for i in inputs]
+    if result.output is not None:
+        outputs[node.id] = result.output
     node.publish_result(result)
+
+
+def _get_metadata(x):
+    if hasattr(x, "metadata"):
+        return x.metadata()
+    return {}
 
 
 def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
