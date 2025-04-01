@@ -363,31 +363,60 @@ def biomedical_foundation_graph(*, filter_nodes: str):
     return None
 
 
-@op("Train model")
-def train_model(
+@op("Define model")
+def define_model(
     bundle: core.Bundle,
     *,
     model_workspace: str,
-    input_mapping: pytorch_model_ops.ModelMapping,
-    epochs: int = 1,
     save_as: str = "model",
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     assert model_workspace, "Model workspace is unset."
-    print(f"input_mapping: {input_mapping}")
     ws = load_ws(model_workspace)
-    inputs = (
-        pytorch_model_ops.to_tensors(bundle, input_mapping) if input_mapping else {}
-    )
-    m = pytorch_model_ops.build_model(ws, inputs)
+    # Build the model without inputs, to get its interface.
+    m = pytorch_model_ops.build_model(ws, {})
+    m.source_workspace = model_workspace
     bundle = bundle.copy()
     bundle.other[save_as] = m
-    if input_mapping is None:
-        return ops.Result(bundle, error="Mapping is unset.")
+    return bundle
+
+
+# These contain the same mapping, but they get different UIs.
+# For inputs, you select existing columns. For outputs, you can create new columns.
+class ModelInferenceInputMapping(pytorch_model_ops.ModelMapping):
+    pass
+
+
+class ModelTrainingInputMapping(pytorch_model_ops.ModelMapping):
+    pass
+
+
+class ModelOutputMapping(pytorch_model_ops.ModelMapping):
+    pass
+
+
+@op("Train model")
+def train_model(
+    bundle: core.Bundle,
+    *,
+    model_name: str = "model",
+    input_mapping: ModelTrainingInputMapping,
+    epochs: int = 1,
+):
+    """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
+    m = bundle.other[model_name].copy()
+    inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
+    if not m.trained and m.source_workspace:
+        # Rebuild the model for the correct inputs.
+        ws = load_ws(m.source_workspace)
+        m = pytorch_model_ops.build_model(ws, inputs)
     t = tqdm(range(epochs), desc="Training model")
     for _ in t:
         loss = m.train(inputs)
         t.set_postfix({"loss": loss})
+    m.trained = True
+    bundle = bundle.copy()
+    bundle.other[model_name] = m
     return bundle
 
 
@@ -396,13 +425,14 @@ def model_inference(
     bundle: core.Bundle,
     *,
     model_name: str = "model",
-    input_mapping: pytorch_model_ops.ModelMapping,
-    output_mapping: pytorch_model_ops.ModelMapping,
+    input_mapping: ModelInferenceInputMapping,
+    output_mapping: ModelOutputMapping,
 ):
     """Executes a trained model."""
     if input_mapping is None or output_mapping is None:
         return ops.Result(bundle, error="Mapping is unset.")
     m = bundle.other[model_name]
+    assert m.trained, "The model is not trained."
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
     outputs = m.inference(inputs)
     bundle = bundle.copy()

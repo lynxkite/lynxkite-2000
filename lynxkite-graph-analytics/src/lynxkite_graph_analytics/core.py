@@ -204,8 +204,8 @@ def _execute_node(node, ws, catalog, outputs):
         for edge in ws.edges
         if edge.target == node.id
     }
+    # Convert inputs types to match operation signature.
     try:
-        # Convert inputs types to match operation signature.
         inputs = []
         for p in op.inputs.values():
             if p.name not in input_map:
@@ -219,13 +219,24 @@ def _execute_node(node, ws, catalog, outputs):
             elif p.type == Bundle and isinstance(x, pd.DataFrame):
                 x = Bundle.from_df(x)
             inputs.append(x)
-        result = op(*inputs, **params)
     except Exception as e:
         if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
             traceback.print_exc()
         node.publish_error(e)
         return
-    outputs[node.id] = result.output
+    # Execute op.
+    try:
+        result = op(*inputs, **params)
+    except Exception as e:
+        if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
+            traceback.print_exc()
+        result = ops.Result(error=str(e))
+        # On error, just output the first input. This helps reduce the errors on the frontend,
+        # and it lets boxes easily access things from their inputs on the UI, even in error state.
+        if inputs:
+            result.output = inputs[0]
+    if result.output is not None:
+        outputs[node.id] = result.output
     node.publish_result(result)
 
 
