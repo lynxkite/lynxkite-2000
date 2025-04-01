@@ -1,9 +1,4 @@
-import {
-  Handle,
-  NodeResizeControl,
-  type Position,
-  useReactFlow,
-} from "@xyflow/react";
+import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
 // @ts-ignore
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 
@@ -38,10 +33,8 @@ function getHandles(inputs: object, outputs: object) {
   }
   for (const e of handles) {
     e.offsetPercentage = (100 * (e.index + 1)) / (counts[e.position] + 1);
-    const simpleHorizontal =
-      counts.top === 0 && counts.bottom === 0 && handles.length <= 2;
-    const simpleVertical =
-      counts.left === 0 && counts.right === 0 && handles.length <= 2;
+    const simpleHorizontal = counts.top === 0 && counts.bottom === 0 && handles.length <= 2;
+    const simpleVertical = counts.left === 0 && counts.right === 0 && handles.length <= 2;
     e.showLabel = !simpleHorizontal && !simpleVertical;
   }
   return handles;
@@ -71,10 +64,7 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
       }}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
-        <div
-          className={`title bg-primary ${data.status}`}
-          onClick={titleClicked}
-        >
+        <div className={`title bg-primary ${data.status}`} onClick={titleClicked}>
           {data.title}
           {data.error && <span className="title-icon">⚠️</span>}
           {expanded || <span className="title-icon">⋯</span>}
@@ -99,14 +89,11 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
             type={handle.type}
             position={handle.position as Position}
             style={{
-              [handleOffsetDirection[handle.position]]:
-                `${handle.offsetPercentage}% `,
+              [handleOffsetDirection[handle.position]]: `${handle.offsetPercentage}% `,
             }}
           >
             {handle.showLabel && (
-              <span className="handle-name">
-                {handle.name.replace(/_/g, " ")}
-              </span>
+              <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>
             )}
           </Handle>
         ))}
