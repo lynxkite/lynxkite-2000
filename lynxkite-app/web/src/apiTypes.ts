@@ -5,6 +5,8 @@
 /* Do not modify it by hand - just update the pydantic models and then re-run the script
 */
 
+export type NodeStatus = "planned" | "active" | "done";
+
 export interface DirectoryEntry {
   name: string;
   type: string;
@@ -40,8 +42,9 @@ export interface WorkspaceNodeData {
     [k: string]: unknown;
   };
   display?: unknown;
+  input_metadata?: unknown;
   error?: string | null;
-  in_progress?: boolean;
+  status?: NodeStatus;
   [k: string]: unknown;
 }
 export interface Position {

@@ -32,6 +32,7 @@ class WorkspaceNodeData(BaseConfig):
     title: str
     params: dict
     display: Optional[object] = None
+    input_metadata: Optional[object] = None
     error: Optional[str] = None
     status: NodeStatus = NodeStatus.done
     # Also contains a "meta" field when going out.
@@ -59,13 +60,13 @@ class WorkspaceNode(BaseConfig):
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
-        if self.data.display is None:
-            self.data.display = result.default_display()
+        self.data.input_metadata = result.input_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
         if hasattr(self, "_crdt"):
             with self._crdt.doc.transaction():
                 self._crdt["data"]["display"] = self.data.display
+                self._crdt["data"]["input_metadata"] = self.data.input_metadata
                 self._crdt["data"]["error"] = self.data.error
                 self._crdt["data"]["status"] = NodeStatus.done
 

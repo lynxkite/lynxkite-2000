@@ -90,6 +90,7 @@ last_ws_input = None
 def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
+        node.data.input_metadata = None
         node.data.error = None
         node.data.status = workspace.NodeStatus.done
         node.position.x = 0
@@ -168,9 +169,12 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
     """
     if os.path.exists(name):
         ws_pyd = workspace.load(name)
-        # We treat the display field as a black box, since it is a large
-        # dictionary that is meant to change as a whole.
-        crdt_update(ws, ws_pyd.model_dump(), non_collaborative_fields={"display"})
+        crdt_update(
+            ws,
+            ws_pyd.model_dump(),
+            # We treat some fields as black boxes. They are not edited on the frontend.
+            non_collaborative_fields={"display", "input_metadata"},
+        )
 
 
 last_known_versions = {}
