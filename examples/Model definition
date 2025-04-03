@@ -1,34 +1,6 @@
 {
   "edges": [
     {
-      "id": "Input: embedding 1 Linear 1",
-      "source": "Input: embedding 1",
-      "sourceHandle": "x",
-      "target": "Linear 1",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Input: label 1 MSE loss 1",
-      "source": "Input: label 1",
-      "sourceHandle": "y",
-      "target": "MSE loss 1",
-      "targetHandle": "y"
-    },
-    {
-      "id": "Linear 1 Activation 2",
-      "source": "Linear 1",
-      "sourceHandle": "x",
-      "target": "Activation 2",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Activation 2 MSE loss 1",
-      "source": "Activation 2",
-      "sourceHandle": "x",
-      "target": "MSE loss 1",
-      "targetHandle": "x"
-    },
-    {
       "id": "MSE loss 1 Optimizer 2",
       "source": "MSE loss 1",
       "sourceHandle": "loss",
@@ -36,108 +8,50 @@
       "targetHandle": "loss"
     },
     {
-      "id": "Activation 2 Repeat 1",
-      "source": "Activation 2",
-      "sourceHandle": "x",
+      "id": "Repeat 1 Linear 2",
+      "source": "Repeat 1",
+      "sourceHandle": "output",
+      "target": "Linear 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 MSE loss 1",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 2 Activation 1",
+      "source": "Linear 2",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 Repeat 1",
+      "source": "Activation 1",
+      "sourceHandle": "output",
       "target": "Repeat 1",
       "targetHandle": "input"
     },
     {
-      "id": "Repeat 1 Linear 1",
-      "source": "Repeat 1",
-      "sourceHandle": "output",
-      "target": "Linear 1",
+      "id": "Input: tensor 3 MSE loss 1",
+      "source": "Input: tensor 3",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "Input: tensor 1 Linear 2",
+      "source": "Input: tensor 1",
+      "sourceHandle": "x",
+      "target": "Linear 2",
       "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
   "nodes": [
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {},
-          "name": "Input: embedding",
-          "outputs": {
-            "x": {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {},
-          "type": "basic"
-        },
-        "params": {},
-        "status": "planned",
-        "title": "Input: embedding"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Input: embedding 1",
-      "position": {
-        "x": 91.0,
-        "y": 266.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "x": {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "name": "Linear",
-          "outputs": {
-            "x": {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {
-            "output_dim": {
-              "default": "same",
-              "name": "output_dim",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "output_dim": "same"
-        },
-        "status": "planned",
-        "title": "Linear"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Linear 1",
-      "position": {
-        "x": 86.0,
-        "y": 33.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
     {
       "data": {
         "display": null,
@@ -183,99 +97,6 @@
       "position": {
         "x": 315.0,
         "y": -510.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {},
-          "name": "Input: label",
-          "outputs": {
-            "y": {
-              "name": "y",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {},
-          "type": "basic"
-        },
-        "params": {},
-        "status": "planned",
-        "title": "Input: label"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Input: label 1",
-      "position": {
-        "x": 615.0,
-        "y": -165.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "x": {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "name": "Activation",
-          "outputs": {
-            "x": {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {
-            "type": {
-              "default": "ReLU",
-              "name": "type",
-              "type": {
-                "enum": [
-                  "ReLU",
-                  "Leaky ReLU",
-                  "Tanh",
-                  "Mish"
-                ]
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "type": "Leaky ReLU"
-        },
-        "status": "planned",
-        "title": "Activation"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Activation 2",
-      "position": {
-        "x": 93.61643829835265,
-        "y": -229.04087132886406
       },
       "type": "basic",
       "width": 200.0
@@ -333,14 +154,14 @@
         "title": "Optimizer"
       },
       "dragHandle": ".bg-primary",
-      "height": 200.0,
+      "height": 250.0,
       "id": "Optimizer 2",
       "position": {
-        "x": 305.6132943499785,
-        "y": -804.0094318451224
+        "x": 292.3983313429414,
+        "y": -853.8015246037802
       },
       "type": "basic",
-      "width": 200.0
+      "width": 232.0
     },
     {
       "data": {
@@ -371,7 +192,7 @@
           },
           "params": {
             "same_weights": {
-              "default": true,
+              "default": false,
               "name": "same_weights",
               "type": {
                 "type": "<class 'bool'>"
@@ -385,15 +206,11 @@
               }
             }
           },
-          "position": {
-            "x": 386.0,
-            "y": 456.0
-          },
           "type": "basic"
         },
         "params": {
           "same_weights": false,
-          "times": "2"
+          "times": "3"
         },
         "status": "planned",
         "title": "Repeat"
@@ -404,6 +221,221 @@
       "position": {
         "x": -180.0,
         "y": -90.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Linear",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "output_dim": {
+              "default": "same",
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "output_dim": "same"
+        },
+        "status": "planned",
+        "title": "Linear"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Linear 2",
+      "position": {
+        "x": 92.32755761444682,
+        "y": 20.626371289630676
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Activation",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "type": {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 344.0,
+            "y": 384.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "type": "Leaky_ReLU"
+        },
+        "status": "planned",
+        "title": "Activation"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Activation 1",
+      "position": {
+        "x": 99.77615018185415,
+        "y": -249.43925929074078
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: tensor",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "name": {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "position": {
+            "x": 258.0,
+            "y": 397.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "name": "X"
+        },
+        "status": "planned",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: tensor 1",
+      "position": {
+        "x": 97.60681762952905,
+        "y": 293.6278596776366
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: tensor",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "name": {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "position": {
+            "x": 1169.0,
+            "y": 340.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "name": "Y"
+        },
+        "status": "planned",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: tensor 3",
+      "position": {
+        "x": 862.4359094222825,
+        "y": -290.0677203273021
       },
       "type": "basic",
       "width": 200.0
