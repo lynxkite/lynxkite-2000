@@ -1,4 +1,5 @@
 // @ts-ignore
+import { useRef } from "react";
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 
 const BOOLEAN = "<class 'bool'>";
@@ -14,13 +15,16 @@ function ParamName({ name }: { name: string }) {
 function Input({
   value,
   onChange,
+  inputRef,
 }: {
   value: string;
   onChange: (value: string, options?: { delay: number }) => void;
+  inputRef?: React.Ref<HTMLInputElement>;
 }) {
   return (
     <input
       className="input input-bordered w-full"
+      ref={inputRef}
       value={value || ""}
       onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
       onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
@@ -28,6 +32,13 @@ function Input({
     />
   );
 }
+
+type Bindings = {
+  [key: string]: {
+    df: string;
+    column: string;
+  };
+};
 
 function getModelBindings(
   data: any,
@@ -71,6 +82,10 @@ function parseJsonOrEmpty(json: string): object {
 }
 
 function ModelMapping({ value, onChange, data, variant }: any) {
+  const dfsRef = useRef({} as { [binding: string]: HTMLSelectElement | null });
+  const columnsRef = useRef(
+    {} as { [binding: string]: HTMLSelectElement | HTMLInputElement | null },
+  );
   const v: any = parseJsonOrEmpty(value);
   v.map ??= {};
   const dfs: { [df: string]: string[] } = {};
@@ -84,6 +99,17 @@ function ModelMapping({ value, onChange, data, variant }: any) {
     }
   }
   const bindings = getModelBindings(data, variant);
+  function getMap() {
+    const map: Bindings = {};
+    for (const binding of bindings) {
+      const df = dfsRef.current[binding]?.value ?? "";
+      const column = columnsRef.current[binding]?.value ?? "";
+      if (df.length || column.length) {
+        map[binding] = { df, column };
+      }
+    }
+    return map;
+  }
   return (
     <table className="model-mapping-param">
       <tbody>
@@ -98,21 +124,10 @@ function ModelMapping({ value, onChange, data, variant }: any) {
                 <select
                   className="select select-ghost"
                   value={v.map?.[binding]?.df}
-                  onChange={(evt) => {
-                    const df = evt.currentTarget.value;
-                    if (df === "") {
-                      const map = { ...v.map, [binding]: undefined };
-                      onChange(JSON.stringify({ map }));
-                    } else {
-                      const columnSpec = {
-                        column: dfs[df][0],
-                        ...(v.map?.[binding] || {}),
-                        df,
-                      };
-                      const map = { ...v.map, [binding]: columnSpec };
-                      onChange(JSON.stringify({ map }));
-                    }
+                  ref={(el) => {
+                    dfsRef.current[binding] = el;
                   }}
+                  onChange={() => onChange(JSON.stringify({ map: getMap() }))}
                 >
                   <option key="" value="" />
                   {Object.keys(dfs).map((df: string) => (
@@ -125,13 +140,16 @@ function ModelMapping({ value, onChange, data, variant }: any) {
               <td>
                 {variant === "output" ? (
                   <Input
+                    inputRef={(el) => {
+                      columnsRef.current[binding] = el;
+                    }}
                     value={v.map?.[binding]?.column}
                     onChange={(column, options) => {
-                      const columnSpec = {
-                        ...(v.map?.[binding] || {}),
-                        column,
-                      };
-                      const map = { ...v.map, [binding]: columnSpec };
+                      const map = getMap();
+                      // At this point the <input> has not been updated yet. We use the value from the event.
+                      const df = dfsRef.current[binding]?.value ?? "";
+                      map[binding] ??= { df, column };
+                      map[binding].column = column;
                       onChange(JSON.stringify({ map }), options);
                     }}
                   />
@@ -139,16 +157,12 @@ function ModelMapping({ value, onChange, data, variant }: any) {
                   <select
                     className="select select-ghost"
                     value={v.map?.[binding]?.column}
-                    onChange={(evt) => {
-                      const column = evt.currentTarget.value;
-                      const columnSpec = {
-                        ...(v.map?.[binding] || {}),
-                        column,
-                      };
-                      const map = { ...v.map, [binding]: columnSpec };
-                      onChange(JSON.stringify({ map }));
+                    ref={(el) => {
+                      columnsRef.current[binding] = el;
                     }}
+                    onChange={() => onChange(JSON.stringify({ map: getMap() }))}
                   >
+                    <option key="" value="" />
                     {dfs[v.map?.[binding]?.df]?.map((col: string) => (
                       <option key={col} value={col}>
                         {col}
