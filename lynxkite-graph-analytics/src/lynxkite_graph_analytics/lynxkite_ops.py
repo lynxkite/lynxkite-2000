@@ -409,7 +409,13 @@ def model_inference(
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
     outputs = m.inference(inputs)
     bundle = bundle.copy()
+    copied = set()
     for k, v in output_mapping.map.items():
+        if not v.df or not v.column:
+            continue
+        if v.df not in copied:
+            bundle.dfs[v.df] = bundle.dfs[v.df].copy()
+            copied.add(v.df)
         bundle.dfs[v.df][v.column] = outputs[k].detach().numpy().tolist()
     return bundle
 
