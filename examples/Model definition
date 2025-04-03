@@ -34,6 +34,20 @@
       "sourceHandle": "loss",
       "target": "Optimizer 2",
       "targetHandle": "loss"
+    },
+    {
+      "id": "Activation 2 Repeat 1",
+      "source": "Activation 2",
+      "sourceHandle": "x",
+      "target": "Repeat 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Repeat 1 Linear 1",
+      "source": "Repeat 1",
+      "sourceHandle": "output",
+      "target": "Linear 1",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -42,6 +56,7 @@
       "data": {
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {},
           "name": "Input: embedding",
@@ -75,6 +90,7 @@
       "data": {
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "x": {
@@ -126,6 +142,7 @@
       "data": {
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "x": {
@@ -174,6 +191,7 @@
       "data": {
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {},
           "name": "Input: label",
@@ -209,6 +227,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "x": {
@@ -243,10 +262,6 @@
               }
             }
           },
-          "position": {
-            "x": 419.0,
-            "y": 396.0
-          },
           "type": "basic"
         },
         "params": {
@@ -271,6 +286,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "loss": {
@@ -307,10 +323,6 @@
               }
             }
           },
-          "position": {
-            "x": 526.0,
-            "y": 116.0
-          },
           "type": "basic"
         },
         "params": {
@@ -326,6 +338,72 @@
       "position": {
         "x": 305.6132943499785,
         "y": -804.0094318451224
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Repeat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "same_weights": {
+              "default": true,
+              "name": "same_weights",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            "times": {
+              "default": 1.0,
+              "name": "times",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 386.0,
+            "y": 456.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "same_weights": false,
+          "times": "2"
+        },
+        "status": "planned",
+        "title": "Repeat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Repeat 1",
+      "position": {
+        "x": -180.0,
+        "y": -90.0
       },
       "type": "basic",
       "width": 200.0
