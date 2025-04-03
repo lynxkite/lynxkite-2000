@@ -1,6 +1,7 @@
 """Boxes for defining PyTorch models."""
 
 import copy
+import enum
 import graphlib
 import types
 
@@ -15,6 +16,21 @@ from . import core
 ENV = "PyTorch model"
 
 
+def op(name, **kwargs):
+    _op = ops.op(ENV, name, **kwargs)
+
+    def decorator(func):
+        _op(func)
+        op = func.__op__
+        for p in op.inputs.values():
+            p.position = "bottom"
+        for p in op.outputs.values():
+            p.position = "top"
+        return func
+
+    return decorator
+
+
 def reg(name, inputs=[], outputs=None, params=[]):
     if outputs is None:
         outputs = inputs
@@ -27,13 +43,9 @@ def reg(name, inputs=[], outputs=None, params=[]):
     )
 
 
-reg("Input: embedding", outputs=["x"])
+reg("Input: tensor", outputs=["x"], params=[P.basic("name")])
 reg("Input: graph edges", outputs=["edges"])
-reg("Input: label", outputs=["y"])
-reg("Input: positive sample", outputs=["x_pos"])
-reg("Input: negative sample", outputs=["x_neg"])
 reg("Input: sequential", outputs=["y"])
-reg("Input: zeros", outputs=["x"])
 
 reg("LSTM", inputs=["x", "h"], outputs=["x", "h"])
 reg(
@@ -59,21 +71,41 @@ reg(
         ),
     ],
 )
+
+
 reg("Attention", inputs=["q", "k", "v"], outputs=["x", "weights"])
 reg("LayerNorm", inputs=["x"])
 reg("Dropout", inputs=["x"], params=[P.basic("p", 0.5)])
-reg("Linear", inputs=["x"], params=[P.basic("output_dim", "same")])
+
+
+@op("Linear")
+def linear(x, *, output_dim="same"):
+    if output_dim == "same":
+        oshape = x.shape
+    else:
+        oshape = tuple(*x.shape[:-1], int(output_dim))
+    return Layer(torch.nn.Linear(x.shape, oshape), shape=oshape)
+
+
+class ActivationTypes(enum.Enum):
+    ReLU = "ReLU"
+    Leaky_ReLU = "Leaky ReLU"
+    Tanh = "Tanh"
+    Mish = "Mish"
+
+
+@op("Activation")
+def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
+    f = getattr(torch.nn.functional, type.name.lower().replace(" ", "_"))
+    return Layer(f, shape=x.shape)
+
+
 reg("Softmax", inputs=["x"])
 reg(
     "Graph conv",
     inputs=["x", "edges"],
     outputs=["x"],
     params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
-)
-reg(
-    "Activation",
-    inputs=["x"],
-    params=[P.options("type", ["ReLU", "Leaky ReLU", "Tanh", "Mish"])],
 )
 reg("Concatenate", inputs=["a", "b"], outputs=["x"])
 reg("Add", inputs=["a", "b"], outputs=["x"])
@@ -126,6 +158,28 @@ ops.register_passive_op(
 def _to_id(*strings: str) -> str:
     """Replaces all non-alphanumeric characters with underscores."""
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
+
+
+@dataclasses.dataclass
+class OpInput:
+    """Ops get their inputs like this. They have to return a Layer made for this input."""
+
+    id: str
+    shape: tuple[int, ...]
+
+
+@dataclasses.dataclass
+class Layer:
+    """Return this from an op. Must include a module and the shapes of the outputs."""
+
+    module: torch.nn.Module
+    shapes: list[tuple[int, ...]] | None = None  # One for each output.
+    shape: dataclasses.InitVar[tuple[int, ...] | None] = None  # Convenience for single output.
+
+    def __post_init__(self, shape):
+        assert not self.shapes or not shape, "Cannot set both shapes and shape."
+        if shape:
+            self.shapes = [shape]
 
 
 class ColumnSpec(pydantic.BaseModel):
@@ -306,15 +360,6 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
         outputs = types.SimpleNamespace(**outputs)
         ls = loss_layers if "loss" in regions[node_id] else layers
         match t:
-            case "Linear":
-                isize = sizes.get(inputs.x, 1)
-                osize = isize if p["output_dim"] == "same" else int(p["output_dim"])
-                ls.append((torch.nn.Linear(isize, osize), f"{inputs.x} -> {outputs.x}"))
-                sizes[outputs.x] = osize
-            case "Activation":
-                f = getattr(torch.nn.functional, p["type"].name.lower().replace(" ", "_"))
-                ls.append((f, f"{inputs.x} -> {outputs.x}"))
-                sizes[outputs.x] = sizes.get(inputs.x, 1)
             case "MSE loss":
                 ls.append(
                     (
@@ -335,6 +380,25 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
                         r = regions.get(n, set())
                         if ("repeat", repeat_id) in r:
                             print(f"repeating {n}")
+            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
+                pass
+            case _:
+                op_inputs = []
+                for i in op.inputs.keys():
+                    id = getattr(inputs, i)
+                    op_inputs.append(OpInput(id, shape=sizes.get(id, 1)))
+                if op.func != ops.no_op:
+                    layer = op.func(*op_inputs, **p)
+                else:
+                    layer = Layer(torch.nn.Identity(), shapes=[i.shape for i in op_inputs])
+                input_ids = ", ".join(i.id for i in op_inputs)
+                output_ids = []
+                for o, shape in zip(op.outputs.keys(), layer.shapes):
+                    id = getattr(outputs, o)
+                    output_ids.append(id)
+                    sizes[id] = shape
+                output_ids = ", ".join(output_ids)
+                ls.append((layer.module, f"{input_ids} -> {output_ids}"))
     cfg["model_inputs"] = list(used_in_model - made_in_model)
     cfg["model_outputs"] = list(made_in_model & used_in_loss)
     cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
