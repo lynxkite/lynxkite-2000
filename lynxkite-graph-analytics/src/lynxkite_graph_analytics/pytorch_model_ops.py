@@ -110,7 +110,7 @@ ops.register_passive_op(
     outputs=[ops.Output(name="output", position="bottom", type="tensor")],
     params=[
         ops.Parameter.basic("times", 1, int),
-        ops.Parameter.basic("same_weights", True, bool),
+        ops.Parameter.basic("same_weights", False, bool),
     ],
 )
 
@@ -207,8 +207,10 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
     dependencies = {n.id: [] for n in ws.nodes}
     in_edges = {}
     out_edges = {}
-    # TODO: Dissolve repeat boxes here.
+    repeats = []
     for e in ws.edges:
+        if nodes[e.target].data.title == "Repeat":
+            repeats.append(e.target)
         dependencies[e.target].append(e.source)
         in_edges.setdefault(e.target, {}).setdefault(e.targetHandle, []).append(
             (e.source, e.sourceHandle)
@@ -216,34 +218,78 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
         out_edges.setdefault(e.source, {}).setdefault(e.sourceHandle, []).append(
             (e.target, e.targetHandle)
         )
+    # Split repeat boxes into start and end, and insert them into the flow.
+    # TODO: Think about recursive repeats.
+    for repeat in repeats:
+        start_id = f"START {repeat}"
+        end_id = f"END {repeat}"
+        # repeat -> first <- real_input
+        # ...becomes...
+        # real_input -> start -> first
+        first, firsth = out_edges[repeat]["output"][0]
+        [(real_input, real_inputh)] = [
+            k for k in in_edges[first][firsth] if k != (repeat, "output")
+        ]
+        dependencies[first].remove(repeat)
+        dependencies[first].append(start_id)
+        dependencies[start_id] = [real_input]
+        out_edges[real_input][real_inputh] = [
+            k if k != (first, firsth) else (start_id, "input")
+            for k in out_edges[real_input][real_inputh]
+        ]
+        in_edges[start_id] = {"input": [(real_input, real_inputh)]}
+        out_edges[start_id] = {"output": [(first, firsth)]}
+        in_edges[first][firsth] = [(start_id, "output")]
+        # repeat <- last -> real_output
+        # ...becomes...
+        # last -> end -> real_output
+        last, lasth = in_edges[repeat]["input"][0]
+        [(real_output, real_outputh)] = [
+            k for k in out_edges[last][lasth] if k != (repeat, "input")
+        ]
+        del dependencies[repeat]
+        dependencies[end_id] = [last]
+        dependencies[real_output].append(end_id)
+        out_edges[last][lasth] = [(end_id, "input")]
+        in_edges[end_id] = {"input": [(last, lasth)]}
+        out_edges[end_id] = {"output": [(real_output, real_outputh)]}
+        in_edges[real_output][real_outputh] = [
+            k if k != (last, lasth) else (end_id, "output")
+            for k in in_edges[real_output][real_outputh]
+        ]
+    # Walk the graph in topological order.
     sizes = {}
     for k, i in inputs.items():
         sizes[k] = i.shape[-1]
     ts = graphlib.TopologicalSorter(dependencies)
     layers = []
     loss_layers = []
-    in_loss = set()
+    regions: dict[str, set[str]] = {node_id: set() for node_id in dependencies}
     cfg = {}
     used_in_model = set()
     made_in_model = set()
     used_in_loss = set()
     made_in_loss = set()
     for node_id in ts.static_order():
-        node = nodes[node_id]
+        if node_id.startswith("START "):
+            node = nodes[node_id.removeprefix("START ")]
+        elif node_id.startswith("END "):
+            node = nodes[node_id.removeprefix("END ")]
+        else:
+            node = nodes[node_id]
         t = node.data.title
         op = catalog[t]
         p = op.convert_params(node.data.params)
         for b in dependencies[node_id]:
-            if b in in_loss:
-                in_loss.add(node_id)
+            regions[node_id] |= regions[b]
         if "loss" in t:
-            in_loss.add(node_id)
+            regions[node_id].add("loss")
         inputs = {}
         for n in in_edges.get(node_id, []):
             for b, h in in_edges[node_id][n]:
                 i = _to_id(b, h)
                 inputs[n] = i
-                if node_id in in_loss:
+                if "loss" in regions[node_id]:
                     used_in_loss.add(i)
                 else:
                     used_in_model.add(i)
@@ -252,13 +298,13 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
             i = _to_id(node_id, out)
             outputs[out] = i
             if inputs:  # Nodes with no inputs are input nodes. Their outputs are not "made" by us.
-                if node_id in in_loss:
+                if "loss" in regions[node_id]:
                     made_in_loss.add(i)
                 else:
                     made_in_model.add(i)
         inputs = types.SimpleNamespace(**inputs)
         outputs = types.SimpleNamespace(**outputs)
-        ls = loss_layers if node_id in in_loss else layers
+        ls = loss_layers if "loss" in regions[node_id] else layers
         match t:
             case "Linear":
                 isize = sizes.get(inputs.x, 1)
@@ -276,6 +322,19 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
                         f"{inputs.x}, {inputs.y} -> {outputs.loss}",
                     )
                 )
+            case "Repeat":
+                ls.append((torch.nn.Identity(), f"{inputs.input} -> {outputs.output}"))
+                sizes[outputs.output] = sizes.get(inputs.input, 1)
+                if node_id.startswith("START "):
+                    regions[node_id].add(("repeat", node_id.removeprefix("START ")))
+                else:
+                    repeat_id = node_id.removeprefix("END ")
+                    print(f"repeat {repeat_id} ending")
+                    regions[node_id].remove(("repeat", repeat_id))
+                    for n in nodes:
+                        r = regions.get(n, set())
+                        if ("repeat", repeat_id) in r:
+                            print(f"repeating {n}")
     cfg["model_inputs"] = list(used_in_model - made_in_model)
     cfg["model_outputs"] = list(made_in_model & used_in_loss)
     cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
