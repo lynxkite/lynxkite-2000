@@ -246,6 +246,34 @@ class ModelConfig:
         }
 
 
+def _add_op(op, params, inputs, outputs, sizes, layers):
+    op_inputs = []
+    for i in op.inputs.keys():
+        id = getattr(inputs, i)
+        op_inputs.append(OpInput(id, shape=sizes.get(id, 1)))
+    if op.func != ops.no_op:
+        layer = op.func(*op_inputs, **params)
+    else:
+        layer = Layer(torch.nn.Identity(), shapes=[i.shape for i in op_inputs])
+    input_ids = ", ".join(i.id for i in op_inputs)
+    output_ids = []
+    for o, shape in zip(op.outputs.keys(), layer.shapes):
+        id = getattr(outputs, o)
+        output_ids.append(id)
+        sizes[id] = shape
+    output_ids = ", ".join(output_ids)
+    layers.append((layer.module, f"{input_ids} -> {output_ids}"))
+
+
+def _all_dependencies(node: str, dependencies: dict[str, list[str]]) -> set[str]:
+    """Returns all dependencies of a node."""
+    deps = set()
+    for dep in dependencies[node]:
+        deps.add(dep)
+        deps.update(_all_dependencies(dep, dependencies))
+    return deps
+
+
 def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> ModelConfig:
     """Builds the model described in the workspace."""
     catalog = ops.CATALOGS[ENV]
@@ -259,6 +287,7 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
     assert len(optimizers) == 1, f"More than one optimizer found: {optimizers}"
     [optimizer] = optimizers
     dependencies = {n.id: [] for n in ws.nodes}
+    inv_dependencies = {n.id: [] for n in ws.nodes}
     in_edges = {}
     out_edges = {}
     repeats = []
@@ -266,6 +295,7 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
         if nodes[e.target].data.title == "Repeat":
             repeats.append(e.target)
         dependencies[e.target].append(e.source)
+        inv_dependencies[e.source].append(e.target)
         in_edges.setdefault(e.target, {}).setdefault(e.targetHandle, []).append(
             (e.source, e.sourceHandle)
         )
@@ -351,7 +381,7 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
         for out in out_edges.get(node_id, []):
             i = _to_id(node_id, out)
             outputs[out] = i
-            if inputs:  # Nodes with no inputs are input nodes. Their outputs are not "made" by us.
+            if not t.startswith("Input:"):  # The outputs of inputs are not "made" by us.
                 if "loss" in regions[node_id]:
                     made_in_loss.add(i)
                 else:
@@ -374,31 +404,23 @@ def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> Mod
                     regions[node_id].add(("repeat", node_id.removeprefix("START ")))
                 else:
                     repeat_id = node_id.removeprefix("END ")
+                    start_id = f"START {repeat_id}"
                     print(f"repeat {repeat_id} ending")
+                    after_start = _all_dependencies(start_id, inv_dependencies)
+                    after_end = _all_dependencies(node_id, inv_dependencies)
+                    before_end = _all_dependencies(node_id, dependencies)
+                    affected_nodes = after_start - after_end
+                    repeated_nodes = after_start & before_end
+                    assert affected_nodes == repeated_nodes, (
+                        f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
+                    )
                     regions[node_id].remove(("repeat", repeat_id))
-                    for n in nodes:
-                        r = regions.get(n, set())
-                        if ("repeat", repeat_id) in r:
-                            print(f"repeating {n}")
+                    for n in repeated_nodes:
+                        print(f"repeating {n}")
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
                 pass
             case _:
-                op_inputs = []
-                for i in op.inputs.keys():
-                    id = getattr(inputs, i)
-                    op_inputs.append(OpInput(id, shape=sizes.get(id, 1)))
-                if op.func != ops.no_op:
-                    layer = op.func(*op_inputs, **p)
-                else:
-                    layer = Layer(torch.nn.Identity(), shapes=[i.shape for i in op_inputs])
-                input_ids = ", ".join(i.id for i in op_inputs)
-                output_ids = []
-                for o, shape in zip(op.outputs.keys(), layer.shapes):
-                    id = getattr(outputs, o)
-                    output_ids.append(id)
-                    sizes[id] = shape
-                output_ids = ", ".join(output_ids)
-                ls.append((layer.module, f"{input_ids} -> {output_ids}"))
+                _add_op(op, p, inputs, outputs, sizes, ls)
     cfg["model_inputs"] = list(used_in_model - made_in_model)
     cfg["model_outputs"] = list(made_in_model & used_in_loss)
     cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
