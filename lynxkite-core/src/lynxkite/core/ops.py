@@ -13,7 +13,7 @@ from typing_extensions import Annotated
 if typing.TYPE_CHECKING:
     from . import workspace
 
-CATALOGS = {}
+CATALOGS: dict[str, dict[str, "Op"]] = {}
 EXECUTORS = {}
 
 typeof = type  # We have some arguments called "type".
