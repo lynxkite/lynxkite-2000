@@ -214,6 +214,9 @@ class ModelConfig:
     source_workspace: str | None = None
     trained: bool = False
 
+    def num_parameters(self) -> int:
+        return sum(p.numel() for p in self.model.parameters())
+
     def _forward(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
         model_inputs = [inputs[i] for i in self.model_inputs]
         output = self.model(*model_inputs)
@@ -270,7 +273,7 @@ class ModelBuilder:
     def __init__(self, ws: workspace.Workspace, inputs: dict[str, torch.Tensor]):
         self.catalog = ops.CATALOGS[ENV]
         optimizers = []
-        self.nodes = {}
+        self.nodes: dict[str, workspace.WorkspaceNode] = {}
         for node in ws.nodes:
             self.nodes[node.id] = node
             if node.data.title == "Optimizer":
@@ -279,8 +282,8 @@ class ModelBuilder:
         assert len(optimizers) == 1, f"More than one optimizer found: {optimizers}"
         [self.optimizer] = optimizers
         self.dependencies = {n.id: [] for n in ws.nodes}
-        self.in_edges = {}
-        self.out_edges = {}
+        self.in_edges: dict[str, dict[str, list[(str, str)]]] = {}
+        self.out_edges: dict[str, dict[str, list[(str, str)]]] = {}
         repeats = []
         for e in ws.edges:
             if self.nodes[e.target].data.title == "Repeat":
@@ -367,21 +370,12 @@ class ModelBuilder:
         t = node.data.title
         op = self.catalog[t]
         p = op.convert_params(node.data.params)
-        inputs = {}
-        for n in self.in_edges.get(node_id, []):
-            for b, h in self.in_edges[node_id][n]:
-                i = _to_id(b, h)
-                inputs[n] = i
-        outputs = {}
-        for out in self.out_edges.get(node_id, []):
-            i = _to_id(node_id, out)
-            outputs[out] = i
         match t:
             case "Repeat":
                 if node_id.startswith("END "):
                     repeat_id = node_id.removeprefix("END ")
                     start_id = f"START {repeat_id}"
-                    print(f"repeat {repeat_id} ending")
+                    [last_output] = self.in_edges[node_id]["input"]
                     after_start = self.all_downstream(start_id)
                     after_end = self.all_downstream(node_id)
                     before_end = self.all_upstream(node_id)
@@ -390,28 +384,64 @@ class ModelBuilder:
                     assert affected_nodes == repeated_nodes, (
                         f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
                     )
-                    for n in repeated_nodes:
-                        print(f"repeating {n}")
+                    repeated_layers = [e for e in self.layers if e._origin_id in repeated_nodes]
+                    for i in range(p["times"] - 1):
+                        # Copy repeat section's output to repeat section's input.
+                        self.layers.append(
+                            self.empty_layer(
+                                node_id,
+                                inputs=[_to_id(*last_output)],
+                                outputs=[_to_id(start_id, "output")],
+                            )
+                        )
+                        # Repeat the layers in the section.
+                        for layer in repeated_layers:
+                            if p["same_weights"]:
+                                self.layers.append(
+                                    Layer(
+                                        layer.module,
+                                        shapes=layer.shapes,
+                                        _origin_id=layer._origin_id,
+                                        _inputs=layer._inputs,
+                                        _outputs=layer._outputs,
+                                    )
+                                )
+                            else:
+                                self.run_node(layer._origin_id)
+                self.layers.append(self.run_op(node_id, op, p))
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
                 return
-        layer = self.run_op(op, p, inputs, outputs)
-        layer._origin_id = node_id
-        self.layers.append(layer)
+            case _:
+                self.layers.append(self.run_op(node_id, op, p))
 
-    def run_op(self, op, params, inputs: dict[str, str], outputs: dict[str, str]) -> Layer:
+    def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        op_inputs = [
-            TensorRef(inputs[i], shape=self.sizes.get(inputs[i], 1)) for i in op.inputs.keys()
-        ]
+        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n]]
+        outputs = [_to_id(node_id, n) for n in op.outputs]
+        layer = self.empty_layer(node_id, inputs, outputs)
         if op.func != ops.no_op:
-            layer = op.func(*op_inputs, **params)
-        else:
-            layer = Layer(torch.nn.Identity(), shapes=[i.shape for i in op_inputs])
-        layer._inputs = op_inputs
-        layer._outputs = []
-        for o, shape in zip(op.outputs.keys(), layer.shapes):
-            layer._outputs.append(TensorRef(outputs[o], shape=shape))
-            self.sizes[outputs[o]] = shape
+            op_layer = op.func(*layer._inputs, **params)
+            layer.module = op_layer.module
+            layer.shapes = op_layer.shapes
+            for o in layer._outputs:
+                self.sizes[o._id] = o.shape
+        return layer
+
+    def empty_layer(self, id: str, inputs: list[str], outputs: list[str]) -> Layer:
+        """Creates an identity layer. Assumes that outputs have the same shapes as inputs."""
+        layer_inputs = [TensorRef(i, shape=self.sizes.get(i, 1)) for i in inputs]
+        layer_outputs = []
+        for i, o in zip(inputs, outputs):
+            shape = self.sizes.get(i, 1)
+            layer_outputs.append(TensorRef(o, shape=shape))
+            self.sizes[o] = shape
+        layer = Layer(
+            torch.nn.Identity(),
+            shapes=[self.sizes[o._id] for o in layer_outputs],
+            _inputs=layer_inputs,
+            _outputs=layer_outputs,
+            _origin_id=id,
+        )
         return layer
 
     def build_model(self) -> ModelConfig:
@@ -462,7 +492,6 @@ class ModelBuilder:
         p = op.convert_params(self.nodes[self.optimizer].data.params)
         o = getattr(torch.optim, p["type"].name)
         cfg["optimizer"] = o(cfg["model"].parameters(), lr=p["lr"])
-        print(cfg)
         return ModelConfig(**cfg)
 
 
