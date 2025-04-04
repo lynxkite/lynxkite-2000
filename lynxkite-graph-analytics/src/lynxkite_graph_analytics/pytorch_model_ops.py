@@ -42,7 +42,7 @@ def reg(name, inputs=[], outputs=None, params=[]):
     )
 
 
-reg("Input: tensor", outputs=["x"], params=[P.basic("name")])
+reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
 reg("Input: graph edges", outputs=["edges"])
 reg("Input: sequential", outputs=["y"])
 
@@ -274,20 +274,22 @@ class ModelBuilder:
         self.catalog = ops.CATALOGS[ENV]
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
+        repeats: list[str] = []
         for node in ws.nodes:
             self.nodes[node.id] = node
             if node.data.title == "Optimizer":
                 optimizers.append(node.id)
+            elif node.data.title == "Repeat":
+                repeats.append(node.id)
+                self.nodes[f"START {node.id}"] = node
+                self.nodes[f"END {node.id}"] = node
         assert optimizers, "No optimizer found."
         assert len(optimizers) == 1, f"More than one optimizer found: {optimizers}"
         [self.optimizer] = optimizers
-        self.dependencies = {n.id: [] for n in ws.nodes}
-        self.in_edges: dict[str, dict[str, list[(str, str)]]] = {}
-        self.out_edges: dict[str, dict[str, list[(str, str)]]] = {}
-        repeats = []
+        self.dependencies = {n: [] for n in self.nodes}
+        self.in_edges: dict[str, dict[str, list[(str, str)]]] = {n: {} for n in self.nodes}
+        self.out_edges: dict[str, dict[str, list[(str, str)]]] = {n: {} for n in self.nodes}
         for e in ws.edges:
-            if self.nodes[e.target].data.title == "Repeat":
-                repeats.append(e.target)
             self.dependencies[e.target].append(e.source)
             self.in_edges.setdefault(e.target, {}).setdefault(e.targetHandle, []).append(
                 (e.source, e.sourceHandle)
@@ -298,6 +300,8 @@ class ModelBuilder:
         # Split repeat boxes into start and end, and insert them into the flow.
         # TODO: Think about recursive repeats.
         for repeat in repeats:
+            if not self.out_edges[repeat] or not self.in_edges[repeat]:
+                continue
             start_id = f"START {repeat}"
             end_id = f"END {repeat}"
             # repeat -> first <- real_input
@@ -334,7 +338,7 @@ class ModelBuilder:
                 k if k != (last, lasth) else (end_id, "output")
                 for k in self.in_edges[real_output][real_outputh]
             ]
-        self.inv_dependencies = {n: [] for n in self.dependencies}
+        self.inv_dependencies = {n: [] for n in self.nodes}
         for k, v in self.dependencies.items():
             for i in v:
                 self.inv_dependencies[i].append(k)
@@ -342,6 +346,19 @@ class ModelBuilder:
         for k, i in inputs.items():
             self.sizes[k] = i.shape[-1]
         self.layers = []
+        # Clean up disconnected nodes.
+        disconnected = set()
+        for node_id in self.nodes:
+            op = self.catalog[self.nodes[node_id].data.title]
+            if len(self.in_edges[node_id]) != len(op.inputs):
+                disconnected.add(node_id)
+                disconnected |= self.all_upstream(node_id)
+        for node_id in disconnected:
+            del self.dependencies[node_id]
+            del self.in_edges[node_id]
+            del self.out_edges[node_id]
+            del self.inv_dependencies[node_id]
+            del self.nodes[node_id]
 
     def all_upstream(self, node: str) -> set[str]:
         """Returns all nodes upstream of a node."""
@@ -361,12 +378,7 @@ class ModelBuilder:
 
     def run_node(self, node_id: str) -> None:
         """Adds the layer(s) produced by this node to self.layers."""
-        if node_id.startswith("START "):
-            node = self.nodes[node_id.removeprefix("START ")]
-        elif node_id.startswith("END "):
-            node = self.nodes[node_id.removeprefix("END ")]
-        else:
-            node = self.nodes[node_id]
+        node = self.nodes[node_id]
         t = node.data.title
         op = self.catalog[t]
         p = op.convert_params(node.data.params)
@@ -385,6 +397,7 @@ class ModelBuilder:
                         f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
                     )
                     repeated_layers = [e for e in self.layers if e._origin_id in repeated_nodes]
+                    assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
                     for i in range(p["times"] - 1):
                         # Copy repeat section's output to repeat section's input.
                         self.layers.append(
