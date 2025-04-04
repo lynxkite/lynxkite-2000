@@ -1,24 +1,10 @@
 {
   "edges": [
     {
-      "id": "MSE loss 1 Optimizer 2",
-      "source": "MSE loss 1",
-      "sourceHandle": "loss",
-      "target": "Optimizer 2",
-      "targetHandle": "loss"
-    },
-    {
       "id": "Repeat 1 Linear 2",
       "source": "Repeat 1",
       "sourceHandle": "output",
       "target": "Linear 2",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Activation 1 MSE loss 1",
-      "source": "Activation 1",
-      "sourceHandle": "output",
-      "target": "MSE loss 1",
       "targetHandle": "x"
     },
     {
@@ -36,71 +22,36 @@
       "targetHandle": "input"
     },
     {
-      "id": "Input: tensor 3 MSE loss 1",
-      "source": "Input: tensor 3",
-      "sourceHandle": "x",
-      "target": "MSE loss 1",
-      "targetHandle": "y"
-    },
-    {
       "id": "Input: tensor 1 Linear 2",
       "source": "Input: tensor 1",
       "sourceHandle": "x",
       "target": "Linear 2",
       "targetHandle": "x"
+    },
+    {
+      "id": "MSE loss 2 Optimizer 2",
+      "source": "MSE loss 2",
+      "sourceHandle": "output",
+      "target": "Optimizer 2",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Activation 1 MSE loss 2",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "MSE loss 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 3 MSE loss 2",
+      "source": "Input: tensor 3",
+      "sourceHandle": "x",
+      "target": "MSE loss 2",
+      "targetHandle": "y"
     }
   ],
   "env": "PyTorch model",
   "nodes": [
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "x": {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            },
-            "y": {
-              "name": "y",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "name": "MSE loss",
-          "outputs": {
-            "loss": {
-              "name": "loss",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {},
-          "type": "basic"
-        },
-        "params": {},
-        "status": "planned",
-        "title": "MSE loss"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "MSE loss 1",
-      "position": {
-        "x": 315.0,
-        "y": -510.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
     {
       "data": {
         "__execution_delay": 0.0,
@@ -384,7 +335,7 @@
       "height": 200.0,
       "id": "Input: tensor 1",
       "position": {
-        "x": 97.60681762952905,
+        "x": 85.83561484252238,
         "y": 293.6278596776366
       },
       "type": "basic",
@@ -434,8 +385,61 @@
       "height": 200.0,
       "id": "Input: tensor 3",
       "position": {
-        "x": 862.4359094222825,
-        "y": -290.0677203273021
+        "x": 485.8840220312055,
+        "y": -149.86223034126274
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "y": {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "MSE loss",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 937.0,
+            "y": 270.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "MSE loss 2",
+      "position": {
+        "x": 690.0,
+        "y": -480.0
       },
       "type": "basic",
       "width": 200.0
