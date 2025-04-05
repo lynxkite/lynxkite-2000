@@ -347,7 +347,7 @@ def define_model(
     assert model_workspace, "Model workspace is unset."
     ws = load_ws(model_workspace)
     # Build the model without inputs, to get its interface.
-    m = pytorch_model_ops.build_model(ws, {})
+    m = pytorch_model_ops.build_model(ws)
     m.source_workspace = model_workspace
     bundle = bundle.copy()
     bundle.other[save_as] = m
@@ -379,10 +379,6 @@ def train_model(
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     m = bundle.other[model_name].copy()
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
-    if not m.trained and m.source_workspace:
-        # Rebuild the model for the correct inputs.
-        ws = load_ws(m.source_workspace)
-        m = pytorch_model_ops.build_model(ws, inputs)
     t = tqdm(range(epochs), desc="Training model")
     for _ in t:
         loss = m.train(inputs)

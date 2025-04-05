@@ -1,13 +1,6 @@
 {
   "edges": [
     {
-      "id": "Repeat 1 Linear 2",
-      "source": "Repeat 1",
-      "sourceHandle": "output",
-      "target": "Linear 2",
-      "targetHandle": "x"
-    },
-    {
       "id": "Linear 2 Activation 1",
       "source": "Linear 2",
       "sourceHandle": "output",
@@ -15,16 +8,9 @@
       "targetHandle": "x"
     },
     {
-      "id": "Activation 1 Repeat 1",
-      "source": "Activation 1",
-      "sourceHandle": "output",
-      "target": "Repeat 1",
-      "targetHandle": "input"
-    },
-    {
       "id": "Input: tensor 1 Linear 2",
       "source": "Input: tensor 1",
-      "sourceHandle": "output",
+      "sourceHandle": "x",
       "target": "Linear 2",
       "targetHandle": "x"
     },
@@ -45,9 +31,23 @@
     {
       "id": "Input: tensor 3 MSE loss 2",
       "source": "Input: tensor 3",
-      "sourceHandle": "output",
+      "sourceHandle": "x",
       "target": "MSE loss 2",
       "targetHandle": "y"
+    },
+    {
+      "id": "Activation 1 Repeat 1",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Repeat 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Repeat 1 Linear 2",
+      "source": "Repeat 1",
+      "sourceHandle": "output",
+      "target": "Linear 2",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -123,66 +123,6 @@
         "input_metadata": null,
         "meta": {
           "inputs": {
-            "input": {
-              "name": "input",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "name": "Repeat",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {
-            "same_weights": {
-              "default": false,
-              "name": "same_weights",
-              "type": {
-                "type": "<class 'bool'>"
-              }
-            },
-            "times": {
-              "default": 1.0,
-              "name": "times",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "same_weights": false,
-          "times": "3"
-        },
-        "status": "planned",
-        "title": "Repeat"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Repeat 1",
-      "position": {
-        "x": -180.0,
-        "y": -90.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
             "x": {
               "name": "x",
               "position": "bottom",
@@ -203,17 +143,17 @@
           },
           "params": {
             "output_dim": {
-              "default": "same",
+              "default": "",
               "name": "output_dim",
               "type": {
-                "type": "<class 'str'>"
+                "type": "<class 'int'>"
               }
             }
           },
           "type": "basic"
         },
         "params": {
-          "output_dim": "same"
+          "output_dim": "4"
         },
         "status": "planned",
         "title": "Linear"
