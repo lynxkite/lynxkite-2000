@@ -1,20 +1,6 @@
 {
   "edges": [
     {
-      "id": "Linear 2 Activation 1",
-      "source": "Linear 2",
-      "sourceHandle": "output",
-      "target": "Activation 1",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Input: tensor 1 Linear 2",
-      "source": "Input: tensor 1",
-      "sourceHandle": "x",
-      "target": "Linear 2",
-      "targetHandle": "x"
-    },
-    {
       "id": "MSE loss 2 Optimizer 2",
       "source": "MSE loss 2",
       "sourceHandle": "output",
@@ -43,10 +29,24 @@
       "targetHandle": "input"
     },
     {
-      "id": "Repeat 1 Linear 2",
+      "id": "Input: tensor 1 Linear 1",
+      "source": "Input: tensor 1",
+      "sourceHandle": "x",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 1 Activation 1",
+      "source": "Linear 1",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Repeat 1 Linear 1",
       "source": "Repeat 1",
       "sourceHandle": "output",
-      "target": "Linear 2",
+      "target": "Linear 1",
       "targetHandle": "x"
     }
   ],
@@ -131,60 +131,6 @@
               }
             }
           },
-          "name": "Linear",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "output_dim": {
-              "default": "",
-              "name": "output_dim",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "output_dim": "4"
-        },
-        "status": "planned",
-        "title": "Linear"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Linear 2",
-      "position": {
-        "x": 92.32755761444682,
-        "y": 20.626371289630676
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "x": {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          },
           "name": "Activation",
           "outputs": {
             "output": {
@@ -242,8 +188,8 @@
           "inputs": {},
           "name": "Input: tensor",
           "outputs": {
-            "output": {
-              "name": "output",
+            "x": {
+              "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
@@ -292,8 +238,8 @@
           "inputs": {},
           "name": "Input: tensor",
           "outputs": {
-            "output": {
-              "name": "output",
+            "x": {
+              "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
@@ -380,6 +326,130 @@
       "position": {
         "x": 309.4422414664647,
         "y": -552.1056805642488
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Repeat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "same_weights": {
+              "default": false,
+              "name": "same_weights",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            "times": {
+              "default": 1.0,
+              "name": "times",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 487.0,
+            "y": 443.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "same_weights": false,
+          "times": "2"
+        },
+        "status": "planned",
+        "title": "Repeat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Repeat 1",
+      "position": {
+        "x": -210.0,
+        "y": -135.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Linear",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "output_dim": {
+              "default": 1024.0,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 359.0,
+            "y": 310.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "output_dim": "4"
+        },
+        "status": "planned",
+        "title": "Linear"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Linear 1",
+      "position": {
+        "x": 88.83370222907377,
+        "y": 48.642890099180136
       },
       "type": "basic",
       "width": 200.0

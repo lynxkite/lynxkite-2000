@@ -91,6 +91,7 @@ function ModelMapping({ value, onChange, data, variant }: any) {
   const dfs: { [df: string]: string[] } = {};
   const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
   for (const input of inputs) {
+    if (!input.dataframes) continue;
     const dataframes = input.dataframes as {
       [df: string]: { columns: string[] };
     };

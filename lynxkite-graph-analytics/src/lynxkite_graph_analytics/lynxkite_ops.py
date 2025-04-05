@@ -369,6 +369,7 @@ class ModelOutputMapping(pytorch_model_ops.ModelMapping):
 
 
 @op("Train model")
+@ops.slow
 def train_model(
     bundle: core.Bundle,
     *,
@@ -380,9 +381,11 @@ def train_model(
     m = bundle.other[model_name].copy()
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
     t = tqdm(range(epochs), desc="Training model")
+    losses = []
     for _ in t:
         loss = m.train(inputs)
         t.set_postfix({"loss": loss})
+        losses.append(loss)
     m.trained = True
     bundle = bundle.copy()
     bundle.other[model_name] = m
@@ -390,6 +393,7 @@ def train_model(
 
 
 @op("Model inference")
+@ops.slow
 def model_inference(
     bundle: core.Bundle,
     *,
