@@ -189,9 +189,13 @@ class ModelConfig:
     model_outputs: list[str]
     loss_inputs: list[str]
     loss: torch.nn.Module
-    optimizer: torch.optim.Optimizer
+    optimizer_parameters: dict[str, any]
+    optimizer: torch.optim.Optimizer | None = None
     source_workspace: str | None = None
     trained: bool = False
+
+    def __post_init__(self):
+        self._make_optimizer()
 
     def num_parameters(self) -> int:
         return sum(p.numel() for p in self.model.parameters())
@@ -222,10 +226,20 @@ class ModelConfig:
         self.optimizer.step()
         return loss.item()
 
+    def _make_optimizer(self):
+        # We need to make a new optimizer when the model is copied. (It's tied to its parameters.)
+        p = self.optimizer_parameters
+        o = getattr(torch.optim, p["type"].name)
+        self.optimizer = o(self.model.parameters(), lr=p["lr"])
+
     def copy(self):
         """Returns a copy of the model."""
-        c = dataclasses.replace(self)
-        c.model = copy.deepcopy(self.model)
+        c = dataclasses.replace(
+            self,
+            model=copy.deepcopy(self.model),
+        )
+        c._make_optimizer()
+        c.optimizer.load_state_dict(self.optimizer.state_dict())
         return c
 
     def metadata(self):
@@ -451,9 +465,7 @@ class ModelBuilder:
         assert not list(cfg["loss"].parameters()), f"loss should have no parameters: {loss_layers}"
         # Create optimizer.
         op = self.catalog["Optimizer"]
-        p = op.convert_params(self.nodes[self.optimizer].data.params)
-        o = getattr(torch.optim, p["type"].name)
-        cfg["optimizer"] = o(cfg["model"].parameters(), lr=p["lr"])
+        cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
         return ModelConfig(**cfg)
 
 
