@@ -1,5 +1,5 @@
 from lynxkite.core import workspace
-from lynxkite_graph_analytics import pytorch_model_ops
+from lynxkite_graph_analytics import pytorch
 import torch
 import pytest
 
@@ -33,11 +33,11 @@ def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
     return ws
 
 
-def summarize_layers(m: pytorch_model_ops.ModelConfig) -> str:
+def summarize_layers(m: pytorch.core.ModelConfig) -> str:
     return "".join(str(e)[0] for e in m.model)
 
 
-def summarize_connections(m: pytorch_model_ops.ModelConfig) -> str:
+def summarize_connections(m: pytorch.core.ModelConfig) -> str:
     return " ".join(
         "".join(n[0] for n in c.param_names) + "->" + "".join(n[0] for n in c.return_names)
         for c in m.model._children
@@ -46,7 +46,7 @@ def summarize_connections(m: pytorch_model_ops.ModelConfig) -> str:
 
 async def test_build_model():
     ws = make_ws(
-        pytorch_model_ops.ENV,
+        pytorch.core.ENV,
         {
             "emb": {"title": "Input: tensor"},
             "lin": {"title": "Linear", "output_dim": 4},
@@ -65,7 +65,7 @@ async def test_build_model():
     )
     x = torch.rand(100, 4)
     y = x + 1
-    m = pytorch_model_ops.build_model(ws)
+    m = pytorch.core.build_model(ws)
     for i in range(1000):
         loss = m.train({"emb_output": x, "label_output": y})
     assert loss < 0.1
@@ -77,7 +77,7 @@ async def test_build_model():
 async def test_build_model_with_repeat():
     def repeated_ws(times):
         return make_ws(
-            pytorch_model_ops.ENV,
+            pytorch.core.ENV,
             {
                 "emb": {"title": "Input: tensor"},
                 "lin": {"title": "Linear", "output_dim": 8},
@@ -99,17 +99,17 @@ async def test_build_model_with_repeat():
         )
 
     # 1 repetition
-    m = pytorch_model_ops.build_model(repeated_ws(1))
+    m = pytorch.core.build_model(repeated_ws(1))
     assert summarize_layers(m) == "IL<II"
     assert summarize_connections(m) == "e->S S->l l->a a->E E->E"
 
     # 2 repetitions
-    m = pytorch_model_ops.build_model(repeated_ws(2))
+    m = pytorch.core.build_model(repeated_ws(2))
     assert summarize_layers(m) == "IL<IL<II"
     assert summarize_connections(m) == "e->S S->l l->a a->S S->l l->a a->E E->E"
 
     # 3 repetitions
-    m = pytorch_model_ops.build_model(repeated_ws(3))
+    m = pytorch.core.build_model(repeated_ws(3))
     assert summarize_layers(m) == "IL<IL<IL<II"
     assert summarize_connections(m) == "e->S S->l l->a a->S S->l l->a a->S S->l l->a a->E E->E"
 
