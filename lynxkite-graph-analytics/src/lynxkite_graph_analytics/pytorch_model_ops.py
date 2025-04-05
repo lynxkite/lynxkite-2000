@@ -8,7 +8,7 @@ import pydantic
 from lynxkite.core import ops, workspace
 from lynxkite.core.ops import Parameter as P
 import torch
-import torch_geometric as pyg
+import torch_geometric.nn as pyg_nn
 import dataclasses
 from . import core
 
@@ -78,12 +78,8 @@ reg("Dropout", inputs=["x"], params=[P.basic("p", 0.5)])
 
 
 @op("Linear")
-def linear(x, *, output_dim="same"):
-    if output_dim == "same":
-        oshape = x.shape
-    else:
-        oshape = tuple(*x.shape[:-1], int(output_dim))
-    return Layer(torch.nn.Linear(x.shape, oshape), shape=oshape)
+def linear(x, *, output_dim=1024):
+    return pyg_nn.Linear(-1, output_dim)
 
 
 class ActivationTypes(enum.Enum):
@@ -95,13 +91,12 @@ class ActivationTypes(enum.Enum):
 
 @op("Activation")
 def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
-    f = getattr(torch.nn.functional, type.name.lower().replace(" ", "_"))
-    return Layer(f, shape=x.shape)
+    return getattr(torch.nn.functional, type.name.lower().replace(" ", "_"))
 
 
 @op("MSE loss")
 def mse_loss(x, y):
-    return Layer(torch.nn.functional.mse_loss, shape=[1])
+    return torch.nn.functional.mse_loss
 
 
 reg("Softmax", inputs=["x"])
@@ -164,33 +159,17 @@ def _to_id(*strings: str) -> str:
 
 
 @dataclasses.dataclass
-class TensorRef:
-    """Ops get their inputs like this. They have to return a Layer made for this input."""
-
-    _id: str
-    shape: tuple[int, ...]
-
-
-@dataclasses.dataclass
 class Layer:
-    """Return this from an op. Must include a module and the shapes of the outputs."""
+    """Temporary data structure used by ModelBuilder."""
 
     module: torch.nn.Module
-    shapes: list[tuple[int, ...]] | None = None  # One for each output.
-    shape: dataclasses.InitVar[tuple[int, ...] | None] = None  # Convenience for single output.
-    # Set by ModelBuilder.
-    _origin_id: str | None = None
-    _inputs: list[TensorRef] | None = None
-    _outputs: list[TensorRef] | None = None
+    origin_id: str
+    inputs: list[str]
+    outputs: list[str]
 
-    def __post_init__(self, shape):
-        assert not self.shapes or not shape, "Cannot set both shapes and shape."
-        if shape:
-            self.shapes = [shape]
-
-    def _for_sequential(self):
-        inputs = ", ".join(i._id for i in self._inputs)
-        outputs = ", ".join(o._id for o in self._outputs)
+    def for_sequential(self):
+        inputs = ", ".join(self.inputs)
+        outputs = ", ".join(self.outputs)
         return self.module, f"{inputs} -> {outputs}"
 
 
@@ -261,16 +240,16 @@ class ModelConfig:
         }
 
 
-def build_model(ws: workspace.Workspace, inputs: dict[str, torch.Tensor]) -> ModelConfig:
+def build_model(ws: workspace.Workspace) -> ModelConfig:
     """Builds the model described in the workspace."""
-    builder = ModelBuilder(ws, inputs)
+    builder = ModelBuilder(ws)
     return builder.build_model()
 
 
 class ModelBuilder:
     """The state shared between methods that are used to build the model."""
 
-    def __init__(self, ws: workspace.Workspace, inputs: dict[str, torch.Tensor]):
+    def __init__(self, ws: workspace.Workspace):
         self.catalog = ops.CATALOGS[ENV]
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
@@ -287,8 +266,8 @@ class ModelBuilder:
         assert len(optimizers) == 1, f"More than one optimizer found: {optimizers}"
         [self.optimizer] = optimizers
         self.dependencies = {n: [] for n in self.nodes}
-        self.in_edges: dict[str, dict[str, list[(str, str)]]] = {n: {} for n in self.nodes}
-        self.out_edges: dict[str, dict[str, list[(str, str)]]] = {n: {} for n in self.nodes}
+        self.in_edges: dict[str, dict[str, list[tuple[str, str]]]] = {n: {} for n in self.nodes}
+        self.out_edges: dict[str, dict[str, list[tuple[str, str]]]] = {n: {} for n in self.nodes}
         for e in ws.edges:
             self.dependencies[e.target].append(e.source)
             self.in_edges.setdefault(e.target, {}).setdefault(e.targetHandle, []).append(
@@ -342,10 +321,7 @@ class ModelBuilder:
         for k, v in self.dependencies.items():
             for i in v:
                 self.inv_dependencies[i].append(k)
-        self.sizes = {}
-        for k, i in inputs.items():
-            self.sizes[k] = i.shape[-1]
-        self.layers = []
+        self.layers: list[Layer] = []
         # Clean up disconnected nodes.
         disconnected = set()
         for node_id in self.nodes:
@@ -396,13 +372,14 @@ class ModelBuilder:
                     assert affected_nodes == repeated_nodes, (
                         f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
                     )
-                    repeated_layers = [e for e in self.layers if e._origin_id in repeated_nodes]
+                    repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
                     assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
                     for i in range(p["times"] - 1):
                         # Copy repeat section's output to repeat section's input.
                         self.layers.append(
-                            self.empty_layer(
-                                node_id,
+                            Layer(
+                                torch.nn.Identity(),
+                                origin_id=node_id,
                                 inputs=[_to_id(*last_output)],
                                 outputs=[_to_id(start_id, "output")],
                             )
@@ -410,17 +387,9 @@ class ModelBuilder:
                         # Repeat the layers in the section.
                         for layer in repeated_layers:
                             if p["same_weights"]:
-                                self.layers.append(
-                                    Layer(
-                                        layer.module,
-                                        shapes=layer.shapes,
-                                        _origin_id=layer._origin_id,
-                                        _inputs=layer._inputs,
-                                        _outputs=layer._outputs,
-                                    )
-                                )
+                                self.layers.append(layer)
                             else:
-                                self.run_node(layer._origin_id)
+                                self.run_node(layer.origin_id)
                 self.layers.append(self.run_op(node_id, op, p))
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
                 return
@@ -431,31 +400,11 @@ class ModelBuilder:
         """Returns the layer produced by this op."""
         inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n]]
         outputs = [_to_id(node_id, n) for n in op.outputs]
-        layer = self.empty_layer(node_id, inputs, outputs)
-        if op.func != ops.no_op:
-            op_layer = op.func(*layer._inputs, **params)
-            layer.module = op_layer.module
-            layer.shapes = op_layer.shapes
-            for o in layer._outputs:
-                self.sizes[o._id] = o.shape
-        return layer
-
-    def empty_layer(self, id: str, inputs: list[str], outputs: list[str]) -> Layer:
-        """Creates an identity layer. Assumes that outputs have the same shapes as inputs."""
-        layer_inputs = [TensorRef(i, shape=self.sizes.get(i, 1)) for i in inputs]
-        layer_outputs = []
-        for i, o in zip(inputs, outputs):
-            shape = self.sizes.get(i, 1)
-            layer_outputs.append(TensorRef(o, shape=shape))
-            self.sizes[o] = shape
-        layer = Layer(
-            torch.nn.Identity(),
-            shapes=[self.sizes[o._id] for o in layer_outputs],
-            _inputs=layer_inputs,
-            _outputs=layer_outputs,
-            _origin_id=id,
-        )
-        return layer
+        if op.func == ops.no_op:
+            module = torch.nn.Identity()
+        else:
+            module = op.func(*inputs, **params)
+        return Layer(module, node_id, inputs, outputs)
 
     def build_model(self) -> ModelConfig:
         # Walk the graph in topological order.
@@ -474,16 +423,16 @@ class ModelBuilder:
         layers = []
         loss_layers = []
         for layer in self.layers:
-            if layer._origin_id in loss_nodes:
+            if layer.origin_id in loss_nodes:
                 loss_layers.append(layer)
             else:
                 layers.append(layer)
-        used_in_model = set(input._id for layer in layers for input in layer._inputs)
-        used_in_loss = set(input._id for layer in loss_layers for input in layer._inputs)
-        made_in_model = set(output._id for layer in layers for output in layer._outputs)
-        made_in_loss = set(output._id for layer in loss_layers for output in layer._outputs)
-        layers = [layer._for_sequential() for layer in layers]
-        loss_layers = [layer._for_sequential() for layer in loss_layers]
+        used_in_model = set(input for layer in layers for input in layer.inputs)
+        used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
+        made_in_model = set(output for layer in layers for output in layer.outputs)
+        made_in_loss = set(output for layer in loss_layers for output in layer.outputs)
+        layers = [layer.for_sequential() for layer in layers]
+        loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
         cfg["model_inputs"] = list(used_in_model - made_in_model)
         cfg["model_outputs"] = list(made_in_model & used_in_loss)
@@ -492,13 +441,13 @@ class ModelBuilder:
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
         # Create model.
-        cfg["model"] = pyg.nn.Sequential(", ".join(cfg["model_inputs"]), layers)
+        cfg["model"] = pyg_nn.Sequential(", ".join(cfg["model_inputs"]), layers)
         # Make sure the loss is output from the last loss layer.
         [(lossb, lossh)] = self.in_edges[self.optimizer]["loss"]
         lossi = _to_id(lossb, lossh)
         loss_layers.append((torch.nn.Identity(), f"{lossi} -> loss"))
         # Create loss function.
-        cfg["loss"] = pyg.nn.Sequential(", ".join(cfg["loss_inputs"]), loss_layers)
+        cfg["loss"] = pyg_nn.Sequential(", ".join(cfg["loss_inputs"]), loss_layers)
         assert not list(cfg["loss"].parameters()), f"loss should have no parameters: {loss_layers}"
         # Create optimizer.
         op = self.catalog["Optimizer"]
