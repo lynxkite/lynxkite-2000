@@ -1,6 +1,7 @@
 """API for implementing LynxKite operations."""
 
 from __future__ import annotations
+import asyncio
 import enum
 import functools
 import inspect
@@ -13,7 +14,7 @@ from typing_extensions import Annotated
 if typing.TYPE_CHECKING:
     from . import workspace
 
-CATALOGS = {}
+CATALOGS: dict[str, dict[str, "Op"]] = {}
 EXECUTORS = {}
 
 typeof = type  # We have some arguments called "type".
@@ -297,3 +298,13 @@ def op_registration(env: str):
 def passive_op_registration(env: str):
     """Returns a function that can be used to register operations without associated code."""
     return functools.partial(register_passive_op, env)
+
+
+def slow(func):
+    """Decorator for slow, blocking operations. Turns them into separate threads."""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        return await asyncio.to_thread(func, *args, **kwargs)
+
+    return wrapper

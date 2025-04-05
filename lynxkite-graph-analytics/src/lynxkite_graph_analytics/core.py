@@ -1,5 +1,6 @@
 """Graph analytics executor and data types."""
 
+import inspect
 import os
 from lynxkite.core import ops, workspace
 import dataclasses
@@ -177,10 +178,16 @@ async def execute(ws: workspace.Workspace):
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
-                _execute_node(node, ws, catalog, outputs)
+                await _execute_node(node, ws, catalog, outputs)
 
 
-def _execute_node(node, ws, catalog, outputs):
+async def await_if_needed(obj):
+    if inspect.isawaitable(obj):
+        obj = await obj
+    return obj
+
+
+async def _execute_node(node, ws, catalog, outputs):
     params = {**node.data.params}
     op = catalog.get(node.data.title)
     if not op:
@@ -214,6 +221,7 @@ def _execute_node(node, ws, catalog, outputs):
     # Execute op.
     try:
         result = op(*inputs, **params)
+        result.output = await await_if_needed(result.output)
     except Exception as e:
         if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
             traceback.print_exc()

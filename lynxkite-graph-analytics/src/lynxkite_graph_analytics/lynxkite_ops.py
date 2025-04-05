@@ -347,7 +347,7 @@ def define_model(
     assert model_workspace, "Model workspace is unset."
     ws = load_ws(model_workspace)
     # Build the model without inputs, to get its interface.
-    m = pytorch_model_ops.build_model(ws, {})
+    m = pytorch_model_ops.build_model(ws)
     m.source_workspace = model_workspace
     bundle = bundle.copy()
     bundle.other[save_as] = m
@@ -369,6 +369,7 @@ class ModelOutputMapping(pytorch_model_ops.ModelMapping):
 
 
 @op("Train model")
+@ops.slow
 def train_model(
     bundle: core.Bundle,
     *,
@@ -379,14 +380,12 @@ def train_model(
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     m = bundle.other[model_name].copy()
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
-    if not m.trained and m.source_workspace:
-        # Rebuild the model for the correct inputs.
-        ws = load_ws(m.source_workspace)
-        m = pytorch_model_ops.build_model(ws, inputs)
     t = tqdm(range(epochs), desc="Training model")
+    losses = []
     for _ in t:
         loss = m.train(inputs)
         t.set_postfix({"loss": loss})
+        losses.append(loss)
     m.trained = True
     bundle = bundle.copy()
     bundle.other[model_name] = m
@@ -394,6 +393,7 @@ def train_model(
 
 
 @op("Model inference")
+@ops.slow
 def model_inference(
     bundle: core.Bundle,
     *,
@@ -409,7 +409,13 @@ def model_inference(
     inputs = pytorch_model_ops.to_tensors(bundle, input_mapping)
     outputs = m.inference(inputs)
     bundle = bundle.copy()
+    copied = set()
     for k, v in output_mapping.map.items():
+        if not v.df or not v.column:
+            continue
+        if v.df not in copied:
+            bundle.dfs[v.df] = bundle.dfs[v.df].copy()
+            copied.add(v.df)
         bundle.dfs[v.df][v.column] = outputs[k].detach().numpy().tolist()
     return bundle
 
