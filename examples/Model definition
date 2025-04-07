@@ -235,7 +235,7 @@
       "id": "Input: tensor 3",
       "position": {
         "x": 485.8840220312055,
-        "y": -149.86223034126274
+        "y": -268.0485936515193
       },
       "type": "basic",
       "width": 200.0
@@ -285,8 +285,8 @@
       "height": 200.0,
       "id": "MSE loss 2",
       "position": {
-        "x": 362.77557479979805,
-        "y": -1287.1056805642488
+        "x": 384.54674698852955,
+        "y": -1184.4701545316577
       },
       "type": "basic",
       "width": 200.0
@@ -513,8 +513,8 @@
       "height": 258.0,
       "id": "Constant vector 1",
       "position": {
-        "x": 983.1241140187901,
-        "y": -562.803650462906
+        "x": 886.708922897265,
+        "y": -298.4394167425953
       },
       "type": "basic",
       "width": 238.0
@@ -568,8 +568,8 @@
       "height": 200.0,
       "id": "Add 1",
       "position": {
-        "x": 818.5444381090571,
-        "y": -955.5157374399466
+        "x": 722.1292469875319,
+        "y": -762.6853551968964
       },
       "type": "basic",
       "width": 200.0
@@ -621,6 +621,59 @@
       },
       "type": "basic",
       "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Constant vector",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "size": {
+              "default": 1.0,
+              "name": "size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "value": {
+              "default": 0.0,
+              "name": "value",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 318.0,
+            "y": 215.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "size": 1.0,
+          "value": 0.0
+        },
+        "status": "done",
+        "title": "Constant vector"
+      },
+      "id": "Constant vector 2",
+      "position": {
+        "x": -1125.0,
+        "y": -780.0
+      },
+      "type": "basic"
     }
   ]
 }
