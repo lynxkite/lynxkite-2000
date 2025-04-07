@@ -621,59 +621,6 @@
       },
       "type": "basic",
       "width": 200.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {},
-          "name": "Constant vector",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "size": {
-              "default": 1.0,
-              "name": "size",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "value": {
-              "default": 0.0,
-              "name": "value",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          },
-          "position": {
-            "x": 318.0,
-            "y": 215.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "size": 1.0,
-          "value": 0.0
-        },
-        "status": "done",
-        "title": "Constant vector"
-      },
-      "id": "Constant vector 2",
-      "position": {
-        "x": -1125.0,
-        "y": -780.0
-      },
-      "type": "basic"
     }
   ]
 }
