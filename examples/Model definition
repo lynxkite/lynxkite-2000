@@ -8,32 +8,11 @@
       "targetHandle": "loss"
     },
     {
-      "id": "Activation 1 MSE loss 2",
-      "source": "Activation 1",
-      "sourceHandle": "output",
-      "target": "MSE loss 2",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Input: tensor 3 MSE loss 2",
-      "source": "Input: tensor 3",
-      "sourceHandle": "x",
-      "target": "MSE loss 2",
-      "targetHandle": "y"
-    },
-    {
       "id": "Activation 1 Repeat 1",
       "source": "Activation 1",
       "sourceHandle": "output",
       "target": "Repeat 1",
       "targetHandle": "input"
-    },
-    {
-      "id": "Input: tensor 1 Linear 1",
-      "source": "Input: tensor 1",
-      "sourceHandle": "x",
-      "target": "Linear 1",
-      "targetHandle": "x"
     },
     {
       "id": "Linear 1 Activation 1",
@@ -47,6 +26,48 @@
       "source": "Repeat 1",
       "sourceHandle": "output",
       "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 1 Linear 1",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Constant vector 1 Add 1",
+      "source": "Constant vector 1",
+      "sourceHandle": "output",
+      "target": "Add 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 3 Add 1",
+      "source": "Input: tensor 3",
+      "sourceHandle": "output",
+      "target": "Add 1",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Add 1 MSE loss 2",
+      "source": "Add 1",
+      "sourceHandle": "output",
+      "target": "MSE loss 2",
+      "targetHandle": "y"
+    },
+    {
+      "id": "Activation 1 Output 1",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Output 1 MSE loss 2",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "MSE loss 2",
       "targetHandle": "x"
     }
   ],
@@ -108,8 +129,8 @@
       "height": 250.0,
       "id": "Optimizer 2",
       "position": {
-        "x": 292.3983313429414,
-        "y": -853.8015246037802
+        "x": 359.75221367487865,
+        "y": -1560.7604266065723
       },
       "type": "basic",
       "width": 232.0
@@ -155,10 +176,6 @@
               }
             }
           },
-          "position": {
-            "x": 344.0,
-            "y": 384.0
-          },
           "type": "basic"
         },
         "params": {
@@ -188,8 +205,8 @@
           "inputs": {},
           "name": "Input: tensor",
           "outputs": {
-            "x": {
-              "name": "x",
+            "output": {
+              "name": "output",
               "position": "top",
               "type": {
                 "type": "tensor"
@@ -204,60 +221,6 @@
                 "type": "None"
               }
             }
-          },
-          "position": {
-            "x": 258.0,
-            "y": 397.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "name": "X"
-        },
-        "status": "planned",
-        "title": "Input: tensor"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Input: tensor 1",
-      "position": {
-        "x": 85.83561484252238,
-        "y": 293.6278596776366
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {},
-          "name": "Input: tensor",
-          "outputs": {
-            "x": {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          },
-          "params": {
-            "name": {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "position": {
-            "x": 1169.0,
-            "y": 340.0
           },
           "type": "basic"
         },
@@ -279,6 +242,8 @@
     },
     {
       "data": {
+        "__execution_delay": null,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -310,10 +275,6 @@
             }
           },
           "params": {},
-          "position": {
-            "x": 937.0,
-            "y": 270.0
-          },
           "type": "basic"
         },
         "params": {},
@@ -324,8 +285,8 @@
       "height": 200.0,
       "id": "MSE loss 2",
       "position": {
-        "x": 309.4422414664647,
-        "y": -552.1056805642488
+        "x": 362.77557479979805,
+        "y": -1287.1056805642488
       },
       "type": "basic",
       "width": 200.0
@@ -372,10 +333,6 @@
                 "type": "<class 'int'>"
               }
             }
-          },
-          "position": {
-            "x": 487.0,
-            "y": 443.0
           },
           "type": "basic"
         },
@@ -433,8 +390,8 @@
             }
           },
           "position": {
-            "x": 359.0,
-            "y": 310.0
+            "x": 667.0,
+            "y": 432.0
           },
           "type": "basic"
         },
@@ -448,8 +405,219 @@
       "height": 200.0,
       "id": "Linear 1",
       "position": {
-        "x": 88.83370222907377,
-        "y": 48.642890099180136
+        "x": 98.54861342271252,
+        "y": 14.121603973834155
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: tensor",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "name": {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "position": {
+            "x": 675.0,
+            "y": 499.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "name": "X"
+        },
+        "status": "planned",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: tensor 1",
+      "position": {
+        "x": 108.75735538875443,
+        "y": 331.53404347930933
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Constant vector",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "size": {
+              "default": 1.0,
+              "name": "size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "value": {
+              "default": 0.0,
+              "name": "value",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1061.0,
+            "y": 239.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "size": "1",
+          "value": "1"
+        },
+        "status": "planned",
+        "title": "Constant vector"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 258.0,
+      "id": "Constant vector 1",
+      "position": {
+        "x": 983.1241140187901,
+        "y": -562.803650462906
+      },
+      "type": "basic",
+      "width": 238.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "a": {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "b": {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Add",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 1077.0,
+            "y": 334.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Add"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Add 1",
+      "position": {
+        "x": 818.5444381090571,
+        "y": -955.5157374399466
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Output",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 544.0,
+            "y": 306.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Output"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Output 1",
+      "position": {
+        "x": 185.15239170944702,
+        "y": -733.1526319565451
       },
       "type": "basic",
       "width": 200.0
