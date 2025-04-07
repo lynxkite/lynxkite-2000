@@ -48,17 +48,19 @@ async def test_build_model():
     ws = make_ws(
         pytorch.core.ENV,
         {
-            "emb": {"title": "Input: tensor"},
+            "input": {"title": "Input: tensor"},
             "lin": {"title": "Linear", "output_dim": 4},
             "act": {"title": "Activation", "type": "Leaky_ReLU"},
+            "output": {"title": "Output"},
             "label": {"title": "Input: tensor"},
             "loss": {"title": "MSE loss"},
             "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
         },
         [
-            ("emb:output", "lin:x"),
+            ("input:output", "lin:x"),
             ("lin:output", "act:x"),
-            ("act:output", "loss:x"),
+            ("act:output", "output:x"),
+            ("output:x", "loss:x"),
             ("label:output", "loss:y"),
             ("loss:output", "optim:loss"),
         ],
@@ -67,10 +69,10 @@ async def test_build_model():
     y = x + 1
     m = pytorch.core.build_model(ws)
     for i in range(1000):
-        loss = m.train({"emb_output": x, "label_output": y})
+        loss = m.train({"input_output": x, "label_output": y})
     assert loss < 0.1
-    o = m.inference({"emb_output": x[:1]})
-    error = torch.nn.functional.mse_loss(o["act_output"], x[:1] + 1)
+    o = m.inference({"input_output": x[:1]})
+    error = torch.nn.functional.mse_loss(o["output_x"], x[:1] + 1)
     assert error < 0.1
 
 
@@ -79,18 +81,20 @@ async def test_build_model_with_repeat():
         return make_ws(
             pytorch.core.ENV,
             {
-                "emb": {"title": "Input: tensor"},
+                "input": {"title": "Input: tensor"},
                 "lin": {"title": "Linear", "output_dim": 8},
                 "act": {"title": "Activation", "type": "Leaky_ReLU"},
+                "output": {"title": "Output"},
                 "label": {"title": "Input: tensor"},
                 "loss": {"title": "MSE loss"},
                 "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
                 "repeat": {"title": "Repeat", "times": times, "same_weights": False},
             },
             [
-                ("emb:output", "lin:x"),
+                ("input:output", "lin:x"),
                 ("lin:output", "act:x"),
-                ("act:output", "loss:x"),
+                ("act:output", "output:x"),
+                ("output:x", "loss:x"),
                 ("label:output", "loss:y"),
                 ("loss:output", "optim:loss"),
                 ("repeat:output", "lin:x"),
@@ -100,18 +104,18 @@ async def test_build_model_with_repeat():
 
     # 1 repetition
     m = pytorch.core.build_model(repeated_ws(1))
-    assert summarize_layers(m) == "IL<II"
-    assert summarize_connections(m) == "e->S S->l l->a a->E E->E"
+    assert summarize_layers(m) == "IL<III"
+    assert summarize_connections(m) == "i->S S->l l->a a->E E->o o->o"
 
     # 2 repetitions
     m = pytorch.core.build_model(repeated_ws(2))
-    assert summarize_layers(m) == "IL<IL<II"
-    assert summarize_connections(m) == "e->S S->l l->a a->S S->l l->a a->E E->E"
+    assert summarize_layers(m) == "IL<IL<III"
+    assert summarize_connections(m) == "i->S S->l l->a a->S S->l l->a a->E E->o o->o"
 
     # 3 repetitions
     m = pytorch.core.build_model(repeated_ws(3))
-    assert summarize_layers(m) == "IL<IL<IL<II"
-    assert summarize_connections(m) == "e->S S->l l->a a->S S->l l->a a->S S->l l->a a->E E->E"
+    assert summarize_layers(m) == "IL<IL<IL<III"
+    assert summarize_connections(m) == "i->S S->l l->a a->S S->l l->a a->S S->l l->a a->E E->o o->o"
 
 
 if __name__ == "__main__":
