@@ -8,7 +8,8 @@ from lynxkite.core import ops
 from collections import deque
 
 from tqdm import tqdm
-from . import core, pytorch
+from . import core
+from .pytorch import pytorch_core
 from lynxkite.core import workspace
 import grandcypher
 import joblib
@@ -347,7 +348,7 @@ def define_model(
     assert model_workspace, "Model workspace is unset."
     ws = load_ws(model_workspace)
     # Build the model without inputs, to get its interface.
-    m = pytorch.core.build_model(ws)
+    m = pytorch_core.build_model(ws)
     m.source_workspace = model_workspace
     bundle = bundle.copy()
     bundle.other[save_as] = m
@@ -356,15 +357,15 @@ def define_model(
 
 # These contain the same mapping, but they get different UIs.
 # For inputs, you select existing columns. For outputs, you can create new columns.
-class ModelInferenceInputMapping(pytorch.core.ModelMapping):
+class ModelInferenceInputMapping(pytorch_core.ModelMapping):
     pass
 
 
-class ModelTrainingInputMapping(pytorch.core.ModelMapping):
+class ModelTrainingInputMapping(pytorch_core.ModelMapping):
     pass
 
 
-class ModelOutputMapping(pytorch.core.ModelMapping):
+class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
@@ -379,7 +380,7 @@ def train_model(
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     m = bundle.other[model_name].copy()
-    inputs = pytorch.core.to_tensors(bundle, input_mapping)
+    inputs = pytorch_core.to_tensors(bundle, input_mapping)
     t = tqdm(range(epochs), desc="Training model")
     losses = []
     for _ in t:
@@ -406,7 +407,7 @@ def model_inference(
         return ops.Result(bundle, error="Mapping is unset.")
     m = bundle.other[model_name]
     assert m.trained, "The model is not trained."
-    inputs = pytorch.core.to_tensors(bundle, input_mapping)
+    inputs = pytorch_core.to_tensors(bundle, input_mapping)
     outputs = m.inference(inputs)
     bundle = bundle.copy()
     copied = set()
