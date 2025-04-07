@@ -5,7 +5,7 @@ from lynxkite.core import ops
 from lynxkite.core.ops import Parameter as P
 import torch
 import torch_geometric.nn as pyg_nn
-from .core import op, reg, ENV
+from .pytorch_core import op, reg, ENV
 
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
 reg("Input: graph edges", outputs=["edges"])
