@@ -291,7 +291,7 @@ def visualize_graph(
 
 
 @op("View tables", view="table_view")
-def view_tables(bundle: core.Bundle, *, limit: int = 100):
+def view_tables(bundle: core.Bundle, *, tables_open: str = "", limit: int = 100):
     return bundle.to_dict(limit=limit)
 
 
