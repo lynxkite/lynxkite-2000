@@ -13,7 +13,7 @@ pd.options.mode.copy_on_write = True  # Prepare for Pandas 3.0.
 from .core import *  # noqa (easier access for core classes)
 from . import lynxkite_ops  # noqa (imported to trigger registration)
 from . import networkx_ops  # noqa (imported to trigger registration)
-from . import pytorch_model_ops  # noqa (imported to trigger registration)
+from . import pytorch  # noqa (imported to trigger registration)
 
 if os.environ.get("LYNXKITE_BIONEMO_INSTALLED", "").strip().lower() == "true":
     from . import bionemo_ops  # noqa (imported to trigger registration)
