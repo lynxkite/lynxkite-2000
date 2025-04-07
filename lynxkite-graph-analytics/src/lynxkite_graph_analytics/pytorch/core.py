@@ -1,4 +1,4 @@
-"""Boxes for defining PyTorch models."""
+"""Infrastructure for defining PyTorch models."""
 
 import copy
 import graphlib
@@ -55,7 +55,10 @@ class Layer:
     outputs: list[str]
 
     def for_sequential(self):
-        inputs = ", ".join(self.inputs)
+        """The layer signature for pyg.nn.Sequential."""
+        # "nothing" is used as a bogus input if an operation has no inputs.
+        # The module in turn needs to take one argument, but it will always be None.
+        inputs = ", ".join(self.inputs) or "nothing"
         outputs = ", ".join(self.outputs)
         return self.module, f"{inputs} -> {outputs}"
 
@@ -88,8 +91,7 @@ class ModelConfig:
         return sum(p.numel() for p in self.model.parameters())
 
     def _forward(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
-        model_inputs = [inputs[i] for i in self.model_inputs]
-        output = self.model(*model_inputs)
+        output = self.model(nothing=None, **inputs)
         if not isinstance(output, tuple):
             output = (output,)
         values = {k: v for k, v in zip(self.model_outputs, output)}
@@ -107,8 +109,7 @@ class ModelConfig:
         self.optimizer.zero_grad()
         values = self._forward(inputs)
         values.update(inputs)
-        loss_inputs = [values[i] for i in self.loss_inputs]
-        loss = self.loss(*loss_inputs)
+        loss = self.loss(nothing=None, **values)
         loss.backward()
         self.optimizer.step()
         return loss.item()
@@ -204,20 +205,20 @@ class ModelBuilder:
             # repeat <- last -> real_output
             # ...becomes...
             # last -> end -> real_output
-            last, lasth = self.in_edges[repeat]["input"][0]
-            [(real_output, real_outputh)] = [
-                k for k in self.out_edges[last][lasth] if k != (repeat, "input")
-            ]
+            [(last, lasth)] = self.in_edges[repeat]["input"]
             del self.dependencies[repeat]
             self.dependencies[end_id] = [last]
-            self.dependencies[real_output].append(end_id)
+            real_edges = [e for e in self.out_edges[last][lasth] if e != (repeat, "input")]
             self.out_edges[last][lasth] = [(end_id, "input")]
             self.in_edges[end_id] = {"input": [(last, lasth)]}
-            self.out_edges[end_id] = {"output": [(real_output, real_outputh)]}
-            self.in_edges[real_output][real_outputh] = [
-                k if k != (last, lasth) else (end_id, "output")
-                for k in self.in_edges[real_output][real_outputh]
-            ]
+            self.out_edges[end_id] = {"output": []}  # Populated below.
+            for real_output, real_outputh in real_edges:
+                self.dependencies[real_output].append(end_id)
+                self.in_edges[real_output][real_outputh] = [
+                    k if k != (last, lasth) else (end_id, "output")
+                    for k in self.in_edges[real_output][real_outputh]
+                ]
+                self.out_edges[end_id]["output"].append((real_output, real_outputh))
         self.inv_dependencies = {n: [] for n in self.nodes}
         for k, v in self.dependencies.items():
             for i in v:
@@ -316,18 +317,19 @@ class ModelBuilder:
 
     def get_config(self) -> ModelConfig:
         # Split the design into model and loss.
-        loss_nodes = set()
+        model_nodes = set()
         for node_id in self.nodes:
-            if "loss" in self.nodes[node_id].data.title:
-                loss_nodes.add(node_id)
-                loss_nodes |= self.all_downstream(node_id)
+            if self.nodes[node_id].data.title == "Output":
+                model_nodes.add(node_id)
+                model_nodes |= self.all_upstream(node_id)
+        assert model_nodes, "The model definition must have at least one Output node."
         layers = []
         loss_layers = []
         for layer in self.layers:
-            if layer.origin_id in loss_nodes:
-                loss_layers.append(layer)
-            else:
+            if layer.origin_id in model_nodes:
                 layers.append(layer)
+            else:
+                loss_layers.append(layer)
         used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
