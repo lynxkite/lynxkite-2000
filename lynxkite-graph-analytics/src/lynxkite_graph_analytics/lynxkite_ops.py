@@ -291,7 +291,8 @@ def visualize_graph(
 
 
 @op("View tables", view="table_view")
-def view_tables(bundle: core.Bundle, *, tables_open: str = "", limit: int = 100):
+def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
+    _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
     return bundle.to_dict(limit=limit)
 
 

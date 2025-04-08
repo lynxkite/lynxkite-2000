@@ -91,6 +91,9 @@ def clean_input(ws_pyd):
         node.data.input_metadata = None
         node.data.error = None
         node.data.status = workspace.NodeStatus.done
+        for p in list(node.data.params):
+            if p.startswith("_"):
+                del node.data.params[p]
         node.position.x = 0
         node.position.y = 0
         if node.model_extra:
