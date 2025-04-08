@@ -15,11 +15,11 @@ function toMD(v: any): string {
   return JSON.stringify(v);
 }
 
+type OpenState = { [name: string]: boolean };
+
 export default function NodeWithTableView(props: any) {
   const reactFlow = useReactFlow();
-  const [open, setOpen] = useState(
-    props.data?.params?.tables_open ?? ({} as { [name: string]: boolean }),
-  );
+  const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
   const display = props.data.display?.value;
   const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
@@ -31,8 +31,11 @@ export default function NodeWithTableView(props: any) {
     }));
   }
   function toggleTable(name: string) {
-    setOpen((prevOpen) => ({ ...prevOpen, [name]: !prevOpen[name] }));
-    setParam("tables_open", { ...open, [name]: !open[name] });
+    setOpen((prevOpen: OpenState) => {
+      const newOpen = { ...prevOpen, [name]: !prevOpen[name] };
+      setParam("_tables_open", newOpen);
+      return newOpen;
+    });
   }
   return (
     <LynxKiteNode {...props}>

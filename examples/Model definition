@@ -389,10 +389,6 @@
               }
             }
           },
-          "position": {
-            "x": 667.0,
-            "y": 432.0
-          },
           "type": "basic"
         },
         "params": {
@@ -438,10 +434,6 @@
                 "type": "None"
               }
             }
-          },
-          "position": {
-            "x": 675.0,
-            "y": 499.0
           },
           "type": "basic"
         },
@@ -495,10 +487,6 @@
                 "type": "<class 'int'>"
               }
             }
-          },
-          "position": {
-            "x": 1061.0,
-            "y": 239.0
           },
           "type": "basic"
         },
@@ -554,10 +542,6 @@
             }
           },
           "params": {},
-          "position": {
-            "x": 1077.0,
-            "y": 334.0
-          },
           "type": "basic"
         },
         "params": {},
@@ -601,10 +585,14 @@
               }
             }
           },
-          "params": {},
-          "position": {
-            "x": 544.0,
-            "y": 306.0
+          "params": {
+            "name": {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
           },
           "type": "basic"
         },
