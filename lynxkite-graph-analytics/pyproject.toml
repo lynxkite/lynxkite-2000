@@ -16,6 +16,7 @@ dependencies = [
     "polars[gpu]>=1.14.0",
     "torch>=2.6.0",
     "torch-geometric>=2.6.1",
+    "cuml-cu12>=25.2.1",
 ]
 
 [project.optional-dependencies]
