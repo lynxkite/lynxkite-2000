@@ -4,10 +4,10 @@ import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelTrainingInputMapping'>";
+  "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>";
 const MODEL_INFERENCE_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>";
-const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>";
+  "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>";
+const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
 function ParamName({ name }: { name: string }) {
   return <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>;
 }
