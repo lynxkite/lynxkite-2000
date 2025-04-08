@@ -35,7 +35,7 @@ function NodeWithParams(props: any) {
 
   return (
     <LynxKiteNode {...props}>
-      {props.collapsed && (
+      {props.collapsed && params.length > 0 && (
         <div className="params-expander" onClick={() => setCollapsed(!collapsed)}>
           <Triangle className={`flippy ${collapsed ? "flippy-90" : ""}`} />
         </div>
