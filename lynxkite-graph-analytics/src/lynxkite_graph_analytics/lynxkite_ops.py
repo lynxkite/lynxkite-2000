@@ -291,7 +291,8 @@ def visualize_graph(
 
 
 @op("View tables", view="table_view")
-def view_tables(bundle: core.Bundle, *, limit: int = 100):
+def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
+    _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
     return bundle.to_dict(limit=limit)
 
 
@@ -389,6 +390,7 @@ def train_model(
         losses.append(loss)
     m.trained = True
     bundle = bundle.copy()
+    bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})
     bundle.other[model_name] = m
     return bundle
 
@@ -431,3 +433,17 @@ def train_test_split(bundle: core.Bundle, *, table_name: str, test_ratio: float 
     bundle.dfs[f"{table_name}_train"] = train
     bundle.dfs[f"{table_name}_test"] = test
     return bundle
+
+
+@op("View loss", view="visualization")
+def view_loss(
+    bundle: core.Bundle,
+):
+    loss = bundle.dfs["training"].training_loss.tolist()
+    v = {
+        "title": {"text": "Training loss"},
+        "xAxis": {"type": "category"},
+        "yAxis": {"type": "value"},
+        "series": [{"data": loss, "type": "line"}],
+    }
+    return v
