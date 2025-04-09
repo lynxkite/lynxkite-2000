@@ -352,7 +352,7 @@ function LynxKiteFlow() {
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
             maxZoom={1}
-            minZoom={0.3}
+            minZoom={0.2}
             zoomOnScroll={false}
             preventScrolling={false}
             defaultEdgeOptions={{
