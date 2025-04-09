@@ -1,3 +1,5 @@
+// The LynxKite workspace editor.
+
 import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   type Connection,
@@ -16,7 +18,6 @@ import {
 } from "@xyflow/react";
 import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-// The LynxKite workspace editor.
 import { useParams } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
