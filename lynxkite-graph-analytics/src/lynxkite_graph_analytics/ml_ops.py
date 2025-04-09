@@ -1,5 +1,7 @@
 """Operations for machine learning."""
 
+import enum
+import functools
 import numpy as np
 from . import core
 from lynxkite.core import workspace
@@ -153,6 +155,24 @@ VIRIDIS = [
 ]
 
 
+class UMAPMetric(enum.Enum):
+    l1 = "l1"
+    cityblock = "cityblock"
+    taxicab = "taxicab"
+    manhattan = "manhattan"
+    euclidean = "euclidean"
+    l2 = "l2"
+    sqeuclidean = "sqeuclidean"
+    canberra = "canberra"
+    minkowski = "minkowski"
+    chebyshev = "chebyshev"
+    linf = "linf"
+    cosine = "cosine"
+    correlation = "correlation"
+    hellinger = "hellinger"
+    hamming = "hamming"
+
+
 @op("View vectors", view="visualization")
 def view_vectors(
     bundle: core.Bundle,
@@ -160,15 +180,24 @@ def view_vectors(
     table_name: str = "nodes",
     vector_column: str = "",
     label_column: str = "",
+    n_neighbors: int = 15,
+    min_dist: float = 0.1,
+    metric: UMAPMetric = UMAPMetric.euclidean,
 ):
     vec = np.stack(bundle.dfs[table_name][vector_column].to_numpy())
-    proj = cuml.manifold.umap.UMAP(n_components=2).fit_transform(vec)
-    color = cuml.manifold.umap.UMAP(n_components=1).fit_transform(vec)
+    umap = functools.partial(
+        cuml.manifold.umap.UMAP,
+        n_neighbors=n_neighbors,
+        min_dist=min_dist,
+        metric=metric.value,
+    )
+    proj = umap(n_components=2).fit_transform(vec)
+    color = umap(n_components=1).fit_transform(vec)
     data = [[*p.tolist(), "", c.item()] for p, c in zip(proj, color)]
     if label_column:
         for i, row in enumerate(bundle.dfs[table_name][label_column]):
             data[i][2] = row
-    size = 50 / len(data) ** 0.5
+    size = 100 / len(data) ** 0.4
     v = {
         "title": {
             "text": f"UMAP projection of {vector_column}",
