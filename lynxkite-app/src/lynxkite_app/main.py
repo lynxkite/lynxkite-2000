@@ -26,6 +26,7 @@ def detect_plugins():
 
 
 lynxkite_plugins = detect_plugins()
+ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
@@ -33,7 +34,8 @@ app.add_middleware(GZipMiddleware)
 
 
 @app.get("/api/catalog")
-def get_catalog():
+def get_catalog(workspace: str):
+    ops.load_user_scripts(workspace)
     return {k: {op.name: op.model_dump() for op in v.values()} for k, v in ops.CATALOGS.items()}
 
 

@@ -151,7 +151,7 @@ function LynxKiteFlow() {
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
-  const catalog = useSWR("/api/catalog", fetcher);
+  const catalog = useSWR(`/api/catalog?workspace=${path}`, fetcher);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
