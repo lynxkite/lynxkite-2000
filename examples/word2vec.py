@@ -22,3 +22,8 @@ def word2vec_1000():
 @op(ENV, "Take first N")
 def first_n(df: pd.DataFrame, *, n=10):
     return df.head(n)
+
+
+@op(ENV, "Sample N")
+def sample_n(df: pd.DataFrame, *, n=10):
+    return df.sample(n)

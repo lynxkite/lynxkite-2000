@@ -32,6 +32,7 @@
     "react-router-dom": "^7.0.2",
     "swr": "^2.2.5",
     "unplugin-icons": "^0.21.0",
+    "y-monaco": "^0.1.6",
     "y-websocket": "^2.0.4",
     "yjs": "^13.6.20"
   },
