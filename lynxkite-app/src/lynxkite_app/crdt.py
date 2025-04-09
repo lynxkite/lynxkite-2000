@@ -26,11 +26,11 @@ def ws_exception_handler(exception, log):
     return True
 
 
-class WebsocketServer(pycrdt_websocket.WebsocketServer):
+class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
     async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
         """Initialize a room for the workspace with the given name.
 
-        The workspace is loaded from "crdt_data" if it exists there, or from "data", or a new workspace is created.
+        The workspace is loaded from ".crdt" if it exists there, or from a JSON file, or a new workspace is created.
         """
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
@@ -79,6 +79,37 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
             self.rooms[name] = await self.init_room(name)
         room = self.rooms[name]
         await self.start_room(room)
+        return room
+
+
+class CodeWebsocketServer(WorkspaceWebsocketServer):
+    async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
+        """Initialize a room for a text document with the given name."""
+        crdt_path = pathlib.Path(".crdt")
+        path = crdt_path / f"{name}.crdt"
+        assert path.is_relative_to(crdt_path)
+        ystore = pycrdt_websocket.ystore.FileYStore(path)
+        ydoc = pycrdt.Doc()
+        ydoc["text"] = text = pycrdt.Text()
+        # Replay updates from the store.
+        try:
+            for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
+                ydoc.apply_update(update)
+        except pycrdt_websocket.ystore.YDocNotFound:
+            pass
+        if len(text) == 0:
+            if os.path.exists(name):
+                with open(name) as f:
+                    text += f.read()
+        room = pycrdt_websocket.YRoom(
+            ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
+        )
+        room.text = text
+
+        def on_change(changes):
+            asyncio.create_task(code_changed(name, changes, text))
+
+        text.observe(on_change)
         return room
 
 
@@ -247,14 +278,21 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 
+async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
+    # TODO: Make this more fancy?
+    with open(name, "w") as f:
+        f.write(str(text))
+
+
 @contextlib.asynccontextmanager
 async def lifespan(app):
-    global websocket_server
-    websocket_server = WebsocketServer(
-        auto_clean_rooms=False,
-    )
-    async with websocket_server:
-        yield
+    global ws_websocket_server
+    global code_websocket_server
+    ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
+    code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
+    async with ws_websocket_server:
+        async with code_websocket_server:
+            yield
     print("closing websocket server")
 
 
@@ -265,5 +303,12 @@ def sanitize_path(path):
 @router.websocket("/ws/crdt/{room_name}")
 async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt_websocket.ASGIServer(websocket_server)
+    server = pycrdt_websocket.ASGIServer(ws_websocket_server)
+    await server({"path": room_name}, websocket._receive, websocket._send)
+
+
+@router.websocket("/ws/code/crdt/{room_name}")
+async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
+    room_name = sanitize_path(room_name)
+    server = pycrdt_websocket.ASGIServer(code_websocket_server)
     await server({"path": room_name}, websocket._receive, websocket._send)

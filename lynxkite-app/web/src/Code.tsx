@@ -1,10 +1,11 @@
 // Full-page editor for code files.
 
-import Editor from "@monaco-editor/react";
-import { loader } from "@monaco-editor/react";
-import { useEffect } from "react";
+import Editor, { type Monaco } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import useSWR, { type Fetcher } from "swr";
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
 // @ts-ignore
 import Atom from "~icons/tabler/atom.jsx";
 // @ts-ignore
@@ -13,20 +14,41 @@ import Backspace from "~icons/tabler/backspace.jsx";
 import Close from "~icons/tabler/x.jsx";
 import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
+// For some reason y-monaco is gigantic. The other Monaco packages are small.
+const MonacoBinding = await import("y-monaco").then((m) => m.MonacoBinding);
 
 export default function Code() {
-  useEffect(() => {
-    const initMonaco = async () => {
-      const monaco = await loader.init();
-      monaco.editor.defineTheme("lynxkite", theme);
-    };
-    initMonaco();
-  }, []);
   const { path } = useParams();
   const parentDir = path!.split("/").slice(0, -1).join("/");
-  const fetcher: Fetcher<{ code: string }> = (resource: string, init?: RequestInit) =>
-    fetch(resource, init).then((res) => res.json());
-  const code = useSWR(`/api/getCode?path=${path}`, fetcher);
+  const ydoc = useRef<any>();
+  const wsProvider = useRef<any>();
+  const monacoBinding = useRef<any>();
+  function beforeMount(monaco: Monaco) {
+    monaco.editor.defineTheme("lynxkite", theme);
+  }
+  function onMount(_editor: editor.IStandaloneCodeEditor) {
+    ydoc.current = new Y.Doc();
+    const text = ydoc.current.getText("text");
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    wsProvider.current = new WebsocketProvider(
+      `${proto}//${location.host}/ws/code/crdt`,
+      path!,
+      ydoc.current,
+    );
+    monacoBinding.current = new MonacoBinding(
+      text,
+      _editor.getModel()!,
+      new Set([_editor]),
+      wsProvider.current.awareness,
+    );
+  }
+  useEffect(() => {
+    return () => {
+      ydoc.current?.destroy();
+      wsProvider.current?.destroy();
+      monacoBinding.current?.destroy();
+    };
+  });
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -46,29 +68,19 @@ export default function Code() {
           </a>
         </div>
       </div>
-      {code.isLoading && (
-        <div className="loading">
-          <div className="loading-text">Loading...</div>
-        </div>
-      )}
-      {code.error && (
-        <div className="error">
-          <div className="error-text">Error: {code.error}</div>
-        </div>
-      )}
-      {code.data && (
-        <Editor
-          defaultLanguage="python"
-          defaultValue={code.data.code}
-          theme="lynxkite"
-          options={{
-            cursorStyle: "block",
-            cursorBlinking: "solid",
-            minimap: { enabled: false },
-            renderLineHighlight: "none",
-          }}
-        />
-      )}
+      <Editor
+        defaultLanguage="python"
+        theme="lynxkite"
+        path={path}
+        beforeMount={beforeMount}
+        onMount={onMount}
+        options={{
+          cursorStyle: "block",
+          cursorBlinking: "solid",
+          minimap: { enabled: false },
+          renderLineHighlight: "none",
+        }}
+      />
     </div>
   );
 }

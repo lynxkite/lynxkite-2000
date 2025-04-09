@@ -39,15 +39,6 @@ def get_catalog(workspace: str):
     return {k: {op.name: op.model_dump() for op in v.values()} for k, v in ops.CATALOGS.items()}
 
 
-@app.get("/api/getCode")
-def get_code(path: str):
-    path = data_path / path
-    assert path.is_relative_to(data_path)
-    with open(path) as f:
-        code = f.read()
-    return {"code": code}
-
-
 class SaveRequest(workspace.BaseConfig):
     path: str
     ws: workspace.Workspace
