@@ -233,6 +233,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
+    ops.load_user_scripts(name)
     ws_pyd._crdt = ws_crdt
     with ws_crdt.doc.transaction():
         for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
