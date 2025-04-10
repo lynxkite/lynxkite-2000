@@ -53,6 +53,10 @@ function LynxKiteFlow() {
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
+  const shortPath = path!
+    .split("/")
+    .pop()!
+    .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as Workspace });
   const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
@@ -320,7 +324,8 @@ function LynxKiteFlow() {
         <a className="logo" href="">
           <img alt="" src={favicon} />
         </a>
-        <div className="ws-name">{path}</div>
+        <div className="ws-name">{shortPath}</div>
+        <title>{shortPath}</title>
         <EnvironmentSelector
           options={Object.keys(catalog.data || {})}
           value={state.workspace.env!}
