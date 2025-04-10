@@ -281,7 +281,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
 async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
     # TODO: Make this more fancy?
     with open(name, "w") as f:
-        f.write(str(text))
+        f.write(str(text).strip() + "\n")
 
 
 @contextlib.asynccontextmanager
