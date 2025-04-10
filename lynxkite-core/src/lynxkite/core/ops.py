@@ -7,6 +7,7 @@ import functools
 import importlib
 import inspect
 import pathlib
+import subprocess
 import traceback
 import joblib
 import types
@@ -348,8 +349,20 @@ def load_user_scripts(workspace: str):
                 run_user_script(f)
             except Exception:
                 traceback.print_exc()
+        req = p / "requirements.txt"
+        if req.exists():
+            try:
+                install_requirements(req)
+            except Exception:
+                traceback.print_exc()
         if p == cwd:
             break
+
+
+def install_requirements(req: pathlib.Path):
+    cmd = ["uv", "pip", "install", "-r", str(req)]
+    print(f"Running {' '.join(cmd)}")
+    subprocess.check_call(cmd)
 
 
 def run_user_script(script_path: pathlib.Path):
