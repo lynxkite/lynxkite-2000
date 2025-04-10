@@ -84,6 +84,15 @@ class DirectoryEntry(pydantic.BaseModel):
     type: str
 
 
+def _get_path_type(path: pathlib.Path) -> str:
+    if path.is_dir():
+        return "directory"
+    elif path.suffixes[-2:] == [".lynxkite", ".json"]:
+        return "workspace"
+    else:
+        return "file"
+
+
 @app.get("/api/dir/list")
 def list_dir(path: str):
     path = data_path / path
@@ -92,7 +101,7 @@ def list_dir(path: str):
         [
             DirectoryEntry(
                 name=str(p.relative_to(data_path)),
-                type="directory" if p.is_dir() else "workspace",
+                type=_get_path_type(p),
             )
             for p in path.iterdir()
             if not p.name.startswith(".")

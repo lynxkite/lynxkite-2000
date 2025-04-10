@@ -326,7 +326,14 @@ body {
   .actions {
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
+    height: 50px;
     padding: 5px;
+
+    form,
+    button {
+      flex: 1;
+    }
   }
 
   .actions a {

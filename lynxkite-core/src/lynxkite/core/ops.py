@@ -196,13 +196,14 @@ class Op(BaseConfig):
         return res
 
 
-def op(env: str, name: str, *, view="basic", outputs=None, params=None, cache=False):
+def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=False):
     """Decorator for defining an operation."""
 
     def decorator(func):
-        if cache:
-            func = mem.cache(func)
         sig = inspect.signature(func)
+        if slow:
+            func = mem.cache(func)
+            func = _global_slow(func)
         # Positional arguments are inputs.
         inputs = {
             name: Input(name=name, type=param.annotation)
@@ -319,6 +320,7 @@ def slow(func):
     return wrapper
 
 
+_global_slow = slow  # For access inside op().
 CATALOGS_SNAPSHOTS: dict[str, Catalogs] = {}
 
 

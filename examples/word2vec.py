@@ -5,17 +5,14 @@ import pandas as pd
 ENV = "LynxKite Graph Analytics"
 
 
-@op(ENV, "Word2vec for the top 1000 words", cache=True)
+@op(ENV, "Word2vec for the top 1000 words", slow=True)
 def word2vec_1000():
     model = staticvectors.StaticVectors("neuml/word2vec-quantized")
-    with open("wordlist.txt") as f:
-        words = [w.strip() for w in f.read().strip().split("\n")]
-    df = pd.DataFrame(
-        {
-            "word": words,
-            "embedding": model.embeddings(words).tolist(),
-        }
+    df = pd.read_csv(
+        "https://gist.githubusercontent.com/deekayen/4148741/raw/98d35708fa344717d8eee15d11987de6c8e26d7d/1-1000.txt",
+        names=["word"],
     )
+    df["embedding"] = model.embeddings(df.word.tolist()).tolist()
     return df
 
 
