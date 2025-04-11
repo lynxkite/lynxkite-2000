@@ -14,39 +14,53 @@ import Backspace from "~icons/tabler/backspace.jsx";
 import Close from "~icons/tabler/x.jsx";
 import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
-// For some reason y-monaco is gigantic. The other Monaco packages are small.
-const MonacoBinding = await import("y-monaco").then((m) => m.MonacoBinding);
 
 export default function Code() {
   const { path } = useParams();
   const parentDir = path!.split("/").slice(0, -1).join("/");
-  const ydoc = useRef<any>();
-  const wsProvider = useRef<any>();
-  const monacoBinding = useRef<any>();
+  const yDocRef = useRef<any>();
+  const wsProviderRef = useRef<any>();
+  const monacoBindingRef = useRef<any>();
+  const yMonacoRef = useRef<any>();
+  const editorRef = useRef<any>();
+  useEffect(() => {
+    const loadMonaco = async () => {
+      // y-monaco is gigantic. The other Monaco packages are small.
+      yMonacoRef.current = await import("y-monaco");
+      initCRDT();
+    };
+    loadMonaco();
+  }, []);
   function beforeMount(monaco: Monaco) {
     monaco.editor.defineTheme("lynxkite", theme);
   }
   function onMount(_editor: editor.IStandaloneCodeEditor) {
-    ydoc.current = new Y.Doc();
-    const text = ydoc.current.getText("text");
+    editorRef.current = _editor;
+    initCRDT();
+  }
+  function initCRDT() {
+    if (!yMonacoRef.current || !editorRef.current) return;
+    if (yDocRef.current) return;
+    yDocRef.current = new Y.Doc();
+    const text = yDocRef.current.getText("text");
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    wsProvider.current = new WebsocketProvider(
+    wsProviderRef.current = new WebsocketProvider(
       `${proto}//${location.host}/ws/code/crdt`,
       path!,
-      ydoc.current,
+      yDocRef.current,
     );
-    monacoBinding.current = new MonacoBinding(
+    monacoBindingRef.current = new yMonacoRef.current.MonacoBinding(
       text,
-      _editor.getModel()!,
-      new Set([_editor]),
-      wsProvider.current.awareness,
+      editorRef.current.getModel()!,
+      new Set([editorRef.current]),
+      wsProviderRef.current.awareness,
     );
   }
   useEffect(() => {
     return () => {
-      ydoc.current?.destroy();
-      wsProvider.current?.destroy();
-      monacoBinding.current?.destroy();
+      yDocRef.current?.destroy();
+      wsProviderRef.current?.destroy();
+      monacoBindingRef.current?.destroy();
     };
   });
   return (
@@ -74,6 +88,7 @@ export default function Code() {
         path={path}
         beforeMount={beforeMount}
         onMount={onMount}
+        loading={null}
         options={{
           cursorStyle: "block",
           cursorBlinking: "solid",
