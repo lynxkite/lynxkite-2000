@@ -26,6 +26,7 @@ def detect_plugins():
 
 
 lynxkite_plugins = detect_plugins()
+ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
@@ -33,7 +34,8 @@ app.add_middleware(GZipMiddleware)
 
 
 @app.get("/api/catalog")
-def get_catalog():
+def get_catalog(workspace: str):
+    ops.load_user_scripts(workspace)
     return {k: {op.name: op.model_dump() for op in v.values()} for k, v in ops.CATALOGS.items()}
 
 
@@ -82,6 +84,15 @@ class DirectoryEntry(pydantic.BaseModel):
     type: str
 
 
+def _get_path_type(path: pathlib.Path) -> str:
+    if path.is_dir():
+        return "directory"
+    elif path.suffixes[-2:] == [".lynxkite", ".json"]:
+        return "workspace"
+    else:
+        return "file"
+
+
 @app.get("/api/dir/list")
 def list_dir(path: str):
     path = data_path / path
@@ -90,7 +101,7 @@ def list_dir(path: str):
         [
             DirectoryEntry(
                 name=str(p.relative_to(data_path)),
-                type="directory" if p.is_dir() else "workspace",
+                type=_get_path_type(p),
             )
             for p in path.iterdir()
             if not p.name.startswith(".")

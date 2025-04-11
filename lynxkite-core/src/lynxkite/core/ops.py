@@ -4,7 +4,12 @@ from __future__ import annotations
 import asyncio
 import enum
 import functools
+import importlib
 import inspect
+import pathlib
+import subprocess
+import traceback
+import joblib
 import types
 import pydantic
 import typing
@@ -14,8 +19,11 @@ from typing_extensions import Annotated
 if typing.TYPE_CHECKING:
     from . import workspace
 
-CATALOGS: dict[str, dict[str, "Op"]] = {}
+Catalog = dict[str, "Op"]
+Catalogs = dict[str, Catalog]
+CATALOGS: Catalogs = {}
 EXECUTORS = {}
+mem = joblib.Memory(".joblib-cache")
 
 typeof = type  # We have some arguments called "type".
 
@@ -189,11 +197,14 @@ class Op(BaseConfig):
         return res
 
 
-def op(env: str, name: str, *, view="basic", outputs=None, params=None):
+def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=False):
     """Decorator for defining an operation."""
 
     def decorator(func):
         sig = inspect.signature(func)
+        if slow:
+            func = mem.cache(func)
+            func = _global_slow(func)
         # Positional arguments are inputs.
         inputs = {
             name: Input(name=name, type=param.annotation)
@@ -308,3 +319,54 @@ def slow(func):
         return await asyncio.to_thread(func, *args, **kwargs)
 
     return wrapper
+
+
+_global_slow = slow  # For access inside op().
+CATALOGS_SNAPSHOTS: dict[str, Catalogs] = {}
+
+
+def save_catalogs(snapshot_name: str):
+    CATALOGS_SNAPSHOTS[snapshot_name] = {k: dict(v) for k, v in CATALOGS.items()}
+
+
+def load_catalogs(snapshot_name: str):
+    global CATALOGS
+    snap = CATALOGS_SNAPSHOTS[snapshot_name]
+    CATALOGS = {k: dict(v) for k, v in snap.items()}
+
+
+def load_user_scripts(workspace: str):
+    """Reloads the *.py in the workspace's directory and higher-level directories."""
+    if "plugins loaded" in CATALOGS_SNAPSHOTS:
+        load_catalogs("plugins loaded")
+    cwd = pathlib.Path()
+    path = cwd / workspace
+    assert path.is_relative_to(cwd), "Provided workspace path is invalid"
+    for p in path.parents:
+        print("checking user scripts in", p)
+        for f in p.glob("*.py"):
+            try:
+                run_user_script(f)
+            except Exception:
+                traceback.print_exc()
+        req = p / "requirements.txt"
+        if req.exists():
+            try:
+                install_requirements(req)
+            except Exception:
+                traceback.print_exc()
+        if p == cwd:
+            break
+
+
+def install_requirements(req: pathlib.Path):
+    cmd = ["uv", "pip", "install", "-r", str(req)]
+    print(f"Running {' '.join(cmd)}")
+    subprocess.check_call(cmd)
+
+
+def run_user_script(script_path: pathlib.Path):
+    print(f"Running {script_path}...")
+    spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
