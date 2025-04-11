@@ -124,9 +124,7 @@
         "display": {
           "dataframes": {
             "df": {
-              "columns": [
-                "answer"
-              ],
+              "columns": ["answer"],
               "data": [
                 [
                   "Lynx Analytics has two notable professionals named G\u00e1bor. Could you please specify which G\u00e1bor you are inquiring about?\n\n- **G\u00e1bor Benedek**: Chief Innovation Officer & Co-founder at Lynx Analytics. He specializes in economic and business simulations, social network analysis, data mining, and predictive analytics. He has an academic background as a former Associate Professor at Corvinus University of Budapest and has founded several data-related companies.\n\n- **G\u00e1bor Kriv\u00e1chy**: Country Manager at Lynx Analytics in Hungary. He is an experienced technology executive with a background in system implementation, integration, and project management, particularly in SAP implementations.\n\nLet me know which G\u00e1bor's details you would like to learn more about!"
@@ -604,10 +602,7 @@
               "default": "v1",
               "name": "input_type",
               "type": {
-                "enum": [
-                  "V1",
-                  "V2"
-                ]
+                "enum": ["V1", "V2"]
               }
             },
             "text_embedder_interface": {
@@ -703,11 +698,7 @@
               "default": "gcp",
               "name": "cloud_provider",
               "type": {
-                "enum": [
-                  "GCP",
-                  "AWS",
-                  "AZURE"
-                ]
+                "enum": ["GCP", "AWS", "AZURE"]
               }
             },
             "folder_URL": {
