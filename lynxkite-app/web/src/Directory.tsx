@@ -15,8 +15,45 @@ import FolderPlus from "~icons/tabler/folder-plus";
 // @ts-ignore
 import Home from "~icons/tabler/home";
 // @ts-ignore
+import LayoutGrid from "~icons/tabler/layout-grid";
+// @ts-ignore
+import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+// @ts-ignore
 import Trash from "~icons/tabler/trash";
 import logo from "./assets/logo.png";
+
+function EntryCreator(props: {
+  label: string;
+  icon: JSX.Element;
+  onCreate: (name: string) => void;
+}) {
+  const [isCreating, setIsCreating] = useState(false);
+  return (
+    <>
+      {isCreating ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            props.onCreate((e.target as HTMLFormElement).entryName.value.trim());
+          }}
+        >
+          <input
+            className="input input-ghost w-full"
+            autoFocus
+            type="text"
+            name="entryName"
+            onBlur={() => setIsCreating(false)}
+            placeholder={`${props.label} name`}
+          />
+        </form>
+      ) : (
+        <button type="button" onClick={() => setIsCreating(true)}>
+          {props.icon} {props.label}
+        </button>
+      )}
+    </>
+  );
+}
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -27,68 +64,51 @@ export default function () {
     dedupingInterval: 0,
   });
   const navigate = useNavigate();
-  const [isCreatingDir, setIsCreatingDir] = useState(false);
-  const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
 
   function link(item: DirectoryEntry) {
     if (item.type === "directory") {
       return `/dir/${item.name}`;
     }
-    return `/edit/${item.name}`;
+    if (item.type === "workspace") {
+      return `/edit/${item.name}`;
+    }
+    return `/code/${item.name}`;
   }
 
   function shortName(item: DirectoryEntry) {
-    return item.name.split("/").pop();
+    return item.name
+      .split("/")
+      .pop()
+      ?.replace(/[.]lynxkite[.]json$/, "");
   }
 
-  function newName(list: DirectoryEntry[], baseName = "Untitled") {
-    let i = 0;
-    while (true) {
-      const name = `${baseName}${i ? ` ${i}` : ""}`;
-      if (!list.find((item) => item.name === name)) {
-        return name;
-      }
-      i++;
-    }
-  }
-
-  function newWorkspaceIn(
-    path: string,
-    list: DirectoryEntry[],
-    workspaceName?: string,
-  ) {
+  function newWorkspaceIn(path: string, workspaceName: string) {
     const pathSlash = path ? `${path}/` : "";
-    const name = workspaceName || newName(list);
-    navigate(`/edit/${pathSlash}${name}`, { replace: true });
+    navigate(`/edit/${pathSlash}${workspaceName}.lynxkite.json`, { replace: true });
   }
-
-  async function newFolderIn(
-    path: string,
-    list: DirectoryEntry[],
-    folderName?: string,
-  ) {
-    const name = folderName || newName(list, "New Folder");
+  function newCodeFile(path: string, name: string) {
     const pathSlash = path ? `${path}/` : "";
-
+    navigate(`/code/${pathSlash}${name}`, { replace: true });
+  }
+  async function newFolderIn(path: string, folderName: string) {
+    const pathSlash = path ? `${path}/` : "";
     const res = await fetch("/api/dir/mkdir", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: pathSlash + name }),
+      body: JSON.stringify({ path: pathSlash + folderName }),
     });
     if (res.ok) {
-      navigate(`/dir/${pathSlash}${name}`);
+      navigate(`/dir/${pathSlash}${folderName}`);
     } else {
       alert("Failed to create folder.");
     }
   }
 
   async function deleteItem(item: DirectoryEntry) {
-    if (!window.confirm(`Are you sure you want to delete "${item.name}"?`))
-      return;
+    if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return;
     const pathSlash = path ? `${path}/` : "";
 
-    const apiPath =
-      item.type === "directory" ? "/api/dir/delete" : "/api/delete";
+    const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
     await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -115,89 +135,66 @@ export default function () {
         {list.data && (
           <>
             <div className="actions">
-              <div className="new-workspace">
-                {isCreatingWorkspace && (
-                  // @ts-ignore
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      newWorkspaceIn(
-                        path || "",
-                        list.data,
-                        (
-                          e.target as HTMLFormElement
-                        ).workspaceName.value.trim(),
-                      );
-                    }}
-                  >
-                    <input
-                      type="text"
-                      name="workspaceName"
-                      defaultValue={newName(list.data)}
-                      placeholder={newName(list.data)}
-                    />
-                  </form>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setIsCreatingWorkspace(true)}
-                >
-                  <FolderPlus /> New workspace
-                </button>
-              </div>
-
-              <div className="new-folder">
-                {isCreatingDir && (
-                  // @ts-ignore
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      newFolderIn(
-                        path || "",
-                        list.data,
-                        (e.target as HTMLFormElement).folderName.value.trim(),
-                      );
-                    }}
-                  >
-                    <input
-                      type="text"
-                      name="folderName"
-                      defaultValue={newName(list.data)}
-                      placeholder={newName(list.data)}
-                    />
-                  </form>
-                )}
-                <button type="button" onClick={() => setIsCreatingDir(true)}>
-                  <FolderPlus /> New folder
-                </button>
-              </div>
+              <EntryCreator
+                onCreate={(name) => {
+                  newWorkspaceIn(path || "", name);
+                }}
+                icon={<LayoutGridAdd />}
+                label="New workspace"
+              />
+              <EntryCreator
+                onCreate={(name) => {
+                  newCodeFile(path || "", name);
+                }}
+                icon={<FilePlus />}
+                label="New code file"
+              />
+              <EntryCreator
+                onCreate={(name: string) => {
+                  newFolderIn(path || "", name);
+                }}
+                icon={<FolderPlus />}
+                label="New folder"
+              />
             </div>
 
-            {path && (
+            {path ? (
               <div className="breadcrumbs">
                 <Link to="/dir/">
                   <Home />
                 </Link>{" "}
                 <span className="current-folder">{path}</span>
+                <title>{path}</title>
               </div>
+            ) : (
+              <title>LynxKite 2000:MM</title>
             )}
 
-            {list.data.map((item: DirectoryEntry) => (
-              <div key={item.name} className="entry">
-                <Link key={link(item)} to={link(item)}>
-                  {item.type === "directory" ? <Folder /> : <File />}
-                  {shortName(item)}
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    deleteItem(item);
-                  }}
-                >
-                  <Trash />
-                </button>
-              </div>
-            ))}
+            {list.data.map(
+              (item: DirectoryEntry) =>
+                !shortName(item)?.startsWith("__") && (
+                  <div key={item.name} className="entry">
+                    <Link key={link(item)} to={link(item)}>
+                      {item.type === "directory" ? (
+                        <Folder />
+                      ) : item.type === "workspace" ? (
+                        <LayoutGrid />
+                      ) : (
+                        <File />
+                      )}
+                      {shortName(item)}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        deleteItem(item);
+                      }}
+                    >
+                      <Trash />
+                    </button>
+                  </div>
+                ),
+            )}
           </>
         )}
       </div>{" "}

@@ -18,7 +18,7 @@ export class Workspace {
   }
 
   // Starts with a brand new workspace.
-  static async empty(page: Page, workspaceName?: string): Promise<Workspace> {
+  static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
     return await splash.createWorkspace(workspaceName);
   }
@@ -63,10 +63,7 @@ export class Workspace {
 
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    await this.page
-      .locator(".node-search")
-      .getByText(boxName, { exact: true })
-      .click();
+    await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
@@ -107,9 +104,7 @@ export class Workspace {
 
   getBoxHandle(boxId: string, pos?: string) {
     if (pos) {
-      return this.page.locator(
-        `[data-id="${boxId}"] [data-handlepos="${pos}"]`,
-      );
+      return this.page.locator(`[data-id="${boxId}"] [data-handlepos="${pos}"]`);
     }
     return this.page.getByTestId(boxId);
   }
@@ -133,11 +128,9 @@ export class Workspace {
     } else if (offset) {
       // Without steps the movement is too fast and the box is not dragged. The more steps,
       // the better the movement is captured
-      await this.page.mouse.move(
-        boxCenterX + offset.offsetX,
-        boxCenterY + offset.offsetY,
-        { steps: 5 },
-      );
+      await this.page.mouse.move(boxCenterX + offset.offsetX, boxCenterY + offset.offsetY, {
+        steps: 5,
+      });
     }
     await this.page.mouse.up();
   }
@@ -189,20 +182,12 @@ export class Splash {
     return this.page.locator(".entry").filter({ hasText: name }).first();
   }
 
-  async createWorkspace(name?: string) {
+  async createWorkspace(name: string) {
     await this.page.getByRole("button", { name: "New workspace" }).click();
-    await this.page.locator('input[name="workspaceName"]').click();
-    let workspaceName: string;
-    if (name) {
-      workspaceName = name;
-      await this.page.locator('input[name="workspaceName"]').fill(name);
-    } else {
-      workspaceName = await this.page
-        .locator('input[name="workspaceName"]')
-        .inputValue();
-    }
-    await this.page.locator('input[name="workspaceName"]').press("Enter");
-    const ws = new Workspace(this.page, workspaceName);
+    const nameBox = this.page.locator('input[name="entryName"]');
+    await nameBox.fill(name);
+    await nameBox.press("Enter");
+    const ws = new Workspace(this.page, name);
     await ws.setEnv("LynxKite Graph Analytics");
     return ws;
   }
@@ -212,13 +197,11 @@ export class Splash {
     return new Workspace(this.page, name);
   }
 
-  async createFolder(folderName?: string) {
+  async createFolder(folderName: string) {
     await this.page.getByRole("button", { name: "New folder" }).click();
-    await this.page.locator('input[name="folderName"]').click();
-    if (folderName) {
-      await this.page.locator('input[name="folderName"]').fill(folderName);
-    }
-    await this.page.locator('input[name="folderName"]').press("Enter");
+    const nameBox = this.page.locator('input[name="entryName"]');
+    await nameBox.fill(folderName);
+    await nameBox.press("Enter");
   }
 
   async deleteEntry(entryName: string) {

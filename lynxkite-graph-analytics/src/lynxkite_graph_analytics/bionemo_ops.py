@@ -40,7 +40,7 @@ from bionemo.scdl.io.single_cell_collection import SingleCellCollection
 import scanpy
 
 
-mem = joblib.Memory("joblib-cache")
+mem = joblib.Memory(".joblib-cache")
 op = ops.op_registration(core.ENV)
 DATA_PATH = Path("/workspace")
 
@@ -89,9 +89,7 @@ def download_cellxgene_dataset(
     adata.write_h5ad(h5ad_outfile)
     with tempfile.TemporaryDirectory() as temp_dir:
         coll = SingleCellCollection(temp_dir)
-        coll.load_h5ad_multi(
-            h5ad_outfile.parent, max_workers=max_workers, use_processes=use_mp
-        )
+        coll.load_h5ad_multi(h5ad_outfile.parent, max_workers=max_workers, use_processes=use_mp)
         coll.flatten(DATA_PATH / save_path, destroy_on_copy=True)
     return DATA_PATH / save_path
 
@@ -148,9 +146,7 @@ def download_model(*, model_name: str) -> str:
 
 @op("BioNeMo > Infer")
 @mem.cache(verbose=1)
-def infer(
-    dataset_path: str, model_path: str | None = None, *, results_path: str
-) -> str:
+def infer(dataset_path: str, model_path: str | None = None, *, results_path: str) -> str:
     """Infer on a dataset."""
     # This import is slow, so we only import it when we need it.
     from bionemo.geneformer.scripts.infer_geneformer import infer_model
@@ -175,10 +171,7 @@ def infer(
 @op("BioNeMo > Load results")
 def load_results(results_path: str):
     embeddings = (
-        torch.load(f"{results_path}/predictions__rank_0.pt")["embeddings"]
-        .float()
-        .cpu()
-        .numpy()
+        torch.load(f"{results_path}/predictions__rank_0.pt")["embeddings"].float().cpu().numpy()
     )
     return embeddings
 
@@ -248,9 +241,7 @@ def run_benchmark(data, labels, *, use_pca: bool = False):
             ]
         )
     else:
-        pipeline = Pipeline(
-            [("classifier", RandomForestClassifier(class_weight="balanced"))]
-        )
+        pipeline = Pipeline([("classifier", RandomForestClassifier(class_weight="balanced"))])
 
     # Set up StratifiedKFold to ensure each fold reflects the overall distribution of labels
     cv = StratifiedKFold(n_splits=5)
@@ -258,9 +249,7 @@ def run_benchmark(data, labels, *, use_pca: bool = False):
     # Define the scoring functions
     scoring = {
         "accuracy": make_scorer(accuracy_score),
-        "precision": make_scorer(
-            precision_score, average="macro"
-        ),  # 'macro' averages over classes
+        "precision": make_scorer(precision_score, average="macro"),  # 'macro' averages over classes
         "recall": make_scorer(recall_score, average="macro"),
         "f1_score": make_scorer(f1_score, average="macro"),
         # 'roc_auc' requires probability or decision function; hence use multi_class if applicable
@@ -298,9 +287,7 @@ def plot_confusion_matrix(benchmark_output, labels):
     # heatmap has the 0,0 at the bottom left corner
     num_rows = len(str_labels)
     heatmap_data = [
-        [j, num_rows - i - 1, norm_cm[i][j]]
-        for i in range(len(labels))
-        for j in range(len(labels))
+        [j, num_rows - i - 1, norm_cm[i][j]] for i in range(len(labels)) for j in range(len(labels))
     ]
 
     options = {
@@ -332,9 +319,7 @@ def plot_confusion_matrix(benchmark_output, labels):
             "orient": "vertical",
             "right": 10,
             "top": "center",
-            "inRange": {
-                "color": ["#E0F7FA", "#81D4FA", "#29B6F6", "#0288D1", "#01579B"]
-            },
+            "inRange": {"color": ["#E0F7FA", "#81D4FA", "#29B6F6", "#0288D1", "#01579B"]},
         },
         "series": [
             {
@@ -424,9 +409,7 @@ def accuracy_comparison(benchmark_output10m, benchmark_output100m):
             {
                 "name": "Error Bars",
                 "type": "errorbar",
-                "data": [
-                    [val - err, val + err] for val, err in zip(values, error_bars)
-                ],
+                "data": [[val - err, val + err] for val, err in zip(values, error_bars)],
                 "itemStyle": {"color": "#1f77b4"},
             },
         ],
@@ -509,9 +492,7 @@ def f1_comparison(benchmark_output10m, benchmark_output100m):
             {
                 "name": "Error Bars",
                 "type": "errorbar",
-                "data": [
-                    [val - err, val + err] for val, err in zip(values, error_bars)
-                ],
+                "data": [[val - err, val + err] for val, err in zip(values, error_bars)],
                 "itemStyle": {"color": "#1f77b4"},
             },
         ],

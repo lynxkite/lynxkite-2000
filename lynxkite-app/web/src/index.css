@@ -102,15 +102,14 @@ body {
     --status-color-1: oklch(75% 0.2 55);
     --status-color-2: oklch(75% 0.2 55);
     --status-color-3: oklch(75% 0.2 55);
-    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3
-      0.3s;
+    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3 0.3s;
   }
 
   .lynxkite-node .title.active {
     --status-color-1: oklch(75% 0.2 55);
     --status-color-2: oklch(90% 0.2 55);
     --status-color-3: oklch(75% 0.1 55);
-    /* animation: active-node-gradient-animation 2s ease-in-out infinite; */
+    animation: active-node-gradient-animation 2s ease-in-out infinite;
   }
 
   .lynxkite-node .title.planned {
@@ -256,6 +255,14 @@ body {
       cursor: pointer;
     }
   }
+
+  .model-mapping-param {
+    border: 1px solid var(--fallback-bc, oklch(var(--bc) / 0.2));
+    border-collapse: separate;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 100%;
+  }
 }
 
 .params-expander {
@@ -319,7 +326,14 @@ body {
   .actions {
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
+    height: 50px;
     padding: 5px;
+
+    form,
+    button {
+      flex: 1;
+    }
   }
 
   .actions a {
@@ -526,4 +540,26 @@ body {
 
 .add-relationship-button:hover {
   background-color: #218838;
+}
+
+.yRemoteSelection {
+  background-color: rgb(250, 129, 0, 0.5);
+}
+
+.yRemoteSelectionHead {
+  position: absolute;
+  border-left: #ff8800 solid 2px;
+  border-top: #ff8800 solid 2px;
+  border-bottom: #ff8800 solid 2px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.yRemoteSelectionHead::after {
+  position: absolute;
+  content: " ";
+  border: 3px solid #ff8800;
+  border-radius: 4px;
+  left: -4px;
+  top: -5px;
 }

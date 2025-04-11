@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 2048,
+    chunkSizeWarningLimit: 3000,
   },
   esbuild: {
     supported: {

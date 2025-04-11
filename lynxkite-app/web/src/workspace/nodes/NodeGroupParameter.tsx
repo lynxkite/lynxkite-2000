@@ -24,6 +24,7 @@ interface GroupsType {
 interface NodeGroupParameterProps {
   meta: { selector: SelectorType; groups: GroupsType };
   value: any;
+  data: any;
   setParam: (name: string, value: any, options?: { delay: number }) => void;
   deleteParam: (name: string, options?: { delay: number }) => void;
 }
@@ -31,14 +32,13 @@ interface NodeGroupParameterProps {
 export default function NodeGroupParameter({
   meta,
   value,
+  data,
   setParam,
   deleteParam,
 }: NodeGroupParameterProps) {
   const selector = meta.selector;
   const groups = meta.groups;
-  const [selectedValue, setSelectedValue] = useState<string>(
-    value || selector.default,
-  );
+  const [selectedValue, setSelectedValue] = useState<string>(value || selector.default);
 
   const handleSelectorChange = (value: any, opts?: { delay: number }) => {
     setSelectedValue(value);
@@ -47,9 +47,7 @@ export default function NodeGroupParameter({
 
   useEffect(() => {
     // Clean possible previous parameters first
-    Object.values(groups).flatMap((group) =>
-      group.map((entry) => deleteParam(entry.name)),
-    );
+    Object.values(groups).flatMap((group) => group.map((entry) => deleteParam(entry.name)));
     for (const param of groups[selectedValue]) {
       setParam(param.name, param.default);
     }
@@ -60,6 +58,7 @@ export default function NodeGroupParameter({
       name={selector.name}
       key={selector.name}
       value={selectedValue}
+      data={data}
       meta={selector}
       onChange={handleSelectorChange}
     />

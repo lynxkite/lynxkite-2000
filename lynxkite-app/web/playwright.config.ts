@@ -7,6 +7,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  maxFailures: 5,
   workers: 1,
   reporter: process.env.CI ? [["github"], ["html"]] : "html",
   use: {
@@ -24,7 +25,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "cd ../../examples && lynxkite",
-    url: "http://127.0.0.1:8000",
+    port: 8000,
     reuseExistingServer: false,
   },
 });

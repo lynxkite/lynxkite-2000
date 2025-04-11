@@ -16,11 +16,16 @@ Run tests with:
 uv run pytest
 ```
 
-The LLM agent flow examples use local models.
+The LLM agent flow examples can use local models.
 
 ```bash
 uv pip install infinity-emb[all]
 infinity_emb v2 --model-id michaelfeil/bge-small-en-v1.5
 uv pip install "sglang[all]>=0.4.2.post2" --find-links https://flashinfer.ai/whl/cu124/torch2.5/flashinfer/
 python -m sglang.launch_server --model-path SultanR/SmolTulu-1.7b-Instruct --port 8080
+export LLM_BASE_URL='http://localhost:8080/v1'
+export LLM_MODEL='SultanR/SmolTulu-1.7b-Instruct'
+export EMBEDDING_BASE_URL='http://localhost:7997/'
+export EMBEDDING_MODEL='michaelfeil/bge-small-en-v1.5'
+lynxkite
 ```

@@ -1,0 +1,796 @@
+{
+  "edges": [
+    {
+      "id": "Input: embedding 1 Graph conv 1",
+      "source": "Input: embedding 1",
+      "sourceHandle": "x",
+      "target": "Graph conv 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: graph edges 1 Graph conv 1",
+      "source": "Input: graph edges 1",
+      "sourceHandle": "edges",
+      "target": "Graph conv 1",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph conv 1 Activation 1",
+      "source": "Graph conv 1",
+      "sourceHandle": "x",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 Repeat 1",
+      "source": "Activation 1",
+      "sourceHandle": "x",
+      "target": "Repeat 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Repeat 1 Graph conv 1",
+      "source": "Repeat 1",
+      "sourceHandle": "output",
+      "target": "Graph conv 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: sequential 1 LSTM 1",
+      "source": "Input: sequential 1",
+      "sourceHandle": "y",
+      "target": "LSTM 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: zeros 1 LSTM 1",
+      "source": "Input: zeros 1",
+      "sourceHandle": "x",
+      "target": "LSTM 1",
+      "targetHandle": "h"
+    },
+    {
+      "id": "Recurrent chain 1 LSTM 1",
+      "source": "Recurrent chain 1",
+      "sourceHandle": "output",
+      "target": "LSTM 1",
+      "targetHandle": "h"
+    },
+    {
+      "id": "LSTM 1 Recurrent chain 1",
+      "source": "LSTM 1",
+      "sourceHandle": "h",
+      "target": "Recurrent chain 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Activation 1 Concatenate 1",
+      "source": "Activation 1",
+      "sourceHandle": "x",
+      "target": "Concatenate 1",
+      "targetHandle": "a"
+    },
+    {
+      "id": "LSTM 1 Concatenate 1",
+      "source": "LSTM 1",
+      "sourceHandle": "x",
+      "target": "Concatenate 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: label 1 MSE loss 1",
+      "source": "Input: label 1",
+      "sourceHandle": "y",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "MSE loss 1 Optimizer 1",
+      "source": "MSE loss 1",
+      "sourceHandle": "loss",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Concatenate 1 Neural ODE 2",
+      "source": "Concatenate 1",
+      "sourceHandle": "x",
+      "target": "Neural ODE 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Neural ODE 2 MSE loss 1",
+      "source": "Neural ODE 2",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "edges": {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Graph conv",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "type": {
+              "default": "1",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "GCNConv",
+                  "GATConv",
+                  "GATv2Conv",
+                  "SAGEConv"
+                ]
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "type": 1.0
+        },
+        "status": "planned",
+        "title": "Graph conv"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Graph conv 1",
+      "position": {
+        "x": 350.98078368755864,
+        "y": 195.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Repeat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "times": {
+              "default": 1.0,
+              "name": "times",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "times": "5"
+        },
+        "status": "planned",
+        "title": "Repeat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Repeat 1",
+      "position": {
+        "x": -94.15168677219138,
+        "y": 14.525356969883305
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "a": {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "b": {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Concatenate",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Concatenate 1",
+      "position": {
+        "x": 477.88148637482334,
+        "y": -372.62774030487003
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: graph edges",
+          "outputs": {
+            "edges": {
+              "name": "edges",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: graph edges"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: graph edges 1",
+      "position": {
+        "x": 515.6535517374441,
+        "y": 545.4709559884296
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: embedding",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: embedding"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: embedding 1",
+      "position": {
+        "x": 246.6527948448857,
+        "y": 551.6313504198322
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Activation",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "type": {
+              "default": "1",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "LeakyReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "type": 1.0
+        },
+        "status": "planned",
+        "title": "Activation"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Activation 1",
+      "position": {
+        "x": 354.3731834561054,
+        "y": -73.74768512965228
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "h": {
+              "name": "h",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "LSTM",
+          "outputs": {
+            "h": {
+              "name": "h",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "LSTM"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "LSTM 1",
+      "position": {
+        "x": 960.0,
+        "y": 135.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: sequential",
+          "outputs": {
+            "y": {
+              "name": "y",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: sequential"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: sequential 1",
+      "position": {
+        "x": 1005.0,
+        "y": 510.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: zeros",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: zeros"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: zeros 1",
+      "position": {
+        "x": 1290.0,
+        "y": 405.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Recurrent chain",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Recurrent chain"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Recurrent chain 1",
+      "position": {
+        "x": 1224.6603040746108,
+        "y": 135.44839862151363
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            },
+            "y": {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "MSE loss",
+          "outputs": {
+            "loss": {
+              "name": "loss",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "position": {
+        "x": 915.0,
+        "y": -900.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input: label",
+          "outputs": {
+            "y": {
+              "name": "y",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "planned",
+        "title": "Input: label"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Input: label 1",
+      "position": {
+        "x": 1095.0,
+        "y": -450.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "loss": {
+              "name": "loss",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Optimizer",
+          "outputs": {},
+          "params": {
+            "lr": {
+              "default": 0.001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            "type": {
+              "default": "1",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "AdamW",
+                  "Adafactor",
+                  "Adagrad",
+                  "SGD",
+                  "Lion",
+                  "Paged AdamW",
+                  "Galore AdamW"
+                ]
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "lr": 0.001,
+          "type": 1.0
+        },
+        "status": "planned",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 247.0,
+      "id": "Optimizer 1",
+      "position": {
+        "x": 915.3430278730226,
+        "y": -1268.0577550022126
+      },
+      "type": "basic",
+      "width": 190.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "x": {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "name": "Neural ODE",
+          "outputs": {
+            "x": {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          },
+          "params": {
+            "absolute_tolerance": {
+              "default": null,
+              "name": "absolute_tolerance",
+              "type": {
+                "type": "None"
+              }
+            },
+            "method": {
+              "default": "1",
+              "name": "method",
+              "type": {
+                "enum": [
+                  "dopri8",
+                  "dopri5",
+                  "bosh3",
+                  "fehlberg2",
+                  "adaptive_heun",
+                  "euler",
+                  "midpoint",
+                  "rk4",
+                  "explicit_adams",
+                  "implicit_adams"
+                ]
+              }
+            },
+            "relative_tolerance": {
+              "default": null,
+              "name": "relative_tolerance",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "absolute_tolerance": null,
+          "method": 1.0,
+          "relative_tolerance": null
+        },
+        "status": "planned",
+        "title": "Neural ODE"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Neural ODE 2",
+      "position": {
+        "x": 342.3226409443945,
+        "y": -687.1882072175634
+      },
+      "type": "basic",
+      "width": 200.0
+    }
+  ]
+}

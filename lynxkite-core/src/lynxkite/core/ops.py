@@ -1,9 +1,15 @@
 """API for implementing LynxKite operations."""
 
 from __future__ import annotations
+import asyncio
 import enum
 import functools
+import importlib
 import inspect
+import pathlib
+import subprocess
+import traceback
+import joblib
 import types
 import pydantic
 import typing
@@ -13,8 +19,11 @@ from typing_extensions import Annotated
 if typing.TYPE_CHECKING:
     from . import workspace
 
-CATALOGS = {}
+Catalog = dict[str, "Op"]
+Catalogs = dict[str, Catalog]
+CATALOGS: Catalogs = {}
 EXECUTORS = {}
+mem = joblib.Memory(".joblib-cache")
 
 typeof = type  # We have some arguments called "type".
 
@@ -61,7 +70,7 @@ class Parameter(BaseConfig):
     @staticmethod
     def options(name, options, default=None):
         e = enum.Enum(f"OptionsFor_{name}", options)
-        return Parameter.basic(name, e[default or options[0]], e)
+        return Parameter.basic(name, default or options[0], e)
 
     @staticmethod
     def collapsed(name, default, type=None):
@@ -106,11 +115,13 @@ class Result:
     The `output` attribute is what will be used as input for other operations.
     The `display` attribute is used to send data to display on the UI. The value has to be
     JSON-serializable.
+    `input_metadata` is a list of JSON objects describing each input.
     """
 
     output: typing.Any = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
+    input_metadata: ReadOnlyJSON | None = None
 
 
 MULTI_INPUT = Input(name="multi", type="*")
@@ -140,6 +151,11 @@ def _param_to_type(name, value, type):
                 return None if value == "" else _param_to_type(name, value, type)
             case (type, types.NoneType):
                 return None if value == "" else _param_to_type(name, value, type)
+    if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
+        try:
+            return type.model_validate_json(value)
+        except pydantic.ValidationError:
+            return None
     return value
 
 
@@ -154,9 +170,7 @@ class Op(BaseConfig):
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
-        for p in params:
-            if p in self.params:
-                params[p] = _param_to_type(p, params[p], self.params[p].type)
+        params = self.convert_params(params)
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
@@ -172,12 +186,25 @@ class Op(BaseConfig):
                 res.display = res.output
         return res
 
+    def convert_params(self, params):
+        """Returns the parameters converted to the expected type."""
+        res = {}
+        for p in params:
+            if p in self.params:
+                res[p] = _param_to_type(p, params[p], self.params[p].type)
+            else:
+                res[p] = params[p]
+        return res
 
-def op(env: str, name: str, *, view="basic", outputs=None, params=None):
+
+def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=False):
     """Decorator for defining an operation."""
 
     def decorator(func):
         sig = inspect.signature(func)
+        if slow:
+            func = mem.cache(func)
+            func = _global_slow(func)
         # Positional arguments are inputs.
         inputs = {
             name: Input(name=name, type=param.annotation)
@@ -193,9 +220,7 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None):
         if outputs:
             _outputs = {name: Output(name=name, type=None) for name in outputs}
         else:
-            _outputs = (
-                {"output": Output(name="output", type=None)} if view == "basic" else {}
-            )
+            _outputs = {"output": Output(name="output", type=None)} if view == "basic" else {}
         op = Op(
             func=func,
             name=name,
@@ -249,12 +274,10 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
         name=name,
         params={p.name: p for p in params},
         inputs=dict(
-            (i, Input(name=i, type=None)) if isinstance(i, str) else (i.name, i)
-            for i in inputs
+            (i, Input(name=i, type=None)) if isinstance(i, str) else (i.name, i) for i in inputs
         ),
         outputs=dict(
-            (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o)
-            for o in outputs
+            (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o) for o in outputs
         ),
     )
     CATALOGS.setdefault(env, {})
@@ -286,3 +309,64 @@ def op_registration(env: str):
 def passive_op_registration(env: str):
     """Returns a function that can be used to register operations without associated code."""
     return functools.partial(register_passive_op, env)
+
+
+def slow(func):
+    """Decorator for slow, blocking operations. Turns them into separate threads."""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        return await asyncio.to_thread(func, *args, **kwargs)
+
+    return wrapper
+
+
+_global_slow = slow  # For access inside op().
+CATALOGS_SNAPSHOTS: dict[str, Catalogs] = {}
+
+
+def save_catalogs(snapshot_name: str):
+    CATALOGS_SNAPSHOTS[snapshot_name] = {k: dict(v) for k, v in CATALOGS.items()}
+
+
+def load_catalogs(snapshot_name: str):
+    global CATALOGS
+    snap = CATALOGS_SNAPSHOTS[snapshot_name]
+    CATALOGS = {k: dict(v) for k, v in snap.items()}
+
+
+def load_user_scripts(workspace: str):
+    """Reloads the *.py in the workspace's directory and higher-level directories."""
+    if "plugins loaded" in CATALOGS_SNAPSHOTS:
+        load_catalogs("plugins loaded")
+    cwd = pathlib.Path()
+    path = cwd / workspace
+    assert path.is_relative_to(cwd), "Provided workspace path is invalid"
+    for p in path.parents:
+        print("checking user scripts in", p)
+        for f in p.glob("*.py"):
+            try:
+                run_user_script(f)
+            except Exception:
+                traceback.print_exc()
+        req = p / "requirements.txt"
+        if req.exists():
+            try:
+                install_requirements(req)
+            except Exception:
+                traceback.print_exc()
+        if p == cwd:
+            break
+
+
+def install_requirements(req: pathlib.Path):
+    cmd = ["uv", "pip", "install", "-r", str(req)]
+    print(f"Running {' '.join(cmd)}")
+    subprocess.check_call(cmd)
+
+
+def run_user_script(script_path: pathlib.Path):
+    print(f"Running {script_path}...")
+    spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)

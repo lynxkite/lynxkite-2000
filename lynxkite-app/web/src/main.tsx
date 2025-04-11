@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "@xyflow/react/dist/style.css";
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router";
+import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
 import Workspace from "./workspace/Workspace.tsx";
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/dir" element={<Directory />} />
         <Route path="/dir/:path" element={<Directory />} />
         <Route path="/edit/:path" element={<Workspace />} />
+        <Route path="/code/:path" element={<Code />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

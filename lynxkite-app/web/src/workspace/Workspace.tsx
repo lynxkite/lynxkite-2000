@@ -1,3 +1,5 @@
+// The LynxKite workspace editor.
+
 import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   type Connection,
@@ -15,14 +17,7 @@ import {
   useUpdateNodeInternals,
 } from "@xyflow/react";
 import axios from "axios";
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-// The LynxKite workspace editor.
+import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
@@ -37,11 +32,7 @@ import favicon from "../assets/favicon.ico";
 // import NodeWithTableView from './NodeWithTableView';
 import EnvironmentSelector from "./EnvironmentSelector";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, {
-  type OpsOp,
-  type Catalog,
-  type Catalogs,
-} from "./NodeSearch.tsx";
+import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
@@ -62,6 +53,10 @@ function LynxKiteFlow() {
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
+  const shortPath = path!
+    .split("/")
+    .pop()!
+    .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as Workspace });
   const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
@@ -69,11 +64,7 @@ function LynxKiteFlow() {
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    const wsProvider = new WebsocketProvider(
-      `${proto}//${location.host}/ws/crdt`,
-      path!,
-      doc,
-    );
+    const wsProvider = new WebsocketProvider(`${proto}//${location.host}/ws/crdt`, path!, doc);
     const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.
@@ -165,7 +156,7 @@ function LynxKiteFlow() {
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
-  const catalog = useSWR("/api/catalog", fetcher);
+  const catalog = useSWR(`/api/catalog?workspace=${path}`, fetcher);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
@@ -190,11 +181,7 @@ function LynxKiteFlow() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Show the node search dialog on "/".
-      if (
-        event.key === "/" &&
-        !nodeSearchSettings &&
-        !isTypingInFormElement()
-      ) {
+      if (event.key === "/" && !nodeSearchSettings && !isTypingInFormElement()) {
         event.preventDefault();
         setNodeSearchSettings({
           pos: { x: 100, y: 100 },
@@ -238,11 +225,7 @@ function LynxKiteFlow() {
     },
     [catalog, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
-  function addNode(
-    node: Partial<WorkspaceNode>,
-    state: { workspace: Workspace },
-    nodes: Node[],
-  ) {
+  function addNode(node: Partial<WorkspaceNode>, state: { workspace: Workspace }, nodes: Node[]) {
     const title = node.data?.title;
     let i = 1;
     node.id = `${title} ${i}`;
@@ -260,9 +243,7 @@ function LynxKiteFlow() {
       data: {
         meta: meta,
         title: meta.name,
-        params: Object.fromEntries(
-          Object.values(meta.params).map((p) => [p.name, p.default]),
-        ),
+        params: Object.fromEntries(Object.values(meta.params).map((p) => [p.name, p.default])),
       },
     };
     return node;
@@ -310,9 +291,7 @@ function LynxKiteFlow() {
     try {
       await axios.post("/api/upload", formData, {
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (100 * progressEvent.loaded) / progressEvent.total!,
-          );
+          const percentCompleted = Math.round((100 * progressEvent.loaded) / progressEvent.total!);
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
@@ -345,7 +324,8 @@ function LynxKiteFlow() {
         <a className="logo" href="">
           <img alt="" src={favicon} />
         </a>
-        <div className="ws-name">{path}</div>
+        <div className="ws-name">{shortPath}</div>
+        <title>{shortPath}</title>
         <EnvironmentSelector
           options={Object.keys(catalog.data || {})}
           value={state.workspace.env!}
@@ -365,11 +345,7 @@ function LynxKiteFlow() {
           </a>
         </div>
       </div>
-      <div
-        style={{ height: "100%", width: "100vw" }}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
-      >
+      <div style={{ height: "100%", width: "100vw" }} onDragOver={onDragOver} onDrop={onDrop}>
         <LynxKiteState.Provider value={state}>
           <ReactFlow
             nodes={nodes}
@@ -382,7 +358,9 @@ function LynxKiteFlow() {
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
             maxZoom={1}
-            minZoom={0.3}
+            minZoom={0.2}
+            zoomOnScroll={false}
+            preventScrolling={false}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
