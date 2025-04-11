@@ -1,4 +1,7 @@
 {
+  "files": {
+    "ignore": ["**/*.lynxkite.json"]
+  },
   "formatter": {
     "ignore": ["**/node_modules/**", "**/dist/**"],
     "lineWidth": 100,
@@ -21,6 +24,7 @@
         "useKeyWithClickEvents": "off",
         "useValidAnchor": "off",
         "useButtonType": "off",
+        "noAutofocus": "off",
         "noNoninteractiveTabindex": "off"
       }
     }
