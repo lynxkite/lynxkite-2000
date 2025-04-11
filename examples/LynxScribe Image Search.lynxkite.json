@@ -15,18 +15,18 @@
       "targetHandle": "image_descriptions"
     },
     {
-      "id": "LynxScribe Image RAG Builder 1 LynxScribe Image RAG Query 1",
-      "source": "LynxScribe Image RAG Builder 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Image RAG Query 1",
-      "targetHandle": "rag_graph"
-    },
-    {
       "id": "Input chat 1 LynxScribe Image RAG Query 1",
       "source": "Input chat 1",
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Query 1",
       "targetHandle": "text"
+    },
+    {
+      "id": "LynxScribe Image RAG Builder 1 LynxScribe Image RAG Query 1",
+      "source": "LynxScribe Image RAG Builder 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image RAG Query 1",
+      "targetHandle": "rag_graph"
     },
     {
       "id": "LynxScribe Image RAG Query 1 LynxScribe Image Result Viewer 1",
@@ -41,54 +41,10 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {},
-          "name": "Input chat",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "chat": {
-              "default": null,
-              "name": "chat",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "type": "basic"
-        },
-        "params": {
-          "chat": "show me a picture about cyclists"
-        },
-        "status": "done",
-        "title": "Input chat"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 214.0,
-      "id": "Input chat 1",
-      "position": {
-        "x": 51.51211115780683,
-        "y": -147.75474103115954
-      },
-      "type": "basic",
-      "width": 387.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {},
           "name": "Cloud-sourced File Listing",
@@ -113,7 +69,11 @@
               "default": "gcp",
               "name": "cloud_provider",
               "type": {
-                "enum": ["GCP", "AWS", "AZURE"]
+                "enum": [
+                  "GCP",
+                  "AWS",
+                  "AZURE"
+                ]
               }
             },
             "folder_URL": {
@@ -123,10 +83,6 @@
                 "type": "<class 'str'>"
               }
             }
-          },
-          "position": {
-            "x": 1271.0,
-            "y": 603.0
           },
           "type": "basic"
         },
@@ -139,21 +95,20 @@
         "title": "Cloud-sourced File Listing"
       },
       "dragHandle": ".bg-primary",
-      "height": 308.0,
+      "height": 353.0,
       "id": "Cloud-sourced File Listing 1",
       "position": {
-        "x": -733.5815993327456,
-        "y": 418.3880816741662
+        "x": -365.0,
+        "y": 302.0
       },
       "type": "basic",
-      "width": 613.0
+      "width": 430.0
     },
     {
       "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "file_urls": {
@@ -204,10 +159,6 @@
               }
             }
           },
-          "position": {
-            "x": 1331.0,
-            "y": 686.0
-          },
           "type": "basic"
         },
         "params": {
@@ -220,21 +171,20 @@
         "title": "LynxScribe Image Describer"
       },
       "dragHandle": ".bg-primary",
-      "height": 366.0,
+      "height": 361.0,
       "id": "LynxScribe Image Describer 1",
       "position": {
-        "x": 94.4350838249984,
-        "y": 389.7616279503166
+        "x": 159.0,
+        "y": 298.0
       },
       "type": "basic",
-      "width": 362.0
+      "width": 371.0
     },
     {
       "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "image_descriptions": {
@@ -292,31 +242,27 @@
               }
             }
           },
-          "position": {
-            "x": 1714.0,
-            "y": 740.0
-          },
           "type": "basic"
         },
         "params": {
           "text_embedder_interface": "openai",
           "text_embedder_model_name_or_path": "text-embedding-3-large",
           "vdb_collection_name": "lynx",
-          "vdb_num_dimensions": "3072",
+          "vdb_num_dimensions": 3072.0,
           "vdb_provider_name": "faiss"
         },
         "status": "done",
         "title": "LynxScribe Image RAG Builder"
       },
       "dragHandle": ".bg-primary",
-      "height": 463.0,
+      "height": 441.0,
       "id": "LynxScribe Image RAG Builder 1",
       "position": {
-        "x": 634.1082253159385,
-        "y": 341.7237080874875
+        "x": 644.0,
+        "y": 259.0
       },
       "type": "basic",
-      "width": 309.0
+      "width": 291.0
     },
     {
       "data": {
@@ -324,6 +270,55 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input chat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "chat": {
+              "default": null,
+              "name": "chat",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1260.0,
+            "y": 166.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "chat": "Show me a picture about doctors and patients!"
+        },
+        "status": "done",
+        "title": "Input chat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 218.0,
+      "id": "Input chat 1",
+      "position": {
+        "x": 153.0,
+        "y": -47.0
+      },
+      "type": "basic",
+      "width": 776.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "rag_graph": {
@@ -361,31 +356,32 @@
             }
           },
           "position": {
-            "x": 1865.0,
-            "y": 363.0
+            "x": 1987.0,
+            "y": 365.0
           },
           "type": "basic"
         },
         "params": {
-          "top_k": "3"
+          "top_k": 3.0
         },
         "status": "done",
         "title": "LynxScribe Image RAG Query"
       },
       "dragHandle": ".bg-primary",
-      "height": 205.0,
+      "height": 207.0,
       "id": "LynxScribe Image RAG Query 1",
       "position": {
-        "x": 1064.0579569918539,
-        "y": -140.79102876607624
+        "x": 1160.0,
+        "y": -40.0
       },
       "type": "basic",
-      "width": 263.0
+      "width": 283.0
     },
     {
       "data": {
-        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/riding-7661658_1280.jpg",
+        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/bethesda-naval-medical-center-80380_1280.jpg",
         "error": null,
+        "input_metadata": null,
         "meta": {
           "inputs": {
             "embedding_similarities": {
@@ -400,8 +396,8 @@
           "outputs": {},
           "params": {},
           "position": {
-            "x": 2207.0,
-            "y": 327.0
+            "x": 2326.0,
+            "y": 319.0
           },
           "type": "image"
         },
@@ -410,14 +406,14 @@
         "title": "LynxScribe Image Result Viewer"
       },
       "dragHandle": ".bg-primary",
-      "height": 574.0,
+      "height": 515.0,
       "id": "LynxScribe Image Result Viewer 1",
       "position": {
-        "x": 1551.9130513063783,
-        "y": -326.059648265166
+        "x": 1657.0,
+        "y": -193.0
       },
       "type": "image",
-      "width": 802.0
+      "width": 707.0
     }
   ]
 }
