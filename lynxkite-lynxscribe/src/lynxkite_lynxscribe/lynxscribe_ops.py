@@ -80,9 +80,7 @@ def cloud_file_loader(
 
         bucket = client.bucket(bucket_name)
         blobs = bucket.list_blobs(prefix=prefix)
-        file_urls = [
-            blob.public_url for blob in blobs if blob.name.endswith(accepted_file_types)
-        ]
+        file_urls = [blob.public_url for blob in blobs if blob.name.endswith(accepted_file_types)]
         return {"file_urls": file_urls}
     else:
         raise ValueError(f"Cloud provider '{cloud_provider}' is not supported.")
@@ -172,25 +170,20 @@ async def ls_image_describer(
 
     # creating the prompt objects
     ch_prompt_list = [
-        ChatCompletionPrompt(model=llm_visual_model, messages=prompt)
-        for prompt in prompt_list
+        ChatCompletionPrompt(model=llm_visual_model, messages=prompt) for prompt in prompt_list
     ]
 
     # get the image descriptions
-    tasks = [
-        llm.acreate_completion(completion_prompt=_prompt) for _prompt in ch_prompt_list
-    ]
+    tasks = [llm.acreate_completion(completion_prompt=_prompt) for _prompt in ch_prompt_list]
     out_completions = await asyncio.gather(*tasks)
     results = [
-        dictionary_corrector(result.choices[0].message.content)
-        for result in out_completions
+        dictionary_corrector(result.choices[0].message.content) for result in out_completions
     ]
 
     # getting the image descriptions (list of dictionaries {image_url: URL, description: description})
     # TODO: some result class could be a better idea (will be developed in LynxScribe)
     image_descriptions = [
-        {"image_url": image_urls[i], "description": results[i]}
-        for i in range(len(image_urls))
+        {"image_url": image_urls[i], "description": results[i]} for i in range(len(image_urls))
     ]
 
     return {"image_descriptions": image_descriptions}
@@ -232,13 +225,9 @@ async def ls_image_rag_builder(
     # b) getting the vector store
     # TODO: vdb_provider_name should be ENUM, and other parameters should appear accordingly
     if vdb_provider_name == "chromadb":
-        vector_store = get_vector_store(
-            name=vdb_provider_name, collection_name=vdb_collection_name
-        )
+        vector_store = get_vector_store(name=vdb_provider_name, collection_name=vdb_collection_name)
     elif vdb_provider_name == "faiss":
-        vector_store = get_vector_store(
-            name=vdb_provider_name, num_dimensions=vdb_num_dimensions
-        )
+        vector_store = get_vector_store(name=vdb_provider_name, num_dimensions=vdb_num_dimensions)
     else:
         raise ValueError(f"Vector store name '{vdb_provider_name}' is not supported.")
 
@@ -334,9 +323,7 @@ async def search_context(rag_graph, text, *, top_k=3):
         image_url = emb_sim.embedding.metadata["image_url"]
         score = emb_sim.score
         description = emb_sim.embedding.document
-        result_list.append(
-            {"image_url": image_url, "score": score, "description": description}
-        )
+        result_list.append({"image_url": image_url, "score": score, "description": description})
 
     return {"embedding_similarities": result_list}
 
@@ -381,13 +368,9 @@ def ls_text_rag_loader(
 
     # getting the vector store
     if vdb_provider_name == "chromadb":
-        vector_store = get_vector_store(
-            name=vdb_provider_name, collection_name=vdb_collection_name
-        )
+        vector_store = get_vector_store(name=vdb_provider_name, collection_name=vdb_collection_name)
     elif vdb_provider_name == "faiss":
-        vector_store = get_vector_store(
-            name=vdb_provider_name, num_dimensions=vdb_num_dimensions
-        )
+        vector_store = get_vector_store(name=vdb_provider_name, num_dimensions=vdb_num_dimensions)
     else:
         raise ValueError(f"Vector store name '{vdb_provider_name}' is not supported.")
 
