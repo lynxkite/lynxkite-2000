@@ -68,7 +68,7 @@
           "type": "basic"
         },
         "params": {
-          "chat": "show me a picture about 2 doctors"
+          "chat": "show me a picture about cyclists"
         },
         "status": "done",
         "title": "Input chat"
@@ -304,9 +304,9 @@
         },
         "params": {
           "text_embedder_interface": "openai",
-          "text_embedder_model_name_or_path": "text-embedding-3-small",
+          "text_embedder_model_name_or_path": "text-embedding-3-large",
           "vdb_collection_name": "lynx",
-          "vdb_num_dimensions": "1536",
+          "vdb_num_dimensions": "3072",
           "vdb_provider_name": "faiss"
         },
         "status": "done",
@@ -388,7 +388,7 @@
     },
     {
       "data": {
-        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/surgery-1807541_1280.jpg",
+        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/riding-7661658_1280.jpg",
         "error": null,
         "meta": {
           "inputs": {
@@ -414,11 +414,11 @@
         "title": "LynxScribe Image Result Viewer"
       },
       "dragHandle": ".bg-primary",
-      "height": 622.0,
+      "height": 574.0,
       "id": "LynxScribe Image Result Viewer 1",
       "position": {
-        "x": 1550.5086064306404,
-        "y": -349.93521115271193
+        "x": 1551.9130513063783,
+        "y": -326.059648265166
       },
       "type": "image",
       "width": 802.0
