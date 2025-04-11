@@ -1,3 +1,5 @@
+// The LynxKite workspace editor.
+
 import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   type Connection,
@@ -16,7 +18,6 @@ import {
 } from "@xyflow/react";
 import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-// The LynxKite workspace editor.
 import { useParams } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
@@ -52,6 +53,10 @@ function LynxKiteFlow() {
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const { path } = useParams();
+  const shortPath = path!
+    .split("/")
+    .pop()!
+    .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as Workspace });
   const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
@@ -151,7 +156,7 @@ function LynxKiteFlow() {
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
-  const catalog = useSWR("/api/catalog", fetcher);
+  const catalog = useSWR(`/api/catalog?workspace=${path}`, fetcher);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
@@ -319,7 +324,8 @@ function LynxKiteFlow() {
         <a className="logo" href="">
           <img alt="" src={favicon} />
         </a>
-        <div className="ws-name">{path}</div>
+        <div className="ws-name">{shortPath}</div>
+        <title>{shortPath}</title>
         <EnvironmentSelector
           options={Object.keys(catalog.data || {})}
           value={state.workspace.env!}

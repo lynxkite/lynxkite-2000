@@ -326,7 +326,14 @@ body {
   .actions {
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
+    height: 50px;
     padding: 5px;
+
+    form,
+    button {
+      flex: 1;
+    }
   }
 
   .actions a {
@@ -533,4 +540,26 @@ body {
 
 .add-relationship-button:hover {
   background-color: #218838;
+}
+
+.yRemoteSelection {
+  background-color: rgb(250, 129, 0, 0.5);
+}
+
+.yRemoteSelectionHead {
+  position: absolute;
+  border-left: #ff8800 solid 2px;
+  border-top: #ff8800 solid 2px;
+  border-bottom: #ff8800 solid 2px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.yRemoteSelectionHead::after {
+  position: absolute;
+  content: " ";
+  border: 3px solid #ff8800;
+  border-radius: 4px;
+  left: -4px;
+  top: -5px;
 }

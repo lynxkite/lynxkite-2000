@@ -18,7 +18,7 @@ export class Workspace {
   }
 
   // Starts with a brand new workspace.
-  static async empty(page: Page, workspaceName?: string): Promise<Workspace> {
+  static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
     return await splash.createWorkspace(workspaceName);
   }
@@ -182,18 +182,12 @@ export class Splash {
     return this.page.locator(".entry").filter({ hasText: name }).first();
   }
 
-  async createWorkspace(name?: string) {
+  async createWorkspace(name: string) {
     await this.page.getByRole("button", { name: "New workspace" }).click();
-    await this.page.locator('input[name="workspaceName"]').click();
-    let workspaceName: string;
-    if (name) {
-      workspaceName = name;
-      await this.page.locator('input[name="workspaceName"]').fill(name);
-    } else {
-      workspaceName = await this.page.locator('input[name="workspaceName"]').inputValue();
-    }
-    await this.page.locator('input[name="workspaceName"]').press("Enter");
-    const ws = new Workspace(this.page, workspaceName);
+    const nameBox = this.page.locator('input[name="entryName"]');
+    await nameBox.fill(name);
+    await nameBox.press("Enter");
+    const ws = new Workspace(this.page, name);
     await ws.setEnv("LynxKite Graph Analytics");
     return ws;
   }
@@ -203,13 +197,11 @@ export class Splash {
     return new Workspace(this.page, name);
   }
 
-  async createFolder(folderName?: string) {
+  async createFolder(folderName: string) {
     await this.page.getByRole("button", { name: "New folder" }).click();
-    await this.page.locator('input[name="folderName"]').click();
-    if (folderName) {
-      await this.page.locator('input[name="folderName"]').fill(folderName);
-    }
-    await this.page.locator('input[name="folderName"]').press("Enter");
+    const nameBox = this.page.locator('input[name="entryName"]');
+    await nameBox.fill(folderName);
+    await nameBox.press("Enter");
   }
 
   async deleteEntry(entryName: string) {
