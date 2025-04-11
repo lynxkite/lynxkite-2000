@@ -34,11 +34,6 @@ from lynxkite.core.executors import one_by_one
 
 DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not contain any information related to your question."
 
-# logger
-# import logging
-# logging.basicConfig(level=logging.INFO)
-# logger = logging.getLogger(__name__)
-
 ENV = "LynxScribe"
 one_by_one.register(ENV)
 mem = joblib.Memory("joblib-cache")
@@ -51,6 +46,11 @@ class CloudProvider(Enum):
     GCP = "gcp"
     AWS = "aws"
     AZURE = "azure"
+
+
+class RAGVersion(Enum):
+    V1 = "v1"
+    V2 = "v2"
 
 
 @op("Cloud-sourced File Listing")
@@ -88,43 +88,43 @@ def cloud_file_loader(
         raise ValueError(f"Cloud provider '{cloud_provider}' is not supported.")
 
 
-@output_on_top
-@op("LynxScribe RAG Graph Vector Store")
-@mem.cache
-def ls_rag_graph(
-    *,
-    name: str = "faiss",
-    num_dimensions: int = 3072,
-    collection_name: str = "lynx",
-    text_embedder_interface: str = "openai",
-    text_embedder_model_name_or_path: str = "text-embedding-3-large",
-    # api_key_name: str = "OPENAI_API_KEY",
-):
-    """
-    Returns with a vector store instance.
-    """
+# @output_on_top
+# @op("LynxScribe RAG Graph Vector Store")
+# @mem.cache
+# def ls_rag_graph(
+#     *,
+#     name: str = "faiss",
+#     num_dimensions: int = 3072,
+#     collection_name: str = "lynx",
+#     text_embedder_interface: str = "openai",
+#     text_embedder_model_name_or_path: str = "text-embedding-3-large",
+#     # api_key_name: str = "OPENAI_API_KEY",
+# ):
+#     """
+#     Returns with a vector store instance.
+#     """
 
-    # getting the text embedder instance
-    llm_params = {"name": text_embedder_interface}
-    # if api_key_name:
-    #     llm_params["api_key"] = os.getenv(api_key_name)
-    llm = get_llm_engine(**llm_params)
-    text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
+#     # getting the text embedder instance
+#     llm_params = {"name": text_embedder_interface}
+#     # if api_key_name:
+#     #     llm_params["api_key"] = os.getenv(api_key_name)
+#     llm = get_llm_engine(**llm_params)
+#     text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
 
-    # getting the vector store
-    if name == "chromadb":
-        vector_store = get_vector_store(name=name, collection_name=collection_name)
-    elif name == "faiss":
-        vector_store = get_vector_store(name=name, num_dimensions=num_dimensions)
-    else:
-        raise ValueError(f"Vector store name '{name}' is not supported.")
+#     # getting the vector store
+#     if name == "chromadb":
+#         vector_store = get_vector_store(name=name, collection_name=collection_name)
+#     elif name == "faiss":
+#         vector_store = get_vector_store(name=name, num_dimensions=num_dimensions)
+#     else:
+#         raise ValueError(f"Vector store name '{name}' is not supported.")
 
-    # building up the RAG graph
-    rag_graph = RAGGraph(
-        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
-    )
+#     # building up the RAG graph
+#     rag_graph = RAGGraph(
+#         PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+#     )
 
-    return {"rag_graph": rag_graph}
+#     return {"rag_graph": rag_graph}
 
 
 @op("LynxScribe Image Describer")
@@ -296,7 +296,7 @@ async def ls_image_rag_builder(
     # # saving the RAG graph
     # rag_graph.kg_base.save(image_rag_out_path)
 
-    return {"knowledge_base": rag_graph}
+    return {"rag_graph": rag_graph}
 
 
 @op("LynxScribe RAG Graph Saver")
@@ -320,7 +320,7 @@ def ls_save_rag_graph(
 @op("LynxScribe Image RAG Query")
 async def search_context(rag_graph, text, *, top_k=3):
     message = text["text"]
-    rag_graph = rag_graph[0]["knowledge_base"]
+    rag_graph = rag_graph[0]["rag_graph"]
 
     # get all similarities
     emb_similarities = await rag_graph.search_context(
@@ -352,78 +352,52 @@ def view_image(embedding_similarities):
     return embedding_similarities[0]["image_url"]
 
 
-# @output_on_top
-# @op("Vector store")
-# def vector_store(*, name="chromadb", collection_name="lynx"):
-#     vector_store = get_vector_store(name=name, collection_name=collection_name)
-#     return {"vector_store": vector_store}
-
-
-# @output_on_top
-# @op("LLM")
-# def llm(*, name="openai"):
-#     llm = get_llm_engine(name=name)
-#     return {"llm": llm}
-
-
-# @output_on_top
-# @ops.input_position(llm="bottom")
-# @op("Text embedder")
-# def text_embedder(llm, *, model="text-embedding-ada-002"):
-#     llm = llm[0]["llm"]
-#     text_embedder = TextEmbedder(llm=llm, model=model)
-#     return {"text_embedder": text_embedder}
-
-
-# @output_on_top
-# @ops.input_position(vector_store="bottom", text_embedder="bottom")
-# @op("RAG graph")
-# def rag_graph(vector_store, text_embedder):
-#     vector_store = vector_store[0]["vector_store"]
-#     text_embedder = text_embedder[0]["text_embedder"]
-#     rag_graph = RAGGraph(
-#         PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
-#     )
-#     return {"rag_graph": rag_graph}
-
-
-@output_on_top
-@ops.input_position(rag_graph="bottom")
-@op("LynxScribe RAG Graph Chatbot Builder")
+@op("LynxScribe Text RAG Loader")
 @mem.cache
-def ls_rag_chatbot_builder(
+def ls_text_rag_loader(
     file_urls,
-    rag_graph,
     *,
-    scenario_file: str = "uploads/lynx_chatbot_scenario_selector.yaml",
-    node_types: str = "intent_cluster",
-    input_type: str = "v1",
+    input_type: RAGVersion = RAGVersion.V1,
+    vdb_provider_name: str = "faiss",
+    vdb_num_dimensions: int = 3072,
+    vdb_collection_name: str = "lynx",
+    text_embedder_interface: str = "openai",
+    text_embedder_model_name_or_path: str = "text-embedding-3-large",
+    # api_key_name: str = "OPENAI_API_KEY",
 ):
     """
-    Builds up a RAG Graph-based chatbot. It could load the chatbot from
-    an existing folder (v1 or v2).
-
-    TODO: Later, we should not use these saved files, but we should build
-    up the chatbot from scratch - will be added soon). That time we will
-    add the summarizer-related parameters (LLM interface and model).
-
-    TODO: Later, the scenario selector can be built up synthetically from
-    the input documents - or semi-automated.
-
-    TODO: Currently, we do not affected by the embedder, as the files are
-    pre-loaded, so the text embedder should have the same model as the
-    one used in the files...
+    Loading a text-based RAG graph from saved files (getting pandas readable links).
     """
-
-    scenarios = load_config(scenario_file)
-    node_types = [t.strip() for t in node_types.split(",")]
 
     # handling inputs
     file_urls = file_urls["file_urls"]
-    rag_graph = rag_graph[0]["rag_graph"]
 
-    # loading v1 knowledge base (shitty solution, but temporary)
-    if input_type == "v1":
+    # getting the text embedder instance
+    llm_params = {"name": text_embedder_interface}
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
+    text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
+
+    # getting the vector store
+    if vdb_provider_name == "chromadb":
+        vector_store = get_vector_store(
+            name=vdb_provider_name, collection_name=vdb_collection_name
+        )
+    elif vdb_provider_name == "faiss":
+        vector_store = get_vector_store(
+            name=vdb_provider_name, num_dimensions=vdb_num_dimensions
+        )
+    else:
+        raise ValueError(f"Vector store name '{vdb_provider_name}' is not supported.")
+
+    # building up the RAG graph
+    rag_graph = RAGGraph(
+        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+    )
+
+    # loading the knowledge base (temporary + TODO: adding v2)
+    if input_type == RAGVersion.V1:
         node_file = [f for f in file_urls if "nodes.p" in f][0]
         edge_file = [f for f in file_urls if "edges.p" in f][0]
         tempcluster_file = [f for f in file_urls if "clusters.p" in f][0]
@@ -432,10 +406,38 @@ def ls_rag_chatbot_builder(
             edges_path=edge_file,
             template_cluster_path=tempcluster_file,
         )
-    elif input_type == "v2":
+    elif input_type == RAGVersion.V2:
         raise ValueError("Currently only v1 input type is supported.")
     else:
         raise ValueError(f"Input type '{input_type}' is not supported.")
+
+    return {"rag_graph": rag_graph}
+
+
+@output_on_top
+@op("LynxScribe RAG Graph Chatbot Builder")
+@mem.cache
+def ls_rag_chatbot_builder(
+    rag_graph,
+    *,
+    scenario_file: str = "uploads/lynx_chatbot_scenario_selector.yaml",
+    node_types: str = "intent_cluster",
+):
+    """
+    Builds up a RAG Graph-based chatbot (basically the loaded RAG graph +
+    a scenario selector).
+
+    TODO: Later, the scenario selector can be built up synthetically from
+    the input documents - or semi-automated, not just from the scenario
+    yaml.
+    """
+
+    scenarios = load_config(scenario_file)
+    node_types = [t.strip() for t in node_types.split(",")]
+
+    # handling inputs
+    # rag_graph = rag_graph[0]["rag_graph"] TODO: check why is it bad
+    rag_graph = rag_graph["rag_graph"]
 
     # loading the scenarios
     scenario_selector = ScenarioSelector(
@@ -451,18 +453,6 @@ def ls_rag_chatbot_builder(
             "scenario_selector": scenario_selector,
         }
     }
-
-
-# @output_on_top
-# @op("Scenario selector")
-# def scenario_selector(*, scenario_file: str, node_types="intent_cluster"):
-#     scenarios = load_config(scenario_file)
-#     node_types = [t.strip() for t in node_types.split(",")]
-#     scenario_selector = ScenarioSelector(
-#         scenarios=[Scenario(**scenario) for scenario in scenarios],
-#         node_types=node_types,
-#     )
-#     return {"scenario_selector": scenario_selector}
 
 
 @output_on_top
@@ -524,35 +514,6 @@ def ls_rag_chatbot_backend(
     )
 
     return {"chat_api": c}
-
-
-# @output_on_top
-# @ops.input_position(rag_graph="bottom", scenario_selector="bottom", llm="bottom")
-# @op("RAG chatbot")
-# def rag_chatbot(
-#     rag_graph,
-#     scenario_selector,
-#     llm,
-#     *,
-#     negative_answer=DEFAULT_NEGATIVE_ANSWER,
-#     limits_by_type="{}",
-#     strict_limits=True,
-#     max_results=5,
-# ):
-#     rag_graph = rag_graph[0]["rag_graph"]
-#     scenario_selector = scenario_selector[0]["scenario_selector"]
-#     llm = llm[0]["llm"]
-#     limits_by_type = json.loads(limits_by_type)
-#     rag_chatbot = RAGChatbot(
-#         rag_graph=rag_graph,
-#         scenario_selector=scenario_selector,
-#         llm=llm,
-#         negative_answer=negative_answer,
-#         limits_by_type=limits_by_type,
-#         strict_limits=strict_limits,
-#         max_results=max_results,
-#     )
-#     return {"chatbot": rag_chatbot}
 
 
 @output_on_top
@@ -620,39 +581,6 @@ async def test_chat_api(message, chat_api, *, show_details=False):
 @op("Input chat")
 def input_chat(*, chat: str):
     return {"text": chat}
-
-
-# @output_on_top
-# @ops.input_position(chatbot="bottom", chat_processor="bottom", knowledge_base="bottom")
-# @op("Chat API")
-# def chat_api(chatbot, chat_processor, knowledge_base, *, model="gpt-4o-mini"):
-#     chatbot = chatbot[0]["chatbot"]
-#     chat_processor = chat_processor[0]["chat_processor"]
-#     knowledge_base = knowledge_base[0]
-#     c = ChatAPI(
-#         chatbot=chatbot,
-#         chat_processor=chat_processor,
-#         model=model,
-#     )
-#     if knowledge_base:
-#         c.chatbot.rag_graph.kg_base.load_v1_knowledge_base(**knowledge_base)
-#         c.chatbot.scenario_selector.check_compatibility(c.chatbot.rag_graph)
-#     return {"chat_api": c}
-
-
-# @output_on_top
-# @op("Knowledge base")
-# def knowledge_base(
-#     *,
-#     nodes_path="nodes.pickle",
-#     edges_path="edges.pickle",
-#     template_cluster_path="tempclusters.pickle",
-# ):
-#     return {
-#         "nodes_path": nodes_path,
-#         "edges_path": edges_path,
-#         "template_cluster_path": template_cluster_path,
-#     }
 
 
 @op("View", view="table_view")
@@ -772,7 +700,7 @@ def dictionary_corrector(dict_string: str, expected_keys: list | None = None) ->
         dstring_prc = "}".join(dstring_prc.split("}")[:-1]) + "}"
 
     try:
-        trf_dict = eval(dstring_prc)
+        trf_dict = json.loads(dstring_prc)
         if expected_keys:
             for _key in expected_keys:
                 if _key in trf_dict:
