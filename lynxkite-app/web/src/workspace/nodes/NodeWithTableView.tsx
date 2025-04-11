@@ -1,3 +1,4 @@
+import { useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 import React from "react";
 import Markdown from "react-markdown";
@@ -14,34 +15,41 @@ function toMD(v: any): string {
   return JSON.stringify(v);
 }
 
+type OpenState = { [name: string]: boolean };
+
 export default function NodeWithTableView(props: any) {
-  const [open, setOpen] = useState({} as { [name: string]: boolean });
+  const reactFlow = useReactFlow();
+  const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
   const display = props.data.display?.value;
-  const single =
-    display?.dataframes && Object.keys(display?.dataframes).length === 1;
+  const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();
+  function setParam(name: string, newValue: any) {
+    reactFlow.updateNodeData(props.id, (prevData: any) => ({
+      ...prevData,
+      params: { ...prevData.data.params, [name]: newValue },
+    }));
+  }
+  function toggleTable(name: string) {
+    setOpen((prevOpen: OpenState) => {
+      const newOpen = { ...prevOpen, [name]: !prevOpen[name] };
+      setParam("_tables_open", newOpen);
+      return newOpen;
+    });
+  }
   return (
     <LynxKiteNode {...props}>
       {display && [
         dfs.map(([name, df]: [string, any]) => (
           <React.Fragment key={name}>
             {!single && (
-              <div
-                key={`${name}-header`}
-                className="df-head"
-                onClick={() => setOpen({ ...open, [name]: !open[name] })}
-              >
+              <div key={`${name}-header`} className="df-head" onClick={() => toggleTable(name)}>
                 {name}
               </div>
             )}
             {(single || open[name]) &&
               (df.data.length > 1 ? (
-                <Table
-                  key={`${name}-table`}
-                  columns={df.columns}
-                  data={df.data}
-                />
+                <Table key={`${name}-table`} columns={df.columns} data={df.data} />
               ) : df.data.length ? (
                 <dl key={`${name}-dl`}>
                   {df.columns.map((c: string, i: number) => (
@@ -60,11 +68,7 @@ export default function NodeWithTableView(props: any) {
         )),
         Object.entries(display.others || {}).map(([name, o]) => (
           <>
-            <div
-              key={`${name}-header`}
-              className="df-head"
-              onClick={() => setOpen({ ...open, [name]: !open[name] })}
-            >
+            <div key={`${name}-header`} className="df-head" onClick={() => toggleTable(name)}>
               {name}
             </div>
             {open[name] && <pre>{(o as any).toString()}</pre>}

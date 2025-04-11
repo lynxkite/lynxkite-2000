@@ -35,11 +35,8 @@ function NodeWithParams(props: any) {
 
   return (
     <LynxKiteNode {...props}>
-      {props.collapsed && (
-        <div
-          className="params-expander"
-          onClick={() => setCollapsed(!collapsed)}
-        >
+      {props.collapsed && params.length > 0 && (
+        <div className="params-expander" onClick={() => setCollapsed(!collapsed)}>
           <Triangle className={`flippy ${collapsed ? "flippy-90" : ""}`} />
         </div>
       )}
@@ -49,23 +46,21 @@ function NodeWithParams(props: any) {
             <NodeGroupParameter
               key={name}
               value={value}
+              data={props.data}
               meta={metaParams?.[name]}
               setParam={(name: string, value: any, opts?: UpdateOptions) =>
                 setParam(name, value, opts || {})
               }
-              deleteParam={(name: string, opts?: UpdateOptions) =>
-                deleteParam(name, opts || {})
-              }
+              deleteParam={(name: string, opts?: UpdateOptions) => deleteParam(name, opts || {})}
             />
           ) : (
             <NodeParameter
               name={name}
               key={name}
               value={value}
+              data={props.data}
               meta={metaParams?.[name]}
-              onChange={(value: any, opts?: UpdateOptions) =>
-                setParam(name, value, opts || {})
-              }
+              onChange={(value: any, opts?: UpdateOptions) => setParam(name, value, opts || {})}
             />
           ),
         )}

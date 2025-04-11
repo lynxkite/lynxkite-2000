@@ -20,12 +20,7 @@ function toMD(v: any): string {
 function displayTable(name: string, df: any) {
   if (df.data.length > 1) {
     return (
-      <Table
-        key={`${name}-table`}
-        name={`${name}-table`}
-        columns={df.columns}
-        data={df.data}
-      />
+      <Table key={`${name}-table`} name={`${name}-table`} columns={df.columns} data={df.data} />
     );
   }
   if (df.data.length) {
@@ -60,9 +55,7 @@ export default function NodeWithGraphCreationView(props: any) {
   const display = props.data.display?.value;
   const tables = display?.dataframes || {};
   const singleTable = tables && Object.keys(tables).length === 1;
-  const [relations, setRelations] = useState(
-    relationsToDict(display?.relations) || {},
-  );
+  const [relations, setRelations] = useState(relationsToDict(display?.relations) || {});
   const singleRelation = relations && Object.keys(relations).length === 1;
   function setParam(name: string, newValue: any, opts: UpdateOptions) {
     reactFlow.updateNodeData(props.id, {
@@ -211,9 +204,7 @@ export default function NodeWithGraphCreationView(props: any) {
 
         <datalist id="edges-column-options">
           {tables[relation.source_table] &&
-            tables[relation.df].columns.map((name: string) => (
-              <option key={name} value={name} />
-            ))}
+            tables[relation.df].columns.map((name: string) => <option key={name} value={name} />)}
         </datalist>
 
         <datalist id="source-node-column-options">
@@ -274,10 +265,7 @@ export default function NodeWithGraphCreationView(props: any) {
         <div className="graph-relations">
           <div className="graph-table-header">
             Relationships
-            <button
-              className="add-relationship-button"
-              onClick={(_) => addRelation()}
-            >
+            <button className="add-relationship-button" onClick={(_) => addRelation()}>
               +
             </button>
           </div>

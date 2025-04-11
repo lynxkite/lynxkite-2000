@@ -1,0 +1,3297 @@
+{
+  "edges": [
+    {
+      "id": "Import Parquet 1 Train/test split 1",
+      "source": "Import Parquet 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train/test split 1 Define model 1",
+      "source": "Train/test split 1",
+      "sourceHandle": "output",
+      "target": "Define model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define model 1 Train model 2",
+      "source": "Define model 1",
+      "sourceHandle": "output",
+      "target": "Train model 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 2 Model inference 1",
+      "source": "Train model 2",
+      "sourceHandle": "output",
+      "target": "Model inference 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 2 View loss 1",
+      "source": "Train model 2",
+      "sourceHandle": "output",
+      "target": "View loss 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Model inference 1 View tables 1",
+      "source": "Model inference 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Model inference 1 View vectors 1",
+      "source": "Model inference 1",
+      "sourceHandle": "output",
+      "target": "View vectors 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train/test split",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "test_ratio": {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "table_name": "df",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "title": "Train/test split"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train/test split",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "test_ratio": {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "table_name": "df",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "title": "Train/test split"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 282.0,
+      "id": "Train/test split 1",
+      "position": {
+        "x": 345.0,
+        "y": 139.0
+      },
+      "type": "basic",
+      "width": 259.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "inputs": {},
+          "name": "Import Parquet",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filename": {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "filename": "uploads/plus-one-dataset.parquet"
+        },
+        "status": "done",
+        "title": "Import Parquet"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "inputs": {},
+          "name": "Import Parquet",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filename": {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "filename": "uploads/plus-one-dataset.parquet"
+        },
+        "status": "done",
+        "title": "Import Parquet"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 403.0,
+      "id": "Import Parquet 1",
+      "position": {
+        "x": -166.0,
+        "y": 112.0
+      },
+      "type": "basic",
+      "width": 371.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Define model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_workspace": "Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Define model"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Define model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_workspace": "Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Define model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 537.0,
+      "id": "Define model 1",
+      "position": {
+        "x": 795.0,
+        "y": -45.0
+      },
+      "type": "basic",
+      "width": 498.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Output_1_x",
+                    "Input__tensor_3_output"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "epochs": {
+              "default": 1.0,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelTrainingInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "epochs": "501",
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"df_train\",\"column\":\"x\"},\"Input__tensor_3_output\":{\"df\":\"df_train\",\"column\":\"y\"}}}",
+          "model_name": "model"
+        },
+        "status": "done",
+        "title": "Train model"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_3_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "epochs": {
+              "default": 1.0,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "epochs": "151",
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"df_train\",\"column\":\"x\"},\"Input__tensor_3_output\":{\"df\":\"df_train\",\"column\":\"y\"}}}",
+          "model_name": "model"
+        },
+        "status": "done",
+        "title": "Train model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 604.0,
+      "id": "Train model 2",
+      "position": {
+        "x": 1399.5245787239226,
+        "y": -19.196202428593544
+      },
+      "type": "basic",
+      "width": 586.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Output_1_x",
+                    "Input__tensor_3_output"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "output_mapping": {
+              "default": null,
+              "name": "output_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"df_test\",\"column\":\"x\"}}}",
+          "model_name": "model",
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"df\":\"df_test\",\"column\":\"pred\"}}}"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_3_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "output_mapping": {
+              "default": null,
+              "name": "output_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"df_test\",\"column\":\"x\"}}}",
+          "model_name": "model",
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"df\":\"df_test\",\"column\":\"pred\"}}}"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 650.0,
+      "id": "Model inference 1",
+      "position": {
+        "x": 2181.718373860645,
+        "y": -69.44701793295484
+      },
+      "type": "basic",
+      "width": 529.0
+    },
+    {
+      "_data": {
+        "__execution_delay": null,
+        "collapsed": false,
+        "display": {
+          "series": [
+            {
+              "data": [
+                5.194248676300049,
+                4.732226848602295,
+                4.301504611968994,
+                3.9289824962615967,
+                3.6416826248168945,
+                3.4493889808654785,
+                3.339247703552246,
+                3.2848846912384033,
+                3.2611656188964844,
+                3.251643180847168,
+                3.2479231357574463,
+                3.2463886737823486,
+                3.245635986328125,
+                3.245159149169922,
+                3.2447798252105713,
+                3.2444353103637695,
+                3.2441060543060303,
+                3.2437832355499268,
+                3.243464469909668,
+                3.243149518966675,
+                3.2428362369537354,
+                3.242525339126587,
+                3.2422165870666504,
+                3.241910457611084,
+                3.2416069507598877,
+                3.2413055896759033,
+                3.2410058975219727,
+                3.240708112716675,
+                3.2404117584228516,
+                3.2401177883148193,
+                3.239825487136841,
+                3.239534616470337,
+                3.239245653152466,
+                3.2389581203460693,
+                3.238672971725464,
+                3.238389015197754,
+                3.2381069660186768,
+                3.237826108932495,
+                3.2375471591949463,
+                3.237269878387451,
+                3.2369940280914307,
+                3.236720085144043,
+                3.2364470958709717,
+                3.236175775527954,
+                3.2359063625335693,
+                3.2356388568878174,
+                3.235372304916382,
+                3.235107183456421,
+                3.2348432540893555,
+                3.234581232070923,
+                3.2343204021453857,
+                3.2340610027313232,
+                3.233802556991577,
+                3.233546257019043,
+                3.233290910720825,
+                3.233036518096924,
+                3.2327840328216553,
+                3.2325327396392822,
+                3.232283115386963,
+                3.232034921646118,
+                3.2317872047424316,
+                3.2315409183502197,
+                3.2312965393066406,
+                3.231052875518799,
+                3.2308101654052734,
+                3.2305691242218018,
+                3.2303292751312256,
+                3.230090379714966,
+                3.2298526763916016,
+                3.2296159267425537,
+                3.2293803691864014,
+                3.2291462421417236,
+                3.228912591934204,
+                3.2286808490753174,
+                3.228449821472168,
+                3.228219985961914,
+                3.2279903888702393,
+                3.2277631759643555,
+                3.22753643989563,
+                3.2273104190826416,
+                3.2270853519439697,
+                3.2268614768981934,
+                3.226637363433838,
+                3.2264153957366943,
+                3.2261929512023926,
+                3.2259714603424072,
+                3.2257511615753174,
+                3.2255313396453857,
+                3.2253129482269287,
+                3.225095272064209,
+                3.224879264831543,
+                3.224663734436035,
+                3.2244486808776855,
+                3.2242350578308105,
+                3.224022388458252,
+                3.223810911178589,
+                3.223599672317505,
+                3.2233896255493164,
+                3.2231807708740234,
+                3.2229726314544678,
+                3.222764730453491,
+                3.2225584983825684,
+                3.2223527431488037,
+                3.2221477031707764,
+                3.2219433784484863,
+                3.2217350006103516,
+                3.2210605144500732,
+                3.2179861068725586,
+                3.1490979194641113,
+                2.5611555576324463,
+                2.1667709350585938,
+                1.941397786140442,
+                1.8211313486099243,
+                1.7602094411849976,
+                1.7300406694412231,
+                1.7150671482086182,
+                1.707504153251648,
+                1.703554630279541,
+                1.7013800144195557,
+                1.7000809907913208,
+                1.6992148160934448,
+                1.6985713243484497,
+                1.6980407238006592,
+                1.6975696086883545,
+                1.6971304416656494,
+                1.69670832157135,
+                1.696295976638794,
+                1.6958922147750854,
+                1.6954957246780396,
+                1.6951044797897339,
+                1.6947181224822998,
+                1.694334626197815,
+                1.6939517259597778,
+                1.6935737133026123,
+                1.6931995153427124,
+                1.6928293704986572,
+                1.6924631595611572,
+                1.6921008825302124,
+                1.6917426586151123,
+                1.6913865804672241,
+                1.6910340785980225,
+                1.690685510635376,
+                1.690340518951416,
+                1.6899985074996948,
+                1.689659595489502,
+                1.6893242597579956,
+                1.6889920234680176,
+                1.6886632442474365,
+                1.688332438468933,
+                1.6879974603652954,
+                1.6876615285873413,
+                1.687328815460205,
+                1.6869547367095947,
+                1.6862459182739258,
+                1.6816266775131226,
+                1.5337661504745483,
+                0.8366889357566833,
+                0.46365517377853394,
+                0.2645129859447479,
+                0.16432315111160278,
+                0.11595670133829117,
+                0.09297489374876022,
+                0.08202926814556122,
+                0.07672866433858871,
+                0.07407510280609131,
+                0.07266353815793991,
+                0.07183551043272018,
+                0.07128453254699707,
+                0.07086450606584549,
+                0.07050899416208267,
+                0.0701858326792717,
+                0.06987988203763962,
+                0.0695839673280716,
+                0.06929467618465424,
+                0.06901033222675323,
+                0.0687265694141388,
+                0.0684463381767273,
+                0.06816895306110382,
+                0.06789495050907135,
+                0.0676238089799881,
+                0.06735056638717651,
+                0.06708052009344101,
+                0.06681209057569504,
+                0.06654231995344162,
+                0.06627301871776581,
+                0.06600192189216614,
+                0.06573258340358734,
+                0.06545879691839218,
+                0.06518517434597015,
+                0.06490959227085114,
+                0.06463567167520523,
+                0.0643647089600563,
+                0.06409519165754318,
+                0.06382837891578674,
+                0.06356203556060791,
+                0.06330081075429916,
+                0.06304193288087845,
+                0.06278356909751892,
+                0.06252720952033997,
+                0.06227334961295128,
+                0.06202361360192299,
+                0.0617777444422245,
+                0.06153156980872154,
+                0.061283886432647705,
+                0.061029158532619476,
+                0.06077418848872185,
+                0.060523588210344315,
+                0.06027815118432045,
+                0.06003476679325104,
+                0.059792377054691315,
+                0.059549830853939056,
+                0.05930154025554657,
+                0.05905551835894585,
+                0.05881192907691002,
+                0.0585709884762764,
+                0.05833115428686142,
+                0.05809348449110985,
+                0.0578579381108284,
+                0.05762450024485588,
+                0.05739405006170273,
+                0.05716623365879059,
+                0.056934017688035965,
+                0.05670491233468056,
+                0.05647972598671913,
+                0.05625642091035843,
+                0.05603497847914696,
+                0.05581538379192352,
+                0.05559813603758812,
+                0.05538330227136612,
+                0.055170174688100815,
+                0.054959800094366074,
+                0.05475304275751114,
+                0.054547909647226334,
+                0.05434436723589897,
+                0.05414241552352905,
+                0.053942013531923294,
+                0.053743164986371994,
+                0.05354584753513336,
+                0.05335003510117531,
+                0.05315623804926872,
+                0.05296580120921135,
+                0.052776746451854706,
+                0.052589051425457,
+                0.05240271985530853,
+                0.05221769958734512,
+                0.05203401669859886,
+                0.05185163766145706,
+                0.05167055502533913,
+                0.05149075761437416,
+                0.05131221190094948,
+                0.051134925335645676,
+                0.05095922574400902,
+                0.05078546702861786,
+                0.05061294883489609,
+                0.05044237896800041,
+                0.050274644047021866,
+                0.05010804161429405,
+                0.04994256794452667,
+                0.049778200685977936,
+                0.04961492121219635,
+                0.049452755600214005,
+                0.04929284378886223,
+                0.04913467913866043,
+                0.04897753894329071,
+                0.04882141575217247,
+                0.04866630584001541,
+                0.04851251095533371,
+                0.04836169257760048,
+                0.04821375384926796,
+                0.04806669428944588,
+                0.04792052507400513,
+                0.04777522012591362,
+                0.04763077199459076,
+                0.04748716205358505,
+                0.047344379127025604,
+                0.04720241203904152,
+                0.04706142097711563,
+                0.04692186415195465,
+                0.04678306728601456,
+                0.04664503037929535,
+                0.04650787264108658,
+                0.04637163504958153,
+                0.046236440539360046,
+                0.04610292613506317,
+                0.04597007483243942,
+                0.045837946236133575,
+                0.04570755362510681,
+                0.04557782784104347,
+                0.04544825479388237,
+                0.0453183650970459,
+                0.045189570635557175,
+                0.04506213217973709,
+                0.04493529349565506,
+                0.044809043407440186,
+                0.044683389365673065,
+                0.04455830156803131,
+                0.04443386197090149,
+                0.04431009292602539,
+                0.04418685659766197,
+                0.04406414180994034,
+                0.043941959738731384,
+                0.043820276856422424,
+                0.04369909688830376,
+                0.043578337877988815,
+                0.04345747083425522,
+                0.04333708435297012,
+                0.04321715980768204,
+                0.04309769719839096,
+                0.0429786778986454,
+                0.04286010563373566,
+                0.04274197295308113,
+                0.042624276131391525,
+                0.042507000267505646,
+                0.04239014536142349,
+                0.04227370768785477,
+                0.042157672345638275,
+                0.042042046785354614,
+                0.04192682355642319,
+                0.0418119840323925,
+                0.041697535663843155,
+                0.04158347100019455,
+                0.04146978259086609,
+                0.041356466710567474,
+                0.041243527084589005,
+                0.041130952537059784,
+                0.04101872816681862,
+                0.040906865149736404,
+                0.04079534858465195,
+                0.04068418964743614,
+                0.0405733622610569,
+                0.040462885051965714,
+                0.04035273939371109,
+                0.04024292156100273,
+                0.040133725851774216,
+                0.040025271475315094,
+                0.03991713374853134,
+                0.03980930522084236,
+                0.039701659232378006,
+                0.039593927562236786,
+                0.039486486464738846,
+                0.03937936946749687,
+                0.039272651076316833,
+                0.039166223257780075,
+                0.039060063660144806,
+                0.038954153656959534,
+                0.0388483963906765,
+                0.038742903620004654,
+                0.0386376827955246,
+                0.03853272274136543,
+                0.03842802718281746,
+                0.03832358866930008,
+                0.03821941092610359,
+                0.0381154865026474,
+                0.038011811673641205,
+                0.0379084013402462,
+                0.037805236876010895,
+                0.03770232945680618,
+                0.03759966045618057,
+                0.037497248500585556,
+                0.03739452734589577,
+                0.03729122132062912,
+                0.03718816488981247,
+                0.03708536550402641,
+                0.03698281571269035,
+                0.03688051551580429,
+                0.036778464913368225,
+                0.03667666018009186,
+                0.03657510131597519,
+                0.03647379204630852,
+                0.036372724920511246,
+                0.03627190366387367,
+                0.036171332001686096,
+                0.036071084439754486,
+                0.03597136586904526,
+                0.03587188571691513,
+                0.03577264025807381,
+                0.035673633217811584,
+                0.03557485342025757,
+                0.03547630459070206,
+                0.03537798300385475,
+                0.035279903560876846,
+                0.035182058811187744,
+                0.03508443757891655,
+                0.03498705103993416,
+                0.034889888018369675,
+                0.034792978316545486,
+                0.03469628840684891,
+                0.03459983691573143,
+                0.034503620117902756,
+                0.034407634288072586,
+                0.03431188315153122,
+                0.034216366708278656,
+                0.0341210775077343,
+                0.03402603417634964,
+                0.033931225538253784,
+                0.03383665531873703,
+                0.03374231979250908,
+                0.03364821895956993,
+                0.033554356545209885,
+                0.03346073254942894,
+                0.03336735814809799,
+                0.033274225890636444,
+                0.0331813283264637,
+                0.03308868035674095,
+                0.03299626335501671,
+                0.03290409594774246,
+                0.032812174409627914,
+                0.032720498740673065,
+                0.032629065215587616,
+                0.03253787383437157,
+                0.03244693577289581,
+                0.03235623985528946,
+                0.032265804708004,
+                0.03217560797929764,
+                0.03208566829562187,
+                0.03199596703052521,
+                0.03190653398633003,
+                0.031817350536584854,
+                0.031728409230709076,
+                0.03163974732160568,
+                0.03155132010579109,
+                0.03146316111087799,
+                0.03137525916099548,
+                0.03128761053085327,
+                0.031200233846902847,
+                0.03111310862004757,
+                0.031026242300868034,
+                0.030939649790525436,
+                0.030853310599923134,
+                0.030767245218157768,
+                0.030681440606713295,
+                0.03059590980410576,
+                0.030510643497109413,
+                0.03042564168572426,
+                0.030340921133756638,
+                0.03025646135210991,
+                0.030172280967235565,
+                0.03008836880326271,
+                0.030004747211933136,
+                0.029921378940343857,
+                0.029838303104043007,
+                0.029755493625998497,
+                0.029672972857952118,
+                0.029590733349323273,
+                0.029508762061595917,
+                0.029427088797092438,
+                0.029345687478780746,
+                0.029264571145176888,
+                0.02918374352157116,
+                0.029103199020028114,
+                0.02902294509112835,
+                0.028942979872226715,
+                0.028863299638032913,
+                0.02878391183912754,
+                0.02870481088757515,
+                0.028626007959246635,
+                0.028547491878271103,
+                0.028469275683164597,
+                0.02839135006070137,
+                0.02831372618675232,
+                0.02823638916015625,
+                0.028159350156784058,
+                0.02808261476457119,
+                0.0280061773955822,
+                0.027930041775107384,
+                0.027854204177856445,
+                0.027778668329119682,
+                0.027703437954187393,
+                0.02762851119041443,
+                0.02755388431251049,
+                0.027479562908411026,
+                0.027405548840761185,
+                0.027331842109560966,
+                0.027258435264229774,
+                0.02718534506857395,
+                0.027112558484077454,
+                0.02704007923603058,
+                0.026967914775013924,
+                0.026896055787801743,
+                0.02682451158761978,
+                0.026753274723887444,
+                0.026682356372475624,
+                0.02661174349486828,
+                0.0265414509922266,
+                0.026471465826034546,
+                0.02640179730951786,
+                0.026332441717386246,
+                0.0262634065002203,
+                0.026194684207439423,
+                0.026126278564333916,
+                0.02605818584561348,
+                0.025990411639213562,
+                0.025922955945134163,
+                0.025855818763375282,
+                0.02578899636864662,
+                0.025722496211528778,
+                0.025656312704086304,
+                0.02559044398367405,
+                0.02552489936351776,
+                0.02545967325568199,
+                0.02539476379752159
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Training loss"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Output_1_x",
+                    "Input__tensor_3_output"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View loss",
+          "outputs": {},
+          "params": {},
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View loss"
+      },
+      "data": {
+        "__execution_delay": null,
+        "collapsed": false,
+        "display": {
+          "series": [
+            {
+              "data": [
+                6.014081001281738,
+                5.580916404724121,
+                5.274184226989746,
+                5.0237603187561035,
+                4.804426670074463,
+                4.605026721954346,
+                4.419903755187988,
+                4.246149063110352,
+                4.082696914672852,
+                3.9301321506500244,
+                3.7902746200561523,
+                3.6642696857452393,
+                3.5418264865875244,
+                3.3390703201293945,
+                2.8697218894958496,
+                2.3933401107788086,
+                2.047636032104492,
+                1.83914053440094,
+                1.7334750890731812,
+                1.6865350008010864,
+                1.666785478591919,
+                1.658176302909851,
+                1.6540385484695435,
+                1.651779055595398,
+                1.650368094444275,
+                1.6493637561798096,
+                1.6485661268234253,
+                1.6478790044784546,
+                1.6472536325454712,
+                1.6466654539108276,
+                1.6461007595062256,
+                1.6455528736114502,
+                1.6450183391571045,
+                1.6444944143295288,
+                1.643980622291565,
+                1.6434764862060547,
+                1.6429831981658936,
+                1.6424978971481323,
+                1.64202082157135,
+                1.6415510177612305,
+                1.6410887241363525,
+                1.6406346559524536,
+                1.6401888132095337,
+                1.639750361442566,
+                1.6393187046051025,
+                1.6388964653015137,
+                1.6384804248809814,
+                1.638070821762085,
+                1.6376668214797974,
+                1.6372689008712769,
+                1.6368769407272339,
+                1.6364902257919312,
+                1.636109471321106,
+                1.6357333660125732,
+                1.6353627443313599,
+                1.6349972486495972,
+                1.6346369981765747,
+                1.6342813968658447,
+                1.6339303255081177,
+                1.6335841417312622,
+                1.6332424879074097,
+                1.6329057216644287,
+                1.6325738430023193,
+                1.6322462558746338,
+                1.6319226026535034,
+                1.6316030025482178,
+                1.6312874555587769,
+                1.6309759616851807,
+                1.6306681632995605,
+                1.630364179611206,
+                1.6300634145736694,
+                1.629766821861267,
+                1.629473328590393,
+                1.6291834115982056,
+                1.628896713256836,
+                1.6286135911941528,
+                1.628333568572998,
+                1.628056526184082,
+                1.6277827024459839,
+                1.6275124549865723,
+                1.6272450685501099,
+                1.6269807815551758,
+                1.6267189979553223,
+                1.626460075378418,
+                1.6262041330337524,
+                1.625950813293457,
+                1.6256998777389526,
+                1.625451683998108,
+                1.6252059936523438,
+                1.6249629259109497,
+                1.6247217655181885,
+                1.6244832277297974,
+                1.6242470741271973,
+                1.6240129470825195,
+                1.6237813234329224,
+                1.6235517263412476,
+                1.6233243942260742,
+                1.6230992078781128,
+                1.6228758096694946,
+                1.622654676437378,
+                1.6224353313446045,
+                1.6220967769622803,
+                1.6087429523468018,
+                1.1195111274719238,
+                0.6312010288238525,
+                0.35807740688323975,
+                0.21476756036281586,
+                0.14402888715267181,
+                0.11020153015851974,
+                0.09413749724626541,
+                0.08644001930952072,
+                0.08266805112361908,
+                0.08074231445789337,
+                0.07968885451555252,
+                0.07904941588640213,
+                0.0786079540848732,
+                0.0782623365521431,
+                0.07796423882246017,
+                0.07769070565700531,
+                0.0774308443069458,
+                0.0771794393658638,
+                0.07693397998809814,
+                0.07669319212436676,
+                0.07645650207996368,
+                0.07622353732585907,
+                0.07599412649869919,
+                0.0757681354880333,
+                0.07554544508457184,
+                0.07532599568367004,
+                0.07510971277952194,
+                0.07489652186632156,
+                0.07468635588884354,
+                0.07447917759418488,
+                0.07427489757537842,
+                0.07407346367835999,
+                0.073874831199646,
+                0.07367893308401108,
+                0.07348571717739105,
+                0.07329512387514114,
+                0.07310713827610016,
+                0.07292166352272034,
+                0.07273866981267929,
+                0.07255809754133224,
+                0.072379931807518,
+                0.07220420241355896,
+                0.07203087955713272,
+                0.07185979187488556,
+                0.07169090956449509,
+                0.07152417302131653,
+                0.0713595449924469,
+                0.07119700312614441
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Training loss"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_3_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View loss",
+          "outputs": {},
+          "params": {},
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View loss"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 417.0,
+      "id": "View loss 1",
+      "position": {
+        "x": 2052.643815443704,
+        "y": 617.6466886696832
+      },
+      "type": "visualization",
+      "width": 721.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "x",
+                "y"
+              ],
+              "data": [
+                [
+                  "[0.52046251 0.45887971 0.72169858 0.29517919]",
+                  "[1.52046251 1.45887971 1.72169852 1.29517913]"
+                ],
+                [
+                  "[0.85706753 0.61447072 0.41741937 0.85147089]",
+                  "[1.85706758 1.61447072 1.41741943 1.85147095]"
+                ],
+                [
+                  "[0.11560339 0.57495481 0.76535827 0.0391947 ]",
+                  "[1.11560345 1.57495475 1.76535821 1.0391947 ]"
+                ],
+                [
+                  "[0.19409031 0.68692201 0.60667384 0.57829887]",
+                  "[1.19409037 1.68692207 1.60667384 1.57829881]"
+                ],
+                [
+                  "[0.76807946 0.98855817 0.08259124 0.01730657]",
+                  "[1.76807952 1.98855817 1.0825913  1.01730657]"
+                ],
+                [
+                  "[0.67269951 0.10478973 0.5584439  0.83605725]",
+                  "[1.67269945 1.10478973 1.5584439  1.83605719]"
+                ],
+                [
+                  "[0.18686318 0.49356437 0.51323432 0.75392658]",
+                  "[1.18686318 1.49356437 1.51323438 1.75392652]"
+                ],
+                [
+                  "[0.18149549 0.30520517 0.30946714 0.16786289]",
+                  "[1.18149543 1.30520511 1.30946708 1.16786289]"
+                ],
+                [
+                  "[4.27091718e-01 4.89909172e-01 6.92297399e-01 2.57611275e-04]",
+                  "[1.42709172 1.48990917 1.69229746 1.00025761]"
+                ],
+                [
+                  "[0.32225502 0.16999388 0.05823922 0.9628762 ]",
+                  "[1.32225502 1.16999388 1.05823922 1.9628762 ]"
+                ],
+                [
+                  "[0.50783676 0.04156506 0.21984279 0.8454656 ]",
+                  "[1.50783682 1.04156506 1.21984279 1.84546566]"
+                ],
+                [
+                  "[0.98324287 0.99464184 0.14008355 0.47651017]",
+                  "[1.98324287 1.99464178 1.14008355 1.47651017]"
+                ],
+                [
+                  "[0.11693293 0.49860179 0.55020827 0.88832849]",
+                  "[1.11693287 1.49860179 1.55020833 1.88832855]"
+                ],
+                [
+                  "[0.48959708 0.48549271 0.32688856 0.356677  ]",
+                  "[1.48959708 1.48549271 1.32688856 1.35667706]"
+                ],
+                [
+                  "[0.50272274 0.54912758 0.17663097 0.79070699]",
+                  "[1.50272274 1.54912758 1.17663097 1.79070699]"
+                ],
+                [
+                  "[0.04508126 0.76880038 0.80721325 0.62542385]",
+                  "[1.04508126 1.76880038 1.80721331 1.62542391]"
+                ],
+                [
+                  "[0.19908059 0.17570406 0.51475513 0.1893943 ]",
+                  "[1.19908059 1.175704   1.51475513 1.18939424]"
+                ],
+                [
+                  "[0.40167677 0.25953674 0.9407078  0.76308483]",
+                  "[1.40167677 1.25953674 1.9407078  1.76308489]"
+                ],
+                [
+                  "[0.2480728  0.21694398 0.63941365 0.57128876]",
+                  "[1.24807286 1.21694398 1.6394136  1.57128882]"
+                ],
+                [
+                  "[0.24388778 0.07268471 0.68350857 0.73431659]",
+                  "[1.24388778 1.07268476 1.68350863 1.73431659]"
+                ],
+                [
+                  "[0.62569475 0.9881897  0.83639616 0.9828859 ]",
+                  "[1.62569475 1.9881897  1.83639622 1.98288584]"
+                ],
+                [
+                  "[0.56922203 0.98222166 0.76851749 0.28615737]",
+                  "[1.56922197 1.9822216  1.76851749 1.28615737]"
+                ],
+                [
+                  "[0.88776821 0.51636773 0.30333066 0.32230979]",
+                  "[1.88776827 1.51636767 1.30333066 1.32230973]"
+                ],
+                [
+                  "[0.90817457 0.89270043 0.38583666 0.66566533]",
+                  "[1.90817451 1.89270043 1.3858366  1.66566539]"
+                ],
+                [
+                  "[0.48507756 0.80808765 0.77162558 0.47834778]",
+                  "[1.48507762 1.80808759 1.77162552 1.47834778]"
+                ],
+                [
+                  "[0.68062544 0.98093534 0.14778823 0.53244978]",
+                  "[1.68062544 1.98093534 1.14778829 1.53244972]"
+                ],
+                [
+                  "[0.31518555 0.49643308 0.11509258 0.95458382]",
+                  "[1.31518555 1.49643302 1.11509252 1.95458388]"
+                ],
+                [
+                  "[0.79121011 0.54161114 0.69369799 0.1520769 ]",
+                  "[1.79121017 1.54161119 1.69369793 1.15207696]"
+                ],
+                [
+                  "[0.79423058 0.07138705 0.061777   0.18766576]",
+                  "[1.79423058 1.07138705 1.061777   1.1876657 ]"
+                ],
+                [
+                  "[0.23942459 0.90487361 0.69337189 0.65089428]",
+                  "[1.23942459 1.90487361 1.69337189 1.65089428]"
+                ],
+                [
+                  "[0.94516498 0.08422136 0.5608117  0.07652664]",
+                  "[1.94516492 1.08422136 1.56081176 1.07652664]"
+                ],
+                [
+                  "[0.26661873 0.45946234 0.13510543 0.81294441]",
+                  "[1.26661873 1.4594624  1.13510537 1.81294441]"
+                ],
+                [
+                  "[0.30754459 0.77694583 0.09278506 0.38326019]",
+                  "[1.30754459 1.77694583 1.09278512 1.38326025]"
+                ],
+                [
+                  "[0.27845025 0.32472342 0.82203609 0.77107543]",
+                  "[1.27845025 1.32472348 1.82203603 1.77107549]"
+                ],
+                [
+                  "[0.4827103  0.10563457 0.98858833 0.82286644]",
+                  "[1.48271036 1.10563457 1.98858833 1.82286644]"
+                ],
+                [
+                  "[0.98033333 0.97656083 0.38939917 0.81491041]",
+                  "[1.98033333 1.97656083 1.38939917 1.81491041]"
+                ],
+                [
+                  "[0.74064726 0.4155122  0.09800029 0.49930882]",
+                  "[1.74064732 1.4155122  1.09800029 1.49930882]"
+                ],
+                [
+                  "[0.78956431 0.87284744 0.06880784 0.03455889]",
+                  "[1.78956437 1.87284744 1.06880784 1.03455889]"
+                ],
+                [
+                  "[0.94221359 0.57740951 0.98649532 0.40934443]",
+                  "[1.94221354 1.57740951 1.98649526 1.40934443]"
+                ],
+                [
+                  "[0.00497234 0.39319336 0.57054168 0.75150961]",
+                  "[1.00497234 1.39319336 1.57054162 1.75150967]"
+                ],
+                [
+                  "[0.44330525 0.09997386 0.89025736 0.90507984]",
+                  "[1.44330525 1.09997392 1.89025736 1.90507984]"
+                ],
+                [
+                  "[0.72290605 0.96945059 0.68354797 0.15270454]",
+                  "[1.72290611 1.96945059 1.68354797 1.15270448]"
+                ],
+                [
+                  "[0.75292218 0.81470108 0.49657214 0.56217098]",
+                  "[1.75292218 1.81470108 1.49657214 1.56217098]"
+                ],
+                [
+                  "[0.33480108 0.59181517 0.76198453 0.98062384]",
+                  "[1.33480108 1.59181523 1.76198459 1.98062384]"
+                ],
+                [
+                  "[0.52784437 0.54268694 0.12358981 0.72116476]",
+                  "[1.52784443 1.54268694 1.12358975 1.7211647 ]"
+                ],
+                [
+                  "[0.73217702 0.65233225 0.44077861 0.33837909]",
+                  "[1.73217702 1.65233231 1.44077861 1.33837914]"
+                ],
+                [
+                  "[0.34084332 0.73018837 0.54168713 0.91440833]",
+                  "[1.34084332 1.73018837 1.54168713 1.91440833]"
+                ],
+                [
+                  "[0.60110539 0.3618983  0.32342511 0.98672163]",
+                  "[1.60110545 1.3618983  1.32342505 1.98672163]"
+                ],
+                [
+                  "[0.77427191 0.21829212 0.12769502 0.74303615]",
+                  "[1.77427197 1.21829212 1.12769508 1.74303615]"
+                ],
+                [
+                  "[0.08107251 0.2602725  0.18861133 0.44833237]",
+                  "[1.08107257 1.2602725  1.18861127 1.44833231]"
+                ],
+                [
+                  "[0.59812403 0.78395379 0.0291847  0.81814629]",
+                  "[1.59812403 1.78395379 1.0291847  1.81814623]"
+                ],
+                [
+                  "[0.93488538 0.73882395 0.37345302 0.0274905 ]",
+                  "[1.93488538 1.73882389 1.37345302 1.0274905 ]"
+                ],
+                [
+                  "[0.30631393 0.48311198 0.87847513 0.67559886]",
+                  "[1.30631399 1.48311198 1.87847519 1.67559886]"
+                ],
+                [
+                  "[0.18720162 0.74115586 0.98626411 0.30355608]",
+                  "[1.18720162 1.74115586 1.98626411 1.30355608]"
+                ],
+                [
+                  "[0.85566247 0.83362883 0.48424995 0.25265992]",
+                  "[1.85566247 1.83362889 1.48424995 1.25265992]"
+                ],
+                [
+                  "[0.95928186 0.84273899 0.71514636 0.38619852]",
+                  "[1.95928192 1.84273899 1.7151463  1.38619852]"
+                ],
+                [
+                  "[0.32565445 0.90939188 0.07488042 0.13730896]",
+                  "[1.32565451 1.90939188 1.07488036 1.13730896]"
+                ],
+                [
+                  "[0.9829582  0.59269661 0.40120947 0.95487177]",
+                  "[1.9829582  1.59269667 1.40120947 1.95487177]"
+                ],
+                [
+                  "[0.79905868 0.89367443 0.75429088 0.3190186 ]",
+                  "[1.79905868 1.89367437 1.75429082 1.3190186 ]"
+                ],
+                [
+                  "[0.54914117 0.03810108 0.87531954 0.73044223]",
+                  "[1.54914117 1.03810108 1.87531948 1.73044229]"
+                ],
+                [
+                  "[0.67418337 0.79634351 0.23229051 0.71345252]",
+                  "[1.67418337 1.79634356 1.23229051 1.71345258]"
+                ],
+                [
+                  "[0.87285906 0.48354989 0.39394957 0.59456545]",
+                  "[1.872859   1.48354983 1.39394951 1.59456539]"
+                ],
+                [
+                  "[0.81788456 0.58174163 0.29376316 0.7971254 ]",
+                  "[1.81788456 1.58174157 1.29376316 1.79712534]"
+                ],
+                [
+                  "[0.94559073 0.65736622 0.25761551 0.48553199]",
+                  "[1.94559073 1.65736628 1.25761557 1.48553205]"
+                ],
+                [
+                  "[0.60075855 0.12234765 0.00614399 0.30560958]",
+                  "[1.60075855 1.12234759 1.00614405 1.30560958]"
+                ],
+                [
+                  "[0.39147133 0.29854035 0.84663737 0.58175623]",
+                  "[1.39147139 1.29854035 1.84663737 1.58175623]"
+                ],
+                [
+                  "[0.02162331 0.81861657 0.92468154 0.07808572]",
+                  "[1.02162337 1.81861663 1.92468154 1.07808566]"
+                ],
+                [
+                  "[0.02235305 0.52774918 0.7331115  0.84358269]",
+                  "[1.02235305 1.52774918 1.7331115  1.84358263]"
+                ],
+                [
+                  "[0.6080932  0.56563014 0.32107437 0.72599429]",
+                  "[1.60809326 1.5656302  1.32107437 1.72599435]"
+                ],
+                [
+                  "[0.67447788 0.6125319  0.98007888 0.65968603]",
+                  "[1.67447782 1.6125319  1.98007894 1.65968609]"
+                ],
+                [
+                  "[0.47963417 0.81818312 0.48720706 0.49339259]",
+                  "[1.47963417 1.81818318 1.48720706 1.49339259]"
+                ],
+                [
+                  "[0.9630242  0.76359051 0.24853623 0.76881069]",
+                  "[1.96302414 1.76359057 1.24853623 1.76881075]"
+                ],
+                [
+                  "[0.60609657 0.96257663 0.19292736 0.95702219]",
+                  "[1.60609651 1.96257663 1.19292736 1.95702219]"
+                ],
+                [
+                  "[0.80654246 0.08253473 0.74478531 0.71257162]",
+                  "[1.8065424  1.08253479 1.74478531 1.71257162]"
+                ],
+                [
+                  "[0.70167565 0.26930219 0.5660674  0.61194974]",
+                  "[1.70167565 1.26930213 1.56606746 1.61194968]"
+                ],
+                [
+                  "[0.76933283 0.86241865 0.44114518 0.65644735]",
+                  "[1.76933289 1.86241865 1.44114518 1.65644741]"
+                ],
+                [
+                  "[0.59492421 0.90274489 0.38069052 0.46101224]",
+                  "[1.59492421 1.90274489 1.38069057 1.46101224]"
+                ],
+                [
+                  "[0.15064228 0.03198934 0.25754827 0.51484001]",
+                  "[1.15064228 1.03198934 1.25754833 1.51484001]"
+                ],
+                [
+                  "[0.12024075 0.21342516 0.56858408 0.58644271]",
+                  "[1.12024069 1.21342516 1.56858408 1.58644271]"
+                ],
+                [
+                  "[0.91730917 0.22574073 0.09591609 0.33056474]",
+                  "[1.91730917 1.22574067 1.09591603 1.33056474]"
+                ],
+                [
+                  "[0.49691743 0.61873293 0.90698647 0.94486356]",
+                  "[1.49691749 1.61873293 1.90698647 1.94486356]"
+                ],
+                [
+                  "[0.6032477  0.83361369 0.18538666 0.19108021]",
+                  "[1.60324764 1.83361363 1.18538666 1.19108021]"
+                ],
+                [
+                  "[0.63235509 0.70352674 0.96188956 0.46240485]",
+                  "[1.63235509 1.70352674 1.96188951 1.46240485]"
+                ],
+                [
+                  "[0.37959969 0.42820001 0.10690689 0.96353984]",
+                  "[1.37959969 1.42820001 1.10690689 1.96353984]"
+                ],
+                [
+                  "[0.49607176 0.1922397  0.46640229 0.78321403]",
+                  "[1.49607182 1.19223976 1.46640229 1.78321409]"
+                ],
+                [
+                  "[0.40234613 0.54987347 0.49542785 0.54153186]",
+                  "[1.40234613 1.54987347 1.49542785 1.5415318 ]"
+                ],
+                [
+                  "[0.80893755 0.92237449 0.88346356 0.93164903]",
+                  "[1.80893755 1.92237449 1.88346362 1.93164897]"
+                ],
+                [
+                  "[0.12858278 0.09930819 0.83222693 0.72485673]",
+                  "[1.12858272 1.09930825 1.83222699 1.72485673]"
+                ],
+                [
+                  "[0.72470158 0.4940322  0.41027349 0.89364016]",
+                  "[1.72470164 1.49403214 1.41027355 1.89364016]"
+                ],
+                [
+                  "[0.47856545 0.46267092 0.6376707  0.84747767]",
+                  "[1.47856545 1.46267092 1.63767076 1.84747767]"
+                ],
+                [
+                  "[0.49584109 0.80599248 0.07096875 0.75872749]",
+                  "[1.49584103 1.80599248 1.07096875 1.75872755]"
+                ],
+                [
+                  "[0.43500566 0.66041756 0.80293626 0.96224713]",
+                  "[1.43500566 1.66041756 1.80293632 1.96224713]"
+                ],
+                [
+                  "[0.78397602 0.74223626 0.26603186 0.41664881]",
+                  "[1.78397608 1.74223626 1.26603186 1.41664886]"
+                ],
+                [
+                  "[0.28942841 0.05601001 0.33039129 0.27781558]",
+                  "[1.28942847 1.05601001 1.33039129 1.27781558]"
+                ],
+                [
+                  "[0.68094063 0.45189077 0.22661722 0.37354094]",
+                  "[1.68094063 1.45189071 1.22661722 1.37354088]"
+                ],
+                [
+                  "[0.43681622 0.74680805 0.83598751 0.12414402]",
+                  "[1.43681622 1.74680805 1.83598757 1.12414408]"
+                ],
+                [
+                  "[0.47870928 0.17129105 0.27300501 0.20634609]",
+                  "[1.47870922 1.17129111 1.27300501 1.20634604]"
+                ],
+                [
+                  "[0.72795159 0.79317838 0.27832931 0.96576637]",
+                  "[1.72795153 1.79317832 1.27832937 1.96576643]"
+                ],
+                [
+                  "[0.87608397 0.93200487 0.80169648 0.37758952]",
+                  "[1.87608397 1.93200493 1.80169654 1.37758946]"
+                ],
+                [
+                  "[0.68891573 0.25576538 0.96339929 0.503833  ]",
+                  "[1.68891573 1.25576544 1.96339929 1.50383306]"
+                ]
+              ]
+            },
+            "df_test": {
+              "columns": [
+                "index",
+                "x",
+                "y",
+                "pred"
+              ],
+              "data": [
+                [
+                  4,
+                  "[0.76807946 0.98855817 0.08259124 0.01730657]",
+                  "[1.76807952 1.98855817 1.0825913  1.01730657]",
+                  "[2.398310661315918, 2.482480764389038, 2.3205058574676514, 2.4670262336730957]"
+                ],
+                [
+                  99,
+                  "[0.68891573 0.25576538 0.96339929 0.503833  ]",
+                  "[1.68891573 1.25576544 1.96339929 1.50383306]",
+                  "[2.6001150608062744, 2.58300518989563, 2.5226938724517822, 2.607975959777832]"
+                ],
+                [
+                  26,
+                  "[0.31518555 0.49643308 0.11509258 0.95458382]",
+                  "[1.31518555 1.49643302 1.11509252 1.95458388]",
+                  "[2.460686445236206, 2.5214929580688477, 2.4216299057006836, 2.554131507873535]"
+                ],
+                [
+                  40,
+                  "[0.44330525 0.09997386 0.89025736 0.90507984]",
+                  "[1.44330525 1.09997392 1.89025736 1.90507984]",
+                  "[2.5939838886260986, 2.5837721824645996, 2.534832715988159, 2.6243085861206055]"
+                ],
+                [
+                  44,
+                  "[0.52784437 0.54268694 0.12358981 0.72116476]",
+                  "[1.52784443 1.54268694 1.12358975 1.7211647 ]",
+                  "[2.467513084411621, 2.5237104892730713, 2.4233744144439697, 2.5531327724456787]"
+                ],
+                [
+                  8,
+                  "[4.27091718e-01 4.89909172e-01 6.92297399e-01 2.57611275e-04]",
+                  "[1.42709172 1.48990917 1.69229746 1.00025761]",
+                  "[2.1933858394622803, 2.382107734680176, 2.1187074184417725, 2.328011989593506]"
+                ],
+                [
+                  42,
+                  "[0.75292218 0.81470108 0.49657214 0.56217098]",
+                  "[1.75292218 1.81470108 1.49657214 1.56217098]",
+                  "[2.7627859115600586, 2.660106658935547, 2.6692981719970703, 2.703057289123535]"
+                ],
+                [
+                  62,
+                  "[0.81788456 0.58174163 0.29376316 0.7971254 ]",
+                  "[1.81788456 1.58174157 1.29376316 1.79712534]",
+                  "[2.7435245513916016, 2.656848907470703, 2.682042360305786, 2.725670099258423]"
+                ],
+                [
+                  15,
+                  "[0.04508126 0.76880038 0.80721325 0.62542385]",
+                  "[1.04508126 1.76880038 1.80721331 1.62542391]",
+                  "[2.5160605907440186, 2.536039352416992, 2.410257339477539, 2.5175909996032715]"
+                ],
+                [
+                  66,
+                  "[0.02162331 0.81861657 0.92468154 0.07808572]",
+                  "[1.02162337 1.81861663 1.92468154 1.07808566]",
+                  "[2.2642712593078613, 2.4094104766845703, 2.148714065551758, 2.3313822746276855]"
+                ]
+              ]
+            },
+            "df_train": {
+              "columns": [
+                "index",
+                "x",
+                "y"
+              ],
+              "data": [
+                [
+                  10,
+                  "[0.50783676 0.04156506 0.21984279 0.8454656 ]",
+                  "[1.50783682 1.04156506 1.21984279 1.84546566]"
+                ],
+                [
+                  11,
+                  "[0.98324287 0.99464184 0.14008355 0.47651017]",
+                  "[1.98324287 1.99464178 1.14008355 1.47651017]"
+                ],
+                [
+                  12,
+                  "[0.11693293 0.49860179 0.55020827 0.88832849]",
+                  "[1.11693287 1.49860179 1.55020833 1.88832855]"
+                ],
+                [
+                  13,
+                  "[0.48959708 0.48549271 0.32688856 0.356677  ]",
+                  "[1.48959708 1.48549271 1.32688856 1.35667706]"
+                ],
+                [
+                  14,
+                  "[0.50272274 0.54912758 0.17663097 0.79070699]",
+                  "[1.50272274 1.54912758 1.17663097 1.79070699]"
+                ],
+                [
+                  15,
+                  "[0.04508126 0.76880038 0.80721325 0.62542385]",
+                  "[1.04508126 1.76880038 1.80721331 1.62542391]"
+                ],
+                [
+                  16,
+                  "[0.19908059 0.17570406 0.51475513 0.1893943 ]",
+                  "[1.19908059 1.175704   1.51475513 1.18939424]"
+                ],
+                [
+                  17,
+                  "[0.40167677 0.25953674 0.9407078  0.76308483]",
+                  "[1.40167677 1.25953674 1.9407078  1.76308489]"
+                ],
+                [
+                  18,
+                  "[0.2480728  0.21694398 0.63941365 0.57128876]",
+                  "[1.24807286 1.21694398 1.6394136  1.57128882]"
+                ],
+                [
+                  19,
+                  "[0.24388778 0.07268471 0.68350857 0.73431659]",
+                  "[1.24388778 1.07268476 1.68350863 1.73431659]"
+                ],
+                [
+                  20,
+                  "[0.62569475 0.9881897  0.83639616 0.9828859 ]",
+                  "[1.62569475 1.9881897  1.83639622 1.98288584]"
+                ],
+                [
+                  21,
+                  "[0.56922203 0.98222166 0.76851749 0.28615737]",
+                  "[1.56922197 1.9822216  1.76851749 1.28615737]"
+                ],
+                [
+                  22,
+                  "[0.88776821 0.51636773 0.30333066 0.32230979]",
+                  "[1.88776827 1.51636767 1.30333066 1.32230973]"
+                ],
+                [
+                  23,
+                  "[0.90817457 0.89270043 0.38583666 0.66566533]",
+                  "[1.90817451 1.89270043 1.3858366  1.66566539]"
+                ],
+                [
+                  24,
+                  "[0.48507756 0.80808765 0.77162558 0.47834778]",
+                  "[1.48507762 1.80808759 1.77162552 1.47834778]"
+                ],
+                [
+                  25,
+                  "[0.68062544 0.98093534 0.14778823 0.53244978]",
+                  "[1.68062544 1.98093534 1.14778829 1.53244972]"
+                ],
+                [
+                  26,
+                  "[0.31518555 0.49643308 0.11509258 0.95458382]",
+                  "[1.31518555 1.49643302 1.11509252 1.95458388]"
+                ],
+                [
+                  27,
+                  "[0.79121011 0.54161114 0.69369799 0.1520769 ]",
+                  "[1.79121017 1.54161119 1.69369793 1.15207696]"
+                ],
+                [
+                  28,
+                  "[0.79423058 0.07138705 0.061777   0.18766576]",
+                  "[1.79423058 1.07138705 1.061777   1.1876657 ]"
+                ],
+                [
+                  29,
+                  "[0.23942459 0.90487361 0.69337189 0.65089428]",
+                  "[1.23942459 1.90487361 1.69337189 1.65089428]"
+                ],
+                [
+                  30,
+                  "[0.94516498 0.08422136 0.5608117  0.07652664]",
+                  "[1.94516492 1.08422136 1.56081176 1.07652664]"
+                ],
+                [
+                  31,
+                  "[0.26661873 0.45946234 0.13510543 0.81294441]",
+                  "[1.26661873 1.4594624  1.13510537 1.81294441]"
+                ],
+                [
+                  32,
+                  "[0.30754459 0.77694583 0.09278506 0.38326019]",
+                  "[1.30754459 1.77694583 1.09278512 1.38326025]"
+                ],
+                [
+                  33,
+                  "[0.27845025 0.32472342 0.82203609 0.77107543]",
+                  "[1.27845025 1.32472348 1.82203603 1.77107549]"
+                ],
+                [
+                  34,
+                  "[0.4827103  0.10563457 0.98858833 0.82286644]",
+                  "[1.48271036 1.10563457 1.98858833 1.82286644]"
+                ],
+                [
+                  35,
+                  "[0.98033333 0.97656083 0.38939917 0.81491041]",
+                  "[1.98033333 1.97656083 1.38939917 1.81491041]"
+                ],
+                [
+                  36,
+                  "[0.74064726 0.4155122  0.09800029 0.49930882]",
+                  "[1.74064732 1.4155122  1.09800029 1.49930882]"
+                ],
+                [
+                  37,
+                  "[0.78956431 0.87284744 0.06880784 0.03455889]",
+                  "[1.78956437 1.87284744 1.06880784 1.03455889]"
+                ],
+                [
+                  38,
+                  "[0.94221359 0.57740951 0.98649532 0.40934443]",
+                  "[1.94221354 1.57740951 1.98649526 1.40934443]"
+                ],
+                [
+                  39,
+                  "[0.00497234 0.39319336 0.57054168 0.75150961]",
+                  "[1.00497234 1.39319336 1.57054162 1.75150967]"
+                ],
+                [
+                  40,
+                  "[0.44330525 0.09997386 0.89025736 0.90507984]",
+                  "[1.44330525 1.09997392 1.89025736 1.90507984]"
+                ],
+                [
+                  41,
+                  "[0.72290605 0.96945059 0.68354797 0.15270454]",
+                  "[1.72290611 1.96945059 1.68354797 1.15270448]"
+                ],
+                [
+                  42,
+                  "[0.75292218 0.81470108 0.49657214 0.56217098]",
+                  "[1.75292218 1.81470108 1.49657214 1.56217098]"
+                ],
+                [
+                  43,
+                  "[0.33480108 0.59181517 0.76198453 0.98062384]",
+                  "[1.33480108 1.59181523 1.76198459 1.98062384]"
+                ],
+                [
+                  44,
+                  "[0.52784437 0.54268694 0.12358981 0.72116476]",
+                  "[1.52784443 1.54268694 1.12358975 1.7211647 ]"
+                ],
+                [
+                  45,
+                  "[0.73217702 0.65233225 0.44077861 0.33837909]",
+                  "[1.73217702 1.65233231 1.44077861 1.33837914]"
+                ],
+                [
+                  46,
+                  "[0.34084332 0.73018837 0.54168713 0.91440833]",
+                  "[1.34084332 1.73018837 1.54168713 1.91440833]"
+                ],
+                [
+                  47,
+                  "[0.60110539 0.3618983  0.32342511 0.98672163]",
+                  "[1.60110545 1.3618983  1.32342505 1.98672163]"
+                ],
+                [
+                  48,
+                  "[0.77427191 0.21829212 0.12769502 0.74303615]",
+                  "[1.77427197 1.21829212 1.12769508 1.74303615]"
+                ],
+                [
+                  49,
+                  "[0.08107251 0.2602725  0.18861133 0.44833237]",
+                  "[1.08107257 1.2602725  1.18861127 1.44833231]"
+                ],
+                [
+                  50,
+                  "[0.59812403 0.78395379 0.0291847  0.81814629]",
+                  "[1.59812403 1.78395379 1.0291847  1.81814623]"
+                ],
+                [
+                  51,
+                  "[0.93488538 0.73882395 0.37345302 0.0274905 ]",
+                  "[1.93488538 1.73882389 1.37345302 1.0274905 ]"
+                ],
+                [
+                  52,
+                  "[0.30631393 0.48311198 0.87847513 0.67559886]",
+                  "[1.30631399 1.48311198 1.87847519 1.67559886]"
+                ],
+                [
+                  53,
+                  "[0.18720162 0.74115586 0.98626411 0.30355608]",
+                  "[1.18720162 1.74115586 1.98626411 1.30355608]"
+                ],
+                [
+                  54,
+                  "[0.85566247 0.83362883 0.48424995 0.25265992]",
+                  "[1.85566247 1.83362889 1.48424995 1.25265992]"
+                ],
+                [
+                  55,
+                  "[0.95928186 0.84273899 0.71514636 0.38619852]",
+                  "[1.95928192 1.84273899 1.7151463  1.38619852]"
+                ],
+                [
+                  56,
+                  "[0.32565445 0.90939188 0.07488042 0.13730896]",
+                  "[1.32565451 1.90939188 1.07488036 1.13730896]"
+                ],
+                [
+                  57,
+                  "[0.9829582  0.59269661 0.40120947 0.95487177]",
+                  "[1.9829582  1.59269667 1.40120947 1.95487177]"
+                ],
+                [
+                  58,
+                  "[0.79905868 0.89367443 0.75429088 0.3190186 ]",
+                  "[1.79905868 1.89367437 1.75429082 1.3190186 ]"
+                ],
+                [
+                  59,
+                  "[0.54914117 0.03810108 0.87531954 0.73044223]",
+                  "[1.54914117 1.03810108 1.87531948 1.73044229]"
+                ],
+                [
+                  60,
+                  "[0.67418337 0.79634351 0.23229051 0.71345252]",
+                  "[1.67418337 1.79634356 1.23229051 1.71345258]"
+                ],
+                [
+                  61,
+                  "[0.87285906 0.48354989 0.39394957 0.59456545]",
+                  "[1.872859   1.48354983 1.39394951 1.59456539]"
+                ],
+                [
+                  62,
+                  "[0.81788456 0.58174163 0.29376316 0.7971254 ]",
+                  "[1.81788456 1.58174157 1.29376316 1.79712534]"
+                ],
+                [
+                  63,
+                  "[0.94559073 0.65736622 0.25761551 0.48553199]",
+                  "[1.94559073 1.65736628 1.25761557 1.48553205]"
+                ],
+                [
+                  64,
+                  "[0.60075855 0.12234765 0.00614399 0.30560958]",
+                  "[1.60075855 1.12234759 1.00614405 1.30560958]"
+                ],
+                [
+                  65,
+                  "[0.39147133 0.29854035 0.84663737 0.58175623]",
+                  "[1.39147139 1.29854035 1.84663737 1.58175623]"
+                ],
+                [
+                  66,
+                  "[0.02162331 0.81861657 0.92468154 0.07808572]",
+                  "[1.02162337 1.81861663 1.92468154 1.07808566]"
+                ],
+                [
+                  67,
+                  "[0.02235305 0.52774918 0.7331115  0.84358269]",
+                  "[1.02235305 1.52774918 1.7331115  1.84358263]"
+                ],
+                [
+                  68,
+                  "[0.6080932  0.56563014 0.32107437 0.72599429]",
+                  "[1.60809326 1.5656302  1.32107437 1.72599435]"
+                ],
+                [
+                  69,
+                  "[0.67447788 0.6125319  0.98007888 0.65968603]",
+                  "[1.67447782 1.6125319  1.98007894 1.65968609]"
+                ],
+                [
+                  70,
+                  "[0.47963417 0.81818312 0.48720706 0.49339259]",
+                  "[1.47963417 1.81818318 1.48720706 1.49339259]"
+                ],
+                [
+                  71,
+                  "[0.9630242  0.76359051 0.24853623 0.76881069]",
+                  "[1.96302414 1.76359057 1.24853623 1.76881075]"
+                ],
+                [
+                  72,
+                  "[0.60609657 0.96257663 0.19292736 0.95702219]",
+                  "[1.60609651 1.96257663 1.19292736 1.95702219]"
+                ],
+                [
+                  73,
+                  "[0.80654246 0.08253473 0.74478531 0.71257162]",
+                  "[1.8065424  1.08253479 1.74478531 1.71257162]"
+                ],
+                [
+                  74,
+                  "[0.70167565 0.26930219 0.5660674  0.61194974]",
+                  "[1.70167565 1.26930213 1.56606746 1.61194968]"
+                ],
+                [
+                  75,
+                  "[0.76933283 0.86241865 0.44114518 0.65644735]",
+                  "[1.76933289 1.86241865 1.44114518 1.65644741]"
+                ],
+                [
+                  76,
+                  "[0.59492421 0.90274489 0.38069052 0.46101224]",
+                  "[1.59492421 1.90274489 1.38069057 1.46101224]"
+                ],
+                [
+                  77,
+                  "[0.15064228 0.03198934 0.25754827 0.51484001]",
+                  "[1.15064228 1.03198934 1.25754833 1.51484001]"
+                ],
+                [
+                  78,
+                  "[0.12024075 0.21342516 0.56858408 0.58644271]",
+                  "[1.12024069 1.21342516 1.56858408 1.58644271]"
+                ],
+                [
+                  79,
+                  "[0.91730917 0.22574073 0.09591609 0.33056474]",
+                  "[1.91730917 1.22574067 1.09591603 1.33056474]"
+                ],
+                [
+                  80,
+                  "[0.49691743 0.61873293 0.90698647 0.94486356]",
+                  "[1.49691749 1.61873293 1.90698647 1.94486356]"
+                ],
+                [
+                  81,
+                  "[0.6032477  0.83361369 0.18538666 0.19108021]",
+                  "[1.60324764 1.83361363 1.18538666 1.19108021]"
+                ],
+                [
+                  82,
+                  "[0.63235509 0.70352674 0.96188956 0.46240485]",
+                  "[1.63235509 1.70352674 1.96188951 1.46240485]"
+                ],
+                [
+                  83,
+                  "[0.37959969 0.42820001 0.10690689 0.96353984]",
+                  "[1.37959969 1.42820001 1.10690689 1.96353984]"
+                ],
+                [
+                  84,
+                  "[0.49607176 0.1922397  0.46640229 0.78321403]",
+                  "[1.49607182 1.19223976 1.46640229 1.78321409]"
+                ],
+                [
+                  85,
+                  "[0.40234613 0.54987347 0.49542785 0.54153186]",
+                  "[1.40234613 1.54987347 1.49542785 1.5415318 ]"
+                ],
+                [
+                  86,
+                  "[0.80893755 0.92237449 0.88346356 0.93164903]",
+                  "[1.80893755 1.92237449 1.88346362 1.93164897]"
+                ],
+                [
+                  87,
+                  "[0.12858278 0.09930819 0.83222693 0.72485673]",
+                  "[1.12858272 1.09930825 1.83222699 1.72485673]"
+                ],
+                [
+                  88,
+                  "[0.72470158 0.4940322  0.41027349 0.89364016]",
+                  "[1.72470164 1.49403214 1.41027355 1.89364016]"
+                ],
+                [
+                  89,
+                  "[0.47856545 0.46267092 0.6376707  0.84747767]",
+                  "[1.47856545 1.46267092 1.63767076 1.84747767]"
+                ],
+                [
+                  90,
+                  "[0.49584109 0.80599248 0.07096875 0.75872749]",
+                  "[1.49584103 1.80599248 1.07096875 1.75872755]"
+                ],
+                [
+                  91,
+                  "[0.43500566 0.66041756 0.80293626 0.96224713]",
+                  "[1.43500566 1.66041756 1.80293632 1.96224713]"
+                ],
+                [
+                  92,
+                  "[0.78397602 0.74223626 0.26603186 0.41664881]",
+                  "[1.78397608 1.74223626 1.26603186 1.41664886]"
+                ],
+                [
+                  93,
+                  "[0.28942841 0.05601001 0.33039129 0.27781558]",
+                  "[1.28942847 1.05601001 1.33039129 1.27781558]"
+                ],
+                [
+                  94,
+                  "[0.68094063 0.45189077 0.22661722 0.37354094]",
+                  "[1.68094063 1.45189071 1.22661722 1.37354088]"
+                ],
+                [
+                  95,
+                  "[0.43681622 0.74680805 0.83598751 0.12414402]",
+                  "[1.43681622 1.74680805 1.83598757 1.12414408]"
+                ],
+                [
+                  96,
+                  "[0.47870928 0.17129105 0.27300501 0.20634609]",
+                  "[1.47870922 1.17129111 1.27300501 1.20634604]"
+                ],
+                [
+                  97,
+                  "[0.72795159 0.79317838 0.27832931 0.96576637]",
+                  "[1.72795153 1.79317832 1.27832937 1.96576643]"
+                ],
+                [
+                  98,
+                  "[0.87608397 0.93200487 0.80169648 0.37758952]",
+                  "[1.87608397 1.93200493 1.80169654 1.37758946]"
+                ],
+                [
+                  99,
+                  "[0.68891573 0.25576538 0.96339929 0.503833  ]",
+                  "[1.68891573 1.25576544 1.96339929 1.50383306]"
+                ]
+              ]
+            },
+            "training": {
+              "columns": [
+                "training_loss"
+              ],
+              "data": [
+                [
+                  6.014081001281738
+                ],
+                [
+                  5.580916404724121
+                ],
+                [
+                  5.274184226989746
+                ],
+                [
+                  5.0237603187561035
+                ],
+                [
+                  4.804426670074463
+                ],
+                [
+                  4.605026721954346
+                ],
+                [
+                  4.419903755187988
+                ],
+                [
+                  4.246149063110352
+                ],
+                [
+                  4.082696914672852
+                ],
+                [
+                  3.9301321506500244
+                ],
+                [
+                  3.7902746200561523
+                ],
+                [
+                  3.6642696857452393
+                ],
+                [
+                  3.5418264865875244
+                ],
+                [
+                  3.3390703201293945
+                ],
+                [
+                  2.8697218894958496
+                ],
+                [
+                  2.3933401107788086
+                ],
+                [
+                  2.047636032104492
+                ],
+                [
+                  1.83914053440094
+                ],
+                [
+                  1.7334750890731812
+                ],
+                [
+                  1.6865350008010864
+                ],
+                [
+                  1.666785478591919
+                ],
+                [
+                  1.658176302909851
+                ],
+                [
+                  1.6540385484695435
+                ],
+                [
+                  1.651779055595398
+                ],
+                [
+                  1.650368094444275
+                ],
+                [
+                  1.6493637561798096
+                ],
+                [
+                  1.6485661268234253
+                ],
+                [
+                  1.6478790044784546
+                ],
+                [
+                  1.6472536325454712
+                ],
+                [
+                  1.6466654539108276
+                ],
+                [
+                  1.6461007595062256
+                ],
+                [
+                  1.6455528736114502
+                ],
+                [
+                  1.6450183391571045
+                ],
+                [
+                  1.6444944143295288
+                ],
+                [
+                  1.643980622291565
+                ],
+                [
+                  1.6434764862060547
+                ],
+                [
+                  1.6429831981658936
+                ],
+                [
+                  1.6424978971481323
+                ],
+                [
+                  1.64202082157135
+                ],
+                [
+                  1.6415510177612305
+                ],
+                [
+                  1.6410887241363525
+                ],
+                [
+                  1.6406346559524536
+                ],
+                [
+                  1.6401888132095337
+                ],
+                [
+                  1.639750361442566
+                ],
+                [
+                  1.6393187046051025
+                ],
+                [
+                  1.6388964653015137
+                ],
+                [
+                  1.6384804248809814
+                ],
+                [
+                  1.638070821762085
+                ],
+                [
+                  1.6376668214797974
+                ],
+                [
+                  1.6372689008712769
+                ],
+                [
+                  1.6368769407272339
+                ],
+                [
+                  1.6364902257919312
+                ],
+                [
+                  1.636109471321106
+                ],
+                [
+                  1.6357333660125732
+                ],
+                [
+                  1.6353627443313599
+                ],
+                [
+                  1.6349972486495972
+                ],
+                [
+                  1.6346369981765747
+                ],
+                [
+                  1.6342813968658447
+                ],
+                [
+                  1.6339303255081177
+                ],
+                [
+                  1.6335841417312622
+                ],
+                [
+                  1.6332424879074097
+                ],
+                [
+                  1.6329057216644287
+                ],
+                [
+                  1.6325738430023193
+                ],
+                [
+                  1.6322462558746338
+                ],
+                [
+                  1.6319226026535034
+                ],
+                [
+                  1.6316030025482178
+                ],
+                [
+                  1.6312874555587769
+                ],
+                [
+                  1.6309759616851807
+                ],
+                [
+                  1.6306681632995605
+                ],
+                [
+                  1.630364179611206
+                ],
+                [
+                  1.6300634145736694
+                ],
+                [
+                  1.629766821861267
+                ],
+                [
+                  1.629473328590393
+                ],
+                [
+                  1.6291834115982056
+                ],
+                [
+                  1.628896713256836
+                ],
+                [
+                  1.6286135911941528
+                ],
+                [
+                  1.628333568572998
+                ],
+                [
+                  1.628056526184082
+                ],
+                [
+                  1.6277827024459839
+                ],
+                [
+                  1.6275124549865723
+                ],
+                [
+                  1.6272450685501099
+                ],
+                [
+                  1.6269807815551758
+                ],
+                [
+                  1.6267189979553223
+                ],
+                [
+                  1.626460075378418
+                ],
+                [
+                  1.6262041330337524
+                ],
+                [
+                  1.625950813293457
+                ],
+                [
+                  1.6256998777389526
+                ],
+                [
+                  1.625451683998108
+                ],
+                [
+                  1.6252059936523438
+                ],
+                [
+                  1.6249629259109497
+                ],
+                [
+                  1.6247217655181885
+                ],
+                [
+                  1.6244832277297974
+                ],
+                [
+                  1.6242470741271973
+                ],
+                [
+                  1.6240129470825195
+                ],
+                [
+                  1.6237813234329224
+                ],
+                [
+                  1.6235517263412476
+                ],
+                [
+                  1.6233243942260742
+                ],
+                [
+                  1.6230992078781128
+                ],
+                [
+                  1.6228758096694946
+                ],
+                [
+                  1.622654676437378
+                ]
+              ]
+            }
+          },
+          "other": {
+            "model": "ModelConfig(model=Sequential(\n  (0) - Identity(): Input__tensor_1_output -> START_Repeat_1_output\n  (1) - Linear(4, 4, bias=True): START_Repeat_1_output -> Linear_1_output\n  (2) - <function leaky_relu at 0x7620a30c54e0>: Linear_1_output -> Activation_1_output\n  (3) - Identity(): Activation_1_output -> START_Repeat_1_output\n  (4) - Linear(4, 4, bias=True): START_Repeat_1_output -> Linear_1_output\n  (5) - <function leaky_relu at 0x7620a30c54e0>: Linear_1_output -> Activation_1_output\n  (6) - Identity(): Activation_1_output -> END_Repeat_1_output\n  (7) - Identity(): END_Repeat_1_output -> Output_1_x\n  (8) - Identity(): Output_1_x -> Output_1_x\n), model_inputs=['Input__tensor_1_output'], model_outputs=['Output_1_x'], loss_inputs=['Input__tensor_3_output', 'Output_1_x'], loss=Sequential(\n  (0) - <function constant_vector.<locals>.<lambda> at 0x761ebc727740>: nothing -> Constant_vector_1_output\n  (1) - <built-in method add of type object at 0x76209f79ef00>: Input__tensor_3_output, Constant_vector_1_output -> Add_1_output\n  (2) - <function mse_loss at 0x7620a30c6fc0>: Output_1_x, Add_1_output -> MSE_loss_2_output\n  (3) - Identity(): MSE_loss_2_output -> loss\n), optimizer_parameters={'lr': 0.1, 'type': <OptionsFor_type.SGD: 4>}, optimizer=SGD (\nParameter Group 0\n    dampening: 0\n    differentiable: False\n    foreach: None\n    fused: None\n    lr: 0.1\n    maximize: False\n    momentum: 0\n    nesterov: False\n    weight_decay: 0\n), source_workspace='Model definition', trained=True)"
+          },
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "pred",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_3_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View tables",
+          "outputs": {},
+          "params": {
+            "limit": {
+              "default": 100.0,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "type": "table_view"
+        },
+        "params": {
+          "_tables_open": {
+            "df_test": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 636.0,
+      "id": "View tables 1",
+      "position": {
+        "x": 3075.0,
+        "y": -90.0
+      },
+      "type": "table_view",
+      "width": 603.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "series": [
+            {
+              "data": [
+                [
+                  -1287.0316162109375,
+                  -197.19064331054688,
+                  "",
+                  -10.191871643066406
+                ],
+                [
+                  1850.403076171875,
+                  -1934.8701171875,
+                  "",
+                  -10.843463897705078
+                ],
+                [
+                  -2139.6982421875,
+                  2140.9306640625,
+                  "",
+                  -9.693496704101562
+                ],
+                [
+                  -829.4639892578125,
+                  1453.0125732421875,
+                  "",
+                  -12.964160919189453
+                ],
+                [
+                  -2034.95068359375,
+                  -2228.56005859375,
+                  "",
+                  -8.494583129882812
+                ],
+                [
+                  775.7841796875,
+                  -987.1351318359375,
+                  "",
+                  -7.914520263671875
+                ],
+                [
+                  -834.7413330078125,
+                  -1010.576904296875,
+                  "",
+                  -11.352218627929688
+                ],
+                [
+                  1341.696044921875,
+                  327.52203369140625,
+                  "",
+                  -12.275350570678711
+                ],
+                [
+                  2031.8687744140625,
+                  1949.9718017578125,
+                  "",
+                  -11.710403442382812
+                ],
+                [
+                  506.062255859375,
+                  1029.9742431640625,
+                  "",
+                  -8.997444152832031
+                ]
+              ],
+              "symbolSize": 15.811388300841896,
+              "type": "scatter"
+            }
+          ],
+          "title": {
+            "text": "UMAP projection of pred"
+          },
+          "tooltip": {
+            "show": false
+          },
+          "visualMap": {
+            "calculable": true,
+            "dimension": 3,
+            "inRange": {
+              "color": [
+                "#440154",
+                "#482777",
+                "#3E4989",
+                "#31688E",
+                "#26828E",
+                "#1F9E89",
+                "#35B779",
+                "#6CCE59",
+                "#B4DE2C",
+                "#FDE725"
+              ]
+            },
+            "max": -7.914520263671875,
+            "min": -12.964160919189453,
+            "right": 10,
+            "top": "center"
+          },
+          "xAxis": [
+            {
+              "type": "value"
+            }
+          ],
+          "yAxis": [
+            {
+              "type": "value"
+            }
+          ]
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "index",
+                  "pred",
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_3_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View vectors",
+          "outputs": {},
+          "params": {
+            "label_column": {
+              "default": "",
+              "name": "label_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "table_name": {
+              "default": "nodes",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "vector_column": {
+              "default": "",
+              "name": "vector_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 943.0,
+            "y": 315.0
+          },
+          "type": "visualization"
+        },
+        "params": {
+          "label_column": "",
+          "table_name": "df_test",
+          "vector_column": "pred"
+        },
+        "status": "done",
+        "title": "View vectors"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 668.0,
+      "id": "View vectors 1",
+      "position": {
+        "x": 3091.4609779299844,
+        "y": 659.497108066971
+      },
+      "type": "visualization",
+      "width": 613.0
+    }
+  ]
+}

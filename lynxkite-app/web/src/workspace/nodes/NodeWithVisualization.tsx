@@ -8,6 +8,10 @@ const NodeWithVisualization = (props: any) => {
   useEffect(() => {
     const opts = props.data?.display?.value;
     if (!opts || !chartsRef.current) return;
+    if (opts.tooltip?.formatter === "GET_THIRD_VALUE") {
+      // We can't pass a function from the backend, and can't get good tooltips otherwise.
+      opts.tooltip.formatter = (params: any) => params.value[2];
+    }
     chartsInstanceRef.current = echarts.init(chartsRef.current, null, {
       renderer: "canvas",
       width: "auto",

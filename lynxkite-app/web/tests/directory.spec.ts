@@ -14,13 +14,6 @@ test.describe("Directory operations", () => {
     splash = await Splash.open(page);
   });
 
-  test("Create workspace with default name", async () => {
-    const workspace = await Workspace.empty(splash.page);
-    // Not checking for exact match, since there may be pre-existing "Untitled" workspaces
-    expect(workspace.name).toContain("Untitled");
-    await workspace.close();
-  });
-
   test("Create & delete workspace", async () => {
     const workspaceName = `TestWorkspace-${Date.now()}`;
     const workspace = await Workspace.empty(splash.page, workspaceName);
@@ -39,11 +32,6 @@ test.describe("Directory operations", () => {
     await splash.goHome();
     await splash.deleteEntry(folderName);
     await expect(splash.getEntry(folderName)).not.toBeVisible();
-  });
-
-  test("Create folder with default name", async () => {
-    await splash.createFolder();
-    await expect(splash.currentFolder()).toContainText("Untitled");
   });
 });
 

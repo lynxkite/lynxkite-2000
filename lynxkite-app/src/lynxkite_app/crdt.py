@@ -26,11 +26,11 @@ def ws_exception_handler(exception, log):
     return True
 
 
-class WebsocketServer(pycrdt_websocket.WebsocketServer):
+class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
     async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
         """Initialize a room for the workspace with the given name.
 
-        The workspace is loaded from "crdt_data" if it exists there, or from "data", or a new workspace is created.
+        The workspace is loaded from ".crdt" if it exists there, or from a JSON file, or a new workspace is created.
         """
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
@@ -40,9 +40,7 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         ydoc["workspace"] = ws = pycrdt.Map()
         # Replay updates from the store.
         try:
-            for update, timestamp in [
-                (item[0], item[-1]) async for item in ystore.read()
-            ]:
+            for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
                 ydoc.apply_update(update)
         except pycrdt_websocket.ystore.YDocNotFound:
             pass
@@ -84,14 +82,49 @@ class WebsocketServer(pycrdt_websocket.WebsocketServer):
         return room
 
 
+class CodeWebsocketServer(WorkspaceWebsocketServer):
+    async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
+        """Initialize a room for a text document with the given name."""
+        crdt_path = pathlib.Path(".crdt")
+        path = crdt_path / f"{name}.crdt"
+        assert path.is_relative_to(crdt_path)
+        ystore = pycrdt_websocket.ystore.FileYStore(path)
+        ydoc = pycrdt.Doc()
+        ydoc["text"] = text = pycrdt.Text()
+        # Replay updates from the store.
+        try:
+            for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
+                ydoc.apply_update(update)
+        except pycrdt_websocket.ystore.YDocNotFound:
+            pass
+        if len(text) == 0:
+            if os.path.exists(name):
+                with open(name) as f:
+                    text += f.read()
+        room = pycrdt_websocket.YRoom(
+            ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
+        )
+        room.text = text
+
+        def on_change(changes):
+            asyncio.create_task(code_changed(name, changes, text))
+
+        text.observe(on_change)
+        return room
+
+
 last_ws_input = None
 
 
 def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
+        node.data.input_metadata = None
         node.data.error = None
         node.data.status = workspace.NodeStatus.done
+        for p in list(node.data.params):
+            if p.startswith("_"):
+                del node.data.params[p]
         node.position.x = 0
         node.position.y = 0
         if node.model_extra:
@@ -168,9 +201,12 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
     """
     if os.path.exists(name):
         ws_pyd = workspace.load(name)
-        # We treat the display field as a black box, since it is a large
-        # dictionary that is meant to change as a whole.
-        crdt_update(ws, ws_pyd.model_dump(), non_collaborative_fields={"display"})
+        crdt_update(
+            ws,
+            ws_pyd.model_dump(),
+            # We treat some fields as black boxes. They are not edited on the frontend.
+            non_collaborative_fields={"display", "input_metadata"},
+        )
 
 
 last_known_versions = {}
@@ -208,9 +244,7 @@ async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt
         await execute(name, ws_crdt, ws_pyd)
 
 
-async def execute(
-    name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, delay: int = 0
-):
+async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, delay: int = 0):
     """Execute the workspace and update the CRDT object with the results.
 
     Args:
@@ -230,6 +264,7 @@ async def execute(
     assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
     workspace.save(ws_pyd, path)
+    ops.load_user_scripts(name)
     ws_pyd._crdt = ws_crdt
     with ws_crdt.doc.transaction():
         for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
@@ -243,14 +278,21 @@ async def execute(
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 
+async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
+    # TODO: Make this more fancy?
+    with open(name, "w") as f:
+        f.write(str(text).strip() + "\n")
+
+
 @contextlib.asynccontextmanager
 async def lifespan(app):
-    global websocket_server
-    websocket_server = WebsocketServer(
-        auto_clean_rooms=False,
-    )
-    async with websocket_server:
-        yield
+    global ws_websocket_server
+    global code_websocket_server
+    ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
+    code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
+    async with ws_websocket_server:
+        async with code_websocket_server:
+            yield
     print("closing websocket server")
 
 
@@ -261,5 +303,12 @@ def sanitize_path(path):
 @router.websocket("/ws/crdt/{room_name}")
 async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt_websocket.ASGIServer(websocket_server)
+    server = pycrdt_websocket.ASGIServer(ws_websocket_server)
+    await server({"path": room_name}, websocket._receive, websocket._send)
+
+
+@router.websocket("/ws/code/crdt/{room_name}")
+async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
+    room_name = sanitize_path(room_name)
+    server = pycrdt_websocket.ASGIServer(code_websocket_server)
     await server({"path": room_name}, websocket._receive, websocket._send)
