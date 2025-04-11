@@ -1,9 +1,11 @@
 """
 LynxScribe configuration and testing in LynxKite.
+TODO: all these outputs should contain metadata. So the next task can check the input type, etc.
 """
 
 from google.cloud import storage
 from copy import deepcopy
+from enum import Enum
 import asyncio
 import pandas as pd
 import joblib
@@ -44,10 +46,17 @@ op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
 
 
-@op("Cloud-sourced File Loader")
+# defining the cloud provider enum
+class CloudProvider(Enum):
+    GCP = "gcp"
+    AWS = "aws"
+    AZURE = "azure"
+
+
+@op("Cloud-sourced File Listing")
 def cloud_file_loader(
     *,
-    cloud_provider: str = "gcp",
+    cloud_provider: CloudProvider = CloudProvider.GCP,
     folder_URL: str = "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
     accepted_file_types: str = ".jpg, .jpeg, .png",
 ):
@@ -60,7 +69,7 @@ def cloud_file_loader(
 
     accepted_file_types = tuple([t.strip() for t in accepted_file_types.split(",")])
 
-    if cloud_provider == "gcp":
+    if cloud_provider == CloudProvider.GCP:
         client = storage.Client()
         url_useful_part = folder_URL.split(".com/")[-1]
         bucket_name = url_useful_part.split("/")[0]
@@ -118,66 +127,41 @@ def ls_rag_graph(
     return {"rag_graph": rag_graph}
 
 
-@output_on_top
 @op("LynxScribe Image Describer")
 @mem.cache
-def ls_image_describer(
+async def ls_image_describer(
+    file_urls,
     *,
     llm_interface: str = "openai",
     llm_visual_model: str = "gpt-4o",
-    llm_prompt_path: str = "../lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
+    llm_prompt_path: str = "uploads/image_description_prompts.yaml",
     llm_prompt_name: str = "cot_picture_descriptor",
     # api_key_name: str = "OPENAI_API_KEY",
 ):
     """
-    Returns with an image describer instance.
-    TODO: adding a relative path to the prompt path + adding model kwargs
+    Returns with image descriptions from a list of image URLs.
+
+    TODO: making the inputs more flexible (e.g. accepting file locations, URLs, binaries, etc.).
+          the input dictionary should contain some meta info: e.g., what is in the list...
     """
 
+    # handling inputs
+    image_urls = file_urls["file_urls"]
+
+    # loading the LLM
     llm_params = {"name": llm_interface}
     # if api_key_name:
     #     llm_params["api_key"] = os.getenv(api_key_name)
     llm = get_llm_engine(**llm_params)
 
+    # preparing the prompts
     prompt_base = load_config(llm_prompt_path)[llm_prompt_name]
-
-    return {
-        "image_describer": {
-            "llm": llm,
-            "prompt_base": prompt_base,
-            "model": llm_visual_model,
-        }
-    }
-
-
-@ops.input_position(image_describer="bottom", rag_graph="bottom")
-@op("LynxScribe Image RAG Builder")
-@mem.cache
-async def ls_image_rag_builder(
-    file_urls,
-    image_describer,
-    rag_graph,
-):
-    """
-    Based on an input image folder (currently only supports GCP storage),
-    the function builds up an image RAG graph, where the nodes are the
-    descriptions of the images (and of all image objects).
-
-    In a later phase, synthetic questions and "named entities" will also
-    be added to the graph.
-    """
-
-    # handling inputs
-    image_describer = image_describer[0]["image_describer"]
-    image_urls = file_urls["file_urls"]
-    rag_graph = rag_graph[0]["rag_graph"]
-
-    # generate prompts from inputs
     prompt_list = []
+
     for i in range(len(image_urls)):
         image = image_urls[i]
 
-        _prompt = deepcopy(image_describer["prompt_base"])
+        _prompt = deepcopy(prompt_base)
         for message in _prompt:
             if isinstance(message["content"], list):
                 for _message_part in message["content"]:
@@ -185,13 +169,14 @@ async def ls_image_rag_builder(
                         _message_part["image_url"] = {"url": image}
 
         prompt_list.append(_prompt)
+
+    # creating the prompt objects
     ch_prompt_list = [
-        ChatCompletionPrompt(model=image_describer["model"], messages=prompt)
+        ChatCompletionPrompt(model=llm_visual_model, messages=prompt)
         for prompt in prompt_list
     ]
 
     # get the image descriptions
-    llm = image_describer["llm"]
     tasks = [
         llm.acreate_completion(completion_prompt=_prompt) for _prompt in ch_prompt_list
     ]
@@ -201,27 +186,86 @@ async def ls_image_rag_builder(
         for result in out_completions
     ]
 
-    # generate combination of descriptions and embed them
-    text_embedder = rag_graph.kg_base.text_embedder
+    # getting the image descriptions (list of dictionaries {image_url: URL, description: description})
+    # TODO: some result class could be a better idea (will be developed in LynxScribe)
+    image_descriptions = [
+        {"image_url": image_urls[i], "description": results[i]}
+        for i in range(len(image_urls))
+    ]
+
+    return {"image_descriptions": image_descriptions}
+
+
+@op("LynxScribe Image RAG Builder")
+@mem.cache
+async def ls_image_rag_builder(
+    image_descriptions,
+    *,
+    vdb_provider_name: str = "faiss",
+    vdb_num_dimensions: int = 3072,
+    vdb_collection_name: str = "lynx",
+    text_embedder_interface: str = "openai",
+    text_embedder_model_name_or_path: str = "text-embedding-3-large",
+    # api_key_name: str = "OPENAI_API_KEY",
+):
+    """
+    Based on image descriptions, and embedding/VDB parameters,
+    the function builds up an image RAG graph, where the nodes are the
+    descriptions of the images (and of all image objects).
+
+    In a later phase, synthetic questions and "named entities" will also
+    be added to the graph.
+    """
+
+    # handling inputs
+    image_descriptions = image_descriptions["image_descriptions"]
+
+    # Building up the empty RAG graph
+
+    # a) Define LLM interface and get a text embedder
+    llm_params = {"name": text_embedder_interface}
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
+    text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
+
+    # b) getting the vector store
+    # TODO: vdb_provider_name should be ENUM, and other parameters should appear accordingly
+    if vdb_provider_name == "chromadb":
+        vector_store = get_vector_store(
+            name=vdb_provider_name, collection_name=vdb_collection_name
+        )
+    elif vdb_provider_name == "faiss":
+        vector_store = get_vector_store(
+            name=vdb_provider_name, num_dimensions=vdb_num_dimensions
+        )
+    else:
+        raise ValueError(f"Vector store name '{vdb_provider_name}' is not supported.")
+
+    # c) building up the RAG graph
+    rag_graph = RAGGraph(
+        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+    )
 
     dict_list_df = []
-    for _i, _result in enumerate(results):
-        url_res = image_urls[_i]
+    for image_description_tuple in image_descriptions:
+        image_url = image_description_tuple["image_url"]
+        image_description = image_description_tuple["description"]
 
-        if "overall description" in _result:
+        if "overall description" in image_description:
             dict_list_df.append(
                 {
-                    "image_url": url_res,
-                    "description": _result["overall description"],
+                    "image_url": image_url,
+                    "description": image_description["overall description"],
                     "source": "overall description",
                 }
             )
 
-        if "details" in _result:
-            for dkey in _result["details"].keys():
-                text = f"The picture's description is: {_result['overall description']}\n\nThe description of the {dkey} is: {_result['details'][dkey]}"
+        if "details" in image_description:
+            for dkey in image_description["details"].keys():
+                text = f"The picture's description is: {image_description['overall description']}\n\nThe description of the {dkey} is: {image_description['details'][dkey]}"
                 dict_list_df.append(
-                    {"image_url": url_res, "description": text, "source": "details"}
+                    {"image_url": image_url, "description": text, "source": "details"}
                 )
 
     pdf_descriptions = pd.DataFrame(dict_list_df)
@@ -257,7 +301,7 @@ async def ls_image_rag_builder(
 
 @op("LynxScribe RAG Graph Saver")
 def ls_save_rag_graph(
-    knowledge_base,
+    rag_graph,
     *,
     image_rag_out_path: str = "image_test_rag_graph.pickle",
 ):
@@ -265,7 +309,10 @@ def ls_save_rag_graph(
     Saves the RAG graph to a pickle file.
     """
 
-    knowledge_base.kg_base.save(image_rag_out_path)
+    # reading inputs
+    rag_graph = rag_graph[0]["rag_graph"]
+
+    rag_graph.kg_base.save(image_rag_out_path)
     return None
 
 
@@ -294,10 +341,12 @@ async def search_context(rag_graph, text, *, top_k=3):
     return {"embedding_similarities": result_list}
 
 
-@op("View image", view="image")
+@op("LynxScribe Image Result Viewer", view="image")
 def view_image(embedding_similarities):
     """
-    Plotting the selected image.
+    Plotting the TOP images (from embedding similarities).
+
+    TODO: later on, the user can scroll the images and send feedbacks
     """
     embedding_similarities = embedding_similarities["embedding_similarities"]
     return embedding_similarities[0]["image_url"]

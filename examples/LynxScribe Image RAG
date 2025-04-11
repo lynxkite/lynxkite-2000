@@ -1,24 +1,10 @@
 {
   "edges": [
     {
-      "id": "Input chat 1 LynxScribe Image RAG Query 1",
-      "source": "Input chat 1",
+      "id": "Cloud-sourced File Listing 1 LynxScribe Image Describer 1",
+      "source": "Cloud-sourced File Listing 1",
       "sourceHandle": "output",
-      "target": "LynxScribe Image RAG Query 1",
-      "targetHandle": "text"
-    },
-    {
-      "id": "LynxScribe Image RAG Query 1 View image 1",
-      "source": "LynxScribe Image RAG Query 1",
-      "sourceHandle": "output",
-      "target": "View image 1",
-      "targetHandle": "embedding_similarities"
-    },
-    {
-      "id": "Cloud-sourced File Loader 1 LynxScribe Image RAG Builder 1",
-      "source": "Cloud-sourced File Loader 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Image RAG Builder 1",
+      "target": "LynxScribe Image Describer 1",
       "targetHandle": "file_urls"
     },
     {
@@ -26,14 +12,7 @@
       "source": "LynxScribe Image Describer 1",
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Builder 1",
-      "targetHandle": "image_describer"
-    },
-    {
-      "id": "LynxScribe RAG Graph Vector Store 1 LynxScribe Image RAG Builder 1",
-      "source": "LynxScribe RAG Graph Vector Store 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Image RAG Builder 1",
-      "targetHandle": "rag_graph"
+      "targetHandle": "image_descriptions"
     },
     {
       "id": "LynxScribe Image RAG Builder 1 LynxScribe Image RAG Query 1",
@@ -41,6 +20,20 @@
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Query 1",
       "targetHandle": "rag_graph"
+    },
+    {
+      "id": "Input chat 1 LynxScribe Image RAG Query 1",
+      "source": "Input chat 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image RAG Query 1",
+      "targetHandle": "text"
+    },
+    {
+      "id": "LynxScribe Image RAG Query 1 LynxScribe Image Result Viewer 1",
+      "source": "LynxScribe Image RAG Query 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image Result Viewer 1",
+      "targetHandle": "embedding_similarities"
     }
   ],
   "env": "LynxScribe",
@@ -75,7 +68,7 @@
           "type": "basic"
         },
         "params": {
-          "chat": "Show me a picture about pills!"
+          "chat": "show me a picture about 2 doctors"
         },
         "status": "done",
         "title": "Input chat"
@@ -84,11 +77,250 @@
       "height": 214.0,
       "id": "Input chat 1",
       "position": {
-        "x": -302.70349900314835,
-        "y": -140.67386384008685
+        "x": 51.51211115780683,
+        "y": -147.75474103115954
       },
       "type": "basic",
       "width": 387.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {},
+          "name": "Cloud-sourced File Listing",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "accepted_file_types": {
+              "default": ".jpg, .jpeg, .png",
+              "name": "accepted_file_types",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "cloud_provider": {
+              "default": "gcp",
+              "name": "cloud_provider",
+              "type": {
+                "enum": [
+                  "GCP",
+                  "AWS",
+                  "AZURE"
+                ]
+              }
+            },
+            "folder_URL": {
+              "default": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
+              "name": "folder_URL",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1271.0,
+            "y": 603.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "accepted_file_types": ".jpg, .jpeg, .png",
+          "cloud_provider": "GCP",
+          "folder_URL": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test"
+        },
+        "status": "done",
+        "title": "Cloud-sourced File Listing"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 308.0,
+      "id": "Cloud-sourced File Listing 1",
+      "position": {
+        "x": -733.5815993327456,
+        "y": 418.3880816741662
+      },
+      "type": "basic",
+      "width": 613.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "file_urls": {
+              "name": "file_urls",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Image Describer",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "llm_interface": {
+              "default": "openai",
+              "name": "llm_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_prompt_name": {
+              "default": "cot_picture_descriptor",
+              "name": "llm_prompt_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_prompt_path": {
+              "default": "uploads/image_description_prompts.yaml",
+              "name": "llm_prompt_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_visual_model": {
+              "default": "gpt-4o",
+              "name": "llm_visual_model",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1331.0,
+            "y": 686.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "llm_interface": "openai",
+          "llm_prompt_name": "cot_picture_descriptor",
+          "llm_prompt_path": "uploads/image_description_prompts.yaml",
+          "llm_visual_model": "gpt-4o"
+        },
+        "status": "done",
+        "title": "LynxScribe Image Describer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 366.0,
+      "id": "LynxScribe Image Describer 1",
+      "position": {
+        "x": 94.4350838249984,
+        "y": 389.7616279503166
+      },
+      "type": "basic",
+      "width": 362.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "meta": {
+          "inputs": {
+            "image_descriptions": {
+              "name": "image_descriptions",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Image RAG Builder",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "text_embedder_interface": {
+              "default": "openai",
+              "name": "text_embedder_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "text_embedder_model_name_or_path": {
+              "default": "text-embedding-3-large",
+              "name": "text_embedder_model_name_or_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "vdb_collection_name": {
+              "default": "lynx",
+              "name": "vdb_collection_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "vdb_num_dimensions": {
+              "default": 3072.0,
+              "name": "vdb_num_dimensions",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "vdb_provider_name": {
+              "default": "faiss",
+              "name": "vdb_provider_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1714.0,
+            "y": 740.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "text_embedder_interface": "openai",
+          "text_embedder_model_name_or_path": "text-embedding-3-small",
+          "vdb_collection_name": "lynx",
+          "vdb_num_dimensions": "1536",
+          "vdb_provider_name": "faiss"
+        },
+        "status": "done",
+        "title": "LynxScribe Image RAG Builder"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 463.0,
+      "id": "LynxScribe Image RAG Builder 1",
+      "position": {
+        "x": 634.1082253159385,
+        "y": 341.7237080874875
+      },
+      "type": "basic",
+      "width": 309.0
     },
     {
       "data": {
@@ -132,6 +364,10 @@
               }
             }
           },
+          "position": {
+            "x": 1865.0,
+            "y": 363.0
+          },
           "type": "basic"
         },
         "params": {
@@ -141,20 +377,18 @@
         "title": "LynxScribe Image RAG Query"
       },
       "dragHandle": ".bg-primary",
-      "height": 200.0,
+      "height": 205.0,
       "id": "LynxScribe Image RAG Query 1",
       "position": {
-        "x": 908.9211080204011,
-        "y": -132.3031800030364
+        "x": 1064.0579569918539,
+        "y": -140.79102876607624
       },
       "type": "basic",
-      "width": 200.0
+      "width": 263.0
     },
     {
       "data": {
-        "__execution_delay": null,
-        "collapsed": false,
-        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/capsules-1079838_1280.jpg",
+        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/surgery-1807541_1280.jpg",
         "error": null,
         "meta": {
           "inputs": {
@@ -166,298 +400,28 @@
               }
             }
           },
-          "name": "View image",
+          "name": "LynxScribe Image Result Viewer",
           "outputs": {},
           "params": {},
+          "position": {
+            "x": 2207.0,
+            "y": 327.0
+          },
           "type": "image"
         },
         "params": {},
         "status": "done",
-        "title": "View image"
+        "title": "LynxScribe Image Result Viewer"
       },
       "dragHandle": ".bg-primary",
-      "height": 1170.0,
-      "id": "View image 1",
+      "height": 622.0,
+      "id": "LynxScribe Image Result Viewer 1",
       "position": {
-        "x": 1426.7020124006506,
-        "y": -293.16229409169125
+        "x": 1550.5086064306404,
+        "y": -349.93521115271193
       },
       "type": "image",
-      "width": 750.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {},
-          "name": "LynxScribe Image Describer",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "llm_interface": {
-              "default": "openai",
-              "name": "llm_interface",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "llm_prompt_name": {
-              "default": "cot_picture_descriptor",
-              "name": "llm_prompt_name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "llm_prompt_path": {
-              "default": "../lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
-              "name": "llm_prompt_path",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "llm_visual_model": {
-              "default": "gpt-4o",
-              "name": "llm_visual_model",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "position": {
-            "x": 1066.0,
-            "y": 713.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "llm_interface": "openai",
-          "llm_prompt_name": "cot_picture_descriptor",
-          "llm_prompt_path": "../lynxkite-lynxscribe/promptdb/image_description_prompts.yaml",
-          "llm_visual_model": "gpt-4o"
-        },
-        "status": "done",
-        "title": "LynxScribe Image Describer"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 363.0,
-      "id": "LynxScribe Image Describer 1",
-      "position": {
-        "x": 127.85361236096924,
-        "y": 687.0518781863441
-      },
-      "type": "basic",
-      "width": 401.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {},
-          "name": "LynxScribe RAG Graph Vector Store",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "collection_name": {
-              "default": "lynx",
-              "name": "collection_name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "name": {
-              "default": "faiss",
-              "name": "name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "num_dimensions": {
-              "default": 3072.0,
-              "name": "num_dimensions",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "text_embedder_interface": {
-              "default": "openai",
-              "name": "text_embedder_interface",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "text_embedder_model_name_or_path": {
-              "default": "text-embedding-3-large",
-              "name": "text_embedder_model_name_or_path",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "position": {
-            "x": 790.0,
-            "y": 633.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "collection_name": "lynx",
-          "name": "faiss",
-          "num_dimensions": 3072.0,
-          "text_embedder_interface": "openai",
-          "text_embedder_model_name_or_path": "text-embedding-3-large"
-        },
-        "status": "done",
-        "title": "LynxScribe RAG Graph Vector Store"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 436.0,
-      "id": "LynxScribe RAG Graph Vector Store 1",
-      "position": {
-        "x": 595.4558693958389,
-        "y": 688.0989202130276
-      },
-      "type": "basic",
-      "width": 339.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {},
-          "name": "Cloud-sourced File Loader",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {
-            "accepted_file_types": {
-              "default": ".jpg, .jpeg, .png",
-              "name": "accepted_file_types",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "cloud_provider": {
-              "default": "gcp",
-              "name": "cloud_provider",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            "folder_URL": {
-              "default": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test",
-              "name": "folder_URL",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          },
-          "position": {
-            "x": 248.0,
-            "y": 419.0
-          },
-          "type": "basic"
-        },
-        "params": {
-          "accepted_file_types": ".jpg, .jpeg, .png",
-          "cloud_provider": "gcp",
-          "folder_URL": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test"
-        },
-        "status": "done",
-        "title": "Cloud-sourced File Loader"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 291.0,
-      "id": "Cloud-sourced File Loader 1",
-      "position": {
-        "x": -479.7367372966062,
-        "y": 213.81581567584843
-      },
-      "type": "basic",
-      "width": 512.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "meta": {
-          "inputs": {
-            "file_urls": {
-              "name": "file_urls",
-              "position": "left",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            },
-            "image_describer": {
-              "name": "image_describer",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            },
-            "rag_graph": {
-              "name": "rag_graph",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          },
-          "name": "LynxScribe Image RAG Builder",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {},
-          "position": {
-            "x": 480.0,
-            "y": 388.0
-          },
-          "type": "basic"
-        },
-        "params": {},
-        "status": "done",
-        "title": "LynxScribe Image RAG Builder"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 313.0,
-      "id": "LynxScribe Image RAG Builder 1",
-      "position": {
-        "x": 243.62049392420903,
-        "y": 215.6136303371116
-      },
-      "type": "basic",
-      "width": 526.0
+      "width": 802.0
     }
   ]
 }
