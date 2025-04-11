@@ -113,11 +113,7 @@
               "default": "gcp",
               "name": "cloud_provider",
               "type": {
-                "enum": [
-                  "GCP",
-                  "AWS",
-                  "AZURE"
-                ]
+                "enum": ["GCP", "AWS", "AZURE"]
               }
             },
             "folder_URL": {
