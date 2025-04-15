@@ -81,6 +81,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
+          source .venv/bin/activate
           cd lynxkite-app/web
           npm run build
           npm run test
