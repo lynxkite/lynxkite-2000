@@ -26,6 +26,8 @@ import Atom from "~icons/tabler/atom.jsx";
 // @ts-ignore
 import Backspace from "~icons/tabler/backspace.jsx";
 // @ts-ignore
+import Restart from "~icons/tabler/rotate-clockwise.jsx";
+// @ts-ignore
 import Close from "~icons/tabler/x.jsx";
 import type { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
@@ -181,12 +183,16 @@ function LynxKiteFlow() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Show the node search dialog on "/".
-      if (event.key === "/" && !nodeSearchSettings && !isTypingInFormElement()) {
+      if (nodeSearchSettings || isTypingInFormElement()) return;
+      if (event.key === "/") {
         event.preventDefault();
         setNodeSearchSettings({
           pos: { x: 100, y: 100 },
           boxes: catalog.data![state.workspace.env!],
         });
+      } else if (event.key === "r") {
+        event.preventDefault();
+        executeWorkspace();
       }
     };
     // TODO: Switch to keydown once https://github.com/xyflow/xyflow/pull/5055 is merged.
@@ -318,6 +324,12 @@ function LynxKiteFlow() {
       setMessage("File upload failed.");
     }
   }
+  async function executeWorkspace() {
+    const response = await axios.post(`/api/execute_workspace?name=${path}`);
+    if (response.status !== 200) {
+      setMessage("Workspace execution failed.");
+    }
+  }
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -334,13 +346,16 @@ function LynxKiteFlow() {
           }}
         />
         <div className="tools text-secondary">
-          <a href="">
+          <button className="btn btn-link">
             <Atom />
-          </a>
-          <a href="">
+          </button>
+          <button className="btn btn-link">
             <Backspace />
-          </a>
-          <a href={`/dir/${parentDir}`}>
+          </button>
+          <button className="btn btn-link" onClick={executeWorkspace}>
+            <Restart />
+          </button>
+          <a className="btn btn-link" href={`/dir/${parentDir}`}>
             <Close />
           </a>
         </div>

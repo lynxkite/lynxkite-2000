@@ -421,7 +421,7 @@
           "type": "basic"
         },
         "params": {
-          "model_workspace": "Model definition.lynxkite.json",
+          "model_workspace": "Model definition",
           "save_as": "model"
         },
         "status": "done",
