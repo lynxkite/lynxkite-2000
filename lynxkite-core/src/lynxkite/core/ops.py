@@ -344,15 +344,15 @@ def load_user_scripts(workspace: str):
     assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     for p in path.parents:
         print("checking user scripts in", p)
-        for f in p.glob("*.py"):
-            try:
-                run_user_script(f)
-            except Exception:
-                traceback.print_exc()
         req = p / "requirements.txt"
         if req.exists():
             try:
                 install_requirements(req)
+            except Exception:
+                traceback.print_exc()
+        for f in p.glob("*.py"):
+            try:
+                run_user_script(f)
             except Exception:
                 traceback.print_exc()
         if p == cwd:
