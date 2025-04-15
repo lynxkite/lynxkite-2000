@@ -361,12 +361,10 @@ def load_user_scripts(workspace: str):
 
 def install_requirements(req: pathlib.Path):
     cmd = ["uv", "pip", "install", "-r", str(req)]
-    print(f"Running {' '.join(cmd)}")
     subprocess.check_call(cmd)
 
 
 def run_user_script(script_path: pathlib.Path):
-    print(f"Running {script_path}...")
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
