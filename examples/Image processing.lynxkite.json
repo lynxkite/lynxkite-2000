@@ -8,13 +8,6 @@
       "targetHandle": "image"
     },
     {
-      "id": "xy-edge__Open image 1output-Flip verically 1image",
-      "source": "Open image 1",
-      "sourceHandle": "output",
-      "target": "Flip verically 1",
-      "targetHandle": "image"
-    },
-    {
       "id": "xy-edge__To grayscale 1output-View image 2image",
       "source": "To grayscale 1",
       "sourceHandle": "output",
@@ -22,17 +15,24 @@
       "targetHandle": "image"
     },
     {
-      "id": "xy-edge__Flip verically 1output-Blur 1image",
-      "source": "Flip verically 1",
-      "sourceHandle": "output",
-      "target": "Blur 1",
-      "targetHandle": "image"
-    },
-    {
       "id": "xy-edge__Blur 1output-To grayscale 1image",
       "source": "Blur 1",
       "sourceHandle": "output",
       "target": "To grayscale 1",
+      "targetHandle": "image"
+    },
+    {
+      "id": "Open image 1 Flip vertically 1",
+      "source": "Open image 1",
+      "sourceHandle": "output",
+      "target": "Flip vertically 1",
+      "targetHandle": "image"
+    },
+    {
+      "id": "Flip vertically 1 Blur 1",
+      "source": "Flip vertically 1",
+      "sourceHandle": "output",
+      "target": "Blur 1",
       "targetHandle": "image"
     }
   ],
@@ -119,51 +119,6 @@
       },
       "type": "image",
       "width": 265.0
-    },
-    {
-      "data": {
-        "__execution_delay": null,
-        "collapsed": true,
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "image": {
-              "name": "image",
-              "position": "left",
-              "type": {
-                "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
-              }
-            }
-          },
-          "name": "Flip verically",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "params": {},
-          "type": "basic"
-        },
-        "params": {},
-        "status": "done",
-        "title": "Flip verically"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
-      "id": "Flip verically 1",
-      "parentId": null,
-      "position": {
-        "x": 228.3853393986406,
-        "y": 245.68255477059915
-      },
-      "type": "basic",
-      "width": 200.0
     },
     {
       "data": {
@@ -296,6 +251,50 @@
       "position": {
         "x": 505.15961556359304,
         "y": 539.8477981917164
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "image": {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
+              }
+            }
+          },
+          "name": "Flip vertically",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "Flip vertically"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Flip vertically 1",
+      "position": {
+        "x": 148.51544517498044,
+        "y": 288.98657171134255
       },
       "type": "basic",
       "width": 200.0
