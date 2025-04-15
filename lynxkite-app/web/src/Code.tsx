@@ -71,13 +71,13 @@ export default function Code() {
         </a>
         <div className="ws-name">{path}</div>
         <div className="tools text-secondary">
-          <a href="">
+          <button className="btn btn-link">
             <Atom />
-          </a>
-          <a href="">
+          </button>
+          <button className="btn btn-link">
             <Backspace />
-          </a>
-          <a href={`/dir/${parentDir}`}>
+          </button>
+          <a href={`/dir/${parentDir}`} className="btn btn-link">
             <Close />
           </a>
         </div>
