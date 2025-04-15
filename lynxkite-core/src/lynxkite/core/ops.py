@@ -180,6 +180,7 @@ class Op(BaseConfig):
                 "table_view",
                 "graph_creation_view",
                 "image",
+                "py3dmol",
             ]:
                 # If the operation is some kind of visualization, we use the output as the
                 # value to display by default.
