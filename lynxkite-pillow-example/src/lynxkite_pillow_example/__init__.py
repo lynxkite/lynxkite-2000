@@ -35,7 +35,7 @@ def flip_horizontally(image: Image):
     return image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
 
-@op("Flip verically")
+@op("Flip vertically")
 def flip_vertically(image: Image):
     return image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 

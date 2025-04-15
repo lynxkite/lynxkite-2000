@@ -36,8 +36,7 @@ def define_model(
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     assert model_workspace, "Model workspace is unset."
-    ws = load_ws(model_workspace)
-    # Build the model without inputs, to get its interface.
+    ws = load_ws(model_workspace + ".lynxkite.json")
     m = pytorch_core.build_model(ws)
     m.source_workspace = model_workspace
     bundle = bundle.copy()
@@ -134,11 +133,6 @@ def view_loss(bundle: core.Bundle):
         "series": [{"data": loss, "type": "line"}],
     }
     return v
-
-
-@op("Reduce dimensions")
-def reduce_dimensions(bundle: core.Bundle):
-    return
 
 
 VIRIDIS = [
