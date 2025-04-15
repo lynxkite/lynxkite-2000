@@ -24,6 +24,7 @@ jobs:
         run: |
           eval `ssh-agent -s`
           ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
+          uv venv
           uv pip install \
             -e lynxkite-core/[dev] \
             -e lynxkite-app/[dev] \
