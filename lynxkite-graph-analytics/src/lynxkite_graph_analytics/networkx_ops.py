@@ -152,11 +152,11 @@ def types_from_doc(doc: str) -> dict[str, type]:
 
 def wrapped(name: str, func):
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         for k, v in kwargs.items():
             if v == "None":
                 kwargs[k] = None
-        res = func(*args, **kwargs)
+        res = await ops.slow(func)(*args, **kwargs)
         # Figure out what the returned value is.
         if isinstance(res, nx.Graph):
             return res

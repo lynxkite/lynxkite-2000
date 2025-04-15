@@ -344,15 +344,15 @@ def load_user_scripts(workspace: str):
     assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     for p in path.parents:
         print("checking user scripts in", p)
-        for f in p.glob("*.py"):
-            try:
-                run_user_script(f)
-            except Exception:
-                traceback.print_exc()
         req = p / "requirements.txt"
         if req.exists():
             try:
                 install_requirements(req)
+            except Exception:
+                traceback.print_exc()
+        for f in p.glob("*.py"):
+            try:
+                run_user_script(f)
             except Exception:
                 traceback.print_exc()
         if p == cwd:
@@ -360,13 +360,11 @@ def load_user_scripts(workspace: str):
 
 
 def install_requirements(req: pathlib.Path):
-    cmd = ["uv", "pip", "install", "-r", str(req)]
-    print(f"Running {' '.join(cmd)}")
+    cmd = ["uv", "pip", "install", "-q", "-r", str(req)]
     subprocess.check_call(cmd)
 
 
 def run_user_script(script_path: pathlib.Path):
-    print(f"Running {script_path}...")
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

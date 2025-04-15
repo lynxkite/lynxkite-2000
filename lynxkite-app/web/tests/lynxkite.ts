@@ -144,8 +144,14 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
+  async execute() {
+    const request = this.page.waitForResponse(/api[/]execute_workspace/);
+    await this.page.keyboard.press("r");
+    await request;
+  }
+
   async expectErrorFree(executionWaitTime?) {
-    await expect(this.getBoxes().locator(".error").first()).not.toBeVisible();
+    await expect(this.getBoxes().locator("text=⚠️").first()).not.toBeVisible();
   }
 
   async close() {
