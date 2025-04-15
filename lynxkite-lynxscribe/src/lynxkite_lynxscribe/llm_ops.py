@@ -125,7 +125,7 @@ def create_prompt(input, *, save_as="prompt", template: ops.LongStr):
     return {**input, save_as: prompt}
 
 
-@op("Ask LLM")
+@op("Ask LLM", slow=True)
 def ask_llm(input, *, accepted_regex: str = None, max_tokens: int = 100):
     assert "prompt" in input, "Please create the prompt first."
     options = {}
