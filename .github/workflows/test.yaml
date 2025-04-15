@@ -8,6 +8,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      UV_SYSTEM_PYTHON: 1
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +27,7 @@ jobs:
           eval `ssh-agent -s`
           ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
           uv venv
+          . .venv/bin/activate
           uv pip install \
             -e lynxkite-core/[dev] \
             -e lynxkite-app/[dev] \
@@ -32,15 +35,11 @@ jobs:
             -e lynxkite-bio \
             -e lynxkite-lynxscribe/ \
             -e lynxkite-pillow-example/
-        env:
-            UV_SYSTEM_PYTHON: 1
 
       - name: Run pre-commits
         run: |
           uv pip install pre-commit
           pre-commit run --all-files
-        env:
-            UV_SYSTEM_PYTHON: 1
 
       - name: Run core tests
         run: |
@@ -66,8 +65,6 @@ jobs:
         run: |
           uv pip install mkdocs-material mkdocstrings[python]
           mkdocs build
-        env:
-            UV_SYSTEM_PYTHON: 1
 
       - uses: actions/setup-node@v4
         with:
@@ -81,7 +78,6 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          source .venv/bin/activate
           cd lynxkite-app/web
           npm run build
           npm run test

@@ -360,7 +360,7 @@ def load_user_scripts(workspace: str):
 
 
 def install_requirements(req: pathlib.Path):
-    cmd = ["uv", "pip", "install", "-r", str(req)]
+    cmd = ["uv", "pip", "install", "-q", "-r", str(req)]
     subprocess.check_call(cmd)
 
 
