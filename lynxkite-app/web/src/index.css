@@ -54,7 +54,7 @@ body {
       display: flex;
       align-items: center;
 
-      a {
+      .btn {
         color: oklch(75% 0.13 230);
         font-size: 1.5em;
         padding: 0 10px;

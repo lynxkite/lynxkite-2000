@@ -151,6 +151,14 @@ async def upload(req: fastapi.Request):
     return {"status": "ok"}
 
 
+@app.post("/api/execute_workspace")
+async def execute_workspace(name: str):
+    """Trigger and await the execution of a workspace."""
+    room = await crdt.ws_websocket_server.get_room(name)
+    ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
+    await crdt.execute(name, room.ws, ws_pyd)
+
+
 class SPAStaticFiles(StaticFiles):
     """Route everything to index.html. https://stackoverflow.com/a/73552966/3318517"""
 
