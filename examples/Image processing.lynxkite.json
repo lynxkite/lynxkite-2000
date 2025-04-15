@@ -1,103 +1,133 @@
 {
+  "edges": [
+    {
+      "id": "xy-edge__Open image 1output-View image 1image",
+      "source": "Open image 1",
+      "sourceHandle": "output",
+      "target": "View image 1",
+      "targetHandle": "image"
+    },
+    {
+      "id": "xy-edge__Open image 1output-Flip verically 1image",
+      "source": "Open image 1",
+      "sourceHandle": "output",
+      "target": "Flip verically 1",
+      "targetHandle": "image"
+    },
+    {
+      "id": "xy-edge__To grayscale 1output-View image 2image",
+      "source": "To grayscale 1",
+      "sourceHandle": "output",
+      "target": "View image 2",
+      "targetHandle": "image"
+    },
+    {
+      "id": "xy-edge__Flip verically 1output-Blur 1image",
+      "source": "Flip verically 1",
+      "sourceHandle": "output",
+      "target": "Blur 1",
+      "targetHandle": "image"
+    },
+    {
+      "id": "xy-edge__Blur 1output-To grayscale 1image",
+      "source": "Blur 1",
+      "sourceHandle": "output",
+      "target": "To grayscale 1",
+      "targetHandle": "image"
+    }
+  ],
   "env": "Pillow",
   "nodes": [
     {
-      "id": "Open image 1",
-      "type": "basic",
       "data": {
-        "title": "Open image",
-        "params": {
-          "filename": "https://media.licdn.com/dms/image/v2/C4E03AQEq4tdJKQiNHQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1657270040827?e=2147483647&v=beta&t=lDxix0_0-_K7NUFqgPdzxY5-P7f73bWpPS_XRre842c"
-        },
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
+          "inputs": {},
+          "name": "Open image",
           "outputs": {
             "output": {
               "name": "output",
+              "position": "right",
               "type": {
                 "type": "None"
-              },
-              "position": "right"
+              }
             }
           },
-          "name": "Open image",
-          "inputs": {},
           "params": {
             "filename": {
+              "default": null,
               "name": "filename",
               "type": {
                 "type": "<class 'str'>"
-              },
-              "default": null
+              }
             }
           },
           "type": "basic"
         },
-        "__execution_delay": 0.0,
-        "collapsed": null
+        "params": {
+          "filename": "https://media.licdn.com/dms/image/v2/C4E03AQEq4tdJKQiNHQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1657270040827?e=2147483647&v=beta&t=lDxix0_0-_K7NUFqgPdzxY5-P7f73bWpPS_XRre842c"
+        },
+        "status": "done",
+        "title": "Open image"
       },
+      "dragHandle": ".bg-primary",
+      "height": 222.0,
+      "id": "Open image 1",
+      "parentId": null,
       "position": {
         "x": -316.51795927908694,
         "y": 122.80901061526373
       },
-      "width": 422.0,
-      "parentId": null,
-      "height": 222.0
+      "type": "basic",
+      "width": 422.0
     },
     {
-      "id": "View image 1",
-      "type": "image",
       "data": {
-        "title": "View image",
-        "params": {},
         "display": "data:image/jpeg;base64,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",
         "error": null,
+        "input_metadata": null,
         "meta": {
-          "type": "image",
-          "outputs": {},
           "inputs": {
             "image": {
               "name": "image",
+              "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
-              },
-              "position": "left"
+              }
             }
           },
           "name": "View image",
-          "params": {}
-        }
+          "outputs": {},
+          "params": {},
+          "type": "image"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View image"
       },
+      "dragHandle": ".bg-primary",
+      "height": 288.0,
+      "id": "View image 1",
+      "parentId": null,
       "position": {
         "x": 371.2152385614552,
         "y": -243.68185336918702
       },
-      "parentId": null,
-      "width": 265.0,
-      "height": 288.0
+      "type": "image",
+      "width": 265.0
     },
     {
-      "id": "Flip verically 1",
-      "type": "basic",
       "data": {
-        "title": "Flip verically",
-        "params": {},
+        "__execution_delay": null,
+        "collapsed": true,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
-          "outputs": {
-            "output": {
-              "position": "right",
-              "name": "output",
-              "type": {
-                "type": "None"
-              }
-            }
-          },
-          "type": "basic",
-          "params": {},
-          "name": "Flip verically",
           "inputs": {
             "image": {
               "name": "image",
@@ -106,105 +136,142 @@
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          }
+          },
+          "name": "Flip verically",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
         },
-        "collapsed": true,
-        "__execution_delay": null
+        "params": {},
+        "status": "done",
+        "title": "Flip verically"
       },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Flip verically 1",
+      "parentId": null,
       "position": {
         "x": 228.3853393986406,
         "y": 245.68255477059915
       },
-      "width": 200.0,
-      "parentId": null,
-      "height": 200.0
+      "type": "basic",
+      "width": 200.0
     },
     {
-      "id": "View image 2",
-      "type": "image",
       "data": {
-        "title": "View image",
-        "params": {},
         "display": "data:image/jpeg;base64,UklGRoADAABXRUJQVlA4IHQDAAAwNQCdASrIAMgAPm0ukkYyMaGhrtt5UkANiWluu7AObIPJl9NfJmVCwA06FIbr8ZA3WaSJ7/dHH5er4u683qcKWcW7qn4VGE7XCnSEtZUZsarT1ox9y8J2EionbqsxfkAAIOk7JTtvXiLVAeVPQlEW3R4aJSLoxXCJTuGOqcp6fJ7+tzWWmOSq1IqFDN7536TfOvEoiw/K8AQcP06J13RTpwyFow3MFoK9BWZDv0mPqMmHjuC7Hb5MkHc6QnQihSek5PyYdUN4+yG0NpM3NK0+lOSMpu5jaeY5YrFUKke5nLaJ0Mu/3it1akkzebF4fRj8xdIkJDrC4xD4RcyC8aQ1zI4MjffvaCX8X0jbNJ5n5xzGOOU9kFhpry6Uy30xVtGdrEYwbGflOPdNp1u0tiKemkGylZmdj/9rbvWo0IYnCFLs1tAQ1fpkGVQYVo4FA68IbkKvB2KNxrQ17ySt96mzi6ODrNuVzsgisAS/q2ILoOlZL2nfdCNWb523fz7hEM319hb+aWTmo2zExKfWXzUZRGWy09rt8rQZXW5qBKTs5vsYabOjubwNNfFoX7dv32XwAAD++LH6dpCJbVSQouNoBCx0XMzcYw+6o+G//GpIy1eD9A/1cvAp/zhr1mDURDqx2xBgY79tNgsjX9AArhyCNX/BRq/st/uDXRqUv7Wx+Pl/40TsVhng3/XrKZXhDYKnD2aAAyOHG8yS8FTlr5aM6Nh//ra74YvdX+3/j/RLZDm6wRAbHmTF1ZWhK3HdcgOeU+RMXPeCEL8zqEcm3nMeTpuJhH7GTnjejYZx6OrdHAWBghyiaVrgH9f2nXLm1VZ4AgOokXq16NNjRz3FgLYzr7qd94Y2TRJW/cGAcaH5CN5+iXZy4LY2JaCo5I4//pJ/TthQ8SBbQdOIDZPayUXSmAo7cTuD/rk97N3QBGdx5oIzTeSYL8FZfiH/nJLQARX7PafEYZBW9a/ZMjDSPg9GFTPL4BL42F32uL8ZcYLrpkRGRW6jbjmj7GuGSwV5+YuKOhEAf2ZVwU55UjaxRygygrjlYc8FoCe+HyL6rJ5V3jfZvZy1Nw3CdfX4CWQ5/gUjrgONEGb7g2SL/nS9dGgl2gAHKKCzEneCdL38wwsnQYPGdrerT/4uEWM1T24cHLkgBmT+zH6YiwG7DkqEmAbjF4AAAA==",
         "error": null,
+        "input_metadata": null,
         "meta": {
-          "outputs": {},
           "inputs": {
             "image": {
+              "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
-              },
-              "name": "image"
+              }
             }
           },
           "name": "View image",
+          "outputs": {},
           "params": {},
           "type": "image"
-        }
+        },
+        "params": {},
+        "status": "done",
+        "title": "View image"
       },
+      "dragHandle": ".bg-primary",
+      "height": 456.0,
+      "id": "View image 2",
+      "parentId": null,
       "position": {
-        "x": 1027.1387925400982,
-        "y": 251.36630333493974
+        "x": 1068.1904563045216,
+        "y": 313.7040149772122
       },
-      "width": 222.0,
-      "height": 291.0,
-      "parentId": null
+      "type": "image",
+      "width": 398.0
     },
     {
-      "id": "To grayscale 1",
-      "type": "basic",
       "data": {
-        "title": "To grayscale",
-        "params": {},
+        "__execution_delay": null,
+        "collapsed": true,
         "display": null,
         "error": null,
-        "collapsed": true,
-        "__execution_delay": null,
+        "input_metadata": null,
         "meta": {
-          "type": "basic",
-          "params": {},
-          "outputs": {
-            "output": {
-              "type": {
-                "type": "None"
-              },
-              "position": "right",
-              "name": "output"
-            }
-          },
-          "name": "To grayscale",
           "inputs": {
             "image": {
+              "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
-              },
-              "name": "image"
+              }
             }
-          }
-        }
+          },
+          "name": "To grayscale",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "To grayscale"
       },
-      "position": {
-        "x": 826.1911193192234,
-        "y": 579.1542134884979
-      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "To grayscale 1",
       "parentId": null,
-      "width": 200.0,
-      "height": 200.0
+      "position": {
+        "x": 788.18031953735,
+        "y": 541.1434137066244
+      },
+      "type": "basic",
+      "width": 200.0
     },
     {
-      "id": "Blur 1",
-      "type": "basic",
       "data": {
-        "title": "Blur",
-        "params": {
-          "radius": "5"
-        },
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "input_metadata": null,
         "meta": {
-          "type": "basic",
+          "inputs": {
+            "image": {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
+              }
+            }
+          },
+          "name": "Blur",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
           "params": {
             "radius": {
               "default": 5.0,
@@ -214,71 +281,24 @@
               }
             }
           },
-          "inputs": {
-            "image": {
-              "name": "image",
-              "type": {
-                "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
-              },
-              "position": "left"
-            }
-          },
-          "name": "Blur",
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          }
-        }
+          "type": "basic"
+        },
+        "params": {
+          "radius": "5"
+        },
+        "status": "done",
+        "title": "Blur"
       },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Blur 1",
+      "parentId": null,
       "position": {
         "x": 505.15961556359304,
         "y": 539.8477981917164
       },
-      "parentId": null,
-      "height": 200.0,
+      "type": "basic",
       "width": 200.0
-    }
-  ],
-  "edges": [
-    {
-      "id": "xy-edge__Open image 1output-View image 1image",
-      "source": "Open image 1",
-      "target": "View image 1",
-      "sourceHandle": "output",
-      "targetHandle": "image"
-    },
-    {
-      "id": "xy-edge__Open image 1output-Flip verically 1image",
-      "source": "Open image 1",
-      "target": "Flip verically 1",
-      "sourceHandle": "output",
-      "targetHandle": "image"
-    },
-    {
-      "id": "xy-edge__To grayscale 1output-View image 2image",
-      "source": "To grayscale 1",
-      "target": "View image 2",
-      "sourceHandle": "output",
-      "targetHandle": "image"
-    },
-    {
-      "id": "xy-edge__Flip verically 1output-Blur 1image",
-      "source": "Flip verically 1",
-      "target": "Blur 1",
-      "sourceHandle": "output",
-      "targetHandle": "image"
-    },
-    {
-      "id": "xy-edge__Blur 1output-To grayscale 1image",
-      "source": "Blur 1",
-      "target": "To grayscale 1",
-      "sourceHandle": "output",
-      "targetHandle": "image"
     }
   ]
 }
