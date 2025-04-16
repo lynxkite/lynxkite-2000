@@ -115,7 +115,7 @@ async def query_openfold2(
     return bundle
 
 
-@op("View molecule", view="py3dmol")
+@op("View molecule", view="molecule")
 def view_molecule(
     bundle: Bundle,
     *,
