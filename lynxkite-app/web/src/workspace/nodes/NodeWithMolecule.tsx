@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, type CSSProperties } from "react";
 import NodeWithParams from "./NodeWithParams";
 const $3Dmol = await import("3dmol");
 
-const NodeWithPy3Dmol = (props: any) => {
+const NodeWithMolecule = (props: any) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const viewerRef = React.useRef<any>(null);
 
@@ -47,8 +47,13 @@ const NodeWithPy3Dmol = (props: any) => {
     };
   }, [props.data?.display?.value]);
 
-  const nodeStyle = { display: "flex", flexDirection: "column", height: "100%" };
-  const vizStyle = {
+  const nodeStyle: CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  };
+
+  const vizStyle: CSSProperties = {
     flex: 1,
     minHeight: "300px",
     border: "1px solid #ddd",
@@ -64,4 +69,4 @@ const NodeWithPy3Dmol = (props: any) => {
   );
 };
 
-export default NodeWithPy3Dmol;
+export default NodeWithMolecule;
