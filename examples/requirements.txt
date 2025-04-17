@@ -1,2 +1,3 @@
 # Example of a requirements.txt file. LynxKite will automatically install anything you put here.
 faker
+matplotlib
