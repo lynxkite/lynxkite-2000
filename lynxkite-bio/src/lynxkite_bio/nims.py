@@ -1,107 +1,143 @@
 """Wrappers for BioNeMo NIMs."""
 
-from enum import Enum
 from lynxkite_graph_analytics import Bundle
 from lynxkite.core import ops
 import joblib
+import httpx
+import pandas as pd
 import os
 
-NIM_URLS = os.environ.get("NIM_URLS", "http://localhost:8000").split(",")
 
 mem = joblib.Memory(".joblib-cache")
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
 
-
-class MSASearchTypes(Enum):
-    ALPHAFOLD2 = "ALPHAFOLD2"
-    ESM2 = "ESM2"
+key = os.getenv("NVCF_RUN_KEY")
 
 
-class AlignmentFormats(Enum):
-    FASTA = "fasta"
-    A3M = "a3m"
-    STOCKHOLM = "stockholm"
-    CLUSTAL = "clustal"
-    PDB = "pdb"
-    PIR = "pir"
-    MSF = "msf"
-    TSV = "tsv"
+async def query_bionemo_nim(
+    url: str,
+    payload: dict,
+):
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "NVCF-POLL-SECONDS": "500",
+        "Content-Type": "application/json",
+    }
+    try:
+        print(f"Sending request to {url}")
+        async with httpx.AsyncClient(timeout=600) as client:
+            response = await client.post(url, json=payload, headers=headers)
+        print(f"Received response from {url}", response.status_code)
+        response.raise_for_status()
+        return response.json()
+    except httpx.RequestError as e:
+        raise ValueError(f"Query failed: {e}")
 
 
 @op("MSA-search")
 @mem.cache
-def msa_search(
+async def msa_search(
     bundle: Bundle,
     *,
     protein_table: str,
     protein_column: str,
     e_value: float = 0.0001,
     iterations: int = 1,
-    search_type: MSASearchTypes = MSASearchTypes.ALPHAFOLD2,
-    output_alignment_formats: list[AlignmentFormats] = [
-        AlignmentFormats.FASTA,
-        AlignmentFormats.A3M,
-    ],
-    databases: str = '["Uniref30_2302", "colabfold_envdb_202108", "PDB70_220313"]',
+    search_type: str = "alphafold2",
+    output_alignment_formats: str = "a3m",
+    databases: str = "Uniref30_2302,colabfold_envdb_202108",
 ):
     bundle = bundle.copy()
+    bundle.dfs[protein_table]["alignments"] = None
+
+    formats = [format.strip() for format in output_alignment_formats.split(",")]
+    dbs = [db.strip() for db in databases.split(",")]
+
+    for idx, protein_sequence in enumerate(bundle.dfs[protein_table][protein_column]):
+        print(f"Processing protein {idx + 1}/{len(bundle.dfs[protein_table])}")
+
+        response = await query_bionemo_nim(
+            url="https://health.api.nvidia.com/v1/biology/colabfold/msa-search/predict",
+            payload={
+                "sequence": protein_sequence,
+                "e_value": e_value,
+                "iterations": iterations,
+                "search_type": search_type,
+                "output_alignment_formats": formats,
+                "databases": dbs,
+            },
+        )
+
+        bundle.dfs[protein_table].at[idx, "alignments"] = response["alignments"]
+
     return bundle
 
 
 @op("Query OpenFold2")
 @mem.cache
-def query_openfold2(
+async def query_openfold2(
     bundle: Bundle,
     *,
     protein_table: str,
     protein_column: str,
     alignment_table: str,
     alignment_column: str,
-    use_templates: bool = False,
-    relaxed_prediction: bool = False,
-    databases: str = '["Uniref30_2302", "colabfold_envdb_202108", "PDB70_220313"]',
+    selected_models: str = "1,2",
+    relax_prediction: bool = False,
 ):
     bundle = bundle.copy()
+
+    bundle.dfs[protein_table]["folded_protein"] = None
+    selected_models_list = [int(model) for model in selected_models.split(",")]
+
+    for idx in range(len(bundle.dfs[protein_table])):
+        print(f"Processing protein {idx + 1}/{len(bundle.dfs[protein_table])}")
+
+        protein = bundle.dfs[protein_table][protein_column].iloc[idx]
+        alignments = bundle.dfs[alignment_table][alignment_column].iloc[idx]
+
+        response = await query_bionemo_nim(
+            url="https://health.api.nvidia.com/v1/biology/openfold/openfold2/predict-structure-from-msa-and-template",
+            payload={
+                "sequence": protein,
+                "alignments": alignments,
+                "selected_models": selected_models_list,
+                "relax_prediction": relax_prediction,
+            },
+        )
+
+        folded_protein = response["structures_in_ranked_order"].pop(0)["structure"]
+        bundle.dfs[protein_table].at[idx, "folded_protein"] = folded_protein
+
+    bundle.dfs["openfold"] = pd.DataFrame()
+
     return bundle
 
 
-@op("View molecules", view="visualization")
-def view_molecules(
+@op("View molecule", view="molecule")
+def view_molecule(
     bundle: Bundle,
     *,
     molecule_table: str,
     molecule_column: str,
-    color="spectrum",
+    row_index: int = 0,
 ):
+    molecule_data = bundle.dfs[molecule_table][molecule_column].iloc[row_index]
+
     return {
-        "series": [
-            {
-                "type": "pie",
-                "radius": ["40%", "70%"],
-                "itemStyle": {
-                    "borderRadius": 10,
-                    "borderColor": "#fff",
-                    "borderWidth": 2,
-                },
-                "data": [
-                    {"value": 2, "name": "Hydrogen"},
-                    {"value": 1, "name": "Sulfur"},
-                    {"value": 4, "name": "Oxygen"},
-                ],
-            }
-        ]
+        "data": molecule_data,
+        "format": "pdb"
+        if molecule_data.startswith("ATOM")
+        else "sdf"
+        if molecule_data.startswith("CTfile")
+        else "smiles",
     }
-
-
-@op("Known drug")
-def known_drug(*, drug_name: str):
-    return Bundle()
 
 
 @op("Query GenMol")
 @mem.cache
-def query_genmol(
+async def query_genmol(
     bundle: Bundle,
     *,
     molecule_table: str,
@@ -113,12 +149,26 @@ def query_genmol(
     scoring: str = "QED",
 ):
     bundle = bundle.copy()
+
+    response = await query_bionemo_nim(
+        url="https://health.api.nvidia.com/v1/biology/nvidia/genmol/generate",
+        payload={
+            "smiles": bundle.dfs[molecule_table][molecule_column].iloc[0],
+            "num_molecules": num_molecules,
+            "temperature": temperature,
+            "noise": noise,
+            "step_size": step_size,
+            "scoring": scoring,
+        },
+    )
+    generated_ligands = "\n".join([v["smiles"] for v in response["molecules"]])
+    bundle.dfs[molecule_table]["ligands"] = generated_ligands
     return bundle
 
 
 @op("Query DiffDock")
 @mem.cache
-def query_diffdock(
+async def query_diffdock(
     proteins: Bundle,
     ligands: Bundle,
     *,
@@ -126,8 +176,29 @@ def query_diffdock(
     protein_column: str,
     ligand_table: str,
     ligand_column: str,
+    ligand_file_type: str = "txt",
     num_poses=10,
     time_divisions=20,
     num_steps=18,
 ):
-    return proteins
+    response = await query_bionemo_nim(
+        url="https://health.api.nvidia.com/v1/biology/mit/diffdock",
+        payload={
+            "protein": proteins.dfs[protein_table][protein_column].iloc[0],
+            "ligand": ligands.dfs[ligand_table][ligand_column].iloc[0],
+            "ligand_file_type": ligand_file_type,
+            "num_poses": num_poses,
+            "time_divisions": time_divisions,
+            "num_steps": num_steps,
+        },
+    )
+    bundle = Bundle()
+    bundle.dfs["diffdock_table"] = pd.DataFrame()
+    bundle.dfs["diffdock_table"]["protein"] = [response["protein"]] * len(response["status"])
+    bundle.dfs["diffdock_table"]["ligand"] = [response["ligand"]] * len(response["status"])
+    bundle.dfs["diffdock_table"]["trajectory"] = response["trajectory"]
+    bundle.dfs["diffdock_table"]["ligand_positions"] = response["ligand_positions"]
+    bundle.dfs["diffdock_table"]["position_confidence"] = response["position_confidence"]
+    bundle.dfs["diffdock_table"]["status"] = response["status"]
+
+    return bundle
