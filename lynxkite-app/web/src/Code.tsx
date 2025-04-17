@@ -3,7 +3,7 @@
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 // @ts-ignore
@@ -22,9 +22,12 @@ export default function Code() {
   const wsProviderRef = useRef<any>();
   const monacoBindingRef = useRef<any>();
   const yMonacoRef = useRef<any>();
+  const yMonacoLoadingRef = useRef(false);
   const editorRef = useRef<any>();
   useEffect(() => {
     const loadMonaco = async () => {
+      if (yMonacoLoadingRef.current) return;
+      yMonacoLoadingRef.current = true;
       // y-monaco is gigantic. The other Monaco packages are small.
       yMonacoRef.current = await import("y-monaco");
       initCRDT();
@@ -34,7 +37,9 @@ export default function Code() {
   function beforeMount(monaco: Monaco) {
     monaco.editor.defineTheme("lynxkite", theme);
   }
-  function onMount(_editor: editor.IStandaloneCodeEditor) {
+  function onMount(_editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
+    // Do nothing on Ctrl+S. We save after every keypress anyway.
+    _editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {});
     editorRef.current = _editor;
     initCRDT();
   }
@@ -66,9 +71,9 @@ export default function Code() {
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
-        <a className="logo" href="">
+        <Link className="logo" to="">
           <img alt="" src={favicon} />
-        </a>
+        </Link>
         <div className="ws-name">{path}</div>
         <div className="tools text-secondary">
           <button className="btn btn-link">
@@ -77,9 +82,9 @@ export default function Code() {
           <button className="btn btn-link">
             <Backspace />
           </button>
-          <a href={`/dir/${parentDir}`} className="btn btn-link">
+          <Link to={`/dir/${parentDir}`} className="btn btn-link">
             <Close />
-          </a>
+          </Link>
         </div>
       </div>
       <Editor
