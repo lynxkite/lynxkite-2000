@@ -222,13 +222,17 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
             _outputs = {name: Output(name=name, type=None) for name in outputs}
         else:
             _outputs = {"output": Output(name="output", type=None)} if view == "basic" else {}
+        _view = view
+        if view == "matplotlib":
+            _view = "image"
+            func = matplotlib_to_image(func)
         op = Op(
             func=func,
             name=name,
             params=_params,
             inputs=inputs,
             outputs=_outputs,
-            type=view,
+            type=_view,
         )
         CATALOGS.setdefault(env, {})
         CATALOGS[env][name] = op
@@ -236,6 +240,24 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
         return func
 
     return decorator
+
+
+def matplotlib_to_image(func):
+    import matplotlib.pyplot as plt
+    import base64
+    import io
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        func(*args, **kwargs)
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png")
+        plt.close()
+        buf.seek(0)
+        image_base64 = base64.b64encode(buf.read()).decode("utf-8")
+        return f"data:image/png;base64,{image_base64}"
+
+    return wrapper
 
 
 def input_position(**kwargs):
