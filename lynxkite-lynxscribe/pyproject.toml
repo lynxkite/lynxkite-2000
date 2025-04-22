@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "lynxkite-core",
-    "lynxscribe[openai] @ git+ssh://git@github.com/biggraph/lynxscribe@main",
+    "lynxscribe[openai,faiss-cpu,litellm,google] @ git+ssh://git@github.com/biggraph/lynxscribe@main",
 ]
 
 [tool.uv.sources]
