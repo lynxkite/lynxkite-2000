@@ -1,7 +1,7 @@
 """Demo for how easily we can provide a UI for popular open-source tools."""
 
 from lynxkite.core import ops
-from lynxkite.core.executors import one_by_one
+from lynxkite.core.executors import simple
 from PIL import Image, ImageFilter
 import base64
 import fsspec
@@ -9,7 +9,7 @@ import io
 
 ENV = "Pillow"
 op = ops.op_registration(ENV)
-one_by_one.register(ENV, cache=False)
+simple.register(ENV)
 
 
 @op("Open image")
