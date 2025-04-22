@@ -99,7 +99,7 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
             pass
         if len(text) == 0:
             if os.path.exists(name):
-                with open(name) as f:
+                with open(name, encoding="utf-8") as f:
                     text += f.read()
         room = pycrdt_websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
@@ -279,9 +279,9 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
 
 
 async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
-    # TODO: Make this more fancy?
-    with open(name, "w") as f:
-        f.write(str(text).strip() + "\n")
+    text = text.strip() + "\n"
+    with open(name, "w", encoding="utf-8") as f:
+        f.write(text)
 
 
 @contextlib.asynccontextmanager
