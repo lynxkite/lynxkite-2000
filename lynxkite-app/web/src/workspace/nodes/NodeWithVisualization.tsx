@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import NodeWithParams from "./NodeWithParams";
+import LynxKiteNode from "./LynxKiteNode";
+import { NodeWithParams } from "./NodeWithParams";
 const echarts = await import("echarts");
 
-const NodeWithVisualization = (props: any) => {
+function NodeWithVisualization(props: any) {
   const chartsRef = React.useRef<HTMLDivElement>(null);
   const chartsInstanceRef = React.useRef<echarts.ECharts>();
   useEffect(() => {
@@ -38,6 +39,6 @@ const NodeWithVisualization = (props: any) => {
       <div style={vizStyle} ref={chartsRef} />
     </NodeWithParams>
   );
-};
+}
 
-export default NodeWithVisualization;
+export default LynxKiteNode(NodeWithVisualization);

@@ -1,5 +1,6 @@
 import React, { useEffect, type CSSProperties } from "react";
-import NodeWithParams from "./NodeWithParams";
+import LynxKiteNode from "./LynxKiteNode";
+import { NodeWithParams } from "./NodeWithParams";
 
 const NodeWithMolecule = (props: any) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -70,4 +71,4 @@ const NodeWithMolecule = (props: any) => {
   );
 };
 
-export default NodeWithMolecule;
+export default LynxKiteNode(NodeWithMolecule);
