@@ -1,0 +1,345 @@
+{
+  "edges": [
+    {
+      "id": "LynxScribe Task Solver 1 View DataFrame 1",
+      "source": "LynxScribe Task Solver 1",
+      "sourceHandle": "output",
+      "target": "View DataFrame 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Read Excel 1 LynxScribe Task Solver 1",
+      "source": "Read Excel 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "dataframe"
+    },
+    {
+      "id": "LynxScribe Message 3 LynxScribe Task Solver 1",
+      "source": "LynxScribe Message 3",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "system_prompt"
+    },
+    {
+      "id": "LynxScribe Message 1 LynxScribe Task Solver 1",
+      "source": "LynxScribe Message 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "instruction_prompt"
+    }
+  ],
+  "env": "LynxScribe",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "dataframe": {
+              "name": "dataframe",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "instruction_prompt": {
+              "name": "instruction_prompt",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "system_prompt": {
+              "name": "system_prompt",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Task Solver",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "llm_interface": {
+              "default": "openai",
+              "name": "llm_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_model_name": {
+              "default": "gpt-4o",
+              "name": "llm_model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "new_column_names": {
+              "default": "processed_field",
+              "name": "new_column_names",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "llm_interface": "openai",
+          "llm_model_name": "gpt-4o",
+          "new_column_names": "zip_code, country, state_or_county, city, district, street_name, house_number, floor, flat_number, additional_info"
+        },
+        "status": "done",
+        "title": "LynxScribe Task Solver"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 292.0,
+      "id": "LynxScribe Task Solver 1",
+      "position": {
+        "x": 576.0,
+        "y": 209.0
+      },
+      "type": "basic",
+      "width": 432.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View DataFrame",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 2162.0,
+            "y": 266.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View DataFrame"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 309.0,
+      "id": "View DataFrame 1",
+      "position": {
+        "x": 1350.0,
+        "y": 210.0
+      },
+      "type": "table_view",
+      "width": 662.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Read Excel",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "columns": {
+              "default": "",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "file_path": {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "sheet_name": {
+              "default": "Sheet1",
+              "name": "sheet_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 429.0,
+            "y": 234.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "columns": "",
+          "file_path": "uploads/task_solver_examples.xlsx",
+          "sheet_name": "address_example"
+        },
+        "status": "done",
+        "title": "Read Excel"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 296.0,
+      "id": "Read Excel 1",
+      "position": {
+        "x": 11.0,
+        "y": 207.0
+      },
+      "type": "basic",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "LynxScribe Message",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "prompt_content": {
+              "default": null,
+              "name": "prompt_content",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            "prompt_role": {
+              "default": null,
+              "name": "prompt_role",
+              "type": {
+                "enum": [
+                  "SYSTEM",
+                  "USER"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 653.0,
+            "y": 954.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "prompt_content": "You are an AI assistant designed to clean and extract structured address information from raw text.\nYour goal is to identify and extract relevant address components while ignoring any unrelated information.\nThe output must be formatted as a structured dictionary.\n\nYour task is to parse an address from raw text and return a dictionary with the following keys:\n - zip_code: The postal or ZIP code.\n - country: The country name.\n - state_or_county: The state, province, or county (if applicable).\n - city: The city or town name.\n - district: The district or borough name (if mentioned).\n - street_type: The type of public space (e.g., street, avenue, boulevard, square).\n - street_name: The name of the public space (e.g., Main, Baker, Champs-\u00c9lys\u00e9es).\n - house_number: The house or building number.\n - floor: The floor number (if mentioned).\n - flat_number: The apartment or unit number (if mentioned).\n - additional_info: Any other useful details, such as building names, or known landmarks.\n\nIf any information is missing from the input, leave the corresponding key as an empty string.\n\nYou must return only a python dictionary with the following keys:\n`zip_code`, `country`, `state_or_county`, `city`, `district`, `street_name`, \n`house_number`, `floor`, `flat_number`, `additional_info`.\n\nDo not include any extra text, comments, or explanations\u2014only return the dictionary.",
+          "prompt_role": null
+        },
+        "status": "done",
+        "title": "LynxScribe Message"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 354.0,
+      "id": "LynxScribe Message 3",
+      "position": {
+        "x": 36.0,
+        "y": 561.0
+      },
+      "type": "basic",
+      "width": 740.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "LynxScribe Message",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "prompt_content": {
+              "default": null,
+              "name": "prompt_content",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            "prompt_role": {
+              "default": null,
+              "name": "prompt_role",
+              "type": {
+                "enum": [
+                  "SYSTEM",
+                  "USER"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 1498.0,
+            "y": 660.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "prompt_content": "Extract structured address information from the following text: {message_parts}",
+          "prompt_role": "USER"
+        },
+        "status": "done",
+        "title": "LynxScribe Message"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 347.0,
+      "id": "LynxScribe Message 1",
+      "position": {
+        "x": 817.0,
+        "y": 566.0
+      },
+      "type": "basic",
+      "width": 498.0
+    }
+  ]
+}
