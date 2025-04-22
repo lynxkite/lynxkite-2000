@@ -1,0 +1,605 @@
+{
+  "edges": [
+    {
+      "id": "LynxScribe FAQ to RAG 1 LynxScribe RAG Graph Chatbot Builder 1",
+      "source": "LynxScribe FAQ to RAG 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe RAG Graph Chatbot Builder 1",
+      "targetHandle": "rag_graph"
+    },
+    {
+      "id": "LynxScribe RAG Graph Chatbot Builder 1 LynxScribe RAG Graph Chatbot Backend 1",
+      "source": "LynxScribe RAG Graph Chatbot Builder 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe RAG Graph Chatbot Backend 1",
+      "targetHandle": "knowledge_base"
+    },
+    {
+      "id": "Chat processor 1 LynxScribe RAG Graph Chatbot Backend 1",
+      "source": "Chat processor 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe RAG Graph Chatbot Backend 1",
+      "targetHandle": "chat_processor"
+    },
+    {
+      "id": "Truncate history 1 Chat processor 1",
+      "source": "Truncate history 1",
+      "sourceHandle": "output",
+      "target": "Chat processor 1",
+      "targetHandle": "processor"
+    },
+    {
+      "id": "LynxScribe RAG Graph Chatbot Backend 1 Test Chat API 1",
+      "source": "LynxScribe RAG Graph Chatbot Backend 1",
+      "sourceHandle": "output",
+      "target": "Test Chat API 1",
+      "targetHandle": "chat_api"
+    },
+    {
+      "id": "Input chat 1 Test Chat API 1",
+      "source": "Input chat 1",
+      "sourceHandle": "output",
+      "target": "Test Chat API 1",
+      "targetHandle": "message"
+    },
+    {
+      "id": "Test Chat API 1 View 1",
+      "source": "Test Chat API 1",
+      "sourceHandle": "output",
+      "target": "View 1",
+      "targetHandle": "input"
+    }
+  ],
+  "env": "LynxScribe",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "LynxScribe FAQ to RAG",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "faq_excel_path": {
+              "default": "uploads/organon_demo/organon_en_copy.xlsx",
+              "name": "faq_excel_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "scenario_cluster_distance_pct": {
+              "default": 30.0,
+              "name": "scenario_cluster_distance_pct",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            "text_embedder_interface": {
+              "default": "openai",
+              "name": "text_embedder_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "text_embedder_model_name_or_path": {
+              "default": "text-embedding-3-large",
+              "name": "text_embedder_model_name_or_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "vdb_collection_name": {
+              "default": "lynx",
+              "name": "vdb_collection_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "vdb_num_dimensions": {
+              "default": 3072.0,
+              "name": "vdb_num_dimensions",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "vdb_provider_name": {
+              "default": "faiss",
+              "name": "vdb_provider_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "faq_excel_path": "uploads/organon_demo/organon_en_copy.xlsx",
+          "scenario_cluster_distance_pct": "30",
+          "text_embedder_interface": "openai",
+          "text_embedder_model_name_or_path": "text-embedding-3-large",
+          "vdb_collection_name": "lynx",
+          "vdb_num_dimensions": 3072.0,
+          "vdb_provider_name": "faiss"
+        },
+        "status": "done",
+        "title": "LynxScribe FAQ to RAG"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 620.0,
+      "id": "LynxScribe FAQ to RAG 1",
+      "position": {
+        "x": -1180.0,
+        "y": -76.0
+      },
+      "type": "basic",
+      "width": 415.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "rag_graph": {
+              "name": "rag_graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe RAG Graph Chatbot Builder",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "node_types": {
+              "default": "intent_cluster",
+              "name": "node_types",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "scenario_file": {
+              "default": "uploads/lynx_chatbot_scenario_selector.yaml",
+              "name": "scenario_file",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "scenario_meta_name": {
+              "default": "scenario_name",
+              "name": "scenario_meta_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1569.0,
+            "y": 528.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "node_types": "intent_cluster",
+          "scenario_file": "uploads/organon_demo/backend-scenarios-en.yaml",
+          "scenario_meta_name": "scenario_name"
+        },
+        "status": "done",
+        "title": "LynxScribe RAG Graph Chatbot Builder"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 296.0,
+      "id": "LynxScribe RAG Graph Chatbot Builder 1",
+      "position": {
+        "x": -591.0,
+        "y": 86.0
+      },
+      "type": "basic",
+      "width": 547.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "chat_processor": {
+              "name": "chat_processor",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "knowledge_base": {
+              "name": "knowledge_base",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe RAG Graph Chatbot Backend",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "llm_interface": {
+              "default": "openai",
+              "name": "llm_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_model_name": {
+              "default": "gpt-4o",
+              "name": "llm_model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "negative_answer": {
+              "default": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
+              "name": "negative_answer",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "retriever_limits_by_type": {
+              "default": "{}",
+              "name": "retriever_limits_by_type",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "retriever_max_iterations": {
+              "default": 3.0,
+              "name": "retriever_max_iterations",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "retriever_overall_chunk_limit": {
+              "default": 20.0,
+              "name": "retriever_overall_chunk_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "retriever_overall_token_limit": {
+              "default": 3000.0,
+              "name": "retriever_overall_token_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            "retriever_strict_limits": {
+              "default": true,
+              "name": "retriever_strict_limits",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1280.0,
+            "y": 450.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "llm_interface": "openai",
+          "llm_model_name": "gpt-4o",
+          "negative_answer": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
+          "retriever_limits_by_type": "{\"faq_question\": [0, 0], \"faq_answer\": [3, 3]}",
+          "retriever_max_iterations": "3",
+          "retriever_overall_chunk_limit": "3",
+          "retriever_overall_token_limit": "30000",
+          "retriever_strict_limits": true
+        },
+        "status": "done",
+        "title": "LynxScribe RAG Graph Chatbot Backend"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 382.0,
+      "id": "LynxScribe RAG Graph Chatbot Backend 1",
+      "position": {
+        "x": -427.131476508498,
+        "y": -465.1194966607713
+      },
+      "type": "basic",
+      "width": 791.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "processor": {
+              "name": "processor",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Chat processor",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {},
+          "position": {
+            "x": 1291.0,
+            "y": 718.0
+          },
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "Chat processor"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Chat processor 1",
+      "position": {
+        "x": 252.7291107206022,
+        "y": 81.86852349150202
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Truncate history",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "max_tokens": {
+              "default": 10000.0,
+              "name": "max_tokens",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1440.0,
+            "y": 936.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "max_tokens": 10000.0
+        },
+        "status": "done",
+        "title": "Truncate history"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Truncate history 1",
+      "position": {
+        "x": 253.59374153502728,
+        "y": 386.4661577036063
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Input chat",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "chat": {
+              "default": null,
+              "name": "chat",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 449.0,
+            "y": 172.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "chat": "I had headache after taking the pill"
+        },
+        "status": "done",
+        "title": "Input chat"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 204.0,
+      "id": "Input chat 1",
+      "position": {
+        "x": -1115.7774404622555,
+        "y": -747.1320865489535
+      },
+      "type": "basic",
+      "width": 552.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "chat_api": {
+              "name": "chat_api",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "message": {
+              "name": "message",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "Test Chat API",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "show_details": {
+              "default": false,
+              "name": "show_details",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          },
+          "position": {
+            "x": 937.0,
+            "y": 213.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "show_details": false
+        },
+        "status": "done",
+        "title": "Test Chat API"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Test Chat API 1",
+      "position": {
+        "x": -131.54900620226195,
+        "y": -745.4660726292032
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "answer"
+              ],
+              "data": [
+                [
+                  "I'm not equipped to handle adverse events or other product-related queries. Your safety is important to us, and we want to ensure you receive the appropriate support. Please report any adverse events or concerns to our dedicated support team. They can be reached at dpoc.vietnam@organon.com. If you have any questions related to contraceptives or women's health, please feel free to ask, and I'll provide you with the information you need.\n"
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1547.0,
+            "y": 222.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 483.0,
+      "id": "View 1",
+      "position": {
+        "x": 540.6544350347407,
+        "y": -886.065865503576
+      },
+      "type": "table_view",
+      "width": 707.0
+    }
+  ]
+}
