@@ -1,20 +1,6 @@
 {
   "edges": [
     {
-      "id": "LynxScribe Task Solver 1 View DataFrame 1",
-      "source": "LynxScribe Task Solver 1",
-      "sourceHandle": "output",
-      "target": "View DataFrame 1",
-      "targetHandle": "input"
-    },
-    {
-      "id": "Read Excel 1 LynxScribe Task Solver 1",
-      "source": "Read Excel 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Task Solver 1",
-      "targetHandle": "dataframe"
-    },
-    {
       "id": "LynxScribe Message 3 LynxScribe Task Solver 1",
       "source": "LynxScribe Message 3",
       "sourceHandle": "output",
@@ -27,6 +13,27 @@
       "sourceHandle": "output",
       "target": "LynxScribe Task Solver 1",
       "targetHandle": "instruction_prompt"
+    },
+    {
+      "id": "Read Excel 1 LynxScribe Task Solver 1",
+      "source": "Read Excel 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "df"
+    },
+    {
+      "id": "Read Excel 1 View DataFrame 3",
+      "source": "Read Excel 1",
+      "sourceHandle": "output",
+      "target": "View DataFrame 3",
+      "targetHandle": "input"
+    },
+    {
+      "id": "LynxScribe Task Solver 1 View DataFrame 1",
+      "source": "LynxScribe Task Solver 1",
+      "sourceHandle": "output",
+      "target": "View DataFrame 1",
+      "targetHandle": "input"
     }
   ],
   "env": "LynxScribe",
@@ -36,12 +43,12 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "error": null,
+        "error": "'dict' object has no attribute 'columns'",
         "input_metadata": null,
         "meta": {
           "inputs": {
-            "dataframe": {
-              "name": "dataframe",
+            "df": {
+              "name": "df",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
@@ -106,52 +113,14 @@
         "title": "LynxScribe Task Solver"
       },
       "dragHandle": ".bg-primary",
-      "height": 292.0,
+      "height": 338.0,
       "id": "LynxScribe Task Solver 1",
       "position": {
-        "x": 576.0,
-        "y": 209.0
+        "x": 552.5716888887608,
+        "y": 116.75102499949588
       },
       "type": "basic",
-      "width": 432.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "input": {
-              "name": "input",
-              "position": "left",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          },
-          "name": "View DataFrame",
-          "outputs": {},
-          "params": {},
-          "position": {
-            "x": 2162.0,
-            "y": 266.0
-          },
-          "type": "table_view"
-        },
-        "params": {},
-        "status": "done",
-        "title": "View DataFrame"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 309.0,
-      "id": "View DataFrame 1",
-      "position": {
-        "x": 1350.0,
-        "y": 210.0
-      },
-      "type": "table_view",
-      "width": 662.0
+      "width": 475.0
     },
     {
       "data": {
@@ -195,10 +164,6 @@
               }
             }
           },
-          "position": {
-            "x": 429.0,
-            "y": 234.0
-          },
           "type": "basic"
         },
         "params": {
@@ -213,8 +178,8 @@
       "height": 296.0,
       "id": "Read Excel 1",
       "position": {
-        "x": 11.0,
-        "y": 207.0
+        "x": -334.4711428397128,
+        "y": 205.45080205004612
       },
       "type": "basic",
       "width": 400.0
@@ -257,28 +222,24 @@
               }
             }
           },
-          "position": {
-            "x": 653.0,
-            "y": 954.0
-          },
           "type": "basic"
         },
         "params": {
           "prompt_content": "You are an AI assistant designed to clean and extract structured address information from raw text.\nYour goal is to identify and extract relevant address components while ignoring any unrelated information.\nThe output must be formatted as a structured dictionary.\n\nYour task is to parse an address from raw text and return a dictionary with the following keys:\n - zip_code: The postal or ZIP code.\n - country: The country name.\n - state_or_county: The state, province, or county (if applicable).\n - city: The city or town name.\n - district: The district or borough name (if mentioned).\n - street_type: The type of public space (e.g., street, avenue, boulevard, square).\n - street_name: The name of the public space (e.g., Main, Baker, Champs-\u00c9lys\u00e9es).\n - house_number: The house or building number.\n - floor: The floor number (if mentioned).\n - flat_number: The apartment or unit number (if mentioned).\n - additional_info: Any other useful details, such as building names, or known landmarks.\n\nIf any information is missing from the input, leave the corresponding key as an empty string.\n\nYou must return only a python dictionary with the following keys:\n`zip_code`, `country`, `state_or_county`, `city`, `district`, `street_name`, \n`house_number`, `floor`, `flat_number`, `additional_info`.\n\nDo not include any extra text, comments, or explanations\u2014only return the dictionary.",
-          "prompt_role": null
+          "prompt_role": "SYSTEM"
         },
         "status": "done",
         "title": "LynxScribe Message"
       },
       "dragHandle": ".bg-primary",
-      "height": 354.0,
+      "height": 571.0,
       "id": "LynxScribe Message 3",
       "position": {
-        "x": 36.0,
-        "y": 561.0
+        "x": 164.47629681808115,
+        "y": 558.211148839972
       },
       "type": "basic",
-      "width": 740.0
+      "width": 553.0
     },
     {
       "data": {
@@ -318,10 +279,6 @@
               }
             }
           },
-          "position": {
-            "x": 1498.0,
-            "y": 660.0
-          },
           "type": "basic"
         },
         "params": {
@@ -335,11 +292,118 @@
       "height": 347.0,
       "id": "LynxScribe Message 1",
       "position": {
-        "x": 817.0,
-        "y": 566.0
+        "x": 972.1851717027744,
+        "y": 595.0972196942703
       },
       "type": "basic",
       "width": 498.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "message_parts"
+              ],
+              "data": [
+                [
+                  "John's old apartment: 742 Evergreen Terrace, Springfield, IL 62704, USA. Call me at +1-555-1234 or email john.doe@email.com."
+                ],
+                [
+                  "Visit our office at 56B Baker Street, Marylebone, London W1U 8ED, UK. (Nearest Tube: Baker Street). Contact: office@company.com."
+                ],
+                [
+                  "New residence: 300, 5th Avenue, New York, NY 10001, USA. Floor 12, Apt 1204. My new phone is (212) 555-6789."
+                ],
+                [
+                  "We just moved to 23 rue de la Paix, 75002 Paris, France. Floor 3, Flat 5. Send mail to my old address instead."
+                ],
+                [
+                  "Warehouse location: 1024 Industrial Blvd, Houston, TX 77002, USA. Not open on weekends. Customer support: support@example.com."
+                ],
+                [
+                  "My grandma lives at 2F, 15-3 Shinjuku, Tokyo 160-0022, Japan. Don't use my old phone number anymore!"
+                ],
+                [
+                  "Delivery address: Apt 9, 88 Queen's Road Central, Central, Hong Kong. Landmark: Opposite IFC Mall."
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View DataFrame",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 509.0,
+            "y": 333.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View DataFrame"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View DataFrame 3",
+      "position": {
+        "x": 103.41814621957258,
+        "y": -51.67901479134021
+      },
+      "type": "table_view",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": "input is missing",
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View DataFrame",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1012.0,
+            "y": 194.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View DataFrame"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View DataFrame 1",
+      "position": {
+        "x": 1343.9738575285708,
+        "y": -27.16272859910062
+      },
+      "type": "table_view",
+      "width": 200.0
     }
   ]
 }

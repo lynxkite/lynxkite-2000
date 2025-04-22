@@ -832,25 +832,18 @@ def input_chat(*, chat: str):
     return {"text": chat}
 
 
+@ops.input_position(input="bottom")
 @op("View DataFrame", view="table_view")
-def view_df(input, *, _ctx: one_by_one.Context):
-    """
-    TODO: This part is not working
-    """
-    v = _ctx.last_result
-    if v:
-        columns = v["dataframes"]["df"]["columns"]
-        v["dataframes"]["df"]["data"].append([input[c] for c in columns])
-    else:
-        columns = [str(c) for c in input.keys() if not str(c).startswith("_")]
-        v = {
-            "dataframes": {
-                "df": {
-                    "columns": columns,
-                    "data": [[input[c] for c in columns]],
-                }
+def view_df(input):
+    df = pd.DataFrame(input)
+    v = {
+        "dataframes": {
+            "df": {
+                "columns": [str(c) for c in df.columns],
+                "data": df.values.tolist(),
             }
         }
+    }
     return v
 
 
