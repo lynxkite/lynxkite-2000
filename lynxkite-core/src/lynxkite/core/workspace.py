@@ -111,7 +111,9 @@ def save(ws: Workspace, path: str):
     if dirname:
         os.makedirs(dirname, exist_ok=True)
     # Create temp file in the same directory to make sure it's on the same filesystem.
-    with tempfile.NamedTemporaryFile("w", prefix=f".{basename}.", dir=dirname, delete=False) as f:
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", prefix=f".{basename}.", dir=dirname, delete=False
+    ) as f:
         temp_name = f.name
         f.write(j)
     os.replace(temp_name, path)
@@ -128,7 +130,7 @@ def load(path: str) -> Workspace:
     Returns:
         Workspace: The loaded workspace object, with updated metadata.
     """
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         j = f.read()
     ws = Workspace.model_validate_json(j)
     # Metadata is added after loading. This way code changes take effect on old boxes too.
