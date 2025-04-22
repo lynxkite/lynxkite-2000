@@ -8,7 +8,7 @@ import NodeParameter from "./NodeParameter";
 
 export type UpdateOptions = { delay?: number };
 
-function NodeWithParams(props: any) {
+export function NodeWithParams(props: any) {
   const reactFlow = useReactFlow();
   const metaParams = props.data.meta?.params;
   const [collapsed, setCollapsed] = React.useState(props.collapsed);
@@ -34,7 +34,7 @@ function NodeWithParams(props: any) {
   const params = props.data?.params ? Object.entries(props.data.params) : [];
 
   return (
-    <LynxKiteNode {...props}>
+    <>
       {props.collapsed && params.length > 0 && (
         <div className="params-expander" onClick={() => setCollapsed(!collapsed)}>
           <Triangle className={`flippy ${collapsed ? "flippy-90" : ""}`} />
@@ -65,8 +65,8 @@ function NodeWithParams(props: any) {
           ),
         )}
       {props.children}
-    </LynxKiteNode>
+    </>
   );
 }
 
-export default NodeWithParams;
+export default LynxKiteNode(NodeWithParams);

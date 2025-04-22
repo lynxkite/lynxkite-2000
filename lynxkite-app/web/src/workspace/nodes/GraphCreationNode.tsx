@@ -49,7 +49,7 @@ function relationsToDict(relations: any[]) {
 
 export type UpdateOptions = { delay?: number };
 
-export default function NodeWithGraphCreationView(props: any) {
+function NodeWithGraphCreationView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState({} as { [name: string]: boolean });
   const display = props.data.display?.value;
@@ -229,68 +229,68 @@ export default function NodeWithGraphCreationView(props: any) {
   }
 
   return (
-    <LynxKiteNode {...props}>
-      <div className="graph-creation-view">
-        <div className="graph-tables">
-          <div className="graph-table-header">Node Tables</div>
-          {display && [
-            Object.entries(tables).map(([name, df]: [string, any]) => (
-              <React.Fragment key={name}>
-                {!singleTable && (
-                  <div
-                    key={`${name}-header`}
-                    className="df-head"
-                    onClick={() => setOpen({ ...open, [name]: !open[name] })}
-                  >
-                    {name}
-                  </div>
-                )}
-                {(singleTable || open[name]) && displayTable(name, df)}
-              </React.Fragment>
-            )),
-            Object.entries(display.others || {}).map(([name, o]) => (
-              <>
-                <div
-                  key={name}
-                  className="df-head"
-                  onClick={() => setOpen({ ...open, [name]: !open[name] })}
-                >
-                  {name}
-                </div>
-                {open[name] && <pre>{(o as any).toString()}</pre>}
-              </>
-            )),
-          ]}
-        </div>
-        <div className="graph-relations">
-          <div className="graph-table-header">
-            Relationships
-            <button className="add-relationship-button" onClick={(_) => addRelation()}>
-              +
-            </button>
-          </div>
-          {relations &&
-            Object.entries(relations).map(([name, relation]: [string, any]) => (
-              <React.Fragment key={name}>
+    <div className="graph-creation-view">
+      <div className="graph-tables">
+        <div className="graph-table-header">Node Tables</div>
+        {display && [
+          Object.entries(tables).map(([name, df]: [string, any]) => (
+            <React.Fragment key={name}>
+              {!singleTable && (
                 <div
                   key={`${name}-header`}
                   className="df-head"
                   onClick={() => setOpen({ ...open, [name]: !open[name] })}
                 >
                   {name}
-                  <button
-                    onClick={() => {
-                      deleteRelation(relation);
-                    }}
-                  >
-                    <Trash />
-                  </button>
                 </div>
-                {(singleRelation || open[name]) && displayRelation(relation)}
-              </React.Fragment>
-            ))}
-        </div>
+              )}
+              {(singleTable || open[name]) && displayTable(name, df)}
+            </React.Fragment>
+          )),
+          Object.entries(display.others || {}).map(([name, o]) => (
+            <>
+              <div
+                key={name}
+                className="df-head"
+                onClick={() => setOpen({ ...open, [name]: !open[name] })}
+              >
+                {name}
+              </div>
+              {open[name] && <pre>{(o as any).toString()}</pre>}
+            </>
+          )),
+        ]}
       </div>
-    </LynxKiteNode>
+      <div className="graph-relations">
+        <div className="graph-table-header">
+          Relationships
+          <button className="add-relationship-button" onClick={(_) => addRelation()}>
+            +
+          </button>
+        </div>
+        {relations &&
+          Object.entries(relations).map(([name, relation]: [string, any]) => (
+            <React.Fragment key={name}>
+              <div
+                key={`${name}-header`}
+                className="df-head"
+                onClick={() => setOpen({ ...open, [name]: !open[name] })}
+              >
+                {name}
+                <button
+                  onClick={() => {
+                    deleteRelation(relation);
+                  }}
+                >
+                  <Trash />
+                </button>
+              </div>
+              {(singleRelation || open[name]) && displayRelation(relation)}
+            </React.Fragment>
+          ))}
+      </div>
+    </div>
   );
 }
+
+export default LynxKiteNode(NodeWithGraphCreationView);

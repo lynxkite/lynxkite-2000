@@ -1,4 +1,5 @@
-import NodeWithParams from "./NodeWithParams";
+import LynxKiteNode from "./LynxKiteNode";
+import { NodeWithParams } from "./NodeWithParams";
 
 const NodeWithImage = (props: any) => {
   return (
@@ -8,4 +9,4 @@ const NodeWithImage = (props: any) => {
   );
 };
 
-export default NodeWithImage;
+export default LynxKiteNode(NodeWithImage);

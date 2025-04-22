@@ -54,6 +54,7 @@ export default function Code() {
       path!,
       yDocRef.current,
     );
+    editorRef.current.getModel()!.setEOL(0); // https://github.com/yjs/y-monaco/issues/6
     monacoBindingRef.current = new yMonacoRef.current.MonacoBinding(
       text,
       editorRef.current.getModel()!,
