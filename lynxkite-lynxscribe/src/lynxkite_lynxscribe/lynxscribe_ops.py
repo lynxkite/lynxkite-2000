@@ -679,7 +679,9 @@ def chat_processor(processor, *, _ctx: one_by_one.Context):
 
 @output_on_top
 @op("LynxScribe Message")
-def lynxscribe_message(*, prompt_role: MessageRole, prompt_content: ops.LongStr):
+def lynxscribe_message(
+    *, prompt_role: MessageRole = MessageRole.SYSTEM, prompt_content: ops.LongStr
+):
     return_message = Message(role=prompt_role.value, content=prompt_content.strip())
     return {"prompt_message": return_message}
 
