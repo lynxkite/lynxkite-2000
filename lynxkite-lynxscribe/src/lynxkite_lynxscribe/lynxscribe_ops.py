@@ -9,6 +9,7 @@ from enum import Enum
 import asyncio
 import pandas as pd
 import joblib
+from pydantic import BaseModel, ConfigDict
 
 import pathlib
 from lynxscribe.core.llm.base import get_llm_engine
@@ -16,6 +17,7 @@ from lynxscribe.core.vector_store.base import get_vector_store
 from lynxscribe.common.config import load_config
 from lynxscribe.components.text.embedder import TextEmbedder
 from lynxscribe.core.models.embedding import Embedding
+from lynxscribe.components.embedding_clustering import FclusterBasedClustering
 
 from lynxscribe.components.rag.rag_graph import RAGGraph
 from lynxscribe.components.rag.knowledge_base_graph import PandasKnowledgeBaseGraph
@@ -27,6 +29,7 @@ from lynxscribe.components.chat.processors import (
 )
 from lynxscribe.components.chat.api import ChatAPI
 from lynxscribe.core.models.prompts import ChatCompletionPrompt
+from lynxscribe.components.rag.loaders import FAQTemplateLoader
 
 from lynxkite.core import ops
 import json
@@ -51,6 +54,60 @@ class CloudProvider(Enum):
 class RAGVersion(Enum):
     V1 = "v1"
     V2 = "v2"
+
+
+class RAGTemplate(BaseModel):
+    """
+    Model for RAG templates consisting of three tables: they are connected via scenario names.
+    One table (FAQs) contains scenario-denoted nodes to upsert into the knowledge base, the other
+    two tables serve as the configuration for the scenario selector.
+    Attributes:
+        faq_data:
+            Table where each row is an FAQ question, and possibly its answer pair. Will be fed into
+            `FAQTemplateLoader.load_nodes_and_edges()`. For configuration of this table see the
+            loader's init arguments.
+        scenario_data:
+            Table where each row is a Scenario, column names are thus scenario attributes. Will be
+            fed into `ScenarioSelector.from_data()`.
+        prompt_codes:
+            Optional helper for the scenario table, may contain prompt code mappings to real prompt
+            messages. It's enough then to use the codes instead of the full messages in the
+            scenarios table. Will be fed into `ScenarioSelector.from_data()`.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    faq_data: pd.DataFrame
+    scenario_data: pd.DataFrame
+    prompt_codes: dict[str, str] = {}
+
+    @classmethod
+    def from_excel_path(
+        cls,
+        path: str,
+        faq_data_sheet_name: str,
+        scenario_data_sheet_name: str,
+        prompt_codes_sheet_name: str | None = None,
+    ) -> "RAGTemplate":
+        """Spawn a from an Excel file containing the two needed (plus one optional) sheets."""
+
+        def transform_codes(prompt_codes: pd.DataFrame) -> dict[str, str]:
+            """Check and transform prompt codes table into a code dictionary."""
+            if (len_columns := len(prompt_codes.columns)) != 2:
+                raise ValueError(
+                    f"Prompt codes should contain exactly 2 columns, {len_columns} found."
+                )
+            return prompt_codes.set_index(prompt_codes.columns[0])[
+                prompt_codes.columns[1]
+            ].to_dict()
+
+        return cls(
+            faq_data=pd.read_excel(path, sheet_name=faq_data_sheet_name),
+            scenario_data=pd.read_excel(path, sheet_name=scenario_data_sheet_name),
+            prompt_codes=transform_codes(pd.read_excel(path, sheet_name=prompt_codes_sheet_name))
+            if prompt_codes_sheet_name
+            else {},
+        )
 
 
 @op("Cloud-sourced File Listing")
@@ -397,14 +454,102 @@ def ls_text_rag_loader(
     return {"rag_graph": rag_graph}
 
 
+@op("LynxScribe FAQ to RAG")
+@mem.cache
+async def ls_faq_to_rag(
+    *,
+    faq_excel_path: str = "uploads/organon_demo/organon_en_copy.xlsx",
+    vdb_provider_name: str = "faiss",
+    vdb_num_dimensions: int = 3072,
+    vdb_collection_name: str = "lynx",
+    text_embedder_interface: str = "openai",
+    text_embedder_model_name_or_path: str = "text-embedding-3-large",
+    scenario_cluster_distance_pct: int = 30,
+):
+    """
+    Loading a text-based RAG graph from saved files (getting pandas readable links).
+    """
+
+    # getting the text embedder instance
+    llm_params = {"name": text_embedder_interface}
+    llm = get_llm_engine(**llm_params)
+    text_embedder = TextEmbedder(llm=llm, model=text_embedder_model_name_or_path)
+
+    # getting the vector store
+    if vdb_provider_name == "chromadb":
+        vector_store = get_vector_store(name=vdb_provider_name, collection_name=vdb_collection_name)
+    elif vdb_provider_name == "faiss":
+        vector_store = get_vector_store(name=vdb_provider_name, num_dimensions=vdb_num_dimensions)
+    else:
+        raise ValueError(f"Vector store name '{vdb_provider_name}' is not supported.")
+
+    # building up the RAG graph
+    rag_graph = RAGGraph(
+        PandasKnowledgeBaseGraph(vector_store=vector_store, text_embedder=text_embedder)
+    )
+
+    # loading the knowledge base from the FAQ file
+    rag_template = RAGTemplate.from_excel_path(
+        path=faq_excel_path,
+        faq_data_sheet_name="scenario_examples",
+        scenario_data_sheet_name="scenario_scripts",
+        prompt_codes_sheet_name="prompt_dictionary",
+    )
+
+    faq_loader_params = {
+        "id_column": "scenario_example_ID",
+        "timestamp_column": "last_modified_timestamp",
+        "validity_column": "valid_flg",
+        "question_type_contents_id": ["faq_question", "faq_question", "q_{id}"],
+        "answer_type_contents_id": ["faq_answer", "{faq_question}\n\n{faq_answer}", "a_{id}"],
+        "question_to_answer_edge_type_weight": ["qna", 1.0],
+    }
+
+    nodes, edges = FAQTemplateLoader(**faq_loader_params).load_nodes_and_edges(
+        rag_template.faq_data
+    )
+
+    await rag_graph.kg_base.upsert_nodes(*nodes)
+    rag_graph.kg_base.upsert_edges(edges)
+
+    # Generating scenario clusters
+    question_ids = [_id for _id in nodes[0] if _id.startswith("q_")]
+    stored_embeddings = rag_graph.kg_base.vector_store.get(
+        question_ids, include=["embeddings", "metadatas"]
+    )
+    embedding_vals = pd.Series([_emb.value for _emb in stored_embeddings], index=question_ids)
+    labels = pd.Series(
+        [_emb.metadata["scenario_name"] for _emb in stored_embeddings], index=question_ids
+    )
+    temp_cls = FclusterBasedClustering(distance_percentile=scenario_cluster_distance_pct)
+    temp_cls.fit(embedding_vals, labels)
+    df_tempclusters = temp_cls.get_cluster_centers()
+
+    # Adding the scenario clusters to the RAG Graph
+    df_tempclusters["template_id"] = "t_" + df_tempclusters.index.astype(str)
+    df_tempclusters["embedding"] = df_tempclusters.apply(
+        lambda row: Embedding(
+            id=row["template_id"],
+            value=row["cluster_center"],
+            metadata={"scenario_name": row["control_label"], "type": "intent_cluster"},
+        ),
+        axis=1,
+    )
+    embedding_list = df_tempclusters["embedding"].tolist()
+    rag_graph.kg_base.vector_store.upsert(embedding_list)
+
+    return {"rag_graph": rag_graph}
+
+
 @output_on_top
 @op("LynxScribe RAG Graph Chatbot Builder")
-@mem.cache
+# @mem.cache
 def ls_rag_chatbot_builder(
     rag_graph,
     *,
     scenario_file: str = "uploads/lynx_chatbot_scenario_selector.yaml",
     node_types: str = "intent_cluster",
+    scenario_meta_name: str = "",
 ):
     """
     Builds up a RAG Graph-based chatbot (basically the loaded RAG graph +
@@ -422,11 +567,15 @@ def ls_rag_chatbot_builder(
     # rag_graph = rag_graph[0]["rag_graph"] TODO: check why is it bad
     rag_graph = rag_graph["rag_graph"]
 
+    parameters = {
+        "scenarios": [Scenario(**scenario) for scenario in scenarios],
+        "node_types": node_types,
+    }
+    if len(scenario_meta_name) > 0:
+        parameters["get_scenario_name"] = lambda node: node.metadata[scenario_meta_name]
+
     # loading the scenarios
-    scenario_selector = ScenarioSelector(
-        scenarios=[Scenario(**scenario) for scenario in scenarios],
-        node_types=node_types,
-    )
+    scenario_selector = ScenarioSelector(**parameters)
 
     # TODO: later we should unify this "knowledge base" object across the functions
     # this could be always an input of a RAG Chatbot, but also for other apps.
@@ -554,7 +703,12 @@ async def test_chat_api(message, chat_api, *, show_details=False):
         messages=[{"role": "user", "content": message["text"]}],
     )
     response = await chat_api.answer(request, stream=False)
-    answer = response.choices[0].message.content
+    if len(response.choices) == 0:
+        answer = "The following FAQ items are similar to the question:\n"
+        for item in response.sources:
+            answer += f"------------------------------------------------------ \n{item.body}\n\n"
+    else:
+        answer = response.choices[0].message.content
     if show_details:
         return {"answer": answer, **response.__dict__}
     else:
