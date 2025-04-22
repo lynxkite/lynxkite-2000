@@ -17,7 +17,7 @@ function toMD(v: any): string {
 
 type OpenState = { [name: string]: boolean };
 
-export default function NodeWithTableView(props: any) {
+function NodeWithTableView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
   const display = props.data.display?.value;
@@ -38,7 +38,7 @@ export default function NodeWithTableView(props: any) {
     });
   }
   return (
-    <LynxKiteNode {...props}>
+    <>
       {display && [
         dfs.map(([name, df]: [string, any]) => (
           <React.Fragment key={name}>
@@ -75,6 +75,8 @@ export default function NodeWithTableView(props: any) {
           </>
         )),
       ]}
-    </LynxKiteNode>
+    </>
   );
 }
+
+export default LynxKiteNode(NodeWithTableView);
