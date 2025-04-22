@@ -89,7 +89,7 @@ class RAGTemplate(BaseModel):
         scenario_data_sheet_name: str,
         prompt_codes_sheet_name: str | None = None,
     ) -> "RAGTemplate":
-        """Spawn a from an Excel file containing the two needed (plus one optional) sheets."""
+        """Spawn a RAGTemplate from an Excel file containing the two needed (plus one optional) sheets."""
 
         def transform_codes(prompt_codes: pd.DataFrame) -> dict[str, str]:
             """Check and transform prompt codes table into a code dictionary."""
@@ -458,7 +458,7 @@ def ls_text_rag_loader(
 @mem.cache
 async def ls_faq_to_rag(
     *,
-    faq_excel_path: str = "uploads/organon_demo/organon_en_copy.xlsx",
+    faq_excel_path: str = "",
     vdb_provider_name: str = "faiss",
     vdb_num_dimensions: int = 3072,
     vdb_collection_name: str = "lynx",
@@ -543,7 +543,6 @@ async def ls_faq_to_rag(
 
 @output_on_top
 @op("LynxScribe RAG Graph Chatbot Builder")
-# @mem.cache
 def ls_rag_chatbot_builder(
     rag_graph,
     *,
@@ -564,7 +563,6 @@ def ls_rag_chatbot_builder(
     node_types = [t.strip() for t in node_types.split(",")]
 
     # handling inputs
-    # rag_graph = rag_graph[0]["rag_graph"] TODO: check why is it bad
     rag_graph = rag_graph["rag_graph"]
 
     parameters = {
@@ -743,7 +741,7 @@ async def get_chat_api(ws: str):
     assert path.exists(), f"Workspace {path} does not exist"
     ws = workspace.load(path)
     contexts = await ops.EXECUTORS[ENV](ws)
-    nodes = [op for op in ws.nodes if op.data.title == "Chat API"]
+    nodes = [op for op in ws.nodes if op.data.title == "LynxScribe RAG Graph Chatbot Backend"]
     [node] = nodes
     context = contexts[node.id]
     return context.last_result["chat_api"]

@@ -1,0 +1,92 @@
+- name: general_contraception_information # Must match the scenario name found in RAG graph
+  mode: retrieve_only # Literal[retrieve_llm, retrieve_only, llm_only, fixed_answer, sticky_answer]
+  min_pass_similarity_score: 0.55 # Custom value: if any answer is above, give three results
+  single_similarity_score: 0.86 # Custom value: is best answer is above, give single result
+  # min_similarity_score not used (stays -1.0) because it ditches all lower-score docs from results
+- name: intrauterine_devices
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55 # Sim Score = 2 * (1 - Distance) - 1
+  single_similarity_score: 0.86 # Sim Score = 2 * (1 - Distance) - 1
+- name: contraceptive_injection
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55
+  single_similarity_score: 0.86
+- name: emergency_contraceptive_pills
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55
+  single_similarity_score: 0.86
+- name: contraceptive_implant
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55
+  single_similarity_score: 0.86
+- name: combined_contraceptive_pills
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55
+  single_similarity_score: 0.86
+- name: other_okay
+  mode: retrieve_only
+  min_pass_similarity_score: 0.55
+  single_similarity_score: 0.86
+- name: own_side_effect
+  mode: fixed_answer
+  fixed_answer:
+    &abort_side_eff > # Anchors are added only for reference to old V1 template file
+    I'm not equipped to handle adverse events or other product-related queries. Your safety is
+    important to us, and we want to ensure you receive the appropriate support. Please report any
+    adverse events or concerns to our dedicated support team.
+    They can be reached at dpoc.vietnam@organon.com.
+    If you have any questions related to contraceptives or women's health, please feel free to ask,
+    and I'll provide you with the information you need.
+  keywords: [Mercilon, Marvelon, Implanon]
+  keyword_answer: &alternative_side_eff >
+    I'm not equipped to handle adverse events or other product-related queries. Your safety is
+    important to us, and we want to ensure you receive the appropriate support. Please report any
+    adverse events or concerns related to Organon products to our dedicated support team.
+    They can be reached at dpoc.vietnam@organon.com.
+    If you have any questions related to contraceptives or women's health, please feel free to ask,
+    and I'll provide you with the information you need.
+- name: own_dosage
+  mode: fixed_answer
+  fixed_answer: &abort_dosage >
+    I'm not equipped to handle adverse events, dosage-related questions or other product-related
+    queries. Your safety is important to us, and we want to ensure you receive the appropriate
+    support. Please consult with the prescribing doctor about the details on how to use the
+    medication. For further information, please write a message to our dedicated support team.
+    They can be reached at dpoc.vietnam@organon.com.
+    If you have any questions related to contraceptives or women's health, please feel free to ask,
+    and I'll provide you with the information you need.
+- name: brand_specific_information
+  mode: fixed_answer
+  fixed_answer: &brand_selection >
+    I appreciate your question about brand recommendations. For personalized advice related to
+    healthcare or specific products, it's always best to consult with a healthcare professional
+    who can consider your individual needs and provide tailored recommendations. They have the
+    expertise to guide you in the right direction.
+    If you have any questions related to contraceptives or women's health, please feel free to ask,
+    and I'll provide you with the information you need.
+- name: greetings_hay
+  mode: fixed_answer
+  fixed_answer: &how_are_you_hi >
+    I am fine thanks, hope you feel the same! Feel free to ask any contraception related question.
+- name: greetings_hi
+  mode: fixed_answer
+  fixed_answer: &say_hi >
+    Hi, nice to meet you! Feel free to ask any contraception related question.
+- name: emailthanks
+  mode: fixed_answer
+  fixed_answer: &email_thanks >
+    Thank you. Could I help with something else?
+- name: thanks
+  mode: fixed_answer
+  fixed_answer: &thanks_answer >
+    Not at all. Could I help with something else?
+- name: confirmation
+  mode: fixed_answer
+  fixed_answer: &confirmation_answer >
+    Thank you. Could I help with something else?
+- name: malicious
+  mode: sticky_answer
+  fixed_answer: &malicious_message >
+    I am sorry, but I feel you want me use in a wrong way.
+    If I feel it wrong, please try to rephrase your question.
+    Refresh your browser if you'd like to ask more questions.
