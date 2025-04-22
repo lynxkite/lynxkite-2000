@@ -1,6 +1,9 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import { ErrorBoundary } from "react-error-boundary";
 // @ts-ignore
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
+// @ts-ignore
+import Skull from "~icons/tabler/skull.jsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -40,7 +43,7 @@ function getHandles(inputs: object, outputs: object) {
   return handles;
 }
 
-export default function LynxKiteNode(props: LynxKiteNodeProps) {
+function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
   const expanded = !data.collapsed;
@@ -72,7 +75,16 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
         {expanded && (
           <>
             {data.error && <div className="error">{data.error}</div>}
-            {props.children}
+            <ErrorBoundary
+              fallback={
+                <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <Skull style={{ fontSize: 20 }} />
+                  Failed to display this node.
+                </p>
+              }
+            >
+              {props.children}
+            </ErrorBoundary>
             <NodeResizeControl
               minWidth={100}
               minHeight={50}
@@ -100,4 +112,14 @@ export default function LynxKiteNode(props: LynxKiteNodeProps) {
       </div>
     </div>
   );
+}
+
+export default function LynxKiteNode(Component: React.ComponentType<any>) {
+  return (props: any) => {
+    return (
+      <LynxKiteNodeComponent {...props}>
+        <Component {...props} />
+      </LynxKiteNodeComponent>
+    );
+  };
 }
