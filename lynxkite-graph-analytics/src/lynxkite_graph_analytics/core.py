@@ -214,7 +214,7 @@ async def _execute_node(node, ws, catalog, outputs):
                 x = Bundle.from_df(x)
             inputs.append(x)
     except Exception as e:
-        if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
+        if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
         node.publish_error(e)
         return
@@ -223,7 +223,7 @@ async def _execute_node(node, ws, catalog, outputs):
         result = op(*inputs, **params)
         result.output = await await_if_needed(result.output)
     except Exception as e:
-        if os.environ.get("LYNXKITE_LOG_OP_ERRORS"):
+        if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
