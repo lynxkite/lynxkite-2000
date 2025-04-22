@@ -28,7 +28,7 @@ from lynxscribe.components.chat.processors import (
     TruncateHistory,
 )
 from lynxscribe.components.chat.api import ChatAPI
-from lynxscribe.core.models.prompts import ChatCompletionPrompt
+from lynxscribe.core.models.prompts import ChatCompletionPrompt, Message
 from lynxscribe.components.rag.loaders import FAQTemplateLoader
 
 from lynxkite.core import ops
@@ -54,6 +54,11 @@ class CloudProvider(Enum):
 class RAGVersion(Enum):
     V1 = "v1"
     V2 = "v2"
+
+
+class MessageRole(Enum):
+    SYSTEM = "system"
+    USER = "user"
 
 
 class RAGTemplate(BaseModel):
@@ -673,6 +678,113 @@ def chat_processor(processor, *, _ctx: one_by_one.Context):
 
 
 @output_on_top
+@op("LynxScribe Message")
+def lynxscribe_message(*, prompt_role: MessageRole, prompt_content: ops.LongStr):
+    return_message = Message(role=prompt_role.value, content=prompt_content.strip())
+    return {"prompt_message": return_message}
+
+
+@op("Read Excel")
+def read_excel(*, file_path: str, sheet_name: str = "Sheet1", columns: str = ""):
+    """
+    Reads an Excel file and returns the content of the specified sheet.
+    The columns parameter can be used to specify which columns to include in the output.
+    If not specified, all columns will be included (separate the values by comma).
+
+    TODO: more general: several input/output versions.
+    """
+    df = pd.read_excel(file_path, sheet_name=sheet_name)
+    if columns:
+        columns = [c.strip() for c in columns.split(",") if c.strip()]
+        columns = [c for c in columns if c in df.columns]
+        if len(columns) == 0:
+            raise ValueError("No valid columns specified.")
+        df = df[columns].copy()
+    return df  # {"dataframe": df}
+
+
+@ops.input_position(system_prompt="bottom", instruction_prompt="bottom", df="left")
+@op("LynxScribe Task Solver")
+@mem.cache
+async def ls_task_solver(
+    system_prompt,
+    instruction_prompt,
+    df,
+    *,
+    llm_interface: str = "openai",
+    llm_model_name: str = "gpt-4o",
+    new_column_names: str = "processed_field",
+    # api_key_name: str = "OPENAI_API_KEY",
+):
+    """
+    Solving the described task on a data frame and put the results into a new column.
+
+    If there are multiple new_column_names provided, the structured dictionary output
+    will be split into multiple columns.
+    """
+
+    # handling inputs
+    system_message = system_prompt[0]["prompt_message"]
+    instruction_message = instruction_prompt[0]["prompt_message"]
+
+    # preparing output
+    out_df = df.copy()
+
+    # connecting to the LLM
+    llm_params = {"name": llm_interface}
+    # if api_key_name:
+    #     llm_params["api_key"] = os.getenv(api_key_name)
+    llm = get_llm_engine(**llm_params)
+
+    # getting the list of fieldnames used in the instruction message
+    fieldnames = []
+    for pot_fieldname in df.columns:
+        if "{" + pot_fieldname + "}" in instruction_message.content:
+            fieldnames.append(pot_fieldname)
+
+    # generate a list of instruction messages (from fieldnames)
+    # each row of the df is a separate instruction message
+    # TODO: make it fast for large dataframes
+    instruction_messages = []
+    for i in range(len(df)):
+        instruction_message_i = deepcopy(instruction_message)
+        for fieldname in fieldnames:
+            instruction_message_i.content = instruction_message_i.content.replace(
+                "{" + fieldname + "}", str(df.iloc[i][fieldname])
+            )
+        instruction_messages.append(instruction_message_i)
+
+    # generate completition prompt
+    completion_prompts = [
+        ChatCompletionPrompt(
+            model=llm_model_name,
+            messages=[system_message, instruction_message_j],
+        )
+        for instruction_message_j in instruction_messages
+    ]
+
+    # get the answers
+    tasks = [llm.acreate_completion(completion_prompt=_prompt) for _prompt in completion_prompts]
+    out_completions = await asyncio.gather(*tasks)
+
+    # answer post-processing: 1 vs more columns
+    col_list = [_c.strip() for _c in new_column_names.split(",") if _c.strip()]
+    if len(col_list) == 0:
+        raise ValueError("No valid column names specified.")
+    elif len(col_list) == 1:
+        out_df[col_list[0]] = [result.choices[0].message.content for result in out_completions]
+    else:
+        answers = [
+            dictionary_corrector(result.choices[0].message.content, expected_keys=col_list)
+            for result in out_completions
+        ]
+        for i, col in enumerate(col_list):
+            out_df[col] = [answer[col] for answer in answers]
+
+    return out_df  # {"dataframe": out_df}
+
+
+@output_on_top
 @op("Truncate history")
 def truncate_history(*, max_tokens=10000):
     return {"question_processor": TruncateHistory(max_tokens=max_tokens)}
@@ -716,6 +828,28 @@ async def test_chat_api(message, chat_api, *, show_details=False):
 @op("Input chat")
 def input_chat(*, chat: str):
     return {"text": chat}
+
+
+@op("View DataFrame", view="table_view")
+def view_df(input, *, _ctx: one_by_one.Context):
+    """
+    TODO: This part is not working
+    """
+    v = _ctx.last_result
+    if v:
+        columns = v["dataframes"]["df"]["columns"]
+        v["dataframes"]["df"]["data"].append([input[c] for c in columns])
+    else:
+        columns = [str(c) for c in input.keys() if not str(c).startswith("_")]
+        v = {
+            "dataframes": {
+                "df": {
+                    "columns": columns,
+                    "data": [[input[c] for c in columns]],
+                }
+            }
+        }
+    return v
 
 
 @op("View", view="table_view")
