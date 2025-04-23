@@ -144,6 +144,7 @@ def _param_to_type(name, value, type):
         assert value != "", f"{name} is unset."
         return float(value)
     if isinstance(type, enum.EnumMeta):
+        assert value in type.__members__, f"{value} is not an option for {name}."
         return type[value]
     if isinstance(type, types.UnionType):
         match type.__args__:
