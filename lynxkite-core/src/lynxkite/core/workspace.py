@@ -97,6 +97,25 @@ class Workspace(BaseConfig):
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     _crdt: pycrdt.Map
 
+    def normalize(self):
+        if self.env not in ops.CATALOGS:
+            return self
+        catalog = ops.CATALOGS[self.env]
+        _ops = {n.id: catalog[n.data.title] for n in self.nodes if n.data.title in catalog}
+        valid_targets = set(
+            (n.id, h) for n in self.nodes for h in _ops[n.id].inputs if n.id in _ops
+        )
+        valid_sources = set(
+            (n.id, h) for n in self.nodes for h in _ops[n.id].outputs if n.id in _ops
+        )
+        edges = [
+            edge
+            for edge in self.edges
+            if (edge.source, edge.sourceHandle) in valid_sources
+            and (edge.target, edge.targetHandle) in valid_targets
+        ]
+        return self.model_copy(update={"edges": edges})
+
 
 async def execute(ws: Workspace):
     if ws.env in ops.EXECUTORS:
