@@ -18,7 +18,7 @@ import {
 } from "@xyflow/react";
 import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router";
+import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
 // @ts-ignore
@@ -31,6 +31,7 @@ import Restart from "~icons/tabler/rotate-clockwise.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Workspace, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
+import { usePath } from "../common.ts";
 // import NodeWithTableView from './NodeWithTableView';
 import EnvironmentSelector from "./EnvironmentSelector";
 import { LynxKiteState } from "./LynxKiteState";
@@ -55,7 +56,7 @@ function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
-  const path = decodeURIComponent(useLocation().pathname).replace(/^\/edit\//, "");
+  const path = usePath().replace(/^[/]edit[/]/, "");
   const shortPath = path!
     .split("/")
     .pop()!
@@ -335,9 +336,9 @@ function LynxKiteFlow() {
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
-        <a className="logo" href="">
+        <Link className="logo" to="/">
           <img alt="" src={favicon} />
-        </a>
+        </Link>
         <div className="ws-name">{shortPath}</div>
         <title>{shortPath}</title>
         <EnvironmentSelector
@@ -357,9 +358,9 @@ function LynxKiteFlow() {
           <button className="btn btn-link" onClick={executeWorkspace}>
             <Restart />
           </button>
-          <a className="btn btn-link" href={`/dir/${parentDir}`}>
+          <Link className="btn btn-link" to={`/dir/${parentDir}`} aria-label="close">
             <Close />
-          </a>
+          </Link>
         </div>
       </div>
       <div style={{ height: "100%", width: "100vw" }} onDragOver={onDragOver} onDrop={onDrop}>
