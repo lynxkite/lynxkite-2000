@@ -49,12 +49,6 @@ const NodeWithMolecule = (props: any) => {
     };
   }, [props.data?.display?.value]);
 
-  const nodeStyle: CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-  };
-
   const vizStyle: CSSProperties = {
     flex: 1,
     minHeight: "300px",
@@ -65,7 +59,7 @@ const NodeWithMolecule = (props: any) => {
   };
 
   return (
-    <NodeWithParams nodeStyle={nodeStyle} collapsed {...props}>
+    <NodeWithParams collapsed {...props}>
       <div style={vizStyle} ref={containerRef} />
     </NodeWithParams>
   );
