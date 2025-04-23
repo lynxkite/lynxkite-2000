@@ -273,6 +273,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
             nc["data"]["status"] = "planned"
             # Nodes get a reference to their CRDT maps, so they can update them as the results come in.
             np._crdt = nc
+    ws_pyd = ws_pyd.normalize()
     await workspace.execute(ws_pyd)
     workspace.save(ws_pyd, path)
     print(f"Finished running {name} in {ws_pyd.env}.")
