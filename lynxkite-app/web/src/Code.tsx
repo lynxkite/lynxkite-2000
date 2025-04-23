@@ -3,7 +3,7 @@
 import Editor, { type Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useEffect, useRef } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useLocation } from "react-router";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 // @ts-ignore
@@ -16,7 +16,7 @@ import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
 
 export default function Code() {
-  const { path } = useParams();
+  const path = decodeURIComponent(useLocation().pathname).replace(/^\/code\//, "");
   const parentDir = path!.split("/").slice(0, -1).join("/");
   const yDocRef = useRef<any>();
   const wsProviderRef = useRef<any>();
