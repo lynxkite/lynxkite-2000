@@ -82,6 +82,15 @@ body {
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
     border-radius: 4px;
     background: white;
+    display: flex;
+    flex-direction: column;
+
+    .node-content {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .expanded .lynxkite-node {
