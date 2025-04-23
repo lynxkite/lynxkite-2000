@@ -155,7 +155,7 @@ export class Workspace {
   }
 
   async close() {
-    await this.page.locator('a[href="/dir/"]').click();
+    await this.page.getByRole("link", { name: "close" }).click();
   }
 }
 
@@ -220,6 +220,6 @@ export class Splash {
   }
 
   async goHome() {
-    await this.page.locator('a[href="/dir/"]').click();
+    await this.page.getByRole("link", { name: "home" }).click();
   }
 }
