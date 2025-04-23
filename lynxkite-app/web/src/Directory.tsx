@@ -1,6 +1,6 @@
 import { useState } from "react";
 // The directory browser.
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useSWR from "swr";
 import type { DirectoryEntry } from "./apiTypes.ts";
 
@@ -58,7 +58,7 @@ function EntryCreator(props: {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function () {
-  const { path } = useParams();
+  const path = decodeURIComponent(useLocation().pathname).replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
