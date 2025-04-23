@@ -370,6 +370,10 @@ def ls_save_rag_graph(
 @ops.input_position(rag_graph="bottom")
 @op("LynxScribe Image RAG Query")
 async def search_context(rag_graph, text, *, top_k=3):
+    """
+    top_k: which results we are showing (TODO: when the image viewer is
+    updated w pager, change back to top k)
+    """
     message = text["text"]
     rag_graph = rag_graph[0]["rag_graph"]
 
@@ -387,7 +391,9 @@ async def search_context(rag_graph, text, *, top_k=3):
         description = emb_sim.embedding.document
         result_list.append({"image_url": image_url, "score": score, "description": description})
 
-    return {"embedding_similarities": result_list}
+    real_k = min(top_k, len(result_list) - 1)
+
+    return {"embedding_similarities": [result_list[real_k]]}
 
 
 @op("LynxScribe Image Result Viewer", view="image")
@@ -702,16 +708,16 @@ def read_excel(*, file_path: str, sheet_name: str = "Sheet1", columns: str = "")
         if len(columns) == 0:
             raise ValueError("No valid columns specified.")
         df = df[columns].copy()
-    return df  # {"dataframe": df}
+    return {"dataframe": df}
 
 
-@ops.input_position(system_prompt="bottom", instruction_prompt="bottom", df="left")
+@ops.input_position(system_prompt="bottom", instruction_prompt="bottom", dataframe="left")
 @op("LynxScribe Task Solver")
 @mem.cache
 async def ls_task_solver(
     system_prompt,
     instruction_prompt,
-    df,
+    dataframe,
     *,
     llm_interface: str = "openai",
     llm_model_name: str = "gpt-4o",
@@ -728,6 +734,7 @@ async def ls_task_solver(
     # handling inputs
     system_message = system_prompt[0]["prompt_message"]
     instruction_message = instruction_prompt[0]["prompt_message"]
+    df = dataframe["dataframe"]
 
     # preparing output
     out_df = df.copy()
@@ -783,7 +790,7 @@ async def ls_task_solver(
         for i, col in enumerate(col_list):
             out_df[col] = [answer[col] for answer in answers]
 
-    return out_df  # {"dataframe": out_df}
+    return {"dataframe": out_df}
 
 
 @output_on_top
@@ -835,7 +842,7 @@ def input_chat(*, chat: str):
 @ops.input_position(input="bottom")
 @op("View DataFrame", view="table_view")
 def view_df(input):
-    df = pd.DataFrame(input)
+    df = input[0]["dataframe"]
     v = {
         "dataframes": {
             "df": {
