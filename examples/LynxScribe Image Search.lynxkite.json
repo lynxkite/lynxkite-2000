@@ -15,6 +15,13 @@
       "targetHandle": "image_descriptions"
     },
     {
+      "id": "LynxScribe Image RAG Query 1 LynxScribe Image Result Viewer 1",
+      "source": "LynxScribe Image RAG Query 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Image Result Viewer 1",
+      "targetHandle": "embedding_similarities"
+    },
+    {
       "id": "Input chat 1 LynxScribe Image RAG Query 1",
       "source": "Input chat 1",
       "sourceHandle": "output",
@@ -27,13 +34,6 @@
       "sourceHandle": "output",
       "target": "LynxScribe Image RAG Query 1",
       "targetHandle": "rag_graph"
-    },
-    {
-      "id": "LynxScribe Image RAG Query 1 LynxScribe Image Result Viewer 1",
-      "source": "LynxScribe Image RAG Query 1",
-      "sourceHandle": "output",
-      "target": "LynxScribe Image Result Viewer 1",
-      "targetHandle": "embedding_similarities"
     }
   ],
   "env": "LynxScribe",
@@ -295,7 +295,7 @@
           "type": "basic"
         },
         "params": {
-          "chat": "Show me a picture about fruits"
+          "chat": "Show me a picture about healthy lifestyle"
         },
         "status": "done",
         "title": "Input chat"
@@ -312,6 +312,42 @@
     },
     {
       "data": {
+        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/food-405521_1280.jpg",
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "embedding_similarities": {
+              "name": "embedding_similarities",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Image Result Viewer",
+          "outputs": {},
+          "params": {},
+          "type": "image"
+        },
+        "params": {},
+        "status": "done",
+        "title": "LynxScribe Image Result Viewer"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 1008.0,
+      "id": "LynxScribe Image Result Viewer 1",
+      "position": {
+        "x": 1674.3708499095837,
+        "y": -254.88365280289335
+      },
+      "type": "image",
+      "width": 677.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -351,57 +387,27 @@
               }
             }
           },
+          "position": {
+            "x": 1611.0,
+            "y": 353.0
+          },
           "type": "basic"
         },
         "params": {
-          "top_k": 3.0
+          "top_k": "1"
         },
         "status": "done",
         "title": "LynxScribe Image RAG Query"
       },
       "dragHandle": ".bg-primary",
-      "height": 207.0,
+      "height": 212.0,
       "id": "LynxScribe Image RAG Query 1",
       "position": {
-        "x": 1160.0,
-        "y": -40.0
+        "x": 1106.0332007233271,
+        "y": -44.51280289330922
       },
       "type": "basic",
-      "width": 283.0
-    },
-    {
-      "data": {
-        "display": "https://storage.googleapis.com/lynxkite_public_data/lynxscribe-images/image-rag-test/food-405521_1280.jpg",
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "inputs": {
-            "embedding_similarities": {
-              "name": "embedding_similarities",
-              "position": "left",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          },
-          "name": "LynxScribe Image Result Viewer",
-          "outputs": {},
-          "params": {},
-          "type": "image"
-        },
-        "params": {},
-        "status": "done",
-        "title": "LynxScribe Image Result Viewer"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 515.0,
-      "id": "LynxScribe Image Result Viewer 1",
-      "position": {
-        "x": 1657.0,
-        "y": -193.0
-      },
-      "type": "image",
-      "width": 707.0
+      "width": 281.0
     }
   ]
 }
