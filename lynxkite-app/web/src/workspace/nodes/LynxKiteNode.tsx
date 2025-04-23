@@ -76,6 +76,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
           <>
             {data.error && <div className="error">{data.error}</div>}
             <ErrorBoundary
+              resetKeys={[props]}
               fallback={
                 <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Skull style={{ fontSize: 20 }} />
