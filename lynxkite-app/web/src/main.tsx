@@ -13,9 +13,9 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<Directory />} />
         <Route path="/dir" element={<Directory />} />
-        <Route path="/dir/:path" element={<Directory />} />
-        <Route path="/edit/:path" element={<Workspace />} />
-        <Route path="/code/:path" element={<Code />} />
+        <Route path="/dir/*" element={<Directory />} />
+        <Route path="/edit/*" element={<Workspace />} />
+        <Route path="/code/*" element={<Code />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
