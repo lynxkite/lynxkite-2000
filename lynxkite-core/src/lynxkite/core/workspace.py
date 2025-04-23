@@ -102,12 +102,14 @@ class Workspace(BaseConfig):
             return self
         catalog = ops.CATALOGS[self.env]
         _ops = {n.id: catalog[n.data.title] for n in self.nodes if n.data.title in catalog}
-        valid_targets = set(
-            (n.id, h) for n in self.nodes for h in _ops[n.id].inputs if n.id in _ops
-        )
-        valid_sources = set(
-            (n.id, h) for n in self.nodes for h in _ops[n.id].outputs if n.id in _ops
-        )
+        valid_targets = set()
+        valid_sources = set()
+        for n in self.nodes:
+            if n.id in _ops:
+                for h in _ops[n.id].inputs:
+                    valid_targets.add((n.id, h))
+                for h in _ops[n.id].outputs:
+                    valid_sources.add((n.id, h))
         edges = [
             edge
             for edge in self.edges
