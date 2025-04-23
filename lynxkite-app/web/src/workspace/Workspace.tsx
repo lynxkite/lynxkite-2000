@@ -18,7 +18,7 @@ import {
 } from "@xyflow/react";
 import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
 // @ts-ignore
@@ -55,7 +55,7 @@ function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
-  const { path } = useParams();
+  const path = decodeURIComponent(useLocation().pathname).replace(/^\/edit\//, "");
   const shortPath = path!
     .split("/")
     .pop()!

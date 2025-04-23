@@ -41,7 +41,7 @@ uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-an
 This also builds the frontend, hopefully very quickly. To run it:
 
 ```bash
-cd examples && LYNXKITE_RELOAD=1 lynxkite
+cd examples && lynxkite
 ```
 
 If you also want to make changes to the frontend with hot reloading:
