@@ -1,0 +1,536 @@
+{
+  "edges": [
+    {
+      "id": "LynxScribe Message 3 LynxScribe Task Solver 1",
+      "source": "LynxScribe Message 3",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "system_prompt"
+    },
+    {
+      "id": "LynxScribe Message 1 LynxScribe Task Solver 1",
+      "source": "LynxScribe Message 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "instruction_prompt"
+    },
+    {
+      "id": "Read Excel 1 LynxScribe Task Solver 1",
+      "source": "Read Excel 1",
+      "sourceHandle": "output",
+      "target": "LynxScribe Task Solver 1",
+      "targetHandle": "dataframe"
+    },
+    {
+      "id": "LynxScribe Task Solver 1 View DataFrame 1",
+      "source": "LynxScribe Task Solver 1",
+      "sourceHandle": "output",
+      "target": "View DataFrame 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "Read Excel 1 View DataFrame 2",
+      "source": "Read Excel 1",
+      "sourceHandle": "output",
+      "target": "View DataFrame 2",
+      "targetHandle": "input"
+    }
+  ],
+  "env": "LynxScribe",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "LynxScribe Message",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "prompt_content": {
+              "default": null,
+              "name": "prompt_content",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            "prompt_role": {
+              "default": null,
+              "name": "prompt_role",
+              "type": {
+                "enum": [
+                  "SYSTEM",
+                  "USER"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 653.0,
+            "y": 954.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "prompt_content": "You are an AI assistant designed to clean and extract structured address information from raw text.\nYour goal is to identify and extract relevant address components while ignoring any unrelated information.\nThe output must be formatted as a structured dictionary.\n\nYour task is to parse an address from raw text and return a dictionary with the following keys:\n - zip_code: The postal or ZIP code.\n - country: The country name.\n - state_or_county: The state, province, or county (if applicable).\n - city: The city or town name.\n - district: The district or borough name (if mentioned).\n - street_type: The type of public space (e.g., street, avenue, boulevard, square).\n - street_name: The name of the public space (e.g., Main, Baker, Champs-\u00c9lys\u00e9es).\n - house_number: The house or building number.\n - floor: The floor number (if mentioned).\n - flat_number: The apartment or unit number (if mentioned).\n - additional_info: Any other useful details, such as building names, or known landmarks.\n\nIf any information is missing from the input, leave the corresponding key as an empty string.\n\nYou must return only a python dictionary with the following keys:\n`zip_code`, `country`, `state_or_county`, `city`, `district`, `street_name`, \n`house_number`, `floor`, `flat_number`, `additional_info`.\n\nDo not include any extra text, comments, or explanations\u2014only return the dictionary.",
+          "prompt_role": "SYSTEM"
+        },
+        "status": "done",
+        "title": "LynxScribe Message"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 354.0,
+      "id": "LynxScribe Message 3",
+      "position": {
+        "x": 36.0,
+        "y": 569.0
+      },
+      "type": "basic",
+      "width": 740.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "LynxScribe Message",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "prompt_content": {
+              "default": null,
+              "name": "prompt_content",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            "prompt_role": {
+              "default": null,
+              "name": "prompt_role",
+              "type": {
+                "enum": [
+                  "SYSTEM",
+                  "USER"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 1498.0,
+            "y": 660.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "prompt_content": "Extract structured address information from the following text: {message_parts}",
+          "prompt_role": "USER"
+        },
+        "status": "done",
+        "title": "LynxScribe Message"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 347.0,
+      "id": "LynxScribe Message 1",
+      "position": {
+        "x": 817.0,
+        "y": 566.0
+      },
+      "type": "basic",
+      "width": 498.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {},
+          "name": "Read Excel",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "columns": {
+              "default": "",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "file_path": {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "sheet_name": {
+              "default": "Sheet1",
+              "name": "sheet_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 236.0,
+            "y": 150.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "columns": "",
+          "file_path": "uploads/task_solver_examples.xlsx",
+          "sheet_name": "address_example"
+        },
+        "status": "done",
+        "title": "Read Excel"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 284.0,
+      "id": "Read Excel 1",
+      "position": {
+        "x": 41.0,
+        "y": 168.0
+      },
+      "type": "basic",
+      "width": 332.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "dataframe": {
+              "name": "dataframe",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "instruction_prompt": {
+              "name": "instruction_prompt",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            "system_prompt": {
+              "name": "system_prompt",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "LynxScribe Task Solver",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "llm_interface": {
+              "default": "openai",
+              "name": "llm_interface",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "llm_model_name": {
+              "default": "gpt-4o",
+              "name": "llm_model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "new_column_names": {
+              "default": "processed_field",
+              "name": "new_column_names",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "position": {
+            "x": 1511.0,
+            "y": 220.0
+          },
+          "type": "basic"
+        },
+        "params": {
+          "llm_interface": "openai",
+          "llm_model_name": "gpt-4o-mini",
+          "new_column_names": "zip_code, country, state_or_county, city, district, street_name, house_number, floor, flat_number, additional_info"
+        },
+        "status": "done",
+        "title": "LynxScribe Task Solver"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 282.0,
+      "id": "LynxScribe Task Solver 1",
+      "position": {
+        "x": 626.0,
+        "y": 170.0
+      },
+      "type": "basic",
+      "width": 272.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "message_parts",
+                "zip_code",
+                "country",
+                "state_or_county",
+                "city",
+                "district",
+                "street_name",
+                "house_number",
+                "floor",
+                "flat_number",
+                "additional_info"
+              ],
+              "data": [
+                [
+                  "John's old apartment: 742 Evergreen Terrace, Springfield, IL 62704, USA. Call me at +1-555-1234 or email john.doe@email.com.",
+                  "62704",
+                  "USA",
+                  "IL",
+                  "Springfield",
+                  "",
+                  "Evergreen Terrace",
+                  "742",
+                  "",
+                  "",
+                  "John's old apartment"
+                ],
+                [
+                  "Visit our office at 56B Baker Street, Marylebone, London W1U 8ED, UK. (Nearest Tube: Baker Street). Contact: office@company.com.",
+                  "W1U 8ED",
+                  "UK",
+                  "",
+                  "London",
+                  "Marylebone",
+                  "Baker",
+                  "56B",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "New residence: 300, 5th Avenue, New York, NY 10001, USA. Floor 12, Apt 1204. My new phone is (212) 555-6789.",
+                  "10001",
+                  "USA",
+                  "NY",
+                  "New York",
+                  "",
+                  "5th Avenue",
+                  "300",
+                  "12",
+                  "1204",
+                  ""
+                ],
+                [
+                  "We just moved to 23 rue de la Paix, 75002 Paris, France. Floor 3, Flat 5. Send mail to my old address instead.",
+                  "75002",
+                  "France",
+                  "",
+                  "Paris",
+                  "",
+                  "rue de la Paix",
+                  "23",
+                  "3",
+                  "5",
+                  ""
+                ],
+                [
+                  "Warehouse location: 1024 Industrial Blvd, Houston, TX 77002, USA. Not open on weekends. Customer support: support@example.com.",
+                  "77002",
+                  "USA",
+                  "TX",
+                  "Houston",
+                  "",
+                  "Industrial Blvd",
+                  "1024",
+                  "",
+                  "",
+                  "Warehouse location"
+                ],
+                [
+                  "My grandma lives at 2F, 15-3 Shinjuku, Tokyo 160-0022, Japan. Don't use my old phone number anymore!",
+                  "160-0022",
+                  "Japan",
+                  "",
+                  "Tokyo",
+                  "Shinjuku",
+                  "Shinjuku",
+                  "15-3",
+                  "2F",
+                  "",
+                  ""
+                ],
+                [
+                  "Delivery address: Apt 9, 88 Queen's Road Central, Central, Hong Kong. Landmark: Opposite IFC Mall.",
+                  "",
+                  "Hong Kong",
+                  "",
+                  "Central",
+                  "",
+                  "Queen's Road Central",
+                  "88",
+                  "",
+                  "9",
+                  "Opposite IFC Mall"
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View DataFrame",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1719.0,
+            "y": 332.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View DataFrame"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 316.0,
+      "id": "View DataFrame 1",
+      "position": {
+        "x": 1139.0,
+        "y": 91.0
+      },
+      "type": "table_view",
+      "width": 1118.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "message_parts"
+              ],
+              "data": [
+                [
+                  "John's old apartment: 742 Evergreen Terrace, Springfield, IL 62704, USA. Call me at +1-555-1234 or email john.doe@email.com."
+                ],
+                [
+                  "Visit our office at 56B Baker Street, Marylebone, London W1U 8ED, UK. (Nearest Tube: Baker Street). Contact: office@company.com."
+                ],
+                [
+                  "New residence: 300, 5th Avenue, New York, NY 10001, USA. Floor 12, Apt 1204. My new phone is (212) 555-6789."
+                ],
+                [
+                  "We just moved to 23 rue de la Paix, 75002 Paris, France. Floor 3, Flat 5. Send mail to my old address instead."
+                ],
+                [
+                  "Warehouse location: 1024 Industrial Blvd, Houston, TX 77002, USA. Not open on weekends. Customer support: support@example.com."
+                ],
+                [
+                  "My grandma lives at 2F, 15-3 Shinjuku, Tokyo 160-0022, Japan. Don't use my old phone number anymore!"
+                ],
+                [
+                  "Delivery address: Apt 9, 88 Queen's Road Central, Central, Hong Kong. Landmark: Opposite IFC Mall."
+                ]
+              ]
+            }
+          }
+        },
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "inputs": {
+            "input": {
+              "name": "input",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          },
+          "name": "View DataFrame",
+          "outputs": {},
+          "params": {},
+          "position": {
+            "x": 1083.0,
+            "y": 134.0
+          },
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View DataFrame"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View DataFrame 2",
+      "position": {
+        "x": 515.0,
+        "y": -135.125
+      },
+      "type": "table_view",
+      "width": 200.0
+    }
+  ]
+}
