@@ -301,14 +301,14 @@ def sanitize_path(path):
     return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
 
 
-@router.websocket("/ws/crdt/{room_name}")
+@router.websocket("/ws/crdt/{room_name:path}")
 async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
     server = pycrdt_websocket.ASGIServer(ws_websocket_server)
     await server({"path": room_name}, websocket._receive, websocket._send)
 
 
-@router.websocket("/ws/code/crdt/{room_name}")
+@router.websocket("/ws/code/crdt/{room_name:path}")
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
     server = pycrdt_websocket.ASGIServer(code_websocket_server)
