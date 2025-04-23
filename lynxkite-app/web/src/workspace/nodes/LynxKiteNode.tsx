@@ -83,7 +83,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
                 </p>
               }
             >
-              {props.children}
+              <div className="node-content">{props.children}</div>
             </ErrorBoundary>
             <NodeResizeControl
               minWidth={100}

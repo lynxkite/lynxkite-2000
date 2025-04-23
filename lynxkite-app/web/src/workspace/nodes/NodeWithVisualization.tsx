@@ -32,11 +32,9 @@ function NodeWithVisualization(props: any) {
       chartsInstanceRef.current?.dispose();
     };
   }, [props.data?.display?.value]);
-  const nodeStyle = { display: "flex", flexDirection: "column" };
-  const vizStyle = { flex: 1 };
   return (
-    <NodeWithParams nodeStyle={nodeStyle} collapsed {...props}>
-      <div style={vizStyle} ref={chartsRef} />
+    <NodeWithParams collapsed {...props}>
+      <div style={{ flex: 1 }} ref={chartsRef} />
     </NodeWithParams>
   );
 }
