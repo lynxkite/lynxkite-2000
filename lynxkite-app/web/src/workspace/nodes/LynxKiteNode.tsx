@@ -14,7 +14,7 @@ interface LynxKiteNodeProps {
   children: any;
 }
 
-function getHandles(inputs: object, outputs: object) {
+function getHandles(inputs: any[], outputs: any[]) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
     name: string;
@@ -23,10 +23,10 @@ function getHandles(inputs: object, outputs: object) {
     showLabel: boolean;
     type: "source" | "target";
   }[] = [];
-  for (const e of Object.values(inputs)) {
+  for (const e of inputs) {
     handles.push({ ...e, type: "target" });
   }
-  for (const e of Object.values(outputs)) {
+  for (const e of outputs) {
     handles.push({ ...e, type: "source" });
   }
   const counts = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -43,11 +43,17 @@ function getHandles(inputs: object, outputs: object) {
   return handles;
 }
 
+const OP_COLORS: { [key: string]: string } = {
+  orange: "oklch(75% 0.2 55)",
+  blue: "oklch(75% 0.2 230)",
+  green: "oklch(75% 0.2 130)",
+};
+
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
   const expanded = !data.collapsed;
-  const handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
+  const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
   function titleClicked() {
     reactFlow.updateNodeData(props.id, { collapsed: expanded });
   }
@@ -57,7 +63,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     left: "top",
     right: "top",
   };
-
+  const titleStyle: { backgroundColor?: string } = {};
+  if (data.meta?.value?.color) {
+    titleStyle.backgroundColor = OP_COLORS[data.meta.value.color] || data.meta.value.color;
+  }
   return (
     <div
       className={`node-container ${expanded ? "expanded" : "collapsed"} `}
@@ -67,7 +76,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       }}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
-        <div className={`title bg-primary ${data.status}`} onClick={titleClicked}>
+        <div
+          className={`title bg-primary ${data.status}`}
+          style={titleStyle}
+          onClick={titleClicked}
+        >
           {data.title}
           {data.error && <span className="title-icon">⚠️</span>}
           {expanded || <span className="title-icon">⋯</span>}
@@ -97,7 +110,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         )}
         {handles.map((handle) => (
           <Handle
-            key={handle.name}
+            key={`${handle.name} on ${handle.position}`}
             id={handle.name}
             type={handle.type}
             position={handle.position as Position}

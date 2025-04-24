@@ -6,29 +6,30 @@ import graphlib
 import pydantic
 from lynxkite.core import ops, workspace
 import torch
-import torch_geometric.nn as pyg_nn
 import dataclasses
 from .. import core
 
 ENV = "PyTorch model"
 
 
-def op(name, **kwargs):
+def op(name, weights=False, **kwargs):
+    if weights:
+        kwargs["color"] = "blue"
     _op = ops.op(ENV, name, **kwargs)
 
     def decorator(func):
         _op(func)
         op = func.__op__
-        for p in op.inputs.values():
-            p.position = "bottom"
-        for p in op.outputs.values():
-            p.position = "top"
+        for p in op.inputs:
+            p.position = ops.Position.BOTTOM
+        for p in op.outputs:
+            p.position = ops.Position.TOP
         return func
 
     return decorator
 
 
-def reg(name, inputs=[], outputs=None, params=[]):
+def reg(name, inputs=[], outputs=None, params=[], **kwargs):
     if outputs is None:
         outputs = inputs
     return ops.register_passive_op(
@@ -37,6 +38,7 @@ def reg(name, inputs=[], outputs=None, params=[]):
         inputs=[ops.Input(name=name, position="bottom", type="tensor") for name in inputs],
         outputs=[ops.Output(name=name, position="top", type="tensor") for name in outputs],
         params=params,
+        **kwargs,
     )
 
 
@@ -300,8 +302,8 @@ class ModelBuilder:
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n]]
-        outputs = [_to_id(node_id, n) for n in op.outputs]
+        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
+        outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
@@ -316,6 +318,8 @@ class ModelBuilder:
         return self.get_config()
 
     def get_config(self) -> ModelConfig:
+        import torch_geometric.nn as pyg_nn
+
         # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:

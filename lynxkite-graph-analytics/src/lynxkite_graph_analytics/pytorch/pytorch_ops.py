@@ -4,7 +4,6 @@ import enum
 from lynxkite.core import ops
 from lynxkite.core.ops import Parameter as P
 import torch
-import torch_geometric.nn as pyg_nn
 from .pytorch_core import op, reg, ENV
 
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
@@ -13,7 +12,7 @@ reg("Input: sequential", outputs=["y"])
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")])
 
 
-@op("LSTM")
+@op("LSTM", weights=True)
 def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
     return torch.nn.LSTM(input_size, hidden_size, dropout=0.0)
 
@@ -59,12 +58,14 @@ def dropout(x, *, p=0.0):
     return torch.nn.Dropout(p)
 
 
-@op("Linear")
+@op("Linear", weights=True)
 def linear(x, *, output_dim=1024):
+    import torch_geometric.nn as pyg_nn
+
     return pyg_nn.Linear(-1, output_dim)
 
 
-class ActivationTypes(enum.Enum):
+class ActivationTypes(str, enum.Enum):
     ReLU = "ReLU"
     Leaky_ReLU = "Leaky ReLU"
     Tanh = "Tanh"
@@ -124,6 +125,7 @@ reg(
         ),
         P.basic("lr", 0.001),
     ],
+    color="green",
 )
 
 ops.register_passive_op(
@@ -148,10 +150,10 @@ ops.register_passive_op(
 
 def _set_handle_positions(op):
     op: ops.Op = op.__op__
-    for v in op.outputs.values():
-        v.position = "top"
-    for v in op.inputs.values():
-        v.position = "bottom"
+    for v in op.outputs:
+        v.position = ops.Position.TOP
+    for v in op.inputs:
+        v.position = ops.Position.BOTTOM
 
 
 def _register_simple_pytorch_layer(func):

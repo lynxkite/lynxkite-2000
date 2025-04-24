@@ -6107,26 +6107,26 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "View vectors",
-          "outputs": {},
-          "params": {
-            "label_column": {
+          "outputs": [],
+          "params": [
+            {
               "default": "",
               "name": "label_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "metric": {
+            {
               "default": "euclidean",
               "name": "metric",
               "type": {
@@ -6149,35 +6149,35 @@
                 ]
               }
             },
-            "min_dist": {
+            {
               "default": 0.1,
               "name": "min_dist",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "n_neighbors": {
+            {
               "default": 15.0,
               "name": "n_neighbors",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "table_name": {
+            {
               "default": "nodes",
               "name": "table_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "vector_column": {
+            {
               "default": "",
               "name": "vector_column",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -12267,26 +12267,26 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "View vectors",
-          "outputs": {},
-          "params": {
-            "label_column": {
+          "outputs": [],
+          "params": [
+            {
               "default": "",
               "name": "label_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "metric": {
+            {
               "default": "euclidean",
               "name": "metric",
               "type": {
@@ -12309,35 +12309,35 @@
                 ]
               }
             },
-            "min_dist": {
+            {
               "default": 0.1,
               "name": "min_dist",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "n_neighbors": {
+            {
               "default": 15.0,
               "name": "n_neighbors",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "table_name": {
+            {
               "default": "nodes",
               "name": "table_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "vector_column": {
+            {
               "default": "",
               "name": "vector_column",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -12367,18 +12367,18 @@
         "error": null,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Word2vec for the top 1000 words",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -12405,34 +12405,34 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "df": {
+          "inputs": [
+            {
               "name": "df",
               "position": "left",
               "type": {
                 "type": "<class 'pandas.core.frame.DataFrame'>"
               }
             }
-          },
+          ],
           "name": "Take first N",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "n": {
+          ],
+          "params": [
+            {
               "default": 10.0,
               "name": "n",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -12461,34 +12461,34 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "df": {
+          "inputs": [
+            {
               "name": "df",
               "position": "left",
               "type": {
                 "type": "<class 'pandas.core.frame.DataFrame'>"
               }
             }
-          },
+          ],
           "name": "Sample N",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "n": {
+          ],
+          "params": [
+            {
               "default": 10.0,
               "name": "n",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -12939,26 +12939,26 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "View tables",
-          "outputs": {},
-          "params": {
-            "limit": {
+          "outputs": [],
+          "params": [
+            {
               "default": 100.0,
               "name": "limit",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 356.0,
             "y": 478.0

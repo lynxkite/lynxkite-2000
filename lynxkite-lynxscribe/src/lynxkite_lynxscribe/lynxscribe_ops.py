@@ -45,18 +45,18 @@ output_on_top = ops.output_position(output="top")
 
 
 # defining the cloud provider enum
-class CloudProvider(Enum):
+class CloudProvider(str, Enum):
     GCP = "gcp"
     AWS = "aws"
     AZURE = "azure"
 
 
-class RAGVersion(Enum):
+class RAGVersion(str, Enum):
     V1 = "v1"
     V2 = "v2"
 
 
-class MessageRole(Enum):
+class MessageRole(str, Enum):
     SYSTEM = "system"
     USER = "user"
 
@@ -875,7 +875,7 @@ async def get_chat_api(ws: str):
     path = cwd / ws
     assert path.is_relative_to(cwd)
     assert path.exists(), f"Workspace {path} does not exist"
-    ws = workspace.load(path)
+    ws = workspace.Workspace.load(path)
     contexts = await ops.EXECUTORS[ENV](ws)
     nodes = [op for op in ws.nodes if op.data.title == "LynxScribe RAG Graph Chatbot Backend"]
     [node] = nodes
@@ -939,7 +939,7 @@ def get_lynxscribe_workspaces():
     for p in pathlib.Path().glob("**/*"):
         if p.is_file():
             try:
-                ws = workspace.load(p)
+                ws = workspace.Workspace.load(p)
                 if ws.env == ENV:
                     workspaces.append(p)
             except Exception:

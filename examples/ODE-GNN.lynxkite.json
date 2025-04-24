@@ -113,34 +113,34 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "edges": {
+          "inputs": [
+            {
               "name": "edges",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             },
-            "x": {
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Graph conv",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "type": {
+          ],
+          "params": [
+            {
               "default": "1",
               "name": "type",
               "type": {
@@ -152,7 +152,7 @@
                 ]
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -178,34 +178,34 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Repeat",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "times": {
+          ],
+          "params": [
+            {
               "default": 1.0,
               "name": "times",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -231,33 +231,33 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "a": {
+          "inputs": [
+            {
               "name": "a",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             },
-            "b": {
+            {
               "name": "b",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Concatenate",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -281,18 +281,18 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input: graph edges",
-          "outputs": {
-            "edges": {
+          "outputs": [
+            {
               "name": "edges",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -316,18 +316,18 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input: embedding",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -349,27 +349,27 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Activation",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "type": {
+          ],
+          "params": [
+            {
               "default": "1",
               "name": "type",
               "type": {
@@ -381,7 +381,7 @@
                 ]
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -407,40 +407,40 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "h": {
+          "inputs": [
+            {
               "name": "h",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             },
-            "x": {
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "LSTM",
-          "outputs": {
-            "h": {
+          "outputs": [
+            {
               "name": "h",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             },
-            "x": {
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -464,18 +464,18 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input: sequential",
-          "outputs": {
-            "y": {
+          "outputs": [
+            {
               "name": "y",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -499,18 +499,18 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input: zeros",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -534,26 +534,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Recurrent chain",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -577,33 +577,33 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             },
-            "y": {
+            {
               "name": "y",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "MSE loss",
-          "outputs": {
-            "loss": {
+          "outputs": [
+            {
               "name": "loss",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -627,18 +627,18 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input: label",
-          "outputs": {
-            "y": {
+          "outputs": [
+            {
               "name": "y",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -660,26 +660,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "loss": {
+          "inputs": [
+            {
               "name": "loss",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Optimizer",
-          "outputs": {},
-          "params": {
-            "lr": {
+          "outputs": [],
+          "params": [
+            {
               "default": 0.001,
               "name": "lr",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "type": {
+            {
               "default": "1",
               "name": "type",
               "type": {
@@ -694,7 +694,7 @@
                 ]
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -719,34 +719,34 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Neural ODE",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "absolute_tolerance": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "absolute_tolerance",
               "type": {
                 "type": "None"
               }
             },
-            "method": {
+            {
               "default": "1",
               "name": "method",
               "type": {
@@ -764,14 +764,14 @@
                 ]
               }
             },
-            "relative_tolerance": {
+            {
               "default": null,
               "name": "relative_tolerance",
               "type": {
                 "type": "None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
