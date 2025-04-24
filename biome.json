@@ -25,6 +25,7 @@
         "useValidAnchor": "off",
         "useButtonType": "off",
         "noAutofocus": "off",
+        "noLabelWithoutControl": "off",
         "noNoninteractiveTabindex": "off"
       }
     }
