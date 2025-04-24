@@ -50,14 +50,15 @@ data_path = pathlib.Path()
 def save(req: SaveRequest):
     path = data_path / req.path
     assert path.is_relative_to(data_path)
-    workspace.save(req.ws, path)
+    req.ws.save(path)
 
 
 @app.post("/api/save")
 async def save_and_execute(req: SaveRequest):
     save(req)
-    await workspace.execute(req.ws)
-    save(req)
+    if req.ws.has_executor():
+        await req.ws.execute()
+        save(req)
     return req.ws
 
 
@@ -76,7 +77,7 @@ def load(path: str):
     assert path.is_relative_to(data_path)
     if not path.exists():
         return workspace.Workspace()
-    return workspace.load(path)
+    return workspace.Workspace.load(path)
 
 
 class DirectoryEntry(pydantic.BaseModel):

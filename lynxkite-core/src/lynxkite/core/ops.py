@@ -95,17 +95,28 @@ class ParameterGroup(BaseConfig):
     type: str = "group"
 
 
+class Position(str, enum.Enum):
+    """Defines the position of an input or output in the UI."""
+
+    LEFT = "left"
+    RIGHT = "right"
+    TOP = "top"
+    BOTTOM = "bottom"
+
+    def is_vertical(self):
+        return self in (self.TOP, self.BOTTOM)
+
+
 class Input(BaseConfig):
     name: str
     type: Type
-    # TODO: Make position an enum with the possible values.
-    position: str = "left"
+    position: Position = Position.LEFT
 
 
 class Output(BaseConfig):
     name: str
     type: Type
-    position: str = "right"
+    position: Position = Position.RIGHT
 
 
 @dataclass
@@ -163,11 +174,12 @@ def _param_to_type(name, value, type):
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     name: str
-    params: dict[str, Parameter | ParameterGroup]
-    inputs: dict[str, Input]
-    outputs: dict[str, Output]
+    params: list[Parameter | ParameterGroup]
+    inputs: list[Input]
+    outputs: list[Output]
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
+    color: str = "orange"  # The color of the operation in the UI.
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -188,18 +200,39 @@ class Op(BaseConfig):
                 res.display = res.output
         return res
 
-    def convert_params(self, params):
+    def get_input(self, name: str):
+        """Returns the input with the given name."""
+        for i in self.inputs:
+            if i.name == name:
+                return i
+        raise ValueError(f"Input {name} not found in operation {self.name}.")
+
+    def get_output(self, name: str):
+        """Returns the output with the given name."""
+        for o in self.outputs:
+            if o.name == name:
+                return o
+        raise ValueError(f"Output {name} not found in operation {self.name}.")
+
+    def convert_params(self, params: dict[str, typing.Any]):
         """Returns the parameters converted to the expected type."""
-        res = {}
-        for p in params:
-            if p in self.params:
-                res[p] = _param_to_type(p, params[p], self.params[p].type)
-            else:
-                res[p] = params[p]
+        res = dict(params)
+        for p in self.params:
+            if p.name in params:
+                res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
 
 
-def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=False):
+def op(
+    env: str,
+    name: str,
+    *,
+    view="basic",
+    outputs=None,
+    params=None,
+    slow=False,
+    color=None,
+):
     """Decorator for defining an operation."""
 
     def decorator(func):
@@ -208,21 +241,21 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
             func = mem.cache(func)
             func = _global_slow(func)
         # Positional arguments are inputs.
-        inputs = {
-            name: Input(name=name, type=param.annotation)
+        inputs = [
+            Input(name=name, type=param.annotation)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
-        }
-        _params = {}
+        ]
+        _params = []
         for n, param in sig.parameters.items():
             if param.kind == param.KEYWORD_ONLY and not n.startswith("_"):
-                _params[n] = Parameter.basic(n, param.default, param.annotation)
+                _params.append(Parameter.basic(n, param.default, param.annotation))
         if params:
-            _params.update(params)
+            _params.extend(params)
         if outputs:
-            _outputs = {name: Output(name=name, type=None) for name in outputs}
+            _outputs = [Output(name=name, type=None) for name in outputs]
         else:
-            _outputs = {"output": Output(name="output", type=None)} if view == "basic" else {}
+            _outputs = [Output(name="output", type=None)] if view == "basic" else []
         _view = view
         if view == "matplotlib":
             _view = "image"
@@ -234,6 +267,7 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
             inputs=inputs,
             outputs=_outputs,
             type=_view,
+            color=color or "orange",
         )
         CATALOGS.setdefault(env, {})
         CATALOGS[env][name] = op
@@ -244,6 +278,7 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
 
 
 def matplotlib_to_image(func):
+    """Decorator for converting a matplotlib figure to an image."""
     import matplotlib.pyplot as plt
     import base64
     import io
@@ -267,7 +302,7 @@ def input_position(**kwargs):
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.inputs[k].position = v
+            op.get_input(k).position = Position(v)
         return func
 
     return decorator
@@ -279,7 +314,7 @@ def output_position(**kwargs):
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.outputs[k].position = v
+            op.get_output(k).position = Position(v)
         return func
 
     return decorator
@@ -291,18 +326,15 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[]):
+def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[], **kwargs):
     """A passive operation has no associated code."""
     op = Op(
         func=no_op,
         name=name,
-        params={p.name: p for p in params},
-        inputs=dict(
-            (i, Input(name=i, type=None)) if isinstance(i, str) else (i.name, i) for i in inputs
-        ),
-        outputs=dict(
-            (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o) for o in outputs
-        ),
+        params=params,
+        inputs=[Input(name=i, type=None) if isinstance(i, str) else i for i in inputs],
+        outputs=[Output(name=o, type=None) if isinstance(o, str) else o for o in outputs],
+        **kwargs,
     )
     CATALOGS.setdefault(env, {})
     CATALOGS[env][name] = op

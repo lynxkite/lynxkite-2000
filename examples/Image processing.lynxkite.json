@@ -46,26 +46,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Open image",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "filename": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "filename",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -91,18 +91,18 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "image": {
+          "inputs": [
+            {
               "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          },
+          ],
           "name": "View image",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "type": "image"
         },
         "params": {},
@@ -126,18 +126,18 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "image": {
+          "inputs": [
+            {
               "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          },
+          ],
           "name": "View image",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "type": "image"
         },
         "params": {},
@@ -163,26 +163,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "image": {
+          "inputs": [
+            {
               "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          },
+          ],
           "name": "To grayscale",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -208,34 +208,34 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "image": {
+          "inputs": [
+            {
               "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          },
+          ],
           "name": "Blur",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "radius": {
+          ],
+          "params": [
+            {
               "default": 5.0,
               "name": "radius",
               "type": {
                 "type": "<class 'float'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -263,26 +263,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "image": {
+          "inputs": [
+            {
               "name": "image",
               "position": "left",
               "type": {
                 "type": "<module 'PIL.Image' from '/media/nvme/darabos/lynxkite-2024/.venv/lib/python3.11/site-packages/PIL/Image.py'>"
               }
             }
-          },
+          ],
           "name": "Flip vertically",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
