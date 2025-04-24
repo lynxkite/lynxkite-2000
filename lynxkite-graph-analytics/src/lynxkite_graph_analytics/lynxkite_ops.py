@@ -29,8 +29,8 @@ class FileFormat(enum.StrEnum):
 
 @op(
     "Import file",
-    params={
-        "file_format": ops.ParameterGroup(
+    params=[
+        ops.ParameterGroup(
             name="file_format",
             selector=ops.Parameter(name="file_format", type=FileFormat, default=FileFormat.csv),
             groups={
@@ -44,7 +44,7 @@ class FileFormat(enum.StrEnum):
             },
             default=FileFormat.csv,
         ),
-    },
+    ],
 )
 def import_file(
     *, file_path: str, table_name: str, file_format: FileFormat, **kwargs

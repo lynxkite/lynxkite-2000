@@ -201,18 +201,19 @@ def _get_params(func) -> dict | None:
             types[k] = param.annotation
         if k in ["i", "j", "n"]:
             types[k] = int
-    params = {}
+    params = []
     for name, param in sig.parameters.items():
         _type = types.get(name, _UNSUPPORTED)
         if _type is _UNSUPPORTED:
             raise UnsupportedParameterType(name)
         if _type is _SKIP or _type in [nx.Graph, nx.DiGraph]:
             continue
-        params[name] = ops.Parameter.basic(
+        p = ops.Parameter.basic(
             name=name,
             default=str(param.default) if type(param.default) in [str, int, float] else None,
             type=_type,
         )
+        params.append(p)
     return params
 
 
@@ -252,7 +253,7 @@ def register_networkx(env: str):
                 params = _get_params(func)
             except UnsupportedParameterType:
                 continue
-            inputs = {k: ops.Input(name=k, type=nx.Graph) for k in func.graphs}
+            inputs = [ops.Input(name=k, type=nx.Graph) for k in func.graphs]
             nicename = "NX › " + name.replace("_", " ").title()
             for a, b in _REPLACEMENTS:
                 nicename = nicename.replace(a, b)
@@ -261,7 +262,7 @@ def register_networkx(env: str):
                 name=nicename,
                 params=params,
                 inputs=inputs,
-                outputs={"output": ops.Output(name="output", type=nx.Graph)},
+                outputs=[ops.Output(name="output", type=nx.Graph)],
                 type="basic",
             )
             cat[nicename] = op

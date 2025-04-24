@@ -46,26 +46,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "LynxScribe Message",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "prompt_content": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "prompt_content",
               "type": {
                 "format": "textarea"
               }
             },
-            "prompt_role": {
+            {
               "default": null,
               "name": "prompt_role",
               "type": {
@@ -75,7 +75,7 @@
                 ]
               }
             }
-          },
+          ],
           "position": {
             "x": 653.0,
             "y": 954.0
@@ -107,26 +107,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "LynxScribe Message",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "prompt_content": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "prompt_content",
               "type": {
                 "format": "textarea"
               }
             },
-            "prompt_role": {
+            {
               "default": null,
               "name": "prompt_role",
               "type": {
@@ -136,7 +136,7 @@
                 ]
               }
             }
-          },
+          ],
           "position": {
             "x": 1498.0,
             "y": 660.0
@@ -168,40 +168,40 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Read Excel",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "columns": {
+          ],
+          "params": [
+            {
               "default": "",
               "name": "columns",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "file_path": {
+            {
               "default": null,
               "name": "file_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "sheet_name": {
+            {
               "default": "Sheet1",
               "name": "sheet_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 236.0,
             "y": 150.0
@@ -234,62 +234,62 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "dataframe": {
+          "inputs": [
+            {
               "name": "dataframe",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "instruction_prompt": {
+            {
               "name": "instruction_prompt",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "system_prompt": {
+            {
               "name": "system_prompt",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "LynxScribe Task Solver",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "llm_interface": {
+          ],
+          "params": [
+            {
               "default": "openai",
               "name": "llm_interface",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "llm_model_name": {
+            {
               "default": "gpt-4o",
               "name": "llm_model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "new_column_names": {
+            {
               "default": "processed_field",
               "name": "new_column_names",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1511.0,
             "y": 220.0
@@ -431,18 +431,18 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "View DataFrame",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "position": {
             "x": 1719.0,
             "y": 332.0
@@ -500,18 +500,18 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "View DataFrame",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "position": {
             "x": 1083.0,
             "y": 134.0

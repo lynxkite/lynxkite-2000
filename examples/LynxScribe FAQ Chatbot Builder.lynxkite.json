@@ -60,68 +60,68 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "LynxScribe FAQ to RAG",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "faq_excel_path": {
+          ],
+          "params": [
+            {
               "default": "uploads/organon_demo/organon_en_copy.xlsx",
               "name": "faq_excel_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "scenario_cluster_distance_pct": {
+            {
               "default": 30.0,
               "name": "scenario_cluster_distance_pct",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "text_embedder_interface": {
+            {
               "default": "openai",
               "name": "text_embedder_interface",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "text_embedder_model_name_or_path": {
+            {
               "default": "text-embedding-3-large",
               "name": "text_embedder_model_name_or_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "vdb_collection_name": {
+            {
               "default": "lynx",
               "name": "vdb_collection_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "vdb_num_dimensions": {
+            {
               "default": 3072.0,
               "name": "vdb_num_dimensions",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "vdb_provider_name": {
+            {
               "default": "faiss",
               "name": "vdb_provider_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -154,48 +154,48 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "rag_graph": {
+          "inputs": [
+            {
               "name": "rag_graph",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "LynxScribe RAG Graph Chatbot Builder",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "node_types": {
+          ],
+          "params": [
+            {
               "default": "intent_cluster",
               "name": "node_types",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "scenario_file": {
+            {
               "default": "uploads/lynx_chatbot_scenario_selector.yaml",
               "name": "scenario_file",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "scenario_meta_name": {
+            {
               "default": "scenario_name",
               "name": "scenario_meta_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1569.0,
             "y": 528.0
@@ -228,90 +228,90 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "chat_processor": {
+          "inputs": [
+            {
               "name": "chat_processor",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "knowledge_base": {
+            {
               "name": "knowledge_base",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "LynxScribe RAG Graph Chatbot Backend",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "llm_interface": {
+          ],
+          "params": [
+            {
               "default": "openai",
               "name": "llm_interface",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "llm_model_name": {
+            {
               "default": "gpt-4o",
               "name": "llm_model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "negative_answer": {
+            {
               "default": "I'm sorry, but the data I've been trained on does not contain any information related to your question.",
               "name": "negative_answer",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "retriever_limits_by_type": {
+            {
               "default": "{}",
               "name": "retriever_limits_by_type",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "retriever_max_iterations": {
+            {
               "default": 3.0,
               "name": "retriever_max_iterations",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "retriever_overall_chunk_limit": {
+            {
               "default": 20.0,
               "name": "retriever_overall_chunk_limit",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "retriever_overall_token_limit": {
+            {
               "default": 3000.0,
               "name": "retriever_overall_token_limit",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "retriever_strict_limits": {
+            {
               "default": true,
               "name": "retriever_strict_limits",
               "type": {
                 "type": "<class 'bool'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1280.0,
             "y": 450.0
@@ -347,26 +347,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "processor": {
+          "inputs": [
+            {
               "name": "processor",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "Chat processor",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "position": {
             "x": 1291.0,
             "y": 718.0
@@ -393,26 +393,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Truncate history",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "max_tokens": {
+          ],
+          "params": [
+            {
               "default": 10000.0,
               "name": "max_tokens",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1440.0,
             "y": 936.0
@@ -443,26 +443,26 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Input chat",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "chat": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "chat",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 449.0,
             "y": 172.0
@@ -493,41 +493,41 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "chat_api": {
+          "inputs": [
+            {
               "name": "chat_api",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "message": {
+            {
               "name": "message",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "Test Chat API",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "show_details": {
+          ],
+          "params": [
+            {
               "default": false,
               "name": "show_details",
               "type": {
                 "type": "<class 'bool'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 937.0,
             "y": 213.0
@@ -569,18 +569,18 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "View",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "position": {
             "x": 1547.0,
             "y": 222.0

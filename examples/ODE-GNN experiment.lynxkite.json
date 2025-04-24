@@ -52,26 +52,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Biomedical foundation graph (PLACEHOLDER)",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "filter_nodes": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "filter_nodes",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -97,41 +97,41 @@
         "display": null,
         "error": "Missing input: bundle",
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Train/test split",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "table_name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "table_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "test_ratio": {
+            {
               "default": 0.1,
               "name": "test_ratio",
               "type": {
                 "type": "<class 'float'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -156,40 +156,40 @@
         "display": null,
         "error": "[Errno 2] No such file or directory: ''",
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Import CSV",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "columns": {
+          ],
+          "params": [
+            {
               "default": "<from file>",
               "name": "columns",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "filename": {
+            {
               "default": null,
               "name": "filename",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "separator": {
+            {
               "default": "<auto>",
               "name": "separator",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -217,48 +217,48 @@
         "display": null,
         "error": "Missing input: bundle",
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Model inference",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "model_mapping": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "model_mapping",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "model_name": {
+            {
               "default": null,
               "name": "model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "save_output_as": {
+            {
               "default": "prediction",
               "name": "save_output_as",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -286,34 +286,34 @@
         "display": null,
         "error": "Missing input: bundle",
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "list[lynxkite_graph_analytics.core.Bundle]"
               }
             }
-          },
+          ],
           "name": "Organize",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "relations": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "relations",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "graph_creation_view"
         },
         "params": {
@@ -339,33 +339,33 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Define model",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "model_workspace": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "model_workspace",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "save_as": {
+            {
               "default": "model",
               "name": "save_as",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 286.0,
             "y": 208.0
@@ -396,48 +396,48 @@
         "display": null,
         "error": "Missing input: bundle",
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Train model",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "epochs": {
+          ],
+          "params": [
+            {
               "default": 1.0,
               "name": "epochs",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "model_mapping": {
+            {
               "default": null,
               "name": "model_mapping",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "model_name": {
+            {
               "default": null,
               "name": "model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 995.0,
             "y": 350.0

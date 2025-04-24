@@ -1,174 +1,260 @@
 {
+  "edges": [
+    {
+      "id": "xy-edge__Answer Post Processing 1output-Chat Output 1input",
+      "source": "Answer Post Processing 1",
+      "sourceHandle": "output",
+      "target": "Chat Output 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Chat Input 1output-Graph RAG Answer 1qa_embs",
+      "source": "Chat Input 1",
+      "sourceHandle": "output",
+      "target": "Graph RAG Answer 1",
+      "targetHandle": "qa_embs"
+    },
+    {
+      "id": "xy-edge__Chat Input 1output-k-NN Intent Classifier 1qa_embs",
+      "source": "Chat Input 1",
+      "sourceHandle": "output",
+      "target": "k-NN Intent Classifier 1",
+      "targetHandle": "qa_embs"
+    },
+    {
+      "id": "xy-edge__Chroma Graph RAG Loader 1output-k-NN Intent Classifier 1rag_graph",
+      "source": "Chroma Graph RAG Loader 1",
+      "sourceHandle": "output",
+      "target": "k-NN Intent Classifier 1",
+      "targetHandle": "rag_graph"
+    },
+    {
+      "id": "xy-edge__k-NN Intent Classifier 1output-Graph RAG Answer 1intent",
+      "source": "k-NN Intent Classifier 1",
+      "sourceHandle": "output",
+      "target": "Graph RAG Answer 1",
+      "targetHandle": "intent"
+    },
+    {
+      "id": "xy-edge__Chroma Graph RAG Loader 1output-Scenario Builder 1input",
+      "source": "Chroma Graph RAG Loader 1",
+      "sourceHandle": "output",
+      "target": "Scenario Builder 1",
+      "targetHandle": "input"
+    },
+    {
+      "id": "xy-edge__Scenario Builder 1output-Graph RAG Answer 1prompt_dict",
+      "source": "Scenario Builder 1",
+      "sourceHandle": "output",
+      "target": "Graph RAG Answer 1",
+      "targetHandle": "prompt_dict"
+    },
+    {
+      "id": "xy-edge__Graph RAG Answer 1output-Answer Post Processing 1qa_embs",
+      "source": "Graph RAG Answer 1",
+      "sourceHandle": "output",
+      "target": "Answer Post Processing 1",
+      "targetHandle": "qa_embs"
+    },
+    {
+      "id": "xy-edge__Chroma Graph RAG Loader 1output-Answer Post Processing 1rag_graph",
+      "source": "Chroma Graph RAG Loader 1",
+      "sourceHandle": "output",
+      "target": "Answer Post Processing 1",
+      "targetHandle": "rag_graph"
+    },
+    {
+      "id": "xy-edge__Chroma Graph RAG Loader 1output-Graph RAG Answer 1rag_graph",
+      "source": "Chroma Graph RAG Loader 1",
+      "sourceHandle": "output",
+      "target": "Graph RAG Answer 1",
+      "targetHandle": "rag_graph"
+    }
+  ],
   "env": "LynxScribe",
   "nodes": [
     {
-      "id": "Chat Input 1",
-      "type": "basic",
       "data": {
-        "title": "Chat Input",
-        "params": {
-          "load_mode": "augmented",
-          "model": "Yi-34B (triton)",
-          "embedder": "GritLM-7b (triton)"
-        },
         "display": null,
         "error": null,
         "inputs": {},
-        "outputs": {
-          "output": "<class 'server.ops.Bundle'>"
-        },
         "meta": {
+          "inputs": [],
           "name": "Chat Input",
-          "params": {
-            "load_mode": {
-              "name": "load_mode",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
               "default": 1,
+              "name": "embedder",
+              "type": {
+                "enum": [
+                  "GritLM-7b (triton)"
+                ]
+              }
+            },
+            {
+              "default": 1,
+              "name": "load_mode",
               "type": {
                 "enum": [
                   "augmented"
                 ]
               }
             },
-            "model": {
-              "name": "model",
+            {
               "default": 1,
+              "name": "model",
               "type": {
                 "enum": [
                   "Yi-34B (triton)"
                 ]
               }
+            }
+          ],
+          "sub_nodes": null,
+          "type": "basic"
+        },
+        "outputs": {
+          "output": "<class 'server.ops.Bundle'>"
+        },
+        "params": {
+          "embedder": "GritLM-7b (triton)",
+          "load_mode": "augmented",
+          "model": "Yi-34B (triton)"
+        },
+        "title": "Chat Input"
+      },
+      "id": "Chat Input 1",
+      "parentId": null,
+      "parentNode": null,
+      "position": {
+        "x": 195.66666666666669,
+        "y": 163.66666666666666
+      },
+      "type": "basic"
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "inputs": {},
+        "meta": {
+          "inputs": [],
+          "name": "Chroma Graph RAG Loader",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "bucket",
+              "type": {
+                "format": "collapsed"
+              }
             },
-            "embedder": {
-              "name": "embedder",
+            {
               "default": 1,
+              "name": "embedder",
               "type": {
                 "enum": [
                   "GritLM-7b (triton)"
                 ]
               }
-            }
-          },
-          "inputs": {},
-          "outputs": {
-            "output": {
-              "name": "output",
+            },
+            {
+              "default": "",
+              "name": "folder",
               "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
-      },
-      "position": {
-        "x": 195.66666666666669,
-        "y": 163.66666666666666
-      },
-      "parentId": null,
-      "parentNode": null
-    },
-    {
-      "id": "Chroma Graph RAG Loader 1",
-      "type": "basic",
-      "data": {
-        "title": "Chroma Graph RAG Loader",
-        "params": {
-          "location": "GCP",
-          "bucket": "",
-          "folder": "",
-          "embedder": "GritLM-7b (triton)"
-        },
-        "display": null,
-        "error": null,
-        "inputs": {},
-        "outputs": {
-          "output": "<class 'server.ops.Bundle'>"
-        },
-        "meta": {
-          "name": "Chroma Graph RAG Loader",
-          "params": {
-            "location": {
-              "name": "location",
+                "format": "collapsed"
+              }
+            },
+            {
               "default": 1,
+              "name": "location",
               "type": {
                 "enum": [
                   "GCP"
                 ]
               }
-            },
-            "bucket": {
-              "name": "bucket",
-              "default": "",
-              "type": {
-                "format": "collapsed"
-              }
-            },
-            "folder": {
-              "name": "folder",
-              "default": "",
-              "type": {
-                "format": "collapsed"
-              }
-            },
-            "embedder": {
-              "name": "embedder",
-              "default": 1,
-              "type": {
-                "enum": [
-                  "GritLM-7b (triton)"
-                ]
-              }
             }
-          },
-          "inputs": {},
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
+          ],
+          "sub_nodes": null,
+          "type": "basic"
+        },
+        "outputs": {
+          "output": "<class 'server.ops.Bundle'>"
+        },
+        "params": {
+          "bucket": "",
+          "embedder": "GritLM-7b (triton)",
+          "folder": "",
+          "location": "GCP"
+        },
+        "title": "Chroma Graph RAG Loader"
       },
+      "id": "Chroma Graph RAG Loader 1",
+      "parentId": null,
+      "parentNode": null,
       "position": {
         "x": 195.60875221397816,
         "y": 395.94296449008243
       },
-      "parentId": null,
-      "parentNode": null
+      "type": "basic"
     },
     {
-      "id": "k-NN Intent Classifier 1",
-      "type": "basic",
       "data": {
-        "title": "k-NN Intent Classifier",
-        "params": {
-          "distance": "cosine",
-          "max_dist": 0.3,
-          "k": "10",
-          "voting": "weighted"
-        },
+        "collapsed": false,
         "display": null,
         "error": null,
         "inputs": {
           "qa_embs": "None",
           "rag_graph": "None"
         },
-        "outputs": {
-          "output": "<class 'server.ops.Bundle'>"
-        },
         "meta": {
+          "inputs": [
+            {
+              "name": "qa_embs",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "rag_graph",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "name": "k-NN Intent Classifier",
-          "params": {
-            "distance": {
-              "name": "distance",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
               "default": 1,
+              "name": "distance",
               "type": {
                 "enum": [
                   "cosine",
@@ -176,23 +262,23 @@
                 ]
               }
             },
-            "max_dist": {
-              "name": "max_dist",
-              "default": 0.3,
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            "k": {
-              "name": "k",
+            {
               "default": 3,
+              "name": "k",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "voting": {
-              "name": "voting",
+            {
+              "default": 0.3,
+              "name": "max_dist",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
               "default": 1,
+              "name": "voting",
               "type": {
                 "enum": [
                   "most common",
@@ -200,104 +286,102 @@
                 ]
               }
             }
-          },
-          "inputs": {
-            "qa_embs": {
-              "name": "qa_embs",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            },
-            "rag_graph": {
-              "name": "rag_graph",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        },
-        "collapsed": false
-      },
-      "position": {
-        "x": 563.2980104689954,
-        "y": 133.15405056058248
-      },
-      "parentId": null,
-      "parentNode": null
-    },
-    {
-      "id": "Graph RAG Answer 1",
-      "type": "basic",
-      "data": {
-        "title": "Graph RAG Answer",
-        "params": {
-          "answer_llm": "Yi-34B (triton)",
-          "faq_dist": 0.12,
-          "max_dist": 0.25,
-          "ctx_tokens": 2800,
-          "distance": "cosine",
-          "graph_rag_params": ""
-        },
-        "display": null,
-        "error": null,
-        "inputs": {
-          "qa_embs": "None",
-          "intent": "None",
-          "rag_graph": "None",
-          "prompt_dict": "None"
+          ],
+          "sub_nodes": null,
+          "type": "basic"
         },
         "outputs": {
           "output": "<class 'server.ops.Bundle'>"
         },
+        "params": {
+          "distance": "cosine",
+          "k": "10",
+          "max_dist": 0.3,
+          "voting": "weighted"
+        },
+        "title": "k-NN Intent Classifier"
+      },
+      "id": "k-NN Intent Classifier 1",
+      "parentId": null,
+      "parentNode": null,
+      "position": {
+        "x": 563.2980104689954,
+        "y": 133.15405056058248
+      },
+      "type": "basic"
+    },
+    {
+      "data": {
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "inputs": {
+          "intent": "None",
+          "prompt_dict": "None",
+          "qa_embs": "None",
+          "rag_graph": "None"
+        },
         "meta": {
+          "inputs": [
+            {
+              "name": "intent",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "prompt_dict",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "qa_embs",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "rag_graph",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "name": "Graph RAG Answer",
-          "params": {
-            "answer_llm": {
-              "name": "answer_llm",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
               "default": 1,
+              "name": "answer_llm",
               "type": {
                 "enum": [
                   "Yi-34B (triton)"
                 ]
               }
             },
-            "faq_dist": {
-              "name": "faq_dist",
-              "default": 0.12,
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            "max_dist": {
-              "name": "max_dist",
-              "default": 0.25,
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            "ctx_tokens": {
-              "name": "ctx_tokens",
+            {
               "default": 2800,
+              "name": "ctx_tokens",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "distance": {
-              "name": "distance",
+            {
               "default": 1,
+              "name": "distance",
               "type": {
                 "enum": [
                   "cosine",
@@ -305,145 +389,148 @@
                 ]
               }
             },
-            "graph_rag_params": {
-              "name": "graph_rag_params",
+            {
+              "default": 0.12,
+              "name": "faq_dist",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
               "default": "",
+              "name": "graph_rag_params",
               "type": {
                 "format": "collapsed"
               }
-            }
-          },
-          "inputs": {
-            "qa_embs": {
-              "name": "qa_embs",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
             },
-            "intent": {
-              "name": "intent",
+            {
+              "default": 0.25,
+              "name": "max_dist",
               "type": {
-                "type": "None"
-              },
-              "position": "left"
-            },
-            "rag_graph": {
-              "name": "rag_graph",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            },
-            "prompt_dict": {
-              "name": "prompt_dict",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
+                "type": "<class 'float'>"
+              }
             }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
+          ],
+          "sub_nodes": null,
+          "type": "basic"
         },
-        "collapsed": false
+        "outputs": {
+          "output": "<class 'server.ops.Bundle'>"
+        },
+        "params": {
+          "answer_llm": "Yi-34B (triton)",
+          "ctx_tokens": 2800,
+          "distance": "cosine",
+          "faq_dist": 0.12,
+          "graph_rag_params": "",
+          "max_dist": 0.25
+        },
+        "title": "Graph RAG Answer"
       },
+      "id": "Graph RAG Answer 1",
+      "parentId": null,
+      "parentNode": null,
       "position": {
         "x": 954.7861764338505,
         "y": 158.59348288997435
       },
-      "parentId": null,
-      "parentNode": null
+      "type": "basic"
     },
     {
-      "id": "Scenario Builder 1",
-      "type": "basic",
       "data": {
-        "title": "Scenario Builder",
-        "params": {
-          "scenario": ""
-        },
         "display": null,
         "error": null,
         "inputs": {
           "input": "<class 'server.ops.Bundle'>"
         },
-        "outputs": {
-          "output": "<class 'server.ops.Bundle'>"
-        },
         "meta": {
+          "inputs": [
+            {
+              "name": "input",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "name": "Scenario Builder",
-          "params": {
-            "scenario": {
-              "name": "scenario",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
               "default": "",
+              "name": "scenario",
               "type": {
                 "format": "collapsed"
               }
             }
-          },
-          "inputs": {
-            "input": {
-              "name": "input",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
+          ],
+          "sub_nodes": null,
+          "type": "basic"
+        },
+        "outputs": {
+          "output": "<class 'server.ops.Bundle'>"
+        },
+        "params": {
+          "scenario": ""
+        },
+        "title": "Scenario Builder"
       },
+      "id": "Scenario Builder 1",
+      "parentId": null,
+      "parentNode": null,
       "position": {
         "x": 564.4460318313352,
         "y": 542.19038386186
       },
-      "parentId": null,
-      "parentNode": null
+      "type": "basic"
     },
     {
-      "id": "Answer Post Processing 1",
-      "type": "basic",
       "data": {
-        "title": "Answer Post Processing",
-        "params": {
-          "distance": "cosine",
-          "min_conf": 0.78
-        },
         "display": null,
         "error": null,
         "inputs": {
           "qa_embs": "None",
           "rag_graph": "None"
         },
-        "outputs": {
-          "output": "<class 'server.ops.Bundle'>"
-        },
         "meta": {
+          "inputs": [
+            {
+              "name": "qa_embs",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "rag_graph",
+              "position": "left",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "name": "Answer Post Processing",
-          "params": {
-            "distance": {
-              "name": "distance",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
               "default": 1,
+              "name": "distance",
               "type": {
                 "enum": [
                   "cosine",
@@ -451,158 +538,71 @@
                 ]
               }
             },
-            "min_conf": {
-              "name": "min_conf",
+            {
               "default": 0.78,
+              "name": "min_conf",
               "type": {
                 "type": "<class 'float'>"
               }
             }
-          },
-          "inputs": {
-            "qa_embs": {
-              "name": "qa_embs",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            },
-            "rag_graph": {
-              "name": "rag_graph",
-              "type": {
-                "type": "None"
-              },
-              "position": "left"
-            }
-          },
-          "outputs": {
-            "output": {
-              "name": "output",
-              "type": {
-                "type": "None"
-              },
-              "position": "right"
-            }
-          },
-          "type": "basic",
-          "sub_nodes": null
-        }
+          ],
+          "sub_nodes": null,
+          "type": "basic"
+        },
+        "outputs": {
+          "output": "<class 'server.ops.Bundle'>"
+        },
+        "params": {
+          "distance": "cosine",
+          "min_conf": 0.78
+        },
+        "title": "Answer Post Processing"
       },
+      "id": "Answer Post Processing 1",
+      "parentId": null,
+      "parentNode": null,
       "position": {
         "x": 1278.9987187264371,
         "y": 203.10622200721383
       },
-      "parentId": null,
-      "parentNode": null
+      "type": "basic"
     },
     {
-      "id": "Chat Output 1",
-      "type": "basic",
       "data": {
-        "title": "Chat Output",
-        "params": {},
+        "collapsed": true,
         "display": null,
         "error": null,
         "inputs": {
           "input": "<class 'server.ops.Bundle'>"
         },
-        "outputs": {},
         "meta": {
-          "name": "Chat Output",
-          "params": {},
-          "inputs": {
-            "input": {
+          "inputs": [
+            {
               "name": "input",
+              "position": "left",
               "type": {
                 "type": "None"
-              },
-              "position": "left"
+              }
             }
-          },
-          "outputs": {},
-          "type": "basic",
-          "sub_nodes": null
+          ],
+          "name": "Chat Output",
+          "outputs": [],
+          "params": [],
+          "sub_nodes": null,
+          "type": "basic"
         },
-        "collapsed": true
+        "outputs": {},
+        "params": {},
+        "title": "Chat Output"
       },
+      "id": "Chat Output 1",
+      "parentId": null,
+      "parentNode": null,
       "position": {
         "x": 1567.1754450730762,
         "y": 249.55429591996437
       },
-      "parentId": null,
-      "parentNode": null
-    }
-  ],
-  "edges": [
-    {
-      "id": "xy-edge__Answer Post Processing 1output-Chat Output 1input",
-      "source": "Answer Post Processing 1",
-      "target": "Chat Output 1",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__Chat Input 1output-Graph RAG Answer 1qa_embs",
-      "source": "Chat Input 1",
-      "target": "Graph RAG Answer 1",
-      "sourceHandle": "output",
-      "targetHandle": "qa_embs"
-    },
-    {
-      "id": "xy-edge__Chat Input 1output-k-NN Intent Classifier 1qa_embs",
-      "source": "Chat Input 1",
-      "target": "k-NN Intent Classifier 1",
-      "sourceHandle": "output",
-      "targetHandle": "qa_embs"
-    },
-    {
-      "id": "xy-edge__Chroma Graph RAG Loader 1output-k-NN Intent Classifier 1rag_graph",
-      "source": "Chroma Graph RAG Loader 1",
-      "target": "k-NN Intent Classifier 1",
-      "sourceHandle": "output",
-      "targetHandle": "rag_graph"
-    },
-    {
-      "id": "xy-edge__k-NN Intent Classifier 1output-Graph RAG Answer 1intent",
-      "source": "k-NN Intent Classifier 1",
-      "target": "Graph RAG Answer 1",
-      "sourceHandle": "output",
-      "targetHandle": "intent"
-    },
-    {
-      "id": "xy-edge__Chroma Graph RAG Loader 1output-Scenario Builder 1input",
-      "source": "Chroma Graph RAG Loader 1",
-      "target": "Scenario Builder 1",
-      "sourceHandle": "output",
-      "targetHandle": "input"
-    },
-    {
-      "id": "xy-edge__Scenario Builder 1output-Graph RAG Answer 1prompt_dict",
-      "source": "Scenario Builder 1",
-      "target": "Graph RAG Answer 1",
-      "sourceHandle": "output",
-      "targetHandle": "prompt_dict"
-    },
-    {
-      "id": "xy-edge__Graph RAG Answer 1output-Answer Post Processing 1qa_embs",
-      "source": "Graph RAG Answer 1",
-      "target": "Answer Post Processing 1",
-      "sourceHandle": "output",
-      "targetHandle": "qa_embs"
-    },
-    {
-      "id": "xy-edge__Chroma Graph RAG Loader 1output-Answer Post Processing 1rag_graph",
-      "source": "Chroma Graph RAG Loader 1",
-      "target": "Answer Post Processing 1",
-      "sourceHandle": "output",
-      "targetHandle": "rag_graph"
-    },
-    {
-      "id": "xy-edge__Chroma Graph RAG Loader 1output-Graph RAG Answer 1rag_graph",
-      "source": "Chroma Graph RAG Loader 1",
-      "target": "Graph RAG Answer 1",
-      "sourceHandle": "output",
-      "targetHandle": "rag_graph"
+      "type": "basic"
     }
   ]
 }
