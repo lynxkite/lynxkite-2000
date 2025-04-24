@@ -4,7 +4,6 @@ import enum
 from lynxkite.core import ops
 from lynxkite.core.ops import Parameter as P
 import torch
-import torch_geometric.nn as pyg_nn
 from .pytorch_core import op, reg, ENV
 
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
@@ -61,6 +60,8 @@ def dropout(x, *, p=0.0):
 
 @op("Linear", weights=True)
 def linear(x, *, output_dim=1024):
+    import torch_geometric.nn as pyg_nn
+
     return pyg_nn.Linear(-1, output_dim)
 
 
