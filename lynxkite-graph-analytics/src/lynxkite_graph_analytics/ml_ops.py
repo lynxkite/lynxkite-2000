@@ -22,7 +22,7 @@ def load_ws(model_workspace: str):
     path = cwd / model_workspace
     assert path.is_relative_to(cwd)
     assert path.exists(), f"Workspace {path} does not exist"
-    ws = workspace.load(path)
+    ws = workspace.Workspace.load(path)
     return ws
 
 

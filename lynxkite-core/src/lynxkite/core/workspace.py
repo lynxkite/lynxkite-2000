@@ -110,102 +110,91 @@ class Workspace(BaseConfig):
                     valid_targets.add((n.id, h.name))
                 for h in _ops[n.id].outputs:
                     valid_sources.add((n.id, h.name))
-        edges = [
+        self.edges = [
             edge
             for edge in self.edges
             if (edge.source, edge.sourceHandle) in valid_sources
             and (edge.target, edge.targetHandle) in valid_targets
         ]
-        return self.model_copy(update={"edges": edges})
 
+    def has_executor(self):
+        return self.env in ops.EXECUTORS
 
-def has_executor(ws: Workspace):
-    return ws.env in ops.EXECUTORS
+    async def execute(self):
+        await ops.EXECUTORS[self.env](self)
 
+    def save(self, path: str):
+        """Persist the workspace to a local file in JSON format."""
+        j = self.model_dump()
+        j = json.dumps(j, indent=2, sort_keys=True) + "\n"
+        dirname, basename = os.path.split(path)
+        if dirname:
+            os.makedirs(dirname, exist_ok=True)
+        # Create temp file in the same directory to make sure it's on the same filesystem.
+        with tempfile.NamedTemporaryFile(
+            "w", encoding="utf-8", prefix=f".{basename}.", dir=dirname, delete=False
+        ) as f:
+            temp_name = f.name
+            f.write(j)
+        os.replace(temp_name, path)
 
-async def execute(ws: Workspace):
-    await ops.EXECUTORS[ws.env](ws)
+    @staticmethod
+    def load(path: str) -> "Workspace":
+        """Load a workspace from a file.
 
+        After loading the workspace, the metadata of the workspace is updated.
 
-def save(ws: Workspace, path: str):
-    """Persist a workspace to a local file in JSON format."""
-    j = ws.model_dump()
-    j = json.dumps(j, indent=2, sort_keys=True) + "\n"
-    dirname, basename = os.path.split(path)
-    if dirname:
-        os.makedirs(dirname, exist_ok=True)
-    # Create temp file in the same directory to make sure it's on the same filesystem.
-    with tempfile.NamedTemporaryFile(
-        "w", encoding="utf-8", prefix=f".{basename}.", dir=dirname, delete=False
-    ) as f:
-        temp_name = f.name
-        f.write(j)
-    os.replace(temp_name, path)
+        Args:
+            path (str): The path to the file to load the workspace from.
 
-
-def load(path: str) -> Workspace:
-    """Load a workspace from a file.
-
-    After loading the workspace, the metadata of the workspace is updated.
-
-    Args:
-        path (str): The path to the file to load the workspace from.
-
-    Returns:
-        Workspace: The loaded workspace object, with updated metadata.
-    """
-    with open(path, encoding="utf-8") as f:
-        j = f.read()
-    ws = Workspace.model_validate_json(j)
-    # Metadata is added after loading. This way code changes take effect on old boxes too.
-    update_metadata(ws)
-    return ws
-
-
-def update_metadata(ws: Workspace) -> Workspace:
-    """Update the metadata of the given workspace object.
-
-    The metadata is the information about the operations that the nodes in the workspace represent,
-    like the parameters and their possible values.
-    This information comes from the catalog of operations for the environment of the workspace.
-
-    Args:
-        ws: The workspace object to update.
-
-    Returns:
-        Workspace: The updated workspace object.
-    """
-    if ws.env not in ops.CATALOGS:
+        Returns:
+            Workspace: The loaded workspace object, with updated metadata.
+        """
+        with open(path, encoding="utf-8") as f:
+            j = f.read()
+        ws = Workspace.model_validate_json(j)
+        # Metadata is added after loading. This way code changes take effect on old boxes too.
+        ws.update_metadata()
         return ws
-    catalog = ops.CATALOGS[ws.env]
-    for node in ws.nodes:
-        data = node.data
-        op = catalog.get(data.title)
-        if op:
-            if data.meta != op:
-                data.meta = op
-                if hasattr(node, "_crdt"):
-                    node._crdt["data"]["meta"] = op.model_dump()
-            if node.type != op.type:
-                node.type = op.type
-                if hasattr(node, "_crdt"):
-                    node._crdt["type"] = op.type
-            if data.error == "Unknown operation.":
-                data.error = None
-                if hasattr(node, "_crdt"):
-                    node._crdt["data"]["error"] = None
-        else:
-            data.error = "Unknown operation."
-            if hasattr(node, "_crdt"):
-                node._crdt["data"]["meta"] = {}
-                node._crdt["data"]["error"] = "Unknown operation."
-    return ws
 
+    def update_metadata(self):
+        """Update the metadata of this workspace.
 
-def connect_crdt(ws_pyd: Workspace, ws_crdt: pycrdt.Map):
-    ws_pyd._crdt = ws_crdt
-    with ws_crdt.doc.transaction():
-        for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
-            if "data" not in nc:
-                nc["data"] = pycrdt.Map()
-            np._crdt = nc
+        The metadata is the information about the operations that the nodes in the workspace represent,
+        like the parameters and their possible values.
+        This information comes from the catalog of operations for the environment of the workspace.
+        """
+        if self.env not in ops.CATALOGS:
+            return self
+        catalog = ops.CATALOGS[self.env]
+        for node in self.nodes:
+            data = node.data
+            op = catalog.get(data.title)
+            if op:
+                if data.meta != op:
+                    data.meta = op
+                    if hasattr(node, "_crdt"):
+                        # Go through JSON to simplify the types. CRDT can't handle enums.
+                        node._crdt["data"]["meta"] = json.loads(op.model_dump_json())
+                        print("set metadata to", op)
+                if node.type != op.type:
+                    node.type = op.type
+                    if hasattr(node, "_crdt"):
+                        node._crdt["type"] = op.type
+                if data.error == "Unknown operation.":
+                    data.error = None
+                    if hasattr(node, "_crdt"):
+                        node._crdt["data"]["error"] = None
+            else:
+                data.error = "Unknown operation."
+                if hasattr(node, "_crdt"):
+                    node._crdt["data"]["meta"] = {}
+                    node._crdt["data"]["error"] = "Unknown operation."
+
+    def connect_crdt(self, ws_crdt: pycrdt.Map):
+        self._crdt = ws_crdt
+        with ws_crdt.doc.transaction():
+            for nc, np in zip(ws_crdt["nodes"], self.nodes):
+                if "data" not in nc:
+                    nc["data"] = pycrdt.Map()
+                np._crdt = nc
