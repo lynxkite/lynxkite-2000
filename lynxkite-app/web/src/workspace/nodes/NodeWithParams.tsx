@@ -3,10 +3,7 @@ import React from "react";
 // @ts-ignore
 import Triangle from "~icons/tabler/triangle-inverted-filled.jsx";
 import LynxKiteNode from "./LynxKiteNode";
-import NodeGroupParameter from "./NodeGroupParameter";
-import NodeParameter from "./NodeParameter";
-
-export type UpdateOptions = { delay?: number };
+import NodeParameter, { type UpdateOptions } from "./NodeParameter";
 
 export function NodeWithParams(props: any) {
   const reactFlow = useReactFlow();
@@ -21,16 +18,6 @@ export function NodeWithParams(props: any) {
     }));
   }
 
-  function deleteParam(name: string, opts: UpdateOptions) {
-    if (props.data.params[name] === undefined) {
-      return;
-    }
-    delete props.data.params[name];
-    reactFlow.updateNodeData(props.id, {
-      params: { ...props.data.params },
-      __execution_delay: opts.delay || 0,
-    });
-  }
   return (
     <>
       {props.collapsed && metaParams.length > 0 && (
@@ -39,31 +26,16 @@ export function NodeWithParams(props: any) {
         </div>
       )}
       {!collapsed &&
-        metaParams.map((meta: any) =>
-          meta.type === "group" ? (
-            <NodeGroupParameter
-              key={meta.name}
-              value={props.data.params[meta.name]}
-              data={props.data}
-              meta={meta}
-              setParam={(name: string, value: any, opts?: UpdateOptions) =>
-                setParam(name, value, opts || {})
-              }
-              deleteParam={(name: string, opts?: UpdateOptions) => deleteParam(name, opts || {})}
-            />
-          ) : (
-            <NodeParameter
-              name={meta.name}
-              key={meta.name}
-              value={props.data.params[meta.name]}
-              data={props.data}
-              meta={meta}
-              onChange={(value: any, opts?: UpdateOptions) =>
-                setParam(meta.name, value, opts || {})
-              }
-            />
-          ),
-        )}
+        metaParams.map((meta: any) => (
+          <NodeParameter
+            name={meta.name}
+            key={meta.name}
+            value={props.data.params[meta.name]}
+            data={props.data}
+            meta={meta}
+            setParam={setParam}
+          />
+        ))}
       {props.children}
     </>
   );

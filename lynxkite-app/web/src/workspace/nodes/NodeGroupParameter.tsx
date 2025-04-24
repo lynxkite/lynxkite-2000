@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import NodeParameter from "./NodeParameter";
+import NodeParameter, { type UpdateOptions } from "./NodeParameter";
 
 interface SelectorType {
   name: string;
@@ -23,44 +22,27 @@ interface GroupsType {
 
 interface NodeGroupParameterProps {
   meta: { selector: SelectorType; groups: GroupsType };
-  value: any;
   data: any;
-  setParam: (name: string, value: any, options?: { delay: number }) => void;
-  deleteParam: (name: string, options?: { delay: number }) => void;
+  setParam: (name: string, value: any, options: UpdateOptions) => void;
 }
 
-export default function NodeGroupParameter({
-  meta,
-  value,
-  data,
-  setParam,
-  deleteParam,
-}: NodeGroupParameterProps) {
+export default function NodeGroupParameter({ meta, data, setParam }: NodeGroupParameterProps) {
   const selector = meta.selector;
-  const groups = meta.groups;
-  const [selectedValue, setSelectedValue] = useState<string>(value || selector.default);
-
-  const handleSelectorChange = (value: any, opts?: { delay: number }) => {
-    setSelectedValue(value);
-    setParam(selector.name, value, opts);
-  };
-
-  useEffect(() => {
-    // Clean possible previous parameters first
-    Object.values(groups).flatMap((group) => group.map((entry) => deleteParam(entry.name)));
-    for (const param of groups[selectedValue]) {
-      setParam(param.name, param.default);
-    }
-  }, [selectedValue]);
+  const selectorValue = data.params[selector.name] || selector.default;
+  const group = meta.groups[selectorValue] || [];
 
   return (
-    <NodeParameter
-      name={selector.name}
-      key={selector.name}
-      value={selectedValue}
-      data={data}
-      meta={selector}
-      onChange={handleSelectorChange}
-    />
+    <>
+      {group.map((meta: any) => (
+        <NodeParameter
+          name={meta.name}
+          key={meta.name}
+          value={data.params[meta.name] ?? meta.default}
+          data={data}
+          meta={meta}
+          setParam={setParam}
+        />
+      ))}
+    </>
   );
 }
