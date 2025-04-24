@@ -151,9 +151,9 @@ ops.register_passive_op(
 def _set_handle_positions(op):
     op: ops.Op = op.__op__
     for v in op.outputs:
-        v.position = "top"
+        v.position = ops.Position.TOP
     for v in op.inputs:
-        v.position = "bottom"
+        v.position = ops.Position.BOTTOM
 
 
 def _register_simple_pytorch_layer(func):

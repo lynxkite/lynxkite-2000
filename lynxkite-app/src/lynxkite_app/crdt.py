@@ -200,7 +200,7 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     if os.path.exists(name):
-        ws_pyd = workspace.load(name)
+        ws_pyd = workspace.Workspace.load(name)
         crdt_update(
             ws,
             ws_pyd.model_dump(),
@@ -263,18 +263,18 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     path = cwd / name
     assert path.is_relative_to(cwd), "Provided workspace path is invalid"
     # Save user changes before executing, in case the execution fails.
-    workspace.save(ws_pyd, path)
+    ws_pyd.save(path)
     ops.load_user_scripts(name)
-    workspace.connect_crdt(ws_pyd, ws_crdt)
-    workspace.update_metadata(ws_pyd)
-    if not workspace.has_executor(ws_pyd):
+    ws_pyd.connect_crdt(ws_crdt)
+    ws_pyd.update_metadata()
+    if not ws_pyd.has_executor():
         return
     with ws_crdt.doc.transaction():
         for nc in ws_crdt["nodes"]:
             nc["data"]["status"] = "planned"
-    ws_pyd = ws_pyd.normalize()
-    await workspace.execute(ws_pyd)
-    workspace.save(ws_pyd, path)
+    ws_pyd.normalize()
+    await ws_pyd.execute()
+    ws_pyd.save(path)
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 
