@@ -1,6 +1,7 @@
 import { useRef } from "react";
 // @ts-ignore
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
+import NodeGroupParameter from "./NodeGroupParameter";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
@@ -189,77 +190,79 @@ interface NodeParameterProps {
   value: any;
   meta: any;
   data: any;
-  onChange: (value: any, options?: { delay: number }) => void;
+  setParam: (name: string, value: any, options: UpdateOptions) => void;
 }
 
-export default function NodeParameter({ name, value, meta, data, onChange }: NodeParameterProps) {
-  return (
-    // biome-ignore lint/a11y/noLabelWithoutControl: Most of the time there is a control.
+export type UpdateOptions = { delay?: number };
+
+export default function NodeParameter({ name, value, meta, data, setParam }: NodeParameterProps) {
+  function onChange(value: any, opts?: UpdateOptions) {
+    setParam(meta.name, value, opts || {});
+  }
+  return meta?.type?.format === "collapsed" ? (
     <label className="param">
-      {meta?.type?.format === "collapsed" ? (
-        <>
-          <ParamName name={name} />
-          <button className="collapsed-param">⋯</button>
-        </>
-      ) : meta?.type?.format === "textarea" ? (
-        <>
-          <ParamName name={name} />
-          <textarea
-            className="textarea textarea-bordered w-full"
-            rows={6}
-            value={value}
-            onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
-            onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
-          />
-        </>
-      ) : meta?.type?.enum ? (
-        <>
-          <ParamName name={name} />
-          <select
-            className="select select-bordered w-full"
-            value={value || meta.type.enum[0]}
-            onChange={(evt) => onChange(evt.currentTarget.value)}
-          >
-            {meta.type.enum.map((option: string) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </>
-      ) : meta?.type?.type === BOOLEAN ? (
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            {name.replace(/_/g, " ")}
-            <input
-              className="checkbox"
-              type="checkbox"
-              checked={value}
-              onChange={(evt) => onChange(evt.currentTarget.checked)}
-            />
-          </label>
-        </div>
-      ) : meta?.type?.type === MODEL_TRAINING_INPUT_MAPPING ? (
-        <>
-          <ParamName name={name} />
-          <ModelMapping value={value} data={data} variant="training input" onChange={onChange} />
-        </>
-      ) : meta?.type?.type === MODEL_INFERENCE_INPUT_MAPPING ? (
-        <>
-          <ParamName name={name} />
-          <ModelMapping value={value} data={data} variant="inference input" onChange={onChange} />
-        </>
-      ) : meta?.type?.type === MODEL_OUTPUT_MAPPING ? (
-        <>
-          <ParamName name={name} />
-          <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
-        </>
-      ) : (
-        <>
-          <ParamName name={name} />
-          <Input value={value} onChange={onChange} />
-        </>
-      )}
+      <ParamName name={name} />
+      <button className="collapsed-param">⋯</button>
+    </label>
+  ) : meta?.type?.format === "textarea" ? (
+    <label className="param">
+      <ParamName name={name} />
+      <textarea
+        className="textarea textarea-bordered w-full"
+        rows={6}
+        value={value}
+        onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
+        onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
+      />
+    </label>
+  ) : meta?.type === "group" ? (
+    <NodeGroupParameter meta={meta} data={data} setParam={setParam} />
+  ) : meta?.type?.enum ? (
+    <label className="param">
+      <ParamName name={name} />
+      <select
+        className="select select-bordered w-full"
+        value={value || meta.type.enum[0]}
+        onChange={(evt) => onChange(evt.currentTarget.value)}
+      >
+        {meta.type.enum.map((option: string) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  ) : meta?.type?.type === BOOLEAN ? (
+    <div className="form-control">
+      <label className="label cursor-pointer">
+        {name.replace(/_/g, " ")}
+        <input
+          className="checkbox"
+          type="checkbox"
+          checked={value}
+          onChange={(evt) => onChange(evt.currentTarget.checked)}
+        />
+      </label>
+    </div>
+  ) : meta?.type?.type === MODEL_TRAINING_INPUT_MAPPING ? (
+    <label className="param">
+      <ParamName name={name} />
+      <ModelMapping value={value} data={data} variant="training input" onChange={onChange} />
+    </label>
+  ) : meta?.type?.type === MODEL_INFERENCE_INPUT_MAPPING ? (
+    <label className="param">
+      <ParamName name={name} />
+      <ModelMapping value={value} data={data} variant="inference input" onChange={onChange} />
+    </label>
+  ) : meta?.type?.type === MODEL_OUTPUT_MAPPING ? (
+    <label className="param">
+      <ParamName name={name} />
+      <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
+    </label>
+  ) : (
+    <label className="param">
+      <ParamName name={name} />
+      <Input value={value} onChange={onChange} />
     </label>
   );
 }

@@ -60,17 +60,17 @@ def import_file(
         Bundle: Bundle with a single table with the contents of the file.
     """
     if file_format == "csv":
-        names = kwargs.pop("columns", "<from file>")
+        names = kwargs.get("columns", "<from file>")
         names = pd.api.extensions.no_default if names == "<from file>" else names.split(",")
-        sep = kwargs.pop("separator", "<auto>")
+        sep = kwargs.get("separator", "<auto>")
         sep = pd.api.extensions.no_default if sep == "<auto>" else sep
-        df = pd.read_csv(file_path, names=names, sep=sep, **kwargs)
+        df = pd.read_csv(file_path, names=names, sep=sep)
     elif file_format == "json":
-        df = pd.read_json(file_path, **kwargs)
+        df = pd.read_json(file_path)
     elif file_format == "parquet":
-        df = pd.read_parquet(file_path, **kwargs)
+        df = pd.read_parquet(file_path)
     elif file_format == "excel":
-        df = pd.read_excel(file_path, **kwargs)
+        df = pd.read_excel(file_path, sheet_name=kwargs.get("sheet_name", "Sheet1"))
     else:
         df = ValueError(f"Unsupported file format: {file_format}")
     return core.Bundle(dfs={table_name: df})
