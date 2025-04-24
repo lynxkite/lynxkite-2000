@@ -10,7 +10,7 @@ export type UpdateOptions = { delay?: number };
 
 export function NodeWithParams(props: any) {
   const reactFlow = useReactFlow();
-  const metaParams = props.data.meta?.value?.params;
+  const metaParams = props.data.meta?.value?.params ?? [];
   const [collapsed, setCollapsed] = React.useState(props.collapsed);
 
   function setParam(name: string, newValue: any, opts: UpdateOptions) {
