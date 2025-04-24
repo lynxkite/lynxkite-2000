@@ -53,7 +53,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
   const expanded = !data.collapsed;
-  const handles = getHandles(data.meta?.inputs || {}, data.meta?.outputs || {});
+  const handles = getHandles(data.meta?.value?.inputs || {}, data.meta?.value?.outputs || {});
   function titleClicked() {
     reactFlow.updateNodeData(props.id, { collapsed: expanded });
   }
@@ -64,8 +64,8 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     right: "top",
   };
   const titleStyle: { backgroundColor?: string } = {};
-  if (data.meta?.color) {
-    titleStyle.backgroundColor = OP_COLORS[data.meta.color] || data.meta.color;
+  if (data.meta?.value?.color) {
+    titleStyle.backgroundColor = OP_COLORS[data.meta.value.color] || data.meta.value.color;
   }
   return (
     <div
