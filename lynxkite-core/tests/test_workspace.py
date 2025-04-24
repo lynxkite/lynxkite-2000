@@ -34,9 +34,9 @@ def test_save_load():
     path = os.path.join(tempfile.gettempdir(), "test_workspace.json")
 
     try:
-        workspace.save(ws, path)
+        ws.save(path)
         assert os.path.exists(path)
-        loaded_ws = workspace.load(path)
+        loaded_ws = workspace.Workspace.load(path)
         assert loaded_ws.env == ws.env
         assert len(loaded_ws.nodes) == len(ws.nodes)
         assert len(loaded_ws.edges) == len(ws.edges)
@@ -88,14 +88,14 @@ def test_update_metadata():
             position=workspace.Position(x=0, y=0),
         )
     )
-    updated_ws = workspace._update_metadata(ws)
-    assert updated_ws.nodes[0].data.meta.name == "Test Operation"
-    assert updated_ws.nodes[0].data.error is None
-    assert not hasattr(updated_ws.nodes[1].data, "meta")
-    assert updated_ws.nodes[1].data.error == "Unknown operation."
+    ws.update_metadata()
+    assert ws.nodes[0].data.meta.name == "Test Operation"
+    assert ws.nodes[0].data.error is None
+    assert not hasattr(ws.nodes[1].data, "meta")
+    assert ws.nodes[1].data.error == "Unknown operation."
 
 
 def test_update_metadata_with_empty_workspace():
     ws = workspace.Workspace(env="test")
-    updated_ws = workspace._update_metadata(ws)
-    assert len(updated_ws.nodes) == 0
+    ws.update_metadata()
+    assert len(ws.nodes) == 0

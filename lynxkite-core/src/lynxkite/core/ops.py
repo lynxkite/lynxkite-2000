@@ -95,17 +95,28 @@ class ParameterGroup(BaseConfig):
     type: str = "group"
 
 
+class Position(enum.Enum):
+    """Defines the position of an input or output in the UI."""
+
+    LEFT = "left"
+    RIGHT = "right"
+    TOP = "top"
+    BOTTOM = "bottom"
+
+    def is_vertical(self):
+        return self in (self.TOP, self.BOTTOM)
+
+
 class Input(BaseConfig):
     name: str
     type: Type
-    # TODO: Make position an enum with the possible values.
-    position: str = "left"
+    position: Position = Position.LEFT
 
 
 class Output(BaseConfig):
     name: str
     type: Type
-    position: str = "right"
+    position: Position = Position.RIGHT
 
 
 @dataclass
@@ -291,7 +302,7 @@ def input_position(**kwargs):
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.get_input(k).position = v
+            op.get_input(k).position = Position(v)
         return func
 
     return decorator
@@ -303,7 +314,7 @@ def output_position(**kwargs):
     def decorator(func):
         op = func.__op__
         for k, v in kwargs.items():
-            op.get_output(k).position = v
+            op.get_output(k).position = Position(v)
         return func
 
     return decorator

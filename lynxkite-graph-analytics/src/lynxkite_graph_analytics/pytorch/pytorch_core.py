@@ -21,9 +21,9 @@ def op(name, weights=False, **kwargs):
         _op(func)
         op = func.__op__
         for p in op.inputs:
-            p.position = "bottom"
+            p.position = ops.Position.BOTTOM
         for p in op.outputs:
-            p.position = "top"
+            p.position = ops.Position.TOP
         return func
 
     return decorator
