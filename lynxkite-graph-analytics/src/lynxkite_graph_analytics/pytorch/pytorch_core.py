@@ -6,7 +6,6 @@ import graphlib
 import pydantic
 from lynxkite.core import ops, workspace
 import torch
-import torch_geometric.nn as pyg_nn
 import dataclasses
 from .. import core
 
@@ -319,6 +318,8 @@ class ModelBuilder:
         return self.get_config()
 
     def get_config(self) -> ModelConfig:
+        import torch_geometric.nn as pyg_nn
+
         # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:

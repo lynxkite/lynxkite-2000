@@ -8,7 +8,6 @@ from lynxkite.core import workspace
 from .pytorch import pytorch_core
 from lynxkite.core import ops
 from tqdm import tqdm
-import umap
 import joblib
 import pandas as pd
 import pathlib
@@ -178,15 +177,19 @@ def view_vectors(
     min_dist: float = 0.1,
     metric: UMAPMetric = UMAPMetric.euclidean,
 ):
+    try:
+        from cuml.manifold.umap import UMAP
+    except ImportError:
+        from umap import UMAP
     vec = np.stack(bundle.dfs[table_name][vector_column].to_numpy())
-    _umap = functools.partial(
-        umap.UMAP,
+    umap = functools.partial(
+        UMAP,
         n_neighbors=n_neighbors,
         min_dist=min_dist,
         metric=metric.value,
     )
-    proj = _umap(n_components=2).fit_transform(vec)
-    color = _umap(n_components=1).fit_transform(vec)
+    proj = umap(n_components=2).fit_transform(vec)
+    color = umap(n_components=1).fit_transform(vec)
     data = [[*p.tolist(), "", c.item()] for p, c in zip(proj, color)]
     if label_column:
         for i, row in enumerate(bundle.dfs[table_name][label_column]):

@@ -26,6 +26,7 @@ dev = [
     "pytest-asyncio>=0.26.0",
 ]
 gpu = [
+    "cuml-cu12>=25.2.1",
     "nx-cugraph-cu12>=25.4.0",
     "polars[gpu]>=1.25.2",
 ]
