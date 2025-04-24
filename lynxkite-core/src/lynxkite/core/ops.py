@@ -168,6 +168,7 @@ class Op(BaseConfig):
     outputs: dict[str, Output]
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
+    color: str = "orange"  # The color of the operation in the UI.
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -199,7 +200,16 @@ class Op(BaseConfig):
         return res
 
 
-def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=False):
+def op(
+    env: str,
+    name: str,
+    *,
+    view="basic",
+    outputs=None,
+    params=None,
+    slow=False,
+    color=None,
+):
     """Decorator for defining an operation."""
 
     def decorator(func):
@@ -234,6 +244,7 @@ def op(env: str, name: str, *, view="basic", outputs=None, params=None, slow=Fal
             inputs=inputs,
             outputs=_outputs,
             type=_view,
+            color=color or "orange",
         )
         CATALOGS.setdefault(env, {})
         CATALOGS[env][name] = op
@@ -291,7 +302,7 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[]):
+def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[], **kwargs):
     """A passive operation has no associated code."""
     op = Op(
         func=no_op,
@@ -303,6 +314,7 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
         outputs=dict(
             (o, Output(name=o, type=None)) if isinstance(o, str) else (o.name, o) for o in outputs
         ),
+        **kwargs,
     )
     CATALOGS.setdefault(env, {})
     CATALOGS[env][name] = op
