@@ -171,7 +171,7 @@ class Workspace(BaseConfig):
             data = node.data
             op = catalog.get(data.title)
             if op:
-                if data.meta != op:
+                if getattr(data, "meta", None) != op:
                     data.meta = op
                     # If the node is connected to a CRDT, update that too.
                     if hasattr(node, "_crdt"):
