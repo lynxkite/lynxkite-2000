@@ -31,7 +31,7 @@ class FileFormat(enum.StrEnum):
     "Import file",
     params=[
         ops.ParameterGroup(
-            name="file_format",
+            name="file_format_group",
             selector=ops.Parameter(name="file_format", type=FileFormat, default=FileFormat.csv),
             groups={
                 "csv": [
