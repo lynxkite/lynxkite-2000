@@ -65,7 +65,7 @@ def linear(x, *, output_dim=1024):
     return pyg_nn.Linear(-1, output_dim)
 
 
-class ActivationTypes(enum.Enum):
+class ActivationTypes(str, enum.Enum):
     ReLU = "ReLU"
     Leaky_ReLU = "Leaky ReLU"
     Tanh = "Tanh"

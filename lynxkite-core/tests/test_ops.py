@@ -54,7 +54,7 @@ def test_op_decorator_with_params_and_types_():
 
 
 def test_op_decorator_with_complex_types():
-    class Color(enum.Enum):
+    class Color(int, enum.Enum):
         RED = 1
         GREEN = 2
         BLUE = 3
