@@ -31,23 +31,21 @@ export function NodeWithParams(props: any) {
       __execution_delay: opts.delay || 0,
     });
   }
-  const params = props.data?.params ? Object.entries(props.data.params) : [];
-
   return (
     <>
-      {props.collapsed && params.length > 0 && (
+      {props.collapsed && metaParams.length > 0 && (
         <div className="params-expander" onClick={() => setCollapsed(!collapsed)}>
           <Triangle className={`flippy ${collapsed ? "flippy-90" : ""}`} />
         </div>
       )}
       {!collapsed &&
-        params.map(([name, value]) =>
-          metaParams?.[name]?.type === "group" ? (
+        metaParams.map((meta: any) =>
+          meta.type === "group" ? (
             <NodeGroupParameter
-              key={name}
-              value={value}
+              key={meta.name}
+              value={props.data.params[meta.name]}
               data={props.data}
-              meta={metaParams?.[name]}
+              meta={meta}
               setParam={(name: string, value: any, opts?: UpdateOptions) =>
                 setParam(name, value, opts || {})
               }
@@ -55,12 +53,14 @@ export function NodeWithParams(props: any) {
             />
           ) : (
             <NodeParameter
-              name={name}
-              key={name}
-              value={value}
+              name={meta.name}
+              key={meta.name}
+              value={props.data.params[meta.name]}
               data={props.data}
-              meta={metaParams?.[name]}
-              onChange={(value: any, opts?: UpdateOptions) => setParam(name, value, opts || {})}
+              meta={meta}
+              onChange={(value: any, opts?: UpdateOptions) =>
+                setParam(meta.name, value, opts || {})
+              }
             />
           ),
         )}

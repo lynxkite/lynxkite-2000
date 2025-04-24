@@ -20,9 +20,9 @@ def op(name, weights=False, **kwargs):
     def decorator(func):
         _op(func)
         op = func.__op__
-        for p in op.inputs.values():
+        for p in op.inputs:
             p.position = "bottom"
-        for p in op.outputs.values():
+        for p in op.outputs:
             p.position = "top"
         return func
 
@@ -302,8 +302,8 @@ class ModelBuilder:
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n]]
-        outputs = [_to_id(node_id, n) for n in op.outputs]
+        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
+        outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:

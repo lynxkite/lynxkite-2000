@@ -150,7 +150,7 @@ def disambiguate_edges(ws: workspace.Workspace):
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
         op = catalog.get(dst_node.data.title)
-        if op.inputs[edge.targetHandle].type == list[Bundle]:
+        if op.get_input(edge.targetHandle).type == list[Bundle]:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
         if (edge.target, edge.targetHandle) in seen:
@@ -201,7 +201,7 @@ async def _execute_node(node, ws, catalog, outputs):
     # Convert inputs types to match operation signature.
     try:
         inputs = []
-        for p in op.inputs.values():
+        for p in op.inputs:
             if p.name not in input_map:
                 node.publish_error(f"Missing input: {p.name}")
                 return

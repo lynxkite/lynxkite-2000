@@ -81,26 +81,20 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "loss": {
+          "color": "green",
+          "inputs": [
+            {
               "name": "loss",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Optimizer",
-          "outputs": {},
-          "params": {
-            "lr": {
-              "default": 0.001,
-              "name": "lr",
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            "type": {
+          "outputs": [],
+          "params": [
+            {
               "default": "AdamW",
               "name": "type",
               "type": {
@@ -114,15 +108,22 @@
                   "Galore AdamW"
                 ]
               }
+            },
+            {
+              "default": 0.001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "lr": "0.1",
           "type": "SGD"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Optimizer"
       },
       "dragHandle": ".bg-primary",
@@ -130,7 +131,7 @@
       "id": "Optimizer 2",
       "position": {
         "x": 359.75221367487865,
-        "y": -1560.7604266065723
+        "y": -1150.2183224762075
       },
       "type": "basic",
       "width": 232.0
@@ -143,28 +144,29 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "color": "orange",
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "Activation",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "type": {
-              "default": "ReLU",
+          ],
+          "params": [
+            {
+              "default": null,
               "name": "type",
               "type": {
                 "enum": [
@@ -175,13 +177,13 @@
                 ]
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "type": "Leaky_ReLU"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Activation"
       },
       "dragHandle": ".bg-primary",
@@ -202,40 +204,41 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "color": "orange",
+          "inputs": [],
           "name": "Input: tensor",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "name",
               "type": {
                 "type": "None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "name": "Y"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Input: tensor"
       },
       "dragHandle": ".bg-primary",
       "height": 200.0,
       "id": "Input: tensor 3",
       "position": {
-        "x": 485.8840220312055,
-        "y": -268.0485936515193
+        "x": 454.7823474758749,
+        "y": -212.0655794519241
       },
       "type": "basic",
       "width": 200.0
@@ -248,45 +251,46 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "color": "orange",
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "y": {
+            {
               "name": "y",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "MSE loss",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
-        "status": "planned",
+        "status": "done",
         "title": "MSE loss"
       },
       "dragHandle": ".bg-primary",
       "height": 200.0,
       "id": "MSE loss 2",
       "position": {
-        "x": 384.54674698852955,
-        "y": -1184.4701545316577
+        "x": 375.21624462193034,
+        "y": -721.0552036572305
       },
       "type": "basic",
       "width": 200.0
@@ -299,48 +303,49 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "input": {
+          "color": "orange",
+          "inputs": [
+            {
               "name": "input",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Repeat",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "same_weights": {
-              "default": false,
-              "name": "same_weights",
-              "type": {
-                "type": "<class 'bool'>"
-              }
-            },
-            "times": {
+          ],
+          "params": [
+            {
               "default": 1.0,
               "name": "times",
               "type": {
                 "type": "<class 'int'>"
               }
+            },
+            {
+              "default": false,
+              "name": "same_weights",
+              "type": {
+                "type": "<class 'bool'>"
+              }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "same_weights": false,
           "times": "2"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Repeat"
       },
       "dragHandle": ".bg-primary",
@@ -361,51 +366,52 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "color": "blue",
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "Linear",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "output_dim": {
+          ],
+          "params": [
+            {
               "default": 1024.0,
               "name": "output_dim",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "output_dim": "4"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Linear"
       },
       "dragHandle": ".bg-primary",
-      "height": 200.0,
+      "height": 189.0,
       "id": "Linear 1",
       "position": {
         "x": 98.54861342271252,
         "y": 14.121603973834155
       },
       "type": "basic",
-      "width": 200.0
+      "width": 199.0
     },
     {
       "data": {
@@ -415,32 +421,33 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "color": "orange",
+          "inputs": [],
           "name": "Input: tensor",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "name",
               "type": {
                 "type": "None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "name": "X"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Input: tensor"
       },
       "dragHandle": ".bg-primary",
@@ -461,48 +468,49 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {},
+          "color": "orange",
+          "inputs": [],
           "name": "Constant vector",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "size": {
-              "default": 1.0,
-              "name": "size",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            "value": {
+          ],
+          "params": [
+            {
               "default": 0.0,
               "name": "value",
               "type": {
                 "type": "<class 'int'>"
               }
+            },
+            {
+              "default": 1.0,
+              "name": "size",
+              "type": {
+                "type": "<class 'int'>"
+              }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
           "size": "1",
           "value": "1"
         },
-        "status": "planned",
+        "status": "done",
         "title": "Constant vector"
       },
       "dragHandle": ".bg-primary",
       "height": 258.0,
       "id": "Constant vector 1",
       "position": {
-        "x": 886.708922897265,
-        "y": -298.4394167425953
+        "x": 846.2767459753351,
+        "y": -226.90556526533476
       },
       "type": "basic",
       "width": 238.0
@@ -515,45 +523,46 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "a": {
+          "color": "orange",
+          "inputs": [
+            {
               "name": "a",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "b": {
+            {
               "name": "b",
               "position": "bottom",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "Add",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
-        "status": "planned",
+        "status": "done",
         "title": "Add"
       },
       "dragHandle": ".bg-primary",
       "height": 200.0,
       "id": "Add 1",
       "position": {
-        "x": 722.1292469875319,
-        "y": -762.6853551968964
+        "x": 631.934390777073,
+        "y": -395.6855954439944
       },
       "type": "basic",
       "width": 200.0
@@ -566,46 +575,47 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "inputs": {
-            "x": {
+          "color": "orange",
+          "inputs": [
+            {
               "name": "x",
               "position": "bottom",
               "type": {
                 "type": "tensor"
               }
             }
-          },
+          ],
           "name": "Output",
-          "outputs": {
-            "x": {
+          "outputs": [
+            {
               "name": "x",
               "position": "top",
               "type": {
                 "type": "tensor"
               }
             }
-          },
-          "params": {
-            "name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "name",
               "type": {
                 "type": "None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {},
-        "status": "planned",
+        "status": "done",
         "title": "Output"
       },
       "dragHandle": ".bg-primary",
       "height": 200.0,
       "id": "Output 1",
       "position": {
-        "x": 185.15239170944702,
-        "y": -733.1526319565451
+        "x": 119.83887514325258,
+        "y": -453.23756095856885
       },
       "type": "basic",
       "width": 200.0

@@ -115,26 +115,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "BioNeMo > Import H5AD file",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "file_path": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "file_path",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 504.0,
             "y": 355.0
@@ -162,26 +162,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "adata": {
+          "inputs": [
+            {
               "name": "adata",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Get labels",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "position": {
             "x": 389.0,
             "y": 633.0
@@ -209,26 +209,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "BioNeMo > Download model",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "model_name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1026.0,
             "y": 839.0
@@ -258,26 +258,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "BioNeMo > Download model",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "model_name": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "model_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 939.0,
             "y": 523.0
@@ -307,61 +307,61 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "BioNeMo > Download CELLxGENE dataset",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "census_version": {
+          ],
+          "params": [
+            {
               "default": "2023-12-15",
               "name": "census_version",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "max_workers": {
+            {
               "default": 1.0,
               "name": "max_workers",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "organism": {
+            {
               "default": "Homo sapiens",
               "name": "organism",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "save_path": {
+            {
               "default": null,
               "name": "save_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "use_mp": {
+            {
               "default": false,
               "name": "use_mp",
               "type": {
                 "type": "<class 'bool'>"
               }
             },
-            "value_filter": {
+            {
               "default": "dataset_id==\"8e47ed12-c658-4252-b126-381df8d52a3d\"",
               "name": "value_filter",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1020.0,
             "y": 262.0
@@ -396,41 +396,41 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "dataset_path": {
+          "inputs": [
+            {
               "name": "dataset_path",
               "position": "left",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "model_path": {
+            {
               "name": "model_path",
               "position": "left",
               "type": {
                 "type": "str | None"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Infer",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "results_path": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "results_path",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1544.0,
             "y": 356.0
@@ -460,41 +460,41 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "dataset_path": {
+          "inputs": [
+            {
               "name": "dataset_path",
               "position": "left",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "model_path": {
+            {
               "name": "model_path",
               "position": "left",
               "type": {
                 "type": "str | None"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Infer",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "results_path": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "results_path",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1256.0,
             "y": 1005.0
@@ -522,26 +522,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "results_path": {
+          "inputs": [
+            {
               "name": "results_path",
               "position": "left",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Load results",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "position": {
             "x": 1506.0,
             "y": 804.0
@@ -567,41 +567,41 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "data": {
+          "inputs": [
+            {
               "name": "data",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "labels": {
+            {
               "name": "labels",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Run benchmark",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "use_pca": {
+          ],
+          "params": [
+            {
               "default": false,
               "name": "use_pca",
               "type": {
                 "type": "<class 'bool'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1698.0,
             "y": 929.0
@@ -629,26 +629,26 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "results_path": {
+          "inputs": [
+            {
               "name": "results_path",
               "position": "left",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Load results",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "position": {
             "x": 1314.0,
             "y": 286.0
@@ -674,41 +674,41 @@
         "display": null,
         "error": null,
         "meta": {
-          "inputs": {
-            "data": {
+          "inputs": [
+            {
               "name": "data",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "labels": {
+            {
               "name": "labels",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Run benchmark",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "use_pca": {
+          ],
+          "params": [
+            {
               "default": false,
               "name": "use_pca",
               "type": {
                 "type": "<class 'bool'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1576.0,
             "y": 395.0
@@ -817,25 +817,25 @@
         },
         "error": null,
         "meta": {
-          "inputs": {
-            "benchmark_output100m": {
+          "inputs": [
+            {
               "name": "benchmark_output100m",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "benchmark_output10m": {
+            {
               "name": "benchmark_output10m",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Plot f1 comparison",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "position": {
             "x": 1716.0,
             "y": 309.0
@@ -942,25 +942,25 @@
         },
         "error": null,
         "meta": {
-          "inputs": {
-            "benchmark_output100m": {
+          "inputs": [
+            {
               "name": "benchmark_output100m",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             },
-            "benchmark_output10m": {
+            {
               "name": "benchmark_output10m",
               "position": "left",
               "type": {
                 "type": "<class 'inspect._empty'>"
               }
             }
-          },
+          ],
           "name": "BioNeMo > Plot accuracy comparison",
-          "outputs": {},
-          "params": {},
+          "outputs": [],
+          "params": [],
           "position": {
             "x": 1574.0,
             "y": 720.0

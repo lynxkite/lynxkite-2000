@@ -531,40 +531,40 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Visualize graph",
-          "outputs": {},
-          "params": {
-            "color_edges_by": {
+          "outputs": [],
+          "params": [
+            {
               "default": null,
               "name": "color_edges_by",
               "type": {
                 "format": "edge attribute"
               }
             },
-            "color_nodes_by": {
+            {
               "default": null,
               "name": "color_nodes_by",
               "type": {
                 "format": "node attribute"
               }
             },
-            "label_by": {
+            {
               "default": null,
               "name": "label_by",
               "type": {
                 "format": "node attribute"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -9730,40 +9730,40 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Visualize graph",
-          "outputs": {},
-          "params": {
-            "color_edges_by": {
+          "outputs": [],
+          "params": [
+            {
               "default": null,
               "name": "color_edges_by",
               "type": {
                 "format": "edge attribute"
               }
             },
-            "color_nodes_by": {
+            {
               "default": null,
               "name": "color_nodes_by",
               "type": {
                 "format": "node attribute"
               }
             },
-            "label_by": {
+            {
               "default": null,
               "name": "label_by",
               "type": {
                 "format": "node attribute"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -9792,26 +9792,26 @@
         "in_progress": true,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "NX \u203a Ladder Graph",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
-          "params": {
-            "n": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "n",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -9842,34 +9842,34 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
+          ],
           "name": "Sample graph",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "nodes": {
+          ],
+          "params": [
+            {
               "default": 100.0,
               "name": "nodes",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -9900,34 +9900,34 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
+          ],
           "name": "Sample graph",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "nodes": {
+          ],
+          "params": [
+            {
               "default": 100.0,
               "name": "nodes",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -10409,40 +10409,40 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Visualize graph",
-          "outputs": {},
-          "params": {
-            "color_edges_by": {
+          "outputs": [],
+          "params": [
+            {
               "default": null,
               "name": "color_edges_by",
               "type": {
                 "format": "edge attribute"
               }
             },
-            "color_nodes_by": {
+            {
               "default": null,
               "name": "color_nodes_by",
               "type": {
                 "format": "node attribute"
               }
             },
-            "label_by": {
+            {
               "default": null,
               "name": "label_by",
               "type": {
                 "format": "node attribute"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -10473,26 +10473,26 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "G": {
+          "inputs": [
+            {
               "name": "G",
               "position": "left",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
+          ],
           "name": "NX \u203a Core Number",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -10521,26 +10521,26 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
+          ],
           "name": "Discard loop edges",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -10567,18 +10567,18 @@
         "in_progress": true,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "NX \u203a Karate Club Graph",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
-          "params": {},
+          ],
+          "params": [],
           "type": "basic"
         },
         "params": {},
@@ -11608,40 +11608,40 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "graph": {
+          "inputs": [
+            {
               "name": "graph",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Visualize graph",
-          "outputs": {},
-          "params": {
-            "color_edges_by": {
+          "outputs": [],
+          "params": [
+            {
               "default": null,
               "name": "color_edges_by",
               "type": {
                 "format": "edge attribute"
               }
             },
-            "color_nodes_by": {
+            {
               "default": null,
               "name": "color_nodes_by",
               "type": {
                 "format": "node attribute"
               }
             },
-            "label_by": {
+            {
               "default": null,
               "name": "label_by",
               "type": {
                 "format": "node attribute"
               }
             }
-          },
+          ],
           "type": "visualization"
         },
         "params": {
@@ -11668,68 +11668,68 @@
         "error": null,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "NX \u203a Scale-Free Graph",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
-          "params": {
-            "alpha": {
+          ],
+          "params": [
+            {
               "default": "0.41",
               "name": "alpha",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "beta": {
+            {
               "default": "0.54",
               "name": "beta",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "delta_in": {
+            {
               "default": "0.2",
               "name": "delta_in",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "delta_out": {
+            {
               "default": "0",
               "name": "delta_out",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "gamma": {
+            {
               "default": "0.05",
               "name": "gamma",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "n": {
+            {
               "default": null,
               "name": "n",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "seed": {
+            {
               "default": null,
               "name": "seed",
               "type": {
                 "type": "int | None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -11764,55 +11764,55 @@
           {}
         ],
         "meta": {
-          "inputs": {
-            "G": {
+          "inputs": [
+            {
               "name": "G",
               "position": "left",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
+          ],
           "name": "NX \u203a PageRank",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
-          },
-          "params": {
-            "alpha": {
+          ],
+          "params": [
+            {
               "default": "0.85",
               "name": "alpha",
               "type": {
                 "type": "float | None"
               }
             },
-            "max_iter": {
+            {
               "default": "100",
               "name": "max_iter",
               "type": {
                 "type": "int | None"
               }
             },
-            "tol": {
+            {
               "default": "1e-06",
               "name": "tol",
               "type": {
                 "type": "float | None"
               }
             },
-            "weight": {
+            {
               "default": "weight",
               "name": "weight",
               "type": {
                 "type": "str | None"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {

@@ -60,19 +60,19 @@
         "error": null,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Import file",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "file_format": {
+          ],
+          "params": [
+            {
               "default": "csv",
               "groups": {
                 "csv": [
@@ -118,21 +118,21 @@
               },
               "type": "group"
             },
-            "file_path": {
+            {
               "default": null,
               "name": "file_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "table_name": {
+            {
               "default": null,
               "name": "table_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -163,19 +163,19 @@
         "error": null,
         "input_metadata": [],
         "meta": {
-          "inputs": {},
+          "inputs": [],
           "name": "Import file",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "file_format": {
+          ],
+          "params": [
+            {
               "default": "csv",
               "groups": {
                 "csv": [
@@ -221,21 +221,21 @@
               },
               "type": "group"
             },
-            "file_path": {
+            {
               "default": null,
               "name": "file_path",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "table_name": {
+            {
               "default": null,
               "name": "table_name",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -278,76 +278,76 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Query GenMol",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "molecule_column": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "molecule_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "molecule_table": {
+            {
               "default": null,
               "name": "molecule_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "noise": {
+            {
               "default": 0.2,
               "name": "noise",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "num_molecules": {
+            {
               "default": 5.0,
               "name": "num_molecules",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "scoring": {
+            {
               "default": "QED",
               "name": "scoring",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "step_size": {
+            {
               "default": 4.0,
               "name": "step_size",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "temperature": {
+            {
               "default": 1.0,
               "name": "temperature",
               "type": {
                 "type": "<class 'float'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -409,90 +409,90 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "ligands": {
+          "inputs": [
+            {
               "name": "ligands",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             },
-            "proteins": {
+            {
               "name": "proteins",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Query DiffDock",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "ligand_column": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "ligand_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "ligand_file_type": {
+            {
               "default": "txt",
               "name": "ligand_file_type",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "ligand_table": {
+            {
               "default": null,
               "name": "ligand_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "num_poses": {
+            {
               "default": 10.0,
               "name": "num_poses",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "num_steps": {
+            {
               "default": 18.0,
               "name": "num_steps",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "protein_column": {
+            {
               "default": null,
               "name": "protein_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "protein_table": {
+            {
               "default": null,
               "name": "protein_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "time_divisions": {
+            {
               "default": 20.0,
               "name": "time_divisions",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -538,69 +538,69 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "Query OpenFold2",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "alignment_column": {
+          ],
+          "params": [
+            {
               "default": null,
               "name": "alignment_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "alignment_table": {
+            {
               "default": null,
               "name": "alignment_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "protein_column": {
+            {
               "default": null,
               "name": "protein_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "protein_table": {
+            {
               "default": null,
               "name": "protein_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "relax_prediction": {
+            {
               "default": false,
               "name": "relax_prediction",
               "type": {
                 "type": "<class 'bool'>"
               }
             },
-            "selected_models": {
+            {
               "default": "1,2",
               "name": "selected_models",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "type": "basic"
         },
         "params": {
@@ -706,26 +706,26 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "View tables",
-          "outputs": {},
-          "params": {
-            "limit": {
+          "outputs": [],
+          "params": [
+            {
               "default": 100.0,
               "name": "limit",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 1260.0,
             "y": 768.0
@@ -768,76 +768,76 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "MSA-search",
-          "outputs": {
-            "output": {
+          "outputs": [
+            {
               "name": "output",
               "position": "right",
               "type": {
                 "type": "None"
               }
             }
-          },
-          "params": {
-            "databases": {
+          ],
+          "params": [
+            {
               "default": "Uniref30_2302,colabfold_envdb_202108",
               "name": "databases",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "e_value": {
+            {
               "default": 0.0001,
               "name": "e_value",
               "type": {
                 "type": "<class 'float'>"
               }
             },
-            "iterations": {
+            {
               "default": 1.0,
               "name": "iterations",
               "type": {
                 "type": "<class 'int'>"
               }
             },
-            "output_alignment_formats": {
+            {
               "default": "a3m",
               "name": "output_alignment_formats",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "protein_column": {
+            {
               "default": null,
               "name": "protein_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "protein_table": {
+            {
               "default": null,
               "name": "protein_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "search_type": {
+            {
               "default": "alphafold2",
               "name": "search_type",
               "type": {
                 "type": "<class 'str'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 774.0,
             "y": 313.0
@@ -894,40 +894,40 @@
           }
         ],
         "meta": {
-          "inputs": {
-            "bundle": {
+          "inputs": [
+            {
               "name": "bundle",
               "position": "left",
               "type": {
                 "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
-          },
+          ],
           "name": "View molecule",
-          "outputs": {},
-          "params": {
-            "molecule_column": {
+          "outputs": [],
+          "params": [
+            {
               "default": null,
               "name": "molecule_column",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "molecule_table": {
+            {
               "default": null,
               "name": "molecule_table",
               "type": {
                 "type": "<class 'str'>"
               }
             },
-            "row_index": {
+            {
               "default": 0.0,
               "name": "row_index",
               "type": {
                 "type": "<class 'int'>"
               }
             }
-          },
+          ],
           "position": {
             "x": 768.0,
             "y": 333.0

@@ -37,7 +37,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
         try:
             inputs = []
             missing = []
-            for i in op.inputs.values():
+            for i in op.inputs:
                 edges = in_edges[node_id]
                 if i.name in edges and edges[i.name] in outputs:
                     inputs.append(outputs[edges[i.name]])
@@ -50,11 +50,11 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)
             if len(op.outputs) == 1:
-                [output] = list(op.outputs.values())
+                [output] = op.outputs
                 outputs[node_id, output.name] = result.output
             elif len(op.outputs) > 1:
                 assert type(result.output) is dict, "An op with multiple outputs must return a dict"
-                for output in op.outputs.values():
+                for output in op.outputs:
                     outputs[node_id, output.name] = result.output[output.name]
             node.publish_result(result)
         except Exception as e:
