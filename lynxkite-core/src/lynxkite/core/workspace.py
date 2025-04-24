@@ -158,11 +158,11 @@ def load(path: str) -> Workspace:
         j = f.read()
     ws = Workspace.model_validate_json(j)
     # Metadata is added after loading. This way code changes take effect on old boxes too.
-    _update_metadata(ws)
+    update_metadata(ws)
     return ws
 
 
-def _update_metadata(ws: Workspace) -> Workspace:
+def update_metadata(ws: Workspace) -> Workspace:
     """Update the metadata of the given workspace object.
 
     The metadata is the information about the operations that the nodes in the workspace represent,
@@ -175,22 +175,36 @@ def _update_metadata(ws: Workspace) -> Workspace:
     Returns:
         Workspace: The updated workspace object.
     """
-    catalog = ops.CATALOGS.get(ws.env, {})
-    nodes = {node.id: node for node in ws.nodes}
-    done = set()
-    while len(done) < len(nodes):
-        for node in ws.nodes:
-            if node.id in done:
-                # TODO: Can nodes with the same ID reference different operations?
-                continue
-            data = node.data
-            op = catalog.get(data.title)
-            if op:
+    if ws.env not in ops.CATALOGS:
+        return ws
+    catalog = ops.CATALOGS[ws.env]
+    for node in ws.nodes:
+        data = node.data
+        op = catalog.get(data.title)
+        if op:
+            if data.meta != op:
                 data.meta = op
+                if hasattr(node, "_crdt"):
+                    node._crdt["data"]["meta"] = op.model_dump()
+            if node.type != op.type:
                 node.type = op.type
-                if data.error == "Unknown operation.":
-                    data.error = None
-            else:
-                data.error = "Unknown operation."
-            done.add(node.id)
+                if hasattr(node, "_crdt"):
+                    node._crdt["type"] = op.type
+            if data.error == "Unknown operation.":
+                data.error = None
+                if hasattr(node, "_crdt"):
+                    node._crdt["data"]["error"] = None
+        else:
+            data.error = "Unknown operation."
+            if hasattr(node, "_crdt"):
+                node._crdt["data"]["error"] = "Unknown operation."
     return ws
+
+
+def connect_crdt(ws_pyd: Workspace, ws_crdt: pycrdt.Map):
+    ws_pyd._crdt = ws_crdt
+    with ws_crdt.doc.transaction():
+        for nc, np in zip(ws_crdt["nodes"], ws_pyd.nodes):
+            if "data" not in nc:
+                nc["data"] = pycrdt.Map()
+            np._crdt = nc
