@@ -56,8 +56,9 @@ def save(req: SaveRequest):
 @app.post("/api/save")
 async def save_and_execute(req: SaveRequest):
     save(req)
-    await req.ws.execute()
-    save(req)
+    if req.ws.has_executor():
+        await req.ws.execute()
+        save(req)
     return req.ws
 
 
