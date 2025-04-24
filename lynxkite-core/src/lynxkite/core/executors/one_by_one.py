@@ -57,7 +57,7 @@ def get_stages(ws, catalog: ops.Catalog):
         inputs.setdefault(edge.target, []).append(edge.source)
         node = nodes[edge.target]
         op = catalog[node.data.title]
-        if op.get_input(edge.targetHandle).position in "top or bottom":
+        if op.get_input(edge.targetHandle).position.is_vertical():
             batch_inputs.setdefault(edge.target, []).append(edge.source)
     stages = []
     for bt, bss in batch_inputs.items():
@@ -94,7 +94,7 @@ async def await_if_needed(obj):
     return obj
 
 
-async def execute(ws: workspace.Workspace, catalog, cache=None):
+async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -109,7 +109,7 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
             continue
         node.publish_error(None)
         # Start tasks for nodes that have no non-batch inputs.
-        if all([i.position in "top or bottom" for i in op.inputs]):
+        if all([i.position.is_vertical() for i in op.inputs]):
             tasks[node.id] = [NO_INPUT]
     batch_inputs = {}
     # Run the rest until we run out of tasks.
@@ -132,7 +132,7 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                 try:
                     inputs = []
                     for i in op.inputs:
-                        if i.position in "top or bottom":
+                        if i.position.is_vertical():
                             assert (n, i.name) in batch_inputs, f"{i.name} is missing"
                             inputs.append(batch_inputs[(n, i.name)])
                         else:
@@ -164,7 +164,7 @@ async def execute(ws: workspace.Workspace, catalog, cache=None):
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.title]
-                    if op.get_input(edge.targetHandle).position in "top or bottom":
+                    if op.get_input(edge.targetHandle).position.is_vertical():
                         batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(
                             results
                         )

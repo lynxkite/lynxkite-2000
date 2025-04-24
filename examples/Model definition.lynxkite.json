@@ -166,7 +166,7 @@
           ],
           "params": [
             {
-              "default": null,
+              "default": "ReLU",
               "name": "type",
               "type": {
                 "enum": [
