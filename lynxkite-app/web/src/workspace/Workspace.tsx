@@ -81,11 +81,12 @@ function LynxKiteFlow() {
             n.dragHandle = ".bg-primary";
           }
         }
-        const selection = state.workspace.nodes.filter((n) => n.selected).map((n) => n.id);
-        const nodes = state.workspace.nodes.map((n) =>
+        const nodes = reactFlow.getNodes();
+        const selection = nodes.filter((n) => n.selected).map((n) => n.id);
+        const newNodes = state.workspace.nodes.map((n) =>
           selection.includes(n.id) ? { ...n, selected: true } : n,
         );
-        setNodes([...nodes] as Node[]);
+        setNodes([...newNodes] as Node[]);
         setEdges([...state.workspace.edges] as Edge[]);
         for (const node of state.workspace.nodes) {
           // Make sure the internal copies are updated.
