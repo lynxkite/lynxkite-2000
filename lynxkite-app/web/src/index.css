@@ -104,27 +104,29 @@ body {
     background-image: linear-gradient(
       to right,
       var(--status-color-1),
-      var(--status-color-2),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
       var(--status-color-3)
     );
+    background-blend-mode: luminosity;
     background-size: 180% 180%;
-    --status-color-1: oklch(75% 0.2 55);
-    --status-color-2: oklch(75% 0.2 55);
-    --status-color-3: oklch(75% 0.2 55);
+    --status-color-1: #0000;
+    --status-color-2: #0000;
+    --status-color-3: #0000;
     transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3 0.3s;
   }
 
   .lynxkite-node .title.active {
-    --status-color-1: oklch(75% 0.2 55);
-    --status-color-2: oklch(90% 0.2 55);
-    --status-color-3: oklch(75% 0.1 55);
-    animation: active-node-gradient-animation 2s ease-in-out infinite;
+    --status-color-1: #0000;
+    --status-color-2: #fff4;
+    --status-color-3: #888f;
+    animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
   }
 
   .lynxkite-node .title.planned {
-    --status-color-1: oklch(75% 0.1 55);
-    --status-color-2: oklch(75% 0.1 55);
-    --status-color-3: oklch(75% 0.1 55);
+    --status-color-1: #888f;
+    --status-color-2: #888f;
+    --status-color-3: #888f;
   }
 
   .handle-name {
@@ -405,15 +407,7 @@ body {
 }
 
 @keyframes active-node-gradient-animation {
-  0% {
-    background-position-x: 100%;
-  }
-
-  50% {
-    background-position-x: 0%;
-  }
-
-  100% {
+  to {
     background-position-x: 100%;
   }
 }

@@ -13,7 +13,9 @@ from .. import core
 ENV = "PyTorch model"
 
 
-def op(name, **kwargs):
+def op(name, weights=False, **kwargs):
+    if weights:
+        kwargs["color"] = "blue"
     _op = ops.op(ENV, name, **kwargs)
 
     def decorator(func):
@@ -28,7 +30,7 @@ def op(name, **kwargs):
     return decorator
 
 
-def reg(name, inputs=[], outputs=None, params=[]):
+def reg(name, inputs=[], outputs=None, params=[], **kwargs):
     if outputs is None:
         outputs = inputs
     return ops.register_passive_op(
@@ -37,6 +39,7 @@ def reg(name, inputs=[], outputs=None, params=[]):
         inputs=[ops.Input(name=name, position="bottom", type="tensor") for name in inputs],
         outputs=[ops.Output(name=name, position="top", type="tensor") for name in outputs],
         params=params,
+        **kwargs,
     )
 
 

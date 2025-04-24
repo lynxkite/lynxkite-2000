@@ -13,7 +13,7 @@ reg("Input: sequential", outputs=["y"])
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")])
 
 
-@op("LSTM")
+@op("LSTM", weights=True)
 def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
     return torch.nn.LSTM(input_size, hidden_size, dropout=0.0)
 
@@ -59,7 +59,7 @@ def dropout(x, *, p=0.0):
     return torch.nn.Dropout(p)
 
 
-@op("Linear")
+@op("Linear", weights=True)
 def linear(x, *, output_dim=1024):
     return pyg_nn.Linear(-1, output_dim)
 
@@ -124,6 +124,7 @@ reg(
         ),
         P.basic("lr", 0.001),
     ],
+    color="green",
 )
 
 ops.register_passive_op(

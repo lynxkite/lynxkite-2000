@@ -43,6 +43,12 @@ function getHandles(inputs: object, outputs: object) {
   return handles;
 }
 
+const OP_COLORS: { [key: string]: string } = {
+  orange: "oklch(75% 0.2 55)",
+  blue: "oklch(75% 0.2 230)",
+  green: "oklch(75% 0.2 130)",
+};
+
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
@@ -57,7 +63,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     left: "top",
     right: "top",
   };
-
+  const titleStyle: { backgroundColor?: string } = {};
+  if (data.meta?.color) {
+    titleStyle.backgroundColor = OP_COLORS[data.meta.color] || data.meta.color;
+  }
   return (
     <div
       className={`node-container ${expanded ? "expanded" : "collapsed"} `}
@@ -67,7 +76,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       }}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
-        <div className={`title bg-primary ${data.status}`} onClick={titleClicked}>
+        <div
+          className={`title bg-primary ${data.status}`}
+          style={titleStyle}
+          onClick={titleClicked}
+        >
           {data.title}
           {data.error && <span className="title-icon">⚠️</span>}
           {expanded || <span className="title-icon">⋯</span>}
@@ -97,7 +110,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         )}
         {handles.map((handle) => (
           <Handle
-            key={handle.name}
+            key={`${handle.name} on ${handle.position}`}
             id={handle.name}
             type={handle.type}
             position={handle.position as Position}
