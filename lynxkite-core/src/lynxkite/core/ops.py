@@ -95,7 +95,7 @@ class ParameterGroup(BaseConfig):
     type: str = "group"
 
 
-class Position(enum.Enum):
+class Position(str, enum.Enum):
     """Defines the position of an input or output in the UI."""
 
     LEFT = "left"

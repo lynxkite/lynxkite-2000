@@ -175,8 +175,7 @@ class Workspace(BaseConfig):
                     data.meta = op
                     # If the node is connected to a CRDT, update that too.
                     if hasattr(node, "_crdt"):
-                        # Go through JSON to simplify the types. CRDT can't handle enums.
-                        node._crdt["data"]["meta"] = json.loads(op.model_dump_json())
+                        node._crdt["data"]["meta"] = op.model_dump()
                         print("set metadata to", op)
                 if node.type != op.type:
                     node.type = op.type
