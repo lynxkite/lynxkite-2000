@@ -150,9 +150,9 @@ ops.register_passive_op(
 
 def _set_handle_positions(op):
     op: ops.Op = op.__op__
-    for v in op.outputs.values():
+    for v in op.outputs:
         v.position = "top"
-    for v in op.inputs.values():
+    for v in op.inputs:
         v.position = "bottom"
 
 

@@ -14,7 +14,7 @@ interface LynxKiteNodeProps {
   children: any;
 }
 
-function getHandles(inputs: object, outputs: object) {
+function getHandles(inputs: any[], outputs: any[]) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
     name: string;
@@ -23,10 +23,10 @@ function getHandles(inputs: object, outputs: object) {
     showLabel: boolean;
     type: "source" | "target";
   }[] = [];
-  for (const e of Object.values(inputs)) {
+  for (const e of inputs) {
     handles.push({ ...e, type: "target" });
   }
-  for (const e of Object.values(outputs)) {
+  for (const e of outputs) {
     handles.push({ ...e, type: "source" });
   }
   const counts = { top: 0, bottom: 0, left: 0, right: 0 };
@@ -53,7 +53,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
   const expanded = !data.collapsed;
-  const handles = getHandles(data.meta?.value?.inputs || {}, data.meta?.value?.outputs || {});
+  const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
   function titleClicked() {
     reactFlow.updateNodeData(props.id, { collapsed: expanded });
   }

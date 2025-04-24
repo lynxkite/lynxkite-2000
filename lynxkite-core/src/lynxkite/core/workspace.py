@@ -107,9 +107,9 @@ class Workspace(BaseConfig):
         for n in self.nodes:
             if n.id in _ops:
                 for h in _ops[n.id].inputs:
-                    valid_targets.add((n.id, h))
+                    valid_targets.add((n.id, h.name))
                 for h in _ops[n.id].outputs:
-                    valid_sources.add((n.id, h))
+                    valid_sources.add((n.id, h.name))
         edges = [
             edge
             for edge in self.edges
@@ -197,6 +197,7 @@ def update_metadata(ws: Workspace) -> Workspace:
         else:
             data.error = "Unknown operation."
             if hasattr(node, "_crdt"):
+                node._crdt["data"]["meta"] = {}
                 node._crdt["data"]["error"] = "Unknown operation."
     return ws
 
