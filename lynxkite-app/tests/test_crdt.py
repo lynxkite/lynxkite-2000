@@ -18,7 +18,7 @@ def empty_list_workspace():
     yield ws
 
 
-class MyEnum(Enum):
+class MyEnum(int, Enum):
     VALUE = 1
 
 

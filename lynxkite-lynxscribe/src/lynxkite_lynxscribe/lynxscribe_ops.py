@@ -45,18 +45,18 @@ output_on_top = ops.output_position(output="top")
 
 
 # defining the cloud provider enum
-class CloudProvider(Enum):
+class CloudProvider(str, Enum):
     GCP = "gcp"
     AWS = "aws"
     AZURE = "azure"
 
 
-class RAGVersion(Enum):
+class RAGVersion(str, Enum):
     V1 = "v1"
     V2 = "v2"
 
 
-class MessageRole(Enum):
+class MessageRole(str, Enum):
     SYSTEM = "system"
     USER = "user"
 

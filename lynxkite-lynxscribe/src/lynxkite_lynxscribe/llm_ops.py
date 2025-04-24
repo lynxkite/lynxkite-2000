@@ -179,7 +179,7 @@ def branch(input, *, expression: str):
     return one_by_one.Output(output_handle=str(bool(res)).lower(), value=input)
 
 
-class RagEngine(enum.Enum):
+class RagEngine(str, enum.Enum):
     Chroma = "Chroma"
     Custom = "Custom"
 
