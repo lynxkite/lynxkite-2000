@@ -119,9 +119,12 @@ class Workspace(BaseConfig):
         return self.model_copy(update={"edges": edges})
 
 
+def has_executor(ws: Workspace):
+    return ws.env in ops.EXECUTORS
+
+
 async def execute(ws: Workspace):
-    if ws.env in ops.EXECUTORS:
-        await ops.EXECUTORS[ws.env](ws)
+    await ops.EXECUTORS[ws.env](ws)
 
 
 def save(ws: Workspace, path: str):
