@@ -281,7 +281,7 @@ body {
     }
 
     .image-in-table {
-      max-height: 50px;
+      max-height: 100px;
     }
   }
 }
