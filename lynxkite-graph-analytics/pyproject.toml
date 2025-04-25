@@ -14,7 +14,6 @@ dependencies = [
     "osmnx>=2.0.2",
     "pandas>=2.2.3",
     "polars>=1.25.2",
-    "pylibcugraph-cu12>=25.4.0",
     "torch>=2.7.0",
     "torch-geometric>=2.6.1",
     "umap-learn>=0.5.7",
@@ -29,6 +28,7 @@ gpu = [
     "cuml-cu12>=25.2.1",
     "nx-cugraph-cu12>=25.4.0",
     "polars[gpu]>=1.25.2",
+    "pylibcugraph-cu12>=25.4.0",
 ]
 
 [tool.uv.sources]
