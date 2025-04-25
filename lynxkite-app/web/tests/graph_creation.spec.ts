@@ -23,18 +23,22 @@ test.afterEach(async () => {
 
 test("Tables are displayed in the Graph creation box", async () => {
   const graphBox = await workspace.getBox("Create graph 1");
-  const nodesTableHeader = await graphBox.locator(".graph-tables .df-head", {
+  const nodesTableHeader = graphBox.locator(".graph-tables .df-head", {
     hasText: "nodes",
   });
-  const edgesTableHeader = await graphBox.locator(".graph-tables .df-head", {
+  const edgesTableHeader = graphBox.locator(".graph-tables .df-head", {
     hasText: "edges",
   });
+  const nodesTable = nodesTableHeader.locator("xpath=//following-sibling::table[1]");
+  const edgesTable = edgesTableHeader.locator("xpath=//following-sibling::table[1]");
   await expect(nodesTableHeader).toBeVisible();
   await expect(edgesTableHeader).toBeVisible();
-  nodesTableHeader.click();
-  await expect(graphBox.locator("#nodes-table")).toBeVisible();
-  edgesTableHeader.click();
-  await expect(graphBox.locator("#edges-table")).toBeVisible();
+  await expect(nodesTable).not.toBeVisible();
+  await expect(edgesTable).not.toBeVisible();
+  await nodesTableHeader.click();
+  await expect(nodesTable).toBeVisible();
+  await edgesTableHeader.click();
+  await expect(edgesTable).toBeVisible();
 });
 
 test("Adding and removing relationships", async () => {
