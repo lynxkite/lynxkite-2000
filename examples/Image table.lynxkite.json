@@ -1,0 +1,132 @@
+{
+  "edges": [
+    {
+      "id": "Example image table 1 View tables 1",
+      "source": "Example image table 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "color": "orange",
+          "inputs": [],
+          "name": "Example image table",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "Example image table"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "Example image table 1",
+      "position": {
+        "x": 450.0,
+        "y": 165.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "names",
+                "images"
+              ],
+              "data": [
+                [
+                  "svg",
+                  "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" enable-background=\"new 0 0 64 64\"><path d=\"M56 2 18.8 42.909 8 34.729 2 34.729 18.8 62 62 2z\"/></svg>"
+                ],
+                [
+                  "data",
+                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjQgNjQiPjxwYXRoIGQ9Ik01NiAyIDE4LjggNDIuOTA5IDggMzQuNzI5IDIgMzQuNzI5IDE4LjggNjIgNjIgMnoiLz48L3N2Zz4="
+                ],
+                [
+                  "http",
+                  "https://upload.wikimedia.org/wikipedia/commons/2/2e/Emojione_BW_2714.svg"
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "images",
+                  "names"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View tables 1",
+      "position": {
+        "x": 840.0,
+        "y": 135.0
+      },
+      "type": "table_view",
+      "width": 200.0
+    }
+  ]
+}
