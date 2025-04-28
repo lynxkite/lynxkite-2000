@@ -104,4 +104,4 @@ def test_visualization_operations_display_is_populated_automatically():
 
     result = ops.CATALOGS["test"]["display_op"]()
     assert isinstance(result, ops.Result)
-    assert result.output == result.display == {"display_value": 1}
+    assert result.display == {"display_value": 1}

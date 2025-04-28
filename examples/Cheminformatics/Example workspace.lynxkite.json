@@ -1,0 +1,986 @@
+{
+  "edges": [
+    {
+      "id": "Import CSV 1 Draw molecules 1",
+      "source": "Import CSV 1",
+      "sourceHandle": "output",
+      "target": "Draw molecules 1",
+      "targetHandle": "df"
+    },
+    {
+      "id": "Draw molecules 1 View tables 1",
+      "source": "Draw molecules 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import file 1 View mol filter 1",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "View mol filter 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Draw molecules 2 View tables 2",
+      "source": "Draw molecules 2",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import file 1 Train QSAR model 1",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "Train QSAR model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train QSAR model 1 View tables 3",
+      "source": "Train QSAR model 1",
+      "sourceHandle": "output",
+      "target": "View tables 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import file 1 Lipinski filter 1",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "Lipinski filter 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Lipinski filter 1 Draw molecules 2",
+      "source": "Lipinski filter 1",
+      "sourceHandle": "output",
+      "target": "Draw molecules 2",
+      "targetHandle": "df"
+    },
+    {
+      "id": "Import file 1 View mol image 1",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "View mol image 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "color": "orange",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/CHEMBL313_sel.csv",
+          "separator": "<auto>"
+        },
+        "status": "done",
+        "title": "Import CSV"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 206.0,
+      "id": "Import CSV 1",
+      "position": {
+        "x": -1645.1133255451734,
+        "y": -601.1570975227908
+      },
+      "type": "basic",
+      "width": 314.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": false,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "Name",
+                  "SMILES",
+                  "image",
+                  "pIC50"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 296.0,
+      "id": "View tables 1",
+      "position": {
+        "x": -870.3210345250492,
+        "y": -671.6118451917321
+      },
+      "type": "table_view",
+      "width": 682.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "color": "orange",
+          "inputs": [],
+          "name": "Import file",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "file_format",
+              "type": {
+                "enum": [
+                  "csv",
+                  "parquet",
+                  "json",
+                  "excel"
+                ]
+              }
+            },
+            {
+              "default": "csv",
+              "groups": {
+                "csv": [
+                  {
+                    "default": "<from file>",
+                    "name": "columns",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  },
+                  {
+                    "default": "<auto>",
+                    "name": "separator",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "excel": [
+                  {
+                    "default": "Sheet1",
+                    "name": "sheet_name",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "json": [],
+                "parquet": []
+              },
+              "name": "file_format_group",
+              "selector": {
+                "default": "csv",
+                "name": "file_format",
+                "type": {
+                  "enum": [
+                    "csv",
+                    "parquet",
+                    "json",
+                    "excel"
+                  ]
+                }
+              },
+              "type": "group"
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "columns": "<from file>",
+          "file_format": "csv",
+          "file_format_group": "csv",
+          "file_path": "uploads/CHEMBL313_sel.csv",
+          "table_name": "data"
+        },
+        "status": "done",
+        "title": "Import file"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 331.0,
+      "id": "Import file 1",
+      "position": {
+        "x": -1690.536661950572,
+        "y": -192.47882875357882
+      },
+      "type": "basic",
+      "width": 326.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {}
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "df",
+              "position": "left",
+              "type": {
+                "type": "<class 'pandas.core.frame.DataFrame'>"
+              }
+            }
+          ],
+          "name": "Draw molecules",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "smiles_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "image",
+              "name": "image_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "image_column": "image",
+          "smiles_column": "SMILES"
+        },
+        "status": "done",
+        "title": "Draw molecules"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 225.0,
+      "id": "Draw molecules 1",
+      "position": {
+        "x": -1168.2624512141447,
+        "y": -616.8610881973451
+      },
+      "type": "basic",
+      "width": 234.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "data": {
+                "columns": [
+                  "Name",
+                  "SMILES",
+                  "mol",
+                  "pIC50"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "View mol filter",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "SMILES_Column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "mols_per_row",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "filter_smarts",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "filter_smiles",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": true,
+              "name": "highlight",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "type": "image"
+        },
+        "params": {
+          "SMILES_Column": "SMILES",
+          "filter_smarts": "",
+          "filter_smiles": "CN1C2CC(CC1CC2)c1ccccc1",
+          "highlight": true,
+          "mols_per_row": "4",
+          "table_name": "data"
+        },
+        "status": "done",
+        "title": "View mol filter"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 229.0,
+      "id": "View mol filter 1",
+      "position": {
+        "x": -796.5179679488858,
+        "y": -20.974048336481403
+      },
+      "type": "image",
+      "width": 416.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {}
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "df",
+              "position": "left",
+              "type": {
+                "type": "<class 'pandas.core.frame.DataFrame'>"
+              }
+            }
+          ],
+          "name": "Draw molecules",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "smiles_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "image",
+              "name": "image_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "image_column": "image",
+          "smiles_column": "SMILES"
+        },
+        "status": "done",
+        "title": "Draw molecules"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 184.0,
+      "id": "Draw molecules 2",
+      "position": {
+        "x": -280.6043043496203,
+        "y": 151.45994649399827
+      },
+      "type": "basic",
+      "width": 234.0
+    },
+    {
+      "data": {
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "HBA",
+                  "HBD",
+                  "MW",
+                  "Name",
+                  "SMILES",
+                  "image",
+                  "logP",
+                  "pIC50",
+                  "pass_lipinski"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 429.0,
+      "id": "View tables 2",
+      "position": {
+        "x": 50.96521878343134,
+        "y": 102.82896600710055
+      },
+      "type": "table_view",
+      "width": 821.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "data": {
+                "columns": [
+                  "Name",
+                  "SMILES",
+                  "pIC50"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Train QSAR model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "smiles_col",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "target_col",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "fp_type",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 2,
+              "name": "radius",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 2048,
+              "name": "n_bits",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 0.2,
+              "name": "test_size",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": 42,
+              "name": "random_state",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "Models",
+              "name": "out_dir",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "fp_type": "ecfp",
+          "n_bits": 2048.0,
+          "out_dir": "Models",
+          "radius": 2.0,
+          "random_state": 42.0,
+          "smiles_col": "SMILES",
+          "table_name": "data",
+          "target_col": "pIC50",
+          "test_size": 0.2
+        },
+        "status": "done",
+        "title": "Train QSAR model"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 288.0,
+      "id": "Train QSAR model 1",
+      "position": {
+        "x": -1159.342067985799,
+        "y": -309.43299496669476
+      },
+      "type": "basic",
+      "width": 329.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "split",
+                "R2",
+                "MAE",
+                "RMSE"
+              ],
+              "data": [
+                [
+                  "train",
+                  0.9417380311136551,
+                  0.24223013565891363,
+                  0.3009354647304392
+                ],
+                [
+                  "test",
+                  0.27586659127848734,
+                  0.8443154545454546,
+                  1.098891477150744
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "MAE",
+                  "R2",
+                  "RMSE",
+                  "split"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 291.0,
+      "id": "View tables 3",
+      "position": {
+        "x": -757.0926975107354,
+        "y": -321.469271323077
+      },
+      "type": "table_view",
+      "width": 496.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "data": {
+                "columns": [
+                  "Name",
+                  "SMILES",
+                  "mol",
+                  "pIC50"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Lipinski filter",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "column_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": true,
+              "name": "strict_lipinski",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "column_name": "SMILES",
+          "strict_lipinski": true,
+          "table_name": "data"
+        },
+        "status": "done",
+        "title": "Lipinski filter"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 299.0,
+      "id": "Lipinski filter 1",
+      "position": {
+        "x": -720.0507400376052,
+        "y": 276.1650594718383
+      },
+      "type": "basic",
+      "width": 402.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "data": {
+                "columns": [
+                  "Name",
+                  "SMILES",
+                  "mol",
+                  "pIC50"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "View mol image",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "smiles_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "mols_per_row",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "image"
+        },
+        "params": {
+          "mols_per_row": "4",
+          "smiles_column": "SMILES",
+          "table_name": "data"
+        },
+        "status": "done",
+        "title": "View mol image"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 309.0,
+      "id": "View mol image 1",
+      "position": {
+        "x": -1378.339896172849,
+        "y": 280.2327514185724
+      },
+      "type": "image",
+      "width": 363.0
+    }
+  ]
+}
