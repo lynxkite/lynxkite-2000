@@ -287,7 +287,7 @@ def matplotlib_to_image(func):
     def wrapper(*args, **kwargs):
         func(*args, **kwargs)
         buf = io.BytesIO()
-        plt.savefig(buf, format="png")
+        plt.savefig(buf, format="png", dpi=300)
         plt.close()
         buf.seek(0)
         image_base64 = base64.b64encode(buf.read()).decode("utf-8")
