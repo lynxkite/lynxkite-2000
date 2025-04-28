@@ -129,7 +129,7 @@ class Result:
     `input_metadata` is a list of JSON objects describing each input.
     """
 
-    output: typing.Any = None
+    output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
     input_metadata: ReadOnlyJSON | None = None
@@ -187,7 +187,6 @@ class Op(BaseConfig):
         res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
-            res = Result(output=res)
             if self.type in [
                 "visualization",
                 "table_view",
@@ -195,9 +194,10 @@ class Op(BaseConfig):
                 "image",
                 "molecule",
             ]:
-                # If the operation is some kind of visualization, we use the output as the
-                # value to display by default.
-                res.display = res.output
+                # If the operation is a visualization, we use the returned value for display.
+                res = Result(display=res)
+            else:
+                res = Result(output=res)
         return res
 
     def get_input(self, name: str):
@@ -237,6 +237,10 @@ def op(
 
     def decorator(func):
         sig = inspect.signature(func)
+        _view = view
+        if view == "matplotlib":
+            _view = "image"
+            func = matplotlib_to_image(func)
         if slow:
             func = mem.cache(func)
             func = _global_slow(func)
@@ -256,10 +260,6 @@ def op(
             _outputs = [Output(name=name, type=None) for name in outputs]
         else:
             _outputs = [Output(name="output", type=None)] if view == "basic" else []
-        _view = view
-        if view == "matplotlib":
-            _view = "image"
-            func = matplotlib_to_image(func)
         op = Op(
             func=func,
             name=name,
