@@ -107,7 +107,7 @@ def list_dir(path: str):
             for p in path.iterdir()
             if not p.name.startswith(".")
         ],
-        key=lambda x: x.name,
+        key=lambda x: (x.type != "directory", x.name.lower()),
     )
 
 
