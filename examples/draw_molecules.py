@@ -15,6 +15,8 @@ def smiles_to_data(smiles):
     import rdkit
 
     m = rdkit.Chem.MolFromSmiles(smiles)
+    if m is None:
+        return None
     img = rdkit.Chem.Draw.MolToImage(m)
     data = pil_to_data(img)
     return data

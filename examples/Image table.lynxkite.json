@@ -27,7 +27,7 @@
     {
       "data": {
         "__execution_delay": null,
-        "collapsed": true,
+        "collapsed": false,
         "display": null,
         "error": null,
         "input_metadata": [],
@@ -55,8 +55,8 @@
       "height": 200.0,
       "id": "Example image table 1",
       "position": {
-        "x": 213.60043945845376,
-        "y": 306.98088700969373
+        "x": 356.1935187064265,
+        "y": 224.8472733628614
       },
       "type": "basic",
       "width": 280.0
@@ -138,8 +138,8 @@
       "height": 440.0,
       "id": "View tables 1",
       "position": {
-        "x": 626.2831607914023,
-        "y": 109.55448939208392
+        "x": 757.4687936995374,
+        "y": 116.39895719598661
       },
       "type": "table_view",
       "width": 376.0
@@ -198,14 +198,14 @@
         "title": "Import CSV"
       },
       "dragHandle": ".bg-primary",
-      "height": 313.0,
+      "height": 339.0,
       "id": "Import CSV 1",
       "position": {
         "x": 13.802068621055497,
         "y": -269.65065144888104
       },
       "type": "basic",
-      "width": 216.0
+      "width": 296.0
     },
     {
       "data": {
@@ -282,15 +282,15 @@
         "params": {
           "limit": 100.0
         },
-        "status": "done",
+        "status": "planned",
         "title": "View tables"
       },
       "dragHandle": ".bg-primary",
       "height": 418.0,
       "id": "View tables 2",
       "position": {
-        "x": 548.7706661684929,
-        "y": -316.9626796191875
+        "x": 815.4121289519509,
+        "y": -330.8232285057863
       },
       "type": "table_view",
       "width": 1116.0
@@ -300,7 +300,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "error": null,
+        "error": "module 'rdkit.Chem' has no attribute 'Draw'",
         "input_metadata": [
           {}
         ],
@@ -354,8 +354,8 @@
       "height": 296.0,
       "id": "Draw molecules 1",
       "position": {
-        "x": 289.42386787591244,
-        "y": -258.0823121715324
+        "x": 351.1956913898301,
+        "y": -235.00831568554486
       },
       "type": "basic",
       "width": 212.0

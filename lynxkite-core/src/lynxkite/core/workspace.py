@@ -65,10 +65,14 @@ class WorkspaceNode(BaseConfig):
         self.data.status = NodeStatus.done
         if hasattr(self, "_crdt"):
             with self._crdt.doc.transaction():
-                self._crdt["data"]["display"] = self.data.display
-                self._crdt["data"]["input_metadata"] = self.data.input_metadata
-                self._crdt["data"]["error"] = self.data.error
-                self._crdt["data"]["status"] = NodeStatus.done
+                try:
+                    self._crdt["data"]["status"] = NodeStatus.done
+                    self._crdt["data"]["display"] = self.data.display
+                    self._crdt["data"]["input_metadata"] = self.data.input_metadata
+                    self._crdt["data"]["error"] = self.data.error
+                except Exception as e:
+                    self._crdt["data"]["error"] = str(e)
+                    raise e
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
@@ -176,7 +180,6 @@ class Workspace(BaseConfig):
                     # If the node is connected to a CRDT, update that too.
                     if hasattr(node, "_crdt"):
                         node._crdt["data"]["meta"] = op.model_dump()
-                        print("set metadata to", op)
                 if node.type != op.type:
                     node.type = op.type
                     if hasattr(node, "_crdt"):

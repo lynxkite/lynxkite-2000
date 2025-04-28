@@ -222,6 +222,7 @@ async def _execute_node(node, ws, catalog, outputs):
     try:
         result = op(*inputs, **params)
         result.output = await await_if_needed(result.output)
+        result.display = await await_if_needed(result.display)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
