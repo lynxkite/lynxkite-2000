@@ -152,24 +152,40 @@ body {
     visibility: hidden;
   }
 
-  .react-flow__handle-left .handle-name {
-    right: 20px;
+  .react-flow__handle-left {
+    left: -5px;
+
+    .handle-name {
+      right: 30px;
+    }
   }
 
-  .react-flow__handle-right .handle-name {
-    left: 20px;
+  .react-flow__handle-right {
+    right: -5px;
+
+    .handle-name {
+      left: 30px;
+    }
   }
 
-  .react-flow__handle-top .handle-name {
-    top: -20px;
-    left: 5px;
-    backdrop-filter: none;
+  .react-flow__handle-top {
+    top: -5px;
+
+    .handle-name {
+      top: -3px;
+      left: 13px;
+      backdrop-filter: none;
+    }
   }
 
-  .react-flow__handle-bottom .handle-name {
-    top: 0px;
-    left: 5px;
-    backdrop-filter: none;
+  .react-flow__handle-bottom {
+    bottom: -5px;
+
+    .handle-name {
+      top: 0px;
+      left: 13px;
+      backdrop-filter: none;
+    }
   }
 
   .node-container:hover .handle-name {
@@ -462,8 +478,9 @@ body {
 .react-flow__handle {
   border-color: black;
   background: white;
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
 }
 
 .react-flow__arrowhead * {
