@@ -34,6 +34,7 @@ import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 // import NodeWithTableView from './NodeWithTableView';
 import EnvironmentSelector from "./EnvironmentSelector";
+import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
@@ -183,6 +184,12 @@ function LynxKiteFlow() {
       table_view: NodeWithTableView,
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
+    }),
+    [],
+  );
+  const edgeTypes = useMemo(
+    () => ({
+      default: LynxKiteEdge,
     }),
     [],
   );
@@ -374,6 +381,7 @@ function LynxKiteFlow() {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             fitView
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
