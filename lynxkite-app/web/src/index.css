@@ -205,6 +205,13 @@ body {
       display: block;
     }
 
+    .param-name-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: end;
+    }
+
     .param-name {
       display: block;
       font-size: 10px;
