@@ -287,7 +287,7 @@ function LynxKiteFlow() {
     (connection: Connection) => {
       setSuppressSearchUntil(Date.now() + 200);
       const edge = {
-        id: `${connection.source} ${connection.target}`,
+        id: `${connection.source} ${connection.sourceHandle} ${connection.target} ${connection.targetHandle}`,
         source: connection.source,
         sourceHandle: connection.sourceHandle!,
         target: connection.target,
