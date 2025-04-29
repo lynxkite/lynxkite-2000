@@ -183,7 +183,7 @@ export default function () {
                       ) : (
                         <File />
                       )}
-                      {shortName(item)}
+                      <span className="entry-name">{shortName(item)}</span>
                     </Link>
                     <button
                       type="button"
