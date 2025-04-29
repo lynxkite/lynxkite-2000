@@ -1,7 +1,15 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import Markdown from "react-markdown";
+// @ts-ignore
+import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 // @ts-ignore
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
+// @ts-ignore
+import Dots from "~icons/tabler/dots.jsx";
+// @ts-ignore
+import Help from "~icons/tabler/help.jsx";
 // @ts-ignore
 import Skull from "~icons/tabler/skull.jsx";
 
@@ -82,8 +90,17 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
           onClick={titleClicked}
         >
           {data.title}
-          {data.error && <span className="title-icon">⚠️</span>}
-          {expanded || <span className="title-icon">⋯</span>}
+          {data.error && (
+            <span className="title-icon">
+              <AlertTriangle />
+            </span>
+          )}
+          {expanded || (
+            <span className="title-icon">
+              <Dots />
+            </span>
+          )}
+          <NodeDocumentation doc={data.meta?.value?.doc} width={props.width - 60} />
         </div>
         {expanded && (
           <>
@@ -136,4 +153,20 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
       </LynxKiteNodeComponent>
     );
   };
+}
+
+function NodeDocumentation(props: any) {
+  if (!props.doc) return null;
+  return (
+    <div className="dropdown dropdown-hover dropdown-top dropdown-end title-icon">
+      <button tabIndex={0}>
+        <Help />
+      </button>
+      <div className="node-documentation dropdown-content" style={{ width: props.width }}>
+        {props.doc.map(
+          (section: any) => section.kind === "text" && <Markdown>{section.value}</Markdown>,
+        )}
+      </div>
+    </div>
+  );
 }

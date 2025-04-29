@@ -7,6 +7,11 @@ faker = Faker()
 
 @op("LynxKite Graph Analytics", "Fake data")
 def fake(*, n=10):
+    """Creates a DataFrame with random-generated names and postal addresses.
+
+    Parameters:
+        n: Number of rows to create.
+    """
     df = pd.DataFrame(
         {
             "name": [faker.name() for _ in range(n)],
