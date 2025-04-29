@@ -1,6 +1,9 @@
 import { useRef } from "react";
 // @ts-ignore
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
+// @ts-ignore
+import Help from "~icons/tabler/question-mark.jsx";
+import NodeDocumentation from "./NodeDocumentation";
 import NodeGroupParameter from "./NodeGroupParameter";
 
 const BOOLEAN = "<class 'bool'>";
@@ -9,8 +12,21 @@ const MODEL_TRAINING_INPUT_MAPPING =
 const MODEL_INFERENCE_INPUT_MAPPING =
   "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>";
 const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
-function ParamName({ name }: { name: string }) {
-  return <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>;
+
+function ParamName({ name, doc }: { name: string; doc: string }) {
+  const help = doc && (
+    <NodeDocumentation doc={doc} width={200}>
+      <button tabIndex={0}>
+        <Help />
+      </button>
+    </NodeDocumentation>
+  );
+  return (
+    <div className="param-name-row">
+      <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>
+      {help}
+    </div>
+  );
 }
 
 function Input({
@@ -195,7 +211,20 @@ interface NodeParameterProps {
 
 export type UpdateOptions = { delay?: number };
 
+function findDocs(docs: any, parameter: string) {
+  for (const sec of docs) {
+    if (sec.kind === "parameters") {
+      for (const p of sec.value) {
+        if (p.name === parameter) {
+          return p.description;
+        }
+      }
+    }
+  }
+}
+
 export default function NodeParameter({ name, value, meta, data, setParam }: NodeParameterProps) {
+  const doc = findDocs(data.meta?.value?.doc ?? [], name);
   function onChange(value: any, opts?: UpdateOptions) {
     setParam(meta.name, value, opts || {});
   }
@@ -261,7 +290,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     </label>
   ) : (
     <label className="param">
-      <ParamName name={name} />
+      <ParamName name={name} doc={doc} />
       <Input value={value} onChange={onChange} />
     </label>
   );
