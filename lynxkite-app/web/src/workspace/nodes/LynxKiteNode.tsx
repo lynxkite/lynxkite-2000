@@ -52,9 +52,11 @@ function getHandles(inputs: any[], outputs: any[]) {
 }
 
 const OP_COLORS: { [key: string]: string } = {
+  pink: "oklch(75% 0.2 0)",
   orange: "oklch(75% 0.2 55)",
+  green: "oklch(75% 0.2 150)",
   blue: "oklch(75% 0.2 230)",
-  green: "oklch(75% 0.2 130)",
+  purple: "oklch(75% 0.2 290)",
 };
 
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
