@@ -17,9 +17,11 @@ export default function LynxKiteEdge(props: any) {
   return (
     <>
       <BaseEdge
-        id={props.id}
         path={path}
-        {...props}
+        labelX={props.labelX}
+        labelY={props.labelY}
+        markerStart={props.markerStart}
+        markerEnd={props.markerEnd}
         style={{
           strokeWidth: 2,
           stroke: "black",
