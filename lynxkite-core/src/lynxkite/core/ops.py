@@ -6,7 +6,6 @@ import asyncio
 import enum
 import functools
 import json
-import griffe
 import importlib
 import inspect
 import pathlib
@@ -434,6 +433,11 @@ def run_user_script(script_path: pathlib.Path):
 
 
 def get_doc(func):
+    """Griffe is an optional dependency. When available, we returned the parsed docstring."""
+    try:
+        import griffe
+    except ImportError:
+        return func.__doc__
     if func.__doc__ is None:
         return None
     doc = griffe.Docstring(func.__doc__).parse("google")

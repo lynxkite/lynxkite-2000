@@ -5,6 +5,7 @@ description = "A lightweight dependency for authoring LynxKite operations and ex
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "griffe>=1.7.3",
 ]
 
 [project.optional-dependencies]
