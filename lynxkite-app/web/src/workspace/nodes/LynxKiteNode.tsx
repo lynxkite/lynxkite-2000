@@ -1,9 +1,17 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
+// @ts-ignore
+import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 // @ts-ignore
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 // @ts-ignore
+import Dots from "~icons/tabler/dots.jsx";
+// @ts-ignore
+import Help from "~icons/tabler/question-mark.jsx";
+// @ts-ignore
 import Skull from "~icons/tabler/skull.jsx";
+import Tooltip from "../../Tooltip";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -44,9 +52,11 @@ function getHandles(inputs: any[], outputs: any[]) {
 }
 
 const OP_COLORS: { [key: string]: string } = {
+  pink: "oklch(75% 0.2 0)",
   orange: "oklch(75% 0.2 55)",
+  green: "oklch(75% 0.2 150)",
   blue: "oklch(75% 0.2 230)",
-  green: "oklch(75% 0.2 130)",
+  purple: "oklch(75% 0.2 290)",
 };
 
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
@@ -81,9 +91,20 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
           style={titleStyle}
           onClick={titleClicked}
         >
-          {data.title}
-          {data.error && <span className="title-icon">⚠️</span>}
-          {expanded || <span className="title-icon">⋯</span>}
+          <span className="title-title">{data.title}</span>
+          {data.error && (
+            <Tooltip doc={`Error: ${data.error}`}>
+              <AlertTriangle />
+            </Tooltip>
+          )}
+          {expanded || (
+            <Tooltip doc="Click to expand node">
+              <Dots />
+            </Tooltip>
+          )}
+          <Tooltip doc={data.meta?.value?.doc}>
+            <Help />
+          </Tooltip>
         </div>
         {expanded && (
           <>

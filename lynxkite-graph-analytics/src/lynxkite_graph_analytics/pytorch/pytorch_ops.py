@@ -8,7 +8,7 @@ from .pytorch_core import op, reg, ENV
 
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
 reg("Input: graph edges", outputs=["edges"])
-reg("Input: sequential", outputs=["y"])
+reg("Input: sequential", outputs=["y"], params=[P.basic("name")])
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")])
 
 
@@ -19,6 +19,7 @@ def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
 
 reg(
     "Neural ODE",
+    color="blue",
     inputs=["x"],
     params=[
         P.basic("relative_tolerance"),
@@ -99,6 +100,7 @@ def concatenate(a, b):
 
 reg(
     "Graph conv",
+    color="blue",
     inputs=["x", "edges"],
     outputs=["x"],
     params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
