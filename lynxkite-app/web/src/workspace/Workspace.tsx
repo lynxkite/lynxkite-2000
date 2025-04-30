@@ -34,6 +34,7 @@ import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 // import NodeWithTableView from './NodeWithTableView';
 import EnvironmentSelector from "./EnvironmentSelector";
+import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
@@ -186,6 +187,12 @@ function LynxKiteFlow() {
     }),
     [],
   );
+  const edgeTypes = useMemo(
+    () => ({
+      default: LynxKiteEdge,
+    }),
+    [],
+  );
 
   // Global keyboard shortcuts.
   useEffect(() => {
@@ -280,7 +287,7 @@ function LynxKiteFlow() {
     (connection: Connection) => {
       setSuppressSearchUntil(Date.now() + 200);
       const edge = {
-        id: `${connection.source} ${connection.target}`,
+        id: `${connection.source} ${connection.sourceHandle} ${connection.target} ${connection.targetHandle}`,
         source: connection.source,
         sourceHandle: connection.sourceHandle!,
         target: connection.target,
@@ -374,6 +381,7 @@ function LynxKiteFlow() {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             fitView
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}

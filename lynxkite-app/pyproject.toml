@@ -10,6 +10,7 @@ dependencies = [
     "orjson>=3.10.13",
     "pycrdt-websocket>=0.15.3",
     "sse-starlette>=2.2.1",
+    "griffe>=1.7.3",
 ]
 
 [project.optional-dependencies]

@@ -8,7 +8,6 @@ from collections import deque
 
 from . import core
 import grandcypher
-import joblib
 import matplotlib
 import networkx as nx
 import pandas as pd
@@ -16,7 +15,6 @@ import polars as pl
 import json
 
 
-mem = joblib.Memory(".joblib-cache")
 op = ops.op_registration(core.ENV)
 
 
@@ -82,8 +80,7 @@ def import_parquet(*, filename: str):
     return pd.read_parquet(filename)
 
 
-@op("Import CSV")
-@mem.cache
+@op("Import CSV", slow=True)
 def import_csv(*, filename: str, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
     return pd.read_csv(
@@ -93,8 +90,7 @@ def import_csv(*, filename: str, columns: str = "<from file>", separator: str = 
     )
 
 
-@op("Import GraphML")
-@mem.cache
+@op("Import GraphML", slow=True)
 def import_graphml(*, filename: str):
     """Imports a GraphML file."""
     files = fsspec.open_files(filename, compression="infer")
@@ -105,8 +101,7 @@ def import_graphml(*, filename: str):
     raise ValueError(f"No .graphml file found at {filename}")
 
 
-@op("Graph from OSM")
-@mem.cache
+@op("Graph from OSM", slow=True)
 def import_osm(*, location: str):
     import osmnx as ox
 
