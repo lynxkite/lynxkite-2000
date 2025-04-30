@@ -20,7 +20,7 @@
     "@syncedstore/core": "^0.6.0",
     "@syncedstore/react": "^0.6.0",
     "@types/node": "^22.10.1",
-    "@xyflow/react": "^12.3.5",
+    "@xyflow/react": "^12.6.0",
     "3dmol": "^2.4.2",
     "axios": "^1.8.2",
     "daisyui": "^4.12.20",
