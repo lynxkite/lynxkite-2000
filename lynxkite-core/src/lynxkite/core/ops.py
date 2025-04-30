@@ -1,19 +1,22 @@
 """API for implementing LynxKite operations."""
 
 from __future__ import annotations
+
 import asyncio
 import enum
 import functools
+import json
 import importlib
 import inspect
 import pathlib
 import subprocess
 import traceback
-import joblib
 import types
-import pydantic
 import typing
 from dataclasses import dataclass
+
+import joblib
+import pydantic
 from typing_extensions import Annotated
 
 if typing.TYPE_CHECKING:
@@ -180,6 +183,7 @@ class Op(BaseConfig):
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
+    doc: object = None
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -236,6 +240,7 @@ def op(
     """Decorator for defining an operation."""
 
     def decorator(func):
+        doc = get_doc(func)
         sig = inspect.signature(func)
         _view = view
         if view == "matplotlib":
@@ -262,6 +267,7 @@ def op(
             _outputs = [Output(name="output", type=None)] if view == "basic" else []
         op = Op(
             func=func,
+            doc=doc,
             name=name,
             params=_params,
             inputs=inputs,
@@ -279,9 +285,10 @@ def op(
 
 def matplotlib_to_image(func):
     """Decorator for converting a matplotlib figure to an image."""
-    import matplotlib.pyplot as plt
     import base64
     import io
+
+    import matplotlib.pyplot as plt
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -423,3 +430,15 @@ def run_user_script(script_path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+
+
+def get_doc(func):
+    """Griffe is an optional dependency. When available, we returned the parsed docstring."""
+    try:
+        import griffe
+    except ImportError:
+        return func.__doc__
+    if func.__doc__ is None:
+        return None
+    doc = griffe.Docstring(func.__doc__).parse("google")
+    return json.loads(json.dumps(doc, cls=griffe.JSONEncoder))
