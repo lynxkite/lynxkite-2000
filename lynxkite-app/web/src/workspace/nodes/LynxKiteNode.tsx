@@ -11,7 +11,7 @@ import Dots from "~icons/tabler/dots.jsx";
 import Help from "~icons/tabler/question-mark.jsx";
 // @ts-ignore
 import Skull from "~icons/tabler/skull.jsx";
-import NodeDocumentation from "./NodeDocumentation";
+import Tooltip from "../../Tooltip";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -91,22 +91,20 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
           style={titleStyle}
           onClick={titleClicked}
         >
-          {data.title}
+          <span className="title-title">{data.title}</span>
           {data.error && (
-            <span className="title-icon">
+            <Tooltip doc={`Error: ${data.error}`}>
               <AlertTriangle />
-            </span>
+            </Tooltip>
           )}
           {expanded || (
-            <span className="title-icon">
+            <Tooltip doc="Click to expand node">
               <Dots />
-            </span>
+            </Tooltip>
           )}
-          <NodeDocumentation doc={data.meta?.value?.doc} width={props.width - 60}>
-            <button tabIndex={0}>
-              <Help />
-            </button>
-          </NodeDocumentation>
+          <Tooltip doc={data.meta?.value?.doc}>
+            <Help />
+          </Tooltip>
         </div>
         {expanded && (
           <>
