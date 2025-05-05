@@ -49,7 +49,7 @@ data_path = pathlib.Path()
 
 def save(req: SaveRequest):
     path = data_path / req.path
-    assert path.is_relative_to(data_path)
+    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
     req.ws.save(path)
 
 
@@ -66,7 +66,7 @@ async def save_and_execute(req: SaveRequest):
 async def delete_workspace(req: dict):
     json_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
-    assert json_path.is_relative_to(data_path)
+    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
 
@@ -74,7 +74,7 @@ async def delete_workspace(req: dict):
 @app.get("/api/load")
 def load(path: str):
     path = data_path / path
-    assert path.is_relative_to(data_path)
+    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
     if not path.exists():
         return workspace.Workspace()
     return workspace.Workspace.load(path)
@@ -97,7 +97,7 @@ def _get_path_type(path: pathlib.Path) -> str:
 @app.get("/api/dir/list")
 def list_dir(path: str):
     path = data_path / path
-    assert path.is_relative_to(data_path)
+    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
     return sorted(
         [
             DirectoryEntry(
@@ -114,7 +114,7 @@ def list_dir(path: str):
 @app.post("/api/dir/mkdir")
 def make_dir(req: dict):
     path = data_path / req["path"]
-    assert path.is_relative_to(data_path)
+    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
     assert not path.exists(), f"{path} already exists"
     path.mkdir()
 
@@ -122,7 +122,9 @@ def make_dir(req: dict):
 @app.post("/api/dir/delete")
 def delete_dir(req: dict):
     path: pathlib.Path = data_path / req["path"]
-    assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()])
+    assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()]), (
+        f"Path '{path}' is invalid"
+    )
     shutil.rmtree(path)
 
 
@@ -146,7 +148,7 @@ async def upload(req: fastapi.Request):
     form = await req.form()
     for file in form.values():
         file_path = data_path / "uploads" / file.filename
-        assert file_path.is_relative_to(data_path), "Invalid file path"
+        assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     return {"status": "ok"}

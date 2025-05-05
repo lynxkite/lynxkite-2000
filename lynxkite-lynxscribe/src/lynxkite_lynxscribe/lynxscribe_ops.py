@@ -873,7 +873,7 @@ async def get_chat_api(ws: str):
 
     cwd = pathlib.Path()
     path = cwd / ws
-    assert path.is_relative_to(cwd)
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     assert path.exists(), f"Workspace {path} does not exist"
     ws = workspace.Workspace.load(path)
     contexts = await ops.EXECUTORS[ENV](ws)
