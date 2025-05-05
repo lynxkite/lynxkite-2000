@@ -404,7 +404,7 @@ def load_user_scripts(workspace: str):
         load_catalogs("plugins loaded")
     cwd = pathlib.Path()
     path = cwd / workspace
-    assert path.is_relative_to(cwd), "Provided workspace path is invalid"
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     for p in path.parents:
         req = p / "requirements.txt"
         if req.exists():

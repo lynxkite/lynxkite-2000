@@ -20,7 +20,7 @@ op = ops.op_registration(core.ENV)
 def load_ws(model_workspace: str):
     cwd = pathlib.Path()
     path = cwd / model_workspace
-    assert path.is_relative_to(cwd)
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     assert path.exists(), f"Workspace {path} does not exist"
     ws = workspace.Workspace.load(path)
     return ws
