@@ -34,7 +34,7 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         """
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
-        assert path.is_relative_to(crdt_path)
+        assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
         ystore = pycrdt_websocket.ystore.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
@@ -87,7 +87,7 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         """Initialize a room for a text document with the given name."""
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
-        assert path.is_relative_to(crdt_path)
+        assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
         ystore = pycrdt_websocket.ystore.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["text"] = text = pycrdt.Text()
@@ -261,7 +261,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
-    assert path.is_relative_to(cwd), "Provided workspace path is invalid"
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     # Save user changes before executing, in case the execution fails.
     ws_pyd.save(path)
     ops.load_user_scripts(name)
