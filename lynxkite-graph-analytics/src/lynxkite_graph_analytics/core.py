@@ -161,11 +161,15 @@ def disambiguate_edges(ws: workspace.Workspace):
         seen.add((edge.target, edge.targetHandle))
 
 
+# Outputs are tracked by node ID and output ID.
+Outputs = dict[tuple[str, str], typing.Any]
+
+
 @ops.register_executor(ENV)
 async def execute(ws: workspace.Workspace):
-    catalog: dict[str, ops.Op] = ops.CATALOGS[ws.env]
+    catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
-    outputs = {}
+    outputs: Outputs = {}
     nodes = {node.id: node for node in ws.nodes}
     todo = set(nodes.keys())
     progress = True
@@ -173,8 +177,12 @@ async def execute(ws: workspace.Workspace):
         progress = False
         for id in list(todo):
             node = nodes[id]
-            input_nodes = [edge.source for edge in ws.edges if edge.target == id]
-            if all(input in outputs for input in input_nodes):
+            inputs_done = [
+                (edge.source, edge.sourceHandle) in outputs
+                for edge in ws.edges
+                if edge.target == id
+            ]
+            if all(inputs_done):
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
@@ -187,7 +195,9 @@ async def await_if_needed(obj):
     return obj
 
 
-async def _execute_node(node, ws, catalog, outputs):
+async def _execute_node(
+    node: workspace.WorkspaceNode, ws: workspace.Workspace, catalog: ops.Catalog, outputs: Outputs
+):
     params = {**node.data.params}
     op = catalog.get(node.data.title)
     if not op:
@@ -196,7 +206,9 @@ async def _execute_node(node, ws, catalog, outputs):
     node.publish_started()
     # TODO: Handle multi-inputs.
     input_map = {
-        edge.targetHandle: outputs[edge.source] for edge in ws.edges if edge.target == node.id
+        edge.targetHandle: outputs[edge.source, edge.sourceHandle]
+        for edge in ws.edges
+        if edge.target == node.id
     }
     # Convert inputs types to match operation signature.
     try:
@@ -228,8 +240,12 @@ async def _execute_node(node, ws, catalog, outputs):
             traceback.print_exc()
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
-    if result.output is not None:
-        outputs[node.id] = result.output
+    if isinstance(result.output, dict):
+        for k, v in result.output.items():
+            outputs[node.id, k] = v
+    elif result.output is not None:
+        [k] = op.outputs
+        outputs[node.id, k.name] = result.output
     node.publish_result(result)
 
 
