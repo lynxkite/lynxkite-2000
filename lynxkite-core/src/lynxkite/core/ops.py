@@ -440,5 +440,8 @@ def get_doc(func):
         return func.__doc__
     if func.__doc__ is None:
         return None
-    doc = griffe.Docstring(func.__doc__).parse("google")
+    if "----" in func.__doc__:
+        doc = griffe.Docstring(func.__doc__).parse("numpy")
+    else:
+        doc = griffe.Docstring(func.__doc__).parse("google")
     return json.loads(json.dumps(doc, cls=griffe.JSONEncoder))
