@@ -1,0 +1,290 @@
+{
+  "edges": [
+    {
+      "id": "Multi-output example 1 one View tables 1 bundle",
+      "source": "Multi-output example 1",
+      "sourceHandle": "one",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Multi-output example 1 two View tables 2 bundle",
+      "source": "Multi-output example 1",
+      "sourceHandle": "two",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns two outputs. Also demonstrates Numpy-style docstrings."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "int",
+                  "description": "Number of elements in output \"one\".",
+                  "name": "a_limit"
+                },
+                {
+                  "annotation": "int",
+                  "description": "Number of elements in output \"two\".",
+                  "name": "b_limit"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": "A dict with two DataFrames in it.",
+                  "description": "",
+                  "name": ""
+                }
+              ]
+            }
+          ],
+          "inputs": [],
+          "name": "Multi-output example",
+          "outputs": [
+            {
+              "name": "one",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "two",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 4,
+              "name": "a_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 10,
+              "name": "b_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "a_limit": "2",
+          "b_limit": "10"
+        },
+        "status": "done",
+        "title": "Multi-output example"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 275.0,
+      "id": "Multi-output example 1",
+      "position": {
+        "x": 86.0,
+        "y": 33.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "a"
+              ],
+              "data": [
+                [
+                  0
+                ],
+                [
+                  1
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "a"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 200.0,
+      "id": "View tables 1",
+      "position": {
+        "x": 485.0,
+        "y": -31.0
+      },
+      "type": "table_view",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "df": {
+              "columns": [
+                "b"
+              ],
+              "data": [
+                [
+                  0
+                ],
+                [
+                  1
+                ],
+                [
+                  2
+                ],
+                [
+                  3
+                ],
+                [
+                  4
+                ],
+                [
+                  5
+                ],
+                [
+                  6
+                ],
+                [
+                  7
+                ],
+                [
+                  8
+                ],
+                [
+                  9
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "b"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 215.0,
+      "id": "View tables 2",
+      "position": {
+        "x": 480.0,
+        "y": 191.0
+      },
+      "type": "table_view",
+      "width": 225.0
+    }
+  ]
+}

@@ -42,10 +42,12 @@ function getHandles(inputs: any[], outputs: any[]) {
     e.index = counts[e.position];
     counts[e.position]++;
   }
+  const simpleHorizontal =
+    counts.top === 0 && counts.bottom === 0 && counts.left <= 1 && counts.right <= 1;
+  const simpleVertical =
+    counts.left === 0 && counts.right === 0 && counts.top <= 1 && counts.bottom <= 1;
   for (const e of handles) {
     e.offsetPercentage = (100 * (e.index + 1)) / (counts[e.position] + 1);
-    const simpleHorizontal = counts.top === 0 && counts.bottom === 0 && handles.length <= 2;
-    const simpleVertical = counts.left === 0 && counts.right === 0 && handles.length <= 2;
     e.showLabel = !simpleHorizontal && !simpleVertical;
   }
   return handles;
