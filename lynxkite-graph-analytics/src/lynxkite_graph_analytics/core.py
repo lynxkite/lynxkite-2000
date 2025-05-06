@@ -162,7 +162,7 @@ def disambiguate_edges(ws: workspace.Workspace):
 
 
 # Outputs are tracked by node ID and output ID.
-Outputs = dict[(str, str), typing.Any]
+Outputs = dict[tuple[str, str], typing.Any]
 
 
 @ops.register_executor(ENV)
