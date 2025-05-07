@@ -149,6 +149,16 @@ def basic_outputs(*names):
     return {name: Output(name=name, type=None) for name in names}
 
 
+def get_optional_type(type):
+    """For a type like `int | None`, returns `int`. Returns `None` otherwise."""
+    if isinstance(type, types.UnionType):
+        match type.__args__:
+            case (types.NoneType, type):
+                return type
+            case (type, types.NoneType):
+                return type
+
+
 def _param_to_type(name, value, type):
     value = value or ""
     if type is int:
@@ -160,12 +170,9 @@ def _param_to_type(name, value, type):
     if isinstance(type, enum.EnumMeta):
         assert value in type.__members__, f"{value} is not an option for {name}."
         return type[value]
-    if isinstance(type, types.UnionType):
-        match type.__args__:
-            case (types.NoneType, type):
-                return None if value == "" else _param_to_type(name, value, type)
-            case (type, types.NoneType):
-                return None if value == "" else _param_to_type(name, value, type)
+    opt_type = get_optional_type(type)
+    if opt_type:
+        return None if value == "" else _param_to_type(name, value, opt_type)
     if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
         try:
             return type.model_validate_json(value)

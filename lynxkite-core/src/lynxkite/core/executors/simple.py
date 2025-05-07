@@ -42,7 +42,11 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
                 if i.name in edges and edges[i.name] in outputs:
                     inputs.append(outputs[edges[i.name]])
                 else:
-                    missing.append(i.name)
+                    opt_type = ops.get_optional_type(i.type)
+                    if opt_type is not None:
+                        inputs.append(None)
+                    else:
+                        missing.append(i.name)
             if missing:
                 node.publish_error(f"Missing input: {', '.join(missing)}")
                 continue
