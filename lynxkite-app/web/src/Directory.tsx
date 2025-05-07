@@ -107,13 +107,11 @@ export default function () {
 
   async function deleteItem(item: DirectoryEntry) {
     if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return;
-    const pathSlash = path ? `${path}/` : "";
-
     const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
     await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: pathSlash + item.name }),
+      body: JSON.stringify({ path: item.name }),
     });
   }
 
