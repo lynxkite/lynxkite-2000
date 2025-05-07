@@ -125,7 +125,7 @@ class Workspace(BaseConfig):
         return self.env in ops.EXECUTORS
 
     async def execute(self):
-        await ops.EXECUTORS[self.env](self)
+        return await ops.EXECUTORS[self.env](self)
 
     def save(self, path: str):
         """Persist the workspace to a local file in JSON format."""
@@ -201,3 +201,36 @@ class Workspace(BaseConfig):
                 if "data" not in nc:
                     nc["data"] = pycrdt.Map()
                 np._crdt = nc
+
+    def add_node(self, func):
+        """For convenience in e.g. tests."""
+        random_string = os.urandom(4).hex()
+        node = WorkspaceNode(
+            id=f"{func.__op__.name} {random_string}",
+            type=func.__op__.type,
+            data=WorkspaceNodeData(
+                title=func.__op__.name,
+                params={},
+                display=None,
+                input_metadata=None,
+                error=None,
+                status=NodeStatus.planned,
+            ),
+            position=Position(x=0, y=0),
+        )
+        self.nodes.append(node)
+        return node
+
+    def add_edge(
+        self, source: WorkspaceNode, sourceHandle: str, target: WorkspaceNode, targetHandle: str
+    ):
+        """For convenience in e.g. tests."""
+        edge = WorkspaceEdge(
+            id=f"{source.id} {sourceHandle} to {target.id} {targetHandle}",
+            source=source.id,
+            target=target.id,
+            sourceHandle=sourceHandle,
+            targetHandle=targetHandle,
+        )
+        self.edges.append(edge)
+        return edge
