@@ -131,12 +131,22 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
             for task in ts:
                 try:
                     inputs = []
+                    missing = []
                     for i in op.inputs:
                         if i.position.is_vertical():
-                            assert (n, i.name) in batch_inputs, f"{i.name} is missing"
-                            inputs.append(batch_inputs[(n, i.name)])
+                            if (n, i.name) in batch_inputs:
+                                inputs.append(batch_inputs[(n, i.name)])
+                            else:
+                                opt_type = ops.get_optional_type(i.type)
+                                if opt_type is not None:
+                                    inputs.append(None)
+                                else:
+                                    missing.append(i.name)
                         else:
                             inputs.append(task)
+                    if missing:
+                        node.publish_error(f"Missing input: {', '.join(missing)}")
+                        break
                     if cache is not None:
                         key = make_cache_key((inputs, params))
                         if key not in cache:
