@@ -289,6 +289,10 @@ def matplotlib_to_image(func):
     import io
 
     import matplotlib.pyplot as plt
+    import matplotlib
+
+    # Make sure we use the non-interactive backend.
+    matplotlib.use("agg")
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
