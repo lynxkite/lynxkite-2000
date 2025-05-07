@@ -187,6 +187,7 @@ async def execute(ws: workspace.Workspace):
                 todo.remove(id)
                 progress = True
                 await _execute_node(node, ws, catalog, outputs)
+    return outputs
 
 
 async def await_if_needed(obj):
@@ -213,10 +214,15 @@ async def _execute_node(
     # Convert inputs types to match operation signature.
     try:
         inputs = []
+        missing = []
         for p in op.inputs:
             if p.name not in input_map:
-                node.publish_error(f"Missing input: {p.name}")
-                return
+                opt_type = ops.get_optional_type(p.type)
+                if opt_type is not None:
+                    inputs.append(None)
+                else:
+                    missing.append(p.name)
+                continue
             x = input_map[p.name]
             if p.type == nx.Graph and isinstance(x, Bundle):
                 x = x.to_nx()
@@ -229,6 +235,9 @@ async def _execute_node(
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
         node.publish_error(e)
+        return
+    if missing:
+        node.publish_error(f"Missing input: {', '.join(missing)}")
         return
     # Execute op.
     try:
