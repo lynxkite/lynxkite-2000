@@ -6,7 +6,6 @@ import {
   Controls,
   type Edge,
   MarkerType,
-  MiniMap,
   type Node,
   ReactFlow,
   ReactFlowProvider,
@@ -406,7 +405,6 @@ function LynxKiteFlow() {
             }}
           >
             <Controls />
-            <MiniMap />
             {nodeSearchSettings && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
