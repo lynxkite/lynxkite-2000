@@ -19,7 +19,7 @@ async def test_optional_inputs():
     ws = workspace.Workspace(env="test", nodes=[], edges=[])
     a = ws.add_node(one)
     b = ws.add_node(maybe_add)
-    outputs = await ws.execute()
+    await ws.execute()
     assert b.data.error == "Missing input: a"
     ws.add_edge(a, "output", b, "a")
     outputs = await ws.execute()
