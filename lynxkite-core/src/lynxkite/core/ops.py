@@ -240,7 +240,7 @@ def op(
     """Decorator for defining an operation."""
 
     def decorator(func):
-        doc = get_doc(func)
+        doc = parse_doc(func.__doc__)
         sig = inspect.signature(func)
         _view = view
         if view == "matplotlib":
@@ -436,16 +436,17 @@ def run_user_script(script_path: pathlib.Path):
     spec.loader.exec_module(module)
 
 
-def get_doc(func):
+@functools.cache
+def parse_doc(doc):
     """Griffe is an optional dependency. When available, we returned the parsed docstring."""
     try:
         import griffe
     except ImportError:
-        return func.__doc__
-    if func.__doc__ is None:
+        return doc
+    if doc is None:
         return None
-    if "----" in func.__doc__:
-        doc = griffe.Docstring(func.__doc__).parse("numpy")
+    if "----" in doc:
+        doc = griffe.Docstring(doc).parse("numpy")
     else:
-        doc = griffe.Docstring(func.__doc__).parse("google")
+        doc = griffe.Docstring(doc).parse("google")
     return json.loads(json.dumps(doc, cls=griffe.JSONEncoder))
