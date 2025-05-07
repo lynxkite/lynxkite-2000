@@ -204,8 +204,9 @@ class Workspace(BaseConfig):
 
     def add_node(self, func):
         """For convenience in e.g. tests."""
+        random_string = os.urandom(4).hex()
         node = WorkspaceNode(
-            id=func.__name__,
+            id=f"{func.__op__.name} {random_string}",
             type=func.__op__.type,
             data=WorkspaceNodeData(
                 title=func.__op__.name,
