@@ -6,24 +6,23 @@ from lynxkite.core.ops import Parameter as P
 import torch
 from .pytorch_core import op, reg, ENV
 
-reg("Input: tensor", outputs=["output"], params=[P.basic("name")])
-reg("Input: graph edges", outputs=["edges"])
-reg("Input: sequential", outputs=["y"], params=[P.basic("name")])
-reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")])
+reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
+reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
+reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
+reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 
 
 @op("LSTM", weights=True)
 def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
-    return torch.nn.LSTM(input_size, hidden_size, dropout=0.0)
+    return torch.nn.LSTM(input_size, hidden_size, dropout=dropout)
 
 
 reg(
-    "Neural ODE",
+    "Neural ODE with MLP",
     color="blue",
-    inputs=["x"],
+    inputs=["x", "y0", "t"],
+    outputs=["y"],
     params=[
-        P.basic("relative_tolerance"),
-        P.basic("absolute_tolerance"),
         P.options(
             "method",
             [
@@ -39,6 +38,11 @@ reg(
                 "implicit_adams",
             ],
         ),
+        P.basic("relative_tolerance"),
+        P.basic("absolute_tolerance"),
+        P.basic("mlp_layers"),
+        P.basic("mlp_hidden_size"),
+        P.options("mlp_activation", ["ReLU", "Tanh", "Sigmoid"]),
     ],
 )
 
@@ -64,6 +68,13 @@ def linear(x, *, output_dim=1024):
     import torch_geometric.nn as pyg_nn
 
     return pyg_nn.Linear(-1, output_dim)
+
+
+@op("Mean pool")
+def mean_pool(x):
+    import torch_geometric.nn as pyg_nn
+
+    return pyg_nn.global_mean_pool
 
 
 class ActivationTypes(str, enum.Enum):
@@ -93,17 +104,54 @@ def softmax(x, *, dim=1):
     return torch.nn.Softmax(dim=dim)
 
 
+@op("Embedding", weights=True)
+def embedding(x, *, num_embeddings: int, embedding_dim: int):
+    return torch.nn.Embedding(num_embeddings, embedding_dim)
+
+
 @op("Concatenate")
 def concatenate(a, b):
     return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
 
 
 reg(
+    "Pick element by index",
+    inputs=["x", "index"],
+    outputs=["x_i"],
+)
+reg(
+    "Pick element by constant",
+    inputs=["x"],
+    outputs=["x_i"],
+    params=[ops.Parameter.basic("index", "0")],
+)
+reg(
+    "Take first n",
+    inputs=["x"],
+    outputs=["x"],
+    params=[ops.Parameter.basic("n", 1, int)],
+)
+reg(
+    "Drop first n",
+    inputs=["x"],
+    outputs=["x"],
+    params=[ops.Parameter.basic("n", 1, int)],
+)
+reg(
     "Graph conv",
     color="blue",
     inputs=["x", "edges"],
     outputs=["x"],
     params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
+)
+reg(
+    "Heterogeneous graph conv",
+    inputs=["node_embeddings", "edge_modules"],
+    outputs=["x"],
+    params=[
+        ops.Parameter.basic("node_embeddings_order"),
+        ops.Parameter.basic("edge_modules_order"),
+    ],
 )
 
 reg("Triplet margin loss", inputs=["x", "x_pos", "x_neg"], outputs=["loss"])
@@ -125,7 +173,7 @@ reg(
                 "Galore AdamW",
             ],
         ),
-        P.basic("lr", 0.001),
+        P.basic("lr", 0.0001),
     ],
     color="green",
 )
