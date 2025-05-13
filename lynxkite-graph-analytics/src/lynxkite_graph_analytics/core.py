@@ -224,12 +224,16 @@ async def _execute_node(
                     missing.append(p.name)
                 continue
             x = input_map[p.name]
-            if p.type == nx.Graph and isinstance(x, Bundle):
-                x = x.to_nx()
-            elif p.type == Bundle and isinstance(x, nx.Graph):
-                x = Bundle.from_nx(x)
-            elif p.type == Bundle and isinstance(x, pd.DataFrame):
-                x = Bundle.from_df(x)
+            if p.type == nx.Graph:
+                if isinstance(x, Bundle):
+                    x = x.to_nx()
+                assert isinstance(x, nx.Graph), "Input must be a graph."
+            elif p.type == Bundle:
+                if isinstance(x, nx.Graph):
+                    x = Bundle.from_nx(x)
+                elif isinstance(x, pd.DataFrame):
+                    x = Bundle.from_df(x)
+                assert isinstance(x, Bundle), "Input must be a graph or dataframe."
             inputs.append(x)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
