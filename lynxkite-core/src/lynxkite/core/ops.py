@@ -255,7 +255,7 @@ def op(
             func = matplotlib_to_image(func)
         if slow:
             func = mem.cache(func)
-            func = _global_slow(func)
+            func = make_async(func)
         # Positional arguments are inputs.
         inputs = [
             Input(name=name, type=param.annotation)
@@ -385,8 +385,12 @@ def passive_op_registration(env: str):
     return functools.partial(register_passive_op, env)
 
 
-def slow(func):
+def make_async(func):
     """Decorator for slow, blocking operations. Turns them into separate threads."""
+
+    if asyncio.iscoroutinefunction(func):
+        # If the function is already a coroutine, return it as is.
+        return func
 
     @functools.wraps(func)
     async def wrapper(*args, **kwargs):
@@ -395,7 +399,6 @@ def slow(func):
     return wrapper
 
 
-_global_slow = slow  # For access inside op().
 CATALOGS_SNAPSHOTS: dict[str, Catalogs] = {}
 
 

@@ -2,7 +2,6 @@
 
 from lynxkite_graph_analytics import Bundle, RelationDefinition
 from lynxkite.core import ops
-import joblib
 import numpy as np
 import pandas as pd
 import rdkit.Chem
@@ -10,7 +9,6 @@ import rdkit.Chem.rdFingerprintGenerator
 import rdkit.Chem.Fingerprints.ClusterMols
 import scipy
 
-mem = joblib.Memory(".joblib-cache")
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
 

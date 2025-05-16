@@ -12,7 +12,6 @@ import tarfile
 import os
 from collections import Counter
 from . import core
-import joblib
 import numpy as np
 import torch
 from pathlib import Path
@@ -40,7 +39,6 @@ from bionemo.scdl.io.single_cell_collection import SingleCellCollection
 import scanpy
 
 
-mem = joblib.Memory(".joblib-cache")
 op = ops.op_registration(core.ENV)
 DATA_PATH = Path("/workspace")
 
@@ -56,8 +54,7 @@ def random_seed(seed: int):
         random.setstate(state)
 
 
-@op("BioNeMo > Download CELLxGENE dataset")
-@mem.cache()
+@op("BioNeMo > Download CELLxGENE dataset", slow=True)
 def download_cellxgene_dataset(
     *,
     save_path: str,
@@ -99,8 +96,7 @@ def import_h5ad(*, file_path: str):
     return scanpy.read_h5ad(DATA_PATH / Path(file_path))
 
 
-@op("BioNeMo > Download model")
-@mem.cache(verbose=1)
+@op("BioNeMo > Download model", slow=True)
 def download_model(*, model_name: str) -> str:
     """Downloads a model."""
     model_download_parameters = {
@@ -144,8 +140,7 @@ def download_model(*, model_name: str) -> str:
     return model_filename
 
 
-@op("BioNeMo > Infer")
-@mem.cache(verbose=1)
+@op("BioNeMo > Infer", slow=True)
 def infer(dataset_path: str, model_path: str | None = None, *, results_path: str) -> str:
     """Infer on a dataset."""
     # This import is slow, so we only import it when we need it.
@@ -218,8 +213,7 @@ def plot_labels(adata):
     return options
 
 
-@op("BioNeMo > Run benchmark")
-@mem.cache(verbose=1)
+@op("BioNeMo > Run benchmark", slow=True)
 def run_benchmark(data, labels, *, use_pca: bool = False):
     """
     data - contains the single cell expression (or whatever feature) in each row.
@@ -277,8 +271,7 @@ def run_benchmark(data, labels, *, use_pca: bool = False):
     return results_out, conf_matrix
 
 
-@op("BioNeMo > Plot confusion matrix", view="visualization")
-@mem.cache(verbose=1)
+@op("BioNeMo > Plot confusion matrix", view="visualization", slow=True)
 def plot_confusion_matrix(benchmark_output, labels):
     cm = benchmark_output[1]
     labels = labels.classes_
