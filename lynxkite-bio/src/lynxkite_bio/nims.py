@@ -2,13 +2,11 @@
 
 from lynxkite_graph_analytics import Bundle
 from lynxkite.core import ops
-import joblib
 import httpx
 import pandas as pd
 import os
 
 
-mem = joblib.Memory(".joblib-cache")
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
 
@@ -35,8 +33,7 @@ async def query_bionemo_nim(
         raise ValueError(f"Query failed: {e}")
 
 
-@op("MSA-search")
-@mem.cache
+@op("MSA-search", slow=True)
 async def msa_search(
     bundle: Bundle,
     *,
@@ -74,8 +71,7 @@ async def msa_search(
     return bundle
 
 
-@op("Query OpenFold2")
-@mem.cache
+@op("Query OpenFold2", slow=True)
 async def query_openfold2(
     bundle: Bundle,
     *,
@@ -135,8 +131,7 @@ def view_molecule(
     }
 
 
-@op("Query GenMol")
-@mem.cache
+@op("Query GenMol", slow=True)
 async def query_genmol(
     bundle: Bundle,
     *,
@@ -166,8 +161,7 @@ async def query_genmol(
     return bundle
 
 
-@op("Query DiffDock")
-@mem.cache
+@op("Query DiffDock", slow=True)
 async def query_diffdock(
     proteins: Bundle,
     ligands: Bundle,
