@@ -3,7 +3,9 @@
 from lynxkite_graph_analytics import Bundle
 from lynxkite.core import ops
 import httpx
+import io
 import pandas as pd
+import rdkit
 import os
 
 from . import k8s
@@ -122,14 +124,15 @@ def view_molecule(
     row_index: int = 0,
 ):
     molecule_data = bundle.dfs[molecule_table][molecule_column].iloc[row_index]
+    if isinstance(molecule_data, rdkit.Chem.Mol):
+        sio = io.StringIO()
+        with rdkit.Chem.SDWriter(sio) as w:
+            w.write(molecule_data)
+        molecule_data = sio.getvalue()
 
     return {
         "data": molecule_data,
-        "format": "pdb"
-        if molecule_data.startswith("ATOM")
-        else "sdf"
-        if molecule_data.startswith("CTfile")
-        else "smiles",
+        "format": "pdb" if molecule_data.startswith("ATOM") else "sdf",
     }
 
 
