@@ -456,6 +456,7 @@ def parse_doc(func):
         return doc
     if doc is None:
         return None
+    griffe.logger.setLevel("ERROR")
     ds = griffe.Docstring(doc, parent=_get_griffe_function(func))
     if "----" in doc:
         ds = ds.parse("numpy")
