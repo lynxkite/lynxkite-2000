@@ -254,8 +254,8 @@ def op(
             _view = "image"
             func = matplotlib_to_image(func)
         if slow:
-            func = mem.cache(func)
             func = make_async(func)
+            func = mem.cache(func)
         # Positional arguments are inputs.
         inputs = [
             Input(name=name, type=param.annotation)
