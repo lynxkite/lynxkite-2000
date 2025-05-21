@@ -268,5 +268,5 @@ def _stop_later(name, namespace):
             # Nobody started the service in the meantime.
             _stop(name, namespace)
 
-    t = threading.Thread(target=stop)
+    t = threading.Thread(target=stop, daemon=True)
     t.start()
