@@ -296,7 +296,4 @@
   link_answer: *link
   min_similarity_score: -1
 - name: malicious
-  mode: fixed_answer  # Could be sticky, but if we want the user to rephrase, let's give 2nd chance
-  fixed_answer: >
-    I am sorry, but I feel you want me use in a wrong way. If I feel it wrong, please try to
-    rephrase your question.
+  mode: llm_only
