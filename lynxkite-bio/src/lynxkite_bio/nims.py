@@ -6,6 +6,8 @@ import httpx
 import pandas as pd
 import os
 
+from . import k8s
+
 
 ENV = "LynxKite Graph Analytics"
 op = ops.op_registration(ENV)
@@ -131,7 +133,30 @@ def view_molecule(
     }
 
 
+def _needs_bionemo_k8s(**k8s_kwargs):
+    if USE_K8S:
+        return k8s.needs(**k8s_kwargs)
+    else:
+        return lambda func: func
+
+
+def base_url(service):
+    if USE_K8S:
+        return f"http://{k8s.get_ip(service)}/"
+    else:
+        return "https://health.api.nvidia.com/"
+
+
+USE_K8S = False  # Not production ready yet.
+needs_genmol_k8s = _needs_bionemo_k8s(
+    name="genmol",
+    image="nvcr.io/nim/nvidia/genmol:1.0.0",
+    port=8000,
+)
+
+
 @op("Query GenMol", slow=True)
+@needs_genmol_k8s
 async def query_genmol(
     bundle: Bundle,
     *,
@@ -146,7 +171,7 @@ async def query_genmol(
     bundle = bundle.copy()
 
     response = await query_bionemo_nim(
-        url="https://health.api.nvidia.com/v1/biology/nvidia/genmol/generate",
+        url=f"{base_url('genmol')}v1/biology/nvidia/genmol/generate",
         payload={
             "smiles": bundle.dfs[molecule_table][molecule_column].iloc[0],
             "num_molecules": num_molecules,
