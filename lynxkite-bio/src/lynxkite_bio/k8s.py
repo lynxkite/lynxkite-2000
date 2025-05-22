@@ -19,7 +19,7 @@ Use `k8s.needs()` to declare a Kubernetes dependency for an operation. For examp
     port=8000,
     args=["--model", "google/gemma-3-1b-it"],
     health_probe="/health",
-    env=k8s.env_vars("HUGGING_FACE_HUB_TOKEN"),
+    forward_env=["HUGGING_FACE_HUB_TOKEN"],
     storage_path="/root/.cache/huggingface",
     storage_size="10Gi",
 )
@@ -49,6 +49,7 @@ def _run(
     storage_size,
     storage_path,
     health_probe,
+    forward_env,
     **kwargs,
 ):
     print(f"Starting {name} in namespace {namespace}...")
@@ -72,6 +73,10 @@ def _run(
                 ),
             )
         )
+    # Forward local environment variables to the container.
+    kwargs.setdefault("env", []).extend(
+        [{"name": name, "value": os.environ[name]} for name in forward_env]
+    )
     container = client.V1Container(
         name=name,
         image=image,
@@ -192,17 +197,13 @@ def _pvc_exists(name: str, namespace: str = "default") -> bool:
             raise
 
 
-def env_vars(*names: str):
-    """A convenient way to pass local environment variables to the microservice."""
-    return [{"name": name, "value": os.environ[name]} for name in names]
-
-
 def needs(
     name: str,
     image: str,
     port: int,
     args: list = None,
     env: list = None,
+    forward_env: list = None,
     health_probe: str = None,
     storage_size: str = None,
     storage_path: str = "/data",
@@ -222,6 +223,7 @@ def needs(
                 port=port,
                 args=args or [],
                 env=env or [],
+                forward_env=forward_env or [],
                 health_probe=health_probe,
                 storage_size=storage_size,
                 storage_path=storage_path,
