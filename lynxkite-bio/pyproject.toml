@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "fsspec>=2025.2.0",
     "joblib>=1.4.2",
+    "kubernetes>=32.0.1",
     "lynxkite-core",
     "lynxkite-graph-analytics",
     "pandas>=2.2.3",
