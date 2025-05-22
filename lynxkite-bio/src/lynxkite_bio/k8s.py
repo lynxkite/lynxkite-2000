@@ -39,8 +39,6 @@ import httpx
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 
-config.load_kube_config()
-
 
 def _run(
     *,
@@ -217,6 +215,7 @@ def needs(
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*func_args, **func_kwargs):
+            config.load_kube_config()
             _using(
                 name=name,
                 image=image,
