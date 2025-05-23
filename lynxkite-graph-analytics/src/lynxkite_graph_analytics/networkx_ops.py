@@ -156,7 +156,7 @@ def wrapped(name: str, func):
         for k, v in kwargs.items():
             if v == "None":
                 kwargs[k] = None
-        res = await ops.run_in_thread(func)(*args, **kwargs)
+        res = await ops.make_async(func)(*args, **kwargs)
         # Figure out what the returned value is.
         if isinstance(res, nx.Graph):
             return res

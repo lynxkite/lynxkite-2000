@@ -52,7 +52,7 @@ class WorkspaceNode(BaseConfig):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
         self.data.status = NodeStatus.active
-        if hasattr(self, "_crdt"):
+        if hasattr(self, "_crdt") and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["error"] = None
                 self._crdt["data"]["status"] = NodeStatus.active
@@ -63,7 +63,7 @@ class WorkspaceNode(BaseConfig):
         self.data.input_metadata = result.input_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
-        if hasattr(self, "_crdt"):
+        if hasattr(self, "_crdt") and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 try:
                     self._crdt["data"]["status"] = NodeStatus.done
