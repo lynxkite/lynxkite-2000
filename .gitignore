@@ -13,10 +13,9 @@ __pycache__
 node_modules
 dist
 build
-joblib-cache
 *.egg-info
 
-lynxkite_crdt_data
+examples/.*
 
 # Playwright
 test-results
