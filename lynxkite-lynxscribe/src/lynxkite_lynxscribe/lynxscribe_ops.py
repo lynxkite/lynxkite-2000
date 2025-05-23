@@ -8,7 +8,6 @@ from copy import deepcopy
 from enum import Enum
 import asyncio
 import pandas as pd
-import joblib
 from pydantic import BaseModel, ConfigDict
 
 import pathlib
@@ -39,7 +38,6 @@ DEFAULT_NEGATIVE_ANSWER = "I'm sorry, but the data I've been trained on does not
 
 ENV = "LynxScribe"
 one_by_one.register(ENV)
-mem = joblib.Memory("joblib-cache")
 op = ops.op_registration(ENV)
 output_on_top = ops.output_position(output="top")
 
@@ -149,8 +147,7 @@ def cloud_file_loader(
 
 
 # @output_on_top
-# @op("LynxScribe RAG Graph Vector Store")
-# @mem.cache
+# @op("LynxScribe RAG Graph Vector Store", slow=True)
 # def ls_rag_graph(
 #     *,
 #     name: str = "faiss",
@@ -187,8 +184,7 @@ def cloud_file_loader(
 #     return {"rag_graph": rag_graph}
 
 
-@op("LynxScribe Image Describer")
-@mem.cache
+@op("LynxScribe Image Describer", slow=True)
 async def ls_image_describer(
     file_urls,
     *,
@@ -251,8 +247,7 @@ async def ls_image_describer(
     return {"image_descriptions": image_descriptions}
 
 
-@op("LynxScribe Image RAG Builder")
-@mem.cache
+@op("LynxScribe Image RAG Builder", slow=True)
 async def ls_image_rag_builder(
     image_descriptions,
     *,
@@ -407,8 +402,7 @@ def view_image(embedding_similarities):
     return embedding_similarities[0]["image_url"]
 
 
-@op("LynxScribe Text RAG Loader")
-@mem.cache
+@op("LynxScribe Text RAG Loader", slow=True)
 def ls_text_rag_loader(
     file_urls,
     *,
@@ -465,8 +459,7 @@ def ls_text_rag_loader(
     return {"rag_graph": rag_graph}
 
 
-@op("LynxScribe FAQ to RAG")
-@mem.cache
+@op("LynxScribe FAQ to RAG", slow=True)
 async def ls_faq_to_rag(
     *,
     faq_excel_path: str = "",
@@ -712,8 +705,7 @@ def read_excel(*, file_path: str, sheet_name: str = "Sheet1", columns: str = "")
 
 
 @ops.input_position(system_prompt="bottom", instruction_prompt="bottom", dataframe="left")
-@op("LynxScribe Task Solver")
-@mem.cache
+@op("LynxScribe Task Solver", slow=True)
 async def ls_task_solver(
     system_prompt,
     instruction_prompt,
@@ -814,7 +806,7 @@ def mask(*, name="", regex="", exceptions="", mask_pattern=""):
 
 
 @ops.input_position(chat_api="bottom")
-@op("Test Chat API")
+@op("Test Chat API", slow=True)
 async def test_chat_api(message, chat_api, *, show_details=False):
     chat_api = chat_api[0]["chat_api"]
     request = ChatCompletionPrompt(
