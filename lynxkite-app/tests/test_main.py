@@ -2,9 +2,11 @@ import pathlib
 import uuid
 from fastapi.testclient import TestClient
 from lynxkite_app.main import app, detect_plugins
+from lynxkite.core import ops
 import os
 
 
+ops.user_script_root = None
 client = TestClient(app)
 
 
