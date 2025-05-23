@@ -53,12 +53,10 @@ npm run dev
 
 ## Executing tests
 
-Just go into each directory and execute `pytest`.
+Run all tests with a single command, or look inside to see how to run them individually:
 
 ```bash
-# Same thing for lynxkite-core and lynxkite-graph-analytics
-$ cd lynxkite-app
-$ pytest
+./test.sh
 ```
 
 ## Documentation
