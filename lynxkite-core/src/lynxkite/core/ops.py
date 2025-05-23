@@ -254,8 +254,8 @@ def op(
             _view = "image"
             func = matplotlib_to_image(func)
         if slow:
-            func = mem.cache(func)
             func = make_async(func)
+            func = mem.cache(func)
         # Positional arguments are inputs.
         inputs = [
             Input(name=name, type=param.annotation)
@@ -456,6 +456,7 @@ def parse_doc(func):
         return doc
     if doc is None:
         return None
+    griffe.logger.setLevel("ERROR")
     ds = griffe.Docstring(doc, parent=_get_griffe_function(func))
     if "----" in doc:
         ds = ds.parse("numpy")

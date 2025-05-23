@@ -22,7 +22,7 @@ op = ops.op_registration(ENV)
     port=8000,
     args=["--model", "google/gemma-3-1b-it"],
     health_probe="/health",
-    env=k8s.env_vars("HUGGING_FACE_HUB_TOKEN"),
+    forward_env=["HUGGING_FACE_HUB_TOKEN"],
     storage_path="/root/.cache/huggingface",
     storage_size="10Gi",
 )

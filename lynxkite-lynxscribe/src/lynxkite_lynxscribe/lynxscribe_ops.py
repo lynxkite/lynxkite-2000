@@ -864,11 +864,15 @@ async def get_chat_api(ws: str):
     from lynxkite.core import workspace
 
     cwd = pathlib.Path()
-    path = cwd / ws
+    path = cwd / (ws + ".lynxkite.json")
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     assert path.exists(), f"Workspace {path} does not exist"
     ws = workspace.Workspace.load(path)
-    contexts = await ops.EXECUTORS[ENV](ws)
+    # Remove any test nodes.
+    ws.nodes = [op for op in ws.nodes if op.data.title != "Test Chat API"]
+    ws.normalize()
+    executor = ops.EXECUTORS[ENV]
+    contexts = await executor(ws)
     nodes = [op for op in ws.nodes if op.data.title == "LynxScribe RAG Graph Chatbot Backend"]
     [node] = nodes
     context = contexts[node.id]
@@ -879,7 +883,16 @@ async def stream_chat_api_response(request):
     chat_api = await get_chat_api(request["model"])
     request = ChatCompletionPrompt(**request)
     async for chunk in await chat_api.answer(request, stream=True):
+        chunk.sources = []
         yield chunk.model_dump_json()
+
+
+async def get_chat_api_response(request):
+    chat_api = await get_chat_api(request["model"])
+    request = ChatCompletionPrompt(**request)
+    response = await chat_api.answer(request, stream=False)
+    response.sources = []
+    return response.model_dump_json()
 
 
 async def api_service_post(request):
@@ -899,9 +912,12 @@ async def api_service_post(request):
     path = "/".join(request.url.path.split("/")[4:])
     request = await request.json()
     if path == "chat/completions":
-        from sse_starlette.sse import EventSourceResponse
+        if request["stream"]:
+            from sse_starlette.sse import EventSourceResponse
 
-        return EventSourceResponse(stream_chat_api_response(request))
+            return EventSourceResponse(stream_chat_api_response(request))
+        else:
+            return await get_chat_api_response(request)
     return {"error": "Not found"}
 
 
@@ -912,7 +928,7 @@ async def api_service_get(request):
             "object": "list",
             "data": [
                 {
-                    "id": ws,
+                    "id": ws.removesuffix(".lynxkite.json"),
                     "object": "model",
                     "created": 0,
                     "owned_by": "lynxkite",
@@ -924,7 +940,7 @@ async def api_service_get(request):
     return {"error": "Not found"}
 
 
-def get_lynxscribe_workspaces():
+def get_lynxscribe_workspaces() -> list[str]:
     from lynxkite.core import workspace
 
     workspaces = []
@@ -933,7 +949,7 @@ def get_lynxscribe_workspaces():
             try:
                 ws = workspace.Workspace.load(p)
                 if ws.env == ENV:
-                    workspaces.append(p)
+                    workspaces.append(str(p))
             except Exception:
                 pass  # Ignore files that are not valid workspaces.
     workspaces.sort()
