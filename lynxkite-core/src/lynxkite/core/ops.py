@@ -412,13 +412,18 @@ def load_catalogs(snapshot_name: str):
     CATALOGS = {k: dict(v) for k, v in snap.items()}
 
 
+# Generally the same as the data directory, but it can be overridden.
+user_script_root = pathlib.Path()
+
+
 def load_user_scripts(workspace: str):
     """Reloads the *.py in the workspace's directory and higher-level directories."""
     if "plugins loaded" in CATALOGS_SNAPSHOTS:
         load_catalogs("plugins loaded")
-    cwd = pathlib.Path()
-    path = cwd / workspace
-    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
+    if not user_script_root:
+        return
+    path = user_script_root / workspace
+    assert path.is_relative_to(user_script_root), f"Path '{path}' is invalid"
     for p in path.parents:
         req = p / "requirements.txt"
         if req.exists():
@@ -431,7 +436,7 @@ def load_user_scripts(workspace: str):
                 run_user_script(f)
             except Exception:
                 traceback.print_exc()
-        if p == cwd:
+        if p == user_script_root:
             break
 
 
