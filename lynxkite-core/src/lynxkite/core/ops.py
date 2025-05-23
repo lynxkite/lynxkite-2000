@@ -247,7 +247,7 @@ def op(
     """Decorator for defining an operation."""
 
     def decorator(func):
-        doc = parse_doc(func.__doc__)
+        doc = parse_doc(func)
         sig = inspect.signature(func)
         _view = view
         if view == "matplotlib":
@@ -444,16 +444,45 @@ def run_user_script(script_path: pathlib.Path):
 
 
 @functools.cache
-def parse_doc(doc):
-    """Griffe is an optional dependency. When available, we returned the parsed docstring."""
+def parse_doc(func):
+    """Griffe is an optional dependency. When available, we return the parsed docstring."""
+    doc = func.__doc__
     try:
         import griffe
     except ImportError:
         return doc
     if doc is None:
         return None
+    ds = griffe.Docstring(doc, parent=_get_griffe_function(func))
     if "----" in doc:
-        doc = griffe.Docstring(doc).parse("numpy")
+        ds = ds.parse("numpy")
     else:
-        doc = griffe.Docstring(doc).parse("google")
-    return json.loads(json.dumps(doc, cls=griffe.JSONEncoder))
+        ds = ds.parse("google")
+    return json.loads(json.dumps(ds, cls=griffe.JSONEncoder))
+
+
+def _get_griffe_function(func):
+    """Returns a griffe.Function object based on the signature of the function."""
+    import griffe
+
+    sig = inspect.signature(func)
+    parameters = []
+    for name, param in sig.parameters.items():
+        if param.annotation is inspect.Parameter.empty:
+            annotation = None
+        else:
+            annotation = param.annotation.__name__
+        parameters.append(
+            griffe.Parameter(
+                name,
+                annotation=annotation,
+                kind=griffe.ParameterKind.keyword_only
+                if param.kind == inspect.Parameter.KEYWORD_ONLY
+                else griffe.ParameterKind.positional_or_keyword,
+            )
+        )
+    return griffe.Function(
+        func.__name__,
+        parameters=griffe.Parameters(*parameters),
+        returns=str(sig.return_annotation),
+    )
