@@ -8,12 +8,10 @@ from lynxkite.core import workspace
 from .pytorch import pytorch_core
 from lynxkite.core import ops
 from tqdm import tqdm
-import joblib
 import pandas as pd
 import pathlib
 
 
-mem = joblib.Memory(".joblib-cache")
 op = ops.op_registration(core.ENV)
 
 
@@ -57,8 +55,7 @@ class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
-@op("Train model")
-@ops.slow
+@op("Train model", slow=True)
 def train_model(
     bundle: core.Bundle,
     *,
@@ -82,8 +79,7 @@ def train_model(
     return bundle
 
 
-@op("Model inference")
-@ops.slow
+@op("Model inference", slow=True)
 def model_inference(
     bundle: core.Bundle,
     *,
