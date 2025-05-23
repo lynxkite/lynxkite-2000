@@ -303,7 +303,7 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
         relations (str, optional): Set of relations to set for the bundle. The parameter
             should be a JSON object where the keys are relation names and the values are
             a dictionary representation of a `RelationDefinition`.
-        Defaults to None.
+            Defaults to None.
 
     Returns:
         Bundle: The input bundle with the new relations set.
