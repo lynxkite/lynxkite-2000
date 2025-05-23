@@ -42,7 +42,7 @@
         where appropriate. Avoid phrases like 'According to this article' to maintain a natural
         tone.
   link_answer: &link # When present, formatted node link appends to answer, should contain {link}
-        "\n\nPlease visit <a href='{link}' target='_blank'>{link}</a> for further information."
+        "\n\nPlease visit {link} for further information."
   min_similarity_score: -1  # Only need to specify if > -1 and in RETRIEVE_LLM or RETRIEVE_ONLY mode
 - name: life_sciences_interest
   mode: retrieve_llm
