@@ -325,6 +325,7 @@ body {
   .table-viewer {
     td {
       padding: 5px 10px;
+      vertical-align: top;
     }
 
     .image-in-table {

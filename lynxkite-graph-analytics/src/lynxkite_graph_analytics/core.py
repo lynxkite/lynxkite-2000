@@ -227,13 +227,13 @@ async def _execute_node(
             if p.type == nx.Graph:
                 if isinstance(x, Bundle):
                     x = x.to_nx()
-                assert isinstance(x, nx.Graph), "Input must be a graph."
+                assert isinstance(x, nx.Graph), f"Input must be a graph. Got: {x}"
             elif p.type == Bundle:
                 if isinstance(x, nx.Graph):
                     x = Bundle.from_nx(x)
                 elif isinstance(x, pd.DataFrame):
                     x = Bundle.from_df(x)
-                assert isinstance(x, Bundle), "Input must be a graph or dataframe."
+                assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
             inputs.append(x)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
