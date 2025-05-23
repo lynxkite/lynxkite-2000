@@ -17,7 +17,6 @@ def test_detect_plugins_with_plugins():
         plugin in plugins.keys()
         for plugin in [
             "lynxkite_graph_analytics",
-            "lynxkite_lynxscribe",
             "lynxkite_pillow_example",
         ]
     )

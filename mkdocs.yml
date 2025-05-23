@@ -22,4 +22,4 @@ plugins:
 - mkdocstrings:
     handlers:
       python:
-        paths: ["./lynxkite-app/src", "./lynxkite-core/src", "./lynxkite-graph-analytics/src", "./lynxkite-lynxscribe/src"]
+        paths: ["./lynxkite-app/src", "./lynxkite-core/src", "./lynxkite-graph-analytics/src"]

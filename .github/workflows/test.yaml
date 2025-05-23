@@ -24,16 +24,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          eval `ssh-agent -s`
-          ssh-add - <<< '${{ secrets.LYNXSCRIBE_DEPLOY_KEY }}'
           uv venv
           . .venv/bin/activate
           uv pip install \
             -e lynxkite-core/[dev] \
             -e lynxkite-app/[dev] \
             -e lynxkite-graph-analytics/[dev] \
-            -e lynxkite-bio \
-            -e lynxkite-lynxscribe/ \
             -e lynxkite-pillow-example/
 
       - name: Run pre-commits
@@ -54,11 +50,6 @@ jobs:
       - name: Run graph analytics tests
         run: |
           cd lynxkite-graph-analytics
-          pytest
-
-      - name: Run LynxScribe tests
-        run: |
-          cd lynxkite-lynxscribe
           pytest
 
       - name: Try building the documentation

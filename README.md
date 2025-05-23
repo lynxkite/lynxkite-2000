@@ -22,8 +22,6 @@ original LynxKite. The primary goals of this rewrite are:
 - `lynxkite-app`: The LynxKite web application. Install some plugins then run this to use LynxKite.
 - `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
 - `lynxkite-pillow`: A simple example plugin.
-- `lynxkite-lynxscribe`: A plugin for building and running LynxScribe applications.
-- `lynxkite-bio`: Bioinformatics additions for LynxKite Graph Analytics.
 - `docs`: User-facing documentation. It's shared between all packages.
 
 ## Development
@@ -35,7 +33,7 @@ uv venv
 source .venv/bin/activate
 uvx pre-commit install
 # The [dev] tag is only needed if you intend on running tests
-uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-bio -e lynxkite-lynxscribe/ -e lynxkite-pillow-example/
+uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-pillow-example/
 ```
 
 This also builds the frontend, hopefully very quickly. To run it:

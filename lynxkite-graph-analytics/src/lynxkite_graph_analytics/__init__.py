@@ -15,6 +15,3 @@ from . import lynxkite_ops  # noqa (imported to trigger registration)
 from . import networkx_ops  # noqa (imported to trigger registration)
 from . import pytorch  # noqa (imported to trigger registration)
 from . import ml_ops  # noqa (imported to trigger registration)
-
-if os.environ.get("LYNXKITE_BIONEMO_INSTALLED", "").strip().lower() == "true":
-    from . import bionemo_ops  # noqa (imported to trigger registration)
