@@ -312,9 +312,3 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     if not (relations is None or relations.strip() == ""):
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
-
-
-@op("Biomedical foundation graph (PLACEHOLDER)")
-def biomedical_foundation_graph(*, filter_nodes: str):
-    """Loads the gigantic Lynx-maintained knowledge graph. Includes drugs, diseases, genes, proteins, etc."""
-    return None

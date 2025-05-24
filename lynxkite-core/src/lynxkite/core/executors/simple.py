@@ -9,7 +9,13 @@ import graphlib
 
 
 def register(env: str):
-    """Registers the one-by-one executor."""
+    """Registers the simple executor.
+
+    Usage:
+
+        from lynxkite.core.executors import simple
+        simple.register("My Environment")
+    """
     ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env])
 
 
