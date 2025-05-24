@@ -17,16 +17,28 @@ ENV = "LynxKite Graph Analytics"
 
 @dataclasses.dataclass
 class RelationDefinition:
-    """Defines a set of edges."""
+    """
+    Defines a set of edges.
 
-    df: str  # The DataFrame that contains the edges.
-    source_column: str  # The column in the edge DataFrame that contains the source node ID.
-    target_column: str  # The column in the edge DataFrame that contains the target node ID.
-    source_table: str  # The DataFrame that contains the source nodes.
-    target_table: str  # The DataFrame that contains the target nodes.
-    source_key: str  # The column in the source table that contains the node ID.
-    target_key: str  # The column in the target table that contains the node ID.
-    name: str | None = None  # Descriptive name for the relation.
+    Attributes:
+        df: The name of the DataFrame that contains the edges.
+        source_column: The column in the edge DataFrame that contains the source node ID.
+        target_column: The column in the edge DataFrame that contains the target node ID.
+        source_table: The name of the DataFrame that contains the source nodes.
+        target_table: The name of the DataFrame that contains the target nodes.
+        source_key: The column in the source table that contains the node ID.
+        target_key: The column in the target table that contains the node ID.
+        name: Descriptive name for the relation.
+    """
+
+    df: str
+    source_column: str
+    target_column: str
+    source_table: str
+    target_table: str
+    source_key: str
+    target_key: str
+    name: str | None = None
 
 
 @dataclasses.dataclass
@@ -34,7 +46,16 @@ class Bundle:
     """A collection of DataFrames and other data.
 
     Can efficiently represent a knowledge graph (homogeneous or heterogeneous) or tabular data.
-    It can also carry other data, such as a trained model.
+
+    By convention, if it contains a single DataFrame, it is called `df`.
+    If it contains a homogeneous graph, it is represented as two DataFrames called `nodes` and
+    `edges`.
+
+    Attributes:
+        dfs: Named DataFrames.
+        relations: Metadata that describes the roles of each DataFrame.
+            Can be empty, if the bundle is just one or more DataFrames.
+        other: Other data, such as a trained model.
     """
 
     dfs: dict[str, pd.DataFrame] = dataclasses.field(default_factory=dict)
@@ -91,7 +112,10 @@ class Bundle:
         return graph
 
     def copy(self):
-        """Returns a medium depth copy of the bundle. The Bundle is completely new, but the DataFrames and RelationDefinitions are shared."""
+        """
+        Returns a shallow copy of the bundle. The Bundle and its containers are new, but
+        the DataFrames and RelationDefinitions are shared. (The contents of `other` are also shared.)
+        """
         return Bundle(
             dfs=dict(self.dfs),
             relations=list(self.relations),

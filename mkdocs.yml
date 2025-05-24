@@ -1,6 +1,25 @@
-site_name: "LynxKite"
-repo_url: https://github.com/lynxkite/lynxkite
-repo_name: lynxkite/lynxkite
+site_name: "LynxKite 2000:MM"
+repo_url: https://github.com/lynxkite/lynxkite-2000
+repo_name: lynxkite/lynxkite-2000
+watch: [mkdocs.yml, README.md, lynxkite-core, lynxkite-graph-analytics, lynxkite-app]
+
+nav:
+- Home:
+  - Overview: index.md
+  - License: license.md
+- Usage:
+  - usage/quickstart.md
+  - usage/plugins.md
+- API reference:
+  - LynxKite Core:
+    - reference/lynxkite-core/ops.md
+    - reference/lynxkite-core/workspace.md
+    - Executors:
+      - reference/lynxkite-core/executors/simple.md
+      - reference/lynxkite-core/executors/one_by_one.md
+  - LynxKite Graph Analytics:
+    - reference/lynxkite-graph-analytics/core.md
+    - reference/lynxkite-graph-analytics/operations.md
 
 theme:
   name: "material"
@@ -13,13 +32,35 @@ theme:
     - navigation.path
     - navigation.instant
     - navigation.instant.prefetch
+    - navigation.footer
+    - content.code.annotate
+    - content.code.copy
 
 extra_css:
   - stylesheets/extra.css
 
 plugins:
 - search
+- autorefs
 - mkdocstrings:
     handlers:
       python:
         paths: ["./lynxkite-app/src", "./lynxkite-core/src", "./lynxkite-graph-analytics/src"]
+        options:
+          show_source: false
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+          docstring_section_style: spacy
+          separate_signature: true
+          show_signature_annotations: true
+          signature_crossrefs: true
+markdown_extensions:
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences
+- toc:
+    permalink: "¤"

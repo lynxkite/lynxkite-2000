@@ -1,3 +1,5 @@
-# Getting started
+---
+title: Overview
+---
 
-Good luck getting started!
+--8<-- "README.md"

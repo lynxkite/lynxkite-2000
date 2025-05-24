@@ -1,17 +1,9 @@
----
-title: LynxKite 2000:MM
-emoji: 🪁
-colorFrom: purple
-colorTo: gray
-sdk: docker
-app_port: 7860
----
-
 # LynxKite 2000:MM
 
 LynxKite 2000:MM is a GPU-accelerated data science platform and a general tool for collaboratively edited workflows.
 
 Features include:
+
 - A web UI for building and executing data science workflows.
 - An extensive toolbox of graph analytics operations powered by NVIDIA RAPIDS (CUDA).
 - An integrated collaborative code editor makes it easy to add new operations.
@@ -20,7 +12,7 @@ Features include:
 
 This is the next evolution of the classical [LynxKite](https://github.com/lynxkite/lynxkite).
 The two tools offer similar functionality, but are not compatible.
-Where classical LynxKite ran on Hadoop clusters, this version runs on GPU clusters.
+This version runs on GPU clusters instead of Hadoop clusters.
 It targets CUDA instead of Apache Spark. It is much more extensible.
 
 ## Structure
