@@ -159,12 +159,12 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                         key = _make_cache_key((inputs, params))
                         if key not in cache:
                             result: ops.Result = op(*inputs, **params)
-                            result.output = await await_if_needed(result.output)
+                            result.output = await _await_if_needed(result.output)
                             cache[key] = result
                         result = cache[key]
                     else:
                         result = op(*inputs, **params)
-                    output = await await_if_needed(result.output)
+                    output = await _await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
                     node.publish_error(e)
@@ -178,7 +178,7 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                 results.extend(output)
             else:  # Finished all tasks without errors.
                 if result.display:
-                    result.display = await await_if_needed(result.display)
+                    result.display = await _await_if_needed(result.display)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.title]

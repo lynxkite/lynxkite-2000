@@ -35,7 +35,7 @@ test("unknown operation", async () => {
   await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.setEnv("Pillow");
   const csvBox = workspace.getBox("NX › Scale-Free Graph 1");
-  await expect(csvBox.locator(".error")).toHaveText('Unknown operation.');
+  await expect(csvBox.locator(".error")).toHaveText("Unknown operation.");
   await workspace.setEnv("LynxKite Graph Analytics");
   await expect(csvBox.locator(".error")).not.toBeVisible();
 });
