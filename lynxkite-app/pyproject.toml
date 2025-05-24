@@ -12,6 +12,10 @@ dependencies = [
     "sse-starlette>=2.2.1",
     "griffe>=1.7.3",
 ]
+classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [project.optional-dependencies]
 dev = [
