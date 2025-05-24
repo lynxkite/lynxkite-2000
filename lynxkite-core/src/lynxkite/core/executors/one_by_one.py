@@ -1,4 +1,6 @@
-"""A LynxKite executor that assumes most operations operate on their input one by one."""
+"""
+A LynxKite executor that assumes most operations operate on their input one by one.
+"""
 
 from .. import ops
 from .. import workspace
@@ -11,24 +13,24 @@ import typing
 
 
 class Context(ops.BaseConfig):
-    """Passed to operation functions as "_ctx" if they have such a parameter."""
+    """Passed to operation functions as "_ctx" if they have such a parameter.
+
+    Attributes:
+        node: The workspace node that this context is associated with.
+        last_result: The last result produced by the operation.
+          This can be used to incrementally build a result, when the operation
+          is executed for multiple items.
+    """
 
     node: workspace.WorkspaceNode
     last_result: typing.Any = None
 
 
-class Output(ops.BaseConfig):
-    """Return this to send values to specific outputs of a node."""
-
-    output_handle: str
-    value: dict
-
-
-def df_to_list(df):
+def _df_to_list(df):
     return df.to_dict(orient="records")
 
 
-def has_ctx(op):
+def _has_ctx(op):
     sig = inspect.signature(op.func)
     return "_ctx" in sig.parameters
 
@@ -37,16 +39,22 @@ CACHES = {}
 
 
 def register(env: str, cache: bool = True):
-    """Registers the one-by-one executor."""
+    """Registers the one-by-one executor.
+
+    Usage:
+
+        from lynxkite.core.executors import one_by_one
+        one_by_one.register("My Environment")
+    """
     if cache:
         CACHES[env] = {}
         cache = CACHES[env]
     else:
         cache = None
-    ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env], cache=cache)
+    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env], cache=cache)
 
 
-def get_stages(ws, catalog: ops.Catalog):
+def _get_stages(ws, catalog: ops.Catalog):
     """Inputs on top/bottom are batch inputs. We decompose the graph into a DAG of components along these edges."""
     nodes = {n.id: n for n in ws.nodes}
     batch_inputs = {}
@@ -81,20 +89,20 @@ def _default_serializer(obj):
     return {"__nonserializable__": id(obj)}
 
 
-def make_cache_key(obj):
+def _make_cache_key(obj):
     return orjson.dumps(obj, default=_default_serializer)
 
 
 EXECUTOR_OUTPUT_CACHE = {}
 
 
-async def await_if_needed(obj):
+async def _await_if_needed(obj):
     if inspect.isawaitable(obj):
         return await obj
     return obj
 
 
-async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
+async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -113,7 +121,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
             tasks[node.id] = [NO_INPUT]
     batch_inputs = {}
     # Run the rest until we run out of tasks.
-    stages = get_stages(ws, catalog)
+    stages = _get_stages(ws, catalog)
     for stage in stages:
         next_stage = {}
         while tasks:
@@ -124,7 +132,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
             node = nodes[n]
             op = catalog[node.data.title]
             params = {**node.data.params}
-            if has_ctx(op):
+            if _has_ctx(op):
                 params["_ctx"] = contexts[node.id]
             results = []
             node.publish_started()
@@ -148,7 +156,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                         node.publish_error(f"Missing input: {', '.join(missing)}")
                         break
                     if cache is not None:
-                        key = make_cache_key((inputs, params))
+                        key = _make_cache_key((inputs, params))
                         if key not in cache:
                             result: ops.Result = op(*inputs, **params)
                             result.output = await await_if_needed(result.output)
@@ -164,7 +172,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                 contexts[node.id].last_result = output
                 # Returned lists and DataFrames are considered multiple tasks.
                 if isinstance(output, pd.DataFrame):
-                    output = df_to_list(output)
+                    output = _df_to_list(output)
                 elif not isinstance(output, list):
                     output = [output]
                 results.extend(output)
