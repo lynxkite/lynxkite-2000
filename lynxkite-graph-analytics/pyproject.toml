@@ -14,6 +14,7 @@ dependencies = [
     "osmnx>=2.0.2",
     "pandas>=2.2.3",
     "polars>=1.25.2",
+    "pyarrow>=19.0.1",
     "torch>=2.7.0",
     "torch-geometric>=2.6.1",
     "umap-learn>=0.5.7",
