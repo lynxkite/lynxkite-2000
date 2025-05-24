@@ -1,0 +1,16 @@
+name: release-lynxkite-app
+on:
+  workflow_dispatch:
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Build
+        working-directory: lynxkite-app
+        run: uv build
+      - name: Publish
+        working-directory: lynxkite-app
+        run: uv publish
