@@ -3,12 +3,9 @@ import { expect, test } from "@playwright/test";
 import { Workspace } from "./lynxkite";
 
 const WORKSPACES = [
-  // "AIMO",
   "Airlines demo",
   "Bio Cypher demo",
-  // "Graph RAG",
   "Image processing",
-  // "LynxScribe demo",
   "NetworkX demo",
   "Model use",
 ];

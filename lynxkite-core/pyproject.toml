@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
 ]
+classifiers = ["Private :: Do Not Upload"]
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [project.optional-dependencies]
 dev = [
