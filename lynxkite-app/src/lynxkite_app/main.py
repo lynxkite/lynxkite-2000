@@ -33,10 +33,17 @@ app.include_router(crdt.router)
 app.add_middleware(GZipMiddleware)
 
 
+def _get_ops(env: str):
+    catalog = ops.CATALOGS[env]
+    res = {op.name: op.model_dump() for op in catalog.values()}
+    res.setdefault("Comment", ops.COMMENT_OP.model_dump())
+    return res
+
+
 @app.get("/api/catalog")
 def get_catalog(workspace: str):
     ops.load_user_scripts(workspace)
-    return {k: {op.name: op.model_dump() for op in v.values()} for k, v in ops.CATALOGS.items()}
+    return {env: _get_ops(env) for env in ops.CATALOGS}
 
 
 class SaveRequest(workspace.BaseConfig):

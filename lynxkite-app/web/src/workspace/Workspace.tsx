@@ -37,6 +37,7 @@ import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
+import NodeWithComment from "./nodes/NodeWithComment.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
@@ -77,8 +78,8 @@ function LynxKiteFlow() {
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
         for (const n of state.workspace.nodes) {
-          if (n.dragHandle !== ".bg-primary") {
-            n.dragHandle = ".bg-primary";
+          if (n.dragHandle !== ".drag-handle") {
+            n.dragHandle = ".drag-handle";
           }
         }
         const nodes = reactFlow.getNodes();
@@ -183,6 +184,7 @@ function LynxKiteFlow() {
       table_view: NodeWithTableView,
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
+      comment: NodeWithComment,
     }),
     [],
   );
