@@ -23,3 +23,5 @@ lynxkite
 ```
 
 Open [http://localhost:8000/](http://localhost:8000/) in your browser.
+
+Find example workspaces in the [`examples` folder](https://github.com/lynxkite/lynxkite-2000/tree/main/examples).
