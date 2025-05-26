@@ -269,7 +269,7 @@ def op(
                 _params.append(Parameter.basic(n, param.default, param.annotation))
         if params:
             _params.extend(params)
-        if outputs:
+        if outputs is not None:
             _outputs = [Output(name=name, type=None) for name in outputs]
         else:
             _outputs = [Output(name="output", type=None)] if view == "basic" else []
@@ -375,6 +375,16 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
     CATALOGS.setdefault(env, {})
     CATALOGS[env][name] = op
     return op
+
+
+COMMENT_OP = Op(
+    func=no_op,
+    name="Comment",
+    params=[Parameter.basic("text", "", LongStr)],
+    inputs=[],
+    outputs=[],
+    type="comment",
+)
 
 
 def register_executor(env: str):
