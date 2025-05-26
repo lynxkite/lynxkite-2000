@@ -1,0 +1,21 @@
+FROM nvcr.io/nvidia/clara/bionemo-framework:nightly
+
+ENV LYNXKITE_BIONEMO_INSTALLED=true
+
+WORKDIR /app
+
+# Download and install nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh |  bash
+RUN echo node > .nvmrc
+RUN source /root/.nvm/nvm.sh --install
+
+COPY . /app
+
+RUN uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-bio  -e lynxkite-pillow-example/
+
+# bionemo cellxgene_census needs this version of numpy
+RUN uv pip install numpy==1.26.4
+
+ENV LYNXKITE_DATA=examples
+
+CMD ["lynxkite"]
