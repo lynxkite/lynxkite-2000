@@ -15,6 +15,8 @@ The two tools offer similar functionality, but are not compatible.
 This version runs on GPU clusters instead of Hadoop clusters.
 It targets CUDA instead of Apache Spark. It is much more extensible.
 
+Check out our [**online demo**](https://lynx-analytics-lynxkite.hf.space/).
+
 ## Structure
 
 - `lynxkite-core`: Core types and utilities. Depend on this lightweight package if you are writing LynxKite plugins.
