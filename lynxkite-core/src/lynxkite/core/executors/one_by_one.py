@@ -18,8 +18,8 @@ class Context(ops.BaseConfig):
     Attributes:
         node: The workspace node that this context is associated with.
         last_result: The last result produced by the operation.
-          This can be used to incrementally build a result, when the operation
-          is executed for multiple items.
+            This can be used to incrementally build a result, when the operation
+            is executed for multiple items.
     """
 
     node: workspace.WorkspaceNode
