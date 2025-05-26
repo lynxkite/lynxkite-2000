@@ -7,14 +7,22 @@ sdk: docker
 app_port: 7860
 ---
 
-# LynxKite 2024
+# LynxKite 2000:MM Enterprise
 
-This is an experimental rewrite of [LynxKite](https://github.com/lynxkite/lynxkite). It is not compatible with the
-original LynxKite. The primary goals of this rewrite are:
+LynxKite 2000:MM is a GPU-accelerated data science platform and a general tool for collaboratively edited workflows.
 
-- Target GPU clusters instead of Hadoop clusters. We use Python instead of Scala, RAPIDS instead of Apache Spark.
-- More extensible backend. Make it easy to add new LynxKite boxes. Make it easy to use our frontend for other purposes,
-  configuring and executing other pipelines.
+Features include:
+
+- A web UI for building and executing data science workflows.
+- An extensive toolbox of graph analytics operations powered by NVIDIA RAPIDS (CUDA).
+- An integrated collaborative code editor makes it easy to add new operations.
+- An environment for visually designing neural network model architectures.
+- The infrastructure for easily creating other workflow design environments. See `lynxkite-pillow-example` for a simple example.
+
+This is the next evolution of the classical [LynxKite](https://github.com/lynxkite/lynxkite).
+The two tools offer similar functionality, but are not compatible.
+This version runs on GPU clusters instead of Hadoop clusters.
+It targets CUDA instead of Apache Spark. It is much more extensible.
 
 ## Structure
 
@@ -67,3 +75,9 @@ To work on the documentation:
 uv pip install mkdocs-material mkdocstrings[python]
 mkdocs serve
 ```
+
+## License
+
+LynxKite 2000:MM Enterprise is built on top of the open-source [LynxKite 2000:MM](https://github.com/lynxkite/lynxkite-2000).
+
+Inquire with [Lynx Analytics](https://www.lynxanalytics.com/) for the licensing of this repository.

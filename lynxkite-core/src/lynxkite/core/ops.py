@@ -41,6 +41,7 @@ def type_to_json(t):
 
 Type = Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)]
 LongStr = Annotated[str, {"format": "textarea"}]
+"""LongStr is a string type for parameters that will be displayed as a multiline text area in the UI."""
 PathStr = Annotated[str, {"format": "path"}]
 CollapsedStr = Annotated[str, {"format": "collapsed"}]
 NodeAttribute = Annotated[str, {"format": "node attribute"}]
@@ -268,7 +269,7 @@ def op(
                 _params.append(Parameter.basic(n, param.default, param.annotation))
         if params:
             _params.extend(params)
-        if outputs:
+        if outputs is not None:
             _outputs = [Output(name=name, type=None) for name in outputs]
         else:
             _outputs = [Output(name="output", type=None)] if view == "basic" else []
@@ -314,24 +315,41 @@ def matplotlib_to_image(func):
     return wrapper
 
 
-def input_position(**kwargs):
-    """Decorator for specifying unusual positions for the inputs."""
+def input_position(**positions):
+    """
+    Decorator for specifying unusual positions for the inputs.
+
+    Example usage:
+
+        @input_position(a="bottom", b="bottom")
+        @op("test", "maybe add")
+        def maybe_add(a: list[int], b: list[int] | None = None):
+            return [a + b for a, b in zip(a, b)] if b else a
+    """
 
     def decorator(func):
         op = func.__op__
-        for k, v in kwargs.items():
+        for k, v in positions.items():
             op.get_input(k).position = Position(v)
         return func
 
     return decorator
 
 
-def output_position(**kwargs):
-    """Decorator for specifying unusual positions for the outputs."""
+def output_position(**positions):
+    """Decorator for specifying unusual positions for the outputs.
+
+    Example usage:
+
+        @output_position(output="top")
+        @op("test", "maybe add")
+        def maybe_add(a: list[int], b: list[int] | None = None):
+            return [a + b for a, b in zip(a, b)] if b else a
+    """
 
     def decorator(func):
         op = func.__op__
-        for k, v in kwargs.items():
+        for k, v in positions.items():
             op.get_output(k).position = Position(v)
         return func
 
@@ -357,6 +375,16 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
     CATALOGS.setdefault(env, {})
     CATALOGS[env][name] = op
     return op
+
+
+COMMENT_OP = Op(
+    func=no_op,
+    name="Comment",
+    params=[Parameter.basic("text", "", LongStr)],
+    inputs=[],
+    outputs=[],
+    type="comment",
+)
 
 
 def register_executor(env: str):
