@@ -48,7 +48,7 @@ class LLMOpsTest(unittest.IsolatedAsyncioTestCase):
             edges=[make_edge("0", "1")],
         )
         catalog = ops.CATALOGS[ws.env]
-        await one_by_one.execute(ws, catalog)
+        await one_by_one._execute(ws, catalog)
         # self.assertEqual('', ws.nodes[1].data.display)
 
     def testStages(self):
@@ -73,7 +73,7 @@ class LLMOpsTest(unittest.IsolatedAsyncioTestCase):
             ],
         )
         catalog = ops.CATALOGS[ws.env]
-        stages = one_by_one.get_stages(ws, catalog)
+        stages = one_by_one._get_stages(ws, catalog)
         print(stages)
         # self.assertEqual('', stages)
 
@@ -99,7 +99,7 @@ class LLMOpsTest(unittest.IsolatedAsyncioTestCase):
             ],
         )
         catalog = ops.CATALOGS[ws.env]
-        stages = one_by_one.get_stages(ws, catalog)
+        stages = one_by_one._get_stages(ws, catalog)
         print(stages)
         # self.assertEqual('', stages)
 
