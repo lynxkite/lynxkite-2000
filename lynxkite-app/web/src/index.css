@@ -100,15 +100,6 @@ body {
     font-size: 16px;
     font-weight: initial;
     max-width: 300px;
-
-    p {
-      margin-top: 1em;
-      line-height: normal;
-    }
-
-    p:first-child {
-      margin-top: 0;
-    }
   }
 
   .expanded .lynxkite-node {
@@ -290,6 +281,26 @@ body {
 
     dl {
       margin: 10px;
+    }
+  }
+
+  .react-flow__node-comment {
+    width: auto !important;
+    height: auto !important;
+    max-width: 400px;
+
+    .comment-view {
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+
+    .comment-editor {
+      width: 400px;
+      box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      overflow-y: hidden;
     }
   }
 
@@ -515,6 +526,7 @@ body {
   z-index: -10 !important;
 }
 
+.selected .comment-view,
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;

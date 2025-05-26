@@ -21,7 +21,7 @@ test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
   for (const env of envs) {
     await workspace.setEnv(env);
-    const catalog = await workspace.getCatalog();
+    const catalog = (await workspace.getCatalog()).filter((box) => box !== "Comment");
     expect(catalog).not.toHaveLength(0);
     const op = catalog[0];
     await workspace.addBox(op);

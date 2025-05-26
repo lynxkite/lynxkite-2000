@@ -90,7 +90,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
         <div
-          className={`title bg-primary ${data.status}`}
+          className={`title bg-primary drag-handle ${data.status}`}
           style={titleStyle}
           onClick={titleClicked}
         >
