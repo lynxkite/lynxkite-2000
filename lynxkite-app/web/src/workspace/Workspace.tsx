@@ -346,6 +346,11 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
+  function deleteSelection() {
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
+    reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+  }
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -365,7 +370,7 @@ function LynxKiteFlow() {
           <button className="btn btn-link">
             <Atom />
           </button>
-          <button className="btn btn-link">
+          <button className="btn btn-link" onClick={deleteSelection}>
             <Backspace />
           </button>
           <button className="btn btn-link" onClick={executeWorkspace}>
