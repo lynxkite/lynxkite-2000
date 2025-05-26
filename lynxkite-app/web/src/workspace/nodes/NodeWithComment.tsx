@@ -6,7 +6,7 @@ import type { UpdateOptions } from "./NodeParameter";
 export default function NodeWithComment(props: any) {
   const reactFlow = useReactFlow();
   const [editing, setEditing] = useState(false);
-  function setComment(newValue: any, opts?: UpdateOptions) {
+  function setComment(newValue: string, opts?: UpdateOptions) {
     reactFlow.updateNodeData(props.id, (prevData: any) => ({
       ...prevData,
       params: { text: newValue },
@@ -39,7 +39,7 @@ export default function NodeWithComment(props: any) {
     return (
       <textarea
         className="comment-editor"
-        onBlur={(e) => finishEditing(e.target)}
+        onBlur={(e) => finishEditing(e.currentTarget)}
         onKeyDown={onKeyDown}
         onInput={(e) => onInput(e.currentTarget)}
         ref={(el) => onInput(el)}
