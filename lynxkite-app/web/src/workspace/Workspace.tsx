@@ -363,7 +363,7 @@ function LynxKiteFlow() {
     reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
   }
   function groupSelection() {
-    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedNodes = nodes.filter((n) => n.selected && !n.parentId);
     const groupNode = {
       id: findFreeId("Group"),
       type: "node_group",
@@ -398,7 +398,7 @@ function LynxKiteFlow() {
               ...n,
               position: { x: n.position.x - left, y: n.position.y - top },
               parentId: groupNode.id,
-              extent: "parent",
+              extent: "parent" as const,
               selected: false,
             }
           : n,
