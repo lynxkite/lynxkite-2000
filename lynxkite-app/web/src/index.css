@@ -98,13 +98,30 @@ body {
     opacity: 1;
   }
 
-  .react-flow__node-group,
-  .react-flow__node-group.selectable.selected,
-  .react-flow__node-group:hover {
+  .node-group {
     box-shadow: 0px 3px 30px 0px rgba(0, 0, 0, 0.3);
     border-radius: 20px;
     border: none;
-    background-color: #fffb;
+    background-color: white;
+    opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    padding: 10px 20px;
+  }
+
+  .node-group-color-picker-icon {
+    font-size: 30px;
+    opacity: 0.1;
+    transition: opacity 0.3s;
+  }
+
+  .node-group:hover .node-group-color-picker-icon {
+    opacity: 1;
+  }
+
+  .color-picker-button {
+    font-size: 30px;
   }
 
   .tooltip {
@@ -119,6 +136,10 @@ body {
     font-size: 16px;
     font-weight: initial;
     max-width: 300px;
+  }
+
+  .prose p {
+    margin-bottom: 0;
   }
 
   .expanded .lynxkite-node {
@@ -545,14 +566,14 @@ body {
   z-index: -10 !important;
 }
 
-.selected.selectable.react-flow__node-group,
+.selected .node-group,
 .selected .comment-view,
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
 }
 
-.selected.selectable.react-flow__node-group {
+.selected .node-group {
   outline-offset: 20px;
 }
 
