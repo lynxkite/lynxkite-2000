@@ -88,6 +88,25 @@ body {
     }
   }
 
+  .in-group .lynxkite-node {
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
+    opacity: 0.3;
+    transition: opacity 0.3s;
+  }
+
+  .in-group .lynxkite-node:hover {
+    opacity: 1;
+  }
+
+  .react-flow__node-group,
+  .react-flow__node-group.selectable.selected,
+  .react-flow__node-group:hover {
+    box-shadow: 0px 3px 30px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    border: none;
+    background-color: #fffb;
+  }
+
   .tooltip {
     padding: 8px;
     border-radius: 4px;
@@ -526,10 +545,15 @@ body {
   z-index: -10 !important;
 }
 
+.selected.selectable.react-flow__node-group,
 .selected .comment-view,
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
+}
+
+.selected.selectable.react-flow__node-group {
+  outline-offset: 20px;
 }
 
 .graph-creation-view {

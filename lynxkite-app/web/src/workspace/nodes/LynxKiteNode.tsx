@@ -82,7 +82,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   }
   return (
     <div
-      className={`node-container ${expanded ? "expanded" : "collapsed"} `}
+      className={`node-container ${expanded ? "expanded" : "collapsed"} ${props.parentId ? "in-group" : ""}`}
       style={{
         width: props.width || 200,
         height: expanded ? props.height || 200 : undefined,
