@@ -12,6 +12,7 @@ import Help from "~icons/tabler/question-mark.jsx";
 // @ts-ignore
 import Skull from "~icons/tabler/skull.jsx";
 import Tooltip from "../../Tooltip";
+import { COLORS } from "../../common.ts";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -20,6 +21,7 @@ interface LynxKiteNodeProps {
   nodeStyle: any;
   data: any;
   children: any;
+  parentId?: string;
 }
 
 function getHandles(inputs: any[], outputs: any[]) {
@@ -53,15 +55,6 @@ function getHandles(inputs: any[], outputs: any[]) {
   return handles;
 }
 
-const OP_COLORS: { [key: string]: string } = {
-  gray: "oklch(95% 0 0)",
-  pink: "oklch(75% 0.2 0)",
-  orange: "oklch(75% 0.2 55)",
-  green: "oklch(75% 0.2 150)",
-  blue: "oklch(75% 0.2 230)",
-  purple: "oklch(75% 0.2 290)",
-};
-
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const data = props.data;
@@ -78,7 +71,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   };
   const titleStyle: { backgroundColor?: string } = {};
   if (data.meta?.value?.color) {
-    titleStyle.backgroundColor = OP_COLORS[data.meta.value.color] || data.meta.value.color;
+    titleStyle.backgroundColor = COLORS[data.meta.value.color] || data.meta.value.color;
   }
   return (
     <div

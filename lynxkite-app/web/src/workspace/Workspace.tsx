@@ -42,6 +42,7 @@ import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
+import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
@@ -83,7 +84,7 @@ function LynxKiteFlow() {
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
         for (const n of state.workspace.nodes) {
-          if (n.type !== "group" && n.dragHandle !== ".drag-handle") {
+          if (n.type !== "node_group" && n.dragHandle !== ".drag-handle") {
             n.dragHandle = ".drag-handle";
           }
         }
@@ -190,6 +191,7 @@ function LynxKiteFlow() {
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
       comment: NodeWithComment,
+      node_group: Group,
     }),
     [],
   );
@@ -364,7 +366,7 @@ function LynxKiteFlow() {
     const selectedNodes = nodes.filter((n) => n.selected);
     const groupNode = {
       id: findFreeId("Group"),
-      type: "group",
+      type: "node_group",
       position: { x: 0, y: 0 },
       width: 0,
       height: 0,
@@ -418,7 +420,7 @@ function LynxKiteFlow() {
   }
   function ungroupSelection() {
     const groups = Object.fromEntries(
-      nodes.filter((n) => n.selected && n.type === "group").map((n) => [n.id, n]),
+      nodes.filter((n) => n.selected && n.type === "node_group").map((n) => [n.id, n]),
     );
     setNodes(
       nodes
@@ -451,7 +453,7 @@ function LynxKiteFlow() {
     });
   }
   const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
-  const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "group");
+  const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
