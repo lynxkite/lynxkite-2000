@@ -374,11 +374,13 @@ function LynxKiteFlow() {
     let left = Number.POSITIVE_INFINITY;
     let bottom = Number.NEGATIVE_INFINITY;
     let right = Number.NEGATIVE_INFINITY;
+    const PAD = 10;
     for (const node of selectedNodes) {
-      if (node.position.y < top) top = node.position.y;
-      if (node.position.x < left) left = node.position.x;
-      if (node.position.y + node.height! > bottom) bottom = node.position.y + node.height!;
-      if (node.position.x + node.width! > right) right = node.position.x + node.width!;
+      if (node.position.y - PAD < top) top = node.position.y - PAD;
+      if (node.position.x - PAD < left) left = node.position.x - PAD;
+      if (node.position.y + PAD + node.height! > bottom)
+        bottom = node.position.y + PAD + node.height!;
+      if (node.position.x + PAD + node.width! > right) right = node.position.x + PAD + node.width!;
     }
     groupNode.position = {
       x: left,
@@ -394,6 +396,7 @@ function LynxKiteFlow() {
               ...n,
               position: { x: n.position.x - left, y: n.position.y - top },
               parentId: groupNode.id,
+              extent: "parent",
               selected: false,
             }
           : n,
@@ -407,6 +410,7 @@ function LynxKiteFlow() {
           node.position.x -= left;
           node.position.y -= top;
           node.parentId = groupNode.id;
+          node.extent = "parent";
           node.selected = false;
         }
       }
@@ -426,6 +430,7 @@ function LynxKiteFlow() {
             ...n,
             position: { x: n.position.x + g.position.x, y: n.position.y + g.position.y },
             parentId: undefined,
+            extent: undefined,
           };
         }),
     );
@@ -441,6 +446,7 @@ function LynxKiteFlow() {
         node.position.x += g.position.x;
         node.position.y += g.position.y;
         node.parentId = undefined;
+        node.extent = undefined;
       }
     });
   }
