@@ -1,4 +1,3 @@
-import { cursorTo } from "node:readline";
 import { useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 // @ts-ignore
@@ -19,7 +18,6 @@ export default function Group(props: any) {
     setDisplayingColorPicker(false);
   }
   function toggleColorPicker(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    console.log("toggleColorPicker", displayingColorPicker);
     e.stopPropagation();
     setDisplayingColorPicker(!displayingColorPicker);
   }
@@ -34,7 +32,11 @@ export default function Group(props: any) {
         opacity: 0.9,
       }}
     >
-      <button className="node-group-color-picker-icon" onClick={toggleColorPicker}>
+      <button
+        className="node-group-color-picker-icon"
+        onClick={toggleColorPicker}
+        aria-label="Change group color"
+      >
         <Tooltip doc="Change color">
           <Palette />
         </Tooltip>
