@@ -371,7 +371,6 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
-      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -392,7 +391,7 @@ function LynxKiteFlow() {
     groupNode.width = right - left;
     groupNode.height = bottom - top;
     setNodes([
-      groupNode as WorkspaceNode,
+      { ...(groupNode as WorkspaceNode), selected: true },
       ...nodes.map((n) =>
         n.selected
           ? {
