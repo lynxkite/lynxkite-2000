@@ -371,6 +371,7 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
+      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -420,7 +421,9 @@ function LynxKiteFlow() {
   }
   function ungroupSelection() {
     const groups = Object.fromEntries(
-      nodes.filter((n) => n.selected && n.type === "node_group").map((n) => [n.id, n]),
+      nodes
+        .filter((n) => n.selected && n.type === "node_group" && !n.parentId)
+        .map((n) => [n.id, n]),
     );
     setNodes(
       nodes
@@ -433,15 +436,12 @@ function LynxKiteFlow() {
             position: { x: n.position.x + g.position.x, y: n.position.y + g.position.y },
             parentId: undefined,
             extent: undefined,
+            selected: true,
           };
         }),
     );
     getYjsDoc(state).transact(() => {
       const wnodes = state.workspace.nodes!;
-      for (const groupId in groups) {
-        const groupIdx = wnodes.findIndex((n) => n.id === groupId);
-        wnodes.splice(groupIdx, 1);
-      }
       for (const node of state.workspace.nodes!) {
         const g = groups[node.parentId as string];
         if (!g) continue;
@@ -449,6 +449,10 @@ function LynxKiteFlow() {
         node.position.y += g.position.y;
         node.parentId = undefined;
         node.extent = undefined;
+      }
+      for (const groupId in groups) {
+        const groupIdx = wnodes.findIndex((n) => n.id === groupId);
+        wnodes.splice(groupIdx, 1);
       }
     });
   }
