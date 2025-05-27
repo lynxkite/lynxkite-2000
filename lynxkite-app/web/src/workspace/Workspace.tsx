@@ -28,7 +28,7 @@ import Backspace from "~icons/tabler/backspace.jsx";
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-ignore
 import Close from "~icons/tabler/x.jsx";
-import type { Workspace, WorkspaceNode } from "../apiTypes.ts";
+import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 // import NodeWithTableView from './NodeWithTableView';
@@ -44,7 +44,7 @@ import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 
-export default function (props: any) {
+export default function Workspace(props: any) {
   return (
     <ReactFlowProvider>
       <LynxKiteFlow {...props} />
@@ -62,10 +62,10 @@ function LynxKiteFlow() {
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const [state, setState] = useState({ workspace: {} as Workspace });
+  const [state, setState] = useState({ workspace: {} as WorkspaceType });
   const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
-    const state = syncedStore({ workspace: {} as Workspace });
+    const state = syncedStore({ workspace: {} as WorkspaceType });
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
