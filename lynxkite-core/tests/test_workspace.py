@@ -6,21 +6,15 @@ from lynxkite.core import workspace
 
 def test_save_load():
     ws = workspace.Workspace(env="test")
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="1",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Node 1", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="1",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Node 1", params={}),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="2",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Node 2", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="2",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Node 2", params={}),
     )
     ws.edges.append(
         workspace.WorkspaceEdge(
@@ -72,21 +66,15 @@ def populate_ops_catalog():
 
 def test_update_metadata():
     ws = workspace.Workspace(env="test")
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="1",
-            type="basic",
-            data=workspace.WorkspaceNodeData(title="Test Operation", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="1",
+        type="basic",
+        data=workspace.WorkspaceNodeData(title="Test Operation", params={}),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="2",
-            type="basic",
-            data=workspace.WorkspaceNodeData(title="Unknown Operation", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="2",
+        type="basic",
+        data=workspace.WorkspaceNodeData(title="Unknown Operation", params={}),
     )
     ws.update_metadata()
     assert ws.nodes[0].data.meta.name == "Test Operation"
