@@ -517,7 +517,7 @@ function LynxKiteFlow() {
             onPaneClick={toggleNodeSearch}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
-            maxZoom={1}
+            maxZoom={4}
             minZoom={0.2}
             zoomOnScroll={false}
             panOnScroll={true}
