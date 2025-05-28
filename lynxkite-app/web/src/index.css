@@ -110,6 +110,10 @@ body {
     padding: 10px 20px;
   }
 
+  .node-group.in-group {
+    opacity: 0.5;
+  }
+
   .node-group-color-picker-icon {
     font-size: 30px;
     opacity: 0.1;
