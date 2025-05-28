@@ -15,57 +15,17 @@ The two tools offer similar functionality, but are not compatible.
 This version runs on GPU clusters instead of Hadoop clusters.
 It targets CUDA instead of Apache Spark. It is much more extensible.
 
-Check out our [**online demo**](https://lynx-analytics-lynxkite.hf.space/).
-
-## Structure
-
-- `lynxkite-core`: Core types and utilities. Depend on this lightweight package if you are writing LynxKite plugins.
-- `lynxkite-app`: The LynxKite web application. Install some plugins then run this to use LynxKite.
-- `lynxkite-graph-analytics`: Graph analytics plugin. The classical LynxKite experience!
-- `lynxkite-pillow`: A simple example plugin.
-- `docs`: User-facing documentation. It's shared between all packages.
-
-## Development
-
-Install everything like this:
+## Installation
 
 ```bash
-uv venv
-source .venv/bin/activate
-uvx pre-commit install
-# The [dev] tag is only needed if you intend on running tests
-uv pip install -e lynxkite-core/[dev] -e lynxkite-app/[dev] -e lynxkite-graph-analytics/[dev] -e lynxkite-pillow-example/
+pip install lynxkite lynxkite-graph-analytics
 ```
 
-This also builds the frontend, hopefully very quickly. To run it:
+## Getting started
 
-```bash
-cd examples && lynxkite
-```
-
-If you also want to make changes to the frontend with hot reloading:
-
-```bash
-cd lynxkite-app/web
-npm run dev
-```
-
-## Executing tests
-
-Run all tests with a single command, or look inside to see how to run them individually:
-
-```bash
-./test.sh
-```
-
-## Documentation
-
-To work on the documentation:
-
-```bash
-uv pip install mkdocs-material mkdocstrings[python]
-mkdocs serve
-```
+- [Online demo](https://lynx-analytics-lynxkite.hf.space/)
+- [Quickstart](https://lynxkite.github.io/lynxkite-2000/guides/quickstart/)
+- [Contributing](https://lynxkite.github.io/lynxkite-2000/contributing/)
 
 ## License
 
