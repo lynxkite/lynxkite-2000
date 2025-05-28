@@ -24,12 +24,11 @@ export default function Group(props: any) {
   const currentColor = props.data?.params?.color || "gray";
   return (
     <div
-      className="node-group"
+      className={`node-group ${props.parentId ? "in-group" : ""}`}
       style={{
         width: props.width,
         height: props.height,
         backgroundColor: COLORS[currentColor],
-        opacity: 0.9,
       }}
     >
       <button
