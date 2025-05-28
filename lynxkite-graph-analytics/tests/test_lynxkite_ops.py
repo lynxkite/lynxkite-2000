@@ -8,13 +8,11 @@ from lynxkite_graph_analytics.core import Bundle, execute, ENV
 
 async def test_execute_operation_not_in_catalog():
     ws = workspace.Workspace(env=ENV)
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="1",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Non existing op", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="1",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Non existing op", params={}),
+        position=workspace.Position(x=0, y=0),
     )
     await execute(ws)
     assert ws.nodes[0].data.error == "Operation not found in catalog"
@@ -43,37 +41,29 @@ async def test_execute_operation_inputs_correct_cast():
         return bundle
 
     ws = workspace.Workspace(env="test")
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="1",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Create Bundle", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="1",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Create Bundle", params={}),
+        position=workspace.Position(x=0, y=0),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="2",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Bundle to Graph", params={}),
-            position=workspace.Position(x=100, y=0),
-        )
+    ws.add_node(
+        id="2",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Bundle to Graph", params={}),
+        position=workspace.Position(x=100, y=0),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="3",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Graph to Bundle", params={}),
-            position=workspace.Position(x=200, y=0),
-        )
+    ws.add_node(
+        id="3",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Graph to Bundle", params={}),
+        position=workspace.Position(x=200, y=0),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="4",
-            type="node_type",
-            data=workspace.WorkspaceNodeData(title="Dataframe to Bundle", params={}),
-            position=workspace.Position(x=300, y=0),
-        )
+    ws.add_node(
+        id="4",
+        type="node_type",
+        data=workspace.WorkspaceNodeData(title="Dataframe to Bundle", params={}),
+        position=workspace.Position(x=300, y=0),
     )
     ws.edges = [
         workspace.WorkspaceEdge(
@@ -109,29 +99,23 @@ async def test_multiple_inputs():
         return a < b
 
     ws = workspace.Workspace(env="test")
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="one",
-            type="cool",
-            data=workspace.WorkspaceNodeData(title="One", params={}),
-            position=workspace.Position(x=0, y=0),
-        )
+    ws.add_node(
+        id="one",
+        type="cool",
+        data=workspace.WorkspaceNodeData(title="One", params={}),
+        position=workspace.Position(x=0, y=0),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="two",
-            type="cool",
-            data=workspace.WorkspaceNodeData(title="Two", params={}),
-            position=workspace.Position(x=100, y=0),
-        )
+    ws.add_node(
+        id="two",
+        type="cool",
+        data=workspace.WorkspaceNodeData(title="Two", params={}),
+        position=workspace.Position(x=100, y=0),
     )
-    ws.nodes.append(
-        workspace.WorkspaceNode(
-            id="smaller",
-            type="cool",
-            data=workspace.WorkspaceNodeData(title="Smaller?", params={}),
-            position=workspace.Position(x=200, y=0),
-        )
+    ws.add_node(
+        id="smaller",
+        type="cool",
+        data=workspace.WorkspaceNodeData(title="Smaller?", params={}),
+        position=workspace.Position(x=200, y=0),
     )
     ws.edges = [
         workspace.WorkspaceEdge(

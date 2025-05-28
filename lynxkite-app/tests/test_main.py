@@ -44,6 +44,8 @@ def test_save_and_load():
                         "params": {"param1": "value"},
                     },
                     "position": {"x": -493.5496596237119, "y": 20.90123252513356},
+                    "width": 100,
+                    "height": 100,
                 }
             ],
             "edges": [],
