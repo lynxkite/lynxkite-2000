@@ -16,7 +16,7 @@ import {
   useUpdateNodeInternals,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
@@ -61,6 +61,7 @@ export default function Workspace(props: any) {
 function LynxKiteFlow() {
   const updateNodeInternals = useUpdateNodeInternals();
   const reactFlow = useReactFlow();
+  const reactFlowContainer = useRef<HTMLDivElement>(null);
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const path = usePath().replace(/^[/]edit[/]/, "");
@@ -210,7 +211,7 @@ function LynxKiteFlow() {
       if (event.key === "/") {
         event.preventDefault();
         setNodeSearchSettings({
-          pos: { x: 100, y: 100 },
+          pos: getBestPosition(),
           boxes: catalog.data![state.workspace.env!],
         });
       } else if (event.key === "r") {
@@ -224,6 +225,39 @@ function LynxKiteFlow() {
       document.removeEventListener("keyup", handleKeyDown);
     };
   }, [catalog.data, nodeSearchSettings, state.workspace.env]);
+
+  function getBestPosition() {
+    const W = reactFlowContainer.current!.clientWidth;
+    const H = reactFlowContainer.current!.clientHeight;
+    const w = 200;
+    const h = 200;
+    const SPEED = 20;
+    const GAP = 50;
+    const pos = { x: 100, y: 100 };
+    while (pos.y < H) {
+      // Find a position that is not occupied by a node.
+      const fpos = reactFlow.screenToFlowPosition(pos);
+      const occupied = state.workspace.nodes!.some((n) => {
+        const np = n.position;
+        return (
+          np.x < fpos.x + w + GAP &&
+          np.x + n.width + GAP > fpos.x &&
+          np.y < fpos.y + h + GAP &&
+          np.y + n.height + GAP > fpos.y
+        );
+      });
+      if (!occupied) {
+        return pos;
+      }
+      // Move the position to the right and down until we find a free spot.
+      pos.x += SPEED;
+      if (pos.x + w > W) {
+        pos.x = 100;
+        pos.y += SPEED;
+      }
+    }
+    return { x: 100, y: 100 };
+  }
 
   function isTypingInFormElement() {
     const activeElement = document.activeElement;
@@ -504,7 +538,12 @@ function LynxKiteFlow() {
           </Tooltip>
         </div>
       </div>
-      <div style={{ height: "100%", width: "100vw" }} onDragOver={onDragOver} onDrop={onDrop}>
+      <div
+        style={{ height: "100%", width: "100vw" }}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        ref={reactFlowContainer}
+      >
         <LynxKiteState.Provider value={state}>
           <ReactFlow
             nodes={nodes}
@@ -537,6 +576,7 @@ function LynxKiteFlow() {
                 stroke: "black",
               },
             }}
+            fitViewOptions={{ maxZoom: 1 }}
           >
             <Controls />
             {nodeSearchSettings && (
