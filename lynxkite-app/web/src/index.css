@@ -88,6 +88,42 @@ body {
     }
   }
 
+  .in-group .lynxkite-node {
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
+    opacity: 0.3;
+    transition: opacity 0.3s;
+  }
+
+  .in-group .lynxkite-node:hover {
+    opacity: 1;
+  }
+
+  .node-group {
+    box-shadow: 0px 3px 30px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    border: none;
+    background-color: white;
+    opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    padding: 10px 20px;
+  }
+
+  .node-group-color-picker-icon {
+    font-size: 30px;
+    opacity: 0.1;
+    transition: opacity 0.3s;
+  }
+
+  .node-group:hover .node-group-color-picker-icon {
+    opacity: 1;
+  }
+
+  .color-picker-button {
+    font-size: 30px;
+  }
+
   .tooltip {
     padding: 8px;
     border-radius: 4px;
@@ -100,6 +136,10 @@ body {
     font-size: 16px;
     font-weight: initial;
     max-width: 300px;
+  }
+
+  .prose p {
+    margin-bottom: 0;
   }
 
   .expanded .lynxkite-node {
@@ -526,10 +566,15 @@ body {
   z-index: -10 !important;
 }
 
+.selected .node-group,
 .selected .comment-view,
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
+}
+
+.selected .node-group {
+  outline-offset: 20px;
 }
 
 .graph-creation-view {

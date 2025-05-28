@@ -7,9 +7,9 @@ export default function Tooltip(props: any) {
   if (!props.doc) return null;
   return (
     <>
-      <a data-tooltip-id={id} tabIndex={0}>
+      <span data-tooltip-id={id} tabIndex={0}>
         {props.children}
-      </a>
+      </span>
       <ReactTooltip id={id} className="tooltip prose" place="top-end">
         {props.doc.map?.(
           (section: any, i: number) =>
