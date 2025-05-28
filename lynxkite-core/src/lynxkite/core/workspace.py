@@ -40,12 +40,13 @@ class WorkspaceNodeData(BaseConfig):
 
 
 class WorkspaceNode(BaseConfig):
-    # The naming of these attributes matches the ones for the NodeBase type in React flow
-    # modyfing them will break the frontend.
+    # Most of these fields are shared with ReactFlow.
     id: str
     type: str
     data: WorkspaceNodeData
     position: Position
+    width: float
+    height: float
     _crdt: pycrdt.Map
 
     def publish_started(self):

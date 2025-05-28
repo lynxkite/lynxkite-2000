@@ -53,14 +53,8 @@ export class Workspace {
   }
 
   async addBox(boxName) {
-    //TODO: Support passing box parameters (id, position, etc.)
+    // TODO: Support passing box parameters.
     const allBoxes = await this.getBoxes().all();
-    if (allBoxes) {
-      // Avoid overlapping with existing nodes
-      const numNodes = allBoxes.length || 1;
-      await this.page.mouse.wheel(0, numNodes * 400);
-    }
-
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
     await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();

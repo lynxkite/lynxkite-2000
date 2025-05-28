@@ -34,6 +34,8 @@ export interface WorkspaceNode {
   type: string;
   data: WorkspaceNodeData;
   position: Position;
+  width: number;
+  height: number;
   [k: string]: unknown;
 }
 export interface WorkspaceNodeData {
