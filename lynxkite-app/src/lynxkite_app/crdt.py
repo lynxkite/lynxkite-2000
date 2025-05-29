@@ -300,6 +300,11 @@ async def lifespan(app):
     print("closing websocket server")
 
 
+def delete_room(name: str):
+    if name in ws_websocket_server.rooms:
+        del ws_websocket_server.rooms[name]
+
+
 def sanitize_path(path):
     return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
 

@@ -76,6 +76,7 @@ async def delete_workspace(req: dict):
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
+    crdt.delete_room(req["path"])
 
 
 @app.get("/api/load")
