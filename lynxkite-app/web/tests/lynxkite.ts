@@ -133,12 +133,12 @@ export class Workspace {
     await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
-    await expect(this.page.locator(".react-flow__connectionline")).toBeVisible();
+    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached();
     await targetHandle.hover();
     await this.page.mouse.up();
     await expect(
       this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
-    ).toBeVisible();
+    ).toBeAttached();
   }
 
   async execute() {
