@@ -126,26 +126,19 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
-  async tryToConnectBoxes(sourceId: string, targetId: string) {
+  async connectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
     const targetHandle = this.getBoxHandle(targetId, "left");
+    await expect(sourceHandle).toBeVisible();
+    await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
     await expect(this.page.locator(".react-flow__connectionline")).toBeVisible({ timeout: 1000 });
     await targetHandle.hover();
     await this.page.mouse.up();
     await expect(
-      this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"`),
+      this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
     ).toBeVisible({ timeout: 1000 });
-  }
-  async connectBoxes(sourceId: string, targetId: string) {
-    for (let retry = 0; retry < 10; retry++) {
-      try {
-        await this.tryToConnectBoxes(sourceId, targetId);
-        return;
-      } catch (e) {}
-    }
-    await this.tryToConnectBoxes(sourceId, targetId);
   }
 
   async execute() {
