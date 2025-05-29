@@ -46,27 +46,7 @@ def get_catalog(workspace: str):
     return {env: _get_ops(env) for env in ops.CATALOGS}
 
 
-class SaveRequest(workspace.BaseConfig):
-    path: str
-    ws: workspace.Workspace
-
-
 data_path = pathlib.Path()
-
-
-def save(req: SaveRequest):
-    path = data_path / req.path
-    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
-    req.ws.save(path)
-
-
-@app.post("/api/save")
-async def save_and_execute(req: SaveRequest):
-    save(req)
-    if req.ws.has_executor():
-        await req.ws.execute()
-        save(req)
-    return req.ws
 
 
 @app.post("/api/delete")
@@ -76,15 +56,7 @@ async def delete_workspace(req: dict):
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
-
-
-@app.get("/api/load")
-def load(path: str):
-    path = data_path / path
-    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
-    if not path.exists():
-        return workspace.Workspace()
-    return workspace.Workspace.load(path)
+    crdt.delete_room(req["path"])
 
 
 class DirectoryEntry(pydantic.BaseModel):
