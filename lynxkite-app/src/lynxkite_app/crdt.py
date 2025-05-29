@@ -63,7 +63,8 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         room.ws = ws
 
         def on_change(changes):
-            asyncio.create_task(workspace_changed(name, changes, ws))
+            task = asyncio.create_task(workspace_changed(name, changes, ws))
+            task.add_done_callback(lambda t: t.result())
 
         ws.observe_deep(on_change)
         return room
