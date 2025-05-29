@@ -306,9 +306,9 @@ function LynxKiteFlow() {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
       data: {
-        meta: meta,
+        meta: { value: meta },
         title: meta.name,
-        params: Object.fromEntries(Object.values(meta.params).map((p) => [p.name, p.default])),
+        params: Object.fromEntries(meta.params.map((p) => [p.name, p.default])),
       },
     };
     return node;
