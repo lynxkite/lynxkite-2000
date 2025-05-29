@@ -45,8 +45,8 @@ class WorkspaceNode(BaseConfig):
     type: str
     data: WorkspaceNodeData
     position: Position
-    width: float
-    height: float
+    width: Optional[float] = None
+    height: Optional[float] = None
     _crdt: pycrdt.Map
 
     def publish_started(self):
