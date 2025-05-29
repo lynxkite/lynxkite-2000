@@ -96,7 +96,7 @@ export class Workspace {
     return this.page.locator(".react-flow__node");
   }
 
-  getBoxHandle(boxId: string, pos?: string) {
+  getBoxHandle(boxId: string, pos: string) {
     return this.page.locator(`.connectable[data-nodeid="${boxId}"][data-handlepos="${pos}"]`);
   }
 

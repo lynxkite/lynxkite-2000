@@ -64,6 +64,8 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
 
         def on_change(changes):
             task = asyncio.create_task(workspace_changed(name, changes, ws))
+            # We have no way to await workspace_changed(). The best we can do is to
+            # dereference its result after it's done, so exceptions are logged normally.
             task.add_done_callback(lambda t: t.result())
 
         ws.observe_deep(on_change)
