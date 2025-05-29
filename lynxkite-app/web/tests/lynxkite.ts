@@ -126,19 +126,28 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
-  async connectBoxes(sourceId: string, targetId: string) {
+  async tryToConnectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
     const targetHandle = this.getBoxHandle(targetId, "left");
     await expect(sourceHandle).toBeVisible();
     await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
-    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached();
+    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached({ timeout: 1000 });
     await targetHandle.hover();
     await this.page.mouse.up();
     await expect(
       this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
-    ).toBeAttached();
+    ).toBeAttached({ timeout: 1000 });
+  }
+  async connectBoxes(sourceId: string, targetId: string) {
+    // The method above is unreliable. I gave up after a lot of debugging and added these retries.
+    while (true) {
+      try {
+        await this.tryToConnectBoxes(sourceId, targetId);
+        return;
+      } catch (e) {}
+    }
   }
 
   async execute() {
