@@ -63,7 +63,10 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         room.ws = ws
 
         def on_change(changes):
-            asyncio.create_task(workspace_changed(name, changes, ws))
+            task = asyncio.create_task(workspace_changed(name, changes, ws))
+            # We have no way to await workspace_changed(). The best we can do is to
+            # dereference its result after it's done, so exceptions are logged normally.
+            task.add_done_callback(lambda t: t.result())
 
         ws.observe_deep(on_change)
         return room
@@ -297,6 +300,11 @@ async def lifespan(app):
         async with code_websocket_server:
             yield
     print("closing websocket server")
+
+
+def delete_room(name: str):
+    if name in ws_websocket_server.rooms:
+        del ws_websocket_server.rooms[name]
 
 
 def sanitize_path(path):
