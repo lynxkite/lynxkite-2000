@@ -9,16 +9,9 @@ def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
     for id, data in nodes.items():
         title = data["title"]
         del data["title"]
-        ws.nodes.append(
-            workspace.WorkspaceNode(
-                id=id,
-                type="basic",
-                data=workspace.WorkspaceNodeData(title=title, params=data),
-                position=workspace.Position(
-                    x=data.get("x", 0),
-                    y=data.get("y", 0),
-                ),
-            )
+        ws.add_node(
+            id=id,
+            data=workspace.WorkspaceNodeData(title=title, params=data),
         )
     ws.edges = [
         workspace.WorkspaceEdge(

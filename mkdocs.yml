@@ -4,12 +4,14 @@ repo_name: lynxkite/lynxkite-2000
 watch: [mkdocs.yml, README.md, lynxkite-core, lynxkite-graph-analytics, lynxkite-app]
 
 nav:
-- Home:
+- About LynxKite:
   - Overview: index.md
-  - License: license.md
-- Usage:
-  - usage/quickstart.md
-  - usage/plugins.md
+  - contributing.md
+  - license.md
+- Guides:
+  - guides/quickstart.md
+  - guides/analytics.md
+  - guides/plugins.md
 - API reference:
   - LynxKite Core:
     - reference/lynxkite-core/ops.md

@@ -40,12 +40,13 @@ class WorkspaceNodeData(BaseConfig):
 
 
 class WorkspaceNode(BaseConfig):
-    # The naming of these attributes matches the ones for the NodeBase type in React flow
-    # modyfing them will break the frontend.
+    # Most of these fields are shared with ReactFlow.
     id: str
     type: str
     data: WorkspaceNodeData
     position: Position
+    width: Optional[float] = None
+    height: Optional[float] = None
     _crdt: pycrdt.Map
 
     def publish_started(self):
@@ -202,27 +203,27 @@ class Workspace(BaseConfig):
                     nc["data"] = pycrdt.Map()
                 np._crdt = nc
 
-    def add_node(self, func):
+    def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""
         random_string = os.urandom(4).hex()
-        node = WorkspaceNode(
-            id=f"{func.__op__.name} {random_string}",
-            type=func.__op__.type,
-            data=WorkspaceNodeData(
-                title=func.__op__.name,
-                params={},
-                display=None,
-                input_metadata=None,
-                error=None,
-                status=NodeStatus.planned,
-            ),
-            position=Position(x=0, y=0),
-        )
+        if func:
+            kwargs["type"] = func.__op__.type
+            kwargs["data"] = WorkspaceNodeData(title=func.__op__.name, params={})
+        kwargs.setdefault("type", "basic")
+        kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")
+        kwargs.setdefault("position", Position(x=0, y=0))
+        kwargs.setdefault("width", 100)
+        kwargs.setdefault("height", 100)
+        node = WorkspaceNode(**kwargs)
         self.nodes.append(node)
         return node
 
     def add_edge(
-        self, source: WorkspaceNode, sourceHandle: str, target: WorkspaceNode, targetHandle: str
+        self,
+        source: WorkspaceNode,
+        sourceHandle: str,
+        target: WorkspaceNode,
+        targetHandle: str,
     ):
         """For convenience in e.g. tests."""
         edge = WorkspaceEdge(

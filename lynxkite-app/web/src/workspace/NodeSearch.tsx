@@ -10,7 +10,7 @@ export type OpsOp = {
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
 
-export default function (props: {
+export default function NodeSearch(props: {
   boxes: Catalog;
   onCancel: any;
   onAdd: any;

@@ -53,14 +53,8 @@ export class Workspace {
   }
 
   async addBox(boxName) {
-    //TODO: Support passing box parameters (id, position, etc.)
+    // TODO: Support passing box parameters.
     const allBoxes = await this.getBoxes().all();
-    if (allBoxes) {
-      // Avoid overlapping with existing nodes
-      const numNodes = allBoxes.length || 1;
-      await this.page.mouse.wheel(0, numNodes * 400);
-    }
-
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
     await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();
@@ -102,11 +96,8 @@ export class Workspace {
     return this.page.locator(".react-flow__node");
   }
 
-  getBoxHandle(boxId: string, pos?: string) {
-    if (pos) {
-      return this.page.locator(`[data-id="${boxId}"] [data-handlepos="${pos}"]`);
-    }
-    return this.page.getByTestId(boxId);
+  getBoxHandle(boxId: string, pos: string) {
+    return this.page.locator(`.connectable[data-nodeid="${boxId}"][data-handlepos="${pos}"]`);
   }
 
   async moveBox(
@@ -135,13 +126,28 @@ export class Workspace {
     await this.page.mouse.up();
   }
 
-  async connectBoxes(sourceId: string, targetId: string) {
+  async tryToConnectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
     const targetHandle = this.getBoxHandle(targetId, "left");
+    await expect(sourceHandle).toBeVisible();
+    await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
+    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached({ timeout: 1000 });
     await targetHandle.hover();
     await this.page.mouse.up();
+    await expect(
+      this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
+    ).toBeAttached({ timeout: 1000 });
+  }
+  async connectBoxes(sourceId: string, targetId: string) {
+    // The method above is unreliable. I gave up after a lot of debugging and added these retries.
+    while (true) {
+      try {
+        await this.tryToConnectBoxes(sourceId, targetId);
+        return;
+      } catch (e) {}
+    }
   }
 
   async execute() {

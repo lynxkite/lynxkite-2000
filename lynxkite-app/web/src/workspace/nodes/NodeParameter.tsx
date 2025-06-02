@@ -237,7 +237,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <textarea
         className="textarea textarea-bordered w-full"
         rows={6}
-        value={value}
+        value={value || ""}
         onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
         onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
       />
