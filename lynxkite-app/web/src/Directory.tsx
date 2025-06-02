@@ -58,7 +58,7 @@ function EntryCreator(props: {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function () {
+export default function Directory() {
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {

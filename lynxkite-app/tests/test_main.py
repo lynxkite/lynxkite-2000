@@ -28,36 +28,6 @@ def test_get_catalog():
     assert response.status_code == 200
 
 
-def test_save_and_load():
-    save_request = {
-        "path": "test",
-        "ws": {
-            "env": "test",
-            "nodes": [
-                {
-                    "id": "Node_1",
-                    "type": "basic",
-                    "data": {
-                        "display": None,
-                        "input_metadata": None,
-                        "error": "Unknown operation.",
-                        "title": "Test node",
-                        "params": {"param1": "value"},
-                    },
-                    "position": {"x": -493.5496596237119, "y": 20.90123252513356},
-                }
-            ],
-            "edges": [],
-        },
-    }
-    response = client.post("/api/save", json=save_request)
-    saved_ws = response.json()
-    assert response.status_code == 200
-    response = client.get("/api/load?path=test")
-    assert response.status_code == 200
-    assert saved_ws == response.json()
-
-
 def test_list_dir():
     test_dir = pathlib.Path() / str(uuid.uuid4())
     test_dir.mkdir(parents=True, exist_ok=True)

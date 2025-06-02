@@ -16,7 +16,7 @@ import {
   useUpdateNodeInternals,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
@@ -25,10 +25,15 @@ import Atom from "~icons/tabler/atom.jsx";
 // @ts-ignore
 import Backspace from "~icons/tabler/backspace.jsx";
 // @ts-ignore
+import UngroupIcon from "~icons/tabler/library-minus.jsx";
+// @ts-ignore
+import GroupIcon from "~icons/tabler/library-plus.jsx";
+// @ts-ignore
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-ignore
 import Close from "~icons/tabler/x.jsx";
-import type { Workspace, WorkspaceNode } from "../apiTypes.ts";
+import Tooltip from "../Tooltip.tsx";
+import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 // import NodeWithTableView from './NodeWithTableView';
@@ -37,6 +42,7 @@ import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
+import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
@@ -44,7 +50,7 @@ import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 
-export default function (props: any) {
+export default function Workspace(props: any) {
   return (
     <ReactFlowProvider>
       <LynxKiteFlow {...props} />
@@ -55,6 +61,7 @@ export default function (props: any) {
 function LynxKiteFlow() {
   const updateNodeInternals = useUpdateNodeInternals();
   const reactFlow = useReactFlow();
+  const reactFlowContainer = useRef<HTMLDivElement>(null);
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
   const path = usePath().replace(/^[/]edit[/]/, "");
@@ -62,10 +69,10 @@ function LynxKiteFlow() {
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const [state, setState] = useState({ workspace: {} as Workspace });
+  const [state, setState] = useState({ workspace: {} as WorkspaceType });
   const [message, setMessage] = useState(null as string | null);
   useEffect(() => {
-    const state = syncedStore({ workspace: {} as Workspace });
+    const state = syncedStore({ workspace: {} as WorkspaceType });
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
@@ -78,7 +85,7 @@ function LynxKiteFlow() {
         if (!state.workspace.nodes) return;
         if (!state.workspace.edges) return;
         for (const n of state.workspace.nodes) {
-          if (n.dragHandle !== ".drag-handle") {
+          if (n.type !== "node_group" && n.dragHandle !== ".drag-handle") {
             n.dragHandle = ".drag-handle";
           }
         }
@@ -185,6 +192,7 @@ function LynxKiteFlow() {
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
       comment: NodeWithComment,
+      node_group: Group,
     }),
     [],
   );
@@ -203,7 +211,7 @@ function LynxKiteFlow() {
       if (event.key === "/") {
         event.preventDefault();
         setNodeSearchSettings({
-          pos: { x: 100, y: 100 },
+          pos: getBestPosition(),
           boxes: catalog.data![state.workspace.env!],
         });
       } else if (event.key === "r") {
@@ -217,6 +225,39 @@ function LynxKiteFlow() {
       document.removeEventListener("keyup", handleKeyDown);
     };
   }, [catalog.data, nodeSearchSettings, state.workspace.env]);
+
+  function getBestPosition() {
+    const W = reactFlowContainer.current!.clientWidth;
+    const H = reactFlowContainer.current!.clientHeight;
+    const w = 200;
+    const h = 200;
+    const SPEED = 20;
+    const GAP = 50;
+    const pos = { x: 100, y: 100 };
+    while (pos.y < H) {
+      // Find a position that is not occupied by a node.
+      const fpos = reactFlow.screenToFlowPosition(pos);
+      const occupied = state.workspace.nodes!.some((n) => {
+        const np = n.position;
+        return (
+          np.x < fpos.x + w + GAP &&
+          np.x + n.width + GAP > fpos.x &&
+          np.y < fpos.y + h + GAP &&
+          np.y + n.height + GAP > fpos.y
+        );
+      });
+      if (!occupied) {
+        return pos;
+      }
+      // Move the position to the right and down until we find a free spot.
+      pos.x += SPEED;
+      if (pos.x + w > W) {
+        pos.x = 100;
+        pos.y += SPEED;
+      }
+    }
+    return { x: 100, y: 100 };
+  }
 
   function isTypingInFormElement() {
     const activeElement = document.activeElement;
@@ -247,25 +288,27 @@ function LynxKiteFlow() {
     },
     [catalog, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
-  function addNode(node: Partial<WorkspaceNode>, state: { workspace: Workspace }, nodes: Node[]) {
-    const title = node.data?.title;
+  function findFreeId(prefix: string) {
     let i = 1;
-    node.id = `${title} ${i}`;
-    const wnodes = state.workspace.nodes!;
-    while (wnodes.find((x) => x.id === node.id)) {
+    let id = `${prefix} ${i}`;
+    const used = new Set(state.workspace.nodes!.map((n) => n.id));
+    while (used.has(id)) {
       i += 1;
-      node.id = `${title} ${i}`;
+      id = `${prefix} ${i}`;
     }
-    wnodes.push(node as WorkspaceNode);
+    return id;
+  }
+  function addNode(node: Partial<WorkspaceNode>) {
+    state.workspace.nodes!.push(node as WorkspaceNode);
     setNodes([...nodes, node as WorkspaceNode]);
   }
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
       data: {
-        meta: meta,
+        meta: { value: meta },
         title: meta.name,
-        params: Object.fromEntries(Object.values(meta.params).map((p) => [p.name, p.default])),
+        params: Object.fromEntries(meta.params.map((p) => [p.name, p.default])),
       },
     };
     return node;
@@ -278,7 +321,8 @@ function LynxKiteFlow() {
         x: nss.pos.x,
         y: nss.pos.y,
       });
-      addNode(node, state, nodes);
+      node.id = findFreeId(node.data!.title);
+      addNode(node);
       closeNodeSearch();
     },
     [nodeSearchSettings, state, reactFlow, nodes, closeNodeSearch],
@@ -321,6 +365,7 @@ function LynxKiteFlow() {
       setMessage(null);
       const cat = catalog.data![state.workspace.env!];
       const node = nodeFromMeta(cat["Import file"]);
+      node.id = findFreeId(node.data!.title);
       node.position = reactFlow.screenToFlowPosition({
         x: e.clientX,
         y: e.clientY,
@@ -335,7 +380,7 @@ function LynxKiteFlow() {
       } else if (file.name.includes(".xls")) {
         node.data!.params.file_format = "excel";
       }
-      addNode(node, state, nodes);
+      addNode(node);
     } catch (error) {
       setMessage("File upload failed.");
     }
@@ -346,6 +391,106 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
+  function deleteSelection() {
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
+    reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+  }
+  function groupSelection() {
+    const selectedNodes = nodes.filter((n) => n.selected && !n.parentId);
+    const groupNode = {
+      id: findFreeId("Group"),
+      type: "node_group",
+      position: { x: 0, y: 0 },
+      width: 0,
+      height: 0,
+      data: { title: "Group", params: {} },
+    };
+    let top = Number.POSITIVE_INFINITY;
+    let left = Number.POSITIVE_INFINITY;
+    let bottom = Number.NEGATIVE_INFINITY;
+    let right = Number.NEGATIVE_INFINITY;
+    const PAD = 10;
+    for (const node of selectedNodes) {
+      if (node.position.y - PAD < top) top = node.position.y - PAD;
+      if (node.position.x - PAD < left) left = node.position.x - PAD;
+      if (node.position.y + PAD + node.height! > bottom)
+        bottom = node.position.y + PAD + node.height!;
+      if (node.position.x + PAD + node.width! > right) right = node.position.x + PAD + node.width!;
+    }
+    groupNode.position = {
+      x: left,
+      y: top,
+    };
+    groupNode.width = right - left;
+    groupNode.height = bottom - top;
+    setNodes([
+      { ...(groupNode as WorkspaceNode), selected: true },
+      ...nodes.map((n) =>
+        n.selected
+          ? {
+              ...n,
+              position: { x: n.position.x - left, y: n.position.y - top },
+              parentId: groupNode.id,
+              extent: "parent" as const,
+              selected: false,
+            }
+          : n,
+      ),
+    ]);
+    getYjsDoc(state).transact(() => {
+      state.workspace.nodes!.unshift(groupNode as WorkspaceNode);
+      const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
+      for (const node of state.workspace.nodes!) {
+        if (selectedNodeIds.has(node.id)) {
+          node.position.x -= left;
+          node.position.y -= top;
+          node.parentId = groupNode.id;
+          node.extent = "parent";
+          node.selected = false;
+        }
+      }
+    });
+  }
+  function ungroupSelection() {
+    const groups = Object.fromEntries(
+      nodes
+        .filter((n) => n.selected && n.type === "node_group" && !n.parentId)
+        .map((n) => [n.id, n]),
+    );
+    setNodes(
+      nodes
+        .filter((n) => !groups[n.id])
+        .map((n) => {
+          const g = groups[n.parentId!];
+          if (!g) return n;
+          return {
+            ...n,
+            position: { x: n.position.x + g.position.x, y: n.position.y + g.position.y },
+            parentId: undefined,
+            extent: undefined,
+            selected: true,
+          };
+        }),
+    );
+    getYjsDoc(state).transact(() => {
+      const wnodes = state.workspace.nodes!;
+      for (const node of state.workspace.nodes!) {
+        const g = groups[node.parentId as string];
+        if (!g) continue;
+        node.position.x += g.position.x;
+        node.position.y += g.position.y;
+        node.parentId = undefined;
+        node.extent = undefined;
+      }
+      for (const groupId in groups) {
+        const groupIdx = wnodes.findIndex((n) => n.id === groupId);
+        wnodes.splice(groupIdx, 1);
+      }
+    });
+  }
+  const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
+  const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -362,21 +507,43 @@ function LynxKiteFlow() {
           }}
         />
         <div className="tools text-secondary">
-          <button className="btn btn-link">
-            <Atom />
-          </button>
-          <button className="btn btn-link">
-            <Backspace />
-          </button>
-          <button className="btn btn-link" onClick={executeWorkspace}>
-            <Restart />
-          </button>
-          <Link className="btn btn-link" to={`/dir/${parentDir}`} aria-label="close">
-            <Close />
-          </Link>
+          {areMultipleNodesSelected && (
+            <Tooltip doc="Group selected nodes">
+              <button className="btn btn-link" onClick={groupSelection}>
+                <GroupIcon />
+              </button>
+            </Tooltip>
+          )}
+          {isAnyGroupSelected && (
+            <Tooltip doc="Ungroup selected nodes">
+              <button className="btn btn-link" onClick={ungroupSelection}>
+                <UngroupIcon />
+              </button>
+            </Tooltip>
+          )}
+          <Tooltip doc="Delete selected nodes and edges">
+            <button className="btn btn-link" onClick={deleteSelection}>
+              <Backspace />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Re-run the workspace">
+            <button className="btn btn-link" onClick={executeWorkspace}>
+              <Restart />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Close workspace">
+            <Link className="btn btn-link" to={`/dir/${parentDir}`} aria-label="close">
+              <Close />
+            </Link>
+          </Tooltip>
         </div>
       </div>
-      <div style={{ height: "100%", width: "100vw" }} onDragOver={onDragOver} onDrop={onDrop}>
+      <div
+        style={{ height: "100%", width: "100vw" }}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        ref={reactFlowContainer}
+      >
         <LynxKiteState.Provider value={state}>
           <ReactFlow
             nodes={nodes}
@@ -389,9 +556,13 @@ function LynxKiteFlow() {
             onPaneClick={toggleNodeSearch}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
-            maxZoom={1}
+            maxZoom={10}
             minZoom={0.2}
             zoomOnScroll={false}
+            panOnScroll={true}
+            panOnDrag={false}
+            selectionOnDrag={true}
+            panOnScrollSpeed={1}
             preventScrolling={false}
             defaultEdgeOptions={{
               markerEnd: {
@@ -405,6 +576,7 @@ function LynxKiteFlow() {
                 stroke: "black",
               },
             }}
+            fitViewOptions={{ maxZoom: 1 }}
           >
             <Controls />
             {nodeSearchSettings && (
