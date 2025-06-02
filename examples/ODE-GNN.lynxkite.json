@@ -120,13 +120,6 @@
       "targetHandle": "edges"
     },
     {
-      "id": "Graph conv 2 x Heterogeneous graph conv 1 cases",
-      "source": "Graph conv 2",
-      "sourceHandle": "x",
-      "target": "Heterogeneous graph conv 1",
-      "targetHandle": "cases"
-    },
-    {
       "id": "Input: tensor 3 output Embedding 1 x",
       "source": "Input: tensor 3",
       "sourceHandle": "output",
@@ -257,6 +250,119 @@
   "nodes": [
     {
       "data": {
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {},
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 2361.0,
+      "id": "Group 4",
+      "position": {
+        "x": -1553.0193773500205,
+        "y": -240.79204628408627
+      },
+      "type": "node_group",
+      "width": 2067.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {},
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 801.0,
+      "id": "Group 5",
+      "position": {
+        "x": 653.8616229610058,
+        "y": -2144.434037892992
+      },
+      "type": "node_group",
+      "width": 686.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "color": "purple"
+        },
+        "status": "done",
+        "title": "Group"
+      },
+      "extent": "parent",
+      "height": 616.0,
+      "id": "Group 3",
+      "parentId": "Group 4",
+      "position": {
+        "x": 955.0773075119091,
+        "y": 276.48133806627845
+      },
+      "selected": false,
+      "type": "node_group",
+      "width": 1035.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "color": "green"
+        },
+        "status": "done",
+        "title": "Group"
+      },
+      "extent": "parent",
+      "height": 1042.0,
+      "id": "Group 2",
+      "parentId": "Group 4",
+      "position": {
+        "x": 10.0,
+        "y": 1309.1540753489603
+      },
+      "selected": false,
+      "type": "node_group",
+      "width": 751.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "color": "blue"
+        },
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 793.0,
+      "id": "Group 1",
+      "position": {
+        "x": 568.8655324518227,
+        "y": -238.1553730513866
+      },
+      "type": "node_group",
+      "width": 420.0
+    },
+    {
+      "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
@@ -313,13 +419,16 @@
         "status": "done",
         "title": "Graph conv"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Graph conv 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -958.3664302023487,
-        "y": 1599.1160982851618
+        "x": 382.5829138643958,
+        "y": 496.96416907011553
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -376,13 +485,16 @@
         "status": "done",
         "title": "Repeat"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Repeat 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -1256.0472900806378,
-        "y": 1462.4640393828538
+        "x": 84.9020539861067,
+        "y": 360.31211016780753
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -429,7 +541,7 @@
         "status": "done",
         "title": "Concatenate"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Concatenate 1",
       "position": {
@@ -477,18 +589,23 @@
         "status": "done",
         "title": "Input: graph edges"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 179.0,
       "id": "Input: graph edges 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -854.519414621737,
-        "y": 1938.2120356180976
+        "x": 486.4299294450075,
+        "y": 836.0601064030513
       },
+      "selected": false,
       "type": "basic",
       "width": 255.0
     },
     {
       "data": {
+        "__execution_delay": null,
+        "collapsed": false,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -536,13 +653,16 @@
         "status": "done",
         "title": "Activation"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Activation 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -957.5224198523413,
-        "y": 1334.1909972833182
+        "x": 383.42692421440324,
+        "y": 158.68687593857499
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -608,13 +728,16 @@
         "status": "done",
         "title": "LSTM"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 312.0,
       "id": "LSTM 1",
+      "parentId": "Group 1",
       "position": {
-        "x": 662.5652799873882,
-        "y": -47.63729698454539
+        "x": 28.315247542851353,
+        "y": 25.635423911301217
       },
+      "selected": false,
       "type": "basic",
       "width": 204.0
     },
@@ -651,18 +774,21 @@
           "type": "basic"
         },
         "params": {
-          "name": "future volumes"
+          "name": "future volumes                                                                                                           "
         },
         "status": "done",
         "title": "Input: sequential"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 176.0,
       "id": "Input: sequential 1",
+      "parentId": "Group 5",
       "position": {
-        "x": 1724.6836018444237,
-        "y": 397.2031221699466
+        "x": 314.61896315858814,
+        "y": 614.6995504433646
       },
+      "selected": false,
       "type": "basic",
       "width": 230.0
     },
@@ -709,13 +835,16 @@
         "status": "done",
         "title": "MSE loss"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "MSE loss 1",
+      "parentId": "Group 5",
       "position": {
-        "x": 784.6649975930936,
-        "y": -1425.9136836194843
+        "x": 10.0,
+        "y": 369.6042243521049
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -773,13 +902,16 @@
         "status": "done",
         "title": "Optimizer"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 247.0,
       "id": "Optimizer 1",
+      "parentId": "Group 5",
       "position": {
-        "x": 792.7562892596496,
-        "y": -1782.9476234049491
+        "x": 10.380437966635554,
+        "y": 10.0
       },
+      "selected": false,
       "type": "basic",
       "width": 190.0
     },
@@ -821,13 +953,16 @@
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: tensor 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -1080.5338448530515,
-        "y": 1933.9824573483497
+        "x": 260.415499213693,
+        "y": 831.8305281333035
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -869,12 +1004,12 @@
         "status": "done",
         "title": "Input: sequential"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 206.0,
       "id": "Input: sequential 2",
       "position": {
-        "x": 1404.6077870047632,
-        "y": 393.03737591778565
+        "x": 1248.253547891751,
+        "y": -168.41648271530312
       },
       "type": "basic",
       "width": 237.0
@@ -989,12 +1124,12 @@
           "mlp_activation": "ReLU",
           "mlp_hidden_size": "64",
           "mlp_layers": "3",
-          "relative_tolerance": "0.001"
+          "relative_tolerance": "                                         0.001                                           "
         },
         "status": "done",
         "title": "Neural ODE with MLP"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 531.0,
       "id": "Neural ODE with MLP 1",
       "position": {
@@ -1042,13 +1177,16 @@
         "status": "done",
         "title": "Input: sequential"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: sequential 3",
+      "parentId": "Group 1",
       "position": {
-        "x": 848.5881581854119,
-        "y": 393.6406513741127
+        "x": 32.39864750027925,
+        "y": 583.4683505178409
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1085,17 +1223,17 @@
           "type": "basic"
         },
         "params": {
-          "name": "current volume"
+          "name": "current volume                                                              "
         },
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Input: tensor 2",
       "position": {
-        "x": 1103.4272296857464,
-        "y": 383.50500648489503
+        "x": 1033.7785231717685,
+        "y": -160.89202606313793
       },
       "type": "basic",
       "width": 200.0
@@ -1146,7 +1284,7 @@
         "status": "done",
         "title": "Output"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 155.0,
       "id": "Output 1",
       "position": {
@@ -1202,13 +1340,16 @@
         "status": "done",
         "title": "Linear"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Linear 1",
+      "parentId": "Group 4",
       "position": {
-        "x": 260.1415749028216,
-        "y": -225.79204628408624
+        "x": 1798.160952252842,
+        "y": 10.0
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1255,13 +1396,16 @@
         "status": "done",
         "title": "Concatenate"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Concatenate 2",
+      "parentId": "Group 3",
       "position": {
-        "x": 199.77501256646406,
-        "y": 50.6892917821922
+        "x": 751.8645969652298,
+        "y": 0.0
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1308,13 +1452,16 @@
         "status": "done",
         "title": "Concatenate"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Concatenate 3",
+      "parentId": "Group 3",
       "position": {
-        "x": -207.83562912506517,
-        "y": 177.1410132322926
+        "x": 467.59424395826454,
+        "y": 175.01732824928223
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1376,13 +1523,16 @@
         "status": "done",
         "title": "Graph conv"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Graph conv 2",
+      "parentId": "Group 4",
       "position": {
-        "x": 568.0618872822669,
-        "y": 1248.5801580938696
+        "x": 1806.181634199722,
+        "y": 1581.8135304557259
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1424,13 +1574,16 @@
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: tensor 3",
+      "parentId": "Group 4",
       "position": {
-        "x": -237.06197713140955,
-        "y": 1913.2497721334535
+        "x": 1105.957400218611,
+        "y": 2144.0418184175396
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1472,13 +1625,16 @@
         "status": "done",
         "title": "Input: graph edges"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: graph edges 2",
+      "parentId": "Group 4",
       "position": {
-        "x": 598.9033780663102,
-        "y": 1889.9532191207059
+        "x": 1856.9227554163308,
+        "y": 2140.745265404792
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1541,18 +1697,21 @@
           "edge_modules_order": "disease-assoc-gene, drug-targets-gene",
           "node_embedding_order": "gene, disease, drug",
           "node_embeddings": "gene, disease, drug",
-          "node_embeddings_order": "gene, disease, drug"
+          "node_embeddings_order": "gene, disease, drug                                       "
         },
         "status": "done",
         "title": "Heterogeneous graph conv"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 226.0,
       "id": "Heterogeneous graph conv 1",
+      "parentId": "Group 4",
       "position": {
-        "x": -193.62478357663917,
-        "y": 857.1221768252228
+        "x": 1149.3945937733813,
+        "y": 1087.9142231093092
       },
+      "selected": false,
       "type": "basic",
       "width": 719.0
     },
@@ -1614,13 +1773,16 @@
         "status": "done",
         "title": "Graph conv"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Graph conv 3",
+      "parentId": "Group 4",
       "position": {
-        "x": 196.18050700893468,
-        "y": 1250.8968769256908
+        "x": 1533.5142756639366,
+        "y": 1575.5014666775842
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1672,19 +1834,22 @@
           "type": "basic"
         },
         "params": {
-          "embedding_dim": "64",
+          "embedding_dim": "64                                                                                                                                    ",
           "num_embeddings": "6"
         },
         "status": "done",
         "title": "Embedding"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 227.0,
       "id": "Embedding 1",
+      "parentId": "Group 4",
       "position": {
-        "x": -256.0885115154183,
-        "y": 1322.2511456416655
+        "x": 1103.9876919196581,
+        "y": 1567.257213663298
       },
+      "selected": false,
       "type": "basic",
       "width": 202.0
     },
@@ -1742,13 +1907,16 @@
         "status": "done",
         "title": "Embedding"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 237.0,
       "id": "Embedding 2",
+      "parentId": "Group 4",
       "position": {
-        "x": -502.1534914179067,
-        "y": 1325.0606482029252
+        "x": 840.8658859321138,
+        "y": 1555.8526944870114
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1790,13 +1958,16 @@
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: tensor 4",
+      "parentId": "Group 4",
       "position": {
-        "x": -503.55824269853656,
-        "y": 1919.6283255695653
+        "x": 839.4611346514839,
+        "y": 2150.4203718536514
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -1838,15 +2009,18 @@
         "status": "done",
         "title": "Input: graph edges"
       },
-      "dragHandle": ".bg-primary",
-      "height": 200.0,
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 201.0,
       "id": "Input: graph edges 3",
+      "parentId": "Group 4",
       "position": {
-        "x": 232.53287654813585,
-        "y": 1903.635542809861
+        "x": 1575.5522538981563,
+        "y": 2134.427589093947
       },
+      "selected": false,
       "type": "basic",
-      "width": 200.0
+      "width": 225.0
     },
     {
       "data": {
@@ -1889,18 +2063,21 @@
           "type": "basic"
         },
         "params": {
-          "index": "disease"
+          "index": "disease                                                                                                                                                                                                                                                                                                                                 "
         },
         "status": "done",
         "title": "Pick element by constant"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Pick element by constant 1",
+      "parentId": "Group 3",
       "position": {
-        "x": -104.82050032377765,
-        "y": 443.88257532291584
+        "x": 478.1215695143337,
+        "y": 403.19328354072366
       },
+      "selected": false,
       "type": "basic",
       "width": 245.0
     },
@@ -1950,13 +2127,16 @@
         "status": "done",
         "title": "Pick element by constant"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Pick element by constant 2",
+      "parentId": "Group 3",
       "position": {
-        "x": 172.0238673738413,
-        "y": 446.3361749709413
+        "x": 754.9659372119527,
+        "y": 405.6468831887491
       },
+      "selected": false,
       "type": "basic",
       "width": 270.0
     },
@@ -2006,13 +2186,16 @@
         "status": "done",
         "title": "Pick element by constant"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 197.0,
       "id": "Pick element by constant 3",
+      "parentId": "Group 3",
       "position": {
-        "x": -385.8219023214074,
-        "y": 444.2181846368153
+        "x": 197.120167516704,
+        "y": 403.5288928546231
       },
+      "selected": false,
       "type": "basic",
       "width": 247.0
     },
@@ -2024,7 +2207,7 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "blue",
+          "color": "orange",
           "doc": null,
           "inputs": [
             {
@@ -2052,13 +2235,16 @@
         "status": "done",
         "title": "Mean pool"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Mean pool 1",
+      "parentId": "Group 3",
       "position": {
-        "x": -363.34092335643146,
-        "y": 338.36409073219164
+        "x": 221.58363816086091,
+        "y": 304.61351982713296
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -2070,7 +2256,7 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "blue",
+          "color": "orange",
           "doc": null,
           "inputs": [
             {
@@ -2098,13 +2284,16 @@
         "status": "done",
         "title": "Mean pool"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Mean pool 2",
+      "parentId": "Group 3",
       "position": {
-        "x": -82.8001236321482,
-        "y": 319.6613707505728
+        "x": 500.14194620596317,
+        "y": 301.77073327896215
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
@@ -2116,7 +2305,7 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "blue",
+          "color": "orange",
           "doc": null,
           "inputs": [
             {
@@ -2144,15 +2333,231 @@
         "status": "done",
         "title": "Mean pool"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Mean pool 3",
+      "parentId": "Group 3",
       "position": {
-        "x": 201.4812200884588,
-        "y": 314.0505547560871
+        "x": 785.4145357661607,
+        "y": 300.1249006428384
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Past tumor volume embedding with LSTM"
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 130.0,
+      "id": "Comment 1",
+      "parentId": "Group 1",
+      "position": {
+        "x": 10.0,
+        "y": 406.3216561052855
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Gene-gene graph embedding"
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 90.0,
+      "id": "Comment 2",
+      "parentId": "Group 2",
+      "position": {
+        "x": 10.0,
+        "y": 214.69868480627042
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Learned initial drug & disease embeddings"
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 90.0,
+      "id": "Comment 3",
+      "parentId": "Group 4",
+      "position": {
+        "x": 886.9430712292642,
+        "y": 1852.533426575776
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Extracting the graph embedding\n\nWe mean-pool the node embeddings of each node type, then concatenate these vectors."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 178.0,
+      "id": "Comment 4",
+      "parentId": "Group 3",
+      "position": {
+        "x": 10.0,
+        "y": 141.970585886959
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Knowledge graph embedding with GNN\n\nThis heterogeneous graph convolution creates node embeddings for all genes, diseases, and drugs in the graph."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 206.0,
+      "id": "Comment 5",
+      "parentId": "Group 4",
+      "position": {
+        "x": 686.3753672347915,
+        "y": 977.8926090141683
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Tumor volume trajectory predictions with ODE\n\nAn MLP is used to predict the derivative of the tumor volume at different stages, based on the knowledge graph embedding and the past tumor volume embeddings."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 274.0,
+      "id": "Comment 6",
+      "position": {
+        "x": -0.7721924881518737,
+        "y": -865.6155529412208
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "# Training configuration\n\nThe loss for the whole model is simply the MSE loss over the future volume measurements."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 138.0,
+      "id": "Comment 7",
+      "parentId": "Group 5",
+      "position": {
+        "x": 276.18914557042024,
+        "y": 267.8721350317928
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": {},
+        "params": {
+          "text": "## Disease-gene and drug-gene edges"
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 74.0,
+      "id": "Comment 8",
+      "parentId": "Group 4",
+      "position": {
+        "x": 1615.9956563920114,
+        "y": 1872.1215872934476
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
     }
   ]
 }
