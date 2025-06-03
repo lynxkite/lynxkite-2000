@@ -883,7 +883,6 @@ async def stream_chat_api_response(request):
     chat_api = await get_chat_api(request["model"])
     request = ChatCompletionPrompt(**request)
     async for chunk in await chat_api.answer(request, stream=True):
-        chunk.sources = []
         yield chunk.model_dump_json()
 
 
@@ -891,7 +890,6 @@ async def get_chat_api_response(request):
     chat_api = await get_chat_api(request["model"])
     request = ChatCompletionPrompt(**request)
     response = await chat_api.answer(request, stream=False)
-    response.sources = []
     return response.model_dump_json()
 
 
