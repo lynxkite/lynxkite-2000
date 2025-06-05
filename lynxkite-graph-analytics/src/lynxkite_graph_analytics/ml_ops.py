@@ -55,7 +55,7 @@ class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
-@op("Train model", slow=True)
+@op("Train model", slow=True, cache=False)
 def train_model(
     bundle: core.Bundle,
     *,
