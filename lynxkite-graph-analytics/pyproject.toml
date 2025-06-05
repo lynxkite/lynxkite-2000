@@ -17,6 +17,7 @@ dependencies = [
     "pyarrow>=19.0.1",
     "torch>=2.7.0",
     "torch-geometric>=2.6.1",
+    "torchdiffeq>=0.2.5",
     "umap-learn>=0.5.7",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
