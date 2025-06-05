@@ -227,13 +227,17 @@ class ModelBuilder:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
         # Clean up disconnected nodes.
-        disconnected = set()
+        to_delete = set()
         for node_id in self.nodes:
-            op = self.catalog[self.nodes[node_id].data.title]
-            if len(self.in_edges[node_id]) != len(op.inputs):
-                disconnected.add(node_id)
-                disconnected |= self.all_upstream(node_id)
-        for node_id in disconnected:
+            title = self.nodes[node_id].data.title
+            if title not in self.catalog:  # Groups and comments, for example.
+                to_delete.add(node_id)
+                continue
+            op = self.catalog[title]
+            if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
+                to_delete.add(node_id)
+                to_delete |= self.all_upstream(node_id)
+        for node_id in to_delete:
             del self.dependencies[node_id]
             del self.in_edges[node_id]
             del self.out_edges[node_id]
