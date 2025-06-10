@@ -7,6 +7,7 @@ import torch
 from .pytorch_core import op, reg, ENV
 
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
+reg("Input: dataset", outputs=["output"], params=[P.basic("name")], color="gray")
 reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
 reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
@@ -87,6 +88,13 @@ class ActivationTypes(str, enum.Enum):
 @op("Activation")
 def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
     return getattr(torch.nn.functional, type.name.lower().replace(" ", "_"))
+
+
+@op("Graph Convolution", weights=True)
+def graph_conv(nodes, edges, *, in_channels: int, out_channels: int):
+    import torch_geometric.nn as pyg_nn
+
+    return pyg_nn.GCNConv(in_channels, out_channels)
 
 
 @op("MSE loss")

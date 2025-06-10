@@ -2,6 +2,7 @@
 
 import enum
 import os
+import types
 import fsspec
 from lynxkite.core import ops
 from collections import deque
@@ -154,6 +155,41 @@ def organize(bundle: list[core.Bundle], *, code: ops.LongStr) -> core.Bundle:
     """
     bundle = bundle.copy()
     exec(code, globals(), {"bundle": bundle})
+    return bundle
+
+
+@op("Merge Bundles")
+def merge_bundles(bundle_a: core.Bundle, bundle_b: core.Bundle, *, suffix: str) -> core.Bundle:
+    """Merges two bundles into one.
+
+    The resulting bundle will have all DataFrames from both bundles, and relations from both bundles.
+    If a DataFrame with the same name exists in both bundles, the one from `bundle_b` will be used.
+    """
+    bundle = bundle_a.copy()
+    # If both bundles have a DataFrame with the same name, modify the name of the one from bundle_b.
+    for name in bundle_b.dfs.keys():
+        if name in bundle.dfs:
+            new_name = f"{name}_{suffix}"
+            bundle.dfs[new_name] = bundle_b.dfs[name]
+        else:
+            bundle.dfs[name] = bundle_b.dfs[name]
+    bundle.relations.extend(bundle_b.relations)
+    return bundle
+
+
+@op("Make indexed bundle")
+def make_indexed_bundle(
+    bundle: core.Bundle, *, get_item_function: ops.LongStr, len_function: ops.LongStr
+) -> core.Bundle:
+    """Converts the bundle to an indexed bundle, using the specified index column."""
+    if not get_item_function:
+        return bundle
+    bundle = bundle.copy()
+    local_vars = {}
+    exec(get_item_function, globals(), local_vars)
+    bundle._getitem_fn = types.MethodType(local_vars["custom_getitem"], bundle)
+    exec(len_function, globals(), local_vars)
+    bundle._len_fn = types.MethodType(local_vars["custom_len"], bundle)
     return bundle
 
 
@@ -318,3 +354,21 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
 def biomedical_foundation_graph(*, filter_nodes: str):
     """Loads the gigantic Lynx-maintained knowledge graph. Includes drugs, diseases, genes, proteins, etc."""
     return None
+
+
+@op("Test indexed bundle")
+def test_indexed_bundle(bundle: core.Bundle, *, index: int) -> ops.Result:
+    """Tests the indexed bundle by getting an item at the specified index."""
+    if not hasattr(bundle, "_getitem_fn"):
+        return ops.Result(bundle, error="Bundle is not indexed.")
+    try:
+        print(f"Len is {len(bundle)}")
+        item = bundle[index]
+        print(item)
+        return ops.Result(item)
+    except Exception:
+        # Return the full stack trace in the error message for debugging.
+        import traceback
+
+        error_message = traceback.format_exc()
+        return ops.Result(bundle, error=str(error_message))

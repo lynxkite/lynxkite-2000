@@ -368,6 +368,15 @@ def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor
         return {}
     tensors = {}
     for k, v in m.map.items():
-        if v.df in b.dfs and v.column in b.dfs[v.df]:
-            tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
+        if v.df in b.dfs:
+            if v.column and v.column in b.dfs[v.df]:
+                tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
+            else:
+                # No column specified, use the whole DataFrame.
+                # TODO: Temporary hack, remove. Substitute with given the user the ability
+                # to specify the type in the mapping.
+                if k == "Input__tensor_2_output":
+                    tensors[k] = torch.tensor(b.dfs[v.df].to_numpy(), dtype=torch.long)
+                else:
+                    tensors[k] = torch.tensor(b.dfs[v.df].to_numpy(), dtype=torch.float32)
     return tensors

@@ -55,6 +55,8 @@ class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
+# TODO: The pickling doesn't work for some model (ie. GCNConv), due to those models
+# having some None defaults in their parameters.
 @op("Train model", slow=True)
 def train_model(
     bundle: core.Bundle,
@@ -64,14 +66,21 @@ def train_model(
     epochs: int = 1,
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
-    m = bundle.other[model_name].copy()
-    inputs = pytorch_core.to_tensors(bundle, input_mapping)
+    m: pytorch_core.ModelConfig = bundle.other[model_name].copy()
     t = tqdm(range(epochs), desc="Training model")
     losses = []
     for _ in t:
-        loss = m.train(inputs)
-        t.set_postfix({"loss": loss})
-        losses.append(loss)
+        # TODO: Do we leave the batch iteration to the model? Or do we do it here?
+        # It we do it in the model, this function remains as agnostic as possible to the
+        # type of model we are training. That will open the door to training models that are not PyTorch-based.
+        total_loss = 0.0
+        for i in range(len(bundle)):
+            print(f"Training on batch {i + 1}/{len(bundle)}")
+            batch = bundle[i]
+            inputs = pytorch_core.to_tensors(batch, input_mapping)
+            total_loss += m.train(inputs)
+        t.set_postfix({"loss": total_loss})
+        losses.append(total_loss)
     m.trained = True
     bundle = bundle.copy()
     bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})

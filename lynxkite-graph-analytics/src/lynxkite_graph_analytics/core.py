@@ -116,11 +116,14 @@ class Bundle:
         Returns a shallow copy of the bundle. The Bundle and its containers are new, but
         the DataFrames and RelationDefinitions are shared. (The contents of `other` are also shared.)
         """
-        return Bundle(
+        new_bundle = Bundle(
             dfs=dict(self.dfs),
             relations=list(self.relations),
             other=dict(self.other),
         )
+        new_bundle._getitem_fn = self._getitem_fn
+        new_bundle._len_fn = self._len_fn
+        return new_bundle
 
     def to_dict(self, limit: int = 100):
         """JSON-serializable representation of the bundle, including some data."""
@@ -148,6 +151,20 @@ class Bundle:
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
             "other": {k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()},
         }
+
+    def _getitem_fn(self, idx: int):
+        # By default, ignore idx and return the whole bundle
+        return self
+
+    def __getitem__(self, idx):
+        return self._getitem_fn(idx)
+
+    def _len_fn(self) -> int:
+        # By default, return 1, indicating that the bundle is a single item.
+        return 1
+
+    def __len__(self):
+        return self._len_fn()
 
 
 def nx_node_attribute_func(name):
