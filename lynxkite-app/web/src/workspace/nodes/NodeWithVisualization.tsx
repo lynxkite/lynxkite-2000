@@ -20,7 +20,8 @@ function NodeWithVisualization(props: any) {
     });
     chartsInstanceRef.current.setOption(opts);
     const resizeObserver = new ResizeObserver(() => {
-      const e = chartsRef.current!;
+      const e = chartsRef.current;
+      if (!e) return;
       e.style.padding = "1px";
       chartsInstanceRef.current?.resize();
       e.style.padding = "0";
