@@ -81,6 +81,11 @@ body {
     display: flex;
     flex-direction: column;
 
+    > :not(.title) {
+      user-select: text;
+      cursor: default;
+    }
+
     .node-content {
       flex: 1;
       overflow: auto;
