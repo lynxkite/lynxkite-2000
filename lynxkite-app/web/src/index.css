@@ -392,6 +392,14 @@ body {
     .image-in-table {
       max-height: 100px;
     }
+
+    .sort-indicator {
+      display: inline-block;
+      width: 0;
+      font-size: 10px;
+      color: #0006;
+      transform: translate(5px, -2px);
+    }
   }
 }
 
