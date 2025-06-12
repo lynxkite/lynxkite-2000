@@ -80,6 +80,7 @@ class ModelConfig:
     model_inputs: list[str]
     model_outputs: list[str]
     loss_inputs: list[str]
+    input_output_names: list[str]
     loss: torch.nn.Module
     optimizer_parameters: dict[str, any]
     optimizer: torch.optim.Optimizer | None = None
@@ -136,9 +137,10 @@ class ModelConfig:
         return {
             "type": "model",
             "model": {
-                "inputs": self.model_inputs,
-                "outputs": self.model_outputs,
+                "model_inputs": self.model_inputs,
+                "model_outputs": self.model_outputs,
                 "loss_inputs": self.loss_inputs,
+                "input_output_names": self.input_output_names,
                 "trained": self.trained,
             },
         }
@@ -348,6 +350,9 @@ class ModelBuilder:
         cfg["model_inputs"] = list(used_in_model - made_in_model)
         cfg["model_outputs"] = list(made_in_model & used_in_loss)
         cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
+        cfg["input_output_names"] = self.get_names(
+            *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
+        )
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
@@ -364,6 +369,29 @@ class ModelBuilder:
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
         return ModelConfig(**cfg)
+
+    def get_names(self, *ids: list[str]) -> dict[str, str]:
+        """Returns a mapping from internal IDs to human-readable names."""
+        names = {}
+        for i in ids:
+            for node in self.nodes.values():
+                title = node.data.title
+                op = self.catalog[title]
+                name = node.data.params.get("name") or title
+                for output in op.outputs:
+                    i2 = _to_id(node.id, output.name)
+                    if i2 == i:
+                        if len(op.outputs) == 1:
+                            names[i] = name
+                        else:
+                            names[i] = f"{name} ({output.name})"
+                        break
+                else:
+                    continue
+                break
+            else:
+                raise ValueError(f"Cannot find name for input {i}.")
+        return names
 
 
 def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor]:
