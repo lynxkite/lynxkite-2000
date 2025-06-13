@@ -12,6 +12,8 @@ const MODEL_TRAINING_INPUT_MAPPING =
 const MODEL_INFERENCE_INPUT_MAPPING =
   "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>";
 const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
+const ATRIBUTE_BASED_BATCHING_MAPPING =
+  "<class 'lynxkite_graph_analytics.ml_ops.AttributeBasedBatchingMapping'>";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
   const help = doc && (
@@ -94,6 +96,109 @@ function parseJsonOrEmpty(json: string): object {
     }
   } catch (e) {}
   return {};
+}
+
+// Helper for editing a mapping from master columns to dataframes
+function AttrributeBasedBatchingMapping({
+  value,
+  onChange,
+  data,
+}: {
+  value: string;
+  onChange: (value: string, options?: { delay: number }) => void;
+  data: any;
+}) {
+  // Parse the value as JSON or use empty object
+  const v: any = parseJsonOrEmpty(value);
+  v.master_df_name ??= "";
+  v.map ??= {};
+
+  // Get available dataframes
+  const dfs: { [df: string]: string[] } = {};
+  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
+  for (const input of inputs) {
+    if (!input.dataframes) continue;
+    const dataframes = input.dataframes as {
+      [df: string]: { columns: string[] };
+    };
+    for (const [df, { columns }] of Object.entries(dataframes)) {
+      dfs[df] = columns;
+    }
+  }
+  const nonMasterDfs = Object.keys(dfs).filter((df) => df !== v.master_df_name);
+  console.log(dfs);
+  // Get columns of the selected master dataframe
+  const masterColumns: string[] =
+    v.master_df_name && dfs[v.master_df_name] ? dfs[v.master_df_name] : [];
+
+  function updateMasterDfName(dfName: string) {
+    // Reset mapping if master df changes
+    onChange(JSON.stringify({ master_df_name: dfName, map: {} }));
+  }
+
+  function updateMapping(col: string, df: string) {
+    const newMapping = {
+      ...v.map,
+      [col]: { df: df, column: "" },
+    };
+    onChange(JSON.stringify({ master_df_name: v.master_df_name, map: newMapping }));
+  }
+
+  return (
+    <div>
+      <div style={{ marginBottom: 8 }}>
+        <label>
+          Master dataframe:&nbsp;
+          <select
+            className="select select-ghost"
+            value={v.master_df_name}
+            onChange={(evt) => updateMasterDfName(evt.currentTarget.value)}
+          >
+            <option key="" value="" />
+            {Object.keys(dfs).map((df) => (
+              <option key={df} value={df}>
+                {df}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {v.master_df_name && (
+        <table className="model-mapping-param">
+          <tbody>
+            {masterColumns.length > 0 ? (
+              masterColumns.map((col) => (
+                <tr key={col}>
+                  <td>{col}</td>
+                  <td>
+                    <ArrowsHorizontal />
+                  </td>
+                  <td>
+                    <select
+                      className="select select-ghost"
+                      value={v.map[col]?.df || ""}
+                      onChange={(evt) => updateMapping(col, evt.currentTarget.value)}
+                    >
+                      <option key="" value="" />
+                      {nonMasterDfs.map((df) => (
+                        <option key={df} value={df}>
+                          {df}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td>no columns</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 }
 
 function ModelMapping({ value, onChange, data, variant }: any) {
@@ -285,6 +390,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
+    </label>
+  ) : meta?.type?.type === ATRIBUTE_BASED_BATCHING_MAPPING ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <AttrributeBasedBatchingMapping value={value} data={data} onChange={onChange} />
     </label>
   ) : (
     <label className="param">

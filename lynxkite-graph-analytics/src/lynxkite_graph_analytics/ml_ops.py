@@ -51,18 +51,59 @@ class ModelTrainingInputMapping(pytorch_core.ModelMapping):
     pass
 
 
+class AttributeBasedBatchingMapping(pytorch_core.ModelMapping):
+    master_df_name: str = "master"
+
+
 class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
-# TODO: The pickling doesn't work for some model (ie. GCNConv), due to those models
+def batch_bundle_by_master(
+    bundle,
+    attribute_based_batching_mapping: AttributeBasedBatchingMapping,
+    input_mapping: dict,
+):
+    """
+    Splits a bundle into batches using a master dataframe and filtering logic.
+
+    Args:
+        bundle: The input bundle with .dfs attribute (dict of DataFrames).
+        master_df_name: Name of the master dataframe in bundle.dfs.
+        df_to_filter_col: Dict mapping each dataframe name to the column to filter on.
+            Example: {"nodes": "color", "edges": "weight"}
+        attribute_based_batching_mapping: Dict mapping each master column to the dataframe it applies to.
+            Example: {"color": "nodes", "weight": "edges"}
+
+    Returns:
+        List of new bundles, one per row in the master dataframe, with filtered dataframes.
+    """
+    master_df = bundle.dfs[attribute_based_batching_mapping.master_df_name]
+    for _, master_row in master_df.iterrows():
+        dfs_for_batch = {}
+        for col, column_spec in attribute_based_batching_mapping.map.items():
+            value_to_filter = master_row[col]
+            print(f"Filtering {column_spec.df} by {col} == {value_to_filter}")
+            df_to_filter = column_spec.df
+            # TODO: Make the drop optional or relate it to input_mapping.
+            dfs_for_batch[df_to_filter] = (
+                bundle.dfs[df_to_filter]
+                .query(f"{col} == @value_to_filter")
+                .drop(columns=[col])
+                .copy()
+            )
+        yield core.Bundle(dfs=dfs_for_batch)
+
+
+# TODO: The joblib pickling doesn't work for some model (ie. GCNConv), due to those models
 # having some None defaults in their parameters.
-@op("Train model", slow=True)
+@op("Train model")
 def train_model(
     bundle: core.Bundle,
     *,
     model_name: str = "model",
     input_mapping: ModelTrainingInputMapping,
+    attribute_based_batching_mapping: AttributeBasedBatchingMapping,
     epochs: int = 1,
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
@@ -74,10 +115,11 @@ def train_model(
         # It we do it in the model, this function remains as agnostic as possible to the
         # type of model we are training. That will open the door to training models that are not PyTorch-based.
         total_loss = 0.0
-        for i in range(len(bundle)):
-            print(f"Training on batch {i + 1}/{len(bundle)}")
-            batch = bundle[i]
-            inputs = pytorch_core.to_tensors(batch, input_mapping)
+        for i, bundle_batch in enumerate(
+            batch_bundle_by_master(bundle, attribute_based_batching_mapping, input_mapping.map)
+        ):
+            print(f"Training on batch {i + 1}")
+            inputs = pytorch_core.to_tensors(bundle_batch, input_mapping)
             total_loss += m.train(inputs)
         t.set_postfix({"loss": total_loss})
         losses.append(total_loss)

@@ -178,6 +178,8 @@ def _param_to_type(name, value, type):
         try:
             return type.model_validate_json(value)
         except pydantic.ValidationError:
+            # TODO: We should probably raise this error, the None is mostlikely
+            # generating an error downstream which will be harder to debug.
             return None
     return value
 
