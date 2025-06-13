@@ -6,6 +6,36 @@ from lynxkite.core.ops import Parameter as P
 import torch
 from .pytorch_core import op, reg, ENV
 
+
+class ActivationTypes(str, enum.Enum):
+    ELU = "ELU"
+    GELU = "GELU"
+    LeakyReLU = "Leaky ReLU"
+    Mish = "Mish"
+    PReLU = "PReLU"
+    ReLU = "ReLU"
+    Sigmoid = "Sigmoid"
+    SiLU = "SiLU"
+    Softplus = "Softplus"
+    Tanh = "Tanh"
+
+    def to_layer(self):
+        return getattr(torch.nn, self.name.replace(" ", ""))()
+
+
+class ODEMethod(str, enum.Enum):
+    dopri8 = "dopri8"
+    dopri5 = "dopri5"
+    bosh3 = "bosh3"
+    fehlberg2 = "fehlberg2"
+    adaptive_heun = "adaptive_heun"
+    euler = "euler"
+    midpoint = "midpoint"
+    rk4 = "rk4"
+    explicit_adams = "explicit_adams"
+    implicit_adams = "implicit_adams"
+
+
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
 reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
 reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
@@ -17,34 +47,55 @@ def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
     return torch.nn.LSTM(input_size, hidden_size, dropout=dropout)
 
 
-reg(
-    "Neural ODE with MLP",
-    color="blue",
-    inputs=["x", "y0", "t"],
-    outputs=["y"],
-    params=[
-        P.options(
-            "method",
-            [
-                "dopri8",
-                "dopri5",
-                "bosh3",
-                "fehlberg2",
-                "adaptive_heun",
-                "euler",
-                "midpoint",
-                "rk4",
-                "explicit_adams",
-                "implicit_adams",
-            ],
-        ),
-        P.basic("relative_tolerance"),
-        P.basic("absolute_tolerance"),
-        P.basic("mlp_layers"),
-        P.basic("mlp_hidden_size"),
-        P.options("mlp_activation", ["ReLU", "Tanh", "Sigmoid"]),
-    ],
-)
+class ODEWithMLP(torch.nn.Module):
+    def __init__(self, *, rtol, atol, input_dim, hidden_dim, num_layers, activation_type, method):
+        super().__init__()
+        layers = [torch.nn.Linear(input_dim, hidden_dim)]
+        for _ in range(num_layers - 1):
+            layers.append(activation_type.to_layer())
+            layers.append(torch.nn.Linear(hidden_dim, hidden_dim))
+
+        self.mlp = torch.nn.Sequential(*layers)
+        self.rtol = rtol
+        self.atol = atol
+        self.method = method
+
+    def forward(self, state0, times):
+        import torchdiffeq
+
+        sol = torchdiffeq.odeint_adjoint(
+            self.mlp,
+            state0,
+            times,
+            rtol=self.rtol,
+            atol=self.atol,
+            method=self.method.value,
+        )
+        return sol
+
+
+@op("Neural ODE with MLP", weights=True)
+def neural_ode_mlp(
+    state_0,
+    timestamps,
+    *,
+    method=ODEMethod.dopri5,
+    relative_tolerance=1e-3,
+    absolute_tolerance=1e-3,
+    state_dimensions=1,
+    mlp_layers=3,
+    mlp_hidden_size=64,
+    mlp_activation=ActivationTypes.ReLU,
+):
+    return ODEWithMLP(
+        rtol=relative_tolerance,
+        atol=absolute_tolerance,
+        input_dim=state_dimensions,
+        hidden_dim=mlp_hidden_size,
+        num_layers=mlp_layers,
+        activation_type=mlp_activation,
+        method=method,
+    )
 
 
 @op("Attention", outputs=["outputs", "weights"])
@@ -77,16 +128,9 @@ def mean_pool(x):
     return pyg_nn.global_mean_pool
 
 
-class ActivationTypes(str, enum.Enum):
-    ReLU = "ReLU"
-    Leaky_ReLU = "Leaky ReLU"
-    Tanh = "Tanh"
-    Mish = "Mish"
-
-
 @op("Activation")
 def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
-    return getattr(torch.nn.functional, type.name.lower().replace(" ", "_"))
+    return type.to_layer()
 
 
 @op("MSE loss")
