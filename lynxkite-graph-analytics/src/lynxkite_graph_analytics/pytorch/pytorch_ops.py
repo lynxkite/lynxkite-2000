@@ -44,18 +44,34 @@ reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray
 
 @op("LSTM", weights=True)
 def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
-    return torch.nn.LSTM(input_size, hidden_size, dropout=dropout)
+    lstm = torch.nn.LSTM(input_size, hidden_size, dropout=dropout, batch_first=True)
+    if input_size == 1:
+        return lambda x: lstm(x.unsqueeze(-1))[1][0].squeeze(0)
+    return lambda x: lstm(x)[1][0].squeeze(0)
 
 
-class ODEWithMLP(torch.nn.Module):
-    def __init__(self, *, rtol, atol, input_dim, hidden_dim, num_layers, activation_type, method):
+class ODEFunc(torch.nn.Module):
+    def __init__(self, *, input_dim, hidden_dim, num_layers, activation_type):
         super().__init__()
         layers = [torch.nn.Linear(input_dim, hidden_dim)]
         for _ in range(num_layers - 1):
             layers.append(activation_type.to_layer())
             layers.append(torch.nn.Linear(hidden_dim, hidden_dim))
-
         self.mlp = torch.nn.Sequential(*layers)
+
+    def forward(self, t, y):
+        return self.mlp(y)
+
+
+class ODEWithMLP(torch.nn.Module):
+    def __init__(self, *, rtol, atol, input_dim, hidden_dim, num_layers, activation_type, method):
+        super().__init__()
+        self.func = ODEFunc(
+            input_dim=input_dim,
+            hidden_dim=hidden_dim,
+            num_layers=num_layers,
+            activation_type=activation_type,
+        )
         self.rtol = rtol
         self.atol = atol
         self.method = method
@@ -64,14 +80,14 @@ class ODEWithMLP(torch.nn.Module):
         import torchdiffeq
 
         sol = torchdiffeq.odeint_adjoint(
-            self.mlp,
+            self.func,
             state0,
             times,
             rtol=self.rtol,
             atol=self.atol,
             method=self.method.value,
         )
-        return sol
+        return sol[..., 0].squeeze(-1)
 
 
 @op("Neural ODE with MLP", weights=True)
@@ -153,9 +169,17 @@ def embedding(x, *, num_embeddings: int, embedding_dim: int):
     return torch.nn.Embedding(num_embeddings, embedding_dim)
 
 
+def cat(a, b):
+    while len(a.shape) < len(b.shape):
+        a = a.unsqueeze(-1)
+    while len(b.shape) < len(a.shape):
+        b = b.unsqueeze(-1)
+    return torch.concatenate((a, b), -1)
+
+
 @op("Concatenate")
 def concatenate(a, b):
-    return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
+    return cat
 
 
 reg(
