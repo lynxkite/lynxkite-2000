@@ -43,7 +43,7 @@ async def test_build_model():
         {
             "input": {"title": "Input: tensor"},
             "lin": {"title": "Linear", "output_dim": 4},
-            "act": {"title": "Activation", "type": "Leaky_ReLU"},
+            "act": {"title": "Activation", "type": "LeakyReLU"},
             "output": {"title": "Output"},
             "label": {"title": "Input: tensor"},
             "loss": {"title": "MSE loss"},
@@ -76,7 +76,7 @@ async def test_build_model_with_repeat():
             {
                 "input": {"title": "Input: tensor"},
                 "lin": {"title": "Linear", "output_dim": 8},
-                "act": {"title": "Activation", "type": "Leaky_ReLU"},
+                "act": {"title": "Activation", "type": "LeakyReLU"},
                 "output": {"title": "Output"},
                 "label": {"title": "Input: tensor"},
                 "loss": {"title": "MSE loss"},

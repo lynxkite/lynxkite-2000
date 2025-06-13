@@ -10,7 +10,7 @@ from .pytorch_core import op, reg, ENV
 class ActivationTypes(str, enum.Enum):
     ELU = "ELU"
     GELU = "GELU"
-    Leaky_ReLU = "Leaky ReLU"
+    LeakyReLU = "Leaky ReLU"
     Mish = "Mish"
     PReLU = "PReLU"
     ReLU = "ReLU"
