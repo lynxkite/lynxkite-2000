@@ -3,7 +3,6 @@ import { useRef } from "react";
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 // @ts-ignore
 import Help from "~icons/tabler/question-mark.jsx";
-import Tooltip from "../../Tooltip";
 import ParameterInput from "./ParameterInput";
 
 type Bindings = {
