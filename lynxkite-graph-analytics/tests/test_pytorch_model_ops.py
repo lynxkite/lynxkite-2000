@@ -27,7 +27,7 @@ def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
 
 
 def summarize_layers(m: pytorch_core.ModelConfig) -> str:
-    return "".join(str(e)[0] for e in m.model)
+    return "".join(str(e)[:2] for e in m.model)
 
 
 def summarize_connections(m: pytorch_core.ModelConfig) -> str:
@@ -97,17 +97,17 @@ async def test_build_model_with_repeat():
 
     # 1 repetition
     m = pytorch_core.build_model(repeated_ws(1))
-    assert summarize_layers(m) == "IL<III"
+    assert summarize_layers(m) == "IdLiLeIdIdId"
     assert summarize_connections(m) == "i->S S->l l->a a->E E->o o->o"
 
     # 2 repetitions
     m = pytorch_core.build_model(repeated_ws(2))
-    assert summarize_layers(m) == "IL<IL<III"
+    assert summarize_layers(m) == "IdLiLeIdLiLeIdIdId"
     assert summarize_connections(m) == "i->S S->l l->a a->S S->l l->a a->E E->o o->o"
 
     # 3 repetitions
     m = pytorch_core.build_model(repeated_ws(3))
-    assert summarize_layers(m) == "IL<IL<IL<III"
+    assert summarize_layers(m) == "IdLiLeIdLiLeIdLiLeIdIdId"
     assert summarize_connections(m) == "i->S S->l l->a a->S S->l l->a a->S S->l l->a a->E E->o o->o"
 
 
