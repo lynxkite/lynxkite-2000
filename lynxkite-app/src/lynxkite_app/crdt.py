@@ -132,6 +132,8 @@ def clean_input(ws_pyd):
             node.data.params = {}
         node.position.x = 0
         node.position.y = 0
+        node.width = 0
+        node.height = 0
         if node.model_extra:
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
