@@ -3,6 +3,7 @@
 import enum
 import functools
 import numpy as np
+import torch
 from . import core
 from lynxkite.core import workspace
 from .pytorch import pytorch_core
@@ -79,7 +80,46 @@ def train_model(
     return bundle
 
 
-@op("Model inference", slow=True)
+@op("Train model one-by-one", slow=True, cache=False)
+def train_model_one_by_one(
+    bundle: core.Bundle,
+    *,
+    model_name: str = "model",
+    input_mapping: ModelTrainingInputMapping,
+    epochs: int = 1,
+):
+    """
+    Trains the selected model on the selected dataset.
+    Instead of using batches, it trains on one sample at a time.
+    Most training parameters are set in the model definition.
+    """
+    if not input_mapping:
+        return
+    m = bundle.other[model_name].copy()
+    b = bundle
+    inputs = {}
+    for k, v in input_mapping.map.items():
+        if v.df in b.dfs and v.column in b.dfs[v.df]:
+            inputs[k] = b.dfs[v.df][v.column]
+    [num_samples] = set(len(v) for v in inputs.values())
+    t = tqdm(range(epochs * num_samples), desc="Training model")
+    losses = []
+    for n in t:
+        i = n % num_samples
+        tensors = {}
+        for k, v in inputs.items():
+            tensors[k] = torch.tensor(v[i], dtype=torch.float32)
+        loss = m.train(tensors)
+        t.set_postfix({"loss": loss})
+        losses.append(loss)
+    m.trained = True
+    bundle = bundle.copy()
+    bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})
+    bundle.other[model_name] = m
+    return bundle
+
+
+@op("Model inference", slow=True, cache=False)
 def model_inference(
     bundle: core.Bundle,
     *,
@@ -103,6 +143,49 @@ def model_inference(
             bundle.dfs[v.df] = bundle.dfs[v.df].copy()
             copied.add(v.df)
         bundle.dfs[v.df][v.column] = outputs[k].detach().numpy().tolist()
+    return bundle
+
+
+@op("Model inference one-by-one", slow=True, cache=False)
+def model_inference_one_by_one(
+    bundle: core.Bundle,
+    *,
+    model_name: str = "model",
+    input_mapping: ModelInferenceInputMapping,
+    output_mapping: ModelOutputMapping,
+):
+    """Executes a trained model separately for each sample."""
+    if input_mapping is None or output_mapping is None:
+        return ops.Result(bundle, error="Mapping is unset.")
+    m = bundle.other[model_name]
+    assert m.trained, "The model is not trained."
+    b = bundle
+    inputs = {}
+    for k, v in input_mapping.map.items():
+        if v.df in b.dfs and v.column in b.dfs[v.df]:
+            inputs[k] = b.dfs[v.df][v.column]
+    [num_samples] = set(len(v) for v in inputs.values())
+    t = tqdm(range(num_samples), desc="Inference")
+    outputs = {}
+    for i in t:
+        tensors = {}
+        for k, v in inputs.items():
+            tensors[k] = torch.tensor(v[i], dtype=torch.float32)
+        output = m.inference(tensors)
+        for k, v in output.items():
+            if k not in outputs:
+                outputs[k] = []
+            e = v.detach().numpy().tolist()
+            outputs[k].append(e)
+    bundle = bundle.copy()
+    copied = set()
+    for k, v in output_mapping.map.items():
+        if not v.df or not v.column:
+            continue
+        if v.df not in copied:
+            bundle.dfs[v.df] = bundle.dfs[v.df].copy()
+            copied.add(v.df)
+        bundle.dfs[v.df][v.column] = outputs[k]
     return bundle
 
 
