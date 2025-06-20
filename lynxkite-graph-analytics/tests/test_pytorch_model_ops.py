@@ -2,6 +2,8 @@ from lynxkite.core import workspace
 from lynxkite_graph_analytics.pytorch import pytorch_core
 import torch
 import pytest
+import torch_geometric.nn as pyg_nn
+from lynxkite_graph_analytics.pytorch.pytorch_ops import hetero_conv
 
 
 def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
@@ -109,6 +111,49 @@ async def test_build_model_with_repeat():
     m = pytorch_core.build_model(repeated_ws(3))
     assert summarize_layers(m) == "IL<IL<IL<III"
     assert summarize_connections(m) == "i->S S->l l->a a->S S->l l->a a->S S->l l->a a->E E->o o->o"
+
+
+def test_hetero_conv_op():
+    layer = hetero_conv(
+        layers=[
+            {
+                "relation": ["a", "r1", "b"],
+                "type": "GraphConv",
+                "params": {"in_channels": 4, "out_channels": 4},
+            },
+            {
+                "relation": ["b", "r2", "c"],
+                "type": "GraphConv",
+                "params": {"in_channels": 4, "out_channels": 4},
+            },
+        ]
+    )
+    assert isinstance(layer, pyg_nn.HeteroConv)
+
+
+def test_build_model_with_hetero_conv():
+    ws = make_ws(
+        pytorch_core.ENV,
+        {
+            "hetero": {
+                "title": "HeteroConv",
+                "layers": "[{'relation':['a','r1','b'],'type':'GraphConv','params':{'in_channels':4,'out_channels':4}}, {'relation':['b','r2','c'],'type':'GraphConv','params':{'in_channels':4,'out_channels':4}}]",
+            },
+            "output": {"title": "Output"},
+            "label": {"title": "Input: tensor"},
+            "loss": {"title": "MSE loss"},
+            "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
+        },
+        [
+            ("hetero:output", "output:x"),
+            ("output:x", "loss:x"),
+            ("label:output", "loss:y"),
+            ("loss:output", "optim:loss"),
+        ],
+    )
+    m = pytorch_core.build_model(ws)
+    assert any(isinstance(layer, pyg_nn.HeteroConv) for layer in m.model)
+    assert not any(isinstance(layer, pyg_nn.GCNConv) for layer in m.model)
 
 
 if __name__ == "__main__":

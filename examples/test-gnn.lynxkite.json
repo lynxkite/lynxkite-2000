@@ -50,18 +50,25 @@
       "targetHandle": "nodes"
     },
     {
-      "id": "Graph Convolution 2 output Output 1 x",
-      "source": "Graph Convolution 2",
-      "sourceHandle": "output",
-      "target": "Output 1",
-      "targetHandle": "x"
-    },
-    {
       "id": "Input: tensor 2 output Graph Convolution 2 edges",
       "source": "Input: tensor 2",
       "sourceHandle": "output",
       "target": "Graph Convolution 2",
       "targetHandle": "edges"
+    },
+    {
+      "id": "Graph Convolution 2 output Activation 2 x",
+      "source": "Graph Convolution 2",
+      "sourceHandle": "output",
+      "target": "Activation 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 2 output Output 1 x",
+      "source": "Activation 2",
+      "sourceHandle": "output",
+      "target": "Output 1",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -164,6 +171,8 @@
     },
     {
       "data": {
+        "__execution_delay": null,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -215,8 +224,8 @@
       "height": 200.0,
       "id": "Activation 1",
       "position": {
-        "x": -767.78125,
-        "y": -1277.0
+        "x": -907.6536944262307,
+        "y": -1105.4377048834515
       },
       "type": "basic",
       "width": 200.0
@@ -324,8 +333,8 @@
       "height": 200.0,
       "id": "Output 1",
       "position": {
-        "x": -490.78125,
-        "y": -1431.0
+        "x": -679.8276006698275,
+        "y": -1529.3478124871936
       },
       "type": "basic",
       "width": 200.0
@@ -504,14 +513,14 @@
         "title": "Graph Convolution"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 225.0,
       "id": "Graph Convolution 1",
       "position": {
         "x": -908.7789323701209,
         "y": -979.0793138694921
       },
       "type": "basic",
-      "width": 200.0
+      "width": 205.0
     },
     {
       "data": {
@@ -575,11 +584,70 @@
         "title": "Graph Convolution"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 242.0,
       "id": "Graph Convolution 2",
       "position": {
-        "x": -440.32021788847936,
-        "y": -1038.070411248662
+        "x": -675.2622143856636,
+        "y": -974.6907098680261
+      },
+      "type": "basic",
+      "width": 216.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 2",
+      "position": {
+        "x": -677.4299999743869,
+        "y": -1240.4042290548223
       },
       "type": "basic",
       "width": 200.0

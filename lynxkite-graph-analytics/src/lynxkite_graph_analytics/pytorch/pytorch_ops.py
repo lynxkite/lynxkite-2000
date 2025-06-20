@@ -1,11 +1,16 @@
 """Boxes for defining PyTorch models."""
 
 import enum
+from typing import Any
 from lynxkite.core import ops
 from lynxkite.core.ops import Parameter as P
+from lynxkite_graph_analytics.core import Bundle
 import torch
+import torch_geometric.nn as pyg_nn
+from torch_geometric.data import HeteroData
 from .pytorch_core import op, reg, ENV
 
+reg("Input: Bundle", outputs=["data"], params=[P.basic("name")], color="gray")
 reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
 reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
 reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
@@ -96,6 +101,73 @@ def graph_conv(nodes, edges, *, in_channels: int, out_channels: int):
     return pyg_nn.GCNConv(in_channels, out_channels)
 
 
+class BundleHeteroConv(pyg_nn.HeteroConv):
+    def __init__(self, convs: dict):
+        self.convs_dict = convs
+        super().__init__(convs, aggr="mean")
+
+    def _register_node(self, node_name, node_df, data):
+        if node_name in data:
+            return
+        if len(node_df) <= 1:
+            data[node_name].num_nodes = 1
+        else:
+            data[node_name].x = torch.tensor(node_df.to_numpy(), dtype=torch.float32)
+        return data
+
+    def bundle_to_heterodata(
+        self, bundle: Bundle, layers: dict[tuple[str, str, str], Any]
+    ) -> HeteroData:
+        """Returns a :class:`~torch_geometric.data.HeteroData` object."""
+        import torch
+        from torch_geometric.data import HeteroData
+
+        data = HeteroData()
+        for source, relation_name, target in layers.keys():
+            self._register_node(source, bundle.dfs[source], data)
+            self._register_node(target, bundle.dfs[target], data)
+            for relation in bundle.relations:
+                if relation.name != relation_name:
+                    continue
+                source_rows = bundle.dfs[relation.df][relation.source_column].values
+                target_rows = bundle.dfs[relation.df][relation.target_column].values
+                edge_index = torch.tensor([source_rows, target_rows], dtype=torch.long)
+                data[source, relation_name, target].edge_index = edge_index
+        return data
+
+    def forward(self, data: Bundle):
+        hetero_data = self.bundle_to_heterodata(data, self.convs_dict)
+        return super().forward(
+            x_dict={"nodes": hetero_data["nodes"].x}, edge_index_dict=hetero_data.edge_index_dict
+        )
+
+
+@op(
+    "HeteroConv",
+    view="hetero_conv",
+    weights=True,
+    outputs=["x_dict"],
+)
+def hetero_conv(data, *, layers="[]"):
+    """Returns a :class:`~torch_geometric.nn.HeteroConv` layer."""
+
+    import json
+
+    if isinstance(layers, str):
+        config = json.loads(layers or "[]")
+    else:
+        config = layers
+
+    convs = {}
+    for layer in config:
+        relation = tuple(layer.get("relation", []))
+        conv_type = layer.get("type", "GraphConv")
+        params = layer.get("params", {})
+        conv_cls = getattr(pyg_nn, conv_type)
+        convs[relation] = conv_cls(**params)
+    return BundleHeteroConv(convs)
+
+
 @op("MSE loss")
 def mse_loss(x, y):
     return torch.nn.functional.mse_loss
@@ -121,16 +193,42 @@ def concatenate(a, b):
     return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
 
 
+@op(
+    "Pick element by constant",
+    outputs=["x_i"],
+    params=[ops.Parameter.basic("key", "", str)],
+)
+def pick_element_by_constant(x_dict: dict, *, key: str):
+    """Returns the element at the specified index from the input tensor."""
+    import torch.nn as nn
+
+    class MyFunctionModule(nn.Module):
+        def forward(self, x_dict):
+            return x_dict.get(key)
+
+    return MyFunctionModule()
+
+
+@op(
+    "Pick df from bundle",
+    outputs=["x_i"],
+    params=[ops.Parameter.basic("key", "", str)],
+)
+def pick_df_from_bundle(bundle: Bundle, *, key: str):
+    """Returns the element at the specified index from the input tensor."""
+    import torch.nn as nn
+
+    class DfFromBundleModule(nn.Module):
+        def forward(self, bundle):
+            return torch.tensor(bundle.dfs.get(key).to_numpy(), dtype=torch.float)
+
+    return DfFromBundleModule()
+
+
 reg(
     "Pick element by index",
     inputs=["x", "index"],
     outputs=["x_i"],
-)
-reg(
-    "Pick element by constant",
-    inputs=["x"],
-    outputs=["x_i"],
-    params=[ops.Parameter.basic("index", "0")],
 )
 reg(
     "Take first n",

@@ -14,6 +14,7 @@ const MODEL_INFERENCE_INPUT_MAPPING =
 const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
 const ATRIBUTE_BASED_BATCHING_MAPPING =
   "<class 'lynxkite_graph_analytics.ml_ops.AttributeBasedBatchingMapping'>";
+const STRING_TRIPLE = "tuple[str, str, str]";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
   const help = doc && (
@@ -395,6 +396,24 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <AttrributeBasedBatchingMapping value={value} data={data} onChange={onChange} />
+    </label>
+  ) : meta?.type?.type?.startsWith(STRING_TRIPLE) ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      {(() => {
+        const parts = (value ?? "  ,  ,  ").split(",").map((p: string) => p.trim());
+        const update = (idx: number, val: string, opts?: UpdateOptions) => {
+          parts[idx] = val;
+          onChange(parts.join(","), opts);
+        };
+        return (
+          <div className="flex gap-1">
+            <Input value={parts[0]} onChange={(v, o) => update(0, v, o)} />
+            <Input value={parts[1]} onChange={(v, o) => update(1, v, o)} />
+            <Input value={parts[2]} onChange={(v, o) => update(2, v, o)} />
+          </div>
+        );
+      })()}
     </label>
   ) : (
     <label className="param">

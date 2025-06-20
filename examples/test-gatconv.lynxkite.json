@@ -1,0 +1,474 @@
+{
+  "edges": [
+    {
+      "id": "MSE loss 1 output Optimizer 1 loss",
+      "source": "MSE loss 1",
+      "sourceHandle": "output",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Pick element by constant 1 x_i Output 1 x",
+      "source": "Pick element by constant 1",
+      "sourceHandle": "x_i",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Output 1 x MSE loss 1 x",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 2 output HeteroConv 1 data",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "data"
+    },
+    {
+      "id": "HeteroConv 1 x_dict Pick element by constant 1 x_dict",
+      "source": "HeteroConv 1",
+      "sourceHandle": "x_dict",
+      "target": "Pick element by constant 1",
+      "targetHandle": "x_dict"
+    },
+    {
+      "id": "Input: tensor 2 output Pick df from bundle 1 bundle",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Pick df from bundle 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Pick df from bundle 1 x_i MSE loss 1 y",
+      "source": "Pick df from bundle 1",
+      "sourceHandle": "x_i",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "MSE loss",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "position": {
+        "x": 359.17390030453225,
+        "y": -1479.2733652457932
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "green",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "loss",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Optimizer",
+          "outputs": [],
+          "params": [
+            {
+              "default": "AdamW",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "AdamW",
+                  "Adafactor",
+                  "Adagrad",
+                  "SGD",
+                  "Lion",
+                  "Paged AdamW",
+                  "Galore AdamW"
+                ]
+              }
+            },
+            {
+              "default": 0.0001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "lr": "0.01",
+          "type": "AdamW"
+        },
+        "status": "done",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Optimizer 1",
+      "position": {
+        "x": 521.1653867572963,
+        "y": -1781.1275354196075
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the element at the specified index from the input tensor."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "x_dict",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'dict'>"
+              }
+            }
+          ],
+          "name": "Pick element by constant",
+          "outputs": [
+            {
+              "name": "x_i",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "",
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "key": "nodes"
+        },
+        "status": "done",
+        "title": "Pick element by constant"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Pick element by constant 1",
+      "position": {
+        "x": -96.40520928128626,
+        "y": -1446.739293888375
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Output",
+          "outputs": [
+            {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "embeddings"
+        },
+        "status": "done",
+        "title": "Output"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Output 1",
+      "position": {
+        "x": -91.01082676936578,
+        "y": -1706.6979572260475
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "bundle"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 2",
+      "position": {
+        "x": -564.8963817315764,
+        "y": -888.7580190685225
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns a :class:`~torch_geometric.nn.HeteroConv` layer."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "data",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "HeteroConv",
+          "outputs": [
+            {
+              "name": "x_dict",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "[]",
+              "name": "layers",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "hetero_conv"
+        },
+        "params": {
+          "layers": "[{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GraphConv\",\"params\":{\"in_channels\":3,\"out_channels\":2}}]"
+        },
+        "status": "done",
+        "title": "HeteroConv"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 395.0,
+      "id": "HeteroConv 1",
+      "position": {
+        "x": -553.6492253471333,
+        "y": -1418.6912235099926
+      },
+      "type": "hetero_conv",
+      "width": 287.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the element at the specified index from the input tensor."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Pick df from bundle",
+          "outputs": [
+            {
+              "name": "x_i",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "",
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "key": "targets"
+        },
+        "status": "done",
+        "title": "Pick df from bundle"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 237.0,
+      "id": "Pick df from bundle 1",
+      "position": {
+        "x": 209.13450251285997,
+        "y": -1178.0552326654401
+      },
+      "type": "basic",
+      "width": 229.0
+    }
+  ]
+}

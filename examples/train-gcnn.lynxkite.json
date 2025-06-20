@@ -1,13 +1,6 @@
 {
   "edges": [
     {
-      "id": "Train model 1 output View loss 1 bundle",
-      "source": "Train model 1",
-      "sourceHandle": "output",
-      "target": "View loss 1",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Import file 4 output Merge Bundles 3 bundle_a",
       "source": "Import file 4",
       "sourceHandle": "output",
@@ -36,6 +29,20 @@
       "targetHandle": "bundle_b"
     },
     {
+      "id": "Merge Bundles 4 output Merge Bundles 1 bundle_a",
+      "source": "Merge Bundles 4",
+      "sourceHandle": "output",
+      "target": "Merge Bundles 1",
+      "targetHandle": "bundle_a"
+    },
+    {
+      "id": "Import file 1 output Merge Bundles 1 bundle_b",
+      "source": "Import file 1",
+      "sourceHandle": "output",
+      "target": "Merge Bundles 1",
+      "targetHandle": "bundle_b"
+    },
+    {
       "id": "Define model 1 output Train model 1 bundle",
       "source": "Define model 1",
       "sourceHandle": "output",
@@ -43,267 +50,29 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Make indexed bundle 1 output Define model 1 bundle",
-      "source": "Make indexed bundle 1",
+      "id": "Train model 1 output View loss 1 bundle",
+      "source": "Train model 1",
       "sourceHandle": "output",
-      "target": "Define model 1",
+      "target": "View loss 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "Merge Bundles 4 output Make indexed bundle 1 bundle",
-      "source": "Merge Bundles 4",
+      "id": "Merge Bundles 1 output Create graph 1 bundle",
+      "source": "Merge Bundles 1",
       "sourceHandle": "output",
-      "target": "Make indexed bundle 1",
+      "target": "Create graph 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Create graph 1 output Define model 1 bundle",
+      "source": "Create graph 1",
+      "sourceHandle": "output",
+      "target": "Define model 1",
       "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
   "nodes": [
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": "(\"Can't pickle <class 'NoneType'>: it's not found as builtins.NoneType\", 'PicklingError while hashing {\\'bundle\\': Bundle(dfs={\\'nodes\\':    feat1  feat2  feat3  index\\n0    1.0    0.0    1.0      0\\n1    0.0    1.0    0.0      0\\n2    1.0    1.0    0.0      0\\n3    0.0    0.0    1.0      0\\n4    1.0    0.0    1.0      1\\n5    0.0    1.0    0.0      1\\n6    1.0    1.0    0.0      1\\n7    0.0    0.0    1.0      1, \\'edges\\':    0  1  2  3  index\\n0  0  1  2  3      0\\n1  1  0  3  2      0\\n2  0  1  2  3      1\\n3  1  0  3  2      1, \\'targets\\':    feat1  feat2  index\\n0    1.0    0.5      0\\n1    0.5    1.0      0\\n2    1.5    1.5      0\\n3    0.0    1.0      0\\n4    1.0    0.5      1\\n5    0.5    1.0      1\\n6    1.5    1.5      1\\n7    0.0    1.0      1}, relations=[], other={\\'model\\': ModelConfig(model=Sequential(\\n  (0) - GCNConv(3, 2): Input__tensor_1_output, Input__tensor_2_output -> Graph_Convolution_1_output\\n  (1) - <function relu at 0x79c8889867a0>: Graph_Convolution_1_output -> Activation_1_output\\n  (2) - GCNConv(2, 2): Activation_1_output, Input__tensor_2_output -> Graph_Convolution_2_output\\n  (3) - Identity(): Graph_Convolution_2_output -> Output_1_x\\n  (4) - Identity(): Output_1_x -> Output_1_x\\n), model_inputs=[\\'Input__tensor_1_output\\', \\'Input__tensor_2_output\\'], model_outputs=[\\'Output_1_x\\'], loss_inputs=[\\'Output_1_x\\', \\'Input__tensor_3_output\\'], loss=Sequential(\\n  (0) - <function mse_loss at 0x79c888990720>: Output_1_x, Input__tensor_3_output -> MSE_loss_1_output\\n  (1) - Identity(): MSE_loss_1_output -> loss\\n), optimizer_parameters={\\'lr\\': 0.1, \\'type\\': <OptionsFor_type.AdamW: 1>}, optimizer=AdamW (\\nParameter Group 0\\n    amsgrad: False\\n    betas: (0.9, 0.999)\\n    capturable: False\\n    decoupled_weight_decay: True\\n    differentiable: False\\n    eps: 1e-08\\n    foreach: None\\n    fused: None\\n    lr: 0.1\\n    maximize: False\\n    weight_decay: 0.01\\n), source_workspace=\\'test-gnn\\', trained=False)}), \\'model_name\\': \\'model\\', \\'input_mapping\\': ModelTrainingInputMapping(map={\\'Input__tensor_1_output\\': ColumnSpec(df=\\'nodes\\', column=\\'\\'), \\'Input__tensor_2_output\\': ColumnSpec(df=\\'edges\\', column=\\'\\'), \\'Input__tensor_3_output\\': ColumnSpec(df=\\'targets\\', column=\\'\\')}), \\'epochs\\': 9}: PicklingError(\"Can\\'t pickle <class \\'NoneType\\'>: it\\'s not found as builtins.NoneType\")')",
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
-                ]
-              },
-              "nodes": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "feat3",
-                  "index"
-                ]
-              },
-              "targets": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "index"
-                ]
-              }
-            },
-            "other": {
-              "model": {
-                "model": {
-                  "inputs": [
-                    "Input__tensor_1_output",
-                    "Input__tensor_2_output"
-                  ],
-                  "loss_inputs": [
-                    "Output_1_x",
-                    "Input__tensor_3_output"
-                  ],
-                  "outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": false
-                },
-                "type": "model"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "meta": {
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Trains the selected model on the selected dataset. Most training parameters are set in the model definition."
-            }
-          ],
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Train model",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "model",
-              "name": "model_name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": null,
-              "name": "input_mapping",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>"
-              }
-            },
-            {
-              "default": 1,
-              "name": "epochs",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
-        "params": {
-          "epochs": "9",
-          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"nodes\",\"column\":\"\"},\"Input__tensor_2_output\":{\"df\":\"edges\",\"column\":\"\"},\"Input__tensor_3_output\":{\"df\":\"targets\",\"column\":\"\"}}}",
-          "model_name": "model"
-        },
-        "status": "done",
-        "title": "Train model"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 900.0,
-      "id": "Train model 1",
-      "position": {
-        "x": 778.5890469274533,
-        "y": -1861.4422940302277
-      },
-      "type": "basic",
-      "width": 552.0
-    },
-    {
-      "data": {
-        "__execution_delay": null,
-        "collapsed": false,
-        "display": {
-          "series": [
-            {
-              "data": [
-                1.8350000381469727,
-                1.2583738565444946,
-                0.8482052087783813,
-                0.5963118374347687,
-                0.4798938184976578,
-                0.4601782411336899,
-                0.4898223727941513,
-                0.527308464050293,
-                0.5478866994380951,
-                0.5448780059814453
-              ],
-              "type": "line"
-            }
-          ],
-          "title": {
-            "text": "Training loss"
-          },
-          "xAxis": {
-            "type": "category"
-          },
-          "yAxis": {
-            "type": "value"
-          }
-        },
-        "error": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
-                ]
-              },
-              "nodes": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "feat3",
-                  "index"
-                ]
-              },
-              "targets": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "index"
-                ]
-              },
-              "training": {
-                "columns": [
-                  "training_loss"
-                ]
-              }
-            },
-            "other": {
-              "model": {
-                "model": {
-                  "inputs": [
-                    "Input__tensor_1_output",
-                    "Input__tensor_2_output"
-                  ],
-                  "loss_inputs": [
-                    "Input__tensor_3_output",
-                    "Output_1_x"
-                  ],
-                  "outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": true
-                },
-                "type": "model"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "meta": {
-          "color": "orange",
-          "doc": null,
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View loss",
-          "outputs": [],
-          "params": [],
-          "type": "visualization"
-        },
-        "params": {},
-        "status": "done",
-        "title": "View loss"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 383.0,
-      "id": "View loss 1",
-      "position": {
-        "x": 869.4184225447038,
-        "y": -821.6332344500634
-      },
-      "type": "visualization",
-      "width": 667.0
-    },
     {
       "data": {
         "__execution_delay": 0.0,
@@ -449,8 +218,8 @@
       "height": 398.0,
       "id": "Import file 4",
       "position": {
-        "x": -783.9000770152103,
-        "y": -1700.6514780134617
+        "x": -2103.559696111399,
+        "y": -1663.7973962771557
       },
       "type": "basic",
       "width": 231.0
@@ -458,7 +227,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": true,
+        "collapsed": false,
         "display": null,
         "error": null,
         "input_metadata": [],
@@ -590,7 +359,7 @@
         "params": {
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "edges.parquet",
+          "file_path": "edges_T.parquet",
           "table_name": "edges"
         },
         "status": "done",
@@ -600,8 +369,8 @@
       "height": 280.0,
       "id": "Import file 5",
       "position": {
-        "x": -801.8748607919932,
-        "y": -1175.0645869579268
+        "x": -2121.5344798881815,
+        "y": -1138.210505221621
       },
       "type": "basic",
       "width": 223.0
@@ -752,8 +521,8 @@
       "height": 200.0,
       "id": "Import file 6",
       "position": {
-        "x": -811.5093692713009,
-        "y": -941.6390266585476
+        "x": -2131.1689883674894,
+        "y": -904.7849449222416
       },
       "type": "basic",
       "width": 200.0
@@ -772,7 +541,7 @@
                   "feat1",
                   "feat2",
                   "feat3",
-                  "index"
+                  "index_nodes"
                 ]
               }
             },
@@ -783,11 +552,9 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
+                  "index_edges",
+                  "source",
+                  "target"
                 ]
               }
             },
@@ -850,8 +617,8 @@
       "height": 200.0,
       "id": "Merge Bundles 3",
       "position": {
-        "x": -451.00651892862703,
-        "y": -1216.9411295011184
+        "x": -1770.6661380248154,
+        "y": -1180.0870477648125
       },
       "type": "basic",
       "width": 200.0
@@ -867,11 +634,9 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
+                  "index_edges",
+                  "source",
+                  "target"
                 ]
               },
               "nodes": {
@@ -879,7 +644,7 @@
                   "feat1",
                   "feat2",
                   "feat3",
-                  "index"
+                  "index_nodes"
                 ]
               }
             },
@@ -892,7 +657,7 @@
                 "columns": [
                   "feat1",
                   "feat2",
-                  "index"
+                  "index_targets"
                 ]
               }
             },
@@ -955,8 +720,8 @@
       "height": 200.0,
       "id": "Merge Bundles 4",
       "position": {
-        "x": -391.2986759406225,
-        "y": -940.5548663982835
+        "x": -1710.9582950368108,
+        "y": -903.7007846619775
       },
       "type": "basic",
       "width": 200.0
@@ -964,7 +729,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": true,
+        "collapsed": false,
         "display": null,
         "error": null,
         "input_metadata": [
@@ -972,11 +737,16 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
+                  "index_edges",
+                  "source",
+                  "target"
+                ]
+              },
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_nodes",
+                  "index_targets"
                 ]
               },
               "nodes": {
@@ -984,19 +754,30 @@
                   "feat1",
                   "feat2",
                   "feat3",
-                  "index"
+                  "index_nodes"
                 ]
               },
               "targets": {
                 "columns": [
                   "feat1",
                   "feat2",
-                  "index"
+                  "index_targets"
                 ]
               }
             },
             "other": {},
-            "relations": []
+            "relations": [
+              {
+                "df": "edges",
+                "name": "relation",
+                "source_column": "source",
+                "source_key": "index_nodes",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "index_nodes",
+                "target_table": "nodes"
+              }
+            ]
           }
         ],
         "meta": {
@@ -1045,7 +826,7 @@
           "type": "basic"
         },
         "params": {
-          "model_workspace": "test-gnn",
+          "model_workspace": "examples/test-gatconv",
           "save_as": "model"
         },
         "status": "done",
@@ -1055,8 +836,8 @@
       "height": 368.0,
       "id": "Define model 1",
       "position": {
-        "x": 404.44270855896696,
-        "y": -1483.3388914279951
+        "x": -1013.2858934939819,
+        "y": -1502.313425443619
       },
       "type": "basic",
       "width": 226.0
@@ -1067,56 +848,47 @@
         "collapsed": null,
         "display": null,
         "error": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "index"
-                ]
-              },
-              "nodes": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "feat3",
-                  "index"
-                ]
-              },
-              "targets": {
-                "columns": [
-                  "feat1",
-                  "feat2",
-                  "index"
-                ]
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
+        "input_metadata": [],
         "meta": {
           "color": "orange",
           "doc": [
             {
               "kind": "text",
-              "value": "Converts the bundle to an indexed bundle, using the specified index column."
-            }
-          ],
-          "inputs": [
+              "value": "Read the contents of the a file into a `Bundle`."
+            },
             {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "str",
+                  "description": "Path to the file to import.",
+                  "name": "file_path"
+                },
+                {
+                  "annotation": "str",
+                  "description": "Name to use for identifying the table in the bundle.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "FileFormat",
+                  "description": "Format of the file. Has to be one of the values in the `FileFormat` enum.",
+                  "name": "file_format"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": "<class 'lynxkite_graph_analytics.core.Bundle'>",
+                  "description": "Bundle with a single table with the contents of the file.",
+                  "name": "Bundle"
+                }
+              ]
             }
           ],
-          "name": "Make indexed bundle",
+          "inputs": [],
+          "name": "Import file",
           "outputs": [
             {
               "name": "output",
@@ -1129,37 +901,784 @@
           "params": [
             {
               "default": null,
-              "name": "get_item_function",
+              "name": "file_path",
               "type": {
-                "format": "textarea"
+                "type": "<class 'str'>"
               }
             },
             {
               "default": null,
-              "name": "len_function",
+              "name": "table_name",
               "type": {
-                "format": "textarea"
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "file_format",
+              "type": {
+                "enum": [
+                  "csv",
+                  "parquet",
+                  "json",
+                  "excel"
+                ]
+              }
+            },
+            {
+              "default": "csv",
+              "groups": {
+                "csv": [
+                  {
+                    "default": "<from file>",
+                    "name": "columns",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  },
+                  {
+                    "default": "<auto>",
+                    "name": "separator",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "excel": [
+                  {
+                    "default": "Sheet1",
+                    "name": "sheet_name",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "json": [],
+                "parquet": []
+              },
+              "name": "file_format_group",
+              "selector": {
+                "default": "csv",
+                "name": "file_format",
+                "type": {
+                  "enum": [
+                    "csv",
+                    "parquet",
+                    "json",
+                    "excel"
+                  ]
+                }
+              },
+              "type": "group"
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "file_format": "parquet",
+          "file_format_group": "csv",
+          "file_path": "master.parquet",
+          "table_name": "master"
+        },
+        "status": "done",
+        "title": "Import file"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 463.0,
+      "id": "Import file 1",
+      "position": {
+        "x": -1772.0593206406145,
+        "y": -632.7804544645087
+      },
+      "type": "basic",
+      "width": 259.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "index_edges",
+                  "source",
+                  "target"
+                ]
+              },
+              "nodes": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "index_nodes"
+                ]
+              },
+              "targets": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "index_targets"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          },
+          {
+            "dataframes": {
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_nodes",
+                  "index_targets"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merges two bundles into one.\n\nThe resulting bundle will have all DataFrames from both bundles, and relations from both bundles.\nIf a DataFrame with the same name exists in both bundles, the one from `bundle_b` will be used."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle_a",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            },
+            {
+              "name": "bundle_b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Merge Bundles",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "suffix",
+              "type": {
+                "type": "<class 'str'>"
               }
             }
           ],
           "type": "basic"
         },
         "params": {
-          "get_item_function": "def custom_getitem(self, idx):\n   from lynxkite_graph_analytics.core import Bundle\n   return Bundle(\n      dfs ={\n         \"nodes\": self.dfs[\"nodes\"].query(\"index == @idx\").drop(columns=[\"index\"]),\n         \"edges\": self.dfs[\"edges\"].query(\"index == @idx\").drop(columns=[\"index\"]),\n         \"targets\": self.dfs[\"targets\"].query(\"index == @idx\").drop(columns=[\"index\"]),\n      },\n      other=self.other\n   )\n   ",
-          "len_function": "def custom_len(self):\n   return self.dfs[\"nodes\"][\"index\"].nunique()\n   "
+          "suffix": "a"
         },
         "status": "done",
-        "title": "Make indexed bundle"
+        "title": "Merge Bundles"
       },
       "dragHandle": ".drag-handle",
-      "height": 513.0,
-      "id": "Make indexed bundle 1",
+      "height": 200.0,
+      "id": "Merge Bundles 1",
       "position": {
-        "x": -35.44422692771832,
-        "y": -1717.945257020894
+        "x": -1439.0378788546348,
+        "y": -1022.487309665191
       },
       "type": "basic",
-      "width": 386.0
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "index_edges",
+                  "source",
+                  "target"
+                ]
+              },
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_nodes",
+                  "index_targets"
+                ]
+              },
+              "nodes": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "index_nodes"
+                ]
+              },
+              "targets": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "index_targets"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_2_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_2_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "relation",
+                "source_column": "source",
+                "source_key": "index_nodes",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "index_nodes",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains the selected model on the selected dataset. Most training parameters are set in the model definition."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "attribute_based_batching_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.ml_ops.AttributeBasedBatchingMapping'>"
+              }
+            },
+            {
+              "default": 1,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "attribute_based_batching_mapping": "{\"master_df_name\":\"master\",\"map\":{\"index_edges\":{\"df\":\"edges\",\"column\":\"\"},\"index_nodes\":{\"df\":\"nodes\",\"column\":\"\"},\"index_targets\":{\"df\":\"targets\",\"column\":\"\"}}}",
+          "epochs": "10",
+          "input_mapping": "{\"map\":{}}",
+          "model_name": "model"
+        },
+        "status": "done",
+        "title": "Train model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 771.0,
+      "id": "Train model 1",
+      "position": {
+        "x": -591.1068052442752,
+        "y": -1716.300975548233
+      },
+      "type": "basic",
+      "width": 681.0
+    },
+    {
+      "data": {
+        "display": {
+          "series": [
+            {
+              "data": [
+                2.3020753860473633,
+                2.128316640853882,
+                1.9665569067001343,
+                1.8141988515853882,
+                1.6711005568504333,
+                1.5372363924980164,
+                1.412547528743744,
+                1.2969096302986145,
+                1.1901240944862366,
+                1.0919182002544403
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Training loss"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "index_edges",
+                  "source",
+                  "target"
+                ]
+              },
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_nodes",
+                  "index_targets"
+                ]
+              },
+              "nodes": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "index_nodes"
+                ]
+              },
+              "targets": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "index_targets"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_2_output"
+                  ],
+                  "loss_inputs": [
+                    "Input__tensor_2_output",
+                    "Output_1_x"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "relation",
+                "source_column": "source",
+                "source_key": "index_nodes",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "index_nodes",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View loss",
+          "outputs": [],
+          "params": [],
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 571.0,
+      "id": "View loss 1",
+      "position": {
+        "x": -973.0889110365385,
+        "y": -661.8261474665305
+      },
+      "type": "visualization",
+      "width": 938.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "edges": {
+              "columns": [
+                "source",
+                "target",
+                "index_edges"
+              ],
+              "data": [
+                [
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  3,
+                  1
+                ],
+                [
+                  3,
+                  2,
+                  1
+                ]
+              ]
+            },
+            "master": {
+              "columns": [
+                "index_nodes",
+                "index_edges",
+                "index_targets"
+              ],
+              "data": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1,
+                  1
+                ]
+              ]
+            },
+            "nodes": {
+              "columns": [
+                "feat1",
+                "feat2",
+                "feat3",
+                "index_nodes"
+              ],
+              "data": [
+                [
+                  1.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  1.0,
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                [
+                  1.0,
+                  0.0,
+                  1.0,
+                  1.0
+                ],
+                [
+                  0.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                [
+                  1.0,
+                  1.0,
+                  0.0,
+                  1.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  1.0,
+                  1.0
+                ]
+              ]
+            },
+            "targets": {
+              "columns": [
+                "feat1",
+                "feat2",
+                "index_targets"
+              ],
+              "data": [
+                [
+                  1.0,
+                  0.5,
+                  0.0
+                ],
+                [
+                  0.5,
+                  1.0,
+                  0.0
+                ],
+                [
+                  1.5,
+                  1.5,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                [
+                  1.0,
+                  0.5,
+                  1.0
+                ],
+                [
+                  0.5,
+                  1.0,
+                  1.0
+                ],
+                [
+                  1.5,
+                  1.5,
+                  1.0
+                ],
+                [
+                  0.0,
+                  1.0,
+                  1.0
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": [
+            {
+              "df": "edges",
+              "name": "relation",
+              "source_column": "source",
+              "source_key": "index_nodes",
+              "source_table": "nodes",
+              "target_column": "target",
+              "target_key": "index_nodes",
+              "target_table": "nodes"
+            }
+          ]
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "index_edges",
+                  "source",
+                  "target"
+                ]
+              },
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_nodes",
+                  "index_targets"
+                ]
+              },
+              "nodes": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "index_nodes"
+                ]
+              },
+              "targets": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "index_targets"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Replace relations of the given bundle\n\nrelations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)\nare not currently supported in the UI."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "Bundle to modify",
+                  "name": "bundle"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "name": "str"
+                  },
+                  "description": "Set of relations to set for the bundle. The parameter\nshould be a JSON object where the keys are relation names and the values are\na dictionary representation of a `RelationDefinition`.\nDefaults to None.",
+                  "name": "relations"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": "<class 'lynxkite_graph_analytics.core.Bundle'>",
+                  "description": "The input bundle with the new relations set.",
+                  "name": "Bundle"
+                }
+              ]
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Create graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relations",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "graph_creation_view"
+        },
+        "params": {
+          "relations": "{\"relation\":{\"name\":\"relation\",\"df\":\"edges\",\"source_column\":\"source\",\"target_column\":\"target\",\"source_table\":\"nodes\",\"target_table\":\"nodes\",\"source_key\":\"index_nodes\",\"target_key\":\"index_nodes\"}}"
+        },
+        "status": "done",
+        "title": "Create graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 443.0,
+      "id": "Create graph 1",
+      "position": {
+        "x": -1608.9053187173608,
+        "y": -1982.024400268479
+      },
+      "type": "graph_creation_view",
+      "width": 548.0
     }
   ]
 }

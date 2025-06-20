@@ -82,8 +82,7 @@ def batch_bundle_by_master(
     for _, master_row in master_df.iterrows():
         dfs_for_batch = {}
         for col, column_spec in attribute_based_batching_mapping.map.items():
-            value_to_filter = master_row[col]
-            print(f"Filtering {column_spec.df} by {col} == {value_to_filter}")
+            value_to_filter = master_row[col]  # noqa: F841
             df_to_filter = column_spec.df
             # TODO: Make the drop optional or relate it to input_mapping.
             dfs_for_batch[df_to_filter] = (
@@ -92,7 +91,7 @@ def batch_bundle_by_master(
                 .drop(columns=[col])
                 .copy()
             )
-        yield core.Bundle(dfs=dfs_for_batch)
+        yield core.Bundle(dfs=dfs_for_batch, relations=bundle.relations, other=bundle.other)
 
 
 # TODO: The joblib pickling doesn't work for some model (ie. GCNConv), due to those models
@@ -119,8 +118,11 @@ def train_model(
             batch_bundle_by_master(bundle, attribute_based_batching_mapping, input_mapping.map)
         ):
             print(f"Training on batch {i + 1}")
-            inputs = pytorch_core.to_tensors(bundle_batch, input_mapping)
-            total_loss += m.train(inputs)
+            if input_mapping.map:
+                inputs = pytorch_core.to_tensors(bundle_batch, input_mapping)
+                total_loss += m.train(inputs)
+            else:
+                total_loss += m.train({"Input__tensor_2_output": bundle_batch})
         t.set_postfix({"loss": total_loss})
         losses.append(total_loss)
     m.trained = True
