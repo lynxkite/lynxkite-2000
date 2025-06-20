@@ -313,3 +313,16 @@ def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
     if not (relations is None or relations.strip() == ""):
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
+
+
+@op(
+    "Organize data",
+    view="graph_creation_view",
+    outputs=["output"],
+)
+def organize_data(bundles: list[core.Bundle], *, relations: str = None) -> core.Bundle:
+    bundle = core.Bundle()
+    for b in bundles:
+        bundle.dfs.update(b.dfs)
+        bundle.relations.extend(b.relations)
+    return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
