@@ -101,13 +101,12 @@ class ModelConfig:
         return values
 
     def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
-        # TODO: Do multiple batches.
+        """Inference on a single batch."""
         self.model.eval()
         return self._forward(inputs)
 
     def train(self, inputs: dict[str, torch.Tensor]) -> float:
-        """Train the model for one epoch. Returns the loss."""
-        # TODO: Do multiple batches.
+        """One training step on one batch. Returns the loss."""
         self.model.train()
         self.optimizer.zero_grad()
         values = self._forward(inputs)
@@ -395,11 +394,26 @@ class ModelBuilder:
 
 
 def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor]:
-    """Converts a tensor to the correct type for PyTorch. Ignores missing mappings."""
+    """Extracts tensors from a bundle using a model mapping."""
     if m is None:
         return {}
     tensors = {}
     for k, v in m.map.items():
         if v.df in b.dfs and v.column in b.dfs[v.df]:
             tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
+    return tensors
+
+
+def to_batch_tensors(
+    b: core.Bundle, batch_size: int, batch_index: int, m: ModelMapping | None
+) -> dict[str, torch.Tensor]:
+    tensors = {}
+    for k, v in m.map.items():
+        if v.df in b.dfs and v.column in b.dfs[v.df]:
+            batch = b.dfs[v.df][v.column].iloc[
+                batch_index * batch_size : (batch_index + 1) * batch_size
+            ]
+            tensors[k] = torch.tensor(batch.to_list(), dtype=torch.float32)
+            if batch_size == 1:
+                tensors[k] = tensors[k].squeeze(0)
     return tensors

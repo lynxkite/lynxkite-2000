@@ -63,16 +63,40 @@ def train_model(
     model_name: str = "model",
     input_mapping: ModelTrainingInputMapping,
     epochs: int = 1,
+    batch_size: int = 1,
 ):
-    """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
+    """
+    Trains the selected model on the selected dataset.
+    Training parameters specific to the model are set in the model definition,
+    while parameters specific to the hardware environment and dataset are set here.
+    """
+    if input_mapping is None:
+        return ops.Result(bundle, error="No inputs are selected.")
     m = bundle.other[model_name].copy()
-    inputs = pytorch_core.to_tensors(bundle, input_mapping)
-    t = tqdm(range(epochs), desc="Training model")
+    num_samples = None
+    for k, v in input_mapping.map.items():
+        if v.df in bundle.dfs and v.column in bundle.dfs[v.df]:
+            if num_samples is None:
+                num_samples = len(bundle.dfs[v.df][v.column])
+            else:
+                assert num_samples == len(bundle.dfs[v.df][v.column]), (
+                    f"Input '{k}' has different number of samples ({len(bundle.dfs[v.df][v.column])}) "
+                    f"than other inputs ({num_samples})."
+                )
+    if num_samples is None:
+        return ops.Result(bundle, error="No inputs are selected.")
+    num_batches = num_samples // batch_size
+    tepochs = tqdm(range(epochs), desc="Training model")
     losses = []
-    for _ in t:
-        loss = m.train(inputs)
-        t.set_postfix({"loss": loss})
-        losses.append(loss)
+    for _ in tepochs:
+        total_loss = 0
+        for i in tqdm(range(num_batches)):
+            inputs = pytorch_core.to_batch_tensors(bundle, batch_size, i, input_mapping)
+            loss = m.train(inputs)
+            total_loss += loss
+        mean_loss = total_loss / len(inputs)
+        tepochs.set_postfix({"loss": mean_loss})
+        losses.append(mean_loss)
     m.trained = True
     bundle = bundle.copy()
     bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})
