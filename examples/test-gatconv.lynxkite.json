@@ -48,6 +48,62 @@
       "sourceHandle": "x_i",
       "target": "MSE loss 1",
       "targetHandle": "y"
+    },
+    {
+      "id": "Input: tensor 2 output Pick df from bundle 2 bundle",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Pick df from bundle 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Pick df from bundle 2 x_i Graph Convolution 1 nodes",
+      "source": "Pick df from bundle 2",
+      "sourceHandle": "x_i",
+      "target": "Graph Convolution 1",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 2 output Pick df from bundle 3 bundle",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Pick df from bundle 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Pick df from bundle 3 x_i Graph Convolution 1 edges",
+      "source": "Pick df from bundle 3",
+      "sourceHandle": "x_i",
+      "target": "Graph Convolution 1",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph Convolution 1 output Activation 1 x",
+      "source": "Graph Convolution 1",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 output Graph Convolution 2 nodes",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 2",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Pick df from bundle 3 x_i Graph Convolution 2 edges",
+      "source": "Pick df from bundle 3",
+      "sourceHandle": "x_i",
+      "target": "Graph Convolution 2",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph Convolution 2 output Activation 2 x",
+      "source": "Graph Convolution 2",
+      "sourceHandle": "output",
+      "target": "Activation 2",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -99,8 +155,8 @@
       "height": 200.0,
       "id": "MSE loss 1",
       "position": {
-        "x": 359.17390030453225,
-        "y": -1479.2733652457932
+        "x": -912.9151736472685,
+        "y": -1896.1498756859532
       },
       "type": "basic",
       "width": 200.0
@@ -163,8 +219,8 @@
       "height": 200.0,
       "id": "Optimizer 1",
       "position": {
-        "x": 521.1653867572963,
-        "y": -1781.1275354196075
+        "x": -778.0557737434578,
+        "y": -2073.196447734582
       },
       "type": "basic",
       "width": 200.0
@@ -231,8 +287,8 @@
       "height": 200.0,
       "id": "Pick element by constant 1",
       "position": {
-        "x": -96.40520928128626,
-        "y": -1446.739293888375
+        "x": -1487.8754640484822,
+        "y": -1845.9799480717152
       },
       "type": "basic",
       "width": 200.0
@@ -240,7 +296,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -287,8 +343,8 @@
       "height": 200.0,
       "id": "Output 1",
       "position": {
-        "x": -91.01082676936578,
-        "y": -1706.6979572260475
+        "x": -1340.0376271545563,
+        "y": -2070.666898895748
       },
       "type": "basic",
       "width": 200.0
@@ -296,7 +352,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": false,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -335,8 +391,8 @@
       "height": 200.0,
       "id": "Input: tensor 2",
       "position": {
-        "x": -564.8963817315764,
-        "y": -888.7580190685225
+        "x": -1821.5520422372615,
+        "y": -272.8042876386503
       },
       "type": "basic",
       "width": 200.0
@@ -344,7 +400,7 @@
     {
       "data": {
         "__execution_delay": null,
-        "collapsed": null,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": null,
@@ -387,20 +443,20 @@
           "type": "hetero_conv"
         },
         "params": {
-          "layers": "[{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GraphConv\",\"params\":{\"in_channels\":3,\"out_channels\":2}}]"
+          "layers": "[{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GraphConv\",\"params\":{\"in_channels\":2,\"out_channels\":2}},{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GraphConv\",\"params\":{\"in_channels\":3,\"out_channels\":2}}]"
         },
         "status": "done",
         "title": "HeteroConv"
       },
       "dragHandle": ".drag-handle",
-      "height": 395.0,
+      "height": 528.0,
       "id": "HeteroConv 1",
       "position": {
-        "x": -553.6492253471333,
-        "y": -1418.6912235099926
+        "x": -1893.494407524113,
+        "y": -1619.8676458859727
       },
       "type": "hetero_conv",
-      "width": 287.0
+      "width": 335.0
     },
     {
       "data": {
@@ -464,11 +520,535 @@
       "height": 237.0,
       "id": "Pick df from bundle 1",
       "position": {
-        "x": 209.13450251285997,
-        "y": -1178.0552326654401
+        "x": -975.2947876073699,
+        "y": -819.004947613734
       },
       "type": "basic",
       "width": 229.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "3",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 277.0,
+      "id": "Graph Convolution 1",
+      "position": {
+        "x": -2413.06813479483,
+        "y": -975.5429165108654
+      },
+      "type": "basic",
+      "width": 242.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the element at the specified index from the input tensor."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Pick df from bundle",
+          "outputs": [
+            {
+              "name": "x_i",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "",
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "key": "nodes"
+        },
+        "status": "done",
+        "title": "Pick df from bundle"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Pick df from bundle 2",
+      "position": {
+        "x": -2519.699511039469,
+        "y": -675.9604774851201
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the element at the specified index from the input tensor."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Pick df from bundle",
+          "outputs": [
+            {
+              "name": "x_i",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "",
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "key": "edges"
+        },
+        "status": "done",
+        "title": "Pick df from bundle"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Pick df from bundle 3",
+      "position": {
+        "x": -2315.7117664930456,
+        "y": -677.1169827535639
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "2",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Graph Convolution 2",
+      "position": {
+        "x": -2092.909513517179,
+        "y": -1035.233506918563
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 1",
+      "position": {
+        "x": -2446.0914349790914,
+        "y": -1251.3173364647014
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 2",
+      "position": {
+        "x": -2132.9212152202517,
+        "y": -1344.5392935766324
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Embedding",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "num_embeddings",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "embedding_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "embedding_dim": "2",
+          "num_embeddings": "1"
+        },
+        "status": "done",
+        "title": "Embedding"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Embedding 1",
+      "position": {
+        "x": -1567.1961062138748,
+        "y": -861.4622176921367
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Embedding",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "num_embeddings",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "embedding_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "embedding_dim": "2",
+          "num_embeddings": "1"
+        },
+        "status": "done",
+        "title": "Embedding"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Embedding 2",
+      "position": {
+        "x": -1317.6252036243948,
+        "y": -898.2342217555697
+      },
+      "type": "basic",
+      "width": 200.0
     }
   ]
 }

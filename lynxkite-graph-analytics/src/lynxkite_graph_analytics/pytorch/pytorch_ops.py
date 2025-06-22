@@ -69,17 +69,17 @@ def dropout(x, *, p=0.0):
 
 
 @op("Linear", weights=True)
-def linear(x, *, output_dim=1024):
+def linear(x, *, in_channels: int, out_channels: int):
     import torch_geometric.nn as pyg_nn
 
-    return pyg_nn.Linear(-1, output_dim)
+    return pyg_nn.Linear(in_channels, out_channels)
 
 
-@op("Mean pool")
-def mean_pool(x):
-    import torch_geometric.nn as pyg_nn
+# @op("Mean pool")
+# def mean_pool(x):
+#     import torch_geometric.nn as pyg_nn
 
-    return pyg_nn.global_mean_pool
+#     return pyg_nn.global_mean_pool
 
 
 class ActivationTypes(str, enum.Enum):
@@ -242,22 +242,6 @@ reg(
     outputs=["x"],
     params=[ops.Parameter.basic("n", 1, int)],
 )
-reg(
-    "Graph conv",
-    color="blue",
-    inputs=["x", "edges"],
-    outputs=["x"],
-    params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
-)
-reg(
-    "Heterogeneous graph conv",
-    inputs=["node_embeddings", "edge_modules"],
-    outputs=["x"],
-    params=[
-        ops.Parameter.basic("node_embeddings_order"),
-        ops.Parameter.basic("edge_modules_order"),
-    ],
-)
 
 reg("Triplet margin loss", inputs=["x", "x_pos", "x_neg"], outputs=["loss"])
 reg("Cross-entropy loss", inputs=["x", "y"], outputs=["loss"])
@@ -327,11 +311,7 @@ SIMPLE_FUNCTIONS = [
     torch.log,
     torch.exp,
 ]
-TWO_TENSOR_FUNCTIONS = [
-    torch.multiply,
-    torch.add,
-    torch.subtract,
-]
+TWO_TENSOR_FUNCTIONS = [torch.multiply, torch.add, torch.subtract, pyg_nn.global_mean_pool]
 
 
 for f in SIMPLE_FUNCTIONS:
