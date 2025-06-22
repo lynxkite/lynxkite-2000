@@ -2,6 +2,7 @@
 
 import copy
 import graphlib
+from typing import get_origin
 
 import pydantic
 from lynxkite.core import ops, workspace
@@ -47,14 +48,35 @@ def _to_id(*strings: str) -> str:
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
 
 
-@dataclasses.dataclass
 class Layer:
     """Temporary data structure used by ModelBuilder."""
 
-    module: torch.nn.Module
-    origin_id: str
-    inputs: list[str]
-    outputs: list[str]
+    def __init__(
+        self,
+        module: torch.nn.Module,
+        origin_id: str,
+        inputs: list[str | list[str]],
+        outputs: list[str],
+    ):
+        self.module = module
+        self.origin_id = origin_id
+        self.inputs = self.flatten_inputs(inputs)
+        self.outputs = outputs
+
+    @staticmethod
+    def flatten_inputs(inputs: list[str | list[str]]) -> list[str]:
+        """Flattens the input list, since some inputs can be lists.
+
+        We need to flatten them to make sure the signature for pyg.nn.Sequential. is correct.
+        For example, if the inputs are ['a', ['b', 'c']], we want to return ['a', 'b', 'c'].
+        """
+        inputs_flat = []
+        for input_item in inputs:
+            if isinstance(input_item, (list, tuple)):
+                inputs_flat.extend(input_item)
+            else:
+                inputs_flat.append(input_item)
+        return inputs_flat
 
     def for_sequential(self):
         """The layer signature for pyg.nn.Sequential."""
@@ -302,7 +324,15 @@ class ModelBuilder:
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
+        inputs = []
+        for input in op.inputs:
+            input_edges = [_to_id(*input_edge) for input_edge in self.in_edges[node_id][input.name]]
+            if not (input.type is list or get_origin(input.type) is list):
+                assert len(input_edges) == 1, (
+                    f"Detected multiple input edges for non-list input {node_id} {input.name}."
+                )
+                [input_edges] = input_edges
+            inputs.append(input_edges)
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()

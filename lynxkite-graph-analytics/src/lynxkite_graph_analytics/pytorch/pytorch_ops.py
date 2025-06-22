@@ -148,7 +148,7 @@ class BundleHeteroConv(pyg_nn.HeteroConv):
     weights=True,
     outputs=["x_dict"],
 )
-def hetero_conv(data, *, layers="[]"):
+def hetero_conv(data: list[Bundle], *, layers="[]"):
     """Returns a :class:`~torch_geometric.nn.HeteroConv` layer."""
 
     import json
