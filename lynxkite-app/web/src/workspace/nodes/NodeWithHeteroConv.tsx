@@ -3,6 +3,7 @@ import React from "react";
 // @ts-ignore
 import Triangle from "~icons/tabler/triangle-inverted-filled.jsx";
 import LynxKiteNode from "./LynxKiteNode";
+import NodeParameter from "./NodeParameter";
 
 function parseLayers(raw: any): any[] {
   try {
@@ -16,6 +17,10 @@ export default LynxKiteNode(function NodeWithHeteroConv(props: any) {
   const reactFlow = useReactFlow();
   const [collapsed, setCollapsed] = React.useState(props.collapsed);
   const [layers, setLayers] = React.useState(() => parseLayers(props.data.params.layers));
+  const [nodeNamesStr, setNodeNamesStr] = React.useState(props.data.params.node_names_str || "");
+  const [relationNamesStr, setRelationNamesStr] = React.useState(
+    props.data.params.relation_names_str || "",
+  );
 
   function updateLayers(newLayers: any[]) {
     setLayers(newLayers);
@@ -46,7 +51,7 @@ export default LynxKiteNode(function NodeWithHeteroConv(props: any) {
       ...layers,
       {
         relation: ["src", "rel", "dst"],
-        type: "GraphConv",
+        type: "GCNConv",
         params: { in_channels: 4, out_channels: 4 },
       },
     ]);
@@ -58,6 +63,20 @@ export default LynxKiteNode(function NodeWithHeteroConv(props: any) {
     updateLayers(nl);
   }
 
+  function updateNodeNamesStr(value: string) {
+    setNodeNamesStr(value);
+    reactFlow.updateNodeData(props.id, {
+      params: { ...props.data.params, node_names_str: value },
+    });
+  }
+
+  function updateRelationNamesStr(value: string) {
+    setRelationNamesStr(value);
+    reactFlow.updateNodeData(props.id, {
+      params: { ...props.data.params, relation_names_str: value },
+    });
+  }
+
   return (
     <>
       {props.collapsed && (
@@ -67,6 +86,20 @@ export default LynxKiteNode(function NodeWithHeteroConv(props: any) {
       )}
       {!collapsed && (
         <div className="graph-relations">
+          <div className="graph-relation-attributes">
+            <label>Node Names (comma-separated)</label>
+            <input
+              value={nodeNamesStr}
+              onChange={(e) => updateNodeNamesStr(e.currentTarget.value)}
+              placeholder="e.g. gene,drug,disease"
+            />
+            <label>Relation Names (comma-separated, src-rel-dst)</label>
+            <input
+              value={relationNamesStr}
+              onChange={(e) => updateRelationNamesStr(e.currentTarget.value)}
+              placeholder="e.g. drug-targets-gene,disease-assoc-gene"
+            />
+          </div>
           <div className="graph-table-header">
             Convolutions
             <button className="add-relationship-button" onClick={() => addLayer()}>
@@ -95,7 +128,7 @@ export default LynxKiteNode(function NodeWithHeteroConv(props: any) {
                 value={layer.type}
                 onChange={(e) => updateLayer(idx, "type", e.currentTarget.value)}
               >
-                <option value="GraphConv">GraphConv</option>
+                <option value="GCNConv">GCNConv</option>
                 <option value="GATConv">GATConv</option>
               </select>
               <label>in_channels</label>

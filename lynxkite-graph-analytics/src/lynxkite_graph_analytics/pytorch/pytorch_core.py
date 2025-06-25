@@ -405,7 +405,12 @@ def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor
                 # No column specified, use the whole DataFrame.
                 # TODO: Temporary hack, remove. Substitute with given the user the ability
                 # to specify the type in the mapping.
-                if k == "Input__tensor_2_output":
+                if k in [
+                    "Input__tensor_2_output",
+                    "Input__tensor_3_output",
+                    "Input__tensor_4_output",
+                    "Input__tensor_6_output",
+                ]:
                     tensors[k] = torch.tensor(b.dfs[v.df].to_numpy(), dtype=torch.long)
                 else:
                     tensors[k] = torch.tensor(b.dfs[v.df].to_numpy(), dtype=torch.float32)

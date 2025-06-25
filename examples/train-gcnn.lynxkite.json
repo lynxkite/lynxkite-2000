@@ -57,17 +57,31 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Merge Bundles 1 output Create graph 1 bundle",
-      "source": "Merge Bundles 1",
-      "sourceHandle": "output",
-      "target": "Create graph 1",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Create graph 1 output Define model 1 bundle",
       "source": "Create graph 1",
       "sourceHandle": "output",
       "target": "Define model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import file 2 output Merge Bundles 2 bundle_a",
+      "source": "Import file 2",
+      "sourceHandle": "output",
+      "target": "Merge Bundles 2",
+      "targetHandle": "bundle_a"
+    },
+    {
+      "id": "Merge Bundles 1 output Merge Bundles 2 bundle_b",
+      "source": "Merge Bundles 1",
+      "sourceHandle": "output",
+      "target": "Merge Bundles 2",
+      "targetHandle": "bundle_b"
+    },
+    {
+      "id": "Merge Bundles 2 output Create graph 1 bundle",
+      "source": "Merge Bundles 2",
+      "sourceHandle": "output",
+      "target": "Create graph 1",
       "targetHandle": "bundle"
     }
   ],
@@ -208,7 +222,7 @@
         "params": {
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "nodes.parquet",
+          "file_path": "examples/nodes.parquet",
           "table_name": "nodes"
         },
         "status": "done",
@@ -359,7 +373,7 @@
         "params": {
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "edges_T.parquet",
+          "file_path": "examples/edges.parquet",
           "table_name": "edges"
         },
         "status": "done",
@@ -511,7 +525,7 @@
           "columns": "<from file>",
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "targets.parquet",
+          "file_path": "examples/targets.parquet",
           "table_name": "targets"
         },
         "status": "done",
@@ -521,8 +535,8 @@
       "height": 200.0,
       "id": "Import file 6",
       "position": {
-        "x": -2131.1689883674894,
-        "y": -904.7849449222416
+        "x": -2139.559397652325,
+        "y": -794.0315423624114
       },
       "type": "basic",
       "width": 200.0
@@ -552,9 +566,11 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
                 ]
               }
             },
@@ -634,9 +650,11 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
                 ]
               },
               "nodes": {
@@ -737,14 +755,26 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
+                ]
+              },
+              "embeddings": {
+                "columns": [
+                  "i1",
+                  "i2",
+                  "i3",
+                  "i4",
+                  "index_embeddings"
                 ]
               },
               "master": {
                 "columns": [
                   "index_edges",
+                  "index_embeddings",
                   "index_nodes",
                   "index_targets"
                 ]
@@ -826,21 +856,21 @@
           "type": "basic"
         },
         "params": {
-          "model_workspace": "test-gatconv",
+          "model_workspace": "examples/HeteroEncoder",
           "save_as": "model"
         },
         "status": "done",
         "title": "Define model"
       },
       "dragHandle": ".drag-handle",
-      "height": 368.0,
+      "height": 696.0,
       "id": "Define model 1",
       "position": {
-        "x": -1013.2858934939819,
-        "y": -1502.313425443619
+        "x": -1298.4993314224557,
+        "y": -1548.3635117758206
       },
       "type": "basic",
-      "width": 226.0
+      "width": 362.0
     },
     {
       "data": {
@@ -977,7 +1007,7 @@
         "params": {
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "master.parquet",
+          "file_path": "examples/master.parquet",
           "table_name": "master"
         },
         "status": "done",
@@ -1004,9 +1034,11 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
                 ]
               },
               "nodes": {
@@ -1033,6 +1065,7 @@
               "master": {
                 "columns": [
                   "index_edges",
+                  "index_embeddings",
                   "index_nodes",
                   "index_targets"
                 ]
@@ -1088,7 +1121,7 @@
           "type": "basic"
         },
         "params": {
-          "suffix": "a"
+          "suffix": "b"
         },
         "status": "done",
         "title": "Merge Bundles"
@@ -1114,14 +1147,26 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
+                ]
+              },
+              "embeddings": {
+                "columns": [
+                  "i1",
+                  "i2",
+                  "i3",
+                  "i4",
+                  "index_embeddings"
                 ]
               },
               "master": {
                 "columns": [
                   "index_edges",
+                  "index_embeddings",
                   "index_nodes",
                   "index_targets"
                 ]
@@ -1146,10 +1191,14 @@
               "model": {
                 "model": {
                   "inputs": [
-                    "Input__tensor_2_output"
+                    "Input__tensor_3_output",
+                    "Input__tensor_2_output",
+                    "Input__tensor_1_output",
+                    "Input__tensor_4_output",
+                    "Input__tensor_6_output"
                   ],
                   "loss_inputs": [
-                    "Input__tensor_2_output",
+                    "Input__tensor_5_output",
                     "Output_1_x"
                   ],
                   "outputs": [
@@ -1234,9 +1283,9 @@
           "type": "basic"
         },
         "params": {
-          "attribute_based_batching_mapping": "{\"master_df_name\":\"master\",\"map\":{\"index_edges\":{\"df\":\"edges\",\"column\":\"\"},\"index_nodes\":{\"df\":\"nodes\",\"column\":\"\"},\"index_targets\":{\"df\":\"targets\",\"column\":\"\"}}}",
+          "attribute_based_batching_mapping": "{\"master_df_name\":\"master\",\"map\":{\"index_edges\":{\"df\":\"edges\",\"column\":\"\"},\"index_nodes\":{\"df\":\"nodes\",\"column\":\"\"},\"index_targets\":{\"df\":\"targets\",\"column\":\"\"},\"index_embeddings\":{\"df\":\"embeddings\",\"column\":\"\"}}}",
           "epochs": "10",
-          "input_mapping": "{\"map\":{}}",
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"nodes\",\"column\":\"\"},\"Input__tensor_2_output\":{\"df\":\"edges\",\"column\":\"\"},\"Input__tensor_3_output\":{\"df\":\"embeddings\",\"column\":\"\"},\"Input__tensor_4_output\":{\"df\":\"embeddings\",\"column\":\"\"},\"Input__tensor_5_output\":{\"df\":\"targets\",\"column\":\"\"},\"Input__tensor_6_output\":{\"df\":\"edges\",\"column\":\"\"}}}",
           "model_name": "model"
         },
         "status": "done",
@@ -1246,28 +1295,30 @@
       "height": 771.0,
       "id": "Train model 1",
       "position": {
-        "x": -591.1068052442752,
-        "y": -1716.300975548233
+        "x": -853.1302422819787,
+        "y": -2276.4952696725577
       },
       "type": "basic",
       "width": 681.0
     },
     {
       "data": {
+        "__execution_delay": null,
+        "collapsed": false,
         "display": {
           "series": [
             {
               "data": [
-                3.5496991872787476,
-                3.2743929624557495,
-                3.016357898712158,
-                2.7746955156326294,
-                2.549386143684387,
-                2.340363383293152,
-                2.1474274396896362,
-                1.970220148563385,
-                1.8082174062728882,
-                1.6607380509376526
+                2.1245782375335693,
+                2.1233752965927124,
+                2.1221734285354614,
+                2.120973229408264,
+                2.119774103164673,
+                2.1185766458511353,
+                2.1173806190490723,
+                2.1161861419677734,
+                2.114993095397949,
+                2.1138018369674683
               ],
               "type": "line"
             }
@@ -1288,14 +1339,26 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
+                ]
+              },
+              "embeddings": {
+                "columns": [
+                  "i1",
+                  "i2",
+                  "i3",
+                  "i4",
+                  "index_embeddings"
                 ]
               },
               "master": {
                 "columns": [
                   "index_edges",
+                  "index_embeddings",
                   "index_nodes",
                   "index_targets"
                 ]
@@ -1325,10 +1388,14 @@
               "model": {
                 "model": {
                   "inputs": [
-                    "Input__tensor_2_output"
+                    "Input__tensor_3_output",
+                    "Input__tensor_2_output",
+                    "Input__tensor_1_output",
+                    "Input__tensor_4_output",
+                    "Input__tensor_6_output"
                   ],
                   "loss_inputs": [
-                    "Input__tensor_2_output",
+                    "Input__tensor_5_output",
                     "Output_1_x"
                   ],
                   "outputs": [
@@ -1378,8 +1445,8 @@
       "height": 571.0,
       "id": "View loss 1",
       "position": {
-        "x": -973.0889110365385,
-        "y": -661.8261474665305
+        "x": -1116.54686625946,
+        "y": -765.6723782656724
       },
       "type": "visualization",
       "width": 938.0
@@ -1392,29 +1459,64 @@
           "dataframes": {
             "edges": {
               "columns": [
-                "source",
-                "target",
+                "0",
+                "1",
+                "2",
+                "3",
                 "index_edges"
               ],
               "data": [
                 [
                   0,
                   1,
+                  2,
+                  3,
                   0
                 ],
                 [
                   1,
                   0,
+                  3,
+                  2,
                   0
                 ],
                 [
+                  0,
+                  1,
                   2,
                   3,
                   1
                 ],
                 [
+                  1,
+                  0,
                   3,
                   2,
+                  1
+                ]
+              ]
+            },
+            "embeddings": {
+              "columns": [
+                "i1",
+                "i2",
+                "i3",
+                "i4",
+                "index_embeddings"
+              ],
+              "data": [
+                [
+                  0,
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                [
+                  4,
+                  5,
+                  6,
+                  7,
                   1
                 ]
               ]
@@ -1423,15 +1525,18 @@
               "columns": [
                 "index_nodes",
                 "index_edges",
-                "index_targets"
+                "index_targets",
+                "index_embeddings"
               ],
               "data": [
                 [
                   0,
                   0,
+                  0,
                   0
                 ],
                 [
+                  1,
                   1,
                   1,
                   1
@@ -1566,14 +1671,26 @@
             "dataframes": {
               "edges": {
                 "columns": [
-                  "index_edges",
-                  "source",
-                  "target"
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
+                ]
+              },
+              "embeddings": {
+                "columns": [
+                  "i1",
+                  "i2",
+                  "i3",
+                  "i4",
+                  "index_embeddings"
                 ]
               },
               "master": {
                 "columns": [
                   "index_edges",
+                  "index_embeddings",
                   "index_nodes",
                   "index_targets"
                 ]
@@ -1671,14 +1788,287 @@
         "title": "Create graph"
       },
       "dragHandle": ".drag-handle",
-      "height": 443.0,
+      "height": 754.0,
       "id": "Create graph 1",
       "position": {
-        "x": -1608.9053187173608,
-        "y": -1982.024400268479
+        "x": -1598.9107304349805,
+        "y": -2615.189670725803
       },
       "type": "graph_creation_view",
-      "width": 548.0
+      "width": 631.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Read the contents of the a file into a `Bundle`."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "str",
+                  "description": "Path to the file to import.",
+                  "name": "file_path"
+                },
+                {
+                  "annotation": "str",
+                  "description": "Name to use for identifying the table in the bundle.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "FileFormat",
+                  "description": "Format of the file. Has to be one of the values in the `FileFormat` enum.",
+                  "name": "file_format"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": "<class 'lynxkite_graph_analytics.core.Bundle'>",
+                  "description": "Bundle with a single table with the contents of the file.",
+                  "name": "Bundle"
+                }
+              ]
+            }
+          ],
+          "inputs": [],
+          "name": "Import file",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "file_path",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "file_format",
+              "type": {
+                "enum": [
+                  "csv",
+                  "parquet",
+                  "json",
+                  "excel"
+                ]
+              }
+            },
+            {
+              "default": "csv",
+              "groups": {
+                "csv": [
+                  {
+                    "default": "<from file>",
+                    "name": "columns",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  },
+                  {
+                    "default": "<auto>",
+                    "name": "separator",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "excel": [
+                  {
+                    "default": "Sheet1",
+                    "name": "sheet_name",
+                    "type": {
+                      "type": "<class 'str'>"
+                    }
+                  }
+                ],
+                "json": [],
+                "parquet": []
+              },
+              "name": "file_format_group",
+              "selector": {
+                "default": "csv",
+                "name": "file_format",
+                "type": {
+                  "enum": [
+                    "csv",
+                    "parquet",
+                    "json",
+                    "excel"
+                  ]
+                }
+              },
+              "type": "group"
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "file_format": "parquet",
+          "file_format_group": "csv",
+          "file_path": "embeddings.parquet",
+          "table_name": "embeddings"
+        },
+        "status": "done",
+        "title": "Import file"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 338.0,
+      "id": "Import file 2",
+      "position": {
+        "x": -2172.7401088662427,
+        "y": -2033.8364804609234
+      },
+      "type": "basic",
+      "width": 288.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "embeddings": {
+                "columns": [
+                  "i1",
+                  "i2",
+                  "i3",
+                  "i4",
+                  "index_embeddings"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          },
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "index_edges"
+                ]
+              },
+              "master": {
+                "columns": [
+                  "index_edges",
+                  "index_embeddings",
+                  "index_nodes",
+                  "index_targets"
+                ]
+              },
+              "nodes": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "feat3",
+                  "index_nodes"
+                ]
+              },
+              "targets": {
+                "columns": [
+                  "feat1",
+                  "feat2",
+                  "index_targets"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merges two bundles into one.\n\nThe resulting bundle will have all DataFrames from both bundles, and relations from both bundles.\nIf a DataFrame with the same name exists in both bundles, the one from `bundle_b` will be used."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "bundle_a",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            },
+            {
+              "name": "bundle_b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Merge Bundles",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "suffix",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "suffix": "b"
+        },
+        "status": "done",
+        "title": "Merge Bundles"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Merge Bundles 2",
+      "position": {
+        "x": -1718.6538112778496,
+        "y": -1820.7217970394497
+      },
+      "type": "basic",
+      "width": 200.0
     }
   ]
 }

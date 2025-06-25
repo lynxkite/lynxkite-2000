@@ -1,0 +1,1130 @@
+{
+  "edges": [
+    {
+      "id": "Input: tensor 1 output Graph Convolution 1 nodes",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 1",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 2 output Graph Convolution 1 edges",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 1",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph Convolution 1 output Activation 1 x",
+      "source": "Graph Convolution 1",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 output Graph Convolution 2 nodes",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 2",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 2 output Graph Convolution 2 edges",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 2",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph Convolution 2 output Activation 2 x",
+      "source": "Graph Convolution 2",
+      "sourceHandle": "output",
+      "target": "Activation 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 3 output Embedding 1 x",
+      "source": "Input: tensor 3",
+      "sourceHandle": "output",
+      "target": "Embedding 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 4 output Embedding 2 x",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Embedding 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Output 1 x Pick element by constant 1 x_dict",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "Pick element by constant 1",
+      "targetHandle": "x_dict"
+    },
+    {
+      "id": "Pick element by constant 1 x_i MSE loss 1 x",
+      "source": "Pick element by constant 1",
+      "sourceHandle": "x_i",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 5 output MSE loss 1 y",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "MSE loss 1 output Optimizer 1 loss",
+      "source": "MSE loss 1",
+      "sourceHandle": "output",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Activation 2 output HeteroConv 1 nodes",
+      "source": "Activation 2",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Embedding 1 output HeteroConv 1 nodes",
+      "source": "Embedding 1",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Embedding 2 output HeteroConv 1 nodes",
+      "source": "Embedding 2",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 2 output HeteroConv 1 edges",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "HeteroConv 1 x_dict Output 1 x",
+      "source": "HeteroConv 1",
+      "sourceHandle": "x_dict",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 6 output HeteroConv 1 edges",
+      "source": "Input: tensor 6",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "edges"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "nodes"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 1",
+      "position": {
+        "x": -378.5,
+        "y": 781.0
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "edges"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 2",
+      "position": {
+        "x": -98.0,
+        "y": 782.5
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "3",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Graph Convolution 1",
+      "position": {
+        "x": -279.0,
+        "y": 451.5
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "2",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 288.0,
+      "id": "Graph Convolution 2",
+      "position": {
+        "x": 49.0,
+        "y": 395.5
+      },
+      "type": "basic",
+      "width": 234.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 1",
+      "position": {
+        "x": -284.0,
+        "y": 192.5
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ReLU",
+                  "Leaky_ReLU",
+                  "Tanh",
+                  "Mish"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 2",
+      "position": {
+        "x": 49.401110770754855,
+        "y": 117.09888922924515
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "nodes2"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 3",
+      "position": {
+        "x": 405.7016208008376,
+        "y": 802.5653605567652
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "nodes3"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 4",
+      "position": {
+        "x": 738.3271544452383,
+        "y": 809.737937299594
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Embedding",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "num_embeddings",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "embedding_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "embedding_dim": "2",
+          "num_embeddings": "8"
+        },
+        "status": "done",
+        "title": "Embedding"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 238.0,
+      "id": "Embedding 1",
+      "position": {
+        "x": 491.43513960479174,
+        "y": 551.2794957708248
+      },
+      "type": "basic",
+      "width": 225.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Embedding",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "num_embeddings",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "embedding_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "embedding_dim": "2 ",
+          "num_embeddings": "8"
+        },
+        "status": "done",
+        "title": "Embedding"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Embedding 2",
+      "position": {
+        "x": 735.934250145544,
+        "y": 549.2416580451154
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "edges2"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 5",
+      "position": {
+        "x": 1113.852206225478,
+        "y": 420.1044430830195
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Output",
+          "outputs": [
+            {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "x_dict"
+        },
+        "status": "done",
+        "title": "Output"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Output 1",
+      "position": {
+        "x": 434.2371051212413,
+        "y": -494.1066408538857
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the element at the specified index from the input tensor."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "x_dict",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'dict'>"
+              }
+            }
+          ],
+          "name": "Pick element by constant",
+          "outputs": [
+            {
+              "name": "x_i",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "",
+              "name": "key",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "key": "nodes"
+        },
+        "status": "done",
+        "title": "Pick element by constant"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 298.0,
+      "id": "Pick element by constant 1",
+      "position": {
+        "x": 737.7944171610229,
+        "y": -549.7588147278457
+      },
+      "type": "basic",
+      "width": 234.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "MSE loss",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "position": {
+        "x": 1106.279265387091,
+        "y": -456.16197684891307
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "green",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "loss",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Optimizer",
+          "outputs": [],
+          "params": [
+            {
+              "default": "AdamW",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "AdamW",
+                  "Adafactor",
+                  "Adagrad",
+                  "SGD",
+                  "Lion",
+                  "Paged AdamW",
+                  "Galore AdamW"
+                ]
+              }
+            },
+            {
+              "default": 0.0001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "lr": 0.0001,
+          "type": "AdamW"
+        },
+        "status": "done",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 236.0,
+      "id": "Optimizer 1",
+      "position": {
+        "x": 1109.7767729461948,
+        "y": -772.1142035615686
+      },
+      "type": "basic",
+      "width": 196.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns a :class:`~torch_geometric.nn.HeteroConv` layer."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "list[torch.Tensor]"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "list[torch.Tensor]"
+              }
+            }
+          ],
+          "name": "HeteroConv",
+          "outputs": [
+            {
+              "name": "x_dict",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "node_names_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "relation_names_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "[]",
+              "name": "layers",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "hetero_conv"
+        },
+        "params": {
+          "layers": "[{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GATConv\",\"params\":{\"in_channels\":2,\"out_channels\":2,\"heads\":4}},{\"relation\":[\"nodes\",\"relation\",\"nodes2\"],\"type\":\"GATConv\",\"params\":{\"in_channels\":2,\"out_channels\":2,\"heads\":4}}]",
+          "node_names_str": "nodes,nodes2,nodes3",
+          "relation_names_str": "nodes-relation-nodes,nodes-relation-nodes2"
+        },
+        "status": "done",
+        "title": "HeteroConv"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 591.0,
+      "id": "HeteroConv 1",
+      "position": {
+        "x": 378.2912239633134,
+        "y": -243.99247649922546
+      },
+      "type": "hetero_conv",
+      "width": 436.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "gray",
+          "doc": null,
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "name": "edges2"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: tensor 6",
+      "position": {
+        "x": 988.8996485636429,
+        "y": 361.6651098059561
+      },
+      "type": "basic",
+      "width": 200.0
+    }
+  ]
+}
