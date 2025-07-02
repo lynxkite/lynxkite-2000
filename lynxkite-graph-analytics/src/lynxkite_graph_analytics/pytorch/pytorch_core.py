@@ -2,6 +2,7 @@
 
 import copy
 import graphlib
+import io
 import numpy as np
 import pydantic
 from lynxkite.core import ops, workspace
@@ -72,6 +73,19 @@ class ColumnSpec(pydantic.BaseModel):
 
 class ModelMapping(pydantic.BaseModel):
     map: dict[str, ColumnSpec]
+
+
+def _torch_save(data) -> str:
+    """Saves PyTorch data (modules, tensors) as a string."""
+    buffer = io.BytesIO()
+    torch.save(data, buffer)
+    return buffer.getvalue()
+
+
+def _torch_load(data: str) -> any:
+    """Loads PyTorch data (modules, tensors) from a string."""
+    buffer = io.BytesIO(data)  # noqa: F821
+    return torch.load(buffer)
 
 
 @dataclasses.dataclass
@@ -147,6 +161,7 @@ class ModelConfig:
         }
 
     # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
+    # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
     def __repr__(self):
         return repr(self.__getstate__())
 
@@ -159,8 +174,8 @@ class ModelConfig:
         del state["optimizer_parameters"]
         del state["loss"]
         if self.trained:
-            state["model_state_dict"] = self.model.state_dict()
-            state["optimizer_state_dict"] = self.optimizer.state_dict()
+            state["model_state_dict"] = _torch_save(self.model.state_dict())
+            state["optimizer_state_dict"] = _torch_save(self.optimizer.state_dict())
         return state
 
     def __setstate__(self, state):
@@ -175,8 +190,8 @@ class ModelConfig:
         self.optimizer_parameters = cfg.optimizer_parameters
         self.loss = cfg.loss
         if self.trained:
-            self.model.load_state_dict(model_state_dict)
-            self.optimizer.load_state_dict(optimizer_state_dict)
+            self.model.load_state_dict(_torch_load(model_state_dict))
+            self.optimizer.load_state_dict(_torch_load(optimizer_state_dict))
 
 
 def build_model(ws: workspace.Workspace) -> ModelConfig:
