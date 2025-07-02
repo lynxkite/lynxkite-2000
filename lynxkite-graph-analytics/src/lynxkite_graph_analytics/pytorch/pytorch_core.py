@@ -2,7 +2,7 @@
 
 import copy
 import graphlib
-
+import numpy as np
 import pydantic
 from lynxkite.core import ops, workspace
 import torch
@@ -79,9 +79,11 @@ class ModelConfig:
     model: torch.nn.Module
     model_inputs: list[str]
     model_outputs: list[str]
+    model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
     input_output_names: list[str]
     loss: torch.nn.Module
+    source_workspace_json: str
     optimizer_parameters: dict[str, any]
     optimizer: torch.optim.Optimizer | None = None
     source_workspace: str | None = None
@@ -100,7 +102,7 @@ class ModelConfig:
         values = {k: v for k, v in zip(self.model_outputs, output)}
         return values
 
-    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
+    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, np.ndarray]:
         """Inference on a single batch."""
         self.model.eval()
         return self._forward(inputs)
@@ -144,6 +146,38 @@ class ModelConfig:
             },
         }
 
+    # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
+    def __repr__(self):
+        return repr(self.__getstate__())
+
+    def __getstate__(self):
+        # The model may not be serializable. We store the contents of the definition workspace instead,
+        # plus the model parameters (state dict).
+        state = dataclasses.asdict(self)
+        del state["model"]
+        del state["optimizer"]
+        del state["optimizer_parameters"]
+        del state["loss"]
+        if self.trained:
+            state["model_state_dict"] = self.model.state_dict()
+            state["optimizer_state_dict"] = self.optimizer.state_dict()
+        return state
+
+    def __setstate__(self, state):
+        # Rebuild the model from the workspace JSON and load the model and optimizer state dicts.
+        model_state_dict = state.pop("model_state_dict", None)
+        optimizer_state_dict = state.pop("optimizer_state_dict", None)
+        self.__dict__.update(state)
+        ws = workspace.Workspace.model_validate_json(state["source_workspace_json"])
+        cfg = build_model(ws)
+        self.model = cfg.model
+        self.optimizer = cfg.optimizer
+        self.optimizer_parameters = cfg.optimizer_parameters
+        self.loss = cfg.loss
+        if self.trained:
+            self.model.load_state_dict(model_state_dict)
+            self.optimizer.load_state_dict(optimizer_state_dict)
+
 
 def build_model(ws: workspace.Workspace) -> ModelConfig:
     """Builds the model described in the workspace."""
@@ -155,7 +189,9 @@ class ModelBuilder:
     """The state shared between methods that are used to build the model."""
 
     def __init__(self, ws: workspace.Workspace):
+        self.ws = ws
         self.catalog = ops.CATALOGS[ENV]
+        self.model_sequence_outputs = []
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
         repeats: list[str] = []
@@ -328,9 +364,11 @@ class ModelBuilder:
         # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:
-            if self.nodes[node_id].data.title == "Output":
+            if self.nodes[node_id].data.title.startswith("Output"):
                 model_nodes.add(node_id)
                 model_nodes |= self.all_upstream(node_id)
+                if self.nodes[node_id].data.title == "Output sequence":
+                    self.model_sequence_outputs.append(_to_id(node_id, "x"))
         assert model_nodes, "The model definition must have at least one Output node."
         layers = []
         loss_layers = []
@@ -346,12 +384,13 @@ class ModelBuilder:
         layers = [layer.for_sequential() for layer in layers]
         loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
-        cfg["model_inputs"] = list(used_in_model - made_in_model)
-        cfg["model_outputs"] = list(made_in_model & used_in_loss)
-        cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
+        cfg["model_inputs"] = sorted(used_in_model - made_in_model)
+        cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
+        cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
         cfg["input_output_names"] = self.get_names(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
+        cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
@@ -367,6 +406,7 @@ class ModelBuilder:
         # Create optimizer.
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
+        cfg["source_workspace_json"] = self.ws.model_dump_json()
         return ModelConfig(**cfg)
 
     def get_names(self, *ids: list[str]) -> dict[str, str]:
@@ -393,20 +433,10 @@ class ModelBuilder:
         return names
 
 
-def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor]:
-    """Extracts tensors from a bundle using a model mapping."""
-    if m is None:
-        return {}
-    tensors = {}
-    for k, v in m.map.items():
-        if v.df in b.dfs and v.column in b.dfs[v.df]:
-            tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
-    return tensors
-
-
 def to_batch_tensors(
     b: core.Bundle, batch_size: int, batch_index: int, m: ModelMapping | None
 ) -> dict[str, torch.Tensor]:
+    """Extracts tensors from a bundle for a specific batch using a model mapping."""
     tensors = {}
     for k, v in m.map.items():
         if v.df in b.dfs and v.column in b.dfs[v.df]:

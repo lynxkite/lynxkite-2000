@@ -40,6 +40,7 @@ reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
 reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
 reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
+reg("Output sequence", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 
 
 @op("LSTM", weights=True)
