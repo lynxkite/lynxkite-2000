@@ -77,6 +77,7 @@ export default function Code() {
           <img alt="" src={favicon} />
         </Link>
         <div className="ws-name">{path}</div>
+        <title>{path}</title>
         <div className="tools text-secondary">
           <button className="btn btn-link">
             <Atom />
