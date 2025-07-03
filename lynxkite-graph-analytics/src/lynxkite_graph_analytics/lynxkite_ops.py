@@ -79,7 +79,7 @@ def import_file(
 def export_to_file(
     bundle: core.Bundle,
     *,
-    table_name: str = "result",
+    table_name: str,
     filename: str,
     file_format: FileFormat = FileFormat.csv,
 ):
@@ -87,7 +87,7 @@ def export_to_file(
 
     Args:
         bundle: The bundle containing the DataFrame to export.
-        table_name: The name of the DataFrame in the bundle to export. Defaults to "result".
+        table_name: The name of the DataFrame in the bundle to export.
         filename: The name of the file to export to.
         file_format: The format of the file to export to. Defaults to CSV.
     """
