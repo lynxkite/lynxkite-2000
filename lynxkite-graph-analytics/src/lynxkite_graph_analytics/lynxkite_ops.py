@@ -75,41 +75,32 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
-@op(
-    "Export to File",
-)
+@op("Export to File")
 def export_to_file(
     bundle: core.Bundle,
     *,
+    table_name: str = "result",
     filename: str,
     file_format: FileFormat = FileFormat.csv,
-    columns: str = "<all>",
-    index: bool = False,
 ):
     """Exports a DataFrame to a file.
 
     Args:
         bundle: The bundle containing the DataFrame to export.
+        table_name: The name of the DataFrame in the bundle to export. Defaults to "result".
         filename: The name of the file to export to.
         file_format: The format of the file to export to. Defaults to CSV.
-        columns: Comma-separated list of columns to export.
-            Defaults to "<all>" which exports all columns.
-        index: Whether to include the DataFrame index in the exported file. Defaults to False.
     """
 
-    df = bundle.dfs["result"]
-    if columns == "<all>":
-        columns = None
-    else:
-        columns = [col.strip() for col in columns.split(",")]
+    df = bundle.dfs[table_name]
     if file_format == FileFormat.csv:
-        df.to_csv(filename, index=index, columns=columns)
+        df.to_csv(filename, index=False)
     elif file_format == FileFormat.json:
         df.to_json(filename, orient="records", lines=True)
     elif file_format == FileFormat.parquet:
-        df.to_parquet(filename, index=index)
+        df.to_parquet(filename, index=False)
     elif file_format == FileFormat.excel:
-        df.to_excel(filename, index=index)
+        df.to_excel(filename, index=False)
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
 
