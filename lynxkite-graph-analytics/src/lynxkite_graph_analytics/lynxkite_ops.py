@@ -75,6 +75,45 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
+@op(
+    "Export to File",
+)
+def export_to_file(
+    bundle: core.Bundle,
+    *,
+    filename: str,
+    file_format: FileFormat = FileFormat.csv,
+    columns: str = "<all>",
+    index: bool = False,
+):
+    """Exports a DataFrame to a file.
+
+    Args:
+        bundle: The bundle containing the DataFrame to export.
+        filename: The name of the file to export to.
+        file_format: The format of the file to export to. Defaults to CSV.
+        columns: Comma-separated list of columns to export.
+            Defaults to "<all>" which exports all columns.
+        index: Whether to include the DataFrame index in the exported file. Defaults to False.
+    """
+
+    df = bundle.dfs["result"]
+    if columns == "<all>":
+        columns = None
+    else:
+        columns = [col.strip() for col in columns.split(",")]
+    if file_format == FileFormat.csv:
+        df.to_csv(filename, index=index, columns=columns)
+    elif file_format == FileFormat.json:
+        df.to_json(filename, orient="records", lines=True)
+    elif file_format == FileFormat.parquet:
+        df.to_parquet(filename, index=index)
+    elif file_format == FileFormat.excel:
+        df.to_excel(filename, index=index)
+    else:
+        raise ValueError(f"Unsupported file format: {file_format}")
+
+
 @op("Import Parquet")
 def import_parquet(*, filename: str):
     """Imports a Parquet file."""
