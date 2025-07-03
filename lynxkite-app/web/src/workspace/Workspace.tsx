@@ -128,24 +128,32 @@ function LynxKiteFlow() {
           !Number.isNaN(ch.position.y)
         ) {
           getYjsDoc(state).transact(() => {
-            Object.assign(node.position, ch.position);
+            node.position.x = ch.position.x;
+            node.position.y = ch.position.y;
           });
         } else if (ch.type === "select") {
         } else if (ch.type === "dimensions") {
-          getYjsDoc(state).transact(() => Object.assign(node, ch.dimensions));
+          getYjsDoc(state).transact(() => {
+            node.width = ch.dimensions.width;
+            node.height = ch.dimensions.height;
+          });
         } else if (ch.type === "remove") {
           wnodes.splice(nodeIndex, 1);
         } else if (ch.type === "replace") {
           // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
-          const u = {
-            collapsed: ch.item.data.collapsed,
-            // The "..." expansion on a Y.map returns an empty object. Copying with fromEntries/entries instead.
-            params: {
-              ...Object.fromEntries(Object.entries(ch.item.data.params)),
-            },
-            __execution_delay: ch.item.data.__execution_delay,
-          };
-          getYjsDoc(state).transact(() => Object.assign(node.data, u));
+          getYjsDoc(state).transact(() => {
+            if (node.data.collapsed !== ch.item.data.collapsed) {
+              node.data.collapsed = ch.item.data.collapsed;
+            }
+            if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
+              node.data.__execution_delay = ch.item.data.__execution_delay;
+            }
+            for (const [key, value] of Object.entries(ch.item.data.params)) {
+              if (node.data.params[key] !== value) {
+                node.data.params[key] = value;
+              }
+            }
+          });
         } else {
           console.log("Unknown node change", ch);
         }
