@@ -3,7 +3,6 @@
 import enum
 from lynxkite.core import ops
 from lynxkite.core.ops import Parameter as P
-from lynxkite_graph_analytics.core import Bundle
 import torch
 import torch_geometric.nn as pyg_nn
 from .pytorch_core import op, reg, ENV
@@ -121,7 +120,7 @@ class BundleHeteroConv(pyg_nn.HeteroConv):
             f"but got {len(args)} total tensors."
         )
         x_dict = {name.strip(): tensor for name, tensor in zip(self.node_names, args)}
-        edge_index_dict = dict(zip(self.relation_names, args[len(x_dict) :])
+        edge_index_dict = dict(zip(self.relation_names, args[len(x_dict) :]))
         return super().forward(x_dict=x_dict, edge_index_dict=edge_index_dict)
 
 
@@ -196,22 +195,6 @@ def pick_element_by_constant(x_dict: dict, *, key: str):
             return x_dict.get(key)
 
     return MyFunctionModule()
-
-
-@op(
-    "Pick df from bundle",
-    outputs=["x_i"],
-    params=[ops.Parameter.basic("key", "", str)],
-)
-def pick_df_from_bundle(bundle: Bundle, *, key: str):
-    """Returns the element at the specified index from the input tensor."""
-    import torch.nn as nn
-
-    class DfFromBundleModule(nn.Module):
-        def forward(self, bundle):
-            return torch.tensor(bundle.dfs.get(key).to_numpy(), dtype=torch.float)
-
-    return DfFromBundleModule()
 
 
 reg(
