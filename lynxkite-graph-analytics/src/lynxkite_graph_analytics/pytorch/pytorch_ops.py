@@ -121,9 +121,7 @@ class BundleHeteroConv(pyg_nn.HeteroConv):
             f"but got {len(args)} total tensors."
         )
         x_dict = {name.strip(): tensor for name, tensor in zip(self.node_names, args)}
-        edge_index_dict = {
-            relation: tensor for relation, tensor in zip(self.relation_names, args[len(x_dict) :])
-        }
+        edge_index_dict = dict(zip(self.relation_names, args[len(x_dict) :])
         return super().forward(x_dict=x_dict, edge_index_dict=edge_index_dict)
 
 
