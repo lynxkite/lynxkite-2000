@@ -186,11 +186,7 @@ def concatenate(a, b):
     return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
 
 
-@op(
-    "Pick element by constant",
-    outputs=["x_i"],
-    params=[ops.Parameter.basic("key", "", str)],
-)
+@op("Pick element by constant")
 def pick_element_by_constant(x_dict: dict, *, key: str):
     """Returns the element at the specified index from the input tensor."""
     import torch.nn as nn
