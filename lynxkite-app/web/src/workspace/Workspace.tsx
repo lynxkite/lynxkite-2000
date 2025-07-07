@@ -408,9 +408,7 @@ function LynxKiteFlow() {
     }
   }
   function togglePause() {
-    getYjsDoc(state).transact(() => {
-      state.workspace.paused = !state.workspace.paused;
-    });
+    state.workspace.paused = !state.workspace.paused;
     // Force re-render by updating the counter
     forceUpdate((prev) => prev + 1);
   }
