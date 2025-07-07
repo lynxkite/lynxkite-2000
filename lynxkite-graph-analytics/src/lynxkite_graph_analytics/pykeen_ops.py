@@ -4,72 +4,116 @@ from lynxkite.core import ops
 from . import core
 
 import pandas as pd
+import enum
 from pykeen.pipeline import pipeline
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
 from pykeen.triples import TriplesFactory
-from pykeen import datasets
+
 
 op = ops.op_registration(core.ENV)
 
 
-@op("Import Pykeen Dataset")
-def import_pykeen_dataset_path(*, dataset: str) -> core.Bundle:
-    ds = 0
-    if dataset in datasets.__all__:
-        ds = get_dataset(dataset=dataset)
-    else:
-        ds = TriplesFactory.from_path(dataset)
+def mapped_triples_to_df(triples, entity_to_id, relation_to_id):
+    df = pd.DataFrame(triples.numpy(), columns=["head", "relation", "tail"])
+    entity_label_mapping = {idx: label for label, idx in entity_to_id.items()}
+    relation_label_mapping = {idx: label for label, idx in relation_to_id.items()}
+
+    df["head"] = df["head"].map(entity_label_mapping)
+    df["relation"] = df["relation"].map(relation_label_mapping)
+    df["tail"] = df["tail"].map(entity_label_mapping)
+    return df
+
+
+class PyKEENDataset(str, enum.Enum):
+    AristoV4 = "AristoV4"
+    BioKG = "BioKG"
+    CKG = "CKG"
+    CN3l = "CN3l"
+    CoDExLarge = "CoDExLarge"
+    CoDExMedium = "CoDExMedium"
+    CoDExSmall = "CoDExSmall"
+    ConceptNet = "ConceptNet"
+    Countries = "Countries"
+    CSKG = "CSKG"
+    DB100K = "DB100K"
+    DBpedia50 = "DBpedia50"
+    DRKG = "DRKG"
+    FB15k = "FB15k"
+    FB15k237 = "FB15k237"
+    Globi = "Globi"
+    Hetionet = "Hetionet"
+    Kinships = "Kinships"
+    Nations = "Nations"
+    NationsLiteral = "NationsLiteral"
+    OGBBioKG = "OGBBioKG"
+    OGBWikiKG2 = "OGBWikiKG2"
+    OpenBioLink = "OpenBioLink"
+    OpenBioLinkLQ = "OpenBioLinkLQ"
+    OpenEA = "OpenEA"
+    PharMeBINet = "PharMeBINet"
+    PharmKG = "PharmKG"
+    PharmKG8k = "PharmKG8k"
+    PrimeKG = "PrimeKG"
+    UMLS = "UMLS"
+    WD50KT = "WD50KT"
+    Wikidata5M = "Wikidata5M"
+    WK3l120k = "WK3l120k"
+    WK3l15k = "WK3l15k"
+    WN18 = "WN18"
+    WN18RR = "WN18RR"
+    YAGO310 = "YAGO310"
+
+    def to_dataset(self):
+        return get_dataset(dataset=self.value)
+
+
+@op("Import PyKEEN Dataset")
+def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
+    ds = dataset.to_dataset()
 
     # Training -------------
     triples = ds.training.mapped_triples
-
-    df_train = pd.DataFrame(triples.numpy(), columns=["head", "relation", "tail"])
-
-    entity_label_mapping = {idx: label for label, idx in ds.entity_to_id.items()}
-    relation_label_mapping = {idx: label for label, idx in ds.relation_to_id.items()}
-
-    df_train["head"] = df_train["head"].map(entity_label_mapping)
-    df_train["relation"] = df_train["relation"].map(relation_label_mapping)
-    df_train["tail"] = df_train["tail"].map(entity_label_mapping)
+    df_train = mapped_triples_to_df(
+        triples=triples,
+        entity_to_id=ds.entity_to_id,
+        relation_to_id=ds.relation_to_id,
+    )
 
     # Testing -------------
     triples = ds.testing.mapped_triples
-
-    df_test = pd.DataFrame(triples.numpy(), columns=["head", "relation", "tail"])
-
-    entity_label_mapping = {idx: label for label, idx in ds.entity_to_id.items()}
-    relation_label_mapping = {idx: label for label, idx in ds.relation_to_id.items()}
-
-    df_test["head"] = df_test["head"].map(entity_label_mapping)
-    df_test["relation"] = df_test["relation"].map(relation_label_mapping)
-    df_test["tail"] = df_test["tail"].map(entity_label_mapping)
+    df_test = mapped_triples_to_df(
+        triples=triples,
+        entity_to_id=ds.entity_to_id,
+        relation_to_id=ds.relation_to_id,
+    )
 
     # Validation -----------
     triples = ds.validation.mapped_triples
-    df_val = pd.DataFrame(triples.numpy(), columns=["head", "relation", "tail"])
+    df_val = mapped_triples_to_df(
+        triples=triples,
+        entity_to_id=ds.entity_to_id,
+        relation_to_id=ds.relation_to_id,
+    )
 
-    entity_label_mapping = {idx: label for label, idx in ds.entity_to_id.items()}
-    relation_label_mapping = {idx: label for label, idx in ds.relation_to_id.items()}
-
-    df_val["head"] = df_val["head"].map(entity_label_mapping)
-    df_val["relation"] = df_val["relation"].map(relation_label_mapping)
-    df_val["tail"] = df_val["tail"].map(entity_label_mapping)
-
-    df = pd.concat([df_train, df_test])
-    bundle = core.Bundle(dfs={"df": df})
-    bundle.dfs["df_val"] = df_val
+    bundle = core.Bundle()
+    bundle.dfs["triples_train"] = df_train
+    bundle.dfs["triples_test"] = df_test
+    bundle.dfs["triples_val"] = df_val
     return bundle
 
 
+# TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
 @op("Train Embedding Model", slow=True, cache=False)
 def train_embedding_model(bundle: core.Bundle, *, model: str, epochs: int = 5):
     bundle = bundle.copy()
+    if "model" in bundle.other:
+        model = bundle.other["model"]
     training_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["df_train"][["head", "relation", "tail"]].values
+        bundle.dfs["triples_train"][["head", "relation", "tail"]].values
     )
     testing_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["df_test"][["head", "relation", "tail"]].values
+        bundle.dfs["triples_test"][["head", "relation", "tail"]].values
     )
 
     result = pipeline(
@@ -78,30 +122,25 @@ def train_embedding_model(bundle: core.Bundle, *, model: str, epochs: int = 5):
         model=model,
         epochs=epochs,
     )
-    """
-    print(result.losses)
-    losses = []
-    for loss in result.losses:
-        losses.append(loss)
-    """
+
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
     bundle.other["model"] = result.model
-    bundle.other["result_train"] = result.training.triples
+
     return bundle
 
 
 @op("Triples prediction")
-def tail_predict(bundle: core.Bundle):
+def triple_predict(bundle: core.Bundle, *, table_name: str = "triples_val"):
     bundle = bundle.copy()
     pred = predict_triples(
         model=bundle.other["model"],
         triples=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_val"][["head", "relation", "tail"]].values
+            bundle.dfs[table_name][["head", "relation", "tail"]].values
         ),
     )
     df = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_test"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_test"][["head", "relation", "tail"]].values
         )
     ).df
     bundle.dfs["pred"] = df
@@ -120,16 +159,16 @@ def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
         relation=relation if relation != "" else None,
         tail=tail if tail != "" else None,
         triples_factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_train"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_train"][["head", "relation", "tail"]].values
         ),
     )
 
     pred_annotated = pred.add_membership_columns(
         validation=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_val"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_val"][["head", "relation", "tail"]].values
         ),
         testing=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_test"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_test"][["head", "relation", "tail"]].values
         ),
     )
     bundle.dfs["pred"] = pred_annotated.df
@@ -137,18 +176,19 @@ def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
     return bundle
 
 
-@op("Full prediction")
-def full_predict(bundle: core.Bundle, *, k: int = 15):
+@op("Full prediction", slow=True)
+def full_predict(bundle: core.Bundle, *, k: int = None):
+    """Pass k=0 to keep all scores"""
     bundle = bundle.copy()
-    pred = predict_all(model=bundle.other["model"], k=k)
+    pred = predict_all(model=bundle.other["model"], k=k if k != 0 else None)
     pack = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_val"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_val"][["head", "relation", "tail"]].values
         )
     )
     pred_annotated = pack.add_membership_columns(
         training=TriplesFactory.from_labeled_triples(
-            bundle.dfs["df_val"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_train"][["head", "relation", "tail"]].values
         )
     )
     bundle.dfs["pred"] = pred_annotated.df
