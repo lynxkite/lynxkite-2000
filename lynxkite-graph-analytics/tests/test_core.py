@@ -1,12 +1,10 @@
 import pandas as pd
-import pytest
-import networkx as nx
 
 from lynxkite.core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute
 
 
-async def test_execute_operation_not_in_catalog():
+async def test_multi_input_box():
     ws = workspace.Workspace(env="test")
     op = ops.op_registration("test")
 
@@ -45,8 +43,8 @@ async def test_execute_operation_not_in_catalog():
             id="2", source="2", target="3", sourceHandle="output", targetHandle="bundles"
         ),
     ]
-    output = await  execute(ws)
+    output = await execute(ws)
     assert all([node.data.error is None for node in ws.nodes])
-    assert output[("3", "output")] == 2, "Multi input op should return the correct number of bundles"
-
-
+    assert output[("3", "output")] == 2, (
+        "Multi input op should return the correct number of bundles"
+    )
