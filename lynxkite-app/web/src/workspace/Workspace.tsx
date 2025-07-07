@@ -29,6 +29,10 @@ import UngroupIcon from "~icons/tabler/library-minus.jsx";
 // @ts-ignore
 import GroupIcon from "~icons/tabler/library-plus.jsx";
 // @ts-ignore
+import Pause from "~icons/tabler/player-pause.jsx";
+// @ts-ignore
+import Play from "~icons/tabler/player-play.jsx";
+// @ts-ignore
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-ignore
 import Close from "~icons/tabler/x.jsx";
@@ -71,12 +75,16 @@ function LynxKiteFlow() {
     .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as WorkspaceType });
   const [message, setMessage] = useState(null as string | null);
+  const [, forceUpdate] = useState(0);
   useEffect(() => {
     const state = syncedStore({ workspace: {} as WorkspaceType });
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const wsProvider = new WebsocketProvider(`${proto}//${location.host}/ws/crdt`, path!, doc);
+    if (state.workspace && typeof state.workspace.paused === "undefined") {
+      state.workspace.paused = false;
+    }
     const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.
@@ -399,6 +407,13 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
+  function togglePause() {
+    getYjsDoc(state).transact(() => {
+      state.workspace.paused = !state.workspace.paused;
+    });
+    // Force re-render by updating the counter
+    forceUpdate((prev) => prev + 1);
+  }
   function deleteSelection() {
     const selectedNodes = nodes.filter((n) => n.selected);
     const selectedEdges = edges.filter((e) => e.selected);
@@ -532,6 +547,15 @@ function LynxKiteFlow() {
           <Tooltip doc="Delete selected nodes and edges">
             <button className="btn btn-link" onClick={deleteSelection}>
               <Backspace />
+            </button>
+          </Tooltip>
+          <Tooltip
+            doc={
+              state.workspace.paused ? "Resume automatic execution" : "Pause automatic execution"
+            }
+          >
+            <button className="btn btn-link" onClick={togglePause}>
+              {state.workspace.paused ? <Play /> : <Pause />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">
