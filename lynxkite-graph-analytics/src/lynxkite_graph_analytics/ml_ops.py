@@ -3,7 +3,6 @@
 import enum
 import functools
 import numpy as np
-import torch
 from . import core
 from lynxkite.core import workspace
 from .pytorch import pytorch_core
@@ -137,49 +136,6 @@ def model_inference(
             if k not in m.model_sequence_outputs:
                 v = v.squeeze(axis=-1)
             outputs.setdefault(k, []).extend(v.tolist())
-    bundle = bundle.copy()
-    copied = set()
-    for k, v in output_mapping.map.items():
-        if not v.df or not v.column:
-            continue
-        if v.df not in copied:
-            bundle.dfs[v.df] = bundle.dfs[v.df].copy()
-            copied.add(v.df)
-        bundle.dfs[v.df][v.column] = outputs[k]
-    return bundle
-
-
-@op("Model inference one-by-one", slow=True, cache=False)
-def model_inference_one_by_one(
-    bundle: core.Bundle,
-    *,
-    model_name: str = "model",
-    input_mapping: ModelInferenceInputMapping,
-    output_mapping: ModelOutputMapping,
-):
-    """Executes a trained model separately for each sample."""
-    if input_mapping is None or output_mapping is None:
-        return ops.Result(bundle, error="Mapping is unset.")
-    m = bundle.other[model_name]
-    assert m.trained, "The model is not trained."
-    b = bundle
-    inputs = {}
-    for k, v in input_mapping.map.items():
-        if v.df in b.dfs and v.column in b.dfs[v.df]:
-            inputs[k] = b.dfs[v.df][v.column]
-    [num_samples] = set(len(v) for v in inputs.values())
-    t = tqdm(range(num_samples), desc="Inference")
-    outputs = {}
-    for i in t:
-        tensors = {}
-        for k, v in inputs.items():
-            tensors[k] = torch.tensor(v[i], dtype=torch.float32)
-        output = m.inference(tensors)
-        for k, v in output.items():
-            if k not in outputs:
-                outputs[k] = []
-            e = v.detach().numpy().tolist()
-            outputs[k].append(e)
     bundle = bundle.copy()
     copied = set()
     for k, v in output_mapping.map.items():
