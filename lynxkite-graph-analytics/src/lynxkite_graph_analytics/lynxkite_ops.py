@@ -321,7 +321,7 @@ def organize(bundles: list[core.Bundle], *, relations: str = None) -> core.Bundl
     for b in bundles:
         bundle.dfs.update(b.dfs)
         bundle.relations.extend(b.relations)
-        bundle.others.update(b.others)
+        bundle.other.update(b.other)
     if not (relations is None or relations.strip() == ""):
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
