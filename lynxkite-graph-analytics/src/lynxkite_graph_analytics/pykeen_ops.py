@@ -194,3 +194,21 @@ def full_predict(bundle: core.Bundle, *, k: int = None):
     bundle.dfs["pred"] = pred_annotated.df
 
     return bundle
+
+
+@op("Extract embeddings from PyKEEN model")
+def extract_from_pykeen(bundle: core.Bundle, *, node_embedding_name: str, edge_embedding_name: str):
+    bundle = bundle.copy()
+    model = bundle.other["model"]
+    triples = TriplesFactory.from_labeled_triples(
+        bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+    )
+    entity_labels = list(triples.entity_to_id.keys())
+    bundle.other[node_embedding_name] = model.entity_representations[0]().detach().cpu()
+    bundle.other["entity_to_index"] = {entity: idx for idx, entity in enumerate(entity_labels)}
+
+    relation_labels = list(triples.relation_to_id.keys())
+    bundle.other[edge_embedding_name] = model.relation_representations[0]().detach().cpu()
+    bundle.other["relation_to_index"] = {rel: idx for idx, rel in enumerate(relation_labels)}
+
+    return bundle
