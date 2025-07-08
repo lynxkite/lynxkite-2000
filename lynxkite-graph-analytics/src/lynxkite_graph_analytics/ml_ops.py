@@ -133,8 +133,6 @@ def model_inference(
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
             v = v.detach().numpy().reshape(batch_size, -1)
-            if k not in m.model_sequence_outputs:
-                v = v.squeeze(axis=-1)
             outputs.setdefault(k, []).extend(v.tolist())
     bundle = bundle.copy()
     copied = set()
