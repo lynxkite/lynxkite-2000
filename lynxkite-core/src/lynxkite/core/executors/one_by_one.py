@@ -64,7 +64,7 @@ def _get_stages(ws, catalog: ops.Catalog):
     for edge in ws.edges:
         inputs.setdefault(edge.target, []).append(edge.source)
         node = nodes[edge.target]
-        op = catalog[node.data.title]
+        op = catalog[node.data.op_id]
         if op.get_input(edge.targetHandle).position.is_vertical():
             batch_inputs.setdefault(edge.target, []).append(edge.source)
     stages = []
@@ -111,9 +111,9 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
     tasks = {}
     NO_INPUT = object()  # Marker for initial tasks.
     for node in ws.nodes:
-        op = catalog.get(node.data.title)
+        op = catalog.get(node.data.op_id)
         if op is None:
-            node.publish_error(f'Operation "{node.data.title}" not found.')
+            node.publish_error(f'Operation "{node.data.op_id}" not found.')
             continue
         node.publish_error(None)
         # Start tasks for nodes that have no non-batch inputs.
@@ -130,7 +130,7 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                 next_stage.setdefault(n, []).extend(ts)
                 continue
             node = nodes[n]
-            op = catalog[node.data.title]
+            op = catalog[node.data.op_id]
             params = {**node.data.params}
             if _has_ctx(op):
                 params["_ctx"] = contexts[node.id]
@@ -181,7 +181,7 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
                     result.display = await _await_if_needed(result.display)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
-                    op = catalog[t.data.title]
+                    op = catalog[t.data.op_id]
                     if op.get_input(edge.targetHandle).position.is_vertical():
                         batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(
                             results

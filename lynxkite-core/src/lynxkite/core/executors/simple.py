@@ -37,7 +37,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
     ts = graphlib.TopologicalSorter(dependencies)
     for node_id in ts.static_order():
         node = nodes[node_id]
-        op = catalog[node.data.title]
+        op = catalog[node.data.op_id]
         params = {**node.data.params}
         node.publish_started()
         try:
