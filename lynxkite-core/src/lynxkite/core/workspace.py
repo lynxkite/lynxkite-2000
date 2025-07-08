@@ -30,6 +30,7 @@ class NodeStatus(str, enum.Enum):
 
 class WorkspaceNodeData(BaseConfig):
     title: str
+    op_id: str
     params: dict
     display: Optional[object] = None
     input_metadata: Optional[object] = None
@@ -106,7 +107,7 @@ class Workspace(BaseConfig):
         if self.env not in ops.CATALOGS:
             return self
         catalog = ops.CATALOGS[self.env]
-        _ops = {n.id: catalog[n.data.title] for n in self.nodes if n.data.title in catalog}
+        _ops = {n.id: catalog[n.data.op_id] for n in self.nodes if n.data.op_id in catalog}
         valid_targets = set()
         valid_sources = set()
         for n in self.nodes:
@@ -174,7 +175,7 @@ class Workspace(BaseConfig):
         catalog = ops.CATALOGS[self.env]
         for node in self.nodes:
             data = node.data
-            op = catalog.get(data.title)
+            op = catalog.get(data.op_id)
             if op:
                 if getattr(data, "meta", None) != op:
                     data.meta = op
@@ -208,7 +209,9 @@ class Workspace(BaseConfig):
         random_string = os.urandom(4).hex()
         if func:
             kwargs["type"] = func.__op__.type
-            kwargs["data"] = WorkspaceNodeData(title=func.__op__.name, params={})
+            kwargs["data"] = WorkspaceNodeData(
+                title=func.__op__.name, op_id=func.__op__.id, params={}
+            )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")
         kwargs.setdefault("position", Position(x=0, y=0))

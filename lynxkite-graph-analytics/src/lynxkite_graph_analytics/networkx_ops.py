@@ -301,7 +301,7 @@ def register_networkx(env: str):
                 outputs=[ops.Output(name="output", type=nx.Graph)],
                 type="basic",
             )
-            cat[nicename] = op
+            cat[op.id] = op
             counter += 1
     print(f"Registered {counter} NetworkX operations.")
 

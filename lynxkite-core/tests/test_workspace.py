@@ -42,6 +42,7 @@ def test_save_load():
             assert node.id == loaded_node.id
             assert node.type == loaded_node.type
             assert node.data.title == loaded_node.data.title
+            assert node.data.op_id == loaded_node.data.op_id
             assert node.data.params == loaded_node.data.params
             assert node.position.x == loaded_node.position.x
             assert node.position.y == loaded_node.position.y

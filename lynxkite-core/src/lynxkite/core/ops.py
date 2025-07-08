@@ -193,6 +193,8 @@ class Op(BaseConfig):
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
     doc: object = None
+    # ID is automatically set from the name and categories.
+    id: str = pydantic.Field(default=None)
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -235,10 +237,10 @@ class Op(BaseConfig):
                 res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
 
-    @property
-    def id(self) -> str:
-        """The name and categories of the operation."""
-        return " > ".join(self.categories + [self.name])
+    @pydantic.model_validator(mode="after")
+    def compute_id(self):
+        self.id = " > ".join(self.categories + [self.name])
+        return self
 
 
 def op(
@@ -384,7 +386,7 @@ def register_passive_op(env: str, *names: str, inputs=[], outputs=["output"], pa
         **kwargs,
     )
     CATALOGS.setdefault(env, {})
-    CATALOGS[env][name] = op
+    CATALOGS[env][op.id] = op
     return op
 
 

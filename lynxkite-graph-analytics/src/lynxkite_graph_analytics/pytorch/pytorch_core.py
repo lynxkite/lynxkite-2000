@@ -231,11 +231,11 @@ class ModelBuilder:
         # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
-            title = self.nodes[node_id].data.title
-            if title not in self.catalog:  # Groups and comments, for example.
+            op_id = self.nodes[node_id].data.op_id
+            if op_id not in self.catalog:  # Groups and comments, for example.
                 to_delete.add(node_id)
                 continue
-            op = self.catalog[title]
+            op = self.catalog[op_id]
             if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
                 to_delete.add(node_id)
                 to_delete |= self.all_upstream(node_id)
@@ -266,7 +266,7 @@ class ModelBuilder:
         """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
         t = node.data.title
-        op = self.catalog[t]
+        op = self.catalog[node.data.op_id]
         p = op.convert_params(node.data.params)
         match t:
             case "Repeat":
@@ -375,9 +375,8 @@ class ModelBuilder:
         names = {}
         for i in ids:
             for node in self.nodes.values():
-                title = node.data.title
-                op = self.catalog[title]
-                name = node.data.params.get("name") or title
+                op = self.catalog[node.data.op_id]
+                name = node.data.params.get("name") or node.data.title
                 for output in op.outputs:
                     i2 = _to_id(node.id, output.name)
                     if i2 == i:
