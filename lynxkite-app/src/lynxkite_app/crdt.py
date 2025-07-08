@@ -128,7 +128,7 @@ def clean_input(ws_pyd):
         for p in list(node.data.params):
             if p.startswith("_"):
                 del node.data.params[p]
-        if node.data.title == "Comment":
+        if node.data.op_id == "Comment":
             node.data.params = {}
         node.position.x = 0
         node.position.y = 0
