@@ -417,14 +417,14 @@ def register_executor(env: str):
     return decorator
 
 
-def op_registration(env: str):
+def op_registration(env: str, *categories: str):
     """Returns a decorator that can be used for registering functions as operations."""
-    return functools.partial(op, env)
+    return functools.partial(op, env, *categories)
 
 
-def passive_op_registration(env: str):
+def passive_op_registration(env: str, *categories: str):
     """Returns a function that can be used to register operations without associated code."""
-    return functools.partial(register_passive_op, env)
+    return functools.partial(register_passive_op, env, *categories)
 
 
 def make_async(func):
