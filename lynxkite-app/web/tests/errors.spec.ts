@@ -20,8 +20,8 @@ test.afterEach(async () => {
 test("missing parameter", async () => {
   // Test the correct error message is displayed when a required parameter is missing,
   // and that the error message is removed when the parameter is filled.
-  await workspace.addBox("NX › Scale-Free Graph");
-  const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
+  const graphBox = workspace.getBox("Scale-free graph 1");
   await expect(graphBox.locator(".error")).toHaveText("n is unset.");
   await graphBox.getByLabel("n", { exact: true }).fill("10");
   await expect(graphBox.locator(".error")).not.toBeVisible();
@@ -30,11 +30,11 @@ test("missing parameter", async () => {
 test("unknown operation", async () => {
   // Test that the correct error is displayed when the operation does not belong to
   // the current environment.
-  await workspace.addBox("NX › Scale-Free Graph");
-  const graphBox = workspace.getBox("NX › Scale-Free Graph 1");
+  await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
+  const graphBox = workspace.getBox("Scale-free graph 1");
   await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.setEnv("Pillow");
-  const csvBox = workspace.getBox("NX › Scale-Free Graph 1");
+  const csvBox = workspace.getBox("Scale-free graph 1");
   await expect(csvBox.locator(".error")).toHaveText("Unknown operation.");
   await workspace.setEnv("LynxKite Graph Analytics");
   await expect(csvBox.locator(".error")).not.toBeVisible();

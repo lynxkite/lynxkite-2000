@@ -4,6 +4,7 @@ import networkx as nx
 
 from lynxkite.core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute, ENV
+from lynxkite_graph_analytics.lynxkite_ops import FileFormat, export_to_file
 
 
 async def test_execute_operation_not_in_catalog():
@@ -16,6 +17,39 @@ async def test_execute_operation_not_in_catalog():
     )
     await execute(ws)
     assert ws.nodes[0].data.error == "Operation not found in catalog"
+
+
+@pytest.mark.parametrize(
+    "file_format, method_name",
+    [
+        (FileFormat.csv, "to_csv"),
+        (FileFormat.json, "to_json"),
+        (FileFormat.parquet, "to_parquet"),
+        (FileFormat.excel, "to_excel"),
+    ],
+)
+async def test_export_to_file(monkeypatch, file_format, method_name):
+    df = pd.DataFrame({"id": [1, 2], "val": ["a", "b"]})
+    bundle = Bundle(dfs={"data": df})
+    path = "some/path/file.out"
+
+    called = {}
+
+    def fake_writer(self, filepath, **kwargs):
+        called["path"] = filepath
+        called["kwargs"] = kwargs
+
+    monkeypatch.setattr(pd.DataFrame, method_name, fake_writer)
+
+    export_to_file(
+        bundle,
+        table_name="data",
+        filename=path,
+        file_format=file_format,
+    )
+
+    assert called["path"] == path
+    assert isinstance(called["kwargs"], dict)
 
 
 async def test_execute_operation_inputs_correct_cast():

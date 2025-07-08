@@ -11,6 +11,7 @@ dependencies = [
     "lynxkite-core",
     "matplotlib>=3.10.1",
     "networkx[default]>=3.4.2",
+    "numba>=0.61.2",
     "osmnx>=2.0.2",
     "pandas>=2.2.3",
     "polars>=1.25.2",
@@ -18,7 +19,7 @@ dependencies = [
     "torch>=2.7.0",
     "torch-geometric>=2.6.1",
     "torchdiffeq>=0.2.5",
-    "umap-learn>=0.5.7",
+    "umap-learn>=0.5.9.post2",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
 

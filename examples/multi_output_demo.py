@@ -2,7 +2,7 @@ from lynxkite.core.ops import op
 import pandas as pd
 
 
-@op("LynxKite Graph Analytics", "Multi-output example", outputs=["one", "two"])
+@op("LynxKite Graph Analytics", "Examples", "Multi-output example", outputs=["one", "two"])
 def multi_output(*, a_limit=4, b_limit=10):
     """
     Returns two outputs. Also demonstrates Numpy-style docstrings.
