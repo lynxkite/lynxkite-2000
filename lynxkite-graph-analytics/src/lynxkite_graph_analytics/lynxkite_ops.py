@@ -75,7 +75,7 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
-@op("Export to File")
+@op("Export to file")
 def export_to_file(
     bundle: core.Bundle,
     *,
