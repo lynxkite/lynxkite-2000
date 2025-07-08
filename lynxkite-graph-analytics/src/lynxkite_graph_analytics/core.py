@@ -14,6 +14,24 @@ import typing
 
 ENV = "LynxKite Graph Analytics"
 
+TableDropdown = typing.Annotated[str, {"format": "dropdown", "metadata_path": ["*", "dataframes"]}]
+NodeAttribute = typing.Annotated[
+    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "nodes", "columns"]}
+]
+EdgeAttribute = typing.Annotated[
+    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "edges", "columns"]}
+]
+OtherDropdown = typing.Annotated[str, {"format": "dropdown", "metadata_path": ["*", "other"]}]
+ModelDropdown = typing.Annotated[
+    str,
+    {
+        "format": "dropdown",
+        "metadata_path": ["*", "other"],
+        "metadata_filter_key": "type",
+        "metadata_filter_value": "model",
+    },
+]
+
 
 @dataclasses.dataclass
 class RelationDefinition:
