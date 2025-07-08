@@ -39,6 +39,14 @@ class WorkspaceNodeData(BaseConfig):
     # Also contains a "meta" field when going out.
     # This is ignored when coming back from the frontend.
 
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def fill_op_id_if_missing(cls, data: dict) -> dict:
+        """Compatibility with old workspaces that don't have op_id."""
+        if "op_id" not in data:
+            data["op_id"] = data["title"]
+        return data
+
 
 class WorkspaceNode(BaseConfig):
     # Most of these fields are shared with ReactFlow.
