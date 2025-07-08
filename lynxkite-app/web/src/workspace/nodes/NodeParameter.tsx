@@ -55,12 +55,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   function onChange(value: any, opts?: UpdateOptions) {
     setParam(meta.name, value, opts || {});
   }
-  return meta?.type?.format === "collapsed" ? (
-    <label className="param">
-      <ParamName name={name} doc={doc} />
-      <button className="collapsed-param">⋯</button>
-    </label>
-  ) : meta?.type?.format === "textarea" ? (
+  return meta?.type?.format === "textarea" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
       <textarea
