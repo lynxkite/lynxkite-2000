@@ -128,7 +128,7 @@ def clean_input(ws_pyd):
         for p in list(node.data.params):
             if p.startswith("_"):
                 del node.data.params[p]
-        if node.data.title == "Comment":
+        if node.data.op_id == "Comment":
             node.data.params = {}
         node.position.x = 0
         node.position.y = 0
@@ -244,6 +244,10 @@ async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
         for change in changes
     )
+    # Check if workspace is paused - if so, skip automatic execution
+    if getattr(ws_pyd, "paused", False):
+        print(f"Skipping automatic execution for {name} in {ws_pyd.env} - workspace is paused")
+        return
     if delay:
         task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay))
         delayed_executions[name] = task

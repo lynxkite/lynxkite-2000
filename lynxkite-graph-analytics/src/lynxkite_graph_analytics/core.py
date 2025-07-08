@@ -173,7 +173,7 @@ def disambiguate_edges(ws: workspace.Workspace):
     seen = set()
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
-        op = catalog.get(dst_node.data.title)
+        op = catalog.get(dst_node.data.op_id)
         if op.get_input(edge.targetHandle).type == list[Bundle]:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
@@ -220,21 +220,30 @@ async def await_if_needed(obj):
     return obj
 
 
+def _to_bundle(x):
+    if isinstance(x, nx.Graph):
+        x = Bundle.from_nx(x)
+    elif isinstance(x, pd.DataFrame):
+        x = Bundle.from_df(x)
+    assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
+    return x
+
+
 async def _execute_node(
     node: workspace.WorkspaceNode, ws: workspace.Workspace, catalog: ops.Catalog, outputs: Outputs
 ):
     params = {**node.data.params}
-    op = catalog.get(node.data.title)
+    op = catalog.get(node.data.op_id)
     if not op:
         node.publish_error("Operation not found in catalog")
         return
     node.publish_started()
-    # TODO: Handle multi-inputs.
-    input_map = {
-        edge.targetHandle: outputs[edge.source, edge.sourceHandle]
-        for edge in ws.edges
-        if edge.target == node.id
-    }
+    input_map = {}
+    for edge in ws.edges:
+        if edge.target == node.id:
+            input_map.setdefault(edge.targetHandle, []).append(
+                outputs[edge.source, edge.sourceHandle]
+            )
     # Convert inputs types to match operation signature.
     try:
         inputs = []
@@ -248,16 +257,16 @@ async def _execute_node(
                     missing.append(p.name)
                 continue
             x = input_map[p.name]
+            if p.type == list[Bundle]:
+                x = [_to_bundle(i) for i in x]
+            else:
+                [x] = x  # There should never be multiple inputs.
             if p.type == nx.Graph:
                 if isinstance(x, Bundle):
                     x = x.to_nx()
                 assert isinstance(x, nx.Graph), f"Input must be a graph. Got: {x}"
             elif p.type == Bundle:
-                if isinstance(x, nx.Graph):
-                    x = Bundle.from_nx(x)
-                elif isinstance(x, pd.DataFrame):
-                    x = Bundle.from_df(x)
-                assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
+                x = _to_bundle(x)
             if p.type == pd.DataFrame:
                 if isinstance(x, nx.Graph):
                     x = Bundle.from_nx(x)

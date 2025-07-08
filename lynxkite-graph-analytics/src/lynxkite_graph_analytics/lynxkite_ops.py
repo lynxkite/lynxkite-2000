@@ -75,6 +75,36 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
+@op("Export to file")
+def export_to_file(
+    bundle: core.Bundle,
+    *,
+    table_name: str,
+    filename: str,
+    file_format: FileFormat = FileFormat.csv,
+):
+    """Exports a DataFrame to a file.
+
+    Args:
+        bundle: The bundle containing the DataFrame to export.
+        table_name: The name of the DataFrame in the bundle to export.
+        filename: The name of the file to export to.
+        file_format: The format of the file to export to. Defaults to CSV.
+    """
+
+    df = bundle.dfs[table_name]
+    if file_format == FileFormat.csv:
+        df.to_csv(filename, index=False)
+    elif file_format == FileFormat.json:
+        df.to_json(filename, orient="records", lines=True)
+    elif file_format == FileFormat.parquet:
+        df.to_parquet(filename, index=False)
+    elif file_format == FileFormat.excel:
+        df.to_excel(filename, index=False)
+    else:
+        raise ValueError(f"Unsupported file format: {file_format}")
+
+
 @op("Import Parquet")
 def import_parquet(*, filename: str):
     """Imports a Parquet file."""
@@ -144,17 +174,6 @@ def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     graph = bundle.to_nx()
     res = grandcypher.GrandCypher(graph).run(query)
     bundle.dfs[save_as] = pd.DataFrame(res)
-    return bundle
-
-
-@op("Organize")
-def organize(bundle: list[core.Bundle], *, code: ops.LongStr) -> core.Bundle:
-    """Lets you rename/copy/delete DataFrames, and modify relations.
-
-    TODO: Merge this with "Create graph".
-    """
-    bundle = bundle.copy()
-    exec(code, globals(), {"bundle": bundle})
     return bundle
 
 
@@ -289,27 +308,20 @@ def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100
 
 
 @op(
-    "Create graph",
+    "Organize",
     view="graph_creation_view",
     outputs=["output"],
 )
-def create_graph(bundle: core.Bundle, *, relations: str = None) -> core.Bundle:
-    """Replace relations of the given bundle
+def organize(bundles: list[core.Bundle], *, relations: str = None) -> core.Bundle:
+    """Merge multiple inputs and construct graphs from the tables.
 
-    relations is a stringified JSON, instead of a dict, because complex Yjs types (arrays, maps)
-    are not currently supported in the UI.
-
-    Args:
-        bundle: Bundle to modify
-        relations (str, optional): Set of relations to set for the bundle. The parameter
-            should be a JSON object where the keys are relation names and the values are
-            a dictionary representation of a `RelationDefinition`.
-            Defaults to None.
-
-    Returns:
-        Bundle: The input bundle with the new relations set.
+    To create a graph, import tables for edges and nodes, and combine them in this operation.
     """
-    bundle = bundle.copy()
+    bundle = core.Bundle()
+    for b in bundles:
+        bundle.dfs.update(b.dfs)
+        bundle.relations.extend(b.relations)
+        bundle.other.update(b.other)
     if not (relations is None or relations.strip() == ""):
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))

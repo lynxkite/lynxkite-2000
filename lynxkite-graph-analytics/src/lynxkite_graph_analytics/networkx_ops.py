@@ -218,30 +218,102 @@ def _get_params(func) -> dict | None:
 
 
 _REPLACEMENTS = [
-    ("Barabasi Albert", "Barabasi–Albert"),
-    ("Bellman Ford", "Bellman–Ford"),
-    ("Bethe Hessian", "Bethe–Hessian"),
-    ("Bfs", "BFS"),
-    ("Dag ", "DAG "),
-    ("Dfs", "DFS"),
-    ("Dorogovtsev Goltsev Mendes", "Dorogovtsev–Goltsev–Mendes"),
-    ("Erdos Renyi", "Erdos–Renyi"),
-    ("Floyd Warshall", "Floyd–Warshall"),
-    ("Gnc", "G(n,c)"),
-    ("Gnm", "G(n,m)"),
-    ("Gnp", "G(n,p)"),
-    ("Gnr", "G(n,r)"),
-    ("Havel Hakimi", "Havel–Hakimi"),
-    ("Hkn", "H(k,n)"),
-    ("Hnm", "H(n,m)"),
-    ("Kl ", "KL "),
-    ("Moebius Kantor", "Moebius–Kantor"),
-    ("Pagerank", "PageRank"),
-    ("Scale Free", "Scale-Free"),
-    ("Vf2Pp", "VF2++"),
-    ("Watts Strogatz", "Watts–Strogatz"),
-    ("Weisfeiler Lehman", "Weisfeiler–Lehman"),
+    (" at free", " AT-free"),
+    (" dag", " DAG"),
+    (" k out ", " k-out "),
+    (" rary", " r-ary"),
+    ("2d ", "2D "),
+    ("3d ", "3D "),
+    ("adamic adar", "Adamic–Adar"),
+    ("barabasi albert", "Barabasi–Albert"),
+    ("bellman ford", "Bellman–Ford"),
+    ("bethe hessian", "Bethe–Hessian"),
+    ("bfs", "BFS"),
+    ("d separator", "d-separator"),
+    ("dag ", "DAG "),
+    ("dfs", "DFS"),
+    ("dijkstra", "Dijkstra"),
+    ("dorogovtsev goltsev mendes", "Dorogovtsev–Goltsev–Mendes"),
+    ("erdos renyi", "Erdos–Renyi"),
+    ("euler", "Euler"),
+    ("floyd warshall", "Floyd–Warshall"),
+    ("forceatlas2", "ForceAtlas2"),
+    ("gexf ", "GEXF "),
+    ("gml", "GML"),
+    ("gnc", "G(n,c)"),
+    ("gnm", "G(n,m)"),
+    ("gnp", "G(n,p)"),
+    ("gnr", "G(n,r)"),
+    ("graphml", "GraphML"),
+    ("harary", "Harary"),
+    ("havel hakimi", "Havel–Hakimi"),
+    ("hkn", "H(k,n)"),
+    ("hnm", "H(n,m)"),
+    ("internet", "Internet"),
+    ("k core", "k-core"),
+    ("k corona", "k-corona"),
+    ("k crust", "k-crust"),
+    ("k shell", "k-shell"),
+    ("k truss", "k-truss"),
+    ("kl ", "KL "),
+    ("laplacian", "Laplacian"),
+    ("lfr ", "LFR "),
+    ("margulis gabber galil", "Margulis–Gabber–Galil"),
+    ("moebius kantor", "Moebius–Kantor"),
+    ("newman watts strogatz", "Newman–Watts–Strogatz"),
+    ("numpy", "NumPy"),
+    ("pagerank", "PageRank"),
+    ("pajek", "Pajek"),
+    ("pandas", "Pandas"),
+    ("parse leda", "Parse LEDA"),
+    ("powerlaw", "power-law"),
+    ("prufer", "Prüfer"),
+    ("radzik", "Radzik"),
+    ("s metric", "s-metric"),
+    ("scale free", "Scale-free"),
+    ("scipy", "SciPy"),
+    ("small world", "small-world"),
+    ("soundarajan hopcroft", "Soundarajan–Hopcroft"),
+    ("southern women", "Southern women"),
+    ("vf2pp", "VF2++"),
+    ("watts strogatz", "Watts–Strogatz"),
+    ("weisfeiler lehman", "Weisfeiler–Lehman"),
 ]
+_CATEGORY_REPLACEMENTS = [
+    ("Networkx", "NetworkX"),
+    ("D separation", "D-separation"),
+    ("Dag", "DAG"),
+    ("Pagerank alg", "PageRank alg"),
+    ("Richclub", "Rich-club"),
+    ("Smallworld", "Small-world"),
+    ("Smetric", "S-metric"),
+    ("Structuralholes", "Structural holes"),
+    ("Edgedfs", "Edge DFS"),
+    ("Edgebfs", "Edge BFS"),
+    ("Edge_kcomponents", "Edge k-components"),
+    ("Mincost", "Min cost"),
+    ("Networksimplex", "Network simplex"),
+    ("Vf2pp", "VF2++"),
+    ("Mst", "MST"),
+    ("Attrmatrix", "Attr matrix"),
+    ("Graphmatrix", "Graph matrix"),
+    ("Laplacianmatrix", "Laplacian matrix"),
+    ("Algebraicconnectivity", "Algebraic connectivity"),
+    ("Modularitymatrix", "Modularity matrix"),
+    ("Bethehessianmatrix", "Bethe–Hessian matrix"),
+]
+
+
+def _categories(func) -> list[str]:
+    """Extract categories from the function's docstring."""
+    path = func.__module__.split(".")
+    cats = []
+    for p in path:
+        p = p.replace("_", " ").capitalize()
+        for a, b in _CATEGORY_REPLACEMENTS:
+            p = p.replace(a, b)
+        cats.append(p)
+    return cats
 
 
 def register_networkx(env: str):
@@ -254,18 +326,21 @@ def register_networkx(env: str):
             except UnsupportedParameterType:
                 continue
             inputs = [ops.Input(name=k, type=nx.Graph) for k in func.graphs]
-            nicename = "NX › " + name.replace("_", " ").title()
+            nicename = name.replace("_", " ")
             for a, b in _REPLACEMENTS:
                 nicename = nicename.replace(a, b)
+            if nicename[1] != "-":
+                nicename = nicename[0].upper() + nicename[1:]
             op = ops.Op(
                 func=wrapped(name, func),
                 name=nicename,
+                categories=_categories(func),
                 params=params,
                 inputs=inputs,
                 outputs=[ops.Output(name="output", type=nx.Graph)],
                 type="basic",
             )
-            cat[nicename] = op
+            cat[op.id] = op
             counter += 1
     print(f"Registered {counter} NetworkX operations.")
 

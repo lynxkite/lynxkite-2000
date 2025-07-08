@@ -57,7 +57,12 @@ Let's review the changes we made.
 
 The [`@op`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.op) decorator registers a
 function as a LynxKite operation. The first argument is the name of the environment,
-the second argument is the name of the operation.
+the last argument is the name of the operation. Between the two, you can list the hierarchy of
+categories the operation belongs to. For example:
+
+```python
+@op("LynxKite Graph Analytics", "Machine learning", "Preprocessing", "Split train/test set")
+```
 
 When defining multiple operations, you can use
 [`ops.op_registration`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.op_registration)
