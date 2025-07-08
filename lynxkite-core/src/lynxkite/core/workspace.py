@@ -137,10 +137,16 @@ class Workspace(BaseConfig):
     async def execute(self):
         return await ops.EXECUTORS[self.env](self)
 
-    def save(self, path: str):
-        """Persist the workspace to a local file in JSON format."""
+    def model_dump_json(self) -> str:
+        """Returns the workspace as JSON."""
+        # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
         j = self.model_dump()
         j = json.dumps(j, indent=2, sort_keys=True) + "\n"
+        return j
+
+    def save(self, path: str):
+        """Persist the workspace to a local file in JSON format."""
+        j = self.model_dump_json()
         dirname, basename = os.path.split(path)
         if dirname:
             os.makedirs(dirname, exist_ok=True)
