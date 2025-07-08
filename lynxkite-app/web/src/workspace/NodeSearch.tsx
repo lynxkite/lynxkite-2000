@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export type OpsOp = {
   name: string;
+  id: string;
+  categories: string[];
   type: string;
   position: { x: number; y: number };
   params: { name: string; default: any }[];
@@ -81,6 +83,7 @@ export default function NodeSearch(props: {
             onClick={addSelected}
             className={`search-result ${index === selectedIndex ? "selected" : ""}`}
           >
+            {box.item.categories.map((category) => `${category}\u00A0›\u00A0`)}
             {box.item.name}
           </div>
         ))}
