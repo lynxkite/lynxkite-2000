@@ -74,7 +74,7 @@ def _get_num_samples(bundle: core.Bundle, input_mapping: pytorch_core.ModelMappi
 def train_model(
     bundle: core.Bundle,
     *,
-    model_name: str = "model",
+    model_name: core.ModelDropdown = "model",
     input_mapping: ModelTrainingInputMapping,
     epochs: int = 1,
     batch_size: int = 1,
@@ -113,7 +113,7 @@ def train_model(
 def model_inference(
     bundle: core.Bundle,
     *,
-    model_name: str = "model",
+    model_name: core.ModelDropdown = "model",
     input_mapping: ModelInferenceInputMapping,
     output_mapping: ModelOutputMapping,
     batch_size: int = 1,
@@ -147,7 +147,9 @@ def model_inference(
 
 
 @op("Train/test split")
-def train_test_split(bundle: core.Bundle, *, table_name: str, test_ratio: float = 0.1, seed=1234):
+def train_test_split(
+    bundle: core.Bundle, *, table_name: core.TableDropdown, test_ratio: float = 0.1, seed=1234
+):
     """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
     df = bundle.dfs[table_name]
     test = df.sample(frac=test_ratio, random_state=seed).reset_index()
@@ -206,7 +208,7 @@ class UMAPMetric(str, enum.Enum):
 def view_vectors(
     bundle: core.Bundle,
     *,
-    table_name: str = "nodes",
+    table_name: core.TableDropdown = "nodes",
     vector_column: str = "",
     label_column: str = "",
     n_neighbors: int = 15,

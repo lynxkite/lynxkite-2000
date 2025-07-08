@@ -66,6 +66,21 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
       />
     </label>
+  ) : meta?.type?.format === "dropdown" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <select
+        className="select select-bordered w-full"
+        value={value || getDropDownValues(data, meta)[0]}
+        onChange={(evt) => onChange(evt.currentTarget.value)}
+      >
+        {getDropDownValues(data, meta).map((option: string) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
   ) : meta?.type === "group" ? (
     <NodeGroupParameter meta={meta} data={data} setParam={setParam} />
   ) : meta?.type?.enum ? (
@@ -116,4 +131,48 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParameterInput value={value} onChange={onChange} />
     </label>
   );
+}
+
+// We have a little "language" for describing which part of the input_metadata
+// to use in the dropdown.
+function getDropDownValues(data: any, meta: any): string[] {
+  const metadata = data.input_metadata.value;
+  const { metadata_path, metadata_filter_key, metadata_filter_value } = meta.type;
+  let o = [metadata];
+  for (const path of metadata_path) {
+    o = o.flatMap((x: any) => {
+      if (x === undefined || x === null) {
+        return [];
+      }
+      if (typeof x === "object") {
+        if (path === "*") {
+          return Object.values(x);
+        }
+        return [x[path]];
+      }
+      if (path === "*") {
+        return x;
+      }
+      return [x[Number.parseInt(path)]];
+    });
+  }
+  o = o.flatMap((x: any) => {
+    if (x === undefined || x === null) {
+      return [];
+    }
+    if (typeof x === "object") {
+      if (metadata_filter_key && metadata_filter_value) {
+        const keys = [];
+        for (const key in x) {
+          if (x[key][metadata_filter_key] === metadata_filter_value) {
+            keys.push(key);
+          }
+        }
+        return keys;
+      }
+      return Object.keys(x);
+    }
+    return x;
+  });
+  return o;
 }
