@@ -158,6 +158,17 @@ def concatenate(a, b):
     return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
 
 
+@op("Test nested layers")
+def test_nested_layers(x: torch.Tensor, a: torch.nn.Module, b: torch.nn.Module):
+    """
+    This is a test function to demonstrate nested layers.
+    It creates a simple MLP with two layers.
+    """
+    print("A ", a)
+    print("B ", b)
+    return torch.nn.Sequential(a, b)
+
+
 reg(
     "Pick element by index",
     inputs=["x", "index"],

@@ -2,6 +2,7 @@
 
 import copy
 import graphlib
+from typing import get_origin
 
 import pydantic
 from lynxkite.core import ops, workspace
@@ -228,6 +229,7 @@ class ModelBuilder:
             for i in v:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
+        self.submodules: dict[str, torch.nn.Module] = {}
         # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
@@ -235,10 +237,10 @@ class ModelBuilder:
             if title not in self.catalog:  # Groups and comments, for example.
                 to_delete.add(node_id)
                 continue
-            op = self.catalog[title]
-            if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
-                to_delete.add(node_id)
-                to_delete |= self.all_upstream(node_id)
+            # op = self.catalog[title]
+            # if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
+            #     to_delete.add(node_id)
+            #     to_delete |= self.all_upstream(node_id)
         for node_id in to_delete:
             del self.dependencies[node_id]
             del self.in_edges[node_id]
@@ -268,6 +270,10 @@ class ModelBuilder:
         t = node.data.title
         op = self.catalog[t]
         p = op.convert_params(node.data.params)
+        if self.is_submodule(node_id):
+            print(f"node id  {node_id} submodule: {self.is_submodule(node_id)}")
+            self.submodules[node_id] = self.run_op(node_id, op, p)
+            return
         match t:
             case "Repeat":
                 if node_id.startswith("END "):
@@ -306,14 +312,55 @@ class ModelBuilder:
             case _:
                 self.layers.append(self.run_op(node_id, op, p))
 
+    def is_submodule(self, node_id: str) -> bool:
+        # If this node is a submodule, ignore its inputs (shouldn't have any)
+        # and just compute the outcome of the operation
+        print(self.out_edges[node_id])
+        for output, connections in self.out_edges[node_id].items():
+            for target_name, target_handle in connections:
+                # Find target node in list of nodes
+                target_node = self.nodes[target_name]
+                target_op = self.catalog[target_node.data.title]
+                [target_input] = [inp for inp in target_op.inputs if inp.name == target_handle]
+                print(target_input)
+                return (
+                    target_input.type is torch.nn.Module
+                    or get_origin(target_input.type) is torch.nn.Module
+                )
+        return False
+
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
+        # If one of the inputs is a nn.Module, obtain the Layer object, instead of the id.
+        # inputs = []
+        if self.is_submodule(node_id):
+            inputs = ["" for n in op.inputs for i in self.in_edges[node_id].get(n.name, [""])]
+            return op.func(*inputs, **params)
+        operation_inputs = []
+        for input in op.inputs:
+            if input.type is torch.nn.Module or get_origin(input.type) is torch.nn.Module:
+                assert input.name in self.in_edges[node_id], (
+                    f"Module input {input.name} not found in node {node_id}."
+                )
+                input_edges = []
+                for source, _ in self.in_edges[node_id][input.name]:
+                    # Get module from the list of already built layers.
+                    # [layer] = [
+                    #     l for l in self.layers if l.origin_id == input_edge[0]input_edge[0]
+                    # ]
+                    input_edges.append(self.submodules[source])
+                operation_inputs.append(input_edges[0])
+            else:
+                [input_edges] = [
+                    _to_id(*input_edge) for input_edge in self.in_edges[node_id][input.name]
+                ]
+                operation_inputs.append(input_edges)
+        inputs = [input for input in operation_inputs if type(input) is str]
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
-            module = op.func(*inputs, **params)
+            module = op.func(*operation_inputs, **params)
         return Layer(module, node_id, inputs, outputs)
 
     def build_model(self) -> ModelConfig:
@@ -340,6 +387,7 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
+        print(f"Model layers: {layers}")
         used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
