@@ -26,7 +26,7 @@
         "input_metadata": [],
         "meta": {
           "categories": [
-            "examples"
+            "Examples"
           ],
           "color": "orange",
           "doc": [
@@ -60,7 +60,7 @@
               ]
             }
           ],
-          "id": "examples > Multi-output example",
+          "id": "Examples > Multi-output example",
           "inputs": [],
           "name": "Multi-output example",
           "outputs": [
@@ -97,7 +97,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "examples > Multi-output example",
+        "op_id": "Examples > Multi-output example",
         "params": {
           "a_limit": "2",
           "b_limit": "10"
