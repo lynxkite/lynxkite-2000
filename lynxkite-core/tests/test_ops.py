@@ -4,7 +4,7 @@ import enum
 
 
 def test_op_decorator_no_params_no_types_default_positions():
-    @ops.op(env="test", name="add", view="basic", outputs=["result"])
+    @ops.op("test", "add", view="basic", outputs=["result"])
     def add(a, b):
         return a + b
 
@@ -22,7 +22,7 @@ def test_op_decorator_no_params_no_types_default_positions():
 def test_op_decorator_custom_positions():
     @ops.input_position(a="right", b="top")
     @ops.output_position(result="bottom")
-    @ops.op(env="test", name="add", view="basic", outputs=["result"])
+    @ops.op("test", "add", view="basic", outputs=["result"])
     def add(a, b):
         return a + b
 
@@ -38,7 +38,7 @@ def test_op_decorator_custom_positions():
 
 
 def test_op_decorator_with_params_and_types_():
-    @ops.op(env="test", name="multiply", view="basic", outputs=["result"])
+    @ops.op("test", "multiply", view="basic", outputs=["result"])
     def multiply(a: int, b: float = 2.0, *, param: str = "param"):
         return a * b
 
@@ -59,7 +59,7 @@ def test_op_decorator_with_complex_types():
         GREEN = 2
         BLUE = 3
 
-    @ops.op(env="test", name="color_op", view="basic", outputs=["result"])
+    @ops.op("test", "color_op", view="basic", outputs=["result"])
     def complex_op(color: Color, color_list: list[Color], color_dict: dict[str, Color]):
         return color.name
 
@@ -76,7 +76,7 @@ def test_op_decorator_with_complex_types():
 
 
 def test_operation_can_return_non_result_instance():
-    @ops.op(env="test", name="subtract", view="basic", outputs=["result"])
+    @ops.op("test", "subtract", view="basic", outputs=["result"])
     def subtract(a, b):
         return a - b
 
@@ -87,7 +87,7 @@ def test_operation_can_return_non_result_instance():
 
 
 def test_operation_can_return_result_instance():
-    @ops.op(env="test", name="subtract", view="basic", outputs=["result"])
+    @ops.op("test", "subtract", view="basic", outputs=["result"])
     def subtract(a, b):
         return ops.Result(output=a - b, display=None)
 
@@ -98,7 +98,7 @@ def test_operation_can_return_result_instance():
 
 
 def test_visualization_operations_display_is_populated_automatically():
-    @ops.op(env="test", name="display_op", view="visualization", outputs=["result"])
+    @ops.op("test", "display_op", view="visualization", outputs=["result"])
     def display_op():
         return {"display_value": 1}
 
