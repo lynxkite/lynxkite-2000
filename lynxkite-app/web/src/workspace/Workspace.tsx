@@ -75,7 +75,7 @@ function LynxKiteFlow() {
     .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as WorkspaceType });
   const [message, setMessage] = useState(null as string | null);
-  const [, forceUpdate] = useState(0);
+  const [pausedUIState, setPausedUIState] = useState(false);
   useEffect(() => {
     const state = syncedStore({ workspace: {} as WorkspaceType });
     setState(state);
@@ -139,12 +139,16 @@ function LynxKiteFlow() {
             node.position.x = ch.position.x;
             node.position.y = ch.position.y;
           });
+          // Update edge positions.
+          updateNodeInternals(ch.id);
         } else if (ch.type === "select") {
         } else if (ch.type === "dimensions") {
           getYjsDoc(state).transact(() => {
             node.width = ch.dimensions.width;
             node.height = ch.dimensions.height;
           });
+          // Update edge positions when node size changes.
+          updateNodeInternals(ch.id);
         } else if (ch.type === "remove") {
           wnodes.splice(nodeIndex, 1);
         } else if (ch.type === "replace") {
@@ -152,6 +156,8 @@ function LynxKiteFlow() {
           getYjsDoc(state).transact(() => {
             if (node.data.collapsed !== ch.item.data.collapsed) {
               node.data.collapsed = ch.item.data.collapsed;
+              // Update edge positions when node collapses/expands.
+              setTimeout(() => updateNodeInternals(ch.id), 0);
             }
             if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
               node.data.__execution_delay = ch.item.data.__execution_delay;
@@ -167,7 +173,7 @@ function LynxKiteFlow() {
         }
       }
     },
-    [state],
+    [state, updateNodeInternals],
   );
   const onEdgesChange = useCallback(
     (changes: any[]) => {
@@ -409,8 +415,7 @@ function LynxKiteFlow() {
   }
   function togglePause() {
     state.workspace.paused = !state.workspace.paused;
-    // Force re-render by updating the counter
-    forceUpdate((prev) => prev + 1);
+    setPausedUIState(state.workspace.paused);
   }
   function deleteSelection() {
     const selectedNodes = nodes.filter((n) => n.selected);
@@ -547,13 +552,9 @@ function LynxKiteFlow() {
               <Backspace />
             </button>
           </Tooltip>
-          <Tooltip
-            doc={
-              state.workspace.paused ? "Resume automatic execution" : "Pause automatic execution"
-            }
-          >
+          <Tooltip doc={pausedUIState ? "Resume automatic execution" : "Pause automatic execution"}>
             <button className="btn btn-link" onClick={togglePause}>
-              {state.workspace.paused ? <Play /> : <Pause />}
+              {pausedUIState ? <Play /> : <Pause />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">
