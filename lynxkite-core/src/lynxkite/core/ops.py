@@ -253,7 +253,23 @@ def op(
     color=None,
     cache=None,
 ):
-    """Decorator for defining an operation."""
+    """
+    Decorator for defining an operation.
+
+    Parameters:
+        env: The environment (workspace type) to which the operation belongs.
+        names: The list of categories this operation belongs to, followed by the name of the operation.
+        view: How the operation will be displayed in the UI. One of "basic", "visualization",
+              "table_view", "graph_creation_view", "image", "molecule", "matplotlib".
+        outputs: A list of output names. If not provided, defaults to ["output"] for "basic" view.
+        params: Normally the parameters are taken from the function signature.
+                Use "params" to override this.
+        slow: If True, the operation results will be cached.
+              If the function is not async, it will be run in a separate thread.
+        color: The color of the operation in the UI. Defaults to "orange".
+        cache: Set to False to disable caching for a slow operation.
+               You may need this for slow operations with parameters/outputs that can't be serialized.
+    """
     [*categories, name] = names
 
     def decorator(func):
