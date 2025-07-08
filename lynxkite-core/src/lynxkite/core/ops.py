@@ -184,6 +184,7 @@ def _param_to_type(name, value, type):
 
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
+    categories: list[str]
     name: str
     params: list[Parameter | ParameterGroup]
     inputs: list[Input]
@@ -234,11 +235,15 @@ class Op(BaseConfig):
                 res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
 
+    @property
+    def id(self) -> str:
+        """The name and categories of the operation."""
+        return " > ".join(self.categories + [self.name])
+
 
 def op(
     env: str,
-    name: str,
-    *,
+    *names: str,
     view="basic",
     outputs=None,
     params=None,
@@ -247,6 +252,7 @@ def op(
     cache=None,
 ):
     """Decorator for defining an operation."""
+    [*categories, name] = names
 
     def decorator(func):
         doc = parse_doc(func)
@@ -279,6 +285,7 @@ def op(
             func=func,
             doc=doc,
             name=name,
+            categories=categories,
             params=_params,
             inputs=inputs,
             outputs=_outputs,
@@ -286,7 +293,7 @@ def op(
             color=color or "orange",
         )
         CATALOGS.setdefault(env, {})
-        CATALOGS[env][name] = op
+        CATALOGS[env][op.id] = op
         func.__op__ = op
         return func
 
@@ -364,11 +371,13 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[], **kwargs):
+def register_passive_op(env: str, *names: str, inputs=[], outputs=["output"], params=[], **kwargs):
     """A passive operation has no associated code."""
+    [*categories, name] = names
     op = Op(
         func=no_op,
         name=name,
+        categories=categories,
         params=params,
         inputs=[Input(name=i, type=None) if isinstance(i, str) else i for i in inputs],
         outputs=[Output(name=o, type=None) if isinstance(o, str) else o for o in outputs],
@@ -382,6 +391,7 @@ def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], para
 COMMENT_OP = Op(
     func=no_op,
     name="Comment",
+    categories=[],
     params=[Parameter.basic("text", "", LongStr)],
     inputs=[],
     outputs=[],
