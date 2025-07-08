@@ -29,6 +29,10 @@ import UngroupIcon from "~icons/tabler/library-minus.jsx";
 // @ts-ignore
 import GroupIcon from "~icons/tabler/library-plus.jsx";
 // @ts-ignore
+import Pause from "~icons/tabler/player-pause.jsx";
+// @ts-ignore
+import Play from "~icons/tabler/player-play.jsx";
+// @ts-ignore
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-ignore
 import Close from "~icons/tabler/x.jsx";
@@ -71,12 +75,16 @@ function LynxKiteFlow() {
     .replace(/[.]lynxkite[.]json$/, "");
   const [state, setState] = useState({ workspace: {} as WorkspaceType });
   const [message, setMessage] = useState(null as string | null);
+  const [pausedUIState, setPausedUIState] = useState(false);
   useEffect(() => {
     const state = syncedStore({ workspace: {} as WorkspaceType });
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const wsProvider = new WebsocketProvider(`${proto}//${location.host}/ws/crdt`, path!, doc);
+    if (state.workspace && typeof state.workspace.paused === "undefined") {
+      state.workspace.paused = false;
+    }
     const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
       if (origin === wsProvider) {
         // An update from the CRDT. Apply it to the local state.
@@ -131,12 +139,16 @@ function LynxKiteFlow() {
             node.position.x = ch.position.x;
             node.position.y = ch.position.y;
           });
+          // Update edge positions.
+          updateNodeInternals(ch.id);
         } else if (ch.type === "select") {
         } else if (ch.type === "dimensions") {
           getYjsDoc(state).transact(() => {
             node.width = ch.dimensions.width;
             node.height = ch.dimensions.height;
           });
+          // Update edge positions when node size changes.
+          updateNodeInternals(ch.id);
         } else if (ch.type === "remove") {
           wnodes.splice(nodeIndex, 1);
         } else if (ch.type === "replace") {
@@ -144,6 +156,8 @@ function LynxKiteFlow() {
           getYjsDoc(state).transact(() => {
             if (node.data.collapsed !== ch.item.data.collapsed) {
               node.data.collapsed = ch.item.data.collapsed;
+              // Update edge positions when node collapses/expands.
+              setTimeout(() => updateNodeInternals(ch.id), 0);
             }
             if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
               node.data.__execution_delay = ch.item.data.__execution_delay;
@@ -159,7 +173,7 @@ function LynxKiteFlow() {
         }
       }
     },
-    [state],
+    [state, updateNodeInternals],
   );
   const onEdgesChange = useCallback(
     (changes: any[]) => {
@@ -400,6 +414,10 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
+  function togglePause() {
+    state.workspace.paused = !state.workspace.paused;
+    setPausedUIState(state.workspace.paused);
+  }
   function deleteSelection() {
     const selectedNodes = nodes.filter((n) => n.selected);
     const selectedEdges = edges.filter((e) => e.selected);
@@ -533,6 +551,11 @@ function LynxKiteFlow() {
           <Tooltip doc="Delete selected nodes and edges">
             <button className="btn btn-link" onClick={deleteSelection}>
               <Backspace />
+            </button>
+          </Tooltip>
+          <Tooltip doc={pausedUIState ? "Resume automatic execution" : "Pause automatic execution"}>
+            <button className="btn btn-link" onClick={togglePause}>
+              {pausedUIState ? <Play /> : <Pause />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">

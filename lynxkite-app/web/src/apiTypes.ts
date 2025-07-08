@@ -25,6 +25,7 @@ export interface SaveRequest {
  */
 export interface Workspace {
   env?: string;
+  paused?: boolean;
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   [k: string]: unknown;
