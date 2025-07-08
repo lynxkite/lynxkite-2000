@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export type OpsOp = {
   name: string;
+  id: string;
   categories: string[];
   type: string;
   position: { x: number; y: number };

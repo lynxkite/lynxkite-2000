@@ -316,6 +316,7 @@ function LynxKiteFlow() {
       data: {
         meta: { value: meta },
         title: meta.name,
+        op_id: meta.id,
         params: Object.fromEntries(meta.params.map((p) => [p.name, p.default])),
       },
     };

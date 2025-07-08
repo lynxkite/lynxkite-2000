@@ -173,7 +173,7 @@ def disambiguate_edges(ws: workspace.Workspace):
     seen = set()
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
-        op = catalog.get(dst_node.data.title)
+        op = catalog.get(dst_node.data.op_id)
         if op.get_input(edge.targetHandle).type == list[Bundle]:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
@@ -224,7 +224,7 @@ async def _execute_node(
     node: workspace.WorkspaceNode, ws: workspace.Workspace, catalog: ops.Catalog, outputs: Outputs
 ):
     params = {**node.data.params}
-    op = catalog.get(node.data.title)
+    op = catalog.get(node.data.op_id)
     if not op:
         node.publish_error("Operation not found in catalog")
         return
