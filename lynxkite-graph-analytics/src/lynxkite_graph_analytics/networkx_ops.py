@@ -242,6 +242,41 @@ _REPLACEMENTS = [
     ("Watts Strogatz", "Watts–Strogatz"),
     ("Weisfeiler Lehman", "Weisfeiler–Lehman"),
 ]
+_CATEGORY_REPLACEMENTS = [
+    ("Networkx", "NetworkX"),
+    ("D separation", "D-separation"),
+    ("Dag", "DAG"),
+    ("Pagerank alg", "PageRank alg"),
+    ("Richclub", "Rich-club"),
+    ("Smallworld", "Small-world"),
+    ("Smetric", "S-metric"),
+    ("Structuralholes", "Structural holes"),
+    ("Edgedfs", "Edge DFS"),
+    ("Edgebfs", "Edge BFS"),
+    ("Edge_kcomponents", "Edge k-components"),
+    ("Mincost", "Min cost"),
+    ("Networksimplex", "Network simplex"),
+    ("Vf2pp", "VF2++"),
+    ("Mst", "MST"),
+    ("Attrmatrix", "Attr matrix"),
+    ("Graphmatrix", "Graph matrix"),
+    ("Laplacianmatrix", "Laplacian matrix"),
+    ("Algebraicconnectivity", "Algebraic connectivity"),
+    ("Modularitymatrix", "Modularity matrix"),
+    ("Bethehessianmatrix", "Bethe–Hessian matrix"),
+]
+
+
+def _categories(func) -> list[str]:
+    """Extract categories from the function's docstring."""
+    path = func.__module__.split(".")
+    cats = []
+    for p in path:
+        p = p.replace("_", " ").capitalize()
+        for a, b in _CATEGORY_REPLACEMENTS:
+            p = p.replace(a, b)
+        cats.append(p)
+    return cats
 
 
 def register_networkx(env: str):
@@ -254,12 +289,13 @@ def register_networkx(env: str):
             except UnsupportedParameterType:
                 continue
             inputs = [ops.Input(name=k, type=nx.Graph) for k in func.graphs]
-            nicename = "NX › " + name.replace("_", " ").title()
+            nicename = name.replace("_", " ").title()
             for a, b in _REPLACEMENTS:
                 nicename = nicename.replace(a, b)
             op = ops.Op(
                 func=wrapped(name, func),
                 name=nicename,
+                categories=_categories(func),
                 params=params,
                 inputs=inputs,
                 outputs=[ops.Output(name="output", type=nx.Graph)],
