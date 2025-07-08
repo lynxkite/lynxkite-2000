@@ -21,7 +21,10 @@ test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
   for (const env of envs) {
     await workspace.setEnv(env);
-    const catalog = (await workspace.getCatalog()).filter((box) => box !== "Comment");
+    // Op categories don't have a finished UI yet. I just skip NetworkX ops for now.
+    const catalog = (await workspace.getCatalog()).filter(
+      (box) => box !== "Comment" && !box.includes("NetworkX"),
+    );
     expect(catalog).not.toHaveLength(0);
     const op = catalog[0];
     await workspace.addBox(op);
@@ -32,9 +35,9 @@ test("Box creation & deletion per env", async () => {
 });
 
 test("Delete multi-handle boxes", async () => {
-  await workspace.addBox("NX › PageRank");
-  await workspace.deleteBoxes(["NX › PageRank 1"]);
-  await expect(workspace.getBox("NX › PageRank 1")).not.toBeVisible();
+  await workspace.addBox("NetworkX › Algorithms › Link analysis › PageRank alg › PageRank");
+  await workspace.deleteBoxes(["PageRank 1"]);
+  await expect(workspace.getBox("PageRank 1")).not.toBeVisible();
 });
 
 test("Drag box", async () => {

@@ -62,7 +62,7 @@ def test_save_load():
 def populate_ops_catalog():
     from lynxkite.core import ops
 
-    ops.register_passive_op("test", "Test Operation", [])
+    ops.register_passive_op("test", "Test Operation", inputs=[])
 
 
 def test_update_metadata():
