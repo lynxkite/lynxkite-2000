@@ -2,7 +2,7 @@
 
 import copy
 import graphlib
-from typing import get_origin
+import typing
 
 import pydantic
 from lynxkite.core import ops, workspace
@@ -48,14 +48,34 @@ def _to_id(*strings: str) -> str:
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
 
 
-@dataclasses.dataclass
 class Layer:
     """Temporary data structure used by ModelBuilder."""
 
-    module: torch.nn.Module
-    origin_id: str
-    inputs: list[str]
-    outputs: list[str]
+    def __init__(
+        self,
+        module: torch.nn.Module,
+        origin_id: str,
+        inputs: list[str | list[str]],
+        outputs: list[str],
+    ):
+        self.module = module
+        self.origin_id = origin_id
+        self.inputs = self.flatten_inputs(inputs)
+        self.outputs = outputs
+
+    @staticmethod
+    def flatten_inputs(inputs: list[str | list[str]]) -> list[str]:
+        """Flattens the input list, since some inputs can be lists.
+        We need to flatten them to make sure the signature for pyg.nn.Sequential. is correct.
+        For example, if the inputs are ['a', ['b', 'c']], we want to return ['a', 'b', 'c'].
+        """
+        inputs_flat = []
+        for input_item in inputs:
+            if isinstance(input_item, (list, tuple)):
+                inputs_flat.extend(input_item)
+            else:
+                inputs_flat.append(input_item)
+        return inputs_flat
 
     def for_sequential(self):
         """The layer signature for pyg.nn.Sequential."""
@@ -264,6 +284,23 @@ class ModelBuilder:
             deps.update(self.all_downstream(dep))
         return deps
 
+    def _is_submodule_node(self, node_id: str) -> bool:
+        """Returns True if the node is a submodule
+
+        A submodule is a node in the workspace whose output is connected to an input of another
+        node, and that input is of type torch.nn.Module or list[torch.nn.Module].
+        In other words, a submodule is a node that is used as a component (module) inside a
+        higher-level module, rather than being a top-level layer in the model sequence.
+        """
+        for output, connections in self.out_edges[node_id].items():
+            # TODO: What if it is connected to multiple inputs of different type?
+            for target_name, target_handle in connections:
+                target_node = self.nodes[target_name]
+                target_op = self.catalog[target_node.data.title]
+                [target_input] = [inp for inp in target_op.inputs if inp.name == target_handle]
+                return self._is_submodule_type(target_input.type)
+        return False
+
     def run_node(self, node_id: str) -> None:
         """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
@@ -307,52 +344,65 @@ class ModelBuilder:
                 return
             case _:
                 operation_result = self.run_op(node_id, op, p)
-        if self.is_submodule(node_id):
+        if self._is_submodule_node(node_id):
             self.submodules[node_id] = operation_result.module
         else:
             self.layers.append(operation_result)
 
-    def is_submodule(self, node_id: str) -> bool:
-        """Returns True if the node is a submodule, i.e., it has a submodule as an input."""
-        for output, connections in self.out_edges[node_id].items():
-            # TODO: What if it is connected to multiple inputs of different type?
-            for target_name, target_handle in connections:
-                target_node = self.nodes[target_name]
-                target_op = self.catalog[target_node.data.title]
-                [target_input] = [inp for inp in target_op.inputs if inp.name == target_handle]
-                return (
-                    target_input.type is torch.nn.Module
-                    or get_origin(target_input.type) is torch.nn.Module
-                )
+    def _is_submodule_type(self, type_: type[typing.Any]) -> bool:
+        """Returns True if the type is a submodule, i.e., it is a torch.nn.Module or list[torch.nn.Module]."""
+        if type_ is torch.nn.Module or typing.get_origin(type_) is torch.nn.Module:
+            return True
+        if type_ is list or typing.get_origin(type_) is list:
+            args = typing.get_args(type_)
+            if (
+                len(args) == 1
+                and args[0] is torch.nn.Module
+                or typing.get_origin(args[0]) is torch.nn.Module
+            ):
+                return True
         return False
+
+    def _edge_to_input(self, edge: tuple[str, str], input_type: type):
+        """Converts an edge to an input for an operation.
+
+        If the input is a submodule type, it returns the submodule object.
+        Otherwise, it returns the internal ID of the input.
+        """
+        source, source_handle = edge
+        if self._is_submodule_type(input_type):
+            # If the input is a submodule, we need to get the module object.
+            return self.submodules[source]
+        return _to_id(source, source_handle)
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        # If one of the inputs is a nn.Module, obtain the Layer object, instead of the id.
-        # if self.is_submodule(node_id):
-        #     inputs = ["" for n in op.inputs for i in self.in_edges[node_id].get(n.name, [""])]
-        #     return op.func(*inputs, **params)
         operation_inputs = []
-        # Sub-modules are not real inputs, they are just a way to build hierarchical models.
-        non_module_inputs = []
         for input in op.inputs:
-            if input.type is torch.nn.Module or get_origin(input.type) is torch.nn.Module:
-                # If the input is a submodule, we need to get the module object.
-                input_edges = []
-                for source, _ in self.in_edges[node_id][input.name]:
-                    input_edges.append(self.submodules[source])
-                operation_inputs.extend(input_edges)
-            else:
-                input_edges = [
-                    _to_id(*input_edge) for input_edge in self.in_edges[node_id][input.name]
-                ]
-                non_module_inputs.extend(input_edges)
-                operation_inputs.extend(input_edges)
+            input_edges = [
+                self._edge_to_input(edge, input.type) for edge in self.in_edges[node_id][input.name]
+            ]
+            if not (input.type is list or typing.get_origin(input.type) is list):
+                assert len(input_edges) == 1, (
+                    f"Detected multiple input edges for non-list input {node_id} {input.name}."
+                )
+                [input_edges] = input_edges
+            operation_inputs.append(input_edges)
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
             module = op.func(*operation_inputs, **params)
+        # Sub-modules are not real inputs, they are just a way to build hierarchical models.
+        non_module_inputs = [
+            inp
+            for inp in operation_inputs
+            if not (
+                isinstance(inp, torch.nn.Module)
+                or isinstance(inp, list)
+                and all(isinstance(i, torch.nn.Module) for i in inp)
+            )
+        ]
         return Layer(module, node_id, non_module_inputs, outputs)
 
     def build_model(self) -> ModelConfig:

@@ -115,7 +115,7 @@ def dropout(x, *, p=0.0):
 
 
 @op("Linear", weights=True)
-def linear(x, *, output_dim=1024):
+def linear(x: torch.Tensor, *, output_dim=1024):
     import torch_geometric.nn as pyg_nn
 
     return pyg_nn.Linear(-1, output_dim)
@@ -156,17 +156,6 @@ def embedding(x, *, num_embeddings: int, embedding_dim: int):
 @op("Concatenate")
 def concatenate(a, b):
     return lambda a, b: torch.concatenate(*torch.broadcast_tensors(a, b))
-
-
-@op("Test nested layers")
-def test_nested_layers(x: torch.Tensor, a: torch.nn.Module, b: torch.nn.Module):
-    """
-    This is a test function to demonstrate nested layers.
-    It creates a simple MLP with two layers.
-    """
-    print("A ", a)
-    print("B ", b)
-    return torch.nn.Sequential(a, b)
 
 
 reg(
