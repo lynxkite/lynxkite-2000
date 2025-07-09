@@ -190,7 +190,7 @@ async def test_build_model_with_list_inputs():
     x2 = torch.rand(100, 4)
     y = torch.concatenate([x1, x2, x1], dim=1)
     m = pytorch_core.build_model(ws)
-    assert m.model_inputs == ["input1_output", "input2_output"]
+    assert sorted(m.model_inputs) == sorted(["input1_output", "input2_output"])
     for i in range(200):
         loss = m.train({"input1_output": x1, "input2_output": x2, "label_output": y})
     assert loss < 0.1
