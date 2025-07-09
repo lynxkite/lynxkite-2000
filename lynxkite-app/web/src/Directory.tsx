@@ -29,18 +29,18 @@ function EntryCreator(props: {
   onCreate: (name: string) => void;
 }) {
   const [isCreating, setIsCreating] = useState(false);
-  const [nameValidationError, setError] = useState("");
+  const [nameValidationError, setNameValidationError] = useState("");
 
   function validateName(name: string): boolean {
     if (name.includes("/")) {
-      setError("Name cannot contain '/' characters");
+      setNameValidationError("Name cannot contain '/' characters");
       return false;
     }
     if (name.trim() === "") {
-      setError("Name cannot be empty");
+      setNameValidationError("Name cannot be empty");
       return false;
     }
-    setError("");
+    setNameValidationError("");
     return true;
   }
 
