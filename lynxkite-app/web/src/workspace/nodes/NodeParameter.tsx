@@ -1,3 +1,4 @@
+import jmespath from "jmespath";
 // @ts-ignore
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 // @ts-ignore
@@ -133,55 +134,14 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   );
 }
 
-// We have a little "language" for describing which part of the input_metadata
-// to use in the dropdown.
 function getDropDownValues(data: any, meta: any): string[] {
   const metadata = data.input_metadata.value;
-  const { metadata_path, metadata_filter_key, metadata_filter_value } = meta.type;
-  // Starting from the root element of the input_metadata, we follow the
-  // metadata_path to find the items.
-  let o = [metadata];
-  for (const path of metadata_path) {
-    o = o.flatMap((x: any) => {
-      if (x === undefined || x === null) {
-        return [];
-      }
-      // We have a path step, so x must be an object or an array.
-      // For arrays we pick an element by index or the whole array if the path is "*".
-      if (Array.isArray(x)) {
-        if (path === "*") {
-          return x;
-        }
-        return [x[Number.parseInt(path)]];
-      }
-      // For objects we pick a value by key or all values if the path is "*".
-      if (path === "*") {
-        return Object.values(x);
-      }
-      return [x[path]];
-    });
+  let query = meta.type.metadata_query;
+  // Substitute parameters in the query.
+  for (const p in data.params) {
+    query = query.replace(`<${p}>`, data.params[p]);
   }
-  // Now we transform the list of matched items into a list of strings.
-  o = o.flatMap((x: any) => {
-    if (x === undefined || x === null) {
-      return [];
-    }
-    if (Array.isArray(x)) {
-      return x;
-    }
-    if (typeof x === "object") {
-      if (metadata_filter_key && metadata_filter_value) {
-        const keys = [];
-        for (const key in x) {
-          if (x[key][metadata_filter_key] === metadata_filter_value) {
-            keys.push(key);
-          }
-        }
-        return keys;
-      }
-      return Object.keys(x);
-    }
-    return [x];
-  });
-  return ["", ...o];
+  const res = ["", ...jmespath.search(metadata, query)];
+  res.sort();
+  return res;
 }
