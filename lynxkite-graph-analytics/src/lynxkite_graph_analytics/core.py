@@ -14,25 +14,33 @@ import typing
 
 ENV = "LynxKite Graph Analytics"
 
-TableDropdown = typing.Annotated[str, {"format": "dropdown", "metadata_path": ["*", "dataframes"]}]
+# Annotated types with format "dropdown" let you specify the available options
+# as a query on the input_metadata. These query expressions are JMESPath expressions.
+TableDropdown = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].keys(@)[]"}
+]
 NodeAttribute = typing.Annotated[
-    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "nodes", "columns"]}
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].nodes[].columns[]"}
 ]
 EdgeAttribute = typing.Annotated[
-    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "edges", "columns"]}
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].edges[].columns[]"}
 ]
-OtherDropdown = typing.Annotated[str, {"format": "dropdown", "metadata_path": ["*", "other"]}]
+OtherDropdown = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].other.keys(@)[]"}
+]
 ModelDropdown = typing.Annotated[
     str,
     {
         "format": "dropdown",
-        "metadata_path": ["*", "other"],
-        "metadata_filter_key": "type",
-        "metadata_filter_value": "model",
+        "metadata_query": "[].other.*[] | [?type == 'model'].key",
     },
 ]
+# Parameter names in angle brackets, like <table_name>, will be replaced with the parameter
+# values. (This is not part of JMESPath.)
+# ColumnDropdownByTableName will list the columns of the DataFrame with the name
+# specified by the `table_name` parameter.
 ColumnDropdownByTableName = typing.Annotated[
-    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "<table_name>", "columns"]}
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<table_name>.columns[]"}
 ]
 
 
@@ -162,12 +170,15 @@ class Bundle:
         return {
             "dataframes": {
                 name: {
+                    "key": name,
                     "columns": sorted(str(c) for c in df.columns),
                 }
                 for name, df in self.dfs.items()
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": {k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()},
+            "other": {
+                k: {"key": k, **getattr(v, "metadata", lambda: {})()} for k, v in self.other.items()
+            },
         }
 
 
