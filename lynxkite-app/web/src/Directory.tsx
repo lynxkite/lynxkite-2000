@@ -72,7 +72,7 @@ function EntryCreator(props: {
               role="alert"
               style={{ position: "absolute", zIndex: 10 }}
             >
-              <span className="error-icon">⚠️</span>
+              <span className="error-icon" aria-hidden="true">⚠️</span>
               <span className="error-text">{error}</span>
             </div>
           )}
