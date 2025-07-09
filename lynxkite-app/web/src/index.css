@@ -704,3 +704,29 @@ body {
   left: -4px;
   top: -5px;
 }
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.error-icon {
+  flex-shrink: 0;
+}
+
+.error-text {
+  line-height: 1.4;
+}
+
+.input-error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1px #dc2626;
+}

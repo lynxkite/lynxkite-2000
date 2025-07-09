@@ -50,9 +50,13 @@ export default function Code() {
     yDocRef.current = new Y.Doc();
     const text = yDocRef.current.getText("text");
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const encodedPath = path!
+      .split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
     wsProviderRef.current = new WebsocketProvider(
       `${proto}//${location.host}/ws/code/crdt`,
-      path!,
+      encodedPath!,
       yDocRef.current,
     );
     editorRef.current.getModel()!.setEOL(0); // https://github.com/yjs/y-monaco/issues/6
@@ -85,7 +89,13 @@ export default function Code() {
           <button className="btn btn-link">
             <Backspace />
           </button>
-          <Link to={`/dir/${parentDir}`} className="btn btn-link">
+          <Link
+            to={`/dir/${parentDir
+              .split("/")
+              .map((segment) => encodeURIComponent(segment))
+              .join("/")}`}
+            className="btn btn-link"
+          >
             <Close />
           </Link>
         </div>
