@@ -71,7 +71,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered w-full"
-        value={value || getDropDownValues(data, meta)[0]}
+        value={value || ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {getDropDownValues(data, meta).map((option: string) => (
@@ -138,27 +138,36 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
 function getDropDownValues(data: any, meta: any): string[] {
   const metadata = data.input_metadata.value;
   const { metadata_path, metadata_filter_key, metadata_filter_value } = meta.type;
+  // Starting from the root element of the input_metadata, we follow the
+  // metadata_path to find the items.
   let o = [metadata];
   for (const path of metadata_path) {
     o = o.flatMap((x: any) => {
       if (x === undefined || x === null) {
         return [];
       }
-      if (typeof x === "object") {
+      // We have a path step, so x must be an object or an array.
+      // For arrays we pick an element by index or the whole array if the path is "*".
+      if (Array.isArray(x)) {
         if (path === "*") {
-          return Object.values(x);
+          return x;
         }
-        return [x[path]];
+        return [x[Number.parseInt(path)]];
       }
+      // For objects we pick a value by key or all values if the path is "*".
       if (path === "*") {
-        return x;
+        return Object.values(x);
       }
-      return [x[Number.parseInt(path)]];
+      return [x[path]];
     });
   }
+  // Now we transform the list of matched items into a list of strings.
   o = o.flatMap((x: any) => {
     if (x === undefined || x === null) {
       return [];
+    }
+    if (Array.isArray(x)) {
+      return x;
     }
     if (typeof x === "object") {
       if (metadata_filter_key && metadata_filter_value) {
@@ -172,7 +181,7 @@ function getDropDownValues(data: any, meta: any): string[] {
       }
       return Object.keys(x);
     }
-    return x;
+    return [x];
   });
-  return o;
+  return ["", ...o];
 }

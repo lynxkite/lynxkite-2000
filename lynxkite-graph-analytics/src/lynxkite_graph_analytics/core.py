@@ -31,6 +31,9 @@ ModelDropdown = typing.Annotated[
         "metadata_filter_value": "model",
     },
 ]
+ColumnDropdownByTableName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_path": ["*", "dataframes", "<table_name>", "columns"]}
+]
 
 
 @dataclasses.dataclass
