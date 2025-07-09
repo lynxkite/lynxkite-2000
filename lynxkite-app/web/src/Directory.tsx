@@ -29,7 +29,7 @@ function EntryCreator(props: {
   onCreate: (name: string) => void;
 }) {
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState("");
+  const [nameValidationError, setError] = useState("");
 
   function validateName(name: string): boolean {
     if (name.includes("/")) {
@@ -58,7 +58,7 @@ function EntryCreator(props: {
           }}
         >
           <input
-            className={`input input-ghost w-full ${error ? "input-error" : ""}`}
+            className={`input input-ghost w-full ${nameValidationError ? "input-error" : ""}`}
             autoFocus
             type="text"
             name="entryName"
@@ -66,7 +66,7 @@ function EntryCreator(props: {
             onChange={(e) => validateName(e.target.value)}
             placeholder={`${props.label} name`}
           />
-          {error && (
+          {nameValidationError && (
             <div
               className="error-message"
               role="alert"
@@ -75,7 +75,7 @@ function EntryCreator(props: {
               <span className="error-icon" aria-hidden="true">
                 ⚠️
               </span>
-              <span className="error-text">{error}</span>
+              <span className="error-text">{nameValidationError}</span>
             </div>
           )}
         </form>
@@ -99,10 +99,7 @@ export default function Directory() {
   const navigate = useNavigate();
 
   function link(item: DirectoryEntry) {
-    const encodedName = item.name
-      .split("/")
-      .map((segment) => encodeURIComponent(segment))
-      .join("/");
+    const encodedName = encodePathSegments(item.name);
     if (item.type === "directory") {
       return `/dir/${encodedName}`;
     }
@@ -119,24 +116,19 @@ export default function Directory() {
       ?.replace(/[.]lynxkite[.]json$/, "");
   }
 
+  function encodePathSegments(path: string): string {
+    const segments = path.split("/");
+    return segments.map((segment) => encodeURIComponent(segment)).join("/");
+  }
+
   function newWorkspaceIn(path: string, workspaceName: string) {
-    const pathSlash = path
-      ? `${path
-          .split("/")
-          .map((segment) => encodeURIComponent(segment))
-          .join("/")}/`
-      : "";
+    const pathSlash = path ? `${encodePathSegments(path)}/` : "";
     navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite.json`, {
       replace: true,
     });
   }
   function newCodeFile(path: string, name: string) {
-    const pathSlash = path
-      ? `${path
-          .split("/")
-          .map((segment) => encodeURIComponent(segment))
-          .join("/")}/`
-      : "";
+    const pathSlash = path ? `${encodePathSegments(path)}/` : "";
     navigate(`/code/${pathSlash}${encodeURIComponent(name)}`, { replace: true });
   }
   async function newFolderIn(path: string, folderName: string) {
@@ -147,12 +139,7 @@ export default function Directory() {
       body: JSON.stringify({ path: pathSlash + folderName }),
     });
     if (res.ok) {
-      const pathSlash = path
-        ? `${path
-            .split("/")
-            .map((segment) => encodeURIComponent(segment))
-            .join("/")}/`
-        : "";
+      const pathSlash = path ? `${encodePathSegments(path)}/` : "";
       navigate(`/dir/${pathSlash}${encodeURIComponent(folderName)}`);
     } else {
       alert("Failed to create folder.");
