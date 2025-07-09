@@ -73,7 +73,7 @@ export default function Code() {
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
-        <Link className="logo" to="">
+        <Link className="logo" to="/">
           <img alt="" src={favicon} />
         </Link>
         <div className="ws-name">{path}</div>

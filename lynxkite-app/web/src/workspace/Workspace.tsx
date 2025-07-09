@@ -108,6 +108,7 @@ function LynxKiteFlow() {
           // Make sure the internal copies are updated.
           updateNodeInternals(node.id);
         }
+        setPausedUIState(state.workspace.paused || false);
       }
     };
     doc.on("update", onChange);
@@ -409,7 +410,7 @@ function LynxKiteFlow() {
     }
   }
   async function executeWorkspace() {
-    const response = await axios.post(`/api/execute_workspace?name=${path}`);
+    const response = await axios.post(`/api/execute_workspace?name=${encodeURIComponent(path)}`);
     if (response.status !== 200) {
       setMessage("Workspace execution failed.");
     }

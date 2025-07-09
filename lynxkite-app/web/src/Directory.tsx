@@ -67,13 +67,14 @@ export default function Directory() {
   const navigate = useNavigate();
 
   function link(item: DirectoryEntry) {
+    const encodedName = encodeURI(item.name);
     if (item.type === "directory") {
-      return `/dir/${item.name}`;
+      return `/dir/${encodedName}`;
     }
     if (item.type === "workspace") {
-      return `/edit/${item.name}`;
+      return `/edit/${encodedName}`;
     }
-    return `/code/${item.name}`;
+    return `/code/${encodedName}`;
   }
 
   function shortName(item: DirectoryEntry) {
@@ -85,11 +86,13 @@ export default function Directory() {
 
   function newWorkspaceIn(path: string, workspaceName: string) {
     const pathSlash = path ? `${path}/` : "";
-    navigate(`/edit/${pathSlash}${workspaceName}.lynxkite.json`, { replace: true });
+    navigate(`/edit/${encodeURI(pathSlash)}${encodeURIComponent(workspaceName)}.lynxkite.json`, {
+      replace: true,
+    });
   }
   function newCodeFile(path: string, name: string) {
     const pathSlash = path ? `${path}/` : "";
-    navigate(`/code/${pathSlash}${name}`, { replace: true });
+    navigate(`/code/${encodeURI(pathSlash)}${encodeURIComponent(name)}`, { replace: true });
   }
   async function newFolderIn(path: string, folderName: string) {
     const pathSlash = path ? `${path}/` : "";
@@ -99,7 +102,7 @@ export default function Directory() {
       body: JSON.stringify({ path: pathSlash + folderName }),
     });
     if (res.ok) {
-      navigate(`/dir/${pathSlash}${folderName}`);
+      navigate(`/dir/${encodeURI(pathSlash)}${encodeURIComponent(folderName)}`);
     } else {
       alert("Failed to create folder.");
     }
