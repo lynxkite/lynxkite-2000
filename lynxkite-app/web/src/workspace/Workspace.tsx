@@ -209,7 +209,7 @@ function LynxKiteFlow() {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
   const catalog = useSWR(
-    `/api/catalog?workspace=${encodeURIComponent(encodedPathForAPI)}`,
+    `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher,
   );
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
