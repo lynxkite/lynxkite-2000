@@ -2,7 +2,8 @@
 
 import copy
 import graphlib
-
+import io
+import numpy as np
 import pydantic
 from lynxkite.core import ops, workspace
 import torch
@@ -74,14 +75,29 @@ class ModelMapping(pydantic.BaseModel):
     map: dict[str, ColumnSpec]
 
 
+def _torch_save(data) -> str:
+    """Saves PyTorch data (modules, tensors) as a string."""
+    buffer = io.BytesIO()
+    torch.save(data, buffer)
+    return buffer.getvalue()
+
+
+def _torch_load(data: str) -> any:
+    """Loads PyTorch data (modules, tensors) from a string."""
+    buffer = io.BytesIO(data)  # noqa: F821
+    return torch.load(buffer)
+
+
 @dataclasses.dataclass
 class ModelConfig:
     model: torch.nn.Module
     model_inputs: list[str]
     model_outputs: list[str]
+    model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
     input_output_names: list[str]
     loss: torch.nn.Module
+    source_workspace_json: str
     optimizer_parameters: dict[str, any]
     optimizer: torch.optim.Optimizer | None = None
     source_workspace: str | None = None
@@ -100,14 +116,13 @@ class ModelConfig:
         values = {k: v for k, v in zip(self.model_outputs, output)}
         return values
 
-    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
-        # TODO: Do multiple batches.
+    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, np.ndarray]:
+        """Inference on a single batch."""
         self.model.eval()
         return self._forward(inputs)
 
     def train(self, inputs: dict[str, torch.Tensor]) -> float:
-        """Train the model for one epoch. Returns the loss."""
-        # TODO: Do multiple batches.
+        """One training step on one batch. Returns the loss."""
         self.model.train()
         self.optimizer.zero_grad()
         values = self._forward(inputs)
@@ -145,6 +160,39 @@ class ModelConfig:
             },
         }
 
+    # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
+    # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
+    def __repr__(self):
+        return repr(self.__getstate__())
+
+    def __getstate__(self):
+        # The model may not be serializable. We store the contents of the definition workspace instead,
+        # plus the model parameters (state dict).
+        state = dataclasses.asdict(self)
+        del state["model"]
+        del state["optimizer"]
+        del state["optimizer_parameters"]
+        del state["loss"]
+        if self.trained:
+            state["model_state_dict"] = _torch_save(self.model.state_dict())
+            state["optimizer_state_dict"] = _torch_save(self.optimizer.state_dict())
+        return state
+
+    def __setstate__(self, state):
+        # Rebuild the model from the workspace JSON and load the model and optimizer state dicts.
+        model_state_dict = state.pop("model_state_dict", None)
+        optimizer_state_dict = state.pop("optimizer_state_dict", None)
+        self.__dict__.update(state)
+        ws = workspace.Workspace.model_validate_json(state["source_workspace_json"])
+        cfg = build_model(ws)
+        self.model = cfg.model
+        self.optimizer = cfg.optimizer
+        self.optimizer_parameters = cfg.optimizer_parameters
+        self.loss = cfg.loss
+        if self.trained:
+            self.model.load_state_dict(_torch_load(model_state_dict))
+            self.optimizer.load_state_dict(_torch_load(optimizer_state_dict))
+
 
 def build_model(ws: workspace.Workspace) -> ModelConfig:
     """Builds the model described in the workspace."""
@@ -156,7 +204,9 @@ class ModelBuilder:
     """The state shared between methods that are used to build the model."""
 
     def __init__(self, ws: workspace.Workspace):
+        self.ws = ws
         self.catalog = ops.CATALOGS[ENV]
+        self.model_sequence_outputs = []
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
         repeats: list[str] = []
@@ -231,11 +281,11 @@ class ModelBuilder:
         # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
-            title = self.nodes[node_id].data.title
-            if title not in self.catalog:  # Groups and comments, for example.
+            op_id = self.nodes[node_id].data.op_id
+            if op_id not in self.catalog:  # Groups and comments, for example.
                 to_delete.add(node_id)
                 continue
-            op = self.catalog[title]
+            op = self.catalog[op_id]
             if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
                 to_delete.add(node_id)
                 to_delete |= self.all_upstream(node_id)
@@ -266,7 +316,7 @@ class ModelBuilder:
         """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
         t = node.data.title
-        op = self.catalog[t]
+        op = self.catalog[node.data.op_id]
         p = op.convert_params(node.data.params)
         match t:
             case "Repeat":
@@ -329,9 +379,11 @@ class ModelBuilder:
         # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:
-            if self.nodes[node_id].data.title == "Output":
+            if self.nodes[node_id].data.title.startswith("Output"):
                 model_nodes.add(node_id)
                 model_nodes |= self.all_upstream(node_id)
+                if self.nodes[node_id].data.title == "Output sequence":
+                    self.model_sequence_outputs.append(_to_id(node_id, "x"))
         assert model_nodes, "The model definition must have at least one Output node."
         layers = []
         loss_layers = []
@@ -347,12 +399,13 @@ class ModelBuilder:
         layers = [layer.for_sequential() for layer in layers]
         loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
-        cfg["model_inputs"] = list(used_in_model - made_in_model)
-        cfg["model_outputs"] = list(made_in_model & used_in_loss)
-        cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
+        cfg["model_inputs"] = sorted(used_in_model - made_in_model)
+        cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
+        cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
         cfg["input_output_names"] = self.get_names(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
+        cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
@@ -368,6 +421,7 @@ class ModelBuilder:
         # Create optimizer.
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
+        cfg["source_workspace_json"] = self.ws.model_dump_json()
         return ModelConfig(**cfg)
 
     def get_names(self, *ids: list[str]) -> dict[str, str]:
@@ -375,9 +429,8 @@ class ModelBuilder:
         names = {}
         for i in ids:
             for node in self.nodes.values():
-                title = node.data.title
-                op = self.catalog[title]
-                name = node.data.params.get("name") or title
+                op = self.catalog[node.data.op_id]
+                name = node.data.params.get("name") or node.data.title
                 for output in op.outputs:
                     i2 = _to_id(node.id, output.name)
                     if i2 == i:
@@ -394,12 +447,17 @@ class ModelBuilder:
         return names
 
 
-def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor]:
-    """Converts a tensor to the correct type for PyTorch. Ignores missing mappings."""
-    if m is None:
-        return {}
+def to_batch_tensors(
+    b: core.Bundle, batch_size: int, batch_index: int, m: ModelMapping | None
+) -> dict[str, torch.Tensor]:
+    """Extracts tensors from a bundle for a specific batch using a model mapping."""
     tensors = {}
     for k, v in m.map.items():
         if v.df in b.dfs and v.column in b.dfs[v.df]:
-            tensors[k] = torch.tensor(b.dfs[v.df][v.column].to_list(), dtype=torch.float32)
+            batch = b.dfs[v.df][v.column].iloc[
+                batch_index * batch_size : (batch_index + 1) * batch_size
+            ]
+            tensors[k] = torch.tensor(batch.to_list(), dtype=torch.float32)
+            if batch_size == 1:
+                tensors[k] = tensors[k].squeeze(0)
     return tensors

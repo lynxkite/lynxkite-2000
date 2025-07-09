@@ -30,6 +30,7 @@ class NodeStatus(str, enum.Enum):
 
 class WorkspaceNodeData(BaseConfig):
     title: str
+    op_id: str
     params: dict
     display: Optional[object] = None
     input_metadata: Optional[object] = None
@@ -37,6 +38,14 @@ class WorkspaceNodeData(BaseConfig):
     status: NodeStatus = NodeStatus.done
     # Also contains a "meta" field when going out.
     # This is ignored when coming back from the frontend.
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def fill_op_id_if_missing(cls, data: dict) -> dict:
+        """Compatibility with old workspaces that don't have op_id."""
+        if "op_id" not in data:
+            data["op_id"] = data["title"]
+        return data
 
 
 class WorkspaceNode(BaseConfig):
@@ -106,7 +115,7 @@ class Workspace(BaseConfig):
         if self.env not in ops.CATALOGS:
             return self
         catalog = ops.CATALOGS[self.env]
-        _ops = {n.id: catalog[n.data.title] for n in self.nodes if n.data.title in catalog}
+        _ops = {n.id: catalog[n.data.op_id] for n in self.nodes if n.data.op_id in catalog}
         valid_targets = set()
         valid_sources = set()
         for n in self.nodes:
@@ -128,10 +137,16 @@ class Workspace(BaseConfig):
     async def execute(self):
         return await ops.EXECUTORS[self.env](self)
 
-    def save(self, path: str):
-        """Persist the workspace to a local file in JSON format."""
+    def model_dump_json(self) -> str:
+        """Returns the workspace as JSON."""
+        # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
         j = self.model_dump()
         j = json.dumps(j, indent=2, sort_keys=True) + "\n"
+        return j
+
+    def save(self, path: str):
+        """Persist the workspace to a local file in JSON format."""
+        j = self.model_dump_json()
         dirname, basename = os.path.split(path)
         if dirname:
             os.makedirs(dirname, exist_ok=True)
@@ -174,7 +189,7 @@ class Workspace(BaseConfig):
         catalog = ops.CATALOGS[self.env]
         for node in self.nodes:
             data = node.data
-            op = catalog.get(data.title)
+            op = catalog.get(data.op_id)
             if op:
                 if getattr(data, "meta", None) != op:
                     data.meta = op
@@ -208,7 +223,9 @@ class Workspace(BaseConfig):
         random_string = os.urandom(4).hex()
         if func:
             kwargs["type"] = func.__op__.type
-            kwargs["data"] = WorkspaceNodeData(title=func.__op__.name, params={})
+            kwargs["data"] = WorkspaceNodeData(
+                title=func.__op__.name, op_id=func.__op__.id, params={}
+            )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")
         kwargs.setdefault("position", Position(x=0, y=0))

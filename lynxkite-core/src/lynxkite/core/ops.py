@@ -184,6 +184,7 @@ def _param_to_type(name, value, type):
 
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
+    categories: list[str]
     name: str
     params: list[Parameter | ParameterGroup]
     inputs: list[Input]
@@ -192,6 +193,8 @@ class Op(BaseConfig):
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
     doc: object = None
+    # ID is automatically set from the name and categories.
+    id: str = pydantic.Field(default=None)
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -234,11 +237,15 @@ class Op(BaseConfig):
                 res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
 
+    @pydantic.model_validator(mode="after")
+    def compute_id(self):
+        self.id = " > ".join(self.categories + [self.name])
+        return self
+
 
 def op(
     env: str,
-    name: str,
-    *,
+    *names: str,
     view="basic",
     outputs=None,
     params=None,
@@ -246,7 +253,24 @@ def op(
     color=None,
     cache=None,
 ):
-    """Decorator for defining an operation."""
+    """
+    Decorator for defining an operation.
+
+    Parameters:
+        env: The environment (workspace type) to which the operation belongs.
+        names: The list of categories this operation belongs to, followed by the name of the operation.
+        view: How the operation will be displayed in the UI. One of "basic", "visualization",
+              "table_view", "graph_creation_view", "image", "molecule", "matplotlib".
+        outputs: A list of output names. If not provided, defaults to ["output"] for "basic" view.
+        params: Normally the parameters are taken from the function signature.
+                Use "params" to override this.
+        slow: If True, the operation results will be cached.
+              If the function is not async, it will be run in a separate thread.
+        color: The color of the operation in the UI. Defaults to "orange".
+        cache: Set to False to disable caching for a slow operation.
+               You may need this for slow operations with parameters/outputs that can't be serialized.
+    """
+    [*categories, name] = names
 
     def decorator(func):
         doc = parse_doc(func)
@@ -279,6 +303,7 @@ def op(
             func=func,
             doc=doc,
             name=name,
+            categories=categories,
             params=_params,
             inputs=inputs,
             outputs=_outputs,
@@ -286,7 +311,7 @@ def op(
             color=color or "orange",
         )
         CATALOGS.setdefault(env, {})
-        CATALOGS[env][name] = op
+        CATALOGS[env][op.id] = op
         func.__op__ = op
         return func
 
@@ -364,24 +389,27 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(env: str, name: str, inputs=[], outputs=["output"], params=[], **kwargs):
+def register_passive_op(env: str, *names: str, inputs=[], outputs=["output"], params=[], **kwargs):
     """A passive operation has no associated code."""
+    [*categories, name] = names
     op = Op(
         func=no_op,
         name=name,
+        categories=categories,
         params=params,
         inputs=[Input(name=i, type=None) if isinstance(i, str) else i for i in inputs],
         outputs=[Output(name=o, type=None) if isinstance(o, str) else o for o in outputs],
         **kwargs,
     )
     CATALOGS.setdefault(env, {})
-    CATALOGS[env][name] = op
+    CATALOGS[env][op.id] = op
     return op
 
 
 COMMENT_OP = Op(
     func=no_op,
     name="Comment",
+    categories=[],
     params=[Parameter.basic("text", "", LongStr)],
     inputs=[],
     outputs=[],
@@ -405,14 +433,14 @@ def register_executor(env: str):
     return decorator
 
 
-def op_registration(env: str):
+def op_registration(env: str, *categories: str):
     """Returns a decorator that can be used for registering functions as operations."""
-    return functools.partial(op, env)
+    return functools.partial(op, env, *categories)
 
 
-def passive_op_registration(env: str):
+def passive_op_registration(env: str, *categories: str):
     """Returns a function that can be used to register operations without associated code."""
-    return functools.partial(register_passive_op, env)
+    return functools.partial(register_passive_op, env, *categories)
 
 
 def make_async(func):

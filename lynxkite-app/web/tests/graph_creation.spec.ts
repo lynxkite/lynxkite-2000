@@ -6,10 +6,10 @@ let workspace: Workspace;
 
 test.beforeEach(async ({ browser }) => {
   workspace = await Workspace.empty(await browser.newPage(), "graph_creation_spec_test");
-  await workspace.addBox("NX › Scale-Free Graph");
-  await workspace.getBox("NX › Scale-Free Graph 1").getByLabel("n", { exact: true }).fill("10");
-  await workspace.addBox("Create graph");
-  await workspace.connectBoxes("NX › Scale-Free Graph 1", "Create graph 1");
+  await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
+  await workspace.getBox("Scale-free graph 1").getByLabel("n", { exact: true }).fill("10");
+  await workspace.addBox("Organize");
+  await workspace.connectBoxes("Scale-free graph 1", "Organize 1");
 });
 
 test.afterEach(async () => {
@@ -22,7 +22,7 @@ test.afterEach(async () => {
 });
 
 test("Tables are displayed in the Graph creation box", async () => {
-  const graphBox = await workspace.getBox("Create graph 1");
+  const graphBox = await workspace.getBox("Organize 1");
   const nodesTableHeader = graphBox.locator(".graph-tables .df-head", {
     hasText: "nodes",
   });
@@ -42,7 +42,7 @@ test("Tables are displayed in the Graph creation box", async () => {
 });
 
 test("Adding and removing relationships", async () => {
-  const graphBox = await workspace.getBox("Create graph 1");
+  const graphBox = await workspace.getBox("Organize 1");
   const addRelationshipButton = await graphBox.locator(".add-relationship-button");
   await addRelationshipButton.click();
   const formData: Record<string, string> = {
@@ -64,7 +64,7 @@ test("Adding and removing relationships", async () => {
   await graphBox.locator(".submit-relationship-button").click();
   // check that the relationship has been saved in the backend
   await workspace.page.reload();
-  const graphBoxAfterReload = await workspace.getBox("Create graph 1");
+  const graphBoxAfterReload = await workspace.getBox("Organize 1");
   const relationHeader = await graphBoxAfterReload.locator(".graph-relations .df-head", {
     hasText: "relation_1",
   });
@@ -76,7 +76,7 @@ test("Adding and removing relationships", async () => {
 test("Output of the box is a bundle", async () => {
   await workspace.addBox("View tables");
   const tableView = await workspace.getBox("View tables 1");
-  await workspace.connectBoxes("Create graph 1", "View tables 1");
+  await workspace.connectBoxes("Organize 1", "View tables 1");
   const nodesTableHeader = await tableView.locator(".df-head", {
     hasText: "nodes",
   });
