@@ -174,13 +174,13 @@ def disambiguate_edges(ws: workspace.Workspace):
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
         op = catalog.get(dst_node.data.op_id)
-        if op.get_input(edge.targetHandle).type == list[Bundle]:
+        if not op or op.get_input(edge.targetHandle).type == list[Bundle]:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
         if (edge.target, edge.targetHandle) in seen:
             i = ws.edges.index(edge)
             del ws.edges[i]
-            if hasattr(ws, "_crdt"):
+            if ws._crdt:
                 del ws._crdt["edges"][i]
         seen.add((edge.target, edge.targetHandle))
 
