@@ -177,6 +177,7 @@ def train_embedding_model(
     else:
         sampler = None
         if model is PyKEENModel.RGCN and training_approach == TrainingType.sLCWA:
+            # Currently RGCN is the only model that requires a sampler and only when using sLCWA
             sampler = "schlichtkrull"
         model = model.to_class()
     training_set = TriplesFactory.from_labeled_triples(

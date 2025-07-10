@@ -205,8 +205,8 @@
         },
         "op_id": "Train Embedding Model",
         "params": {
-          "epochs": "1",
-          "model": "Unstructured_Model",
+          "epochs": "10",
+          "model": "CompGCN",
           "training_approach": "sLCWA"
         },
         "status": "done",
@@ -230,7 +230,16 @@
           "series": [
             {
               "data": [
-                2.133389949798584
+                3.076913893222809,
+                2.4452097614606223,
+                2.0711413522561393,
+                1.7825321555137634,
+                1.6337800323963165,
+                1.4805578192075093,
+                1.3289171159267426,
+                1.214134156703949,
+                1.1489891558885574,
+                1.1088260412216187
               ],
               "type": "line"
             }
@@ -310,8 +319,8 @@
       "height": 383.0,
       "id": "View loss 1",
       "position": {
-        "x": -111.83771817943575,
-        "y": 744.3272367705268
+        "x": -480.13220347050276,
+        "y": 631.0058566809678
       },
       "type": "visualization",
       "width": 537.0
@@ -332,387 +341,387 @@
               ],
               "data": [
                 [
-                  0,
-                  -11.097247123718262,
-                  "accusation",
-                  false,
-                  false
-                ],
-                [
-                  1,
-                  -11.097247123718262,
-                  "aidenemy",
-                  false,
-                  false
-                ],
-                [
-                  2,
-                  -11.097247123718262,
-                  "attackembassy",
-                  false,
-                  false
-                ],
-                [
-                  3,
-                  -11.097247123718262,
-                  "blockpositionindex",
-                  false,
-                  false
-                ],
-                [
-                  4,
-                  -11.097247123718262,
-                  "booktranslations",
-                  false,
-                  false
-                ],
-                [
-                  5,
-                  -11.097247123718262,
-                  "boycottembargo",
-                  false,
-                  false
-                ],
-                [
-                  6,
-                  -11.097247123718262,
-                  "commonbloc0",
-                  false,
-                  false
-                ],
-                [
-                  7,
-                  -11.097247123718262,
-                  "commonbloc1",
-                  false,
-                  false
-                ],
-                [
-                  8,
-                  -11.097247123718262,
-                  "commonbloc2",
-                  false,
-                  false
-                ],
-                [
-                  9,
-                  -11.097247123718262,
-                  "conferences",
-                  false,
-                  false
-                ],
-                [
-                  10,
-                  -11.097247123718262,
-                  "dependent",
-                  false,
-                  false
-                ],
-                [
-                  11,
-                  -11.097247123718262,
-                  "duration",
-                  false,
-                  false
-                ],
-                [
-                  12,
-                  -11.097247123718262,
-                  "economicaid",
-                  true,
-                  false
-                ],
-                [
-                  13,
-                  -11.097247123718262,
-                  "eemigrants",
-                  false,
-                  false
-                ],
-                [
-                  14,
-                  -11.097247123718262,
-                  "embassy",
-                  false,
-                  false
-                ],
-                [
-                  15,
-                  -11.097247123718262,
-                  "emigrants3",
-                  false,
-                  false
-                ],
-                [
-                  16,
-                  -11.097247123718262,
-                  "expeldiplomats",
-                  false,
-                  false
-                ],
-                [
-                  17,
-                  -11.097247123718262,
-                  "exportbooks",
-                  false,
-                  false
-                ],
-                [
-                  18,
-                  -11.097247123718262,
-                  "exports3",
-                  false,
-                  false
-                ],
-                [
-                  19,
-                  -11.097247123718262,
-                  "independence",
-                  false,
-                  false
-                ],
-                [
-                  20,
-                  -11.097247123718262,
-                  "intergovorgs",
-                  false,
-                  false
-                ],
-                [
-                  21,
-                  -11.097247123718262,
-                  "intergovorgs3",
-                  false,
-                  false
-                ],
-                [
-                  22,
-                  -11.097247123718262,
-                  "lostterritory",
-                  false,
-                  false
-                ],
-                [
-                  23,
-                  -11.097247123718262,
-                  "militaryactions",
-                  false,
-                  false
-                ],
-                [
-                  24,
-                  -11.097247123718262,
-                  "militaryalliance",
-                  false,
-                  false
-                ],
-                [
-                  25,
-                  -11.097247123718262,
-                  "negativebehavior",
-                  false,
-                  false
-                ],
-                [
-                  26,
-                  -11.097247123718262,
-                  "negativecomm",
-                  false,
-                  false
-                ],
-                [
-                  27,
-                  -11.097247123718262,
-                  "ngo",
-                  false,
-                  false
-                ],
-                [
-                  28,
-                  -11.097247123718262,
-                  "ngoorgs3",
-                  false,
-                  false
-                ],
-                [
-                  29,
-                  -11.097247123718262,
-                  "nonviolentbehavior",
-                  false,
-                  false
-                ],
-                [
-                  30,
-                  -11.097247123718262,
-                  "officialvisits",
-                  false,
-                  false
-                ],
-                [
-                  31,
-                  -11.097247123718262,
-                  "pprotests",
-                  false,
-                  false
-                ],
-                [
-                  32,
-                  -11.097247123718262,
-                  "relbooktranslations",
-                  false,
-                  false
-                ],
-                [
-                  33,
-                  -11.097247123718262,
-                  "reldiplomacy",
-                  false,
-                  false
-                ],
-                [
-                  34,
-                  -11.097247123718262,
-                  "releconomicaid",
-                  false,
-                  false
-                ],
-                [
-                  35,
-                  -11.097247123718262,
-                  "relemigrants",
-                  false,
-                  false
-                ],
-                [
-                  36,
-                  -11.097247123718262,
-                  "relexportbooks",
-                  false,
-                  false
-                ],
-                [
-                  37,
-                  -11.097247123718262,
-                  "relexports",
-                  false,
-                  false
-                ],
-                [
-                  38,
-                  -11.097247123718262,
-                  "relintergovorgs",
-                  false,
-                  false
-                ],
-                [
-                  39,
-                  -11.097247123718262,
-                  "relngo",
-                  false,
-                  false
-                ],
-                [
-                  40,
-                  -11.097247123718262,
-                  "relstudents",
-                  false,
-                  false
-                ],
-                [
-                  41,
-                  -11.097247123718262,
-                  "reltourism",
-                  false,
-                  false
-                ],
-                [
-                  42,
-                  -11.097247123718262,
-                  "reltreaties",
-                  false,
-                  false
-                ],
-                [
-                  43,
-                  -11.097247123718262,
-                  "severdiplomatic",
-                  false,
-                  false
-                ],
-                [
-                  44,
-                  -11.097247123718262,
-                  "students",
-                  false,
-                  false
-                ],
-                [
-                  45,
-                  -11.097247123718262,
-                  "timesinceally",
-                  false,
-                  false
-                ],
-                [
-                  46,
-                  -11.097247123718262,
-                  "timesincewar",
-                  false,
-                  false
-                ],
-                [
-                  47,
-                  -11.097247123718262,
-                  "tourism",
-                  false,
-                  false
-                ],
-                [
-                  48,
-                  -11.097247123718262,
+                  96,
+                  3.107093095779419,
                   "tourism3",
                   false,
                   false
                 ],
                 [
-                  49,
-                  -11.097247123718262,
-                  "treaties",
+                  26,
+                  3.011080265045166,
+                  "eemigrants",
+                  false,
+                  false
+                ],
+                [
+                  32,
+                  2.5117580890655518,
+                  "expeldiplomats",
+                  false,
+                  false
+                ],
+                [
+                  82,
+                  2.367234706878662,
+                  "reltourism",
                   false,
                   false
                 ],
                 [
                   50,
-                  -11.097247123718262,
-                  "unoffialacts",
+                  2.34250545501709,
+                  "negativebehavior",
                   false,
                   false
                 ],
                 [
-                  51,
-                  -11.097247123718262,
+                  90,
+                  2.289499044418335,
+                  "timesinceally",
+                  false,
+                  false
+                ],
+                [
+                  2,
+                  1.944096565246582,
+                  "aidenemy",
+                  false,
+                  false
+                ],
+                [
+                  94,
+                  1.891361951828003,
+                  "tourism",
+                  false,
+                  false
+                ],
+                [
+                  74,
+                  1.732425332069397,
+                  "relexports",
+                  false,
+                  false
+                ],
+                [
+                  12,
+                  1.6545861959457397,
+                  "commonbloc0",
+                  true,
+                  false
+                ],
+                [
+                  88,
+                  1.613100528717041,
+                  "students",
+                  false,
+                  false
+                ],
+                [
+                  102,
+                  1.4746090173721313,
                   "unweightedunvote",
                   false,
                   false
                 ],
                 [
-                  52,
-                  -11.097247123718262,
+                  62,
+                  1.3814263343811035,
+                  "pprotests",
+                  false,
+                  false
+                ],
+                [
+                  38,
+                  1.3471460342407227,
+                  "independence",
+                  false,
+                  false
+                ],
+                [
+                  42,
+                  1.235988974571228,
+                  "intergovorgs3",
+                  false,
+                  false
+                ],
+                [
+                  10,
+                  1.1402833461761475,
+                  "boycottembargo",
+                  false,
+                  false
+                ],
+                [
+                  78,
+                  1.120343565940857,
+                  "relngo",
+                  false,
+                  false
+                ],
+                [
+                  24,
+                  1.095353126525879,
+                  "economicaid",
+                  false,
+                  false
+                ],
+                [
+                  4,
+                  1.0907374620437622,
+                  "attackembassy",
+                  false,
+                  false
+                ],
+                [
+                  60,
+                  1.0343931913375854,
+                  "officialvisits",
+                  false,
+                  false
+                ],
+                [
+                  30,
+                  1.032510757446289,
+                  "emigrants3",
+                  false,
+                  false
+                ],
+                [
+                  6,
+                  0.6963798403739929,
+                  "blockpositionindex",
+                  false,
+                  false
+                ],
+                [
+                  16,
+                  0.6116173267364502,
+                  "commonbloc2",
+                  false,
+                  false
+                ],
+                [
+                  66,
+                  0.5752319693565369,
+                  "reldiplomacy",
+                  false,
+                  false
+                ],
+                [
+                  98,
+                  0.5670764446258545,
+                  "treaties",
+                  false,
+                  false
+                ],
+                [
+                  72,
+                  0.43255504965782166,
+                  "relexportbooks",
+                  false,
+                  false
+                ],
+                [
+                  84,
+                  0.13977432250976562,
+                  "reltreaties",
+                  false,
+                  false
+                ],
+                [
+                  34,
+                  0.10334566235542297,
+                  "exportbooks",
+                  false,
+                  false
+                ],
+                [
+                  8,
+                  0.0050966739654541016,
+                  "booktranslations",
+                  false,
+                  false
+                ],
+                [
+                  18,
+                  -0.045005083084106445,
+                  "conferences",
+                  false,
+                  false
+                ],
+                [
+                  28,
+                  -0.04760223627090454,
+                  "embassy",
+                  false,
+                  false
+                ],
+                [
+                  104,
+                  -0.33855605125427246,
                   "violentactions",
                   false,
                   false
                 ],
                 [
-                  53,
-                  -11.097247123718262,
-                  "warning",
+                  58,
+                  -0.3431950807571411,
+                  "nonviolentbehavior",
+                  false,
+                  false
+                ],
+                [
+                  22,
+                  -0.3662582039833069,
+                  "duration",
+                  false,
+                  false
+                ],
+                [
+                  46,
+                  -0.3894645571708679,
+                  "militaryactions",
                   false,
                   false
                 ],
                 [
                   54,
-                  -11.097247123718262,
+                  -0.5642709136009216,
+                  "ngo",
+                  false,
+                  false
+                ],
+                [
+                  20,
+                  -0.6149243116378784,
+                  "dependent",
+                  false,
+                  false
+                ],
+                [
+                  56,
+                  -0.6411711573600769,
+                  "ngoorgs3",
+                  false,
+                  false
+                ],
+                [
+                  100,
+                  -0.6868444085121155,
+                  "unoffialacts",
+                  false,
+                  false
+                ],
+                [
+                  40,
+                  -0.7618719935417175,
+                  "intergovorgs",
+                  false,
+                  false
+                ],
+                [
+                  92,
+                  -1.0000663995742798,
+                  "timesincewar",
+                  false,
+                  false
+                ],
+                [
+                  76,
+                  -1.060382604598999,
+                  "relintergovorgs",
+                  false,
+                  false
+                ],
+                [
+                  52,
+                  -1.1604764461517334,
+                  "negativecomm",
+                  false,
+                  false
+                ],
+                [
+                  70,
+                  -1.1735050678253174,
+                  "relemigrants",
+                  false,
+                  false
+                ],
+                [
+                  14,
+                  -1.3055601119995117,
+                  "commonbloc1",
+                  false,
+                  false
+                ],
+                [
+                  108,
+                  -1.5626298189163208,
                   "weightedunvote",
+                  false,
+                  false
+                ],
+                [
+                  36,
+                  -1.634451150894165,
+                  "exports3",
+                  false,
+                  false
+                ],
+                [
+                  0,
+                  -1.6875075101852417,
+                  "accusation",
+                  false,
+                  false
+                ],
+                [
+                  68,
+                  -1.762732744216919,
+                  "releconomicaid",
+                  false,
+                  false
+                ],
+                [
+                  64,
+                  -1.9846954345703125,
+                  "relbooktranslations",
+                  false,
+                  false
+                ],
+                [
+                  86,
+                  -2.167741060256958,
+                  "severdiplomatic",
+                  false,
+                  false
+                ],
+                [
+                  80,
+                  -2.7407519817352295,
+                  "relstudents",
+                  false,
+                  false
+                ],
+                [
+                  48,
+                  -3.084036111831665,
+                  "militaryalliance",
+                  false,
+                  false
+                ],
+                [
+                  44,
+                  -3.2412846088409424,
+                  "lostterritory",
+                  false,
+                  false
+                ],
+                [
+                  106,
+                  -4.690759658813477,
+                  "warning",
                   false,
                   false
                 ]
@@ -724,7 +733,34 @@
               ],
               "data": [
                 [
-                  2.133389949798584
+                  3.076913893222809
+                ],
+                [
+                  2.4452097614606223
+                ],
+                [
+                  2.0711413522561393
+                ],
+                [
+                  1.7825321555137634
+                ],
+                [
+                  1.6337800323963165
+                ],
+                [
+                  1.4805578192075093
+                ],
+                [
+                  1.3289171159267426
+                ],
+                [
+                  1.214134156703949
+                ],
+                [
+                  1.1489891558885574
+                ],
+                [
+                  1.1088260412216187
                 ]
               ]
             },
@@ -2257,7 +2293,7 @@
             }
           },
           "other": {
-            "model": "UM(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): UMInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList()\n  (weight_regularizers): ModuleList()\n)"
+            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -2589,7 +2625,7 @@
                   "commonbloc0",
                   6,
                   "indonesia",
-                  -12.112058639526367
+                  -0.20490150153636932
                 ],
                 [
                   0,
@@ -2598,7 +2634,7 @@
                   "commonbloc2",
                   10,
                   "poland",
-                  -11.114224433898926
+                  0.062241971492767334
                 ],
                 [
                   0,
@@ -2607,7 +2643,7 @@
                   "commonbloc2",
                   11,
                   "uk",
-                  -13.38198471069336
+                  -2.708897590637207
                 ],
                 [
                   0,
@@ -2616,7 +2652,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -12.112058639526367
+                  -1.5905897617340088
                 ],
                 [
                   0,
@@ -2625,7 +2661,7 @@
                   "intergovorgs3",
                   10,
                   "poland",
-                  -11.114224433898926
+                  -0.4977906346321106
                 ],
                 [
                   0,
@@ -2634,7 +2670,7 @@
                   "militaryactions",
                   7,
                   "israel",
-                  -11.793558120727539
+                  -1.9100942611694336
                 ],
                 [
                   0,
@@ -2643,7 +2679,7 @@
                   "ngoorgs3",
                   7,
                   "israel",
-                  -11.793558120727539
+                  -0.46759045124053955
                 ],
                 [
                   0,
@@ -2652,7 +2688,7 @@
                   "nonviolentbehavior",
                   7,
                   "israel",
-                  -11.793558120727539
+                  -0.060020238161087036
                 ],
                 [
                   0,
@@ -2661,7 +2697,7 @@
                   "timesinceally",
                   4,
                   "egypt",
-                  -11.120698928833008
+                  0.6640222072601318
                 ],
                 [
                   0,
@@ -2670,7 +2706,7 @@
                   "timesinceally",
                   5,
                   "india",
-                  -12.765719413757324
+                  3.8866567611694336
                 ],
                 [
                   0,
@@ -2679,7 +2715,7 @@
                   "timesinceally",
                   12,
                   "usa",
-                  -11.876161575317383
+                  3.807534694671631
                 ],
                 [
                   1,
@@ -2688,7 +2724,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -10.503090858459473
+                  -4.844649314880371
                 ],
                 [
                   1,
@@ -2697,7 +2733,7 @@
                   "commonbloc1",
                   7,
                   "israel",
-                  -10.747295379638672
+                  -1.4978864192962646
                 ],
                 [
                   1,
@@ -2706,7 +2742,7 @@
                   "expeldiplomats",
                   2,
                   "china",
-                  -12.194340705871582
+                  -9.890969276428223
                 ],
                 [
                   1,
@@ -2715,7 +2751,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -10.402691841125488
+                  -0.3866039514541626
                 ],
                 [
                   1,
@@ -2724,7 +2760,7 @@
                   "expeldiplomats",
                   7,
                   "israel",
-                  -10.747295379638672
+                  1.877116084098816
                 ],
                 [
                   1,
@@ -2733,7 +2769,7 @@
                   "expeldiplomats",
                   13,
                   "ussr",
-                  -11.227357864379883
+                  -1.7948400974273682
                 ],
                 [
                   1,
@@ -2742,7 +2778,7 @@
                   "militaryactions",
                   9,
                   "netherlands",
-                  -10.648702621459961
+                  -2.2046959400177
                 ],
                 [
                   1,
@@ -2751,7 +2787,7 @@
                   "nonviolentbehavior",
                   5,
                   "india",
-                  -10.486099243164062
+                  -2.976149559020996
                 ],
                 [
                   1,
@@ -2760,7 +2796,7 @@
                   "nonviolentbehavior",
                   11,
                   "uk",
-                  -11.308690071105957
+                  0.45721375942230225
                 ],
                 [
                   1,
@@ -2769,7 +2805,7 @@
                   "reldiplomacy",
                   11,
                   "uk",
-                  -11.308690071105957
+                  3.3599371910095215
                 ],
                 [
                   1,
@@ -2778,7 +2814,7 @@
                   "relexportbooks",
                   2,
                   "china",
-                  -12.194340705871582
+                  -2.3233261108398438
                 ],
                 [
                   1,
@@ -2787,7 +2823,7 @@
                   "relexportbooks",
                   10,
                   "poland",
-                  -9.544705390930176
+                  2.2978110313415527
                 ],
                 [
                   1,
@@ -2796,7 +2832,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -10.402691841125488
+                  -0.81427001953125
                 ],
                 [
                   1,
@@ -2805,7 +2841,7 @@
                   "reltourism",
                   4,
                   "egypt",
-                  -10.503090858459473
+                  4.081644058227539
                 ],
                 [
                   1,
@@ -2814,7 +2850,7 @@
                   "[UNKNOWN_RELATION]",
                   12,
                   "usa",
-                  -10.909445762634277
+                  -1.1525992155075073
                 ],
                 [
                   2,
@@ -2823,7 +2859,7 @@
                   "blockpositionindex",
                   9,
                   "netherlands",
-                  -11.843181610107422
+                  -2.4725358486175537
                 ],
                 [
                   2,
@@ -2832,7 +2868,7 @@
                   "commonbloc0",
                   6,
                   "indonesia",
-                  -9.862305641174316
+                  -0.16532719135284424
                 ],
                 [
                   2,
@@ -2841,7 +2877,7 @@
                   "dependent",
                   5,
                   "india",
-                  -10.290460586547852
+                  1.932426929473877
                 ],
                 [
                   2,
@@ -2850,7 +2886,7 @@
                   "duration",
                   4,
                   "egypt",
-                  -10.44571304321289
+                  -3.3174514770507812
                 ],
                 [
                   2,
@@ -2859,7 +2895,7 @@
                   "expeldiplomats",
                   3,
                   "cuba",
-                  -11.0299711227417
+                  -1.6003003120422363
                 ],
                 [
                   2,
@@ -2868,7 +2904,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -11.097247123718262
+                  -0.6149245500564575
                 ],
                 [
                   2,
@@ -2877,7 +2913,7 @@
                   "intergovorgs3",
                   4,
                   "egypt",
-                  -10.44571304321289
+                  -1.182781457901001
                 ],
                 [
                   2,
@@ -2886,7 +2922,7 @@
                   "militaryactions",
                   0,
                   "brazil",
-                  -12.664292335510254
+                  2.0649325847625732
                 ],
                 [
                   2,
@@ -2895,7 +2931,7 @@
                   "ngo",
                   6,
                   "indonesia",
-                  -9.862305641174316
+                  -1.122281789779663
                 ],
                 [
                   2,
@@ -2904,7 +2940,7 @@
                   "ngo",
                   12,
                   "usa",
-                  -9.91422176361084
+                  -1.4750028848648071
                 ],
                 [
                   2,
@@ -2913,7 +2949,7 @@
                   "ngo",
                   13,
                   "ussr",
-                  -11.414666175842285
+                  0.33839425444602966
                 ],
                 [
                   2,
@@ -2922,7 +2958,7 @@
                   "officialvisits",
                   13,
                   "ussr",
-                  -11.414666175842285
+                  2.8358066082000732
                 ],
                 [
                   2,
@@ -2931,7 +2967,7 @@
                   "relexportbooks",
                   1,
                   "burma",
-                  -12.194340705871582
+                  -2.3233261108398438
                 ],
                 [
                   2,
@@ -2940,7 +2976,7 @@
                   "relngo",
                   5,
                   "india",
-                  -10.290460586547852
+                  1.5046638250350952
                 ],
                 [
                   2,
@@ -2949,7 +2985,7 @@
                   "students",
                   13,
                   "ussr",
-                  -11.414666175842285
+                  1.8632575273513794
                 ],
                 [
                   2,
@@ -2958,7 +2994,7 @@
                   "timesinceally",
                   6,
                   "indonesia",
-                  -9.862305641174316
+                  0.9553408026695251
                 ],
                 [
                   2,
@@ -2967,7 +3003,7 @@
                   "timesincewar",
                   4,
                   "egypt",
-                  -10.44571304321289
+                  -4.3950886726379395
                 ],
                 [
                   2,
@@ -2976,7 +3012,7 @@
                   "timesincewar",
                   5,
                   "india",
-                  -10.290460586547852
+                  1.6038192510604858
                 ],
                 [
                   2,
@@ -2985,7 +3021,7 @@
                   "timesincewar",
                   9,
                   "netherlands",
-                  -11.843181610107422
+                  1.2627129554748535
                 ],
                 [
                   2,
@@ -2994,7 +3030,7 @@
                   "violentactions",
                   13,
                   "ussr",
-                  -11.414666175842285
+                  -1.1473414897918701
                 ],
                 [
                   3,
@@ -3003,7 +3039,7 @@
                   "blockpositionindex",
                   11,
                   "uk",
-                  -12.67605209350586
+                  0.9958982467651367
                 ],
                 [
                   3,
@@ -3012,7 +3048,7 @@
                   "commonbloc0",
                   0,
                   "brazil",
-                  -12.07036018371582
+                  1.535167932510376
                 ],
                 [
                   3,
@@ -3021,7 +3057,7 @@
                   "commonbloc0",
                   5,
                   "india",
-                  -11.322383880615234
+                  -2.113750457763672
                 ],
                 [
                   3,
@@ -3030,7 +3066,7 @@
                   "commonbloc2",
                   10,
                   "poland",
-                  -10.779029846191406
+                  -1.219200611114502
                 ],
                 [
                   3,
@@ -3039,7 +3075,7 @@
                   "conferences",
                   12,
                   "usa",
-                  -11.54593276977539
+                  -0.5639832019805908
                 ],
                 [
                   3,
@@ -3048,7 +3084,7 @@
                   "expeldiplomats",
                   5,
                   "india",
-                  -11.322383880615234
+                  2.324406385421753
                 ],
                 [
                   3,
@@ -3057,7 +3093,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -12.575776100158691
+                  -1.521202564239502
                 ],
                 [
                   3,
@@ -3066,7 +3102,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -12.67605209350586
+                  -0.09234344959259033
                 ],
                 [
                   3,
@@ -3075,7 +3111,7 @@
                   "intergovorgs3",
                   11,
                   "uk",
-                  -12.67605209350586
+                  -0.5938087105751038
                 ],
                 [
                   3,
@@ -3084,7 +3120,7 @@
                   "lostterritory",
                   0,
                   "brazil",
-                  -12.07036018371582
+                  2.1717166900634766
                 ],
                 [
                   3,
@@ -3093,7 +3129,7 @@
                   "negativecomm",
                   6,
                   "indonesia",
-                  -12.575776100158691
+                  -2.69175386428833
                 ],
                 [
                   3,
@@ -3102,7 +3138,7 @@
                   "ngo",
                   12,
                   "usa",
-                  -11.54593276977539
+                  0.6625937223434448
                 ],
                 [
                   3,
@@ -3111,7 +3147,7 @@
                   "nonviolentbehavior",
                   0,
                   "brazil",
-                  -12.07036018371582
+                  -2.568760395050049
                 ],
                 [
                   3,
@@ -3120,7 +3156,7 @@
                   "pprotests",
                   4,
                   "egypt",
-                  -11.321101188659668
+                  -1.2453187704086304
                 ],
                 [
                   3,
@@ -3129,7 +3165,7 @@
                   "relexportbooks",
                   5,
                   "india",
-                  -11.322383880615234
+                  -3.230990171432495
                 ],
                 [
                   3,
@@ -3138,7 +3174,7 @@
                   "timesincewar",
                   5,
                   "india",
-                  -11.322383880615234
+                  3.936025619506836
                 ],
                 [
                   3,
@@ -3147,7 +3183,7 @@
                   "violentactions",
                   2,
                   "china",
-                  -11.0299711227417
+                  -1.5407073497772217
                 ],
                 [
                   3,
@@ -3156,7 +3192,7 @@
                   "[UNKNOWN_RELATION]",
                   7,
                   "israel",
-                  -8.769421577453613
+                  -4.907418251037598
                 ],
                 [
                   4,
@@ -3165,7 +3201,7 @@
                   "commonbloc0",
                   3,
                   "cuba",
-                  -11.321101188659668
+                  -2.0510406494140625
                 ],
                 [
                   4,
@@ -3174,7 +3210,7 @@
                   "intergovorgs",
                   11,
                   "uk",
-                  -11.070939064025879
+                  -1.3668441772460938
                 ],
                 [
                   4,
@@ -3183,7 +3219,7 @@
                   "lostterritory",
                   7,
                   "israel",
-                  -9.299080848693848
+                  3.1840434074401855
                 ],
                 [
                   4,
@@ -3192,7 +3228,7 @@
                   "militaryactions",
                   7,
                   "israel",
-                  -9.299080848693848
+                  0.956144392490387
                 ],
                 [
                   4,
@@ -3201,7 +3237,7 @@
                   "ngo",
                   7,
                   "israel",
-                  -9.299080848693848
+                  0.40564101934432983
                 ],
                 [
                   4,
@@ -3210,7 +3246,7 @@
                   "ngoorgs3",
                   0,
                   "brazil",
-                  -11.120698928833008
+                  -0.9458215832710266
                 ],
                 [
                   4,
@@ -3219,7 +3255,7 @@
                   "relexportbooks",
                   1,
                   "burma",
-                  -10.503090858459473
+                  0.00941401720046997
                 ],
                 [
                   4,
@@ -3228,7 +3264,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -10.772326469421387
+                  -2.190476894378662
                 ],
                 [
                   4,
@@ -3237,7 +3273,7 @@
                   "timesincewar",
                   0,
                   "brazil",
-                  -11.120698928833008
+                  -2.1109747886657715
                 ],
                 [
                   5,
@@ -3246,7 +3282,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -11.148578643798828
+                  -0.7512480020523071
                 ],
                 [
                   5,
@@ -3255,7 +3291,7 @@
                   "expeldiplomats",
                   4,
                   "egypt",
-                  -11.148578643798828
+                  3.0550894737243652
                 ],
                 [
                   5,
@@ -3264,7 +3300,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -11.496085166931152
+                  -0.44582706689834595
                 ],
                 [
                   5,
@@ -3273,7 +3309,7 @@
                   "militaryactions",
                   0,
                   "brazil",
-                  -12.765719413757324
+                  0.1263611614704132
                 ],
                 [
                   5,
@@ -3282,7 +3318,7 @@
                   "militaryalliance",
                   2,
                   "china",
-                  -10.290460586547852
+                  -2.1882545948028564
                 ],
                 [
                   5,
@@ -3291,7 +3327,7 @@
                   "ngo",
                   2,
                   "china",
-                  -10.290460586547852
+                  0.605745792388916
                 ],
                 [
                   5,
@@ -3300,7 +3336,7 @@
                   "relngo",
                   4,
                   "egypt",
-                  -11.148578643798828
+                  -1.634552001953125
                 ],
                 [
                   5,
@@ -3309,7 +3345,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -10.30144214630127
+                  -0.7555056810379028
                 ],
                 [
                   5,
@@ -3318,7 +3354,7 @@
                   "timesinceally",
                   9,
                   "netherlands",
-                  -11.329219818115234
+                  3.7011258602142334
                 ],
                 [
                   6,
@@ -3327,7 +3363,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -10.772326469421387
+                  -3.5569801330566406
                 ],
                 [
                   6,
@@ -3336,7 +3372,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -12.151327133178711
+                  -1.907724142074585
                 ],
                 [
                   6,
@@ -3345,7 +3381,7 @@
                   "militaryalliance",
                   2,
                   "china",
-                  -9.862305641174316
+                  0.3641950190067291
                 ],
                 [
                   6,
@@ -3354,7 +3390,7 @@
                   "negativecomm",
                   13,
                   "ussr",
-                  -13.442956924438477
+                  -2.625336170196533
                 ],
                 [
                   6,
@@ -3363,7 +3399,7 @@
                   "reldiplomacy",
                   12,
                   "usa",
-                  -12.757780075073242
+                  -0.5947430729866028
                 ],
                 [
                   6,
@@ -3372,7 +3408,7 @@
                   "relngo",
                   3,
                   "cuba",
-                  -12.575776100158691
+                  2.214279890060425
                 ],
                 [
                   6,
@@ -3381,7 +3417,7 @@
                   "violentactions",
                   2,
                   "china",
-                  -9.862305641174316
+                  -1.0285377502441406
                 ],
                 [
                   6,
@@ -3390,7 +3426,7 @@
                   "weightedunvote",
                   5,
                   "india",
-                  -10.30144214630127
+                  -5.363966941833496
                 ],
                 [
                   7,
@@ -3399,7 +3435,7 @@
                   "embassy",
                   12,
                   "usa",
-                  -11.276312828063965
+                  -0.07602047920227051
                 ],
                 [
                   7,
@@ -3408,7 +3444,7 @@
                   "expeldiplomats",
                   12,
                   "usa",
-                  -11.276312828063965
+                  1.7598552703857422
                 ],
                 [
                   7,
@@ -3417,7 +3453,7 @@
                   "lostterritory",
                   0,
                   "brazil",
-                  -11.793558120727539
+                  1.5548158884048462
                 ],
                 [
                   7,
@@ -3426,7 +3462,7 @@
                   "negativebehavior",
                   12,
                   "usa",
-                  -11.276312828063965
+                  1.3428760766983032
                 ],
                 [
                   7,
@@ -3435,7 +3471,7 @@
                   "nonviolentbehavior",
                   12,
                   "usa",
-                  -11.276312828063965
+                  2.3171136379241943
                 ],
                 [
                   7,
@@ -3444,7 +3480,7 @@
                   "relintergovorgs",
                   9,
                   "netherlands",
-                  -8.503986358642578
+                  0.20932817459106445
                 ],
                 [
                   7,
@@ -3453,7 +3489,7 @@
                   "reltourism",
                   9,
                   "netherlands",
-                  -8.503986358642578
+                  -0.6218289136886597
                 ],
                 [
                   7,
@@ -3462,7 +3498,7 @@
                   "tourism3",
                   4,
                   "egypt",
-                  -9.299080848693848
+                  -0.14207792282104492
                 ],
                 [
                   7,
@@ -3471,7 +3507,7 @@
                   "[UNKNOWN_RELATION]",
                   9,
                   "netherlands",
-                  -8.503986358642578
+                  -0.9057588577270508
                 ],
                 [
                   7,
@@ -3480,7 +3516,7 @@
                   "[UNKNOWN_RELATION]",
                   12,
                   "usa",
-                  -11.276312828063965
+                  0.15754598379135132
                 ]
               ]
             },
@@ -3490,7 +3526,34 @@
               ],
               "data": [
                 [
-                  2.133389949798584
+                  3.076913893222809
+                ],
+                [
+                  2.4452097614606223
+                ],
+                [
+                  2.0711413522561393
+                ],
+                [
+                  1.7825321555137634
+                ],
+                [
+                  1.6337800323963165
+                ],
+                [
+                  1.4805578192075093
+                ],
+                [
+                  1.3289171159267426
+                ],
+                [
+                  1.214134156703949
+                ],
+                [
+                  1.1489891558885574
+                ],
+                [
+                  1.1088260412216187
                 ]
               ]
             },
@@ -5023,7 +5086,7 @@
             }
           },
           "other": {
-            "model": "UM(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): UMInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList()\n  (weight_regularizers): ModuleList()\n)"
+            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -5241,43 +5304,253 @@
               ],
               "data": [
                 [
-                  2,
-                  "china",
-                  21,
-                  "ngo",
-                  2,
-                  "china",
-                  -0.0,
+                  4,
+                  "egypt",
+                  50,
+                  "[UNKNOWN_RELATION]",
+                  4,
+                  "egypt",
+                  19.755084991455078,
                   false
                 ],
                 [
-                  2,
-                  "china",
-                  24,
-                  "officialvisits",
-                  2,
-                  "china",
-                  -0.0,
+                  4,
+                  "egypt",
+                  22,
+                  "ngoorgs3",
+                  4,
+                  "egypt",
+                  16.70555877685547,
                   false
                 ],
                 [
-                  12,
-                  "usa",
+                  4,
+                  "egypt",
+                  36,
+                  "timesincewar",
+                  4,
+                  "egypt",
+                  16.62845230102539,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  28,
+                  "releconomicaid",
+                  4,
+                  "egypt",
+                  13.3895902633667,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
                   9,
                   "eemigrants",
-                  12,
-                  "usa",
-                  -0.0,
+                  7,
+                  "israel",
+                  12.319771766662598,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  0,
+                  "accusation",
+                  8,
+                  "jordan",
+                  12.087197303771973,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  25,
+                  "pprotests",
+                  7,
+                  "israel",
+                  12.010881423950195,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  48,
+                  "[UNKNOWN_RELATION]",
+                  10,
+                  "poland",
+                  11.97541618347168,
                   false
                 ],
                 [
                   10,
                   "poland",
+                  48,
+                  "[UNKNOWN_RELATION]",
+                  4,
+                  "egypt",
+                  11.97541618347168,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
+                  36,
+                  "timesincewar",
+                  6,
+                  "indonesia",
+                  11.66945743560791,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  32,
+                  "relstudents",
+                  4,
+                  "egypt",
+                  11.162351608276367,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  13,
+                  "exports3",
+                  4,
+                  "egypt",
+                  11.10141372680664,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  46,
+                  "[UNKNOWN_RELATION]",
+                  2,
+                  "china",
+                  10.902496337890625,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  25,
+                  "pprotests",
+                  5,
+                  "india",
+                  10.726715087890625,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  30,
+                  "relintergovorgs",
+                  8,
+                  "jordan",
+                  10.364011764526367,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
                   16,
                   "intergovorgs3",
-                  10,
-                  "poland",
-                  -0.0,
+                  13,
+                  "ussr",
+                  10.263175964355469,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  31,
+                  "relngo",
+                  7,
+                  "israel",
+                  10.047483444213867,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  53,
+                  "[UNKNOWN_RELATION]",
+                  4,
+                  "egypt",
+                  10.029932022094727,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  36,
+                  "timesincewar",
+                  5,
+                  "india",
+                  9.816062927246094,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  34,
+                  "reltreaties",
+                  1,
+                  "burma",
+                  9.68155288696289,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  34,
+                  "reltreaties",
+                  7,
+                  "israel",
+                  9.681551933288574,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  45,
+                  "[UNKNOWN_RELATION]",
+                  7,
+                  "israel",
+                  9.549028396606445,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  29,
+                  "relexports",
+                  7,
+                  "israel",
+                  9.507752418518066,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  30,
+                  "relintergovorgs",
+                  1,
+                  "burma",
+                  9.50404167175293,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  30,
+                  "relintergovorgs",
+                  7,
+                  "israel",
+                  9.50404167175293,
                   false
                 ],
                 [
@@ -5287,157 +5560,67 @@
                   "militaryalliance",
                   8,
                   "jordan",
-                  -0.0,
+                  9.407536506652832,
                   false
                 ],
                 [
                   6,
                   "indonesia",
-                  24,
-                  "officialvisits",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  47,
+                  "[UNKNOWN_RELATION]",
+                  7,
+                  "israel",
+                  9.394675254821777,
                   false
                 ],
                 [
-                  2,
-                  "china",
+                  7,
+                  "israel",
+                  47,
+                  "[UNKNOWN_RELATION]",
+                  6,
+                  "indonesia",
+                  9.394673347473145,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
+                  47,
+                  "[UNKNOWN_RELATION]",
+                  1,
+                  "burma",
+                  9.365013122558594,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  47,
+                  "[UNKNOWN_RELATION]",
+                  6,
+                  "indonesia",
+                  9.365013122558594,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
                   23,
                   "nonviolentbehavior",
-                  2,
-                  "china",
-                  -0.0,
+                  7,
+                  "israel",
+                  9.091105461120605,
                   false
                 ],
                 [
+                  7,
+                  "israel",
+                  23,
+                  "nonviolentbehavior",
                   6,
                   "indonesia",
-                  25,
-                  "pprotests",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  15,
-                  "intergovorgs",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  22,
-                  "ngoorgs3",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  3,
-                  "commonbloc1",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  10,
-                  "embassy",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  41,
-                  "unweightedunvote",
-                  0,
-                  "brazil",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  26,
-                  "relbooktranslations",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  4,
-                  "commonbloc2",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  17,
-                  "militaryactions",
-                  8,
-                  "jordan",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  27,
-                  "reldiplomacy",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  14,
-                  "independence",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  11,
-                  "emigrants3",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  20,
-                  "negativecomm",
-                  2,
-                  "china",
-                  -0.0,
+                  9.091105461120605,
                   false
                 ],
                 [
@@ -5447,367 +5630,137 @@
                   "commonbloc0",
                   13,
                   "ussr",
-                  -0.0,
+                  9.01644229888916,
                   false
                 ],
                 [
-                  6,
-                  "indonesia",
-                  28,
-                  "releconomicaid",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  4,
+                  "egypt",
+                  34,
+                  "reltreaties",
+                  4,
+                  "egypt",
+                  8.824853897094727,
                   false
                 ],
                 [
-                  6,
-                  "indonesia",
-                  29,
-                  "relexports",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  4,
+                  "egypt",
+                  1,
+                  "blockpositionindex",
+                  4,
+                  "egypt",
+                  8.69696044921875,
                   false
                 ],
                 [
-                  2,
-                  "china",
-                  19,
-                  "negativebehavior",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  13,
-                  "exports3",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  42,
-                  "violentactions",
-                  0,
-                  "brazil",
-                  -0.0,
-                  false
-                ],
-                [
-                  9,
-                  "netherlands",
-                  29,
-                  "relexports",
-                  9,
-                  "netherlands",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  27,
-                  "reldiplomacy",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  30,
-                  "relintergovorgs",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  20,
-                  "negativecomm",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  17,
-                  "militaryactions",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  6,
-                  "dependent",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  29,
-                  "relexports",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  6,
-                  "dependent",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  18,
-                  "militaryalliance",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  19,
-                  "negativebehavior",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  20,
-                  "negativecomm",
-                  8,
-                  "jordan",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  28,
-                  "releconomicaid",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  39,
-                  "treaties",
-                  0,
-                  "brazil",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  19,
-                  "negativebehavior",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  7,
-                  "duration",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  12,
-                  "exportbooks",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  20,
-                  "negativecomm",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  5,
-                  "conferences",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  18,
-                  "militaryalliance",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  26,
-                  "relbooktranslations",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  21,
-                  "ngo",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  19,
-                  "negativebehavior",
-                  8,
-                  "jordan",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  8,
-                  "economicaid",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  22,
-                  "ngoorgs3",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  17,
-                  "militaryactions",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
+                  1,
+                  "burma",
                   25,
                   "pprotests",
-                  2,
-                  "china",
-                  -0.0,
+                  1,
+                  "burma",
+                  8.551037788391113,
                   false
                 ],
                 [
-                  0,
-                  "brazil",
+                  5,
+                  "india",
+                  4,
+                  "commonbloc2",
+                  5,
+                  "india",
+                  8.484299659729004,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
                   40,
                   "unoffialacts",
-                  0,
-                  "brazil",
-                  -0.0,
+                  4,
+                  "egypt",
+                  8.307682037353516,
                   false
                 ],
                 [
-                  6,
-                  "indonesia",
-                  23,
-                  "nonviolentbehavior",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  7,
+                  "israel",
+                  30,
+                  "relintergovorgs",
+                  7,
+                  "israel",
+                  8.267297744750977,
                   false
                 ],
                 [
-                  0,
-                  "brazil",
-                  45,
-                  "[UNKNOWN_RELATION]",
-                  0,
-                  "brazil",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
                   9,
-                  "eemigrants",
-                  10,
-                  "poland",
-                  -0.0,
+                  "netherlands",
+                  30,
+                  "relintergovorgs",
+                  9,
+                  "netherlands",
+                  8.155978202819824,
                   false
                 ],
                 [
-                  12,
-                  "usa",
-                  54,
+                  1,
+                  "burma",
+                  10,
+                  "embassy",
+                  1,
+                  "burma",
+                  8.151378631591797,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
+                  26,
+                  "relbooktranslations",
+                  6,
+                  "indonesia",
+                  8.07820987701416,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  34,
+                  "reltreaties",
+                  8,
+                  "jordan",
+                  8.063867568969727,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  50,
                   "[UNKNOWN_RELATION]",
-                  12,
-                  "usa",
-                  -0.0,
+                  2,
+                  "china",
+                  8.060257911682129,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  50,
+                  "[UNKNOWN_RELATION]",
+                  1,
+                  "burma",
+                  8.060257911682129,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  44,
+                  "weightedunvote",
+                  4,
+                  "egypt",
+                  8.041702270507812,
                   false
                 ],
                 [
@@ -5815,149 +5768,309 @@
                   "indonesia",
                   37,
                   "tourism",
+                  4,
+                  "egypt",
+                  8.003549575805664,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  37,
+                  "tourism",
                   6,
                   "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  12,
-                  "exportbooks",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  38,
-                  "tourism3",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  13,
-                  "exports3",
-                  8,
-                  "jordan",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  16,
-                  "intergovorgs3",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  8,
-                  "economicaid",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  11,
-                  "emigrants3",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  39,
-                  "treaties",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  53,
-                  "[UNKNOWN_RELATION]",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  10,
-                  "embassy",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  17,
-                  "militaryactions",
-                  12,
-                  "usa",
-                  -0.0,
+                  8.003549575805664,
                   false
                 ],
                 [
                   0,
                   "brazil",
+                  24,
+                  "officialvisits",
+                  4,
+                  "egypt",
+                  7.891880989074707,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  24,
+                  "officialvisits",
+                  0,
+                  "brazil",
+                  7.891880989074707,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  29,
+                  "relexports",
+                  1,
+                  "burma",
+                  7.859051704406738,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  29,
+                  "relexports",
+                  7,
+                  "israel",
+                  7.859050750732422,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  49,
+                  "[UNKNOWN_RELATION]",
+                  0,
+                  "brazil",
+                  7.818741798400879,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  49,
+                  "[UNKNOWN_RELATION]",
+                  4,
+                  "egypt",
+                  7.818741798400879,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  43,
+                  "warning",
+                  3,
+                  "cuba",
+                  7.70953369140625,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  40,
+                  "unoffialacts",
+                  3,
+                  "cuba",
+                  7.566962242126465,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  46,
+                  "[UNKNOWN_RELATION]",
+                  8,
+                  "jordan",
+                  7.542333602905273,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  35,
+                  "timesinceally",
+                  8,
+                  "jordan",
+                  7.533351898193359,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
                   44,
                   "weightedunvote",
+                  7,
+                  "israel",
+                  7.524402141571045,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  44,
+                  "weightedunvote",
+                  4,
+                  "egypt",
+                  7.524402141571045,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  36,
+                  "timesincewar",
+                  9,
+                  "netherlands",
+                  7.474417686462402,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  52,
+                  "[UNKNOWN_RELATION]",
                   0,
                   "brazil",
-                  -0.0,
+                  7.386798858642578,
                   false
+                ],
+                [
+                  0,
+                  "brazil",
+                  52,
+                  "[UNKNOWN_RELATION]",
+                  8,
+                  "jordan",
+                  7.386798858642578,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  40,
+                  "unoffialacts",
+                  10,
+                  "poland",
+                  7.37484884262085,
+                  false
+                ],
+                [
+                  10,
+                  "poland",
+                  40,
+                  "unoffialacts",
+                  1,
+                  "burma",
+                  7.374848365783691,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  34,
+                  "reltreaties",
+                  1,
+                  "burma",
+                  7.373277187347412,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  32,
+                  "relstudents",
+                  0,
+                  "brazil",
+                  7.370147228240967,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  32,
+                  "relstudents",
+                  1,
+                  "burma",
+                  7.370147228240967,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  26,
+                  "relbooktranslations",
+                  7,
+                  "israel",
+                  7.322930812835693,
+                  true
+                ],
+                [
+                  7,
+                  "israel",
+                  26,
+                  "relbooktranslations",
+                  8,
+                  "jordan",
+                  7.322930812835693,
+                  true
                 ],
                 [
                   6,
                   "indonesia",
                   40,
                   "unoffialacts",
+                  3,
+                  "cuba",
+                  7.300812721252441,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  40,
+                  "unoffialacts",
                   6,
                   "indonesia",
-                  -0.0,
+                  7.300812721252441,
                   false
                 ],
                 [
-                  10,
-                  "poland",
+                  1,
+                  "burma",
+                  0,
+                  "accusation",
+                  0,
+                  "brazil",
+                  7.298738479614258,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  0,
+                  "accusation",
+                  1,
+                  "burma",
+                  7.298738479614258,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  43,
+                  "warning",
+                  1,
+                  "burma",
+                  7.261962890625,
+                  false
+                ],
+                [
                   7,
-                  "duration",
-                  10,
-                  "poland",
-                  -0.0,
+                  "israel",
+                  26,
+                  "relbooktranslations",
+                  7,
+                  "israel",
+                  7.190979480743408,
                   false
                 ],
                 [
-                  2,
-                  "china",
-                  9,
-                  "eemigrants",
-                  2,
-                  "china",
-                  -0.0,
+                  8,
+                  "jordan",
+                  50,
+                  "[UNKNOWN_RELATION]",
+                  8,
+                  "jordan",
+                  7.1351542472839355,
                   false
                 ],
                 [
@@ -5967,77 +6080,107 @@
                   "unweightedunvote",
                   6,
                   "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  12,
-                  "exportbooks",
-                  8,
-                  "jordan",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  52,
-                  "[UNKNOWN_RELATION]",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  42,
-                  "violentactions",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  7.1345343589782715,
                   false
                 ],
                 [
                   10,
                   "poland",
+                  50,
+                  "[UNKNOWN_RELATION]",
+                  10,
+                  "poland",
+                  7.108039379119873,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
                   6,
                   "dependent",
-                  10,
-                  "poland",
-                  -0.0,
+                  13,
+                  "ussr",
+                  7.078179359436035,
+                  true
+                ],
+                [
+                  13,
+                  "ussr",
+                  6,
+                  "dependent",
+                  0,
+                  "brazil",
+                  7.078179359436035,
+                  true
+                ],
+                [
+                  4,
+                  "egypt",
+                  16,
+                  "intergovorgs3",
+                  1,
+                  "burma",
+                  7.076079845428467,
                   false
                 ],
                 [
-                  2,
-                  "china",
-                  8,
-                  "economicaid",
-                  2,
-                  "china",
-                  -0.0,
+                  1,
+                  "burma",
+                  16,
+                  "intergovorgs3",
+                  4,
+                  "egypt",
+                  7.076079845428467,
                   false
                 ],
                 [
-                  12,
-                  "usa",
-                  18,
-                  "militaryalliance",
-                  12,
-                  "usa",
-                  -0.0,
+                  5,
+                  "india",
+                  0,
+                  "accusation",
+                  6,
+                  "indonesia",
+                  7.068831920623779,
                   false
                 ],
                 [
                   6,
                   "indonesia",
+                  0,
+                  "accusation",
+                  5,
+                  "india",
+                  7.068831920623779,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  51,
+                  "[UNKNOWN_RELATION]",
+                  4,
+                  "egypt",
+                  7.048451900482178,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
                   43,
                   "warning",
-                  6,
-                  "indonesia",
-                  -0.0,
+                  1,
+                  "burma",
+                  7.0045294761657715,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  43,
+                  "warning",
+                  7,
+                  "israel",
+                  7.0045294761657715,
                   false
                 ],
                 [
@@ -6045,199 +6188,119 @@
                   "china",
                   7,
                   "duration",
+                  7,
+                  "israel",
+                  6.9976725578308105,
+                  true
+                ],
+                [
+                  7,
+                  "israel",
+                  7,
+                  "duration",
                   2,
                   "china",
-                  -0.0,
+                  6.9976725578308105,
+                  true
+                ],
+                [
+                  6,
+                  "indonesia",
+                  6,
+                  "dependent",
+                  1,
+                  "burma",
+                  6.968672752380371,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  6,
+                  "dependent",
+                  6,
+                  "indonesia",
+                  6.968672752380371,
                   false
                 ],
                 [
                   8,
                   "jordan",
-                  15,
-                  "intergovorgs",
+                  6,
+                  "dependent",
                   8,
                   "jordan",
-                  -0.0,
+                  6.9286346435546875,
                   false
                 ],
                 [
-                  8,
-                  "jordan",
-                  16,
-                  "intergovorgs3",
-                  8,
-                  "jordan",
-                  -0.0,
+                  13,
+                  "ussr",
+                  51,
+                  "[UNKNOWN_RELATION]",
+                  1,
+                  "burma",
+                  6.927400588989258,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  51,
+                  "[UNKNOWN_RELATION]",
+                  13,
+                  "ussr",
+                  6.927400588989258,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  35,
+                  "timesinceally",
+                  7,
+                  "israel",
+                  6.8932366371154785,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  35,
+                  "timesinceally",
+                  1,
+                  "burma",
+                  6.89323616027832,
                   false
                 ],
                 [
                   6,
                   "indonesia",
+                  25,
+                  "pprotests",
+                  6,
+                  "indonesia",
+                  6.841075420379639,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
                   30,
                   "relintergovorgs",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  18,
-                  "militaryalliance",
-                  2,
-                  "china",
-                  -0.0,
+                  4,
+                  "egypt",
+                  6.8022050857543945,
                   false
                 ],
                 [
                   6,
                   "indonesia",
-                  31,
-                  "relngo",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  1,
-                  "blockpositionindex",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
                   12,
                   "exportbooks",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  17,
-                  "militaryactions",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  13,
-                  "exports3",
-                  12,
-                  "usa",
-                  -0.0,
-                  false
-                ],
-                [
                   6,
                   "indonesia",
-                  32,
-                  "relstudents",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  16,
-                  "intergovorgs3",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  33,
-                  "reltourism",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  43,
-                  "warning",
-                  0,
-                  "brazil",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  16,
-                  "intergovorgs3",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  11,
-                  "emigrants3",
-                  10,
-                  "poland",
-                  -0.0,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  34,
-                  "reltreaties",
-                  6,
-                  "indonesia",
-                  -0.0,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  15,
-                  "intergovorgs",
-                  2,
-                  "china",
-                  -0.0,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  0,
-                  "accusation",
-                  13,
-                  "ussr",
-                  -0.0,
-                  false
-                ],
-                [
-                  12,
-                  "usa",
-                  14,
-                  "independence",
-                  12,
-                  "usa",
-                  -0.0,
+                  6.755964756011963,
                   false
                 ]
               ]
@@ -6248,7 +6311,34 @@
               ],
               "data": [
                 [
-                  2.133389949798584
+                  3.076913893222809
+                ],
+                [
+                  2.4452097614606223
+                ],
+                [
+                  2.0711413522561393
+                ],
+                [
+                  1.7825321555137634
+                ],
+                [
+                  1.6337800323963165
+                ],
+                [
+                  1.4805578192075093
+                ],
+                [
+                  1.3289171159267426
+                ],
+                [
+                  1.214134156703949
+                ],
+                [
+                  1.1489891558885574
+                ],
+                [
+                  1.1088260412216187
                 ]
               ]
             },
@@ -7781,7 +7871,7 @@
             }
           },
           "other": {
-            "model": "UM(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): UMInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList()\n  (weight_regularizers): ModuleList()\n)"
+            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -8004,19 +8094,19 @@
               "data": [
                 [
                   "hits@1",
-                  0.0
+                  0.08706467661691543
                 ],
                 [
                   "hits@3",
-                  0.19154228855721392
+                  0.3333333333333333
                 ],
                 [
                   "hits@5",
-                  0.3781094527363184
+                  0.5373134328358209
                 ],
                 [
                   "hits@10",
-                  0.8109452736318408
+                  0.9079601990049752
                 ]
               ]
             },
@@ -8026,7 +8116,34 @@
               ],
               "data": [
                 [
-                  2.133389949798584
+                  3.076913893222809
+                ],
+                [
+                  2.4452097614606223
+                ],
+                [
+                  2.0711413522561393
+                ],
+                [
+                  1.7825321555137634
+                ],
+                [
+                  1.6337800323963165
+                ],
+                [
+                  1.4805578192075093
+                ],
+                [
+                  1.3289171159267426
+                ],
+                [
+                  1.214134156703949
+                ],
+                [
+                  1.1489891558885574
+                ],
+                [
+                  1.1088260412216187
                 ]
               ]
             },
@@ -9559,7 +9676,7 @@
             }
           },
           "other": {
-            "model": "UM(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): UMInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList()\n  (weight_regularizers): ModuleList()\n)"
+            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -9746,7 +9863,7 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
-        "error": "Cannot extract relation embeddings from model type: <class 'pykeen.models.unimodal.unstructured_model.UM'>. Available attributes: ['T_destination', 'add_module', 'append_weight_regularizer', 'apply', 'bfloat16', 'buffers', 'call_super_init', 'children', 'collect_regularization_term', 'compile', 'cpu', 'cuda', 'device', 'double', 'dump_patches', 'entity_representations', 'eval', 'extra_repr', 'float', 'forward', 'get_buffer', 'get_extra_state', 'get_grad_params', 'get_parameter', 'get_submodule', 'half', 'hpo_default', 'interaction', 'ipu', 'load_state', 'load_state_dict', 'loss', 'loss_default', 'loss_default_kwargs', 'modules', 'mtia', 'named_buffers', 'named_children', 'named_modules', 'named_parameters', 'num_entities', 'num_parameter_bytes', 'num_parameters', 'num_real_relations', 'num_relations', 'parameters', 'post_forward_pass', 'post_parameter_update', 'predict', 'predict_h', 'predict_hrt', 'predict_r', 'predict_t', 'predict_with_sigmoid', 'register_backward_hook', 'register_buffer', 'register_forward_hook', 'register_forward_pre_hook', 'register_full_backward_hook', 'register_full_backward_pre_hook', 'register_load_state_dict_post_hook', 'register_load_state_dict_pre_hook', 'register_module', 'register_parameter', 'register_state_dict_post_hook', 'register_state_dict_pre_hook', 'regularizer_default', 'regularizer_default_kwargs', 'relation_inverter', 'relation_representations', 'requires_grad_', 'reset_parameters_', 'save_state', 'score_h', 'score_h_inverse', 'score_hrt', 'score_hrt_inverse', 'score_r', 'score_t', 'score_t_inverse', 'set_extra_state', 'set_submodule', 'share_memory', 'state_dict', 'to', 'to_empty', 'train', 'training', 'type', 'use_inverse_triples', 'weight_regularizers', 'xpu', 'zero_grad']",
+        "error": null,
         "input_metadata": [
           {
             "dataframes": {
