@@ -122,8 +122,8 @@ async def test_build_model_with_submodules():
 
     #              / Linear \
     # Input:Tensor --------- Sequential -- Activation -- Output -- Loss -- Optimizer
-    #              \ Linear /                           /
-    #               \----------------------------------/
+    #              \ Linear /                                     /
+    #               \--------------------------------------------/
     ws = make_ws(
         pytorch_core.ENV,
         {
@@ -153,6 +153,62 @@ async def test_build_model_with_submodules():
     m = pytorch_core.build_model(ws)
     assert summarize_layers(m) == "SeLeIdId"
     assert len(m.model[0]) == 3 and all(isinstance(layer, pyg_nn.Linear) for layer in m.model[0])
+    assert m.model_inputs == [
+        "input_output"
+    ]  # submodule inputs should not be included in the model inputs
+
+
+async def test_build_model_with_multilayer_submodules():
+    import torch_geometric.nn as pyg_nn
+
+    @pytorch_core.op("Test submodules")
+    def build_submodule(modules: list[torch.nn.Module], single_module: torch.nn.Module):
+        return torch.nn.Sequential(*modules, single_module)
+
+    @pytorch_core.op("Multilayer submodule")
+    def build_multilayer_submodule(x, multilayer: torch.nn.Module):
+        linear = pyg_nn.Linear(-1, 4)
+        return torch.nn.Sequential(linear, multilayer)
+
+    #              / Linear \
+    # Input:Tensor --------- Sequential -- Multilayer -- Activation -- Output -- Loss -- Optimizer
+    #              \ Linear /                                                   /
+    #               \----------------------------------------------------------/
+    ws = make_ws(
+        pytorch_core.ENV,
+        {
+            "input": {"title": "Input: tensor"},
+            "lin1": {"title": "Linear", "output_dim": 4},
+            "lin2": {"title": "Linear", "output_dim": 4},
+            "seq1": {"title": "Test submodules"},
+            "multilayer": {"title": "Multilayer submodule"},
+            "act": {"title": "Activation", "type": "LeakyReLU"},
+            "output": {"title": "Output"},
+            "loss": {"title": "MSE loss"},
+            "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
+        },
+        [
+            ("input:output", "lin1:x"),
+            ("input:output", "lin2:x"),
+            ("input:output", "multilayer:x"),
+            ("input:output", "loss:y"),
+            ("lin1:output", "seq1:modules"),
+            ("lin1:output", "seq1:single_module"),
+            ("lin2:output", "seq1:modules"),
+            ("seq1:output", "multilayer:multilayer"),
+            ("multilayer:output", "act:x"),
+            ("act:output", "output:x"),
+            ("output:x", "loss:x"),
+            ("loss:output", "optim:loss"),
+        ],
+    )
+    m = pytorch_core.build_model(ws)
+    assert summarize_layers(m) == "SeLeIdId"
+    assert len(m.model[0]) == 2
+    assert isinstance(m.model[0][0], pyg_nn.Linear)
+    assert len(m.model[0][1]) == 3 and all(
+        isinstance(layer, pyg_nn.Linear) for layer in m.model[0][1]
+    )
     assert m.model_inputs == [
         "input_output"
     ]  # submodule inputs should not be included in the model inputs

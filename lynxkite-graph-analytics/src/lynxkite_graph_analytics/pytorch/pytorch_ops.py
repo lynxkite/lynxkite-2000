@@ -116,7 +116,7 @@ def dropout(x, *, p=0.0):
 
 
 @op("Linear", weights=True)
-def linear(x: torch.Tensor, *, output_dim=1024):
+def linear(x, *, output_dim=1024):
     import torch_geometric.nn as pyg_nn
 
     return pyg_nn.Linear(-1, output_dim)
@@ -138,7 +138,7 @@ def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
 def graph_conv(nodes, edges, *, in_channels: int, out_channels: int):
     import torch_geometric.nn as pyg_nn
 
-    return pyg_nn.GCNConv(in_channels, out_channels)
+    return pyg_nn.GCNConv(in_channels, out_channels, add_self_loops=False)
 
 
 class BundleHeteroConv(pyg_nn.HeteroConv):
@@ -169,38 +169,24 @@ class BundleHeteroConv(pyg_nn.HeteroConv):
 
 @op(
     "HeteroConv",
-    view="hetero_conv",
     weights=True,
     outputs=["x_dict"],
 )
 def hetero_conv(
     nodes: list[torch.Tensor],
     edges: list[torch.Tensor],
+    convs: list[torch.nn.Module] = [],
     *,
     node_names_str: str,
     relation_names_str: str,
-    layers="[]",
 ):
     """Returns a :class:`~torch_geometric.nn.HeteroConv` layer."""
 
-    import json
-
-    if isinstance(layers, str):
-        config = json.loads(layers or "[]")
-    else:
-        config = layers
-
-    convs = {}
-    for layer in config:
-        relation = tuple(layer.get("relation", []))
-        conv_type = layer.get("type", "GraphConv")
-        params = layer.get("params", {})
-        conv_cls = getattr(pyg_nn, conv_type)
-        convs[relation] = conv_cls(**params, add_self_loops=False, concat=False)
-    node_names = node_names_str.split(",") if node_names_str else []
     relation_names = relation_names_str.split(",") if relation_names_str else []
     relation_names = [tuple(r.strip().split("-")) for r in relation_names]
-    return BundleHeteroConv(convs, node_names, relation_names)
+    conv_layers = {relation: conv for relation, conv in zip(relation_names, convs)}
+    node_names = node_names_str.split(",") if node_names_str else []
+    return BundleHeteroConv(conv_layers, node_names, relation_names)
 
 
 @op("MSE loss")
