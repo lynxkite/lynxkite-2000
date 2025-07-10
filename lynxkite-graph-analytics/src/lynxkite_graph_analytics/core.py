@@ -258,6 +258,13 @@ async def _execute_node(
                 elif isinstance(x, pd.DataFrame):
                     x = Bundle.from_df(x)
                 assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
+            if p.type == pd.DataFrame:
+                if isinstance(x, nx.Graph):
+                    x = Bundle.from_nx(x)
+                if isinstance(x, Bundle):
+                    assert len(x.dfs) == 1, "Bundle must contain a single DataFrame."
+                    [x] = list(x.dfs.values())
+                assert isinstance(x, pd.DataFrame), f"Input must be a DataFrame. Got: {x}"
             inputs.append(x)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):

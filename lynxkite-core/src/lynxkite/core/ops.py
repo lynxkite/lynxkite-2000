@@ -246,6 +246,7 @@ def op(
     params=None,
     slow=False,
     color=None,
+    cache=None,
 ):
     """Decorator for defining an operation."""
 
@@ -258,7 +259,8 @@ def op(
             func = matplotlib_to_image(func)
         if slow:
             func = make_async(func)
-            func = mem.cache(func)
+            if cache is not False:
+                func = mem.cache(func)
         # Positional arguments are inputs.
         inputs = [
             Input(name=name, type=param.annotation)

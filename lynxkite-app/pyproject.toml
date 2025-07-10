@@ -8,7 +8,7 @@ dependencies = [
     "fastapi[standard]>=0.115.6",
     "lynxkite-core",
     "orjson>=3.10.13",
-    "pycrdt-websocket>=0.15.3",
+    "pycrdt-websocket>=0.16",
     "sse-starlette>=2.2.1",
     "griffe>=1.7.3",
 ]

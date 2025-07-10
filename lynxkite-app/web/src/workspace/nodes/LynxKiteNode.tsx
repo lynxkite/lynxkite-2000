@@ -1,5 +1,5 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
-import type React from "react";
+import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 // @ts-ignore
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
@@ -55,11 +55,23 @@ function getHandles(inputs: any[], outputs: any[]) {
   return handles;
 }
 
+const stopPropagation = (e: Event) => e.stopPropagation();
+
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
   const expanded = !data.collapsed;
   const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
+  React.useEffect(() => {
+    // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
+    // To stop the event from reaching ReactFlow, we stop propagation on the wheel event.
+    // This must be done with a "passive: false" listener, which we can only register like this.
+    containerRef.current?.addEventListener("wheel", stopPropagation, { passive: false });
+    return () => {
+      containerRef.current?.removeEventListener("wheel", stopPropagation);
+    };
+  }, [containerRef]);
   function titleClicked() {
     reactFlow.updateNodeData(props.id, { collapsed: expanded });
   }
@@ -80,6 +92,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         width: props.width || 200,
         height: expanded ? props.height || 200 : undefined,
       }}
+      ref={containerRef}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
         <div

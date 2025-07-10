@@ -6,9 +6,8 @@ import enum
 import pathlib
 import fastapi
 import os.path
-import pycrdt
-import pycrdt_websocket
-import pycrdt_websocket.ystore
+import pycrdt.websocket
+import pycrdt.store
 import uvicorn
 import builtins
 from lynxkite.core import workspace, ops
@@ -26,8 +25,8 @@ def ws_exception_handler(exception, log):
     return True
 
 
-class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
-    async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
+class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
+    async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
         """Initialize a room for the workspace with the given name.
 
         The workspace is loaded from ".crdt" if it exists there, or from a JSON file, or a new workspace is created.
@@ -35,14 +34,14 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
         assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
-        ystore = pycrdt_websocket.ystore.FileYStore(path)
+        ystore = pycrdt.store.file.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
         # Replay updates from the store.
         try:
             for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
                 ydoc.apply_update(update)
-        except pycrdt_websocket.ystore.YDocNotFound:
+        except pycrdt.store.YDocNotFound:
             pass
         if "nodes" not in ws:
             ws["nodes"] = pycrdt.Array()
@@ -57,7 +56,7 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         clean_input(ws_simple)
         # Set the last known version to the current state, so we don't trigger a change event.
         last_known_versions[name] = ws_simple
-        room = pycrdt_websocket.YRoom(
+        room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
         room.ws = ws
@@ -71,7 +70,7 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
         ws.observe_deep(on_change)
         return room
 
-    async def get_room(self, name: str) -> pycrdt_websocket.YRoom:
+    async def get_room(self, name: str) -> pycrdt.websocket.YRoom:
         """Get a room by name.
 
         This method overrides the parent get_room method. The original creates an empty room,
@@ -86,25 +85,25 @@ class WorkspaceWebsocketServer(pycrdt_websocket.WebsocketServer):
 
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
-    async def init_room(self, name: str) -> pycrdt_websocket.YRoom:
+    async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
         """Initialize a room for a text document with the given name."""
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
         assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
-        ystore = pycrdt_websocket.ystore.FileYStore(path)
+        ystore = pycrdt.store.file.FileYStore(path)
         ydoc = pycrdt.Doc()
         ydoc["text"] = text = pycrdt.Text()
         # Replay updates from the store.
         try:
             for update, timestamp in [(item[0], item[-1]) async for item in ystore.read()]:
                 ydoc.apply_update(update)
-        except pycrdt_websocket.ystore.YDocNotFound:
+        except pycrdt.store.YDocNotFound:
             pass
         if len(text) == 0:
             if os.path.exists(name):
                 with open(name, encoding="utf-8") as f:
                     text += f.read().replace("\r\n", "\n")
-        room = pycrdt_websocket.YRoom(
+        room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
         room.text = text
@@ -133,6 +132,8 @@ def clean_input(ws_pyd):
             node.data.params = {}
         node.position.x = 0
         node.position.y = 0
+        node.width = 0
+        node.height = 0
         if node.model_extra:
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
@@ -314,12 +315,12 @@ def sanitize_path(path):
 @router.websocket("/ws/crdt/{room_name:path}")
 async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt_websocket.ASGIServer(ws_websocket_server)
-    await server({"path": room_name}, websocket._receive, websocket._send)
+    server = pycrdt.websocket.ASGIServer(ws_websocket_server)
+    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt_websocket.ASGIServer(code_websocket_server)
-    await server({"path": room_name}, websocket._receive, websocket._send)
+    server = pycrdt.websocket.ASGIServer(code_websocket_server)
+    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)

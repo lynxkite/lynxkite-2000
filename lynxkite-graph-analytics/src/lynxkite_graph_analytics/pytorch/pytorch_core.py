@@ -2,7 +2,7 @@
 
 import copy
 import graphlib
-from typing import get_origin
+import typing
 
 import pydantic
 from lynxkite.core import ops, workspace
@@ -66,7 +66,6 @@ class Layer:
     @staticmethod
     def flatten_inputs(inputs: list[str | list[str]]) -> list[str]:
         """Flattens the input list, since some inputs can be lists.
-
         We need to flatten them to make sure the signature for pyg.nn.Sequential. is correct.
         For example, if the inputs are ['a', ['b', 'c']], we want to return ['a', 'b', 'c'].
         """
@@ -102,6 +101,7 @@ class ModelConfig:
     model_inputs: list[str]
     model_outputs: list[str]
     loss_inputs: list[str]
+    input_output_names: list[str]
     loss: torch.nn.Module
     optimizer_parameters: dict[str, any]
     optimizer: torch.optim.Optimizer | None = None
@@ -158,9 +158,10 @@ class ModelConfig:
         return {
             "type": "model",
             "model": {
-                "inputs": self.model_inputs,
-                "outputs": self.model_outputs,
+                "model_inputs": self.model_inputs,
+                "model_outputs": self.model_outputs,
                 "loss_inputs": self.loss_inputs,
+                "input_output_names": self.input_output_names,
                 "trained": self.trained,
             },
         }
@@ -248,14 +249,19 @@ class ModelBuilder:
             for i in v:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
+        self.submodules: dict[str, torch.nn.Module] = {}
         # Clean up disconnected nodes.
-        disconnected = set()
+        to_delete = set()
         for node_id in self.nodes:
-            op = self.catalog[self.nodes[node_id].data.title]
-            if len(self.in_edges[node_id]) != len(op.inputs):
-                disconnected.add(node_id)
-                disconnected |= self.all_upstream(node_id)
-        for node_id in disconnected:
+            title = self.nodes[node_id].data.title
+            if title not in self.catalog:  # Groups and comments, for example.
+                to_delete.add(node_id)
+                continue
+            op = self.catalog[title]
+            if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
+                to_delete.add(node_id)
+                to_delete |= self.all_upstream(node_id)
+        for node_id in to_delete:
             del self.dependencies[node_id]
             del self.in_edges[node_id]
             del self.out_edges[node_id]
@@ -277,6 +283,23 @@ class ModelBuilder:
             deps.add(dep)
             deps.update(self.all_downstream(dep))
         return deps
+
+    def _is_submodule_node(self, node_id: str) -> bool:
+        """Returns True if the node is a submodule
+
+        A submodule is a node in the workspace whose output is connected to an input of another
+        node, and that input is of type torch.nn.Module or list[torch.nn.Module].
+        In other words, a submodule is a node that is used as a component (module) inside a
+        higher-level module, rather than being a top-level layer in the model sequence.
+        """
+        for output, connections in self.out_edges[node_id].items():
+            # TODO: What if it is connected to multiple inputs of different type?
+            for target_name, target_handle in connections:
+                target_node = self.nodes[target_name]
+                target_op = self.catalog[target_node.data.title]
+                [target_input] = [inp for inp in target_op.inputs if inp.name == target_handle]
+                return self._is_submodule_type(target_input.type)
+        return False
 
     def run_node(self, node_id: str) -> None:
         """Adds the layer(s) produced by this node to self.layers."""
@@ -316,29 +339,71 @@ class ModelBuilder:
                                 self.layers.append(layer)
                             else:
                                 self.run_node(layer.origin_id)
-                self.layers.append(self.run_op(node_id, op, p))
+                operation_result = self.run_op(node_id, op, p)
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
                 return
             case _:
-                self.layers.append(self.run_op(node_id, op, p))
+                operation_result = self.run_op(node_id, op, p)
+        if self._is_submodule_node(node_id):
+            self.submodules[node_id] = operation_result.module
+        else:
+            self.layers.append(operation_result)
+
+    def _is_submodule_type(self, type_: type[typing.Any]) -> bool:
+        """Returns True if the type is a submodule, i.e., it is a torch.nn.Module or list[torch.nn.Module]."""
+        if type_ is torch.nn.Module or typing.get_origin(type_) is torch.nn.Module:
+            return True
+        if type_ is list or typing.get_origin(type_) is list:
+            args = typing.get_args(type_)
+            if (
+                len(args) == 1
+                and args[0] is torch.nn.Module
+                or typing.get_origin(args[0]) is torch.nn.Module
+            ):
+                return True
+        return False
+
+    def _edge_to_input(self, edge: tuple[str, str], input_type: type):
+        """Converts an edge to an input for an operation.
+
+        If the input is a submodule type, it returns the submodule object.
+        Otherwise, it returns the internal ID of the input.
+        """
+        source, source_handle = edge
+        if self._is_submodule_type(input_type):
+            # If the input is a submodule, we need to get the module object.
+            return self.submodules[source]
+        return _to_id(source, source_handle)
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = []
+        operation_inputs = []
         for input in op.inputs:
-            input_edges = [_to_id(*input_edge) for input_edge in self.in_edges[node_id][input.name]]
-            if not (input.type is list or get_origin(input.type) is list):
+            input_edges = [
+                self._edge_to_input(edge, input.type) for edge in self.in_edges[node_id][input.name]
+            ]
+            if not (input.type is list or typing.get_origin(input.type) is list):
                 assert len(input_edges) == 1, (
                     f"Detected multiple input edges for non-list input {node_id} {input.name}."
                 )
                 [input_edges] = input_edges
-            inputs.append(input_edges)
+            operation_inputs.append(input_edges)
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
-            module = op.func(*inputs, **params)
-        return Layer(module, node_id, inputs, outputs)
+            module = op.func(*operation_inputs, **params)
+        # Sub-modules are not real inputs, they are just a way to build hierarchical models.
+        non_module_inputs = [
+            inp
+            for inp in operation_inputs
+            if not (
+                isinstance(inp, torch.nn.Module)
+                or isinstance(inp, list)
+                and all(isinstance(i, torch.nn.Module) for i in inp)
+            )
+        ]
+        return Layer(module, node_id, non_module_inputs, outputs)
 
     def build_model(self) -> ModelConfig:
         # Walk the graph in topological order.
@@ -374,6 +439,9 @@ class ModelBuilder:
         cfg["model_inputs"] = list(used_in_model - made_in_model)
         cfg["model_outputs"] = list(made_in_model & used_in_loss)
         cfg["loss_inputs"] = list(used_in_loss - made_in_loss)
+        cfg["input_output_names"] = self.get_names(
+            *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
+        )
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
@@ -390,6 +458,29 @@ class ModelBuilder:
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
         return ModelConfig(**cfg)
+
+    def get_names(self, *ids: list[str]) -> dict[str, str]:
+        """Returns a mapping from internal IDs to human-readable names."""
+        names = {}
+        for i in ids:
+            for node in self.nodes.values():
+                title = node.data.title
+                op = self.catalog[title]
+                name = node.data.params.get("name") or title
+                for output in op.outputs:
+                    i2 = _to_id(node.id, output.name)
+                    if i2 == i:
+                        if len(op.outputs) == 1:
+                            names[i] = name
+                        else:
+                            names[i] = f"{name} ({output.name})"
+                        break
+                else:
+                    continue
+                break
+            else:
+                raise ValueError(f"Cannot find name for input {i}.")
+        return names
 
 
 def to_tensors(b: core.Bundle, m: ModelMapping | None) -> dict[str, torch.Tensor]:

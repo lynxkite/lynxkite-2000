@@ -1,10 +1,11 @@
-import { useRef } from "react";
 // @ts-ignore
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 // @ts-ignore
 import Help from "~icons/tabler/question-mark.jsx";
 import Tooltip from "../../Tooltip";
+import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
+import ParameterInput from "./ParameterInput";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
@@ -202,109 +203,6 @@ function AttrributeBasedBatchingMapping({
   );
 }
 
-function ModelMapping({ value, onChange, data, variant }: any) {
-  const dfsRef = useRef({} as { [binding: string]: HTMLSelectElement | null });
-  const columnsRef = useRef(
-    {} as { [binding: string]: HTMLSelectElement | HTMLInputElement | null },
-  );
-  const v: any = parseJsonOrEmpty(value);
-  v.map ??= {};
-  const dfs: { [df: string]: string[] } = {};
-  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
-  for (const input of inputs) {
-    if (!input.dataframes) continue;
-    const dataframes = input.dataframes as {
-      [df: string]: { columns: string[] };
-    };
-    for (const [df, { columns }] of Object.entries(dataframes)) {
-      dfs[df] = columns;
-    }
-  }
-  const bindings = getModelBindings(data, variant);
-  function getMap() {
-    const map: Bindings = {};
-    for (const binding of bindings) {
-      const df = dfsRef.current[binding]?.value ?? "";
-      const column = columnsRef.current[binding]?.value ?? "";
-      if (df.length || column.length) {
-        map[binding] = { df, column };
-      }
-    }
-    return map;
-  }
-  return (
-    <table className="model-mapping-param">
-      <tbody>
-        {bindings.length > 0 ? (
-          bindings.map((binding: string) => (
-            <tr key={binding}>
-              <td>{binding}</td>
-              <td>
-                <ArrowsHorizontal />
-              </td>
-              <td>
-                <select
-                  className="select select-ghost"
-                  value={v.map?.[binding]?.df}
-                  ref={(el) => {
-                    dfsRef.current[binding] = el;
-                  }}
-                  onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                >
-                  <option key="" value="" />
-                  {Object.keys(dfs).map((df: string) => (
-                    <option key={df} value={df}>
-                      {df}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                {variant === "output" ? (
-                  <Input
-                    inputRef={(el) => {
-                      columnsRef.current[binding] = el;
-                    }}
-                    value={v.map?.[binding]?.column}
-                    onChange={(column, options) => {
-                      const map = getMap();
-                      // At this point the <input> has not been updated yet. We use the value from the event.
-                      const df = dfsRef.current[binding]?.value ?? "";
-                      map[binding] ??= { df, column };
-                      map[binding].column = column;
-                      onChange(JSON.stringify({ map }), options);
-                    }}
-                  />
-                ) : (
-                  <select
-                    className="select select-ghost"
-                    value={v.map?.[binding]?.column}
-                    ref={(el) => {
-                      columnsRef.current[binding] = el;
-                    }}
-                    onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                  >
-                    <option key="" value="" />
-                    {dfs[v.map?.[binding]?.df]?.map((col: string) => (
-                      <option key={col} value={col}>
-                        {col}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td>no bindings</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  );
-}
-
 interface NodeParameterProps {
   name: string;
   value: any;
@@ -418,7 +316,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   ) : (
     <label className="param">
       <ParamName name={name} doc={doc} />
-      <Input value={value} onChange={onChange} />
+      <ParameterInput value={value} onChange={onChange} />
     </label>
   );
 }

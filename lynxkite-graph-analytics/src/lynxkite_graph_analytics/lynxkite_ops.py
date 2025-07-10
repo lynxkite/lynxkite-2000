@@ -43,6 +43,7 @@ class FileFormat(enum.StrEnum):
             default=FileFormat.csv,
         ),
     ],
+    slow=True,
 )
 def import_file(
     *, file_path: str, table_name: str, file_format: FileFormat, **kwargs
