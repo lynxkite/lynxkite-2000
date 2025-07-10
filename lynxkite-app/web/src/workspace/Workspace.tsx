@@ -81,7 +81,15 @@ function LynxKiteFlow() {
     setState(state);
     const doc = getYjsDoc(state);
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    const wsProvider = new WebsocketProvider(`${proto}//${location.host}/ws/crdt`, path!, doc);
+    const encodedPath = path!
+      .split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
+    const wsProvider = new WebsocketProvider(
+      `${proto}//${location.host}/ws/crdt`,
+      encodedPath,
+      doc,
+    );
     if (state.workspace && typeof state.workspace.paused === "undefined") {
       state.workspace.paused = false;
     }
@@ -108,6 +116,7 @@ function LynxKiteFlow() {
           // Make sure the internal copies are updated.
           updateNodeInternals(node.id);
         }
+        setPausedUIState(state.workspace.paused || false);
       }
     };
     doc.on("update", onChange);
@@ -195,7 +204,11 @@ function LynxKiteFlow() {
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
-  const catalog = useSWR(`/api/catalog?workspace=${path}`, fetcher);
+  const encodedPathForAPI = path!
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
@@ -409,7 +422,7 @@ function LynxKiteFlow() {
     }
   }
   async function executeWorkspace() {
-    const response = await axios.post(`/api/execute_workspace?name=${path}`);
+    const response = await axios.post(`/api/execute_workspace?name=${encodeURIComponent(path)}`);
     if (response.status !== 200) {
       setMessage("Workspace execution failed.");
     }
@@ -564,7 +577,14 @@ function LynxKiteFlow() {
             </button>
           </Tooltip>
           <Tooltip doc="Close workspace">
-            <Link className="btn btn-link" to={`/dir/${parentDir}`} aria-label="close">
+            <Link
+              className="btn btn-link"
+              to={`/dir/${parentDir
+                .split("/")
+                .map((segment) => encodeURIComponent(segment))
+                .join("/")}`}
+              aria-label="close"
+            >
               <Close />
             </Link>
           </Tooltip>

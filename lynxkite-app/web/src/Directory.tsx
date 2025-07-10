@@ -29,23 +29,55 @@ function EntryCreator(props: {
   onCreate: (name: string) => void;
 }) {
   const [isCreating, setIsCreating] = useState(false);
+  const [nameValidationError, setNameValidationError] = useState("");
+
+  function validateName(name: string): boolean {
+    if (name.includes("/")) {
+      setNameValidationError("Name cannot contain '/' characters");
+      return false;
+    }
+    if (name.trim() === "") {
+      setNameValidationError("Name cannot be empty");
+      return false;
+    }
+    setNameValidationError("");
+    return true;
+  }
+
   return (
     <>
       {isCreating ? (
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            props.onCreate((e.target as HTMLFormElement).entryName.value.trim());
+            const name = (e.target as HTMLFormElement).entryName.value.trim();
+            if (validateName(name)) {
+              props.onCreate(name);
+              setIsCreating(false);
+            }
           }}
         >
           <input
-            className="input input-ghost w-full"
+            className={`input input-ghost w-full ${nameValidationError ? "input-error" : ""}`}
             autoFocus
             type="text"
             name="entryName"
             onBlur={() => setIsCreating(false)}
+            onChange={(e) => validateName(e.target.value)}
             placeholder={`${props.label} name`}
           />
+          {nameValidationError && (
+            <div
+              className="error-message"
+              role="alert"
+              style={{ position: "absolute", zIndex: 10 }}
+            >
+              <span className="error-icon" aria-hidden="true">
+                ⚠️
+              </span>
+              <span className="error-text">{nameValidationError}</span>
+            </div>
+          )}
         </form>
       ) : (
         <button type="button" onClick={() => setIsCreating(true)}>
@@ -67,13 +99,14 @@ export default function Directory() {
   const navigate = useNavigate();
 
   function link(item: DirectoryEntry) {
+    const encodedName = encodePathSegments(item.name);
     if (item.type === "directory") {
-      return `/dir/${item.name}`;
+      return `/dir/${encodedName}`;
     }
     if (item.type === "workspace") {
-      return `/edit/${item.name}`;
+      return `/edit/${encodedName}`;
     }
-    return `/code/${item.name}`;
+    return `/code/${encodedName}`;
   }
 
   function shortName(item: DirectoryEntry) {
@@ -83,13 +116,20 @@ export default function Directory() {
       ?.replace(/[.]lynxkite[.]json$/, "");
   }
 
+  function encodePathSegments(path: string): string {
+    const segments = path.split("/");
+    return segments.map((segment) => encodeURIComponent(segment)).join("/");
+  }
+
   function newWorkspaceIn(path: string, workspaceName: string) {
-    const pathSlash = path ? `${path}/` : "";
-    navigate(`/edit/${pathSlash}${workspaceName}.lynxkite.json`, { replace: true });
+    const pathSlash = path ? `${encodePathSegments(path)}/` : "";
+    navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite.json`, {
+      replace: true,
+    });
   }
   function newCodeFile(path: string, name: string) {
-    const pathSlash = path ? `${path}/` : "";
-    navigate(`/code/${pathSlash}${name}`, { replace: true });
+    const pathSlash = path ? `${encodePathSegments(path)}/` : "";
+    navigate(`/code/${pathSlash}${encodeURIComponent(name)}`, { replace: true });
   }
   async function newFolderIn(path: string, folderName: string) {
     const pathSlash = path ? `${path}/` : "";
@@ -99,7 +139,8 @@ export default function Directory() {
       body: JSON.stringify({ path: pathSlash + folderName }),
     });
     if (res.ok) {
-      navigate(`/dir/${pathSlash}${folderName}`);
+      const pathSlash = path ? `${encodePathSegments(path)}/` : "";
+      navigate(`/dir/${pathSlash}${encodeURIComponent(folderName)}`);
     } else {
       alert("Failed to create folder.");
     }
