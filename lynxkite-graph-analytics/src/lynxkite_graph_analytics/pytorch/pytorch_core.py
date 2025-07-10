@@ -429,7 +429,6 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
-        print(f"Model layers: {layers}")
         used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
