@@ -62,7 +62,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <textarea
         className="textarea textarea-bordered w-full"
         rows={6}
-        value={value || ""}
+        value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
         onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
       />
@@ -72,7 +72,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered w-full"
-        value={value || ""}
+        value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {getDropDownValues(data, meta).map((option: string) => (
