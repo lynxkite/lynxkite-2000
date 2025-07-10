@@ -115,7 +115,7 @@ def dropout(x, *, p=0.0):
 
 
 @op("Linear", weights=True)
-def linear(x: torch.Tensor, *, output_dim=1024):
+def linear(x, *, output_dim=1024):
     import torch_geometric.nn as pyg_nn
 
     return pyg_nn.Linear(-1, output_dim)
