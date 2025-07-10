@@ -15,3 +15,13 @@ repos:
   rev: v1.9.4
   hooks:
     - id: biome-check
+# https://github.com/astral-sh/ty/issues/269
+- repo: local
+  hooks:
+    - id: ty-check
+      name: ty-check
+      language: python
+      entry: uv run ty check
+      pass_filenames: false
+      args: [--python=.venv/]
+      additional_dependencies: [ty]
