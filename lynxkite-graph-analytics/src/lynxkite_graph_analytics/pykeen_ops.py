@@ -5,6 +5,7 @@ from . import core
 
 import pandas as pd
 import enum
+import pykeen
 from pykeen.pipeline import pipeline
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
@@ -103,6 +104,56 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     return bundle
 
 
+class PyKEENModel(str, enum.Enum):
+    AutoSF = "AutoSF"
+    BoxE = "BoxE"
+    Canonical_Tensor_Decomposition = "CP"
+    CompGCN = "CompGCN"
+    ComplEx = "ComplEx"
+    ConvE = "ConvE"
+    ConvKB = "ConvKB"
+    Cooccurrence_Filtered = "CooccurrenceFilteredModel"
+    CrossE = "CrossE"
+    DistMA = "DistMA"
+    DistMult = "DistMult"
+    ER_MLP = "ERMLP"
+    ER_MLPE = "ERMLPE"
+    Fixed_Model = "FixedModel"
+    HolE = "HolE"
+    KG2E = "KG2E"
+    MuRE = "MuRE"
+    NTN = "NTN"
+    NodePiece = "NodePiece"
+    PairRE = "PairRE"
+    ProjE = "ProjE"
+    QuatE = "QuatE"
+    RGCN = "RGCN"
+    RESCAL = "RESCAL"
+    RotatE = "RotatE"
+    SimplE = "SimplE"
+    Structured_Embedding = "SE"
+    TorusE = "TorusE"
+    TransD = "TransD"
+    TransE = "TransE"
+    TransF = "TransF"
+    TransH = "TransH"
+    TransR = "TransR"
+    TuckER = "TuckER"
+
+    def to_class(self):
+        return getattr(pykeen.models, self.value, None)
+
+
+def req_inverse_triples(model: pykeen.models.Model) -> bool:
+    """
+    Check if the model requires inverse triples.
+    """
+    return model in {
+        pykeen.models.CompGCN,
+        pykeen.models.NodePiece,
+    }
+
+
 class TrainingType(str, enum.Enum):
     sLCWA = "sLCWA"
     LCWA = "LCWA"
@@ -116,18 +167,25 @@ class TrainingType(str, enum.Enum):
 def train_embedding_model(
     bundle: core.Bundle,
     *,
-    model: str,
+    model: PyKEENModel = PyKEENModel.TransE,
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
     bundle = bundle.copy()
     if "model" in bundle.other:
         model = bundle.other["model"]
+    else:
+        sampler = None
+        if model is PyKEENModel.RGCN and training_approach == TrainingType.sLCWA:
+            sampler = "schlichtkrull"
+        model = model.to_class()
     training_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+        bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+        create_inverse_triples=req_inverse_triples(model),
     )
     testing_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_test"][["head", "relation", "tail"]].values
+        bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+        create_inverse_triples=req_inverse_triples(model),
     )
 
     result = pipeline(
@@ -135,7 +193,8 @@ def train_embedding_model(
         testing=testing_set,
         model=model,
         epochs=epochs,
-        training_loop=training_approach.__str__(),
+        training_loop=training_approach,
+        training_kwargs={"sampler": sampler},
         evaluator=None,
     )
 
@@ -148,15 +207,18 @@ def train_embedding_model(
 @op("Triples prediction")
 def triple_predict(bundle: core.Bundle, *, table_name: str = "triples_val"):
     bundle = bundle.copy()
+    model = bundle.other.get("model")
     pred = predict_triples(
-        model=bundle.other["model"],
+        model=model,
         triples=TriplesFactory.from_labeled_triples(
-            bundle.dfs[table_name][["head", "relation", "tail"]].values
+            bundle.dfs[table_name][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         ),
     )
     df = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_test"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         )
     ).df
     bundle.dfs["pred"] = df
@@ -169,22 +231,26 @@ def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
     Leave the target prediction field empty
     """
     bundle = bundle.copy()
+    model = bundle.other.get("model")
     pred = predict_target(
-        model=bundle.other["model"],
+        model=model,
         head=head if head != "" else None,
         relation=relation if relation != "" else None,
         tail=tail if tail != "" else None,
         triples_factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         ),
     )
 
     pred_annotated = pred.add_membership_columns(
         validation=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_val"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_val"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         ),
         testing=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_test"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         ),
     )
     bundle.dfs["pred"] = pred_annotated.df
@@ -196,15 +262,18 @@ def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
 def full_predict(bundle: core.Bundle, *, k: int = None):
     """Pass k=0 to keep all scores"""
     bundle = bundle.copy()
-    pred = predict_all(model=bundle.other["model"], k=k if k != 0 else None)
+    model = bundle.other.get("model")
+    pred = predict_all(model=model, k=k if k != 0 else None)
     pack = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_val"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_val"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         )
     )
     pred_annotated = pack.add_membership_columns(
         training=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+            bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+            create_inverse_triples=req_inverse_triples(model),
         )
     )
     bundle.dfs["pred"] = pred_annotated.df
@@ -217,7 +286,8 @@ def extract_from_pykeen(bundle: core.Bundle, *, node_embedding_name: str, edge_e
     bundle = bundle.copy()
     model = bundle.other["model"]
     triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+        bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+        create_inverse_triples=req_inverse_triples(model),
     )
 
     actual_model = model
