@@ -103,9 +103,23 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     return bundle
 
 
+class TrainingType(str, enum.Enum):
+    sLCWA = "sLCWA"
+    LCWA = "LCWA"
+
+    def __str__(self):
+        return self.value
+
+
 # TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
 @op("Train Embedding Model", slow=True, cache=False)
-def train_embedding_model(bundle: core.Bundle, *, model: str, epochs: int = 5):
+def train_embedding_model(
+    bundle: core.Bundle,
+    *,
+    model: str,
+    epochs: int = 5,
+    training_approach: TrainingType = TrainingType.sLCWA,
+):
     bundle = bundle.copy()
     if "model" in bundle.other:
         model = bundle.other["model"]
@@ -121,6 +135,8 @@ def train_embedding_model(bundle: core.Bundle, *, model: str, epochs: int = 5):
         testing=testing_set,
         model=model,
         epochs=epochs,
+        training_loop=training_approach.__str__(),
+        evaluator=None,
     )
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
@@ -203,12 +219,42 @@ def extract_from_pykeen(bundle: core.Bundle, *, node_embedding_name: str, edge_e
     triples = TriplesFactory.from_labeled_triples(
         bundle.dfs["triples_train"][["head", "relation", "tail"]].values
     )
+
+    actual_model = model
+    while hasattr(actual_model, "base"):
+        actual_model = actual_model.base
+
     entity_labels = list(triples.entity_to_id.keys())
-    bundle.other[node_embedding_name] = model.entity_representations[0]().detach().cpu()
+    entity_embeddings = None
+    if (
+        hasattr(actual_model, "entity_representations")
+        and len(actual_model.entity_representations) > 0
+    ):
+        entity_embeddings = actual_model.entity_representations[0]().detach().cpu()
+
+    if entity_embeddings is None:
+        raise AttributeError(
+            f"Cannot extract entity embeddings from model type: {type(actual_model)}. "
+            f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
+        )
+
+    bundle.other[node_embedding_name] = entity_embeddings
     bundle.other["entity_to_index"] = {entity: idx for idx, entity in enumerate(entity_labels)}
 
     relation_labels = list(triples.relation_to_id.keys())
-    bundle.other[edge_embedding_name] = model.relation_representations[0]().detach().cpu()
+    relation_embeddings = None
+    if (
+        hasattr(actual_model, "relation_representations")
+        and len(actual_model.relation_representations) > 0
+    ):
+        relation_embeddings = actual_model.relation_representations[0]().detach().cpu()
+    if relation_embeddings is None:
+        raise AttributeError(
+            f"Cannot extract relation embeddings from model type: {type(actual_model)}. "
+            f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
+        )
+
+    bundle.other[edge_embedding_name] = relation_embeddings
     bundle.other["relation_to_index"] = {rel: idx for idx, rel in enumerate(relation_labels)}
 
     return bundle
