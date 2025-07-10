@@ -14,6 +14,56 @@ import typing
 
 ENV = "LynxKite Graph Analytics"
 
+# Annotated types with format "dropdown" let you specify the available options
+# as a query on the input_metadata. These query expressions are JMESPath expressions.
+TableName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].keys(@)[]"}
+]
+"""A type annotation to be used for parameters of an operation. TableName is
+rendered as a dropdown in the frontend, listing all DataFrames in the Bundle.
+The table name is passed to the operation as a string."""
+
+NodePropertyName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].nodes[].columns[]"}
+]
+"""A type annotation to be used for parameters of an operation. NodePropertyName is
+rendered as a dropdown in the frontend, listing the columns of the "nodes" DataFrame.
+The column name is passed to the operation as a string."""
+
+EdgePropertyName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].edges[].columns[]"}
+]
+"""A type annotation to be used for parameters of an operation. EdgePropertyName is
+rendered as a dropdown in the frontend, listing the columns of the "edges" DataFrame.
+The column name is passed to the operation as a string."""
+
+OtherName = typing.Annotated[str, {"format": "dropdown", "metadata_query": "[].other.keys(@)[]"}]
+"""A type annotation to be used for parameters of an operation. OtherName is
+rendered as a dropdown in the frontend, listing the keys on the "other" part of the Bundle.
+The key is passed to the operation as a string."""
+
+ModelName = typing.Annotated[
+    str,
+    {
+        "format": "dropdown",
+        "metadata_query": "[].other.*[] | [?type == 'model'].key",
+    },
+]
+"""A type annotation to be used for parameters of an operation. ModelName is
+rendered as a dropdown in the frontend, listing the models in the Bundle.
+The model name is passed to the operation as a string."""
+
+# Parameter names in angle brackets, like <table_name>, will be replaced with the parameter
+# values. (This is not part of JMESPath.)
+# ColumnNameByTableName will list the columns of the DataFrame with the name
+# specified by the `table_name` parameter.
+ColumnNameByTableName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<table_name>.columns[]"}
+]
+"""A type annotation to be used for parameters of an operation. ColumnNameByTableName is
+rendered as a dropdown in the frontend, listing the columns of the DataFrame
+named by the "table_name" parameter. The column name is passed to the operation as a string."""
+
 
 @dataclasses.dataclass
 class RelationDefinition:
@@ -141,12 +191,15 @@ class Bundle:
         return {
             "dataframes": {
                 name: {
+                    "key": name,
                     "columns": sorted(str(c) for c in df.columns),
                 }
                 for name, df in self.dfs.items()
             },
             "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": {k: getattr(v, "metadata", lambda: {})() for k, v in self.other.items()},
+            "other": {
+                k: {"key": k, **getattr(v, "metadata", lambda: {})()} for k, v in self.other.items()
+            },
         }
 
 
