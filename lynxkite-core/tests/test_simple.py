@@ -12,8 +12,8 @@ async def test_optional_inputs():
         return a + (b or 0)
 
     assert maybe_add.__op__.inputs == [
-        ops.Input(name="a", type=int, position="left"),
-        ops.Input(name="b", type=int | None, position="left"),
+        ops.Input(name="a", type=int, position=ops.Position.LEFT),
+        ops.Input(name="b", type=int | None, position=ops.Position.LEFT),
     ]
     simple.register("test")
     ws = workspace.Workspace(env="test", nodes=[], edges=[])

@@ -1,7 +1,7 @@
 """For working with LynxKite workspaces."""
 
 import json
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
@@ -9,6 +9,9 @@ import pycrdt
 import pydantic
 import tempfile
 from . import ops
+
+if TYPE_CHECKING:
+    from lynxkite.core import ops
 
 
 class BaseConfig(pydantic.BaseModel):
@@ -36,8 +39,7 @@ class WorkspaceNodeData(BaseConfig):
     input_metadata: Optional[object] = None
     error: Optional[str] = None
     status: NodeStatus = NodeStatus.done
-    # Also contains a "meta" field when going out.
-    # This is ignored when coming back from the frontend.
+    meta: Optional["ops.Op"] = None
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -56,13 +58,13 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
-    _crdt: pycrdt.Map
+    _crdt: Optional[pycrdt.Map] = None
 
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
         self.data.status = NodeStatus.active
-        if hasattr(self, "_crdt") and "data" in self._crdt:
+        if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["error"] = None
                 self._crdt["data"]["status"] = NodeStatus.active
@@ -73,7 +75,7 @@ class WorkspaceNode(BaseConfig):
         self.data.input_metadata = result.input_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
-        if hasattr(self, "_crdt") and "data" in self._crdt:
+        if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 try:
                     self._crdt["data"]["status"] = NodeStatus.done
@@ -109,7 +111,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
-    _crdt: pycrdt.Map
+    _crdt: Optional[pycrdt.Map] = None
 
     def normalize(self):
         if self.env not in ops.CATALOGS:
@@ -194,19 +196,19 @@ class Workspace(BaseConfig):
                 if getattr(data, "meta", None) != op:
                     data.meta = op
                     # If the node is connected to a CRDT, update that too.
-                    if hasattr(node, "_crdt"):
+                    if node._crdt:
                         node._crdt["data"]["meta"] = op.model_dump()
                 if node.type != op.type:
                     node.type = op.type
-                    if hasattr(node, "_crdt"):
+                    if node._crdt:
                         node._crdt["type"] = op.type
                 if data.error == "Unknown operation.":
                     data.error = None
-                    if hasattr(node, "_crdt"):
+                    if node._crdt:
                         node._crdt["data"]["error"] = None
             else:
                 data.error = "Unknown operation."
-                if hasattr(node, "_crdt"):
+                if node._crdt:
                     node._crdt["data"]["meta"] = {}
                     node._crdt["data"]["error"] = "Unknown operation."
 
@@ -226,12 +228,16 @@ class Workspace(BaseConfig):
             kwargs["data"] = WorkspaceNodeData(
                 title=func.__op__.name, op_id=func.__op__.id, params={}
             )
+        elif "title" in kwargs:
+            kwargs["data"] = WorkspaceNodeData(
+                title=kwargs["title"], op_id=kwargs["title"], params={}
+            )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")
         kwargs.setdefault("position", Position(x=0, y=0))
         kwargs.setdefault("width", 100)
         kwargs.setdefault("height", 100)
-        node = WorkspaceNode(**kwargs)
+        node = WorkspaceNode(**kwargs)  # ty: ignore[missing-argument]
         self.nodes.append(node)
         return node
 
