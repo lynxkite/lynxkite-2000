@@ -49,6 +49,13 @@ class WorkspaceNodeData(BaseConfig):
             data["op_id"] = data["title"]
         return data
 
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def ignore_meta(cls, data: dict) -> dict:
+        """Metadata is never loaded. We will use fresh metadata."""
+        data["meta"] = None
+        return data
+
 
 class WorkspaceNode(BaseConfig):
     # Most of these fields are shared with ReactFlow.
