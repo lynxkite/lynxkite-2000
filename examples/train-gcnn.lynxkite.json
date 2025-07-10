@@ -90,7 +90,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": false,
+        "collapsed": true,
         "display": null,
         "error": null,
         "input_metadata": [],
@@ -232,8 +232,8 @@
       "height": 398.0,
       "id": "Import file 4",
       "position": {
-        "x": -2103.559696111399,
-        "y": -1663.7973962771557
+        "x": -2277.7740533618207,
+        "y": -1643.1497687511796
       },
       "type": "basic",
       "width": 231.0
@@ -383,8 +383,8 @@
       "height": 280.0,
       "id": "Import file 5",
       "position": {
-        "x": -2121.5344798881815,
-        "y": -1138.210505221621
+        "x": -2351.239336114664,
+        "y": -1353.7201175239948
       },
       "type": "basic",
       "width": 223.0
@@ -535,8 +535,8 @@
       "height": 200.0,
       "id": "Import file 6",
       "position": {
-        "x": -2139.559397652325,
-        "y": -794.0315423624114
+        "x": -2490.569065593916,
+        "y": -919.2077842386407
       },
       "type": "basic",
       "width": 200.0
@@ -738,8 +738,8 @@
       "height": 200.0,
       "id": "Merge Bundles 4",
       "position": {
-        "x": -1710.9582950368108,
-        "y": -903.7007846619775
+        "x": -1757.4154569702569,
+        "y": -996.6151085288693
       },
       "type": "basic",
       "width": 200.0
@@ -1017,8 +1017,8 @@
       "height": 463.0,
       "id": "Import file 1",
       "position": {
-        "x": -1772.0593206406145,
-        "y": -632.7804544645087
+        "x": -1937.2403408484222,
+        "y": -681.8185698387016
       },
       "type": "basic",
       "width": 259.0
@@ -1141,7 +1141,7 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
-        "error": null,
+        "error": "Expected 3 node tensors and 2 edge tensors, but got 4 total tensors.",
         "input_metadata": [
           {
             "dataframes": {
@@ -1190,18 +1190,26 @@
             "other": {
               "model": {
                 "model": {
-                  "inputs": [
-                    "Input__tensor_3_output",
-                    "Input__tensor_2_output",
-                    "Input__tensor_1_output",
-                    "Input__tensor_4_output",
-                    "Input__tensor_6_output"
-                  ],
+                  "input_output_names": {
+                    "Input__tensor_1_output": "nodes",
+                    "Input__tensor_2_output": "edges",
+                    "Input__tensor_3_output": "nodes2",
+                    "Input__tensor_4_output": "nodes3",
+                    "Input__tensor_6_output": "edges2",
+                    "Output_1_x": "x_dict"
+                  },
                   "loss_inputs": [
-                    "Input__tensor_5_output",
-                    "Output_1_x"
+                    "Output_1_x",
+                    "Input__tensor_1_output"
                   ],
-                  "outputs": [
+                  "model_inputs": [
+                    "Input__tensor_4_output",
+                    "Input__tensor_6_output",
+                    "Input__tensor_2_output",
+                    "Input__tensor_3_output",
+                    "Input__tensor_1_output"
+                  ],
+                  "model_outputs": [
                     "Output_1_x"
                   ],
                   "trained": false
@@ -1438,7 +1446,7 @@
           "type": "visualization"
         },
         "params": {},
-        "status": "done",
+        "status": "planned",
         "title": "View loss"
       },
       "dragHandle": ".drag-handle",
@@ -1932,7 +1940,7 @@
         "params": {
           "file_format": "parquet",
           "file_format_group": "csv",
-          "file_path": "embeddings.parquet",
+          "file_path": "examples/embeddings.parquet",
           "table_name": "embeddings"
         },
         "status": "done",

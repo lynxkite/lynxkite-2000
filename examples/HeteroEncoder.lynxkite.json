@@ -64,27 +64,6 @@
       "targetHandle": "x_dict"
     },
     {
-      "id": "Pick element by constant 1 x_i MSE loss 1 x",
-      "source": "Pick element by constant 1",
-      "sourceHandle": "x_i",
-      "target": "MSE loss 1",
-      "targetHandle": "x"
-    },
-    {
-      "id": "Input: tensor 5 output MSE loss 1 y",
-      "source": "Input: tensor 5",
-      "sourceHandle": "output",
-      "target": "MSE loss 1",
-      "targetHandle": "y"
-    },
-    {
-      "id": "MSE loss 1 output Optimizer 1 loss",
-      "source": "MSE loss 1",
-      "sourceHandle": "output",
-      "target": "Optimizer 1",
-      "targetHandle": "loss"
-    },
-    {
       "id": "Activation 2 output HeteroConv 1 nodes",
       "source": "Activation 2",
       "sourceHandle": "output",
@@ -106,8 +85,8 @@
       "targetHandle": "nodes"
     },
     {
-      "id": "Input: tensor 2 output HeteroConv 1 edges",
-      "source": "Input: tensor 2",
+      "id": "Input: tensor 6 output HeteroConv 1 edges",
+      "source": "Input: tensor 6",
       "sourceHandle": "output",
       "target": "HeteroConv 1",
       "targetHandle": "edges"
@@ -120,11 +99,67 @@
       "targetHandle": "x"
     },
     {
-      "id": "Input: tensor 6 output HeteroConv 1 edges",
-      "source": "Input: tensor 6",
+      "id": "Graph Convolution 3 output HeteroConv 1 convs",
+      "source": "Graph Convolution 3",
       "sourceHandle": "output",
       "target": "HeteroConv 1",
+      "targetHandle": "convs"
+    },
+    {
+      "id": "Graph Convolution 4 output HeteroConv 1 convs",
+      "source": "Graph Convolution 4",
+      "sourceHandle": "output",
+      "target": "HeteroConv 1",
+      "targetHandle": "convs"
+    },
+    {
+      "id": "Input: tensor 4 output Graph Convolution 3 nodes",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 3",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 4 output Graph Convolution 4 nodes",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 4",
+      "targetHandle": "nodes"
+    },
+    {
+      "id": "Input: tensor 5 output Graph Convolution 3 edges",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 3",
       "targetHandle": "edges"
+    },
+    {
+      "id": "Input: tensor 5 output Graph Convolution 4 edges",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "Graph Convolution 4",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Pick element by constant 1 output MSE loss 1 x",
+      "source": "Pick element by constant 1",
+      "sourceHandle": "output",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 1 output MSE loss 1 y",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "MSE loss 1 output Optimizer 1 loss",
+      "source": "MSE loss 1",
+      "sourceHandle": "output",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
     }
   ],
   "env": "PyTorch model",
@@ -400,10 +435,16 @@
               "name": "type",
               "type": {
                 "enum": [
+                  "ELU",
+                  "GELU",
+                  "LeakyReLU",
+                  "Mish",
+                  "PReLU",
                   "ReLU",
-                  "Leaky_ReLU",
-                  "Tanh",
-                  "Mish"
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
                 ]
               }
             }
@@ -459,10 +500,16 @@
               "name": "type",
               "type": {
                 "enum": [
+                  "ELU",
+                  "GELU",
+                  "LeakyReLU",
+                  "Mish",
+                  "PReLU",
                   "ReLU",
-                  "Leaky_ReLU",
-                  "Tanh",
-                  "Mish"
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
                 ]
               }
             }
@@ -840,7 +887,7 @@
           "name": "Pick element by constant",
           "outputs": [
             {
-              "name": "x_i",
+              "name": "output",
               "position": "top",
               "type": {
                 "type": "None"
@@ -850,13 +897,6 @@
           "params": [
             {
               "default": null,
-              "name": "key",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": "",
               "name": "key",
               "type": {
                 "type": "<class 'str'>"
@@ -880,57 +920,6 @@
       },
       "type": "basic",
       "width": 234.0
-    },
-    {
-      "data": {
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "color": "orange",
-          "doc": null,
-          "inputs": [
-            {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            },
-            {
-              "name": "y",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "MSE loss",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [],
-          "type": "basic"
-        },
-        "params": {},
-        "status": "done",
-        "title": "MSE loss"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 200.0,
-      "id": "MSE loss 1",
-      "position": {
-        "x": 1106.279265387091,
-        "y": -456.16197684891307
-      },
-      "type": "basic",
-      "width": 200.0
     },
     {
       "data": {
@@ -996,90 +985,6 @@
     },
     {
       "data": {
-        "__execution_delay": null,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "input_metadata": null,
-        "meta": {
-          "color": "blue",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Returns a :class:`~torch_geometric.nn.HeteroConv` layer."
-            }
-          ],
-          "inputs": [
-            {
-              "name": "nodes",
-              "position": "bottom",
-              "type": {
-                "type": "list[torch.Tensor]"
-              }
-            },
-            {
-              "name": "edges",
-              "position": "bottom",
-              "type": {
-                "type": "list[torch.Tensor]"
-              }
-            }
-          ],
-          "name": "HeteroConv",
-          "outputs": [
-            {
-              "name": "x_dict",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "node_names_str",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": null,
-              "name": "relation_names_str",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": "[]",
-              "name": "layers",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "hetero_conv"
-        },
-        "params": {
-          "layers": "[{\"relation\":[\"nodes\",\"relation\",\"nodes\"],\"type\":\"GATConv\",\"params\":{\"in_channels\":2,\"out_channels\":2,\"heads\":4}},{\"relation\":[\"nodes\",\"relation\",\"nodes2\"],\"type\":\"GATConv\",\"params\":{\"in_channels\":2,\"out_channels\":2,\"heads\":4}}]",
-          "node_names_str": "nodes,nodes2,nodes3",
-          "relation_names_str": "nodes-relation-nodes,nodes-relation-nodes2"
-        },
-        "status": "done",
-        "title": "HeteroConv"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 591.0,
-      "id": "HeteroConv 1",
-      "position": {
-        "x": 378.2912239633134,
-        "y": -243.99247649922546
-      },
-      "type": "hetero_conv",
-      "width": 436.0
-    },
-    {
-      "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
@@ -1120,8 +1025,281 @@
       "height": 200.0,
       "id": "Input: tensor 6",
       "position": {
-        "x": 988.8996485636429,
-        "y": 361.6651098059561
+        "x": 918.4707101896839,
+        "y": 446.1798358547069
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns a :class:`~torch_geometric.nn.HeteroConv` layer."
+            }
+          ],
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "list[torch.Tensor]"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "list[torch.Tensor]"
+              }
+            },
+            {
+              "name": "convs",
+              "position": "bottom",
+              "type": {
+                "type": "list[torch.nn.modules.module.Module]"
+              }
+            }
+          ],
+          "name": "HeteroConv",
+          "outputs": [
+            {
+              "name": "x_dict",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "node_names_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "relation_names_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "node_names_str": "nodes,nodes2,nodes3",
+          "relation_names_str": "nodes-relation-nodes,nodes-relation-nodes2"
+        },
+        "status": "done",
+        "title": "HeteroConv"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 341.0,
+      "id": "HeteroConv 1",
+      "position": {
+        "x": 378.66184597101335,
+        "y": -67.82481982197856
+      },
+      "type": "basic",
+      "width": 547.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "2",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Graph Convolution 3",
+      "position": {
+        "x": 1490.2703361700546,
+        "y": 265.1234236950212
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "blue",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "nodes",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "edges",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Graph Convolution",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "in_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "out_channels",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "params": {
+          "in_channels": "2",
+          "out_channels": "2"
+        },
+        "status": "done",
+        "title": "Graph Convolution"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Graph Convolution 4",
+      "position": {
+        "x": 1736.8337942844116,
+        "y": 276.6701342292254
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": {
+          "color": "orange",
+          "doc": null,
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "MSE loss",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "type": "basic"
+        },
+        "params": {},
+        "status": "done",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "position": {
+        "x": 1208.5224343691402,
+        "y": -315.10485611758173
       },
       "type": "basic",
       "width": 200.0
