@@ -19,15 +19,31 @@ ENV = "LynxKite Graph Analytics"
 TableDropdown = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].keys(@)[]"}
 ]
+"""A type annotation to be used for parameters of an operation. TableDropdown is
+rendered as a dropdown in the frontend, listing all DataFrames in the Bundle.
+The table name is passed to the operation as a string."""
+
 NodeAttribute = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].nodes[].columns[]"}
 ]
+"""A type annotation to be used for parameters of an operation. NodeAttribute is
+rendered as a dropdown in the frontend, listing the columns of the "nodes" DataFrame.
+The column name is passed to the operation as a string."""
+
 EdgeAttribute = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].edges[].columns[]"}
 ]
+"""A type annotation to be used for parameters of an operation. EdgeAttribute is
+rendered as a dropdown in the frontend, listing the columns of the "edges" DataFrame.
+The column name is passed to the operation as a string."""
+
 OtherDropdown = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].other.keys(@)[]"}
 ]
+"""A type annotation to be used for parameters of an operation. OtherDropdown is
+rendered as a dropdown in the frontend, listing the keys on the "other" part of the Bundle.
+The key is passed to the operation as a string."""
+
 ModelDropdown = typing.Annotated[
     str,
     {
@@ -35,6 +51,10 @@ ModelDropdown = typing.Annotated[
         "metadata_query": "[].other.*[] | [?type == 'model'].key",
     },
 ]
+"""A type annotation to be used for parameters of an operation. ModelDropdown is
+rendered as a dropdown in the frontend, listing the models in the Bundle.
+The model name is passed to the operation as a string."""
+
 # Parameter names in angle brackets, like <table_name>, will be replaced with the parameter
 # values. (This is not part of JMESPath.)
 # ColumnDropdownByTableName will list the columns of the DataFrame with the name
@@ -42,6 +62,9 @@ ModelDropdown = typing.Annotated[
 ColumnDropdownByTableName = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].<table_name>.columns[]"}
 ]
+"""A type annotation to be used for parameters of an operation. ColumnDropdownByTableName is
+rendered as a dropdown in the frontend, listing the columns of the DataFrame
+named by the "table_name" parameter. The column name is passed to the operation as a string."""
 
 
 @dataclasses.dataclass
