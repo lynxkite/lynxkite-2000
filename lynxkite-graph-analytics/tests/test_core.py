@@ -20,19 +20,19 @@ async def test_multi_input_box():
     ws.add_node(
         id="1",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Create Bundle", params={}),
+        title="Create Bundle",
         position=workspace.Position(x=0, y=0),
     )
     ws.add_node(
         id="2",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Create Bundle", params={}),
+        title="Create Bundle",
         position=workspace.Position(x=0, y=0),
     )
     ws.add_node(
         id="3",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Multi input op", params={}),
+        title="Multi input op",
         position=workspace.Position(x=0, y=0),
     )
     ws.edges = [

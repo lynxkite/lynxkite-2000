@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
-    import cudf.pandas
+    import cudf.pandas  # ty: ignore[unresolved-import]
 
     cudf.pandas.install()
 

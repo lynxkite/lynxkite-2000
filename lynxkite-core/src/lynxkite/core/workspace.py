@@ -230,7 +230,7 @@ class Workspace(BaseConfig):
             )
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
-                title=kwargs["title"], op_id=kwargs["title"], params={}
+                title=kwargs["title"], op_id=kwargs["title"], params=kwargs.get("params", {})
             )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")

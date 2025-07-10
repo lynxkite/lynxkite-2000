@@ -117,7 +117,7 @@ def neural_ode_mlp(
 
 @op("Attention", outputs=["outputs", "weights"])
 def attention(query, key, value, *, embed_dim=1024, num_heads=1, dropout=0.0):
-    return torch.nn.MultiHeadAttention(embed_dim, num_heads, dropout=dropout, need_weights=True)
+    return torch.nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
 
 
 @op("LayerNorm", outputs=["outputs", "weights"])
@@ -250,8 +250,8 @@ reg(
 ops.register_passive_op(
     ENV,
     "Repeat",
-    inputs=[ops.Input(name="input", position="top", type="tensor")],
-    outputs=[ops.Output(name="output", position="bottom", type="tensor")],
+    inputs=[ops.Input(name="input", position=ops.Position.TOP, type="tensor")],
+    outputs=[ops.Output(name="output", position=ops.Position.BOTTOM, type="tensor")],
     params=[
         ops.Parameter.basic("times", 1, int),
         ops.Parameter.basic("same_weights", False, bool),
@@ -261,8 +261,8 @@ ops.register_passive_op(
 ops.register_passive_op(
     ENV,
     "Recurrent chain",
-    inputs=[ops.Input(name="input", position="top", type="tensor")],
-    outputs=[ops.Output(name="output", position="bottom", type="tensor")],
+    inputs=[ops.Input(name="input", position=ops.Position.TOP, type="tensor")],
+    outputs=[ops.Output(name="output", position=ops.Position.BOTTOM, type="tensor")],
     params=[],
 )
 
