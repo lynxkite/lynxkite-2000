@@ -1,14 +1,14 @@
 """Automatically wraps all NetworkX functions as LynxKite operations."""
 
-import collections
-import types
 from lynxkite.core import ops
+import collections.abc
+import enum
 import functools
 import inspect
 import networkx as nx
-import re
-
 import pandas as pd
+import re
+import types
 
 ENV = "LynxKite Graph Analytics"
 
@@ -17,20 +17,22 @@ class UnsupportedParameterType(Exception):
     pass
 
 
-_UNSUPPORTED = object()
-_SKIP = object()
+class Failure(str, enum.Enum):
+    UNSUPPORTED = "unsupported"  # This parameter will be hidden.
+    SKIP = "skip"  # We have to skip the whole function.
 
 
-def doc_to_type(name: str, type_hint: str) -> type:
+def doc_to_type(name: str, type_hint: str) -> type | types.UnionType | Failure:
     type_hint = type_hint.lower()
     type_hint = re.sub("[(][^)]+[)]", "", type_hint).strip().strip(".")
     if " " in name or "http" in name:
-        return _UNSUPPORTED  # Not a parameter type.
+        return Failure.UNSUPPORTED  # Not a parameter type.
     if type_hint.endswith(", optional"):
         w = doc_to_type(name, type_hint.removesuffix(", optional").strip())
-        if w is _UNSUPPORTED:
-            return _SKIP
-        return w if w is _SKIP else w | None
+        if w is Failure.UNSUPPORTED or w is Failure.SKIP:
+            return Failure.SKIP
+        assert not isinstance(w, Failure)
+        return w | None
     if type_hint in [
         "a digraph or multidigraph",
         "a graph g",
@@ -54,15 +56,15 @@ def doc_to_type(name: str, type_hint: str) -> type:
     ]:
         return nx.DiGraph
     elif type_hint == "node":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == '"node (optional)"':
-        return _SKIP
+        return Failure.SKIP
     elif type_hint == '"edge"':
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == '"edge (optional)"':
-        return _SKIP
+        return Failure.SKIP
     elif type_hint in ["class", "data type"]:
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint in ["string", "str", "node label"]:
         return str
     elif type_hint in ["string or none", "none or string", "string, or none"]:
@@ -72,27 +74,27 @@ def doc_to_type(name: str, type_hint: str) -> type:
     elif type_hint in ["bool", "boolean"]:
         return bool
     elif type_hint == "tuple":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "set":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "list of floats":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "list of floats or float":
         return float
     elif type_hint in ["dict", "dictionary"]:
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "scalar or dictionary":
         return float
     elif type_hint == "none or dict":
-        return _SKIP
+        return Failure.SKIP
     elif type_hint in ["function", "callable"]:
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint in [
         "collection",
         "container of nodes",
         "list of nodes",
     ]:
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint in [
         "container",
         "generator",
@@ -104,13 +106,13 @@ def doc_to_type(name: str, type_hint: str) -> type:
         "list or tuple",
         "list",
     ]:
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "generator of sets":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "dict or a set of 2 or 3 tuples":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "set of 2 or 3 tuples":
-        return _UNSUPPORTED
+        return Failure.UNSUPPORTED
     elif type_hint == "none, string or function":
         return str | None
     elif type_hint == "string or function" and name == "weight":
@@ -135,8 +137,8 @@ def doc_to_type(name: str, type_hint: str) -> type:
     elif name == "weight":
         return str
     elif type_hint == "object":
-        return _UNSUPPORTED
-    return _SKIP
+        return Failure.UNSUPPORTED
+    return Failure.SKIP
 
 
 def types_from_doc(doc: str) -> dict[str, type]:
@@ -186,13 +188,13 @@ def wrapped(name: str, func):
     return wrapper
 
 
-def _get_params(func) -> dict | None:
+def _get_params(func) -> list[ops.Parameter | ops.ParameterGroup]:
     sig = inspect.signature(func)
     # Get types from docstring.
     types = types_from_doc(func.__doc__)
     # Always hide these.
     for k in ["backend", "backend_kwargs", "create_using"]:
-        types[k] = _SKIP
+        types[k] = Failure.SKIP
     # Add in types based on signature.
     for k, param in sig.parameters.items():
         if k in types:
@@ -203,10 +205,10 @@ def _get_params(func) -> dict | None:
             types[k] = int
     params = []
     for name, param in sig.parameters.items():
-        _type = types.get(name, _UNSUPPORTED)
-        if _type is _UNSUPPORTED:
+        _type = types.get(name, Failure.UNSUPPORTED)
+        if _type is Failure.UNSUPPORTED:
             raise UnsupportedParameterType(name)
-        if _type is _SKIP or _type in [nx.Graph, nx.DiGraph]:
+        if _type is Failure.SKIP or _type in [nx.Graph, nx.DiGraph]:
             continue
         p = ops.Parameter.basic(
             name=name,

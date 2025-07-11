@@ -8,7 +8,7 @@ import pathlib
 import pkgutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
-import starlette
+import starlette.exceptions
 from lynxkite.core import ops
 from lynxkite.core import workspace
 from . import crdt
@@ -136,7 +136,7 @@ async def upload(req: fastapi.Request):
 @app.post("/api/execute_workspace")
 async def execute_workspace(name: str):
     """Trigger and await the execution of a workspace."""
-    room = await crdt.ws_websocket_server.get_room(name)
+    room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
 
