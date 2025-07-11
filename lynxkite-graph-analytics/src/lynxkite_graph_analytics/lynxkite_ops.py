@@ -216,9 +216,9 @@ def _map_color(value):
 def visualize_graph(
     graph: core.Bundle,
     *,
-    color_nodes_by: ops.NodeAttribute = None,
-    label_by: ops.NodeAttribute = None,
-    color_edges_by: ops.EdgeAttribute = None,
+    color_nodes_by: core.NodePropertyName = None,
+    label_by: core.NodePropertyName = None,
+    color_edges_by: core.EdgePropertyName = None,
 ):
     nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:

@@ -1,3 +1,4 @@
+import jmespath from "jmespath";
 // @ts-ignore
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 // @ts-ignore
@@ -55,21 +56,31 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   function onChange(value: any, opts?: UpdateOptions) {
     setParam(meta.name, value, opts || {});
   }
-  return meta?.type?.format === "collapsed" ? (
-    <label className="param">
-      <ParamName name={name} doc={doc} />
-      <button className="collapsed-param">⋯</button>
-    </label>
-  ) : meta?.type?.format === "textarea" ? (
+  return meta?.type?.format === "textarea" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
       <textarea
         className="textarea textarea-bordered w-full"
         rows={6}
-        value={value || ""}
+        value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
         onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
       />
+    </label>
+  ) : meta?.type?.format === "dropdown" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <select
+        className="select select-bordered w-full"
+        value={value ?? ""}
+        onChange={(evt) => onChange(evt.currentTarget.value)}
+      >
+        {getDropDownValues(data, meta).map((option: string) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
     </label>
   ) : meta?.type === "group" ? (
     <NodeGroupParameter meta={meta} data={data} setParam={setParam} />
@@ -121,4 +132,16 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParameterInput value={value} onChange={onChange} />
     </label>
   );
+}
+
+function getDropDownValues(data: any, meta: any): string[] {
+  const metadata = data.input_metadata.value;
+  let query = meta.type.metadata_query;
+  // Substitute parameters in the query.
+  for (const p in data.params) {
+    query = query.replace(`<${p}>`, data.params[p]);
+  }
+  const res = ["", ...jmespath.search(metadata, query)];
+  res.sort();
+  return res;
 }
