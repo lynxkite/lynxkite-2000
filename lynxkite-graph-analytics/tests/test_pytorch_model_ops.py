@@ -137,8 +137,6 @@ async def test_build_model_with_submodules():
             "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
         },
         [
-            ("input:output", "lin1:x"),
-            ("input:output", "lin2:x"),
             ("input:output", "seq1:x"),
             ("input:output", "loss:y"),
             ("lin1:output", "seq1:modules"),
@@ -188,8 +186,6 @@ async def test_build_model_with_multilayer_submodules():
             "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
         },
         [
-            ("input:output", "lin1:x"),
-            ("input:output", "lin2:x"),
             ("input:output", "multilayer:x"),
             ("input:output", "loss:y"),
             ("lin1:output", "seq1:modules"),
