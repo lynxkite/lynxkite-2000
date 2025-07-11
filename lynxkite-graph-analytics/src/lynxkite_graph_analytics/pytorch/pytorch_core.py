@@ -1,6 +1,7 @@
 """Infrastructure for defining PyTorch models."""
 
 import copy
+import enum
 import graphlib
 import io
 import numpy as np
@@ -66,9 +67,28 @@ class Layer:
         return self.module, f"{inputs} -> {outputs}"
 
 
+class TorchTypes(enum.Enum):
+    float = torch.float
+    double = torch.double
+    int = torch.int
+    long = torch.long
+    boolean = torch.bool
+
+
 class ColumnSpec(pydantic.BaseModel):
     df: str
     column: str
+    type: TorchTypes = TorchTypes.float
+
+    @pydantic.field_validator("type", mode="before")
+    def type_from_key(cls, v):
+        if isinstance(v, TorchTypes):
+            return v
+        if isinstance(v, str):
+            for member in TorchTypes:
+                if member.name.lower() == v.lower():
+                    return member
+        raise ValueError(f"Invalid TorchTypes key: {v}")
 
 
 class ModelMapping(pydantic.BaseModel):
@@ -452,12 +472,14 @@ def to_batch_tensors(
 ) -> dict[str, torch.Tensor]:
     """Extracts tensors from a bundle for a specific batch using a model mapping."""
     tensors = {}
-    for k, v in m.map.items():
-        if v.df in b.dfs and v.column in b.dfs[v.df]:
-            batch = b.dfs[v.df][v.column].iloc[
+    for input_name, input_mapping in m.map.items():
+        df_name = input_mapping.df
+        column_name = input_mapping.column
+        if df_name in b.dfs and column_name in b.dfs[df_name]:
+            batch = b.dfs[df_name][column_name].iloc[
                 batch_index * batch_size : (batch_index + 1) * batch_size
             ]
-            tensors[k] = torch.tensor(batch.to_list(), dtype=torch.float32)
+            tensors[input_name] = torch.tensor(batch.to_list(), dtype=input_mapping.type.value)
             if batch_size == 1:
-                tensors[k] = tensors[k].squeeze(0)
+                tensors[input_name] = tensors[input_name].squeeze(0)
     return tensors
