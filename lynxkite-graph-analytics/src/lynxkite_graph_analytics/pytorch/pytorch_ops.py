@@ -98,11 +98,6 @@ def neural_ode_mlp(
     )
 
 
-@op("Sequential")
-def sequential(x, layers: list[torch.nn.Module]):
-    return torch.nn.Sequential(*layers)
-
-
 @op("Attention", outputs=["outputs", "weights"])
 def attention(query, key, value, *, embed_dim=1024, num_heads=1, dropout=0.0):
     return torch.nn.MultiHeadAttention(embed_dim, num_heads, dropout=dropout, need_weights=True)
