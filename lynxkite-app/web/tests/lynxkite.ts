@@ -91,6 +91,10 @@ export class Workspace {
   getBox(boxId: string) {
     return this.page.locator(`[data-id="${boxId}"]`);
   }
+  boxByTitle(title: string): Box {
+    const titleLocator = this.page.getByText(title, { exact: true });
+    return new Box(this.page, titleLocator.locator("../.."));
+  }
 
   getBoxes() {
     return this.page.locator(".react-flow__node");
@@ -150,8 +154,8 @@ export class Workspace {
     }
   }
 
-  async execute() {
-    const request = this.page.waitForResponse(/api[/]execute_workspace/);
+  async execute(opts?) {
+    const request = this.page.waitForResponse(/api[/]execute_workspace/, opts);
     await this.page.keyboard.press("r");
     await request;
   }
@@ -162,6 +166,21 @@ export class Workspace {
 
   async close() {
     await this.page.getByRole("link", { name: "close" }).click();
+  }
+}
+
+export class Box {
+  constructor(
+    readonly page: Page,
+    readonly locator: Locator,
+  ) {}
+  getParameter(name: string) {
+    return this.locator.getByLabel(name);
+  }
+  async expectParameterOptions(parameter: string, options: string[]) {
+    const param = this.getParameter(parameter);
+    const optionsLocator = param.locator("option");
+    await expect(optionsLocator).toHaveText(options);
   }
 }
 

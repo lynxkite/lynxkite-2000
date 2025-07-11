@@ -43,9 +43,6 @@ Type = Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, return_type=
 LongStr = Annotated[str, {"format": "textarea"}]
 """LongStr is a string type for parameters that will be displayed as a multiline text area in the UI."""
 PathStr = Annotated[str, {"format": "path"}]
-CollapsedStr = Annotated[str, {"format": "collapsed"}]
-NodeAttribute = Annotated[str, {"format": "node attribute"}]
-EdgeAttribute = Annotated[str, {"format": "edge attribute"}]
 # https://github.com/python/typing/issues/182#issuecomment-1320974824
 ReadOnlyJSON: typing.TypeAlias = (
     typing.Mapping[str, "ReadOnlyJSON"]
@@ -75,10 +72,6 @@ class Parameter(BaseConfig):
     def options(name, options, default=None):
         e = enum.Enum(f"OptionsFor_{name}", options)
         return Parameter.basic(name, default or options[0], e)
-
-    @staticmethod
-    def collapsed(name, default, type=None):
-        return Parameter.basic(name, default, CollapsedStr)
 
     @staticmethod
     def basic(name, default=None, type=None):
