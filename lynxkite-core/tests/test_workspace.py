@@ -9,12 +9,12 @@ def test_save_load():
     ws.add_node(
         id="1",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Node 1", params={}),
+        title="Node 1",
     )
     ws.add_node(
         id="2",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Node 2", params={}),
+        title="Node 2",
     )
     ws.edges.append(
         workspace.WorkspaceEdge(
@@ -70,17 +70,18 @@ def test_update_metadata():
     ws.add_node(
         id="1",
         type="basic",
-        data=workspace.WorkspaceNodeData(title="Test Operation", params={}),
+        title="Test Operation",
     )
     ws.add_node(
         id="2",
         type="basic",
-        data=workspace.WorkspaceNodeData(title="Unknown Operation", params={}),
+        title="Unknown Operation",
     )
     ws.update_metadata()
+    assert ws.nodes[0].data.meta
     assert ws.nodes[0].data.meta.name == "Test Operation"
     assert ws.nodes[0].data.error is None
-    assert not hasattr(ws.nodes[1].data, "meta")
+    assert ws.nodes[1].data.meta is None
     assert ws.nodes[1].data.error == "Unknown operation."
 
 

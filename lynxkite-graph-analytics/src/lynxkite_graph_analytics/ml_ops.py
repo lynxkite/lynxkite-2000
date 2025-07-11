@@ -216,7 +216,7 @@ def view_vectors(
     metric: UMAPMetric = UMAPMetric.euclidean,
 ):
     try:
-        from cuml.manifold.umap import UMAP
+        from cuml.manifold.umap import UMAP  # ty: ignore[unresolved-import]
     except ImportError:
         from umap import UMAP
     vec = np.stack(bundle.dfs[table_name][vector_column].to_numpy())

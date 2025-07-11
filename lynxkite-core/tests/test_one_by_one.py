@@ -13,8 +13,8 @@ async def test_optional_inputs():
         return [a + b for a, b in zip(a, b)] if b else a
 
     assert maybe_add.__op__.inputs == [
-        ops.Input(name="a", type=list[int], position="bottom"),
-        ops.Input(name="b", type=list[int] | None, position="bottom"),
+        ops.Input(name="a", type=list[int], position=ops.Position.BOTTOM),
+        ops.Input(name="b", type=list[int] | None, position=ops.Position.BOTTOM),
     ]
     one_by_one.register("test")
     ws = workspace.Workspace(env="test", nodes=[], edges=[])

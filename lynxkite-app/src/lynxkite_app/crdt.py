@@ -7,8 +7,8 @@ import pathlib
 import fastapi
 import os.path
 import pycrdt.websocket
-import pycrdt.store
-import uvicorn
+import pycrdt.store.file
+import uvicorn.protocols.utils
 import builtins
 from lynxkite.core import workspace, ops
 
@@ -59,7 +59,8 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
-        room.ws = ws
+        # We hang the YDoc pointer on the room, so it only gets garbage collected when the room does.
+        room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
             task = asyncio.create_task(workspace_changed(name, changes, ws))
@@ -106,7 +107,8 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
-        room.text = text
+        # We hang the YDoc pointer on the room, so it only gets garbage collected when the room does.
+        room.text = text  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
             asyncio.create_task(code_changed(name, changes, text))
@@ -163,6 +165,7 @@ def crdt_update(
         ValueError: If the Python object provided is not a dict or list.
     """
     if isinstance(python_obj, dict):
+        assert isinstance(crdt_obj, pycrdt.Map), "CRDT object must be a Map for a dict input"
         for key, value in python_obj.items():
             if key in non_collaborative_fields:
                 crdt_obj[key] = value
@@ -179,6 +182,7 @@ def crdt_update(
             else:
                 crdt_obj[key] = value
     elif isinstance(python_obj, list):
+        assert isinstance(crdt_obj, pycrdt.Array), "CRDT object must be an Array for a list input"
         for i, value in enumerate(python_obj):
             if isinstance(value, dict):
                 if i >= len(crdt_obj):
@@ -220,7 +224,7 @@ last_known_versions = {}
 delayed_executions = {}
 
 
-async def workspace_changed(name: str, changes: pycrdt.MapEvent, ws_crdt: pycrdt.Map):
+async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
     Args:
@@ -293,6 +297,14 @@ async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
     contents = str(text).strip() + "\n"
     with open(name, "w", encoding="utf-8") as f:
         f.write(contents)
+
+
+ws_websocket_server: WorkspaceWebsocketServer
+code_websocket_server: CodeWebsocketServer
+
+
+def get_room(name):
+    return ws_websocket_server.get_room(name)
 
 
 @contextlib.asynccontextmanager

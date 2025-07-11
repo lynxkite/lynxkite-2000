@@ -12,7 +12,7 @@ async def test_execute_operation_not_in_catalog():
     ws.add_node(
         id="1",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Non existing op", params={}),
+        title="Non existing op",
         position=workspace.Position(x=0, y=0),
     )
     await execute(ws)
@@ -78,25 +78,25 @@ async def test_execute_operation_inputs_correct_cast():
     ws.add_node(
         id="1",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Create Bundle", params={}),
+        title="Create Bundle",
         position=workspace.Position(x=0, y=0),
     )
     ws.add_node(
         id="2",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Bundle to Graph", params={}),
+        title="Bundle to Graph",
         position=workspace.Position(x=100, y=0),
     )
     ws.add_node(
         id="3",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Graph to Bundle", params={}),
+        title="Graph to Bundle",
         position=workspace.Position(x=200, y=0),
     )
     ws.add_node(
         id="4",
         type="node_type",
-        data=workspace.WorkspaceNodeData(title="Dataframe to Bundle", params={}),
+        title="Dataframe to Bundle",
         position=workspace.Position(x=300, y=0),
     )
     ws.edges = [
@@ -136,19 +136,19 @@ async def test_multiple_inputs():
     ws.add_node(
         id="one",
         type="cool",
-        data=workspace.WorkspaceNodeData(title="One", params={}),
+        title="One",
         position=workspace.Position(x=0, y=0),
     )
     ws.add_node(
         id="two",
         type="cool",
-        data=workspace.WorkspaceNodeData(title="Two", params={}),
+        title="Two",
         position=workspace.Position(x=100, y=0),
     )
     ws.add_node(
         id="smaller",
         type="cool",
-        data=workspace.WorkspaceNodeData(title="Smaller?", params={}),
+        title="Smaller?",
         position=workspace.Position(x=200, y=0),
     )
     ws.edges = [
@@ -188,8 +188,8 @@ async def test_optional_inputs():
         return a + (b or 0)
 
     assert maybe_add.__op__.inputs == [
-        ops.Input(name="a", type=int, position="left"),
-        ops.Input(name="b", type=int | None, position="left"),
+        ops.Input(name="a", type=int, position=ops.Position.LEFT),
+        ops.Input(name="b", type=int | None, position=ops.Position.LEFT),
     ]
     ws = workspace.Workspace(env="test", nodes=[], edges=[])
     a = ws.add_node(one)
