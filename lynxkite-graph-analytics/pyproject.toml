@@ -20,6 +20,7 @@ dependencies = [
     "torch-geometric>=2.6.1",
     "torchdiffeq>=0.2.5",
     "umap-learn>=0.5.9.post2",
+    "pykeen>=1.11.1"
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
 
