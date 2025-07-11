@@ -259,8 +259,9 @@ class ModelBuilder:
                 continue
             op = self.catalog[title]
             if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
-                to_delete.add(node_id)
-                to_delete |= self.all_upstream(node_id)
+                if not self._is_submodule_node(node_id):
+                    to_delete.add(node_id)
+                    to_delete |= self.all_upstream(node_id)
         for node_id in to_delete:
             del self.dependencies[node_id]
             del self.in_edges[node_id]
@@ -380,10 +381,14 @@ class ModelBuilder:
         operation_inputs = []
         for input in op.inputs:
             input_edges = [
-                self._edge_to_input(edge, input.type) for edge in self.in_edges[node_id][input.name]
+                self._edge_to_input(edge, input.type)
+                for edge in self.in_edges[node_id].get(input.name, [])
             ]
+            input_edges = input_edges or [
+                None
+            ]  # Nodes that are used as submodules can have no inputs.
             if not (input.type is list or typing.get_origin(input.type) is list):
-                assert len(input_edges) == 1, (
+                assert len(input_edges) <= 1, (
                     f"Detected multiple input edges for non-list input {node_id} {input.name}."
                 )
                 [input_edges] = input_edges
@@ -397,7 +402,8 @@ class ModelBuilder:
         non_module_inputs = [
             inp
             for inp in operation_inputs
-            if not (
+            if inp
+            and not (
                 isinstance(inp, torch.nn.Module)
                 or isinstance(inp, list)
                 and all(isinstance(i, torch.nn.Module) for i in inp)
