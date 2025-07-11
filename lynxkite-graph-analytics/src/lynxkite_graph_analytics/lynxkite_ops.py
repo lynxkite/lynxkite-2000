@@ -8,7 +8,8 @@ from collections import deque
 
 from . import core
 import grandcypher
-import matplotlib
+import matplotlib.cm
+import matplotlib.colors
 import networkx as nx
 import pandas as pd
 import polars as pl
@@ -205,6 +206,7 @@ def _map_color(value):
     else:
         cmap = matplotlib.cm.get_cmap("Paired")
         categories = pd.Index(value.unique())
+        assert isinstance(cmap, matplotlib.colors.ListedColormap)
         colors = cmap.colors[: len(categories)]
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
@@ -216,9 +218,9 @@ def _map_color(value):
 def visualize_graph(
     graph: core.Bundle,
     *,
-    color_nodes_by: ops.NodeAttribute = None,
-    label_by: ops.NodeAttribute = None,
-    color_edges_by: ops.EdgeAttribute = None,
+    color_nodes_by: core.NodePropertyName = None,
+    label_by: core.NodePropertyName = None,
+    color_edges_by: core.EdgePropertyName = None,
 ):
     nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
@@ -312,7 +314,7 @@ def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100
     view="graph_creation_view",
     outputs=["output"],
 )
-def organize(bundles: list[core.Bundle], *, relations: str = None) -> core.Bundle:
+def organize(bundles: list[core.Bundle], *, relations: str = ""):
     """Merge multiple inputs and construct graphs from the tables.
 
     To create a graph, import tables for edges and nodes, and combine them in this operation.
@@ -322,6 +324,9 @@ def organize(bundles: list[core.Bundle], *, relations: str = None) -> core.Bundl
         bundle.dfs.update(b.dfs)
         bundle.relations.extend(b.relations)
         bundle.other.update(b.other)
-    if not (relations is None or relations.strip() == ""):
-        bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
+    if relations.strip():
+        bundle.relations = [
+            core.RelationDefinition(**r)  # ty: ignore[missing-argument]
+            for r in json.loads(relations).values()
+        ]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))

@@ -74,7 +74,7 @@ def _get_num_samples(bundle: core.Bundle, input_mapping: pytorch_core.ModelMappi
 def train_model(
     bundle: core.Bundle,
     *,
-    model_name: str = "model",
+    model_name: core.ModelName = "model",
     input_mapping: ModelTrainingInputMapping,
     epochs: int = 1,
     batch_size: int = 1,
@@ -113,7 +113,7 @@ def train_model(
 def model_inference(
     bundle: core.Bundle,
     *,
-    model_name: str = "model",
+    model_name: core.ModelName = "model",
     input_mapping: ModelInferenceInputMapping,
     output_mapping: ModelOutputMapping,
     batch_size: int = 1,
@@ -133,8 +133,6 @@ def model_inference(
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
             v = v.detach().numpy().reshape(batch_size, -1)
-            if k not in m.model_sequence_outputs:
-                v = v.squeeze(axis=-1)
             outputs.setdefault(k, []).extend(v.tolist())
     bundle = bundle.copy()
     copied = set()
@@ -149,7 +147,9 @@ def model_inference(
 
 
 @op("Train/test split")
-def train_test_split(bundle: core.Bundle, *, table_name: str, test_ratio: float = 0.1, seed=1234):
+def train_test_split(
+    bundle: core.Bundle, *, table_name: core.TableName, test_ratio: float = 0.1, seed=1234
+):
     """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
     df = bundle.dfs[table_name]
     test = df.sample(frac=test_ratio, random_state=seed).reset_index()
@@ -208,15 +208,15 @@ class UMAPMetric(str, enum.Enum):
 def view_vectors(
     bundle: core.Bundle,
     *,
-    table_name: str = "nodes",
-    vector_column: str = "",
-    label_column: str = "",
+    table_name: core.TableName = "nodes",
+    vector_column: core.ColumnNameByTableName = "",
+    label_column: core.ColumnNameByTableName = "",
     n_neighbors: int = 15,
     min_dist: float = 0.1,
     metric: UMAPMetric = UMAPMetric.euclidean,
 ):
     try:
-        from cuml.manifold.umap import UMAP
+        from cuml.manifold.umap import UMAP  # ty: ignore[unresolved-import]
     except ImportError:
         from umap import UMAP
     vec = np.stack(bundle.dfs[table_name][vector_column].to_numpy())

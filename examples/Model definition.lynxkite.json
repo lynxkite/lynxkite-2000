@@ -81,7 +81,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "green",
+          "doc": null,
+          "id": "Optimizer",
           "inputs": [
             {
               "name": "loss",
@@ -110,7 +113,7 @@
               }
             },
             {
-              "default": 0.001,
+              "default": 0.0001,
               "name": "lr",
               "type": {
                 "type": "<class 'float'>"
@@ -119,6 +122,7 @@
           ],
           "type": "basic"
         },
+        "op_id": "Optimizer",
         "params": {
           "lr": "0.1",
           "type": "SGD"
@@ -126,7 +130,7 @@
         "status": "done",
         "title": "Optimizer"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 250.0,
       "id": "Optimizer 2",
       "position": {
@@ -144,7 +148,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "orange",
+          "doc": null,
+          "id": "Activation",
           "inputs": [
             {
               "name": "x",
@@ -170,23 +177,30 @@
               "name": "type",
               "type": {
                 "enum": [
+                  "ELU",
+                  "GELU",
+                  "LeakyReLU",
+                  "Mish",
+                  "PReLU",
                   "ReLU",
-                  "Leaky_ReLU",
-                  "Tanh",
-                  "Mish"
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
                 ]
               }
             }
           ],
           "type": "basic"
         },
+        "op_id": "Activation",
         "params": {
-          "type": "Leaky_ReLU"
+          "type": "LeakyReLU"
         },
         "status": "done",
         "title": "Activation"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Activation 1",
       "position": {
@@ -204,7 +218,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "orange",
+          "categories": [],
+          "color": "gray",
+          "doc": null,
+          "id": "Input: tensor",
           "inputs": [],
           "name": "Input: tensor",
           "outputs": [
@@ -227,13 +244,14 @@
           ],
           "type": "basic"
         },
+        "op_id": "Input: tensor",
         "params": {
           "name": "Y"
         },
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Input: tensor 3",
       "position": {
@@ -251,7 +269,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "orange",
+          "doc": null,
+          "id": "MSE loss",
           "inputs": [
             {
               "name": "x",
@@ -281,11 +302,12 @@
           "params": [],
           "type": "basic"
         },
+        "op_id": "MSE loss",
         "params": {},
         "status": "done",
         "title": "MSE loss"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "MSE loss 2",
       "position": {
@@ -303,7 +325,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "orange",
+          "doc": null,
+          "id": "Repeat",
           "inputs": [
             {
               "name": "input",
@@ -341,6 +366,7 @@
           ],
           "type": "basic"
         },
+        "op_id": "Repeat",
         "params": {
           "same_weights": false,
           "times": "2"
@@ -348,7 +374,7 @@
         "status": "done",
         "title": "Repeat"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Repeat 1",
       "position": {
@@ -366,7 +392,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "blue",
+          "doc": null,
+          "id": "Linear",
           "inputs": [
             {
               "name": "x",
@@ -397,13 +426,14 @@
           ],
           "type": "basic"
         },
+        "op_id": "Linear",
         "params": {
           "output_dim": "4"
         },
         "status": "done",
         "title": "Linear"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 189.0,
       "id": "Linear 1",
       "position": {
@@ -421,7 +451,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "orange",
+          "categories": [],
+          "color": "gray",
+          "doc": null,
+          "id": "Input: tensor",
           "inputs": [],
           "name": "Input: tensor",
           "outputs": [
@@ -444,13 +477,14 @@
           ],
           "type": "basic"
         },
+        "op_id": "Input: tensor",
         "params": {
           "name": "X"
         },
         "status": "done",
         "title": "Input: tensor"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Input: tensor 1",
       "position": {
@@ -468,7 +502,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "orange",
+          "doc": null,
+          "id": "Constant vector",
           "inputs": [],
           "name": "Constant vector",
           "outputs": [
@@ -498,6 +535,7 @@
           ],
           "type": "basic"
         },
+        "op_id": "Constant vector",
         "params": {
           "size": "1",
           "value": "1"
@@ -505,7 +543,7 @@
         "status": "done",
         "title": "Constant vector"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 258.0,
       "id": "Constant vector 1",
       "position": {
@@ -523,7 +561,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
+          "categories": [],
           "color": "orange",
+          "doc": null,
+          "id": "Add",
           "inputs": [
             {
               "name": "a",
@@ -553,11 +594,12 @@
           "params": [],
           "type": "basic"
         },
+        "op_id": "Add",
         "params": {},
         "status": "done",
         "title": "Add"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Add 1",
       "position": {
@@ -575,7 +617,10 @@
         "error": null,
         "input_metadata": null,
         "meta": {
-          "color": "orange",
+          "categories": [],
+          "color": "gray",
+          "doc": null,
+          "id": "Output",
           "inputs": [
             {
               "name": "x",
@@ -606,11 +651,12 @@
           ],
           "type": "basic"
         },
+        "op_id": "Output",
         "params": {},
         "status": "done",
         "title": "Output"
       },
-      "dragHandle": ".bg-primary",
+      "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Output 1",
       "position": {
@@ -620,5 +666,6 @@
       "type": "basic",
       "width": 200.0
     }
-  ]
+  ],
+  "paused": false
 }
