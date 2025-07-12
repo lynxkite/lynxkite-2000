@@ -9,6 +9,7 @@ async def test_optional_inputs():
 
     @ops.op("test", "maybe add")
     def maybe_add(a: int, b: int | None = None):
+        """b is optional"""
         return a + (b or 0)
 
     assert maybe_add.__op__.inputs == [
