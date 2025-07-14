@@ -207,7 +207,6 @@ class ModelBuilder:
         self.ws = ws
         self.catalog = ops.CATALOGS[ENV]
         self.model_sequence_outputs = []
-        self.input_boxes = {}
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
         repeats: list[str] = []
@@ -352,9 +351,7 @@ class ModelBuilder:
                             else:
                                 self.run_node(layer.origin_id)
                 self.layers.append(self.run_op(node_id, op, p))
-            case "Input: tensor" | "Input: graph edges" | "Input: sequential":
-                self.input_boxes[_to_id(node_id, "output")] = node
-            case "Optimizer":
+            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
                 return
             case _:
                 self.layers.append(self.run_op(node_id, op, p))
@@ -377,9 +374,15 @@ class ModelBuilder:
         return self.get_config()
 
     def _add_type_information_to_input(self, inputs: list[str]) -> dict[str, dict[str, str | None]]:
+        def input_name_from_id(input_id: str) -> str:
+            input_name = input_id.rsplit("_", 1)[0]
+            input_name = input_name.replace("_", " ")
+            input_name = input_name.replace("Input  ", "Input: ")
+            return input_name
+
         inputs_with_type = {}
         for inp in inputs:
-            inp_node = self.input_boxes[inp]
+            inp_node = self.nodes[input_name_from_id(inp)]
             inputs_with_type[inp] = {"name": inp_node.data.params.get("name", None), "type": None}
             if not inp.startswith("Input__tensor"):
                 # Only tensors input have a clear defined type for now.
@@ -416,12 +419,12 @@ class ModelBuilder:
         layers = [layer.for_sequential() for layer in layers]
         loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
-        cfg["model_inputs"] = sorted(used_in_model - made_in_model)
-        cfg["model_inputs"] = self._add_type_information_to_input(cfg["model_inputs"])
+        model_inputs_list = sorted(used_in_model - made_in_model)
+        cfg["model_inputs"] = self._add_type_information_to_input(model_inputs_list)
         cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
         cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
         cfg["input_output_names"] = self.get_names(
-            *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
+            *model_inputs_list, *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
         # Make sure the trained output is output from the last model layer.
