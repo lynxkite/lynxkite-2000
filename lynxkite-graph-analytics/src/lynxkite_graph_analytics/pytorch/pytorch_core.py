@@ -3,7 +3,7 @@
 import copy
 import graphlib
 import io
-import numpy as np
+import typing
 import pydantic
 from lynxkite.core import ops, workspace
 import torch
@@ -36,8 +36,12 @@ def reg(name, inputs=[], outputs=None, params=[], **kwargs):
     return ops.register_passive_op(
         ENV,
         name,
-        inputs=[ops.Input(name=name, position="bottom", type="tensor") for name in inputs],
-        outputs=[ops.Output(name=name, position="top", type="tensor") for name in outputs],
+        inputs=[
+            ops.Input(name=name, position=ops.Position.BOTTOM, type="tensor") for name in inputs
+        ],
+        outputs=[
+            ops.Output(name=name, position=ops.Position.TOP, type="tensor") for name in outputs
+        ],
         params=params,
         **kwargs,
     )
@@ -75,16 +79,16 @@ class ModelMapping(pydantic.BaseModel):
     map: dict[str, ColumnSpec]
 
 
-def _torch_save(data) -> str:
+def _torch_save(data) -> bytes:
     """Saves PyTorch data (modules, tensors) as a string."""
     buffer = io.BytesIO()
     torch.save(data, buffer)
     return buffer.getvalue()
 
 
-def _torch_load(data: str) -> any:
+def _torch_load(data: bytes) -> typing.Any:
     """Loads PyTorch data (modules, tensors) from a string."""
-    buffer = io.BytesIO(data)  # noqa: F821
+    buffer = io.BytesIO(data)
     return torch.load(buffer)
 
 
@@ -98,7 +102,7 @@ class ModelConfig:
     input_output_names: list[str]
     loss: torch.nn.Module
     source_workspace_json: str
-    optimizer_parameters: dict[str, any]
+    optimizer_parameters: dict[str, typing.Any]
     optimizer: torch.optim.Optimizer | None = None
     source_workspace: str | None = None
     trained: bool = False
@@ -116,7 +120,7 @@ class ModelConfig:
         values = {k: v for k, v in zip(self.model_outputs, output)}
         return values
 
-    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, np.ndarray]:
+    def inference(self, inputs: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
         """Inference on a single batch."""
         self.model.eval()
         return self._forward(inputs)
@@ -443,7 +447,7 @@ class ModelBuilder:
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
         cfg["source_workspace_json"] = self.ws.model_dump_json()
-        return ModelConfig(**cfg)
+        return ModelConfig(**cfg)  # ty: ignore[missing-argument]
 
     def get_names(self, *ids: list[str]) -> dict[str, str]:
         """Returns a mapping from internal IDs to human-readable names."""
@@ -473,7 +477,7 @@ def to_batch_tensors(
     batch_size: int,
     batch_index: int,
     m: ModelMapping | None,
-    model_inputs: dict[str, dict[str, str | None]],
+    model_inputs: dict[str, dict[str, str]],
 ) -> dict[str, torch.Tensor]:
     """Extracts tensors from a bundle for a specific batch using a model mapping."""
     tensors = {}

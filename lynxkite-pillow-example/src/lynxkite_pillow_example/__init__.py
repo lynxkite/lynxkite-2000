@@ -20,48 +20,48 @@ def open_image(*, filename: str):
 
 
 @op("Save image")
-def save_image(image: Image, *, filename: str):
+def save_image(image: Image.Image, *, filename: str):
     with fsspec.open(filename, "wb") as f:
         image.save(f)
 
 
 @op("Crop")
-def crop(image: Image, *, top: int, left: int, bottom: int, right: int):
+def crop(image: Image.Image, *, top: int, left: int, bottom: int, right: int):
     return image.crop((left, top, right, bottom))
 
 
 @op("Flip horizontally")
-def flip_horizontally(image: Image):
+def flip_horizontally(image: Image.Image):
     return image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
 
 @op("Flip vertically")
-def flip_vertically(image: Image):
+def flip_vertically(image: Image.Image):
     return image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
 
 @op("Blur")
-def blur(image: Image, *, radius: float = 5):
+def blur(image: Image.Image, *, radius: float = 5):
     return image.filter(ImageFilter.GaussianBlur(radius))
 
 
 @op("Detail")
-def detail(image: Image):
+def detail(image: Image.Image):
     return image.filter(ImageFilter.DETAIL)
 
 
 @op("Edge enhance")
-def edge_enhance(image: Image):
+def edge_enhance(image: Image.Image):
     return image.filter(ImageFilter.EDGE_ENHANCE)
 
 
 @op("To grayscale")
-def to_grayscale(image: Image):
+def to_grayscale(image: Image.Image):
     return image.convert("L")
 
 
 @op("View image", view="image")
-def view_image(image: Image):
+def view_image(image: Image.Image):
     buffered = io.BytesIO()
     image.save(buffered, format="webp")
     b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")

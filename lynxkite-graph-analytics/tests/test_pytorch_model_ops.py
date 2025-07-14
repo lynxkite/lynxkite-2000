@@ -1,3 +1,4 @@
+import torch_geometric.nn as pyg_nn
 from lynxkite.core import workspace
 from lynxkite_graph_analytics.pytorch import pytorch_core
 import torch
@@ -11,7 +12,8 @@ def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
         del data["title"]
         ws.add_node(
             id=id,
-            data=workspace.WorkspaceNodeData(title=title, params=data),
+            title=title,
+            params=data,
         )
     ws.edges = [
         workspace.WorkspaceEdge(
@@ -27,10 +29,12 @@ def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
 
 
 def summarize_layers(m: pytorch_core.ModelConfig) -> str:
+    assert isinstance(m.model, pyg_nn.Sequential)
     return "".join(str(e)[:2] for e in m.model)
 
 
 def summarize_connections(m: pytorch_core.ModelConfig) -> str:
+    assert isinstance(m.model, pyg_nn.Sequential)
     return " ".join(
         "".join(n[0] for n in c.param_names) + "->" + "".join(n[0] for n in c.return_names)
         for c in m.model._children
