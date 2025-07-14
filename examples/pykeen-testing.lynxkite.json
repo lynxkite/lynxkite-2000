@@ -1,29 +1,50 @@
 {
   "edges": [
     {
-      "id": "Train Embedding Model 1 output View loss 1 bundle",
-      "source": "Train Embedding Model 1",
+      "id": "Train embedding model 1 output View loss 1 bundle",
+      "source": "Train embedding model 1",
       "sourceHandle": "output",
       "target": "View loss 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "Train Embedding Model 1 output Target Prediction 1 bundle",
-      "source": "Train Embedding Model 1",
+      "id": "Train embedding model 1 output Target prediction 1 bundle",
+      "source": "Train embedding model 1",
       "sourceHandle": "output",
-      "target": "Target Prediction 1",
+      "target": "Target prediction 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "Target Prediction 1 output View tables 2 bundle",
-      "source": "Target Prediction 1",
+      "id": "Target prediction 1 output View tables 2 bundle",
+      "source": "Target prediction 1",
       "sourceHandle": "output",
       "target": "View tables 2",
       "targetHandle": "bundle"
     },
     {
-      "id": "Train Embedding Model 1 output Triples prediction 1 bundle",
-      "source": "Train Embedding Model 1",
+      "id": "Full prediction 1 output View tables 1 bundle",
+      "source": "Full prediction 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import PyKEEN dataset 1 output Train embedding model 1 bundle",
+      "source": "Import PyKEEN dataset 1",
+      "sourceHandle": "output",
+      "target": "Train embedding model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train embedding model 1 output Extract embeddings from PyKEEN model 2 bundle",
+      "source": "Train embedding model 1",
+      "sourceHandle": "output",
+      "target": "Extract embeddings from PyKEEN model 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train embedding model 1 output Triples prediction 1 bundle",
+      "source": "Train embedding model 1",
       "sourceHandle": "output",
       "target": "Triples prediction 1",
       "targetHandle": "bundle"
@@ -36,45 +57,24 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Full prediction 1 output View tables 1 bundle",
-      "source": "Full prediction 1",
-      "sourceHandle": "output",
-      "target": "View tables 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Train Embedding Model 1 output Full prediction 1 bundle",
-      "source": "Train Embedding Model 1",
+      "id": "Train embedding model 1 output Full prediction 1 bundle",
+      "source": "Train embedding model 1",
       "sourceHandle": "output",
       "target": "Full prediction 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "Train Embedding Model 1 output Evaluate Model 1 bundle",
-      "source": "Train Embedding Model 1",
+      "id": "Train embedding model 1 output Evaluate model 1 bundle",
+      "source": "Train embedding model 1",
       "sourceHandle": "output",
-      "target": "Evaluate Model 1",
+      "target": "Evaluate model 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "Evaluate Model 1 output View tables 5 bundle",
-      "source": "Evaluate Model 1",
+      "id": "Evaluate model 1 output View tables 5 bundle",
+      "source": "Evaluate model 1",
       "sourceHandle": "output",
       "target": "View tables 5",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Import PyKEEN Dataset 1 output Train Embedding Model 1 bundle",
-      "source": "Import PyKEEN Dataset 1",
-      "sourceHandle": "output",
-      "target": "Train Embedding Model 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Train Embedding Model 1 output Extract embeddings from PyKEEN model 2 bundle",
-      "source": "Train Embedding Model 1",
-      "sourceHandle": "output",
-      "target": "Extract embeddings from PyKEEN model 2",
       "targetHandle": "bundle"
     }
   ],
@@ -94,21 +94,24 @@
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {},
@@ -119,7 +122,7 @@
           "categories": [],
           "color": "orange",
           "doc": null,
-          "id": "Train Embedding Model",
+          "id": "Train embedding model",
           "inputs": [
             {
               "name": "bundle",
@@ -129,7 +132,7 @@
               }
             }
           ],
-          "name": "Train Embedding Model",
+          "name": "Train embedding model",
           "outputs": [
             {
               "name": "output",
@@ -178,8 +181,7 @@
                   "TransF",
                   "TransH",
                   "TransR",
-                  "TuckER",
-                  "Unstructured_Model"
+                  "TuckER"
                 ]
               }
             },
@@ -199,25 +201,33 @@
                   "LCWA"
                 ]
               }
+            },
+            {
+              "default": "PyKEENmodel",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
             }
           ],
           "type": "basic"
         },
-        "op_id": "Train Embedding Model",
+        "op_id": "Train embedding model",
         "params": {
-          "epochs": "10",
-          "model": "CompGCN",
+          "epochs": "5",
+          "model": "TransE",
+          "save_as": "model",
           "training_approach": "sLCWA"
         },
         "status": "done",
-        "title": "Train Embedding Model"
+        "title": "Train embedding model"
       },
       "dragHandle": ".drag-handle",
       "height": 393.0,
-      "id": "Train Embedding Model 1",
+      "id": "Train embedding model 1",
       "position": {
-        "x": -1115.1628933865297,
-        "y": -134.81870737403295
+        "x": -978.002282152246,
+        "y": -93.49450686614341
       },
       "type": "basic",
       "width": 287.0
@@ -230,16 +240,11 @@
           "series": [
             {
               "data": [
-                3.076913893222809,
-                2.4452097614606223,
-                2.0711413522561393,
-                1.7825321555137634,
-                1.6337800323963165,
-                1.4805578192075093,
-                1.3289171159267426,
-                1.214134156703949,
-                1.1489891558885574,
-                1.1088260412216187
+                1.3741944176810128,
+                1.3248515299388341,
+                1.3379464490073067,
+                1.2641031231198991,
+                1.2603662695203508
               ],
               "type": "line"
             }
@@ -261,32 +266,41 @@
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -341,387 +355,387 @@
               ],
               "data": [
                 [
-                  96,
-                  3.107093095779419,
-                  "tourism3",
-                  false,
-                  false
-                ],
-                [
-                  26,
-                  3.011080265045166,
-                  "eemigrants",
-                  false,
-                  false
-                ],
-                [
-                  32,
-                  2.5117580890655518,
-                  "expeldiplomats",
-                  false,
-                  false
-                ],
-                [
-                  82,
-                  2.367234706878662,
-                  "reltourism",
-                  false,
-                  false
-                ],
-                [
-                  50,
-                  2.34250545501709,
-                  "negativebehavior",
-                  false,
-                  false
-                ],
-                [
-                  90,
-                  2.289499044418335,
-                  "timesinceally",
-                  false,
-                  false
-                ],
-                [
-                  2,
-                  1.944096565246582,
-                  "aidenemy",
-                  false,
-                  false
-                ],
-                [
-                  94,
-                  1.891361951828003,
-                  "tourism",
-                  false,
-                  false
-                ],
-                [
-                  74,
-                  1.732425332069397,
-                  "relexports",
-                  false,
-                  false
-                ],
-                [
-                  12,
-                  1.6545861959457397,
-                  "commonbloc0",
-                  true,
-                  false
-                ],
-                [
-                  88,
-                  1.613100528717041,
-                  "students",
-                  false,
-                  false
-                ],
-                [
-                  102,
-                  1.4746090173721313,
-                  "unweightedunvote",
-                  false,
-                  false
-                ],
-                [
-                  62,
-                  1.3814263343811035,
-                  "pprotests",
-                  false,
-                  false
-                ],
-                [
-                  38,
-                  1.3471460342407227,
-                  "independence",
-                  false,
-                  false
-                ],
-                [
-                  42,
-                  1.235988974571228,
-                  "intergovorgs3",
-                  false,
-                  false
-                ],
-                [
-                  10,
-                  1.1402833461761475,
-                  "boycottembargo",
-                  false,
-                  false
-                ],
-                [
-                  78,
-                  1.120343565940857,
-                  "relngo",
-                  false,
-                  false
-                ],
-                [
-                  24,
-                  1.095353126525879,
-                  "economicaid",
-                  false,
-                  false
-                ],
-                [
-                  4,
-                  1.0907374620437622,
-                  "attackembassy",
-                  false,
-                  false
-                ],
-                [
-                  60,
-                  1.0343931913375854,
-                  "officialvisits",
-                  false,
-                  false
-                ],
-                [
-                  30,
-                  1.032510757446289,
-                  "emigrants3",
-                  false,
-                  false
-                ],
-                [
-                  6,
-                  0.6963798403739929,
-                  "blockpositionindex",
-                  false,
-                  false
-                ],
-                [
-                  16,
-                  0.6116173267364502,
-                  "commonbloc2",
-                  false,
-                  false
-                ],
-                [
-                  66,
-                  0.5752319693565369,
-                  "reldiplomacy",
-                  false,
-                  false
-                ],
-                [
-                  98,
-                  0.5670764446258545,
-                  "treaties",
-                  false,
-                  false
-                ],
-                [
-                  72,
-                  0.43255504965782166,
-                  "relexportbooks",
-                  false,
-                  false
-                ],
-                [
-                  84,
-                  0.13977432250976562,
-                  "reltreaties",
-                  false,
-                  false
-                ],
-                [
-                  34,
-                  0.10334566235542297,
-                  "exportbooks",
-                  false,
-                  false
-                ],
-                [
-                  8,
-                  0.0050966739654541016,
-                  "booktranslations",
-                  false,
-                  false
-                ],
-                [
-                  18,
-                  -0.045005083084106445,
-                  "conferences",
-                  false,
-                  false
-                ],
-                [
-                  28,
-                  -0.04760223627090454,
-                  "embassy",
-                  false,
-                  false
-                ],
-                [
-                  104,
-                  -0.33855605125427246,
-                  "violentactions",
-                  false,
-                  false
-                ],
-                [
-                  58,
-                  -0.3431950807571411,
-                  "nonviolentbehavior",
-                  false,
-                  false
-                ],
-                [
-                  22,
-                  -0.3662582039833069,
-                  "duration",
-                  false,
-                  false
-                ],
-                [
-                  46,
-                  -0.3894645571708679,
-                  "militaryactions",
-                  false,
-                  false
-                ],
-                [
-                  54,
-                  -0.5642709136009216,
-                  "ngo",
-                  false,
-                  false
-                ],
-                [
-                  20,
-                  -0.6149243116378784,
-                  "dependent",
-                  false,
-                  false
-                ],
-                [
-                  56,
-                  -0.6411711573600769,
-                  "ngoorgs3",
-                  false,
-                  false
-                ],
-                [
-                  100,
-                  -0.6868444085121155,
-                  "unoffialacts",
-                  false,
-                  false
-                ],
-                [
-                  40,
-                  -0.7618719935417175,
-                  "intergovorgs",
-                  false,
-                  false
-                ],
-                [
-                  92,
-                  -1.0000663995742798,
-                  "timesincewar",
-                  false,
-                  false
-                ],
-                [
-                  76,
-                  -1.060382604598999,
-                  "relintergovorgs",
-                  false,
-                  false
-                ],
-                [
-                  52,
-                  -1.1604764461517334,
-                  "negativecomm",
-                  false,
-                  false
-                ],
-                [
-                  70,
-                  -1.1735050678253174,
-                  "relemigrants",
-                  false,
-                  false
-                ],
-                [
-                  14,
-                  -1.3055601119995117,
-                  "commonbloc1",
-                  false,
-                  false
-                ],
-                [
-                  108,
-                  -1.5626298189163208,
-                  "weightedunvote",
-                  false,
-                  false
-                ],
-                [
-                  36,
-                  -1.634451150894165,
-                  "exports3",
-                  false,
-                  false
-                ],
-                [
-                  0,
-                  -1.6875075101852417,
-                  "accusation",
-                  false,
-                  false
-                ],
-                [
-                  68,
-                  -1.762732744216919,
-                  "releconomicaid",
-                  false,
-                  false
-                ],
-                [
-                  64,
-                  -1.9846954345703125,
-                  "relbooktranslations",
-                  false,
-                  false
-                ],
-                [
-                  86,
-                  -2.167741060256958,
+                  43,
+                  -7.016031742095947,
                   "severdiplomatic",
                   false,
                   false
                 ],
                 [
-                  80,
-                  -2.7407519817352295,
-                  "relstudents",
+                  14,
+                  -7.693779468536377,
+                  "embassy",
+                  false,
+                  false
+                ],
+                [
+                  12,
+                  -7.943136215209961,
+                  "economicaid",
+                  true,
+                  false
+                ],
+                [
+                  4,
+                  -8.087992668151855,
+                  "booktranslations",
+                  false,
+                  false
+                ],
+                [
+                  21,
+                  -8.251792907714844,
+                  "intergovorgs3",
+                  false,
+                  false
+                ],
+                [
+                  29,
+                  -8.343884468078613,
+                  "nonviolentbehavior",
+                  false,
+                  false
+                ],
+                [
+                  17,
+                  -8.410207748413086,
+                  "exportbooks",
+                  false,
+                  false
+                ],
+                [
+                  2,
+                  -8.41859245300293,
+                  "attackembassy",
+                  false,
+                  false
+                ],
+                [
+                  50,
+                  -8.432648658752441,
+                  "unoffialacts",
                   false,
                   false
                 ],
                 [
                   48,
-                  -3.084036111831665,
-                  "militaryalliance",
+                  -8.589126586914062,
+                  "tourism3",
+                  false,
+                  false
+                ],
+                [
+                  51,
+                  -8.608097076416016,
+                  "unweightedunvote",
+                  false,
+                  false
+                ],
+                [
+                  25,
+                  -8.630517959594727,
+                  "negativebehavior",
+                  false,
+                  false
+                ],
+                [
+                  6,
+                  -8.67331314086914,
+                  "commonbloc0",
+                  false,
+                  false
+                ],
+                [
+                  11,
+                  -8.689579963684082,
+                  "duration",
+                  false,
+                  false
+                ],
+                [
+                  1,
+                  -8.797307014465332,
+                  "aidenemy",
+                  false,
+                  false
+                ],
+                [
+                  16,
+                  -8.814940452575684,
+                  "expeldiplomats",
+                  false,
+                  false
+                ],
+                [
+                  53,
+                  -8.986594200134277,
+                  "warning",
+                  false,
+                  false
+                ],
+                [
+                  42,
+                  -9.00938606262207,
+                  "reltreaties",
+                  false,
+                  false
+                ],
+                [
+                  30,
+                  -9.067970275878906,
+                  "officialvisits",
+                  false,
+                  false
+                ],
+                [
+                  7,
+                  -9.089521408081055,
+                  "commonbloc1",
+                  false,
+                  false
+                ],
+                [
+                  13,
+                  -9.110079765319824,
+                  "eemigrants",
+                  false,
+                  false
+                ],
+                [
+                  27,
+                  -9.119032859802246,
+                  "ngo",
+                  false,
+                  false
+                ],
+                [
+                  54,
+                  -9.123095512390137,
+                  "weightedunvote",
+                  false,
+                  false
+                ],
+                [
+                  8,
+                  -9.155043601989746,
+                  "commonbloc2",
+                  false,
+                  false
+                ],
+                [
+                  46,
+                  -9.15728759765625,
+                  "timesincewar",
+                  false,
+                  false
+                ],
+                [
+                  36,
+                  -9.15965747833252,
+                  "relexportbooks",
+                  false,
+                  false
+                ],
+                [
+                  45,
+                  -9.162384033203125,
+                  "timesinceally",
+                  false,
+                  false
+                ],
+                [
+                  47,
+                  -9.224143028259277,
+                  "tourism",
+                  false,
+                  false
+                ],
+                [
+                  37,
+                  -9.280924797058105,
+                  "relexports",
+                  false,
+                  false
+                ],
+                [
+                  26,
+                  -9.2859525680542,
+                  "negativecomm",
+                  false,
+                  false
+                ],
+                [
+                  38,
+                  -9.331186294555664,
+                  "relintergovorgs",
+                  false,
+                  false
+                ],
+                [
+                  39,
+                  -9.378157615661621,
+                  "relngo",
+                  false,
+                  false
+                ],
+                [
+                  34,
+                  -9.486064910888672,
+                  "releconomicaid",
+                  false,
+                  false
+                ],
+                [
+                  23,
+                  -9.488455772399902,
+                  "militaryactions",
+                  false,
+                  false
+                ],
+                [
+                  52,
+                  -9.641972541809082,
+                  "violentactions",
+                  false,
+                  false
+                ],
+                [
+                  3,
+                  -9.656697273254395,
+                  "blockpositionindex",
+                  false,
+                  false
+                ],
+                [
+                  41,
+                  -9.674064636230469,
+                  "reltourism",
                   false,
                   false
                 ],
                 [
                   44,
-                  -3.2412846088409424,
+                  -9.702082633972168,
+                  "students",
+                  false,
+                  false
+                ],
+                [
+                  5,
+                  -9.80087661743164,
+                  "boycottembargo",
+                  false,
+                  false
+                ],
+                [
+                  19,
+                  -9.815401077270508,
+                  "independence",
+                  false,
+                  false
+                ],
+                [
+                  9,
+                  -9.851058006286621,
+                  "conferences",
+                  false,
+                  false
+                ],
+                [
+                  0,
+                  -9.899598121643066,
+                  "accusation",
+                  false,
+                  false
+                ],
+                [
+                  24,
+                  -9.974985122680664,
+                  "militaryalliance",
+                  false,
+                  false
+                ],
+                [
+                  20,
+                  -9.991706848144531,
+                  "intergovorgs",
+                  false,
+                  false
+                ],
+                [
+                  35,
+                  -10.093334197998047,
+                  "relemigrants",
+                  false,
+                  false
+                ],
+                [
+                  49,
+                  -10.11546802520752,
+                  "treaties",
+                  false,
+                  false
+                ],
+                [
+                  22,
+                  -10.204689025878906,
                   "lostterritory",
                   false,
                   false
                 ],
                 [
-                  106,
-                  -4.690759658813477,
-                  "warning",
+                  31,
+                  -10.276098251342773,
+                  "pprotests",
+                  false,
+                  false
+                ],
+                [
+                  32,
+                  -10.380911827087402,
+                  "relbooktranslations",
+                  false,
+                  false
+                ],
+                [
+                  40,
+                  -10.392865180969238,
+                  "relstudents",
+                  false,
+                  false
+                ],
+                [
+                  18,
+                  -10.457653045654297,
+                  "exports3",
+                  false,
+                  false
+                ],
+                [
+                  15,
+                  -10.466470718383789,
+                  "emigrants3",
+                  false,
+                  false
+                ],
+                [
+                  10,
+                  -10.65011215209961,
+                  "dependent",
+                  false,
+                  false
+                ],
+                [
+                  33,
+                  -10.770047187805176,
+                  "reldiplomacy",
+                  false,
+                  false
+                ],
+                [
+                  28,
+                  -11.539936065673828,
+                  "ngoorgs3",
                   false,
                   false
                 ]
@@ -733,34 +747,19 @@
               ],
               "data": [
                 [
-                  3.076913893222809
+                  1.3741944176810128
                 ],
                 [
-                  2.4452097614606223
+                  1.3248515299388341
                 ],
                 [
-                  2.0711413522561393
+                  1.3379464490073067
                 ],
                 [
-                  1.7825321555137634
+                  1.2641031231198991
                 ],
                 [
-                  1.6337800323963165
-                ],
-                [
-                  1.4805578192075093
-                ],
-                [
-                  1.3289171159267426
-                ],
-                [
-                  1.214134156703949
-                ],
-                [
-                  1.1489891558885574
-                ],
-                [
-                  1.1088260412216187
+                  1.2603662695203508
                 ]
               ]
             },
@@ -2293,7 +2292,7 @@
             }
           },
           "other": {
-            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
+            "model": "TransE(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): TransEInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(55, 50)\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -2308,37 +2307,47 @@
                   "relation_id",
                   "relation_label",
                   "score"
-                ]
+                ],
+                "key": "pred"
               },
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -2386,8 +2395,8 @@
       "height": 422.0,
       "id": "View tables 2",
       "position": {
-        "x": 1048.1921152154923,
-        "y": -62.329262275045295
+        "x": 966.212869262534,
+        "y": -130.17415547749349
       },
       "type": "table_view",
       "width": 906.0
@@ -2404,32 +2413,41 @@
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -2443,7 +2461,7 @@
               "value": "Leave the target prediction field empty"
             }
           ],
-          "id": "Target Prediction",
+          "id": "Target prediction",
           "inputs": [
             {
               "name": "bundle",
@@ -2453,7 +2471,7 @@
               }
             }
           ],
-          "name": "Target Prediction",
+          "name": "Target prediction",
           "outputs": [
             {
               "name": "output",
@@ -2464,6 +2482,14 @@
             }
           ],
           "params": [
+            {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
             {
               "default": null,
               "name": "head",
@@ -2488,118 +2514,25 @@
           ],
           "type": "basic"
         },
-        "op_id": "Target Prediction",
+        "op_id": "Target prediction",
         "params": {
           "head": "uk",
+          "model_name": "model",
           "relation": "",
           "tail": "china"
         },
         "status": "done",
-        "title": "Target Prediction"
+        "title": "Target prediction"
       },
       "dragHandle": ".drag-handle",
-      "height": 313.0,
-      "id": "Target Prediction 1",
+      "height": 452.0,
+      "id": "Target prediction 1",
       "position": {
-        "x": 573.8823822915417,
-        "y": 41.24733570842021
+        "x": 487.27725145723787,
+        "y": -141.31600331159515
       },
       "type": "basic",
-      "width": 249.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "error": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "training": {
-                "columns": [
-                  "training_loss"
-                ]
-              },
-              "triples_test": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              },
-              "triples_train": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              },
-              "triples_val": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              }
-            },
-            "other": {
-              "model": {}
-            },
-            "relations": []
-          }
-        ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "Triples prediction",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Triples prediction",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "triples_val",
-              "name": "table_name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
-        "op_id": "Triples prediction",
-        "params": {
-          "table_name": "triples_val"
-        },
-        "status": "done",
-        "title": "Triples prediction"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 200.0,
-      "id": "Triples prediction 1",
-      "position": {
-        "x": 522.1669295981394,
-        "y": 329.7304477787955
-      },
-      "type": "basic",
-      "width": 200.0
+      "width": 284.0
     },
     {
       "data": {
@@ -2625,7 +2558,7 @@
                   "commonbloc0",
                   6,
                   "indonesia",
-                  -0.20490150153636932
+                  -10.840410232543945
                 ],
                 [
                   0,
@@ -2634,7 +2567,7 @@
                   "commonbloc2",
                   10,
                   "poland",
-                  0.062241971492767334
+                  -11.213082313537598
                 ],
                 [
                   0,
@@ -2643,7 +2576,7 @@
                   "commonbloc2",
                   11,
                   "uk",
-                  -2.708897590637207
+                  -9.50544261932373
                 ],
                 [
                   0,
@@ -2652,7 +2585,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -1.5905897617340088
+                  -10.487015724182129
                 ],
                 [
                   0,
@@ -2661,7 +2594,7 @@
                   "intergovorgs3",
                   10,
                   "poland",
-                  -0.4977906346321106
+                  -10.2725191116333
                 ],
                 [
                   0,
@@ -2670,7 +2603,7 @@
                   "militaryactions",
                   7,
                   "israel",
-                  -1.9100942611694336
+                  -10.643198013305664
                 ],
                 [
                   0,
@@ -2679,7 +2612,7 @@
                   "ngoorgs3",
                   7,
                   "israel",
-                  -0.46759045124053955
+                  -9.992989540100098
                 ],
                 [
                   0,
@@ -2688,7 +2621,7 @@
                   "nonviolentbehavior",
                   7,
                   "israel",
-                  -0.060020238161087036
+                  -10.835259437561035
                 ],
                 [
                   0,
@@ -2697,7 +2630,7 @@
                   "timesinceally",
                   4,
                   "egypt",
-                  0.6640222072601318
+                  -12.416708946228027
                 ],
                 [
                   0,
@@ -2706,7 +2639,7 @@
                   "timesinceally",
                   5,
                   "india",
-                  3.8866567611694336
+                  -10.587820053100586
                 ],
                 [
                   0,
@@ -2715,7 +2648,7 @@
                   "timesinceally",
                   12,
                   "usa",
-                  3.807534694671631
+                  -10.54809856414795
                 ],
                 [
                   1,
@@ -2724,7 +2657,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -4.844649314880371
+                  -9.729930877685547
                 ],
                 [
                   1,
@@ -2733,7 +2666,7 @@
                   "commonbloc1",
                   7,
                   "israel",
-                  -1.4978864192962646
+                  -10.249112129211426
                 ],
                 [
                   1,
@@ -2742,7 +2675,7 @@
                   "expeldiplomats",
                   2,
                   "china",
-                  -9.890969276428223
+                  -10.42536449432373
                 ],
                 [
                   1,
@@ -2751,7 +2684,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -0.3866039514541626
+                  -8.89862060546875
                 ],
                 [
                   1,
@@ -2760,7 +2693,7 @@
                   "expeldiplomats",
                   7,
                   "israel",
-                  1.877116084098816
+                  -9.196788787841797
                 ],
                 [
                   1,
@@ -2769,7 +2702,7 @@
                   "expeldiplomats",
                   13,
                   "ussr",
-                  -1.7948400974273682
+                  -9.65122127532959
                 ],
                 [
                   1,
@@ -2778,7 +2711,7 @@
                   "militaryactions",
                   9,
                   "netherlands",
-                  -2.2046959400177
+                  -10.345436096191406
                 ],
                 [
                   1,
@@ -2787,7 +2720,7 @@
                   "nonviolentbehavior",
                   5,
                   "india",
-                  -2.976149559020996
+                  -9.396241188049316
                 ],
                 [
                   1,
@@ -2796,7 +2729,7 @@
                   "nonviolentbehavior",
                   11,
                   "uk",
-                  0.45721375942230225
+                  -9.759828567504883
                 ],
                 [
                   1,
@@ -2805,7 +2738,7 @@
                   "reldiplomacy",
                   11,
                   "uk",
-                  3.3599371910095215
+                  -10.34848690032959
                 ],
                 [
                   1,
@@ -2814,7 +2747,7 @@
                   "relexportbooks",
                   2,
                   "china",
-                  -2.3233261108398438
+                  -9.32413387298584
                 ],
                 [
                   1,
@@ -2823,7 +2756,7 @@
                   "relexportbooks",
                   10,
                   "poland",
-                  2.2978110313415527
+                  -8.683549880981445
                 ],
                 [
                   1,
@@ -2832,7 +2765,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -0.81427001953125
+                  -10.01894760131836
                 ],
                 [
                   1,
@@ -2841,7 +2774,7 @@
                   "reltourism",
                   4,
                   "egypt",
-                  4.081644058227539
+                  -10.466629028320312
                 ],
                 [
                   1,
@@ -2850,7 +2783,7 @@
                   "[UNKNOWN_RELATION]",
                   12,
                   "usa",
-                  -1.1525992155075073
+                  -10.02033519744873
                 ],
                 [
                   2,
@@ -2859,7 +2792,7 @@
                   "blockpositionindex",
                   9,
                   "netherlands",
-                  -2.4725358486175537
+                  -10.40683364868164
                 ],
                 [
                   2,
@@ -2868,7 +2801,7 @@
                   "commonbloc0",
                   6,
                   "indonesia",
-                  -0.16532719135284424
+                  -10.003198623657227
                 ],
                 [
                   2,
@@ -2877,7 +2810,7 @@
                   "dependent",
                   5,
                   "india",
-                  1.932426929473877
+                  -10.916339874267578
                 ],
                 [
                   2,
@@ -2886,7 +2819,7 @@
                   "duration",
                   4,
                   "egypt",
-                  -3.3174514770507812
+                  -9.138812065124512
                 ],
                 [
                   2,
@@ -2895,7 +2828,7 @@
                   "expeldiplomats",
                   3,
                   "cuba",
-                  -1.6003003120422363
+                  -9.251415252685547
                 ],
                 [
                   2,
@@ -2904,7 +2837,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -0.6149245500564575
+                  -8.061881065368652
                 ],
                 [
                   2,
@@ -2913,7 +2846,7 @@
                   "intergovorgs3",
                   4,
                   "egypt",
-                  -1.182781457901001
+                  -11.387557029724121
                 ],
                 [
                   2,
@@ -2922,7 +2855,7 @@
                   "militaryactions",
                   0,
                   "brazil",
-                  2.0649325847625732
+                  -9.951986312866211
                 ],
                 [
                   2,
@@ -2931,7 +2864,7 @@
                   "ngo",
                   6,
                   "indonesia",
-                  -1.122281789779663
+                  -10.264994621276855
                 ],
                 [
                   2,
@@ -2940,7 +2873,7 @@
                   "ngo",
                   12,
                   "usa",
-                  -1.4750028848648071
+                  -8.064321517944336
                 ],
                 [
                   2,
@@ -2949,7 +2882,7 @@
                   "ngo",
                   13,
                   "ussr",
-                  0.33839425444602966
+                  -10.125701904296875
                 ],
                 [
                   2,
@@ -2958,7 +2891,7 @@
                   "officialvisits",
                   13,
                   "ussr",
-                  2.8358066082000732
+                  -10.282607078552246
                 ],
                 [
                   2,
@@ -2967,7 +2900,7 @@
                   "relexportbooks",
                   1,
                   "burma",
-                  -2.3233261108398438
+                  -11.24597454071045
                 ],
                 [
                   2,
@@ -2976,7 +2909,7 @@
                   "relngo",
                   5,
                   "india",
-                  1.5046638250350952
+                  -8.296070098876953
                 ],
                 [
                   2,
@@ -2985,7 +2918,7 @@
                   "students",
                   13,
                   "ussr",
-                  1.8632575273513794
+                  -9.778623580932617
                 ],
                 [
                   2,
@@ -2994,7 +2927,7 @@
                   "timesinceally",
                   6,
                   "indonesia",
-                  0.9553408026695251
+                  -8.51648235321045
                 ],
                 [
                   2,
@@ -3003,7 +2936,7 @@
                   "timesincewar",
                   4,
                   "egypt",
-                  -4.3950886726379395
+                  -8.390674591064453
                 ],
                 [
                   2,
@@ -3012,7 +2945,7 @@
                   "timesincewar",
                   5,
                   "india",
-                  1.6038192510604858
+                  -7.762441635131836
                 ],
                 [
                   2,
@@ -3021,7 +2954,7 @@
                   "timesincewar",
                   9,
                   "netherlands",
-                  1.2627129554748535
+                  -9.799511909484863
                 ],
                 [
                   2,
@@ -3030,7 +2963,7 @@
                   "violentactions",
                   13,
                   "ussr",
-                  -1.1473414897918701
+                  -10.794012069702148
                 ],
                 [
                   3,
@@ -3039,7 +2972,7 @@
                   "blockpositionindex",
                   11,
                   "uk",
-                  0.9958982467651367
+                  -10.594974517822266
                 ],
                 [
                   3,
@@ -3048,7 +2981,7 @@
                   "commonbloc0",
                   0,
                   "brazil",
-                  1.535167932510376
+                  -9.381561279296875
                 ],
                 [
                   3,
@@ -3057,7 +2990,7 @@
                   "commonbloc0",
                   5,
                   "india",
-                  -2.113750457763672
+                  -9.790741920471191
                 ],
                 [
                   3,
@@ -3066,7 +2999,7 @@
                   "commonbloc2",
                   10,
                   "poland",
-                  -1.219200611114502
+                  -10.958070755004883
                 ],
                 [
                   3,
@@ -3075,7 +3008,7 @@
                   "conferences",
                   12,
                   "usa",
-                  -0.5639832019805908
+                  -10.840078353881836
                 ],
                 [
                   3,
@@ -3084,7 +3017,7 @@
                   "expeldiplomats",
                   5,
                   "india",
-                  2.324406385421753
+                  -10.848690032958984
                 ],
                 [
                   3,
@@ -3093,7 +3026,7 @@
                   "expeldiplomats",
                   6,
                   "indonesia",
-                  -1.521202564239502
+                  -10.667556762695312
                 ],
                 [
                   3,
@@ -3102,7 +3035,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -0.09234344959259033
+                  -9.54086685180664
                 ],
                 [
                   3,
@@ -3111,7 +3044,7 @@
                   "intergovorgs3",
                   11,
                   "uk",
-                  -0.5938087105751038
+                  -10.006028175354004
                 ],
                 [
                   3,
@@ -3120,7 +3053,7 @@
                   "lostterritory",
                   0,
                   "brazil",
-                  2.1717166900634766
+                  -10.667112350463867
                 ],
                 [
                   3,
@@ -3129,7 +3062,7 @@
                   "negativecomm",
                   6,
                   "indonesia",
-                  -2.69175386428833
+                  -10.302092552185059
                 ],
                 [
                   3,
@@ -3138,7 +3071,7 @@
                   "ngo",
                   12,
                   "usa",
-                  0.6625937223434448
+                  -9.6747407913208
                 ],
                 [
                   3,
@@ -3147,7 +3080,7 @@
                   "nonviolentbehavior",
                   0,
                   "brazil",
-                  -2.568760395050049
+                  -9.038294792175293
                 ],
                 [
                   3,
@@ -3156,7 +3089,7 @@
                   "pprotests",
                   4,
                   "egypt",
-                  -1.2453187704086304
+                  -9.917950630187988
                 ],
                 [
                   3,
@@ -3165,7 +3098,7 @@
                   "relexportbooks",
                   5,
                   "india",
-                  -3.230990171432495
+                  -11.612946510314941
                 ],
                 [
                   3,
@@ -3174,7 +3107,7 @@
                   "timesincewar",
                   5,
                   "india",
-                  3.936025619506836
+                  -9.099017143249512
                 ],
                 [
                   3,
@@ -3183,7 +3116,7 @@
                   "violentactions",
                   2,
                   "china",
-                  -1.5407073497772217
+                  -9.966362953186035
                 ],
                 [
                   3,
@@ -3192,7 +3125,7 @@
                   "[UNKNOWN_RELATION]",
                   7,
                   "israel",
-                  -4.907418251037598
+                  -8.865460395812988
                 ],
                 [
                   4,
@@ -3201,7 +3134,7 @@
                   "commonbloc0",
                   3,
                   "cuba",
-                  -2.0510406494140625
+                  -10.733118057250977
                 ],
                 [
                   4,
@@ -3210,7 +3143,7 @@
                   "intergovorgs",
                   11,
                   "uk",
-                  -1.3668441772460938
+                  -9.354940414428711
                 ],
                 [
                   4,
@@ -3219,7 +3152,7 @@
                   "lostterritory",
                   7,
                   "israel",
-                  3.1840434074401855
+                  -11.472485542297363
                 ],
                 [
                   4,
@@ -3228,7 +3161,7 @@
                   "militaryactions",
                   7,
                   "israel",
-                  0.956144392490387
+                  -10.322929382324219
                 ],
                 [
                   4,
@@ -3237,7 +3170,7 @@
                   "ngo",
                   7,
                   "israel",
-                  0.40564101934432983
+                  -11.577309608459473
                 ],
                 [
                   4,
@@ -3246,7 +3179,7 @@
                   "ngoorgs3",
                   0,
                   "brazil",
-                  -0.9458215832710266
+                  -9.939870834350586
                 ],
                 [
                   4,
@@ -3255,7 +3188,7 @@
                   "relexportbooks",
                   1,
                   "burma",
-                  0.00941401720046997
+                  -10.138413429260254
                 ],
                 [
                   4,
@@ -3264,7 +3197,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -2.190476894378662
+                  -9.491334915161133
                 ],
                 [
                   4,
@@ -3273,7 +3206,7 @@
                   "timesincewar",
                   0,
                   "brazil",
-                  -2.1109747886657715
+                  -11.619318962097168
                 ],
                 [
                   5,
@@ -3282,7 +3215,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -0.7512480020523071
+                  -9.320889472961426
                 ],
                 [
                   5,
@@ -3291,7 +3224,7 @@
                   "expeldiplomats",
                   4,
                   "egypt",
-                  3.0550894737243652
+                  -7.909720420837402
                 ],
                 [
                   5,
@@ -3300,7 +3233,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -0.44582706689834595
+                  -9.148741722106934
                 ],
                 [
                   5,
@@ -3309,7 +3242,7 @@
                   "militaryactions",
                   0,
                   "brazil",
-                  0.1263611614704132
+                  -9.079675674438477
                 ],
                 [
                   5,
@@ -3318,7 +3251,7 @@
                   "militaryalliance",
                   2,
                   "china",
-                  -2.1882545948028564
+                  -8.253239631652832
                 ],
                 [
                   5,
@@ -3327,7 +3260,7 @@
                   "ngo",
                   2,
                   "china",
-                  0.605745792388916
+                  -9.937066078186035
                 ],
                 [
                   5,
@@ -3336,7 +3269,7 @@
                   "relngo",
                   4,
                   "egypt",
-                  -1.634552001953125
+                  -9.404969215393066
                 ],
                 [
                   5,
@@ -3345,7 +3278,7 @@
                   "relngo",
                   6,
                   "indonesia",
-                  -0.7555056810379028
+                  -9.915776252746582
                 ],
                 [
                   5,
@@ -3354,7 +3287,7 @@
                   "timesinceally",
                   9,
                   "netherlands",
-                  3.7011258602142334
+                  -10.652416229248047
                 ],
                 [
                   6,
@@ -3363,7 +3296,7 @@
                   "commonbloc1",
                   4,
                   "egypt",
-                  -3.5569801330566406
+                  -9.56627082824707
                 ],
                 [
                   6,
@@ -3372,7 +3305,7 @@
                   "expeldiplomats",
                   11,
                   "uk",
-                  -1.907724142074585
+                  -9.825092315673828
                 ],
                 [
                   6,
@@ -3381,7 +3314,7 @@
                   "militaryalliance",
                   2,
                   "china",
-                  0.3641950190067291
+                  -9.656872749328613
                 ],
                 [
                   6,
@@ -3390,7 +3323,7 @@
                   "negativecomm",
                   13,
                   "ussr",
-                  -2.625336170196533
+                  -9.995532035827637
                 ],
                 [
                   6,
@@ -3399,7 +3332,7 @@
                   "reldiplomacy",
                   12,
                   "usa",
-                  -0.5947430729866028
+                  -9.861583709716797
                 ],
                 [
                   6,
@@ -3408,7 +3341,7 @@
                   "relngo",
                   3,
                   "cuba",
-                  2.214279890060425
+                  -10.406167030334473
                 ],
                 [
                   6,
@@ -3417,7 +3350,7 @@
                   "violentactions",
                   2,
                   "china",
-                  -1.0285377502441406
+                  -10.340971946716309
                 ],
                 [
                   6,
@@ -3426,7 +3359,7 @@
                   "weightedunvote",
                   5,
                   "india",
-                  -5.363966941833496
+                  -9.819999694824219
                 ],
                 [
                   7,
@@ -3435,7 +3368,7 @@
                   "embassy",
                   12,
                   "usa",
-                  -0.07602047920227051
+                  -10.337821960449219
                 ],
                 [
                   7,
@@ -3444,7 +3377,7 @@
                   "expeldiplomats",
                   12,
                   "usa",
-                  1.7598552703857422
+                  -10.573209762573242
                 ],
                 [
                   7,
@@ -3453,7 +3386,7 @@
                   "lostterritory",
                   0,
                   "brazil",
-                  1.5548158884048462
+                  -11.754822731018066
                 ],
                 [
                   7,
@@ -3462,7 +3395,7 @@
                   "negativebehavior",
                   12,
                   "usa",
-                  1.3428760766983032
+                  -10.39291763305664
                 ],
                 [
                   7,
@@ -3471,7 +3404,7 @@
                   "nonviolentbehavior",
                   12,
                   "usa",
-                  2.3171136379241943
+                  -10.225454330444336
                 ],
                 [
                   7,
@@ -3480,7 +3413,7 @@
                   "relintergovorgs",
                   9,
                   "netherlands",
-                  0.20932817459106445
+                  -11.598444938659668
                 ],
                 [
                   7,
@@ -3489,7 +3422,7 @@
                   "reltourism",
                   9,
                   "netherlands",
-                  -0.6218289136886597
+                  -10.131098747253418
                 ],
                 [
                   7,
@@ -3498,7 +3431,7 @@
                   "tourism3",
                   4,
                   "egypt",
-                  -0.14207792282104492
+                  -10.416468620300293
                 ],
                 [
                   7,
@@ -3507,7 +3440,7 @@
                   "[UNKNOWN_RELATION]",
                   9,
                   "netherlands",
-                  -0.9057588577270508
+                  -10.802077293395996
                 ],
                 [
                   7,
@@ -3516,7 +3449,7 @@
                   "[UNKNOWN_RELATION]",
                   12,
                   "usa",
-                  0.15754598379135132
+                  -9.08845329284668
                 ]
               ]
             },
@@ -3526,34 +3459,19 @@
               ],
               "data": [
                 [
-                  3.076913893222809
+                  1.3741944176810128
                 ],
                 [
-                  2.4452097614606223
+                  1.3248515299388341
                 ],
                 [
-                  2.0711413522561393
+                  1.3379464490073067
                 ],
                 [
-                  1.7825321555137634
+                  1.2641031231198991
                 ],
                 [
-                  1.6337800323963165
-                ],
-                [
-                  1.4805578192075093
-                ],
-                [
-                  1.3289171159267426
-                ],
-                [
-                  1.214134156703949
-                ],
-                [
-                  1.1489891558885574
-                ],
-                [
-                  1.1088260412216187
+                  1.2603662695203508
                 ]
               ]
             },
@@ -5086,7 +5004,7 @@
             }
           },
           "other": {
-            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
+            "model": "TransE(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): TransEInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(55, 50)\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -5103,37 +5021,47 @@
                   "score",
                   "tail_id",
                   "tail_label"
-                ]
+                ],
+                "key": "pred"
               },
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -5168,8 +5096,7 @@
         "op_id": "View tables",
         "params": {
           "_tables_open": {
-            "pred": true,
-            "triples_test": false
+            "pred": true
           },
           "limit": 100.0
         },
@@ -5198,32 +5125,41 @@
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -5234,7 +5170,7 @@
           "doc": [
             {
               "kind": "text",
-              "value": "Pass k=0 to keep all scores"
+              "value": "Pass k=\"\" to keep all scores"
             }
           ],
           "id": "Full prediction",
@@ -5259,10 +5195,18 @@
           ],
           "params": [
             {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
               "default": null,
               "name": "k",
               "type": {
-                "type": "<class 'int'>"
+                "type": "int | None"
               }
             }
           ],
@@ -5270,20 +5214,21 @@
         },
         "op_id": "Full prediction",
         "params": {
-          "k": "0"
+          "k": "",
+          "model_name": "model"
         },
         "status": "done",
         "title": "Full prediction"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 236.0,
       "id": "Full prediction 1",
       "position": {
-        "x": 566.7779790572682,
-        "y": 625.2043169045062
+        "x": 509.0602356754206,
+        "y": 676.1221082781792
       },
       "type": "basic",
-      "width": 200.0
+      "width": 238.0
     },
     {
       "data": {
@@ -5304,53 +5249,73 @@
               ],
               "data": [
                 [
-                  4,
-                  "egypt",
-                  50,
-                  "[UNKNOWN_RELATION]",
-                  4,
-                  "egypt",
-                  19.755084991455078,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  22,
-                  "ngoorgs3",
-                  4,
-                  "egypt",
-                  16.70555877685547,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  36,
-                  "timesincewar",
-                  4,
-                  "egypt",
-                  16.62845230102539,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  28,
-                  "releconomicaid",
-                  4,
-                  "egypt",
-                  13.3895902633667,
+                  10,
+                  "poland",
+                  0,
+                  "accusation",
+                  10,
+                  "poland",
+                  -5.779516220092773,
                   false
                 ],
                 [
                   7,
                   "israel",
+                  0,
+                  "accusation",
+                  7,
+                  "israel",
+                  -5.779516220092773,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  0,
+                  "accusation",
+                  4,
+                  "egypt",
+                  -5.779516220092773,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  0,
+                  "accusation",
+                  0,
+                  "brazil",
+                  -5.779516696929932,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  0,
+                  "accusation",
+                  1,
+                  "burma",
+                  -5.779516696929932,
+                  false
+                ],
+                [
                   9,
-                  "eemigrants",
-                  7,
-                  "israel",
-                  12.319771766662598,
+                  "netherlands",
+                  0,
+                  "accusation",
+                  9,
+                  "netherlands",
+                  -5.779516696929932,
+                  false
+                ],
+                [
+                  11,
+                  "uk",
+                  0,
+                  "accusation",
+                  11,
+                  "uk",
+                  -5.779516696929932,
                   false
                 ],
                 [
@@ -5360,167 +5325,207 @@
                   "accusation",
                   8,
                   "jordan",
-                  12.087197303771973,
+                  -5.779516696929932,
                   false
                 ],
                 [
-                  7,
-                  "israel",
-                  25,
-                  "pprotests",
-                  7,
-                  "israel",
-                  12.010881423950195,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  48,
-                  "[UNKNOWN_RELATION]",
-                  10,
-                  "poland",
-                  11.97541618347168,
-                  false
-                ],
-                [
-                  10,
-                  "poland",
-                  48,
-                  "[UNKNOWN_RELATION]",
-                  4,
-                  "egypt",
-                  11.97541618347168,
+                  12,
+                  "usa",
+                  0,
+                  "accusation",
+                  12,
+                  "usa",
+                  -5.779516696929932,
                   false
                 ],
                 [
                   6,
                   "indonesia",
-                  36,
-                  "timesincewar",
+                  0,
+                  "accusation",
                   6,
                   "indonesia",
-                  11.66945743560791,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  32,
-                  "relstudents",
-                  4,
-                  "egypt",
-                  11.162351608276367,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  13,
-                  "exports3",
-                  4,
-                  "egypt",
-                  11.10141372680664,
+                  -5.779516696929932,
                   false
                 ],
                 [
                   2,
                   "china",
-                  46,
-                  "[UNKNOWN_RELATION]",
+                  0,
+                  "accusation",
                   2,
                   "china",
-                  10.902496337890625,
-                  false
-                ],
-                [
-                  5,
-                  "india",
-                  25,
-                  "pprotests",
-                  5,
-                  "india",
-                  10.726715087890625,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  30,
-                  "relintergovorgs",
-                  8,
-                  "jordan",
-                  10.364011764526367,
+                  -5.779516696929932,
                   false
                 ],
                 [
                   13,
                   "ussr",
-                  16,
-                  "intergovorgs3",
+                  0,
+                  "accusation",
                   13,
                   "ussr",
-                  10.263175964355469,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  31,
-                  "relngo",
-                  7,
-                  "israel",
-                  10.047483444213867,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  53,
-                  "[UNKNOWN_RELATION]",
-                  4,
-                  "egypt",
-                  10.029932022094727,
+                  -5.779516696929932,
                   false
                 ],
                 [
                   5,
                   "india",
-                  36,
-                  "timesincewar",
+                  0,
+                  "accusation",
                   5,
                   "india",
-                  9.816062927246094,
+                  -5.779516696929932,
                   false
                 ],
                 [
-                  7,
-                  "israel",
-                  34,
-                  "reltreaties",
+                  3,
+                  "cuba",
+                  0,
+                  "accusation",
+                  3,
+                  "cuba",
+                  -5.779516696929932,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  15,
+                  "intergovorgs",
+                  3,
+                  "cuba",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  10,
+                  "poland",
+                  15,
+                  "intergovorgs",
+                  10,
+                  "poland",
+                  -5.849719524383545,
+                  false
+                ],
+                [
                   1,
                   "burma",
-                  9.68155288696289,
-                  false
-                ],
-                [
+                  15,
+                  "intergovorgs",
                   1,
                   "burma",
-                  34,
-                  "reltreaties",
-                  7,
-                  "israel",
-                  9.681551933288574,
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  12,
+                  "usa",
+                  15,
+                  "intergovorgs",
+                  12,
+                  "usa",
+                  -5.849719524383545,
                   false
                 ],
                 [
                   7,
                   "israel",
-                  45,
-                  "[UNKNOWN_RELATION]",
+                  15,
+                  "intergovorgs",
                   7,
                   "israel",
-                  9.549028396606445,
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  11,
+                  "uk",
+                  15,
+                  "intergovorgs",
+                  11,
+                  "uk",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  15,
+                  "intergovorgs",
+                  8,
+                  "jordan",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  15,
+                  "intergovorgs",
+                  0,
+                  "brazil",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  15,
+                  "intergovorgs",
+                  5,
+                  "india",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  15,
+                  "intergovorgs",
+                  9,
+                  "netherlands",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  15,
+                  "intergovorgs",
+                  2,
+                  "china",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  15,
+                  "intergovorgs",
+                  4,
+                  "egypt",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
+                  15,
+                  "intergovorgs",
+                  6,
+                  "indonesia",
+                  -5.849719524383545,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  15,
+                  "intergovorgs",
+                  13,
+                  "ussr",
+                  -5.849720478057861,
                   false
                 ],
                 [
@@ -5530,247 +5535,167 @@
                   "relexports",
                   7,
                   "israel",
-                  9.507752418518066,
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  7,
-                  "israel",
-                  30,
-                  "relintergovorgs",
-                  1,
-                  "burma",
-                  9.50404167175293,
+                  11,
+                  "uk",
+                  29,
+                  "relexports",
+                  11,
+                  "uk",
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  1,
-                  "burma",
-                  30,
-                  "relintergovorgs",
-                  7,
-                  "israel",
-                  9.50404167175293,
+                  4,
+                  "egypt",
+                  29,
+                  "relexports",
+                  4,
+                  "egypt",
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  8,
-                  "jordan",
-                  18,
-                  "militaryalliance",
-                  8,
-                  "jordan",
-                  9.407536506652832,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  47,
-                  "[UNKNOWN_RELATION]",
-                  7,
-                  "israel",
-                  9.394675254821777,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  47,
-                  "[UNKNOWN_RELATION]",
-                  6,
-                  "indonesia",
-                  9.394673347473145,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  47,
-                  "[UNKNOWN_RELATION]",
-                  1,
-                  "burma",
-                  9.365013122558594,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  47,
-                  "[UNKNOWN_RELATION]",
-                  6,
-                  "indonesia",
-                  9.365013122558594,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  23,
-                  "nonviolentbehavior",
-                  7,
-                  "israel",
-                  9.091105461120605,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  23,
-                  "nonviolentbehavior",
-                  6,
-                  "indonesia",
-                  9.091105461120605,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
                   2,
-                  "commonbloc0",
-                  13,
-                  "ussr",
-                  9.01644229888916,
+                  "china",
+                  29,
+                  "relexports",
+                  2,
+                  "china",
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  4,
-                  "egypt",
-                  34,
-                  "reltreaties",
-                  4,
-                  "egypt",
-                  8.824853897094727,
+                  12,
+                  "usa",
+                  29,
+                  "relexports",
+                  12,
+                  "usa",
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  4,
-                  "egypt",
-                  1,
-                  "blockpositionindex",
-                  4,
-                  "egypt",
-                  8.69696044921875,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  25,
-                  "pprotests",
-                  1,
-                  "burma",
-                  8.551037788391113,
-                  false
-                ],
-                [
-                  5,
-                  "india",
-                  4,
-                  "commonbloc2",
-                  5,
-                  "india",
-                  8.484299659729004,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  40,
-                  "unoffialacts",
-                  4,
-                  "egypt",
-                  8.307682037353516,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  30,
-                  "relintergovorgs",
-                  7,
-                  "israel",
-                  8.267297744750977,
-                  false
-                ],
-                [
-                  9,
-                  "netherlands",
-                  30,
-                  "relintergovorgs",
-                  9,
-                  "netherlands",
-                  8.155978202819824,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
                   10,
-                  "embassy",
-                  1,
-                  "burma",
-                  8.151378631591797,
+                  "poland",
+                  29,
+                  "relexports",
+                  10,
+                  "poland",
+                  -5.9496636390686035,
                   false
                 ],
                 [
-                  6,
-                  "indonesia",
-                  26,
-                  "relbooktranslations",
-                  6,
-                  "indonesia",
-                  8.07820987701416,
+                  0,
+                  "brazil",
+                  29,
+                  "relexports",
+                  0,
+                  "brazil",
+                  -5.9496636390686035,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  29,
+                  "relexports",
+                  3,
+                  "cuba",
+                  -5.9496636390686035,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  29,
+                  "relexports",
+                  1,
+                  "burma",
+                  -5.9496636390686035,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  29,
+                  "relexports",
+                  13,
+                  "ussr",
+                  -5.9496636390686035,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  29,
+                  "relexports",
+                  9,
+                  "netherlands",
+                  -5.9496636390686035,
                   false
                 ],
                 [
                   8,
                   "jordan",
-                  34,
-                  "reltreaties",
+                  29,
+                  "relexports",
                   8,
                   "jordan",
-                  8.063867568969727,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  50,
-                  "[UNKNOWN_RELATION]",
-                  2,
-                  "china",
-                  8.060257911682129,
-                  false
-                ],
-                [
-                  2,
-                  "china",
-                  50,
-                  "[UNKNOWN_RELATION]",
-                  1,
-                  "burma",
-                  8.060257911682129,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  44,
-                  "weightedunvote",
-                  4,
-                  "egypt",
-                  8.041702270507812,
+                  -5.9496636390686035,
                   false
                 ],
                 [
                   6,
                   "indonesia",
+                  29,
+                  "relexports",
+                  6,
+                  "indonesia",
+                  -5.949664115905762,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  29,
+                  "relexports",
+                  5,
+                  "india",
+                  -5.949664115905762,
+                  false
+                ],
+                [
+                  2,
+                  "china",
                   37,
                   "tourism",
-                  4,
-                  "egypt",
-                  8.003549575805664,
+                  2,
+                  "china",
+                  -5.994946002960205,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  37,
+                  "tourism",
+                  8,
+                  "jordan",
+                  -5.994946002960205,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  37,
+                  "tourism",
+                  13,
+                  "ussr",
+                  -5.994946002960205,
                   false
                 ],
                 [
@@ -5778,299 +5703,239 @@
                   "egypt",
                   37,
                   "tourism",
-                  6,
-                  "indonesia",
-                  8.003549575805664,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  24,
-                  "officialvisits",
                   4,
                   "egypt",
-                  7.891880989074707,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  24,
-                  "officialvisits",
-                  0,
-                  "brazil",
-                  7.891880989074707,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  29,
-                  "relexports",
-                  1,
-                  "burma",
-                  7.859051704406738,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  29,
-                  "relexports",
-                  7,
-                  "israel",
-                  7.859050750732422,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  49,
-                  "[UNKNOWN_RELATION]",
-                  0,
-                  "brazil",
-                  7.818741798400879,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  49,
-                  "[UNKNOWN_RELATION]",
-                  4,
-                  "egypt",
-                  7.818741798400879,
-                  false
-                ],
-                [
-                  3,
-                  "cuba",
-                  43,
-                  "warning",
-                  3,
-                  "cuba",
-                  7.70953369140625,
-                  false
-                ],
-                [
-                  3,
-                  "cuba",
-                  40,
-                  "unoffialacts",
-                  3,
-                  "cuba",
-                  7.566962242126465,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  46,
-                  "[UNKNOWN_RELATION]",
-                  8,
-                  "jordan",
-                  7.542333602905273,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  35,
-                  "timesinceally",
-                  8,
-                  "jordan",
-                  7.533351898193359,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  44,
-                  "weightedunvote",
-                  7,
-                  "israel",
-                  7.524402141571045,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  44,
-                  "weightedunvote",
-                  4,
-                  "egypt",
-                  7.524402141571045,
+                  -5.994946002960205,
                   false
                 ],
                 [
                   9,
                   "netherlands",
-                  36,
-                  "timesincewar",
+                  37,
+                  "tourism",
                   9,
                   "netherlands",
-                  7.474417686462402,
+                  -5.994946002960205,
                   false
                 ],
                 [
-                  8,
-                  "jordan",
-                  52,
-                  "[UNKNOWN_RELATION]",
-                  0,
-                  "brazil",
-                  7.386798858642578,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  52,
-                  "[UNKNOWN_RELATION]",
-                  8,
-                  "jordan",
-                  7.386798858642578,
+                  11,
+                  "uk",
+                  37,
+                  "tourism",
+                  11,
+                  "uk",
+                  -5.994946002960205,
                   false
                 ],
                 [
                   1,
                   "burma",
-                  40,
-                  "unoffialacts",
-                  10,
-                  "poland",
-                  7.37484884262085,
+                  37,
+                  "tourism",
+                  1,
+                  "burma",
+                  -5.994946002960205,
                   false
                 ],
                 [
                   10,
                   "poland",
-                  40,
-                  "unoffialacts",
-                  1,
-                  "burma",
-                  7.374848365783691,
+                  37,
+                  "tourism",
+                  10,
+                  "poland",
+                  -5.994946002960205,
                   false
                 ],
                 [
-                  1,
-                  "burma",
-                  34,
-                  "reltreaties",
-                  1,
-                  "burma",
-                  7.373277187347412,
+                  5,
+                  "india",
+                  37,
+                  "tourism",
+                  5,
+                  "india",
+                  -5.994946002960205,
                   false
-                ],
-                [
-                  1,
-                  "burma",
-                  32,
-                  "relstudents",
-                  0,
-                  "brazil",
-                  7.370147228240967,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  32,
-                  "relstudents",
-                  1,
-                  "burma",
-                  7.370147228240967,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  26,
-                  "relbooktranslations",
-                  7,
-                  "israel",
-                  7.322930812835693,
-                  true
-                ],
-                [
-                  7,
-                  "israel",
-                  26,
-                  "relbooktranslations",
-                  8,
-                  "jordan",
-                  7.322930812835693,
-                  true
                 ],
                 [
                   6,
                   "indonesia",
-                  40,
-                  "unoffialacts",
-                  3,
-                  "cuba",
-                  7.300812721252441,
+                  37,
+                  "tourism",
+                  6,
+                  "indonesia",
+                  -5.994946002960205,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  37,
+                  "tourism",
+                  0,
+                  "brazil",
+                  -5.994946002960205,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  37,
+                  "tourism",
+                  7,
+                  "israel",
+                  -5.994946002960205,
+                  false
+                ],
+                [
+                  12,
+                  "usa",
+                  37,
+                  "tourism",
+                  12,
+                  "usa",
+                  -5.994946002960205,
                   false
                 ],
                 [
                   3,
                   "cuba",
-                  40,
-                  "unoffialacts",
-                  6,
-                  "indonesia",
-                  7.300812721252441,
+                  37,
+                  "tourism",
+                  3,
+                  "cuba",
+                  -5.994946002960205,
                   false
                 ],
                 [
                   1,
                   "burma",
-                  0,
-                  "accusation",
+                  41,
+                  "unweightedunvote",
+                  1,
+                  "burma",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  41,
+                  "unweightedunvote",
+                  4,
+                  "egypt",
+                  -6.008641719818115,
+                  false
+                ],
+                [
                   0,
                   "brazil",
-                  7.298738479614258,
-                  false
-                ],
-                [
+                  41,
+                  "unweightedunvote",
                   0,
                   "brazil",
-                  0,
-                  "accusation",
-                  1,
-                  "burma",
-                  7.298738479614258,
+                  -6.008641719818115,
                   false
                 ],
                 [
-                  1,
-                  "burma",
-                  43,
-                  "warning",
-                  1,
-                  "burma",
-                  7.261962890625,
+                  11,
+                  "uk",
+                  41,
+                  "unweightedunvote",
+                  11,
+                  "uk",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  10,
+                  "poland",
+                  41,
+                  "unweightedunvote",
+                  10,
+                  "poland",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  12,
+                  "usa",
+                  41,
+                  "unweightedunvote",
+                  12,
+                  "usa",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  41,
+                  "unweightedunvote",
+                  5,
+                  "india",
+                  -6.008641719818115,
                   false
                 ],
                 [
                   7,
                   "israel",
-                  26,
-                  "relbooktranslations",
+                  41,
+                  "unweightedunvote",
                   7,
                   "israel",
-                  7.190979480743408,
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  41,
+                  "unweightedunvote",
+                  9,
+                  "netherlands",
+                  -6.008641719818115,
                   false
                 ],
                 [
                   8,
                   "jordan",
-                  50,
-                  "[UNKNOWN_RELATION]",
+                  41,
+                  "unweightedunvote",
                   8,
                   "jordan",
-                  7.1351542472839355,
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  41,
+                  "unweightedunvote",
+                  2,
+                  "china",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  41,
+                  "unweightedunvote",
+                  3,
+                  "cuba",
+                  -6.008641719818115,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  41,
+                  "unweightedunvote",
+                  13,
+                  "ussr",
+                  -6.008641719818115,
                   false
                 ],
                 [
@@ -6080,227 +5945,307 @@
                   "unweightedunvote",
                   6,
                   "indonesia",
-                  7.1345343589782715,
+                  -6.008641719818115,
                   false
                 ],
                 [
                   10,
                   "poland",
-                  50,
-                  "[UNKNOWN_RELATION]",
+                  23,
+                  "nonviolentbehavior",
                   10,
                   "poland",
-                  7.108039379119873,
-                  false
-                ],
-                [
-                  0,
-                  "brazil",
-                  6,
-                  "dependent",
-                  13,
-                  "ussr",
-                  7.078179359436035,
-                  true
-                ],
-                [
-                  13,
-                  "ussr",
-                  6,
-                  "dependent",
-                  0,
-                  "brazil",
-                  7.078179359436035,
-                  true
-                ],
-                [
-                  4,
-                  "egypt",
-                  16,
-                  "intergovorgs3",
-                  1,
-                  "burma",
-                  7.076079845428467,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  16,
-                  "intergovorgs3",
-                  4,
-                  "egypt",
-                  7.076079845428467,
-                  false
-                ],
-                [
-                  5,
-                  "india",
-                  0,
-                  "accusation",
-                  6,
-                  "indonesia",
-                  7.068831920623779,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  0,
-                  "accusation",
-                  5,
-                  "india",
-                  7.068831920623779,
-                  false
-                ],
-                [
-                  4,
-                  "egypt",
-                  51,
-                  "[UNKNOWN_RELATION]",
-                  4,
-                  "egypt",
-                  7.048451900482178,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  43,
-                  "warning",
-                  1,
-                  "burma",
-                  7.0045294761657715,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  43,
-                  "warning",
-                  7,
-                  "israel",
-                  7.0045294761657715,
+                  -6.026853561401367,
                   false
                 ],
                 [
                   2,
                   "china",
-                  7,
-                  "duration",
-                  7,
-                  "israel",
-                  6.9976725578308105,
-                  true
-                ],
-                [
-                  7,
-                  "israel",
-                  7,
-                  "duration",
+                  23,
+                  "nonviolentbehavior",
                   2,
                   "china",
-                  6.9976725578308105,
-                  true
-                ],
-                [
-                  6,
-                  "indonesia",
-                  6,
-                  "dependent",
-                  1,
-                  "burma",
-                  6.968672752380371,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  6,
-                  "dependent",
-                  6,
-                  "indonesia",
-                  6.968672752380371,
-                  false
-                ],
-                [
-                  8,
-                  "jordan",
-                  6,
-                  "dependent",
-                  8,
-                  "jordan",
-                  6.9286346435546875,
-                  false
-                ],
-                [
-                  13,
-                  "ussr",
-                  51,
-                  "[UNKNOWN_RELATION]",
-                  1,
-                  "burma",
-                  6.927400588989258,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  51,
-                  "[UNKNOWN_RELATION]",
-                  13,
-                  "ussr",
-                  6.927400588989258,
-                  false
-                ],
-                [
-                  1,
-                  "burma",
-                  35,
-                  "timesinceally",
-                  7,
-                  "israel",
-                  6.8932366371154785,
-                  false
-                ],
-                [
-                  7,
-                  "israel",
-                  35,
-                  "timesinceally",
-                  1,
-                  "burma",
-                  6.89323616027832,
-                  false
-                ],
-                [
-                  6,
-                  "indonesia",
-                  25,
-                  "pprotests",
-                  6,
-                  "indonesia",
-                  6.841075420379639,
+                  -6.026853561401367,
                   false
                 ],
                 [
                   4,
                   "egypt",
-                  30,
-                  "relintergovorgs",
+                  23,
+                  "nonviolentbehavior",
                   4,
                   "egypt",
-                  6.8022050857543945,
+                  -6.026853561401367,
                   false
                 ],
                 [
-                  6,
-                  "indonesia",
+                  11,
+                  "uk",
+                  23,
+                  "nonviolentbehavior",
+                  11,
+                  "uk",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  23,
+                  "nonviolentbehavior",
+                  8,
+                  "jordan",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  23,
+                  "nonviolentbehavior",
+                  9,
+                  "netherlands",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  23,
+                  "nonviolentbehavior",
+                  3,
+                  "cuba",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  23,
+                  "nonviolentbehavior",
+                  13,
+                  "ussr",
+                  -6.026853561401367,
+                  false
+                ],
+                [
                   12,
-                  "exportbooks",
+                  "usa",
+                  23,
+                  "nonviolentbehavior",
+                  12,
+                  "usa",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  23,
+                  "nonviolentbehavior",
+                  0,
+                  "brazil",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  23,
+                  "nonviolentbehavior",
+                  7,
+                  "israel",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  23,
+                  "nonviolentbehavior",
+                  5,
+                  "india",
+                  -6.026853561401367,
+                  false
+                ],
+                [
                   6,
                   "indonesia",
-                  6.755964756011963,
+                  23,
+                  "nonviolentbehavior",
+                  6,
+                  "indonesia",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  23,
+                  "nonviolentbehavior",
+                  1,
+                  "burma",
+                  -6.026853561401367,
+                  false
+                ],
+                [
+                  1,
+                  "burma",
+                  13,
+                  "exports3",
+                  1,
+                  "burma",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  11,
+                  "uk",
+                  13,
+                  "exports3",
+                  11,
+                  "uk",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  13,
+                  "ussr",
+                  13,
+                  "exports3",
+                  13,
+                  "ussr",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  10,
+                  "poland",
+                  13,
+                  "exports3",
+                  10,
+                  "poland",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  9,
+                  "netherlands",
+                  13,
+                  "exports3",
+                  9,
+                  "netherlands",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  8,
+                  "jordan",
+                  13,
+                  "exports3",
+                  8,
+                  "jordan",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  3,
+                  "cuba",
+                  13,
+                  "exports3",
+                  3,
+                  "cuba",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  4,
+                  "egypt",
+                  13,
+                  "exports3",
+                  4,
+                  "egypt",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  5,
+                  "india",
+                  13,
+                  "exports3",
+                  5,
+                  "india",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  13,
+                  "exports3",
+                  0,
+                  "brazil",
+                  -6.052088737487793,
+                  false
+                ],
+                [
+                  7,
+                  "israel",
+                  13,
+                  "exports3",
+                  7,
+                  "israel",
+                  -6.052089214324951,
+                  false
+                ],
+                [
+                  6,
+                  "indonesia",
+                  13,
+                  "exports3",
+                  6,
+                  "indonesia",
+                  -6.052089214324951,
+                  false
+                ],
+                [
+                  12,
+                  "usa",
+                  13,
+                  "exports3",
+                  12,
+                  "usa",
+                  -6.052089214324951,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  13,
+                  "exports3",
+                  2,
+                  "china",
+                  -6.052089214324951,
+                  false
+                ],
+                [
+                  0,
+                  "brazil",
+                  11,
+                  "emigrants3",
+                  0,
+                  "brazil",
+                  -6.058468818664551,
+                  false
+                ],
+                [
+                  2,
+                  "china",
+                  11,
+                  "emigrants3",
+                  2,
+                  "china",
+                  -6.058468818664551,
                   false
                 ]
               ]
@@ -6311,34 +6256,19 @@
               ],
               "data": [
                 [
-                  3.076913893222809
+                  1.3741944176810128
                 ],
                 [
-                  2.4452097614606223
+                  1.3248515299388341
                 ],
                 [
-                  2.0711413522561393
+                  1.3379464490073067
                 ],
                 [
-                  1.7825321555137634
+                  1.2641031231198991
                 ],
                 [
-                  1.6337800323963165
-                ],
-                [
-                  1.4805578192075093
-                ],
-                [
-                  1.3289171159267426
-                ],
-                [
-                  1.214134156703949
-                ],
-                [
-                  1.1489891558885574
-                ],
-                [
-                  1.1088260412216187
+                  1.2603662695203508
                 ]
               ]
             },
@@ -7871,7 +7801,7 @@
             }
           },
           "other": {
-            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
+            "model": "TransE(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): TransEInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(55, 50)\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -7889,37 +7819,47 @@
                   "score",
                   "tail_id",
                   "tail_label"
-                ]
+                ],
+                "key": "pred"
               },
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -7973,117 +7913,6 @@
     },
     {
       "data": {
-        "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "error": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "training": {
-                "columns": [
-                  "training_loss"
-                ]
-              },
-              "triples_test": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              },
-              "triples_train": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              },
-              "triples_val": {
-                "columns": [
-                  "head",
-                  "relation",
-                  "tail"
-                ]
-              }
-            },
-            "other": {
-              "model": {}
-            },
-            "relations": []
-          }
-        ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Metrics are a comma seperated list, \"ALL\" if all metrics are needed"
-            }
-          ],
-          "id": "Evaluate Model",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Evaluate Model",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "Rank Based Evaluator",
-              "name": "evaluator",
-              "type": {
-                "enum": [
-                  "ClassificationEvaluator",
-                  "MacroRankBasedEvaluator",
-                  "RankBasedEvaluator"
-                ]
-              }
-            },
-            {
-              "default": "ALL",
-              "name": "metrics_str",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
-        "op_id": "Evaluate Model",
-        "params": {
-          "evaluator": "RankBasedEvaluator",
-          "metrics_str": "hits@1, hits@3, hits@5, hits@10"
-        },
-        "status": "done",
-        "title": "Evaluate Model"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 312.0,
-      "id": "Evaluate Model 1",
-      "position": {
-        "x": -130.2891113933543,
-        "y": -390.3843306280064
-      },
-      "type": "basic",
-      "width": 302.0
-    },
-    {
-      "data": {
         "display": {
           "dataframes": {
             "metrics": {
@@ -8094,19 +7923,19 @@
               "data": [
                 [
                   "hits@1",
-                  0.08706467661691543
+                  0.0
                 ],
                 [
                   "hits@3",
-                  0.3333333333333333
+                  0.263681592039801
                 ],
                 [
                   "hits@5",
-                  0.5373134328358209
+                  0.48507462686567165
                 ],
                 [
                   "hits@10",
-                  0.9079601990049752
+                  0.8582089552238806
                 ]
               ]
             },
@@ -8116,34 +7945,19 @@
               ],
               "data": [
                 [
-                  3.076913893222809
+                  1.3741944176810128
                 ],
                 [
-                  2.4452097614606223
+                  1.3248515299388341
                 ],
                 [
-                  2.0711413522561393
+                  1.3379464490073067
                 ],
                 [
-                  1.7825321555137634
+                  1.2641031231198991
                 ],
                 [
-                  1.6337800323963165
-                ],
-                [
-                  1.4805578192075093
-                ],
-                [
-                  1.3289171159267426
-                ],
-                [
-                  1.214134156703949
-                ],
-                [
-                  1.1489891558885574
-                ],
-                [
-                  1.1088260412216187
+                  1.2603662695203508
                 ]
               ]
             },
@@ -9676,7 +9490,7 @@
             }
           },
           "other": {
-            "model": "CompGCN(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SingleCompGCNRepresentation(\n      (combined): CombinedCompGCNRepresentations(\n        (entity_representations): Embedding(\n          (_embeddings): Embedding(14, 64)\n        )\n        (relation_representations): Embedding(\n          (_embeddings): Embedding(110, 64)\n        )\n        (layers): ModuleList(\n          (0): CompGCNLayer(\n            (composition): MultiplicationCompositionModule()\n            (edge_weighting): SymmetricEdgeWeighting()\n            (w_rel): Linear(in_features=64, out_features=64, bias=False)\n            (drop): Dropout(p=0.0, inplace=False)\n            (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)\n            (bias): Bias()\n            (activation): Identity()\n          )\n        )\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
+            "model": "TransE(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): TransEInteraction()\n  (entity_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(14, 50)\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): Embedding(\n      (_embeddings): Embedding(55, 50)\n    )\n  )\n  (weight_regularizers): ModuleList()\n)"
           },
           "relations": []
         },
@@ -9688,37 +9502,47 @@
                 "columns": [
                   "metric",
                   "score"
-                ]
+                ],
+                "key": "metrics"
               },
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -9764,8 +9588,8 @@
       "height": 560.0,
       "id": "View tables 5",
       "position": {
-        "x": 318.07496709701286,
-        "y": -628.1850871811633
+        "x": 350.58423113823596,
+        "y": -707.0877801145487
       },
       "type": "table_view",
       "width": 1115.0
@@ -9780,9 +9604,9 @@
           "categories": [],
           "color": "orange",
           "doc": null,
-          "id": "Import PyKEEN Dataset",
+          "id": "Import PyKEEN dataset",
           "inputs": [],
-          "name": "Import PyKEEN Dataset",
+          "name": "Import PyKEEN dataset",
           "outputs": [
             {
               "name": "output",
@@ -9841,16 +9665,16 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import PyKEEN Dataset",
+        "op_id": "Import PyKEEN dataset",
         "params": {
           "dataset": "Nations"
         },
         "status": "done",
-        "title": "Import PyKEEN Dataset"
+        "title": "Import PyKEEN dataset"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
-      "id": "Import PyKEEN Dataset 1",
+      "id": "Import PyKEEN dataset 1",
       "position": {
         "x": -1493.0671794067036,
         "y": 32.04053209725889
@@ -9870,32 +9694,41 @@
               "training": {
                 "columns": [
                   "training_loss"
-                ]
+                ],
+                "key": "training"
               },
               "triples_test": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_test"
               },
               "triples_train": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_train"
               },
               "triples_val": {
                 "columns": [
                   "head",
                   "relation",
                   "tail"
-                ]
+                ],
+                "key": "triples_val"
               }
             },
             "other": {
-              "model": {}
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
             },
             "relations": []
           }
@@ -9926,6 +9759,14 @@
           ],
           "params": [
             {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
               "default": null,
               "name": "node_embedding_name",
               "type": {
@@ -9945,21 +9786,262 @@
         "op_id": "Extract embeddings from PyKEEN model",
         "params": {
           "edge_embedding_name": "edge_embeddings",
+          "model_name": "model",
           "node_embedding_name": "node_embeddings"
         },
         "status": "done",
         "title": "Extract embeddings from PyKEEN model"
       },
       "dragHandle": ".drag-handle",
-      "height": 253.0,
+      "height": 403.0,
       "id": "Extract embeddings from PyKEEN model 2",
       "position": {
-        "x": -628.200059275242,
-        "y": -557.7224708703525
+        "x": -568.6677918292085,
+        "y": -573.9585438101798
       },
       "type": "basic",
-      "width": 411.0
+      "width": 335.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "triples_test": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_test"
+              },
+              "triples_train": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_train"
+              },
+              "triples_val": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_val"
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Triples prediction",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Triples prediction",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
+              "default": "triples_val",
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Triples prediction",
+        "params": {
+          "model_name": "model",
+          "table_name": "triples_val"
+        },
+        "status": "done",
+        "title": "Triples prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 301.0,
+      "id": "Triples prediction 1",
+      "position": {
+        "x": 482.3148007481021,
+        "y": 320.0059913588065
+      },
+      "type": "basic",
+      "width": 243.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "triples_test": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_test"
+              },
+              "triples_train": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_train"
+              },
+              "triples_val": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "triples_val"
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model_class": "TransE",
+                "module": "pykeen.models.unimodal.trans_e",
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Metrics are a comma seperated list, \"ALL\" if all metrics are needed"
+            }
+          ],
+          "id": "Evaluate model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Evaluate model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
+              "default": "Rank Based Evaluator",
+              "name": "evaluator",
+              "type": {
+                "enum": [
+                  "ClassificationEvaluator",
+                  "MacroRankBasedEvaluator",
+                  "RankBasedEvaluator"
+                ]
+              }
+            },
+            {
+              "default": "ALL",
+              "name": "metrics_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Evaluate model",
+        "params": {
+          "evaluator": "RankBasedEvaluator",
+          "metrics_str": "hits@1, hits@3, hits@5, hits@10",
+          "model_name": "model"
+        },
+        "status": "done",
+        "title": "Evaluate model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 297.0,
+      "id": "Evaluate model 1",
+      "position": {
+        "x": -109.35688046446566,
+        "y": -356.83504115566893
+      },
+      "type": "basic",
+      "width": 301.0
     }
   ],
-  "paused": false
+  "paused": true
 }

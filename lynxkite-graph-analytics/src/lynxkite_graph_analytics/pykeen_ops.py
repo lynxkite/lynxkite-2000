@@ -5,7 +5,7 @@ from . import core
 
 import pandas as pd
 import enum
-import pykeen
+from pykeen import models
 from pykeen.pipeline import pipeline
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
@@ -69,7 +69,7 @@ class PyKEENDataset(str, enum.Enum):
         return get_dataset(dataset=self.value)
 
 
-@op("Import PyKEEN Dataset")
+@op("Import PyKEEN dataset")
 def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
     ds = dataset.to_dataset()
 
@@ -141,16 +141,40 @@ class PyKEENModel(str, enum.Enum):
     TuckER = "TuckER"
 
     def to_class(self):
-        return getattr(pykeen.models, self.value, None)
+        return getattr(models, self.value, None)
 
 
-def req_inverse_triples(model: pykeen.models.Model) -> bool:
+class PyKEENModelWrapper:
+    """Wrapper to add metadata method to PyKEEN models for dropdown queries."""
+
+    def __init__(self, model):
+        self.model = model
+
+    def metadata(self):
+        return {
+            "type": "pykeen-model",
+            "model_class": self.model.__class__.__name__,
+            "module": self.model.__module__,
+        }
+
+    def __getattr__(self, name):
+        # Delegate all other attributes to the wrapped model
+        return getattr(self.model, name)
+
+    def __str__(self):
+        return str(self.model)
+
+    def __repr__(self):
+        return repr(self.model)
+
+
+def req_inverse_triples(model: models.Model) -> bool:
     """
     Check if the model requires inverse triples.
     """
     return model in {
-        pykeen.models.CompGCN,
-        pykeen.models.NodePiece,
+        models.CompGCN,
+        models.NodePiece,
     }
 
 
@@ -163,23 +187,21 @@ class TrainingType(str, enum.Enum):
 
 
 # TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
-@op("Train Embedding Model", slow=True, cache=False)
+@op("Train embedding model", slow=True)
 def train_embedding_model(
     bundle: core.Bundle,
     *,
     model: PyKEENModel = PyKEENModel.TransE,
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
+    save_as: str = "PyKEENmodel",
 ):
     bundle = bundle.copy()
-    if "model" in bundle.other:
-        model = bundle.other["model"]
-    else:
-        sampler = None
-        if model is PyKEENModel.RGCN and training_approach == TrainingType.sLCWA:
-            # Currently RGCN is the only model that requires a sampler and only when using sLCWA
-            sampler = "schlichtkrull"
-        model = model.to_class()
+    sampler = None
+    if model is PyKEENModel.RGCN and training_approach == TrainingType.sLCWA:
+        # Currently RGCN is the only model that requires a sampler and only when using sLCWA
+        sampler = "schlichtkrull"
+    model = model.to_class()
     training_set = TriplesFactory.from_labeled_triples(
         bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
@@ -200,15 +222,20 @@ def train_embedding_model(
     )
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
-    bundle.other["model"] = result.model
+    bundle.other[save_as] = PyKEENModelWrapper(result.model)
 
     return bundle
 
 
 @op("Triples prediction")
-def triple_predict(bundle: core.Bundle, *, table_name: str = "triples_val"):
+def triple_predict(
+    bundle: core.Bundle,
+    *,
+    model_name: core.PyKEENModelName = "PyKEENmodel",
+    table_name: core.TableName = "triples_val",
+):
     bundle = bundle.copy()
-    model = bundle.other.get("model")
+    model = bundle.other.get(model_name)
     pred = predict_triples(
         model=model,
         triples=TriplesFactory.from_labeled_triples(
@@ -226,13 +253,20 @@ def triple_predict(bundle: core.Bundle, *, table_name: str = "triples_val"):
     return bundle
 
 
-@op("Target Prediction")
-def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
+@op("Target prediction")
+def target_predict(
+    bundle: core.Bundle,
+    *,
+    model_name: core.PyKEENModelName = "PyKEENmodel",
+    head: str,
+    relation: str,
+    tail: str,
+):
     """
     Leave the target prediction field empty
     """
     bundle = bundle.copy()
-    model = bundle.other.get("model")
+    model = bundle.other.get(model_name)
     pred = predict_target(
         model=model,
         head=head if head != "" else None,
@@ -259,12 +293,15 @@ def target_predict(bundle: core.Bundle, *, head: str, relation: str, tail: str):
     return bundle
 
 
+# TODO: Caching doesnt work, possible because of the pred: ScorePack object.
 @op("Full prediction", slow=True)
-def full_predict(bundle: core.Bundle, *, k: int = None):
-    """Pass k=0 to keep all scores"""
+def full_predict(
+    bundle: core.Bundle, *, model_name: core.PyKEENModelName = "PyKEENmodel", k: int | None = None
+):
+    """Pass k="" to keep all scores"""
     bundle = bundle.copy()
-    model = bundle.other.get("model")
-    pred = predict_all(model=model, k=k if k != 0 else None)
+    model = bundle.other.get(model_name)
+    pred = predict_all(model=model, k=k)
     pack = pred.process(
         factory=TriplesFactory.from_labeled_triples(
             bundle.dfs["triples_val"][["head", "relation", "tail"]].values,
@@ -283,9 +320,15 @@ def full_predict(bundle: core.Bundle, *, k: int = None):
 
 
 @op("Extract embeddings from PyKEEN model")
-def extract_from_pykeen(bundle: core.Bundle, *, node_embedding_name: str, edge_embedding_name: str):
+def extract_from_pykeen(
+    bundle: core.Bundle,
+    *,
+    model_name: core.PyKEENModelName = "PyKEENmodel",
+    node_embedding_name: str,
+    edge_embedding_name: str,
+):
     bundle = bundle.copy()
-    model = bundle.other["model"]
+    model = bundle.other[model_name]
     triples = TriplesFactory.from_labeled_triples(
         bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),

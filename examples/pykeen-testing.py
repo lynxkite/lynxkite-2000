@@ -2,7 +2,7 @@ from lynxkite.core import ops
 from lynxkite_graph_analytics import core
 
 import pandas as pd
-import pykeen
+from pykeen import models
 from pykeen import evaluation
 from pykeen.triples import TriplesFactory
 import enum
@@ -19,16 +19,17 @@ class EvaluatorTypes(str, enum.Enum):
         return getattr(evaluation, self.name.replace(" ", ""))()
 
 
-@op("Evaluate Model")
+@op("Evaluate model")
 def evaluate(
     bundle: core.Bundle,
     *,
+    model_name: core.PyKEENModelName = "PyKEENmodel",
     evaluator: EvaluatorTypes = EvaluatorTypes.RankBasedEvaluator,
     metrics_str: str = "ALL",
 ):
-    """Metrics are a comma seperated list, "ALL" if all metrics are needed"""
+    """Metrics are a comma separated list, "ALL" if all metrics are needed"""
     bundle = bundle.copy()
-    model = bundle.other["model"]
+    model: models.Model = bundle.other.get(model_name)
     evaluator = evaluator.to_class()
     testing_triples = TriplesFactory.from_labeled_triples(
         bundle.dfs["triples_test"][["head", "relation", "tail"]].values
@@ -70,16 +71,16 @@ def evaluate(
     return bundle
 
 
-@op("Load Embedding into PyKEEN model")
-def load_pykeen_embeddings(bundle: core.Bundle, *, model: str):
+@op("Load embedding into PyKEEN model")
+def load_pykeen_embeddings(bundle: core.Bundle, *, _model_name: str):
     """
     Assuming embeddings are torch tensors
-    Entity names has to be a file with comma seperated entity names
+    Entity names has to be a file with comma separated entity names
     """
     node_embeddings = bundle.other["node_embedding"]
     edge_embeddings = bundle.other["edge_embedding"]
 
-    model = pykeen.models.TransE(
+    model = models.TransE(
         triples_factory=TriplesFactory.from_labeled_triples(
             bundle.dfs["triples_train"][["head", "relation", "tail"]].values
         ),

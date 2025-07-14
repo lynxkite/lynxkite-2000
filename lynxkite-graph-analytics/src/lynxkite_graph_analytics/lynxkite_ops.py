@@ -135,9 +135,9 @@ def import_graphml(*, filename: str):
 
 @op("Graph from OSM", slow=True)
 def import_osm(*, location: str):
-    import osmnx as ox
+    from osmnx import graph
 
-    return ox.graph.graph_from_place(location, network_type="drive")
+    return graph.graph_from_place(location, network_type="drive")
 
 
 @op("Discard loop edges")

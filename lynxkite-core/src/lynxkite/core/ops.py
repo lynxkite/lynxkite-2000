@@ -532,7 +532,7 @@ def _get_griffe_function(func):
         if param.annotation is inspect.Parameter.empty:
             annotation = None
         else:
-            annotation = param.annotation.__name__
+            annotation = getattr(param.annotation, "__name__", str(param.annotation))
         parameters.append(
             griffe.Parameter(
                 name,

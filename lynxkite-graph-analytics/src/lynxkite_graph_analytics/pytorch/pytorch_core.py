@@ -154,7 +154,7 @@ class ModelConfig:
 
     def metadata(self):
         return {
-            "type": "model",
+            "type": "pytorch-model",
             "model": {
                 "model_inputs": self.model_inputs,
                 "model_outputs": self.model_outputs,
