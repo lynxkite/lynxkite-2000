@@ -5,19 +5,10 @@ import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
 import Help from "~icons/tabler/question-mark.jsx";
 import ParameterInput from "./ParameterInput";
 
-const TYPE_OPTIONS = [
-  { value: "float", label: "float" },
-  { value: "double", label: "double" },
-  { value: "long", label: "long" },
-  { value: "int", label: "int" },
-  { value: "boolean", label: "boolean" },
-];
-
 type Bindings = {
   [key: string]: {
     df: string;
     column: string;
-    type: string;
   };
 };
 
@@ -79,7 +70,6 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
   const columnsRef = useRef(
     {} as { [binding: string]: HTMLSelectElement | HTMLInputElement | null },
   );
-  const typesRef = useRef({} as { [binding: string]: HTMLSelectElement | HTMLInputElement | null });
   const v: any = parseJsonOrEmpty(value);
   v.map ??= {};
   const dfs: { [df: string]: string[] } = {};
@@ -99,9 +89,8 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
     for (const binding of bindings) {
       const df = dfsRef.current[binding.id]?.value ?? "";
       const column = columnsRef.current[binding.id]?.value ?? "";
-      const type = typesRef.current[binding.id]?.value ?? "";
       if (df.length || column.length) {
-        map[binding.id] = { df, column, type };
+        map[binding.id] = { df, column };
       }
     }
     return map;
@@ -150,38 +139,21 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
                     }}
                   />
                 ) : (
-                  <div>
-                    <select
-                      className="select select-ghost"
-                      value={v.map?.[binding.id]?.column}
-                      ref={(el) => {
-                        columnsRef.current[binding.id] = el;
-                      }}
-                      onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                    >
-                      <option key="" value="" />
-                      {dfs[v.map?.[binding.id]?.df]?.map((col: string) => (
-                        <option key={col} value={col}>
-                          {col}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      className="select select-ghost"
-                      value={v.map?.[binding.id]?.type}
-                      ref={(el) => {
-                        typesRef.current[binding.id] = el;
-                      }}
-                      onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                    >
-                      <option key="" value="" />
-                      {TYPE_OPTIONS.map((type) => (
-                        <option key={type.value} value={type.value}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    className="select select-ghost"
+                    value={v.map?.[binding.id]?.column}
+                    ref={(el) => {
+                      columnsRef.current[binding.id] = el;
+                    }}
+                    onChange={() => onChange(JSON.stringify({ map: getMap() }))}
+                  >
+                    <option key="" value="" />
+                    {dfs[v.map?.[binding.id]?.df]?.map((col: string) => (
+                      <option key={col} value={col}>
+                        {col}
+                      </option>
+                    ))}
+                  </select>
                 )}
               </td>
             </tr>

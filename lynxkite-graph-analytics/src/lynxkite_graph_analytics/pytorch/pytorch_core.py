@@ -1,7 +1,6 @@
 """Infrastructure for defining PyTorch models."""
 
 import copy
-import enum
 import graphlib
 import io
 import numpy as np
@@ -67,28 +66,9 @@ class Layer:
         return self.module, f"{inputs} -> {outputs}"
 
 
-class TorchTypes(enum.Enum):
-    float = torch.float
-    double = torch.double
-    int = torch.int
-    long = torch.long
-    boolean = torch.bool
-
-
 class ColumnSpec(pydantic.BaseModel):
     df: str
     column: str
-    type: TorchTypes = TorchTypes.float
-
-    @pydantic.field_validator("type", mode="before")
-    def type_from_key(cls, v):
-        if isinstance(v, TorchTypes):
-            return v
-        if isinstance(v, str):
-            for member in TorchTypes:
-                if member.name.lower() == v.lower():
-                    return member
-        raise ValueError(f"Invalid TorchTypes key: {v}")
 
 
 class ModelMapping(pydantic.BaseModel):
@@ -111,7 +91,7 @@ def _torch_load(data: str) -> any:
 @dataclasses.dataclass
 class ModelConfig:
     model: torch.nn.Module
-    model_inputs: list[str]
+    model_inputs: dict[str, dict[str, str]]
     model_outputs: list[str]
     model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
@@ -172,7 +152,7 @@ class ModelConfig:
         return {
             "type": "model",
             "model": {
-                "model_inputs": self.model_inputs,
+                "model_inputs": list(self.model_inputs),
                 "model_outputs": self.model_outputs,
                 "loss_inputs": self.loss_inputs,
                 "input_output_names": self.input_output_names,
@@ -227,6 +207,7 @@ class ModelBuilder:
         self.ws = ws
         self.catalog = ops.CATALOGS[ENV]
         self.model_sequence_outputs = []
+        self.input_boxes = {}
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
         repeats: list[str] = []
@@ -371,7 +352,9 @@ class ModelBuilder:
                             else:
                                 self.run_node(layer.origin_id)
                 self.layers.append(self.run_op(node_id, op, p))
-            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
+            case "Input: tensor" | "Input: graph edges" | "Input: sequential":
+                self.input_boxes[_to_id(node_id, "output")] = node
+            case "Optimizer":
                 return
             case _:
                 self.layers.append(self.run_op(node_id, op, p))
@@ -392,6 +375,20 @@ class ModelBuilder:
         for node_id in ts.static_order():
             self.run_node(node_id)
         return self.get_config()
+
+    def _add_type_information_to_input(self, inputs: list[str]) -> dict[str, dict[str, str | None]]:
+        inputs_with_type = {}
+        for inp in inputs:
+            inp_node = self.input_boxes[inp]
+            inputs_with_type[inp] = {"name": inp_node.data.params.get("name", None), "type": None}
+            if not inp.startswith("Input__tensor"):
+                # Only tensors input have a clear defined type for now.
+                continue
+            type_name = inp_node.data.params.get("type", "float").lower()
+            if not getattr(torch, type_name):
+                raise ValueError(f"Unknown type for input {inp}: {type_name}")
+            inputs_with_type[inp]["type"] = type_name
+        return inputs_with_type
 
     def get_config(self) -> ModelConfig:
         import torch_geometric.nn as pyg_nn
@@ -420,6 +417,7 @@ class ModelBuilder:
         loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
         cfg["model_inputs"] = sorted(used_in_model - made_in_model)
+        cfg["model_inputs"] = self._add_type_information_to_input(cfg["model_inputs"])
         cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
         cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
         cfg["input_output_names"] = self.get_names(
@@ -468,7 +466,11 @@ class ModelBuilder:
 
 
 def to_batch_tensors(
-    b: core.Bundle, batch_size: int, batch_index: int, m: ModelMapping | None
+    b: core.Bundle,
+    batch_size: int,
+    batch_index: int,
+    m: ModelMapping | None,
+    model_inputs: dict[str, dict[str, str | None]],
 ) -> dict[str, torch.Tensor]:
     """Extracts tensors from a bundle for a specific batch using a model mapping."""
     tensors = {}
@@ -479,7 +481,9 @@ def to_batch_tensors(
             batch = b.dfs[df_name][column_name].iloc[
                 batch_index * batch_size : (batch_index + 1) * batch_size
             ]
-            tensors[input_name] = torch.tensor(batch.to_list(), dtype=input_mapping.type.value)
+            input_type = model_inputs[input_name].get("type", "float")
+            torch_type = getattr(torch, input_type)
+            tensors[input_name] = torch.tensor(batch.to_list(), dtype=torch_type)
             if batch_size == 1:
                 tensors[input_name] = tensors[input_name].squeeze(0)
     return tensors
