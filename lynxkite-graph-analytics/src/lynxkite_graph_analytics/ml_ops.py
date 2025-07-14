@@ -131,7 +131,7 @@ def model_inference(
     num_batches = num_samples // batch_size
     outputs = {}
     for i in tqdm(range(num_batches)):
-        inputs = pytorch_core.to_batch_tensors(bundle, batch_size, i, input_mapping)
+        inputs = pytorch_core.to_batch_tensors(bundle, batch_size, i, input_mapping, m.model_inputs)
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
             v = v.detach().numpy().reshape(batch_size, -1)
@@ -218,7 +218,7 @@ def view_vectors(
     metric: UMAPMetric = UMAPMetric.euclidean,
 ):
     try:
-        from cuml.manifold.umap import UMAP
+        from cuml.manifold.umap import UMAP  # ty: ignore[unresolved-import]
     except ImportError:
         from umap import UMAP
     vec = np.stack(bundle.dfs[table_name][vector_column].to_numpy())

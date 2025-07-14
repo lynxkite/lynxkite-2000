@@ -48,10 +48,10 @@ def register(env: str, cache: bool = True):
     """
     if cache:
         CACHES[env] = {}
-        cache = CACHES[env]
+        _cache = CACHES[env]
     else:
-        cache = None
-    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env], cache=cache)
+        _cache = None
+    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env], cache=_cache)
 
 
 def _get_stages(ws, catalog: ops.Catalog):
@@ -102,7 +102,9 @@ async def _await_if_needed(obj):
     return obj
 
 
-async def _execute(ws: workspace.Workspace, catalog: ops.Catalog, cache=None):
+async def _execute(
+    ws: workspace.Workspace, catalog: ops.Catalog, cache: typing.Optional[dict] = None
+):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
