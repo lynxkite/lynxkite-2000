@@ -213,6 +213,7 @@ class ModelBuilder:
         self.model_sequence_outputs = []
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
+        self.model_inputs: dict[str, dict[str, str]] = {}
         repeats: list[str] = []
         for node in ws.nodes:
             self.nodes[node.id] = node
@@ -316,6 +317,22 @@ class ModelBuilder:
             deps.update(self.all_downstream(dep))
         return deps
 
+    def _register_input(self, node: workspace.WorkspaceNode):
+        for output_handle in self.out_edges[node.id].keys():
+            input_id = _to_id(node.id, output_handle)
+            self.model_inputs[input_id] = {
+                "name": node.data.params.get("name", node.data.title),
+                "type": "Any",
+            }
+            if node.data.title.startswith("Input: tensor"):
+                # Only tensor inputs have clear defined types for now.
+                type_name = node.data.params.get("type", "float").lower()
+                if not getattr(torch, type_name):
+                    raise ValueError(
+                        f"Unknown type for input {self.model_inputs[input_id]['name']}: {type_name}"
+                    )
+                self.model_inputs[input_id]["type"] = type_name
+
     def run_node(self, node_id: str) -> None:
         """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
@@ -355,7 +372,9 @@ class ModelBuilder:
                             else:
                                 self.run_node(layer.origin_id)
                 self.layers.append(self.run_op(node_id, op, p))
-            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
+            case "Input: tensor" | "Input: graph edges" | "Input: sequential":
+                self._register_input(node)
+            case "Optimizer":
                 return
             case _:
                 self.layers.append(self.run_op(node_id, op, p))
@@ -377,26 +396,6 @@ class ModelBuilder:
             self.run_node(node_id)
         return self.get_config()
 
-    def _add_type_information_to_input(self, inputs: list[str]) -> dict[str, dict[str, str | None]]:
-        def input_name_from_id(input_id: str) -> str:
-            input_name = input_id.rsplit("_", 1)[0]
-            input_name = input_name.replace("_", " ")
-            input_name = input_name.replace("Input  ", "Input: ")
-            return input_name
-
-        inputs_with_type = {}
-        for inp in inputs:
-            inp_node = self.nodes[input_name_from_id(inp)]
-            inputs_with_type[inp] = {"name": inp_node.data.params.get("name", None), "type": None}
-            if not inp.startswith("Input__tensor"):
-                # Only tensors input have a clear defined type for now.
-                continue
-            type_name = inp_node.data.params.get("type", "float").lower()
-            if not getattr(torch, type_name):
-                raise ValueError(f"Unknown type for input {inp}: {type_name}")
-            inputs_with_type[inp]["type"] = type_name
-        return inputs_with_type
-
     def get_config(self) -> ModelConfig:
         import torch_geometric.nn as pyg_nn
 
@@ -416,19 +415,17 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
-        used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
         made_in_loss = set(output for layer in loss_layers for output in layer.outputs)
         layers = [layer.for_sequential() for layer in layers]
         loss_layers = [layer.for_sequential() for layer in loss_layers]
         cfg = {}
-        model_inputs_list = sorted(used_in_model - made_in_model)
-        cfg["model_inputs"] = self._add_type_information_to_input(model_inputs_list)
+        cfg["model_inputs"] = self.model_inputs
         cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
         cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
         cfg["input_output_names"] = self.get_names(
-            *model_inputs_list, *cfg["model_outputs"], *cfg["loss_inputs"]
+            *self.model_inputs, *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
         # Make sure the trained output is output from the last model layer.
