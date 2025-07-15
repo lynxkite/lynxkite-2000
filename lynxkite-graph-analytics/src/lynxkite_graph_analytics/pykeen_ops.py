@@ -104,16 +104,24 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
 
     bundle.dfs["nodes"] = pd.DataFrame(
         {
-            "id": list(ds.entity_to_id.keys()),
+            "id": list(ds.entity_to_id.values()),
             "label": list(ds.entity_to_id.keys()),
         }
     )
+    bundle.dfs["relations"] = pd.DataFrame(
+        {
+            "id": list(ds.relation_to_id.values()),
+            "label": list(ds.relation_to_id.keys()),
+        }
+    )
+
+    df_all = pd.concat([df_train, df_test, df_val], ignore_index=True)
+    print(df_all)
     bundle.dfs["edges"] = pd.DataFrame(
         {
-            "source": df_train["head"].tolist(),
-            "target": df_train["tail"].tolist(),
-            "relation": df_train["relation"].tolist(),
-            "relation_id": df_train["relation"].map(ds.relation_to_id).tolist(),
+            "source": df_all["head"].tolist(),
+            "target": df_all["tail"].tolist(),
+            "relation": df_all["relation"].tolist(),
         }
     )
     return bundle
@@ -341,21 +349,15 @@ def extract_from_pykeen(
     bundle: core.Bundle,
     *,
     model_name: core.PyKEENModelName = "PyKEENmodel",
-    node_embedding_name: str,
-    edge_embedding_name: str,
 ):
     bundle = bundle.copy()
     model = bundle.other[model_name]
-    triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
-        create_inverse_triples=req_inverse_triples(model),
-    )
 
     actual_model = model
     while hasattr(actual_model, "base"):
         actual_model = actual_model.base
 
-    entity_labels = list(triples.entity_to_id.keys())
+    entity_labels = list(bundle.dfs["nodes"]["label"])
     entity_embeddings = None
     if (
         hasattr(actual_model, "entity_representations")
@@ -369,10 +371,15 @@ def extract_from_pykeen(
             f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
         )
 
-    bundle.other[node_embedding_name] = entity_embeddings
-    bundle.other["entity_to_index"] = {entity: idx for idx, entity in enumerate(entity_labels)}
+    nodes_table = bundle.dfs["nodes"]
+    if "embedding" not in nodes_table.columns:
+        nodes_table["embedding"] = None
+    nodes_table["embedding"] = pd.Series(
+        [entity_embeddings[entity_labels.index(label)].numpy() for label in entity_labels]
+    )
+    bundle.dfs["nodes"] = nodes_table
 
-    relation_labels = list(triples.relation_to_id.keys())
+    relation_labels = list(bundle.dfs["relations"]["label"])
     relation_embeddings = None
     if (
         hasattr(actual_model, "relation_representations")
@@ -385,7 +392,14 @@ def extract_from_pykeen(
             f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
         )
 
-    bundle.other[edge_embedding_name] = relation_embeddings
-    bundle.other["relation_to_index"] = {rel: idx for idx, rel in enumerate(relation_labels)}
+    print(relation_embeddings.shape)
+
+    relations_table = bundle.dfs["relations"]
+    if "relation_embedding" not in relations_table.columns:
+        relations_table["relation_embedding"] = None
+    relations_table["relation_embedding"] = pd.Series(
+        [relation_embeddings[relation_labels.index(label)].numpy() for label in relation_labels]
+    )
+    bundle.dfs["relations"] = relations_table
 
     return bundle
