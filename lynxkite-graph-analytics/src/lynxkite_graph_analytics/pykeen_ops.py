@@ -217,6 +217,7 @@ def train_embedding_model(
     model: PyKEENModel = PyKEENModel.TransE,
     training_table: core.TableName = "edges_train",
     testing_table: core.TableName = "edges_test",
+    validation_table: core.TableName = "edges_val",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
     save_as: str = "PyKEENmodel",
@@ -227,18 +228,33 @@ def train_embedding_model(
         # Currently RGCN is the only model that requires a sampler and only when using sLCWA
         sampler = "schlichtkrull"
     model = model.to_class()
+
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
+
     training_set = TriplesFactory.from_labeled_triples(
         bundle.dfs[training_table][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
     )
     testing_set = TriplesFactory.from_labeled_triples(
         bundle.dfs[testing_table][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
+    )
+    validation_set = TriplesFactory.from_labeled_triples(
+        bundle.dfs[validation_table][["head", "relation", "tail"]].values,
+        create_inverse_triples=req_inverse_triples(model),
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
     )
 
     result = pipeline(
         training=training_set,
         testing=testing_set,
+        validation=validation_set,
         model=model,
         epochs=epochs,
         training_loop=training_approach,
@@ -261,17 +277,25 @@ def triple_predict(
 ):
     bundle = bundle.copy()
     model = bundle.other.get(model_name)
+
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
+
     pred = predict_triples(
         model=model,
         triples=TriplesFactory.from_labeled_triples(
             bundle.dfs[table_name][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         ),
     )
     df = pred.process(
         factory=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_test"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         )
     ).df
     bundle.dfs["pred"] = df
@@ -292,6 +316,8 @@ def target_predict(
     """
     bundle = bundle.copy()
     model = bundle.other.get(model_name)
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
     pred = predict_target(
         model=model,
         head=head if head != "" else None,
@@ -300,6 +326,8 @@ def target_predict(
         triples_factory=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         ),
     )
 
@@ -307,10 +335,14 @@ def target_predict(
         validation=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_val"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         ),
         testing=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_test"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         ),
     )
     bundle.dfs["pred"] = pred_annotated.df
@@ -326,17 +358,23 @@ def full_predict(
     """Pass k="" to keep all scores"""
     bundle = bundle.copy()
     model = bundle.other.get(model_name)
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
     pred = predict_all(model=model, k=k)
     pack = pred.process(
         factory=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_val"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         )
     )
     pred_annotated = pack.add_membership_columns(
         training=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
         )
     )
     bundle.dfs["pred"] = pred_annotated.df
