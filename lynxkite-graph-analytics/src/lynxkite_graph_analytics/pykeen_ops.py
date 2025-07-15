@@ -182,7 +182,9 @@ class PyKEENModelWrapper:
 
     def __getattr__(self, name):
         # Delegate all other attributes to the wrapped model
-        return getattr(self.model, name)
+        # Use object.__getattribute__ to avoid recursion when accessing self.model
+        model = object.__getattribute__(self, "model")
+        return getattr(model, name)
 
     def __str__(self):
         return str(self.model)
