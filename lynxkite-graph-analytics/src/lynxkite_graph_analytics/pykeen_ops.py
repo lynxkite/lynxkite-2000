@@ -466,24 +466,33 @@ def evaluate(
     """Metrics are a comma separated list, "ALL" if all metrics are needed"""
     bundle = bundle.copy()
     model: models.Model = bundle.other.get(model_name)
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
     evaluator = evaluator.to_class()
     testing_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_test"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_test"][["head", "relation", "tail"]].values,
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
     )
     training_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_train"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
     )
     validation_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_val"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_val"][["head", "relation", "tail"]].values,
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
     )
 
     evaluated = evaluator.evaluate(
-        model,
-        testing_triples.mapped_triples,
+        model=model,
+        mapped_triples=testing_triples.mapped_triples,
         additional_filter_triples=[
             training_triples.mapped_triples,
             validation_triples.mapped_triples,
         ],
+        batch_size=32,
     )
     if metrics_str == "ALL":
         bundle.dfs["metrics"] = evaluated.to_df()
