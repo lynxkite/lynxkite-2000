@@ -32,13 +32,13 @@ def evaluate(
     model: models.Model = bundle.other.get(model_name)
     evaluator = evaluator.to_class()
     testing_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_test"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_test"][["head", "relation", "tail"]].values
     )
     training_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_train"][["head", "relation", "tail"]].values
     )
     validation_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_val"][["head", "relation", "tail"]].values
+        bundle.dfs["edges_val"][["head", "relation", "tail"]].values
     )
 
     evaluated = evaluator.evaluate(
@@ -82,7 +82,7 @@ def load_pykeen_embeddings(bundle: core.Bundle, *, _model_name: str):
 
     model = models.TransE(
         triples_factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_train"][["head", "relation", "tail"]].values
+            bundle.dfs["edges_train"][["head", "relation", "tail"]].values
         ),
         embedding_dim=node_embeddings.shape[1],
     )

@@ -98,9 +98,24 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     )
 
     bundle = core.Bundle()
-    bundle.dfs["triples_train"] = df_train
-    bundle.dfs["triples_test"] = df_test
-    bundle.dfs["triples_val"] = df_val
+    bundle.dfs["edges_train"] = df_train
+    bundle.dfs["edges_test"] = df_test
+    bundle.dfs["edges_val"] = df_val
+
+    bundle.dfs["nodes"] = pd.DataFrame(
+        {
+            "id": list(ds.entity_to_id.keys()),
+            "label": list(ds.entity_to_id.keys()),
+        }
+    )
+    bundle.dfs["edges"] = pd.DataFrame(
+        {
+            "source": df_train["head"].tolist(),
+            "target": df_train["tail"].tolist(),
+            "relation": df_train["relation"].tolist(),
+            "relation_id": df_train["relation"].map(ds.relation_to_id).tolist(),
+        }
+    )
     return bundle
 
 
@@ -192,8 +207,8 @@ def train_embedding_model(
     bundle: core.Bundle,
     *,
     model: PyKEENModel = PyKEENModel.TransE,
-    training_table: core.TableName = "triples_train",
-    testing_table: core.TableName = "triples_test",
+    training_table: core.TableName = "edges_train",
+    testing_table: core.TableName = "edges_test",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
     save_as: str = "PyKEENmodel",
@@ -234,7 +249,7 @@ def triple_predict(
     bundle: core.Bundle,
     *,
     model_name: core.PyKEENModelName = "PyKEENmodel",
-    table_name: core.TableName = "triples_val",
+    table_name: core.TableName = "edges_val",
 ):
     bundle = bundle.copy()
     model = bundle.other.get(model_name)
@@ -247,7 +262,7 @@ def triple_predict(
     )
     df = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_test"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         )
     ).df
@@ -275,18 +290,18 @@ def target_predict(
         relation=relation if relation != "" else None,
         tail=tail if tail != "" else None,
         triples_factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         ),
     )
 
     pred_annotated = pred.add_membership_columns(
         validation=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_val"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_val"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         ),
         testing=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_test"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         ),
     )
@@ -306,13 +321,13 @@ def full_predict(
     pred = predict_all(model=model, k=k)
     pack = pred.process(
         factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_val"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_val"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         )
     )
     pred_annotated = pack.add_membership_columns(
         training=TriplesFactory.from_labeled_triples(
-            bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+            bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
             create_inverse_triples=req_inverse_triples(model),
         )
     )
@@ -332,7 +347,7 @@ def extract_from_pykeen(
     bundle = bundle.copy()
     model = bundle.other[model_name]
     triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+        bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
     )
 
