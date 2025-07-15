@@ -192,6 +192,8 @@ def train_embedding_model(
     bundle: core.Bundle,
     *,
     model: PyKEENModel = PyKEENModel.TransE,
+    training_table: core.TableName = "triples_train",
+    testing_table: core.TableName = "triples_test",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
     save_as: str = "PyKEENmodel",
@@ -203,11 +205,11 @@ def train_embedding_model(
         sampler = "schlichtkrull"
     model = model.to_class()
     training_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_train"][["head", "relation", "tail"]].values,
+        bundle.dfs[training_table][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
     )
     testing_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs["triples_test"][["head", "relation", "tail"]].values,
+        bundle.dfs[testing_table][["head", "relation", "tail"]].values,
         create_inverse_triples=req_inverse_triples(model),
     )
 
