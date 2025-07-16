@@ -117,7 +117,6 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     )
 
     df_all = pd.concat([df_train, df_test, df_val], ignore_index=True)
-    print(df_all)
     bundle.dfs["edges"] = pd.DataFrame(
         {
             "source": df_all["head"].tolist(),
@@ -164,8 +163,11 @@ class PyKEENModel(str, enum.Enum):
     TransR = "TransR"
     TuckER = "TuckER"
 
-    def to_class(self):
-        return getattr(models, self.value, None)
+    def to_class(self, triples_factory=None, embedding_dim=None):
+        return getattr(models, self.value)(
+            triples_factory=triples_factory,
+            embedding_dim=embedding_dim,
+        )
 
 
 class PyKEENModelWrapper:
@@ -194,13 +196,15 @@ class PyKEENModelWrapper:
         return repr(self.model)
 
 
-def req_inverse_triples(model: models.Model) -> bool:
+def req_inverse_triples(model: models.Model | PyKEENModel) -> bool:
     """
     Check if the model requires inverse triples.
     """
     return model in {
         models.CompGCN,
         models.NodePiece,
+        PyKEENModel.CompGCN,
+        PyKEENModel.NodePiece,
     }
 
 
@@ -212,44 +216,72 @@ class TrainingType(str, enum.Enum):
         return self.value
 
 
+@op("Define PyKEEN model")
+def define_pykeen_model(
+    bundle: core.Bundle,
+    *,
+    model: PyKEENModel = PyKEENModel.TransE,
+    embedding_dim: int = 50,
+    save_as: str = "PyKEENmodel",
+):
+    """Defines a PyKEEN model based on the selected model type."""
+    bundle = bundle.copy()
+    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
+    model_class = model.to_class(
+        triples_factory=TriplesFactory.from_labeled_triples(
+            bundle.dfs["edges_train"][["head", "relation", "tail"]].values,
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
+            create_inverse_triples=req_inverse_triples(model),
+        ),
+        embedding_dim=embedding_dim,
+    )
+
+    # Save the model in the bundle
+    bundle.other[save_as] = PyKEENModelWrapper(model_class)
+    return bundle
+
+
 # TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
 @op("Train embedding model", slow=True)
 def train_embedding_model(
     bundle: core.Bundle,
     *,
-    model: PyKEENModel = PyKEENModel.TransE,
+    model: core.PyKEENModelName = "PyKEENmodel",
     training_table: core.TableName = "edges_train",
     testing_table: core.TableName = "edges_test",
     validation_table: core.TableName = "edges_val",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
-    save_as: str = "PyKEENmodel",
 ):
     bundle = bundle.copy()
+    model_wrapper: PyKEENModelWrapper = bundle.other.get(model)
+    actual_model = model_wrapper.model
     sampler = None
-    if model is PyKEENModel.RGCN and training_approach == TrainingType.sLCWA:
+    if actual_model is models.RGCN and training_approach == TrainingType.sLCWA:
         # Currently RGCN is the only model that requires a sampler and only when using sLCWA
+        print("model is RGCN, using SchlichtkrullSampler")
         sampler = "schlichtkrull"
-    model = model.to_class()
 
     entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
     relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
 
     training_set = TriplesFactory.from_labeled_triples(
         bundle.dfs[training_table][["head", "relation", "tail"]].values,
-        create_inverse_triples=req_inverse_triples(model),
+        create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
     testing_set = TriplesFactory.from_labeled_triples(
         bundle.dfs[testing_table][["head", "relation", "tail"]].values,
-        create_inverse_triples=req_inverse_triples(model),
+        create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
     validation_set = TriplesFactory.from_labeled_triples(
         bundle.dfs[validation_table][["head", "relation", "tail"]].values,
-        create_inverse_triples=req_inverse_triples(model),
+        create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
@@ -258,15 +290,18 @@ def train_embedding_model(
         training=training_set,
         testing=testing_set,
         validation=validation_set,
-        model=model,
+        model=actual_model,
         epochs=epochs,
         training_loop=training_approach,
-        training_kwargs={"sampler": sampler},
+        training_kwargs={
+            "sampler": sampler,
+        },
         evaluator=None,
+        random_seed=42,
     )
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
-    bundle.other[save_as] = PyKEENModelWrapper(result.model)
+    bundle.other[model] = PyKEENModelWrapper(actual_model)
 
     return bundle
 
@@ -436,9 +471,9 @@ def extract_from_pykeen(
     print(relation_embeddings.shape)
 
     relations_table = bundle.dfs["relations"]
-    if "relation_embedding" not in relations_table.columns:
-        relations_table["relation_embedding"] = None
-    relations_table["relation_embedding"] = pd.Series(
+    if "embedding" not in relations_table.columns:
+        relations_table["embedding"] = None
+    relations_table["embedding"] = pd.Series(
         [relation_embeddings[relation_labels.index(label)].numpy() for label in relation_labels]
     )
     bundle.dfs["relations"] = relations_table
@@ -465,7 +500,7 @@ def evaluate(
 ):
     """Metrics are a comma separated list, "ALL" if all metrics are needed"""
     bundle = bundle.copy()
-    model: models.Model = bundle.other.get(model_name)
+    model: models.Model = bundle.other.get(model_name).model
     entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
     relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
     evaluator = evaluator.to_class()
