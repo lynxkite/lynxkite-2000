@@ -165,6 +165,29 @@ class ModelConfig:
             },
         }
 
+    def batch_tensors_from_bundle(
+        self,
+        b: core.Bundle,
+        batch_size: int,
+        batch_index: int,
+        m: ModelMapping | None,
+    ) -> dict[str, torch.Tensor]:
+        """Extracts tensors from a bundle for a specific batch using a model mapping."""
+        tensors = {}
+        for input_name, input_mapping in m.map.items():
+            df_name = input_mapping.df
+            column_name = input_mapping.column
+            if df_name in b.dfs and column_name in b.dfs[df_name]:
+                batch = b.dfs[df_name][column_name].iloc[
+                    batch_index * batch_size : (batch_index + 1) * batch_size
+                ]
+                input_type = self.input_output_types[input_name]
+                torch_type = getattr(torch, input_type)
+                tensors[input_name] = torch.tensor(batch.to_list(), dtype=torch_type)
+                if batch_size == 1:
+                    tensors[input_name] = tensors[input_name].squeeze(0)
+        return tensors
+
     # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
     # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
     def __repr__(self):
@@ -455,26 +478,3 @@ class ModelBuilder:
                 raise ValueError(f"Cannot find name for input {i}.")
         return names, types
 
-
-def to_batch_tensors(
-    b: core.Bundle,
-    batch_size: int,
-    batch_index: int,
-    m: ModelMapping | None,
-    model_inputs: dict[str, dict[str, str]],
-) -> dict[str, torch.Tensor]:
-    """Extracts tensors from a bundle for a specific batch using a model mapping."""
-    tensors = {}
-    for input_name, input_mapping in m.map.items():
-        df_name = input_mapping.df
-        column_name = input_mapping.column
-        if df_name in b.dfs and column_name in b.dfs[df_name]:
-            batch = b.dfs[df_name][column_name].iloc[
-                batch_index * batch_size : (batch_index + 1) * batch_size
-            ]
-            input_type = model_inputs[input_name].get("type", "float")
-            torch_type = getattr(torch, input_type)
-            tensors[input_name] = torch.tensor(batch.to_list(), dtype=torch_type)
-            if batch_size == 1:
-                tensors[input_name] = tensors[input_name].squeeze(0)
-    return tensors
