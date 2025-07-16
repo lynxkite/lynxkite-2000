@@ -96,9 +96,7 @@ def train_model(
     for _ in tepochs:
         total_loss = 0
         for i in tqdm(range(num_batches)):
-            inputs = m.batch_tensors_from_bundle(
-                bundle, batch_size, i, input_mapping
-            )
+            inputs = m.batch_tensors_from_bundle(bundle, batch_size, i, input_mapping)
             loss = m.train(inputs)
             total_loss += loss
         mean_loss = total_loss / len(inputs)

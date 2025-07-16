@@ -465,7 +465,7 @@ class ModelBuilder:
                 for output in op.outputs:
                     i2 = _to_id(node.id, output.name)
                     if i2 == i:
-                        types[i] = type # All outputs of the same node have the same type.
+                        types[i] = type  # All outputs of the same node have the same type.
                         if len(op.outputs) == 1:
                             names[i] = name
                         else:
@@ -477,4 +477,3 @@ class ModelBuilder:
             else:
                 raise ValueError(f"Cannot find name for input {i}.")
         return names, types
-
