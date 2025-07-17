@@ -44,7 +44,12 @@ import { usePath } from "../common.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { type OpsOp, type Catalog, type Catalogs } from "./NodeSearch.tsx";
+import NodeSearch, {
+  type OpsOp,
+  type Catalogs,
+  type CategoryHierarchy,
+  buildCategoryHierarchy,
+} from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
@@ -214,7 +219,7 @@ function LynxKiteFlow() {
     undefined as
       | {
           pos: XYPosition;
-          boxes: Catalog;
+          categoryHierarchy: CategoryHierarchy;
         }
       | undefined,
   );
@@ -247,7 +252,7 @@ function LynxKiteFlow() {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
-          boxes: catalog.data![state.workspace.env!],
+          categoryHierarchy: buildCategoryHierarchy(catalog.data![state.workspace.env!]),
         });
       } else if (event.key === "r") {
         event.preventDefault();
@@ -318,7 +323,7 @@ function LynxKiteFlow() {
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
-        boxes: catalog.data![state.workspace.env!],
+        categoryHierarchy: buildCategoryHierarchy(catalog.data![state.workspace.env!]),
       });
     },
     [catalog, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
@@ -634,7 +639,7 @@ function LynxKiteFlow() {
             {nodeSearchSettings && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
-                boxes={nodeSearchSettings.boxes}
+                categoryHierarchy={nodeSearchSettings.categoryHierarchy}
                 onCancel={closeNodeSearch}
                 onAdd={addNodeFromSearch}
               />
