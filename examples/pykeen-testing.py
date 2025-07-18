@@ -13,7 +13,6 @@ import torch
 op = ops.op_registration("LynxKite Graph Analytics")
 
 
-# TODO: Needs more work
 @op("Load embedding into PyKEEN model")
 def load_pykeen_embeddings(
     dataset: core.Bundle,
@@ -48,11 +47,14 @@ def load_pykeen_embeddings(
 
     print(node_embeddings.shape)
     print(edge_embeddings.shape)
+    entity_to_id = bundle_dataset.dfs["nodes"].set_index("label")["id"].to_dict()
+    relation_to_id = bundle_dataset.dfs["relations"].set_index("label")["id"].to_dict()
+    edges_data = bundle_dataset.dfs["edges"][["source", "relation", "target"]].to_numpy()
     actual_model = model.to_class(
         triples_factory=TriplesFactory.from_labeled_triples(
-            bundle_dataset.dfs["edges"][["source", "relation", "target"]].values,
-            entity_to_id=bundle_dataset.dfs["nodes"].set_index("label")["id"].to_dict(),
-            relation_to_id=bundle_dataset.dfs["relations"].set_index("label")["id"].to_dict(),
+            triples=edges_data,
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
             create_inverse_triples=req_inverse_triples(model),
         ),
         embedding_dim=node_embeddings.shape[1],
@@ -92,7 +94,14 @@ def load_pykeen_embeddings(
             param.requires_grad = False
             print(f"Frozen embedding parameter: {name}")
 
-    model_wrapper = PyKEENModelWrapper(actual_model)
+    model_wrapper = PyKEENModelWrapper(
+        actual_model,
+        model_type=model,
+        embedding_dim=node_embeddings.shape[1],
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
+        edges_data=edges_data,
+    )
 
     bundle_dataset.other[save_as] = model_wrapper
     return bundle_dataset
