@@ -55,7 +55,45 @@ function getHandles(inputs: any[], outputs: any[]) {
   return handles;
 }
 
-const stopPropagation = (e: Event) => e.stopPropagation();
+function canScrollX(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  return style.overflowX === "auto" || style.overflow === "auto";
+}
+function canScrollY(element: HTMLElement) {
+  const style = getComputedStyle(element);
+  return style.overflowY === "auto" || style.overflow === "auto";
+}
+function canScrollUp(e: HTMLElement) {
+  return canScrollY(e) && e.scrollTop > 0;
+}
+function canScrollDown(e: HTMLElement) {
+  return canScrollY(e) && e.scrollTop < e.scrollHeight - e.clientHeight - 1;
+}
+function canScrollLeft(e: HTMLElement) {
+  return canScrollX(e) && e.scrollLeft > 0;
+}
+function canScrollRight(e: HTMLElement) {
+  return canScrollX(e) && e.scrollLeft < e.scrollWidth - e.clientWidth - 1;
+}
+
+function onWheel(e: WheelEvent) {
+  if (e.ctrlKey) return; // Zoom, not scroll.
+  let t = e.target as HTMLElement;
+  // If we find an element inside the node container that can apply this scroll event, we stop propagation.
+  // Otherwise ReactFlow can have it and pan the workspace.
+  while (t && !t.classList.contains("node-container")) {
+    if (
+      (e.deltaX < 0 && canScrollLeft(t)) ||
+      (e.deltaX > 0 && canScrollRight(t)) ||
+      (e.deltaY < 0 && canScrollUp(t)) ||
+      (e.deltaY > 0 && canScrollDown(t))
+    ) {
+      e.stopPropagation();
+      return;
+    }
+    t = t.parentElement as HTMLElement;
+  }
+}
 
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
@@ -67,9 +105,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
     // To stop the event from reaching ReactFlow, we stop propagation on the wheel event.
     // This must be done with a "passive: false" listener, which we can only register like this.
-    containerRef.current?.addEventListener("wheel", stopPropagation, { passive: false });
+    containerRef.current?.addEventListener("wheel", onWheel, {
+      passive: false,
+    });
     return () => {
-      containerRef.current?.removeEventListener("wheel", stopPropagation);
+      containerRef.current?.removeEventListener("wheel", onWheel);
     };
   }, [containerRef]);
   function titleClicked() {
