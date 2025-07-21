@@ -15,9 +15,7 @@ import types
 import typing
 from dataclasses import dataclass
 
-import joblib
 import pydantic
-from typing_extensions import Annotated
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -26,9 +24,16 @@ Catalog = dict[str, "Op"]
 Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
-mem = joblib.Memory(".joblib-cache")
 
 typeof = type  # We have some arguments called "type".
+
+CACHE_WRAPPER = None  # Overwrite this to configure a caching mechanism.
+
+
+def _cache_wrap(func):
+    if CACHE_WRAPPER is None:
+        return func
+    return CACHE_WRAPPER(func)
 
 
 def type_to_json(t):
@@ -39,10 +44,10 @@ def type_to_json(t):
     return {"type": str(t)}
 
 
-Type = Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)]
-LongStr = Annotated[str, {"format": "textarea"}]
+Type = typing.Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, return_type=dict)]
+LongStr = typing.Annotated[str, {"format": "textarea"}]
 """LongStr is a string type for parameters that will be displayed as a multiline text area in the UI."""
-PathStr = Annotated[str, {"format": "path"}]
+PathStr = typing.Annotated[str, {"format": "path"}]
 # https://github.com/python/typing/issues/182#issuecomment-1320974824
 ReadOnlyJSON: typing.TypeAlias = (
     typing.Mapping[str, "ReadOnlyJSON"]
@@ -239,12 +244,12 @@ class Op(BaseConfig):
 def op(
     env: str,
     *names: str,
-    view="basic",
-    outputs=None,
-    params=None,
-    slow=False,
-    color=None,
-    cache=None,
+    view: str = "basic",
+    outputs: list[str] | None = None,
+    params: list[Parameter] | None = None,
+    slow: bool = False,
+    color: str | None = None,
+    cache: bool | None = None,
 ):
     """
     Decorator for defining an operation.
@@ -275,7 +280,7 @@ def op(
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = mem.cache(func)
+                func = _cache_wrap(func)
         # Positional arguments are inputs.
         inputs = [
             Input(name=name, type=param.annotation)

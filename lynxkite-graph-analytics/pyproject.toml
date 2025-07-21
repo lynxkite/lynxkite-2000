@@ -5,20 +5,23 @@ description = "The graph analytics executor and boxes for LynxKite"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "cudf-cu12>=25.6.0",
     "fsspec>=2025.3.2",
     "grand-cypher>=0.13.0",
-    "joblib>=1.4.2",
     "lynxkite-core",
     "matplotlib>=3.10.1",
     "networkx[default]>=3.4.2",
     "numba>=0.61.2",
+    "numpy>=2.2.6",
     "osmnx>=2.0.2",
     "pandas>=2.2.3",
     "polars>=1.25.2",
     "pyarrow>=19.0.1",
+    "pydantic>=2.11.7",
     "torch>=2.7.0",
     "torch-geometric>=2.6.1",
     "torchdiffeq>=0.2.5",
+    "tqdm>=4.67.1",
     "umap-learn>=0.5.9.post2",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
@@ -27,10 +30,6 @@ classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=8.3.5",
-    "pytest-asyncio>=0.26.0",
-]
 gpu = [
     "cuml-cu12>=25.2.1",
     "nx-cugraph-cu12>=25.4.0",
@@ -39,7 +38,7 @@ gpu = [
 ]
 
 [tool.uv.sources]
-lynxkite-core = { path = "../lynxkite-core" }
+lynxkite-core = { workspace = true }
 pylibcugraph-cu12 = { index = "nvidia" }
 
 [tool.pytest.ini_options]
@@ -48,3 +47,21 @@ asyncio_mode = "auto"
 [[tool.uv.index]]
 name = "nvidia"
 url = "https://pypi.nvidia.com"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["numba", "pyarrow", "nx-cugraph-cu12", "pylibcugraph-cu12"]
+
+[tool.deptry.package_module_name_map]
+grand-cypher = "grandcypher"
+lynxkite-core = "lynxkite"
+umap-learn = "umap"
+cuml-cu12 = "cuml"
+cudf-cu12 = "cudf"
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]

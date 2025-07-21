@@ -6,25 +6,28 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]>=0.115.6",
-    "lynxkite-core",
-    "orjson>=3.10.13",
-    "pycrdt-websocket>=0.16",
-    "sse-starlette>=2.2.1",
     "griffe>=1.7.3",
+    "joblib>=1.5.1",
+    "lynxkite-core",
+    "pycrdt-websocket>=0.16",
+    "pycrdt>=0.12.26",
+    "pydantic>=2.11.7",
+    "sse-starlette>=2.2.1",
+    "uvicorn>=0.35.0",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pydantic-to-typescript>=2.0.0",
-    "pytest>=8.3.4",
+    "setuptools>=80.9.0",
 ]
 
 [tool.uv.sources]
-lynxkite-core = { path = "../lynxkite-core" }
+lynxkite-core = { workspace = true }
 
 [build-system]
 requires = ["setuptools", "wheel", "setuptools-scm"]
@@ -47,3 +50,11 @@ build_py = "build_frontend.build_py"
 
 [project.scripts]
 lynxkite = "lynxkite_app.__main__:main"
+
+[tool.deptry.package_module_name_map]
+lynxkite-core = "lynxkite"
+sse-starlette = "starlette"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pycrdt-websocket", "griffe"]
+DEP004 = ["setuptools"]
