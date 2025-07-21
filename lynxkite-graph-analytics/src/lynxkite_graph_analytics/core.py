@@ -354,12 +354,17 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
-    if isinstance(result.output, dict):
-        for k, v in result.output.items():
-            outputs[node.id, k] = v
-    elif result.output is not None:
-        [k] = op.outputs
-        outputs[node.id, k.name] = result.output
+    try:
+        if isinstance(result.output, dict):
+            for k, v in result.output.items():
+                outputs[node.id, k] = v
+        elif result.output is not None:
+            [k] = op.outputs
+            outputs[node.id, k.name] = result.output
+    except Exception as e:
+        if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
+            traceback.print_exc()
+        result = ops.Result(error=str(e))
     node.publish_result(result)
 
 
