@@ -4,9 +4,6 @@ A LynxKite executor that assumes most operations operate on their input one by o
 
 from .. import ops
 from .. import workspace
-import orjson
-import pandas as pd
-import pydantic
 import traceback
 import inspect
 import typing
@@ -35,9 +32,6 @@ def _has_ctx(op):
     return "_ctx" in sig.parameters
 
 
-CACHES = {}
-
-
 def register(env: str, cache: bool = True):
     """Registers the one-by-one executor.
 
@@ -46,12 +40,7 @@ def register(env: str, cache: bool = True):
         from lynxkite.core.executors import one_by_one
         one_by_one.register("My Environment")
     """
-    if cache:
-        CACHES[env] = {}
-        _cache = CACHES[env]
-    else:
-        _cache = None
-    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env], cache=_cache)
+    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env])
 
 
 def _get_stages(ws, catalog: ops.Catalog):
@@ -83,28 +72,13 @@ def _get_stages(ws, catalog: ops.Catalog):
     return stages
 
 
-def _default_serializer(obj):
-    if isinstance(obj, pydantic.BaseModel):
-        return obj.dict()
-    return {"__nonserializable__": id(obj)}
-
-
-def _make_cache_key(obj):
-    return orjson.dumps(obj, default=_default_serializer)
-
-
-EXECUTOR_OUTPUT_CACHE = {}
-
-
 async def _await_if_needed(obj):
     if inspect.isawaitable(obj):
         return await obj
     return obj
 
 
-async def _execute(
-    ws: workspace.Workspace, catalog: ops.Catalog, cache: typing.Optional[dict] = None
-):
+async def _execute(ws: workspace.Workspace, catalog: ops.Catalog):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -157,15 +131,7 @@ async def _execute(
                     if missing:
                         node.publish_error(f"Missing input: {', '.join(missing)}")
                         break
-                    if cache is not None:
-                        key = _make_cache_key((inputs, params))
-                        if key not in cache:
-                            result: ops.Result = op(*inputs, **params)
-                            result.output = await _await_if_needed(result.output)
-                            cache[key] = result
-                        result = cache[key]
-                    else:
-                        result = op(*inputs, **params)
+                    result = op(*inputs, **params)
                     output = await _await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
@@ -173,7 +139,7 @@ async def _execute(
                     break
                 contexts[node.id].last_result = output
                 # Returned lists and DataFrames are considered multiple tasks.
-                if isinstance(output, pd.DataFrame):
+                if hasattr(output, "to_dict"):
                     output = _df_to_list(output)
                 elif not isinstance(output, list):
                     output = [output]
