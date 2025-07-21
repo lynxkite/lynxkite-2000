@@ -108,17 +108,31 @@ class Position(str, enum.Enum):
     def is_vertical(self):
         return self in (self.TOP, self.BOTTOM)
 
+    @staticmethod
+    def from_dir(dir: str) -> tuple[Position, Position]:
+        """Returns the input and output positions based on the direction."""
+        if dir == "left-to-right":
+            return Position.LEFT, Position.RIGHT
+        elif dir == "right-to-left":
+            return Position.RIGHT, Position.LEFT
+        elif dir == "top-to-bottom":
+            return Position.TOP, Position.BOTTOM
+        elif dir == "bottom-to-top":
+            return Position.BOTTOM, Position.TOP
+        else:
+            raise ValueError(f"Invalid direction: {dir}")
+
 
 class Input(BaseConfig):
     name: str
     type: Type
-    position: Position = Position.LEFT
+    position: Position
 
 
 class Output(BaseConfig):
     name: str
     type: Type
-    position: Position = Position.RIGHT
+    position: Position
 
 
 @dataclass
@@ -135,17 +149,6 @@ class Result:
     display: ReadOnlyJSON | None = None
     error: str | None = None
     input_metadata: ReadOnlyJSON | None = None
-
-
-MULTI_INPUT = Input(name="multi", type="*")
-
-
-def basic_inputs(*names):
-    return {name: Input(name=name, type=None) for name in names}
-
-
-def basic_outputs(*names):
-    return {name: Output(name=name, type=None) for name in names}
 
 
 def get_optional_type(type):
@@ -250,6 +253,7 @@ def op(
     slow: bool = False,
     color: str | None = None,
     cache: bool | None = None,
+    dir: str = "left-to-right",
 ):
     """
     Decorator for defining an operation.
@@ -267,6 +271,9 @@ def op(
         color: The color of the operation in the UI. Defaults to "orange".
         cache: Set to False to disable caching for a slow operation.
                You may need this for slow operations with parameters/outputs that can't be serialized.
+        dir: Sets the default input and output positions. The default is "left-to-right", meaning
+             inputs are on the left and outputs are on the right. Other options are "right-to-left",
+             "top-to-bottom", and "bottom-to-top".
     """
     [*categories, name] = names
 
@@ -282,8 +289,9 @@ def op(
             if cache is not False:
                 func = _cache_wrap(func)
         # Positional arguments are inputs.
+        ipos, opos = Position.from_dir(dir)
         inputs = [
-            Input(name=name, type=param.annotation)
+            Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
         ]
@@ -294,9 +302,9 @@ def op(
         if params:
             _params.extend(params)
         if outputs is not None:
-            _outputs = [Output(name=name, type=None) for name in outputs]
+            _outputs = [Output(name=name, type=None, position=opos) for name in outputs]
         else:
-            _outputs = [Output(name="output", type=None)] if view == "basic" else []
+            _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
         op = Op(
             func=func,
             doc=doc,
@@ -387,16 +395,23 @@ def no_op(*args, **kwargs):
     return None
 
 
-def register_passive_op(env: str, *names: str, inputs=[], outputs=["output"], params=[], **kwargs):
+def register_passive_op(
+    env: str, *names: str, inputs=[], outputs=["output"], params=[], dir="left-to-right", **kwargs
+):
     """A passive operation has no associated code."""
+    ipos, opos = Position.from_dir(dir)
     [*categories, name] = names
     op = Op(
         func=no_op,
         name=name,
         categories=categories,
         params=params,
-        inputs=[Input(name=i, type=None) if isinstance(i, str) else i for i in inputs],
-        outputs=[Output(name=o, type=None) if isinstance(o, str) else o for o in outputs],
+        inputs=[
+            Input(name=i, type=None, position=ipos) if isinstance(i, str) else i for i in inputs
+        ],
+        outputs=[
+            Output(name=o, type=None, position=opos) if isinstance(o, str) else o for o in outputs
+        ],
         **kwargs,
     )
     CATALOGS.setdefault(env, {})
@@ -431,14 +446,14 @@ def register_executor(env: str):
     return decorator
 
 
-def op_registration(env: str, *categories: str):
+def op_registration(env: str, *categories: str, **kwargs):
     """Returns a decorator that can be used for registering functions as operations."""
-    return functools.partial(op, env, *categories)
+    return functools.partial(op, env, *categories, **kwargs)
 
 
-def passive_op_registration(env: str, *categories: str):
+def passive_op_registration(env: str, *categories: str, **kwargs):
     """Returns a function that can be used to register operations without associated code."""
-    return functools.partial(register_passive_op, env, *categories)
+    return functools.partial(register_passive_op, env, *categories, **kwargs)
 
 
 def make_async(func):
