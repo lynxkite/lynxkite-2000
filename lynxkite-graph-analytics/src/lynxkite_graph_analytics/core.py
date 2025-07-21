@@ -227,7 +227,10 @@ def disambiguate_edges(ws: workspace.Workspace):
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
         op = catalog.get(dst_node.data.op_id)
-        if not op or op.get_input(edge.targetHandle).type == list[Bundle]:
+        if not op:
+            continue
+        t = op.get_input(edge.targetHandle).type
+        if t is list or typing.get_origin(t) is list:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
         if (edge.target, edge.targetHandle) in seen:
@@ -302,16 +305,21 @@ async def _execute_node(
         inputs = []
         missing = []
         for p in op.inputs:
+            is_list = typing.get_origin(p.type) is list
             if p.name not in input_map:
                 opt_type = ops.get_optional_type(p.type)
                 if opt_type is not None:
                     inputs.append(None)
+                elif is_list:
+                    inputs.append([])
                 else:
                     missing.append(p.name)
                 continue
             x = input_map[p.name]
             if p.type == list[Bundle]:
                 x = [_to_bundle(i) for i in x]
+            elif is_list:
+                pass
             else:
                 [x] = x  # There should never be multiple inputs.
             if p.type == nx.Graph:
