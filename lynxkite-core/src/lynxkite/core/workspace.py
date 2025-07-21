@@ -5,12 +5,12 @@ from typing import Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
-import pycrdt
 import pydantic
 import tempfile
 from . import ops
 
 if TYPE_CHECKING:
+    import pycrdt
     from lynxkite.core import ops
 
 
@@ -65,7 +65,7 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
-    _crdt: Optional[pycrdt.Map] = None
+    _crdt: Optional["pycrdt.Map"] = None
 
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
@@ -118,7 +118,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
-    _crdt: Optional[pycrdt.Map] = None
+    _crdt: Optional["pycrdt.Map"] = None
 
     def normalize(self):
         if self.env not in ops.CATALOGS:
@@ -219,7 +219,9 @@ class Workspace(BaseConfig):
                     node._crdt["data"]["meta"] = {}
                     node._crdt["data"]["error"] = "Unknown operation."
 
-    def connect_crdt(self, ws_crdt: pycrdt.Map):
+    def connect_crdt(self, ws_crdt: "pycrdt.Map"):
+        import pycrdt
+
         self._crdt = ws_crdt
         with ws_crdt.doc.transaction():
             for nc, np in zip(ws_crdt["nodes"], self.nodes):

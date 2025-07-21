@@ -8,8 +8,6 @@ dependencies = [
     "fsspec>=2025.2.0",
     "lynxkite-core",
     "pillow>=11.1.0",
-    "requests>=2.32.3",
-    "aiohttp>=3.11.11",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
 
@@ -17,4 +15,16 @@ classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [tool.uv.sources]
-lynxkite-core = { path = "../lynxkite-core" }
+lynxkite-core = { workspace = true }
+
+[tool.deptry.package_module_name_map]
+lynxkite-core = "lynxkite"
+pillow = "PIL"
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]
