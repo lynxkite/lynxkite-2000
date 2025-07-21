@@ -61,7 +61,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <textarea
         className="textarea textarea-bordered w-full"
-        rows={6}
+        rows={(value ?? "").split("\n").length}
         value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value, { delay: 2 })}
         onBlur={(evt) => onChange(evt.currentTarget.value, { delay: 0 })}
