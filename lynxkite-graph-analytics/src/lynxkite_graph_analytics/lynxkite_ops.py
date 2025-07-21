@@ -47,7 +47,7 @@ class FileFormat(enum.StrEnum):
     slow=True,
 )
 def import_file(
-    *, file_path: str, table_name: str, file_format: FileFormat, **kwargs
+    *, file_path: str, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
 ) -> core.Bundle:
     """Read the contents of the a file into a `Bundle`.
 
