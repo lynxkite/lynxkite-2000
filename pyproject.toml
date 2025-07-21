@@ -1,0 +1,33 @@
+# This is the workspace configuration. Each individual package has its own pyproject.toml.
+[project]
+name = "lynxkite-workspace"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["lynxkite", "lynxkite-core", "lynxkite-graph-analytics[gpu]", "lynxkite-pillow-example"]
+classifiers = ["Private :: Do Not Upload"]
+
+[tool.uv.sources]
+lynxkite = { workspace = true }
+lynxkite-core = { workspace = true }
+lynxkite-graph-analytics = { workspace = true }
+lynxkite-pillow-example = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "lynxkite-app",
+    "lynxkite-core",
+    "lynxkite-graph-analytics",
+    "lynxkite-pillow-example",
+]
+
+[dependency-groups]
+dev = [
+    "deptry>=0.23.0",
+    "mkdocs-material>=9.6.15",
+    "mkdocstrings[python]>=0.29.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
