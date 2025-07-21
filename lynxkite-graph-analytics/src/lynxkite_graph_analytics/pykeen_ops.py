@@ -120,8 +120,8 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     df_all = pd.concat([df_train, df_test, df_val], ignore_index=True)
     bundle.dfs["edges"] = pd.DataFrame(
         {
-            "source": df_all["head"].tolist(),
-            "target": df_all["tail"].tolist(),
+            "head": df_all["head"].tolist(),
+            "tail": df_all["tail"].tolist(),
             "relation": df_all["relation"].tolist(),
         }
     )
@@ -180,24 +180,26 @@ class PyKEENModelWrapper:
         model: models.Model,
         model_type: PyKEENModel,
         embedding_dim: int,
-        entity_to_id,
-        relation_to_id,
-        edges_data,
+        entity_to_id: dict,
+        relation_to_id: dict,
+        edges_data: pd.DataFrame,
+        trained: bool = False,
     ):
         self.model = model
-        self.trained = False
-
+        self.trained = trained
         self.model_type = model_type
         self.embedding_dim = embedding_dim
         self.entity_to_id = entity_to_id
         self.relation_to_id = relation_to_id
         self.edges_data = edges_data
 
-    def metadata(self):
+    def metadata(self) -> dict:
         return {
             "type": "pykeen-model",
             "model_class": self.model.__class__.__name__,
             "module": self.model.__module__,
+            "trained": self.trained,
+            "embedding_dim": self.embedding_dim,
         }
 
     def __getattr__(self, name):
@@ -223,7 +225,7 @@ class PyKEENModelWrapper:
 
         return state
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: dict) -> None:
         model_state_dict = state.pop("model_state_dict", None)
         self.__dict__.update(state)
         if (
@@ -304,6 +306,14 @@ def define_pykeen_model(
     return bundle
 
 
+class PyKEENSupportedOptimizers(str, enum.Enum):
+    Adam = "Adam"
+    AdamW = "AdamW"
+    Adamax = "Adamax"
+    Adagrad = "Adagrad"
+    SGD = "SGD"
+
+
 # TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
 @op("Train embedding model", slow=True)
 def train_embedding_model(
@@ -313,6 +323,7 @@ def train_embedding_model(
     training_table: core.TableName = "edges_train",
     testing_table: core.TableName = "edges_test",
     validation_table: core.TableName = "edges_val",
+    optimizer_type: PyKEENSupportedOptimizers = PyKEENSupportedOptimizers.Adam,
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
@@ -353,11 +364,20 @@ def train_embedding_model(
         model=actual_model,
         epochs=epochs,
         training_loop=training_approach,
-        training_kwargs={
-            "sampler": sampler,
-        },
+        training_kwargs=dict(
+            sampler=sampler,
+            continue_training=model_wrapper.trained,
+        ),
+        optimizer=optimizer_type,
         evaluator=None,
         random_seed=42,
+        stopper="early",
+        stopper_kwargs=dict(
+            frequency=2,
+            patience=6,
+            relative_delta=0.001,
+            metric="hits@k",
+        ),
     )
 
     model_wrapper.model = result.model
@@ -451,7 +471,6 @@ def target_predict(
     return bundle
 
 
-# TODO: Caching doesnt work, possible because of the pred: ScorePack object.
 @op("Full prediction", slow=True)
 def full_predict(
     bundle: core.Bundle, *, model_name: core.PyKEENModelName = "PyKEENmodel", k: int | None = None
