@@ -59,9 +59,5 @@ cuml-cu12 = "cuml"
 cudf-cu12 = "cudf"
 
 [build-system]
-requires = ["setuptools", "wheel", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-namespaces = true
-where = ["src"]
+requires = ["uv_build>=0.8.0,<0.9.0"]
+build-backend = "uv_build"
