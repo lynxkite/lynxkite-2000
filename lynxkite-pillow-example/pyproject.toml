@@ -2,7 +2,6 @@
 name = "lynxkite-pillow-example"
 version = "0.1.0"
 description = "An example LynxKite plugin that wraps some Pillow image processing features in LynxKite operations"
-readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fsspec>=2025.2.0",
@@ -22,9 +21,5 @@ lynxkite-core = "lynxkite"
 pillow = "PIL"
 
 [build-system]
-requires = ["setuptools", "wheel", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-namespaces = true
-where = ["src"]
+requires = ["uv_build>=0.8.0,<0.9.0"]
+build-backend = "uv_build"
