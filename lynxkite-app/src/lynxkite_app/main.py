@@ -10,8 +10,8 @@ import pkgutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
-from lynxkite.core import ops
-from lynxkite.core import workspace
+from lynxkite_core import ops
+from lynxkite_core import workspace
 from . import crdt
 
 mem = joblib.Memory(".joblib-cache")
@@ -21,7 +21,7 @@ ops.CACHE_WRAPPER = mem.cache
 def detect_plugins():
     plugins = {}
     for _, name, _ in pkgutil.iter_modules():
-        if name.startswith("lynxkite_") and name != "lynxkite_app":
+        if name.startswith("lynxkite_") and name != "lynxkite_app" and name != "lynxkite_core":
             print(f"Importing {name}")
             plugins[name] = importlib.import_module(name)
     if not plugins:

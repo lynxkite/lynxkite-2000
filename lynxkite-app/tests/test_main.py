@@ -2,7 +2,7 @@ import pathlib
 import uuid
 from fastapi.testclient import TestClient
 from lynxkite_app.main import app, detect_plugins
-from lynxkite.core import ops
+from lynxkite_core import ops
 import os
 
 

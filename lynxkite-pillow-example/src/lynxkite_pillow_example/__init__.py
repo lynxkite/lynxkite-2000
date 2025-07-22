@@ -1,7 +1,7 @@
 """Demo for how easily we can provide a UI for popular open-source tools."""
 
-from lynxkite.core import ops
-from lynxkite.core.executors import simple
+from lynxkite_core import ops
+from lynxkite_core.executors import simple
 from PIL import Image, ImageFilter
 import base64
 import fsspec

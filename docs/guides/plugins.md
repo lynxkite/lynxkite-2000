@@ -32,11 +32,11 @@ df["length"] = df["my_column"].str.len()
 ```
 
 We can turn it into a LynxKite operation using the
-[`@op`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.op) decorator:
+[`@op`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.op) decorator:
 
 ```python
 import pandas as pd
-from lynxkite.core.ops import op
+from lynxkite_core.ops import op
 
 @op("LynxKite Graph Analytics", "Get column length")
 def get_length(df: pd.DataFrame, *, column_name: str):
@@ -55,7 +55,7 @@ Let's review the changes we made.
 
 ### The `@op` decorator
 
-The [`@op`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.op) decorator registers a
+The [`@op`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.op) decorator registers a
 function as a LynxKite operation. The first argument is the name of the environment,
 the last argument is the name of the operation. Between the two, you can list the hierarchy of
 categories the operation belongs to. For example:
@@ -65,7 +65,7 @@ categories the operation belongs to. For example:
 ```
 
 When defining multiple operations, you can use
-[`ops.op_registration`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.op_registration)
+[`ops.op_registration`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.op_registration)
 for convenience:
 ```python
 op = ops.op_registration("LynxKite Graph Analytics")
@@ -101,8 +101,8 @@ The inputs of an operation are automatically converted to the right type, when p
 To make an input optional, use an optional type, like `pd.DataFrame | None`.
 
 The position of the input and output connectors can be controlled using the
-[`@ops.input_position`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.input_position) and
-[`@ops.output_position`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.output_position)
+[`@ops.input_position`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.input_position) and
+[`@ops.output_position`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.output_position)
 decorators. By default, inputs are on the left and outputs on the right.
 
 All **parameters** are stored in LynxKite workspaces as strings. If a type annotation is provided,
@@ -110,7 +110,7 @@ LynxKite will convert the string to the right type and provide the right UI.
 
 - `str`, `int`, `float` are presented as a text box and converted to the given type.
 - `bool` is presented as a checkbox.
-- [`lynxkite.core.ops.LongStr`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.LongStr)
+- [`lynxkite_core.ops.LongStr`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.LongStr)
   is presented as a text area.
 - Enums are presented as a dropdown list.
 - Pydantic models are presented as their JSON string representations. (Unless you add custom UI
@@ -207,13 +207,13 @@ read the JSON files.
 
 Since the code of the operations is not executed in this case, you can create functions that do nothing.
 Alternatively, you can use the
-[`register_passive_op`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.register_passive_op)
+[`register_passive_op`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.register_passive_op)
 and
-[`passive_op_registration`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.passive_op_registration)
+[`passive_op_registration`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.passive_op_registration)
 functions to easily whip up a set of operations:
 
 ```python
-from lynxkite.core.ops import passive_op_registration, Parameter as P
+from lynxkite_core.ops import passive_op_registration, Parameter as P
 
 op = passive_op_registration("My Environment")
 op('Scrape documents', params=[P('url', '')])
@@ -231,7 +231,7 @@ LynxKite comes with two built-in executors. You can register these for your envi
 and you're good to go.
 
 ```python
-from lynxkite.core.executors import simple
+from lynxkite_core.executors import simple
 simple.register("My Environment")
 ```
 
@@ -240,7 +240,7 @@ runs each operation once, passing the output of the preceding operation
 as the input to the next one. No tricks. You can use any types as inputs and outputs.
 
 ```python
-from lynxkite.core.executors import one_by_one
+from lynxkite_core.executors import one_by_one
 one_by_one.register("My Environment")
 ```
 
@@ -261,7 +261,7 @@ end up with an infinite loop.
 ### Custom executors
 
 A custom executor can be registered using
-[`@ops.register_executor`](../reference/lynxkite-core/ops.md#lynxkite.core.ops.register_executor).
+[`@ops.register_executor`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.register_executor).
 
 ```python
 @ops.register_executor(ENV)
@@ -271,13 +271,13 @@ async def execute(ws: workspace.Workspace):
 ```
 
 The executor must be an asynchronous function that takes a
-[`workspace.Workspace`](../reference/lynxkite-core/workspace.md#lynxkite.core.workspace.Workspace)
+[`workspace.Workspace`](../reference/lynxkite-core/workspace.md#lynxkite_core.workspace.Workspace)
 as an argument. The return value is ignored and it's up to you how you process the workspace.
 
 To update the frontend as the executor processes the workspace, call
-[`WorkspaceNode.publish_started`](../reference/lynxkite-core/workspace.md#lynxkite.core.workspace.WorkspaceNode.publish_started)
+[`WorkspaceNode.publish_started`](../reference/lynxkite-core/workspace.md#lynxkite_core.workspace.WorkspaceNode.publish_started)
 when starting to execute a node, and
-[`WorkspaceNode.publish_result`](../reference/lynxkite-core/workspace.md#lynxkite.core.workspace.WorkspaceNode.publish_result)
+[`WorkspaceNode.publish_result`](../reference/lynxkite-core/workspace.md#lynxkite_core.workspace.WorkspaceNode.publish_result)
 to publish the results. Use
-[`WorkspaceNode.publish_error`](../reference/lynxkite-core/workspace.md#lynxkite.core.workspace.WorkspaceNode.publish_error)
+[`WorkspaceNode.publish_error`](../reference/lynxkite-core/workspace.md#lynxkite_core.workspace.WorkspaceNode.publish_error)
 if the node failed.

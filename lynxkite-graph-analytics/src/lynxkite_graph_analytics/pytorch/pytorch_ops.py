@@ -1,8 +1,8 @@
 """Boxes for defining PyTorch models."""
 
 import enum
-from lynxkite.core import ops
-from lynxkite.core.ops import Parameter as P
+from lynxkite_core import ops
+from lynxkite_core.ops import Parameter as P
 import torch
 from .pytorch_core import op, reg, ENV
 
