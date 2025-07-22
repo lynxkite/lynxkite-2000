@@ -1,6 +1,6 @@
 """Automatically wraps all NetworkX functions as LynxKite operations."""
 
-from lynxkite.core import ops
+from lynxkite_core import ops
 import collections.abc
 import enum
 import functools

@@ -1,5 +1,5 @@
 [project]
-name = "lynxkite"
+name = "lynxkite-app"
 version = "0.1.0"
 description = "The LynxKite application, with web server and UI"
 readme = "README.md"
