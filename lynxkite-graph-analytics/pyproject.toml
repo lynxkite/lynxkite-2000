@@ -5,7 +5,6 @@ description = "The graph analytics executor and boxes for LynxKite"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "cudf-cu12>=25.6.0",
     "fsspec>=2025.3.2",
     "grand-cypher>=0.13.0",
     "lynxkite-core",
@@ -31,6 +30,7 @@ Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [project.optional-dependencies]
 gpu = [
+    "cudf-cu12>=25.6.0",
     "cuml-cu12>=25.2.1",
     "nx-cugraph-cu12>=25.4.0",
     "polars[gpu]>=1.25.2",
