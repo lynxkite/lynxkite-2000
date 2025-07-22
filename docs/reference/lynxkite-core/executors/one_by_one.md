@@ -1,1 +1,1 @@
-::: lynxkite.core.executors.one_by_one
+::: lynxkite_core.executors.one_by_one

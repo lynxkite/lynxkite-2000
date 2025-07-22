@@ -1,5 +1,5 @@
-from lynxkite.core import ops, workspace
-from lynxkite.core.executors import one_by_one
+from lynxkite_core import ops, workspace
+from lynxkite_core.executors import one_by_one
 
 
 async def test_optional_inputs():

@@ -37,7 +37,7 @@ def register(env: str, cache: bool = True):
 
     Usage:
 
-        from lynxkite.core.executors import one_by_one
+        from lynxkite_core.executors import one_by_one
         one_by_one.register("My Environment")
     """
     ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env])

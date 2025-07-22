@@ -19,7 +19,3 @@ DEP003 = ["matplotlib", "griffe", "pycrdt"]
 [build-system]
 requires = ["uv_build>=0.8.0,<0.9.0"]
 build-backend = "uv_build"
-
-[tool.uv.build-backend]
-module-name = "lynxkite.core"
-namespace = true

@@ -5,7 +5,7 @@ import graphlib
 import io
 import typing
 import pydantic
-from lynxkite.core import ops, workspace
+from lynxkite_core import ops, workspace
 import torch
 import dataclasses
 from .. import core

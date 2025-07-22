@@ -1,7 +1,7 @@
 # From https://matplotlib.org/stable/gallery/images_contours_and_fields/contour_corner_mask.html
 import matplotlib.pyplot as plt
 import numpy as np
-from lynxkite.core.ops import op
+from lynxkite_core.ops import op
 
 
 @op("LynxKite Graph Analytics", "Matplotlib example", view="matplotlib")

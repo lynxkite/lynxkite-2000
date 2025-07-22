@@ -1,4 +1,4 @@
-from lynxkite.core.ops import op_registration, LongStr
+from lynxkite_core.ops import op_registration, LongStr
 from lynxkite_graph_analytics.core import Bundle
 from matplotlib import pyplot as plt
 import numpy as np

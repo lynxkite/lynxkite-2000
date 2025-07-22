@@ -11,7 +11,7 @@ from . import ops
 
 if TYPE_CHECKING:
     import pycrdt
-    from lynxkite.core import ops
+    from lynxkite_core import ops
 
 
 class BaseConfig(pydantic.BaseModel):
