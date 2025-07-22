@@ -2,7 +2,7 @@
 
 import inspect
 import os
-from lynxkite.core import ops, workspace
+from lynxkite_core import ops, workspace
 import dataclasses
 import functools
 import networkx as nx

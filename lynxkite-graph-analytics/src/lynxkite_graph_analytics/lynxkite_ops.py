@@ -3,7 +3,7 @@
 import enum
 import os
 import fsspec
-from lynxkite.core import ops
+from lynxkite_core import ops
 from collections import deque
 
 from . import core
