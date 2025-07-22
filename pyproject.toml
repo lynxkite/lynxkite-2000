@@ -25,6 +25,7 @@ dev = [
     "deptry>=0.23.0",
     "mkdocs-material>=9.6.15",
     "mkdocstrings[python]>=0.29.1",
+    "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
 ]
