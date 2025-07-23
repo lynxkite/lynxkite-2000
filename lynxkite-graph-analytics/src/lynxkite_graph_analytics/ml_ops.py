@@ -74,7 +74,7 @@ def _get_num_samples(bundle: core.Bundle, input_mapping: pytorch_core.ModelMappi
 def train_model(
     bundle: core.Bundle,
     *,
-    model_name: core.PyTorchModelName = "model",
+    model_name: pytorch_core.PyTorchModelName = "model",
     input_mapping: ModelTrainingInputMapping,
     epochs: int = 1,
     batch_size: int = 1,
@@ -113,7 +113,7 @@ def train_model(
 def model_inference(
     bundle: core.Bundle,
     *,
-    model_name: core.PyTorchModelName = "model",
+    model_name: pytorch_core.PyTorchModelName = "model",
     input_mapping: ModelInferenceInputMapping,
     output_mapping: ModelOutputMapping,
     batch_size: int = 1,

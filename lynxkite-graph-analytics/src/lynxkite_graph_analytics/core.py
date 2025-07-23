@@ -42,28 +42,6 @@ OtherName = typing.Annotated[str, {"format": "dropdown", "metadata_query": "[].o
 rendered as a dropdown in the frontend, listing the keys on the "other" part of the Bundle.
 The key is passed to the operation as a string."""
 
-PyTorchModelName = typing.Annotated[
-    str,
-    {
-        "format": "dropdown",
-        "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key",
-    },
-]
-"""A type annotation to be used for parameters of an operation. ModelName is
-rendered as a dropdown in the frontend, listing the models in the Bundle.
-The model name is passed to the operation as a string."""
-
-PyKEENModelName = typing.Annotated[
-    str,
-    {
-        "format": "dropdown",
-        "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key",
-    },
-]
-"""A type annotation to be used for parameters of an operation. PyKEENModelName is
-rendered as a dropdown in the frontend, listing the PyKEEN models in the Bundle.
-The model name is passed to the operation as a string."""
-
 # Parameter names in angle brackets, like <table_name>, will be replaced with the parameter
 # values. (This is not part of JMESPath.)
 # ColumnNameByTableName will list the columns of the DataFrame with the name

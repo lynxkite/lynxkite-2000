@@ -92,6 +92,18 @@ def _torch_load(data: bytes) -> typing.Any:
     return torch.load(buffer)
 
 
+PyTorchModelName = typing.Annotated[
+    str,
+    {
+        "format": "dropdown",
+        "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key",
+    },
+]
+"""A type annotation to be used for parameters of an operation. ModelName is
+rendered as a dropdown in the frontend, listing the models in the Bundle.
+The model name is passed to the operation as a string."""
+
+
 @dataclasses.dataclass
 class ModelConfig:
     model: torch.nn.Module

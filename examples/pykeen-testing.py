@@ -1,4 +1,4 @@
-from lynxkite.core import ops
+from lynxkite_core import ops
 from lynxkite_graph_analytics import core
 
 from lynxkite_graph_analytics.pykeen_ops import PyKEENModelWrapper
@@ -13,6 +13,7 @@ import torch
 op = ops.op_registration("LynxKite Graph Analytics")
 
 
+# TODO: make this into an actual op, I have plans see branch `szabo-pykeen-load-embeddings`
 @op("Load embedding into PyKEEN model")
 def load_pykeen_embeddings(
     dataset: core.Bundle,
@@ -101,6 +102,7 @@ def load_pykeen_embeddings(
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
         edges_data=edges_data,
+        seed=42,
     )
 
     bundle_dataset.other[save_as] = model_wrapper

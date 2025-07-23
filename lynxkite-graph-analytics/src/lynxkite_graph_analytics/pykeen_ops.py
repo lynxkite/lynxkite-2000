@@ -1,9 +1,10 @@
 """PyKEEN operations."""
 
-from lynxkite.core import ops
+from lynxkite_core import ops
 from . import core
 from .pytorch.pytorch_core import _torch_save, _torch_load
 
+import typing
 import pandas as pd
 import enum
 from pykeen import models
@@ -15,6 +16,18 @@ from pykeen.triples import TriplesFactory
 
 
 op = ops.op_registration(core.ENV)
+
+
+PyKEENModelName = typing.Annotated[
+    str,
+    {
+        "format": "dropdown",
+        "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key",
+    },
+]
+"""A type annotation to be used for parameters of an operation. PyKEENModelName is
+rendered as a dropdown in the frontend, listing the PyKEEN models in the Bundle.
+The model name is passed to the operation as a string."""
 
 
 def mapped_triples_to_df(triples, entity_to_id, relation_to_id):
@@ -164,11 +177,13 @@ class PyKEENModel(str, enum.Enum):
     TransR = "TransR"
     TuckER = "TuckER"
 
-    def to_class(self, triples_factory: TriplesFactory, embedding_dim: int) -> models.Model:
+    def to_class(
+        self, triples_factory: TriplesFactory, embedding_dim: int, seed: int = 42
+    ) -> models.Model:
         return getattr(models, self.value)(
             triples_factory=triples_factory,
             embedding_dim=embedding_dim,
-            random_seed=42,
+            random_seed=seed,
         )
 
 
@@ -183,6 +198,7 @@ class PyKEENModelWrapper:
         entity_to_id: dict,
         relation_to_id: dict,
         edges_data: pd.DataFrame,
+        seed: int,
         trained: bool = False,
     ):
         self.model = model
@@ -192,6 +208,7 @@ class PyKEENModelWrapper:
         self.entity_to_id = entity_to_id
         self.relation_to_id = relation_to_id
         self.edges_data = edges_data
+        self.seed = seed
 
     def metadata(self) -> dict:
         return {
@@ -212,14 +229,8 @@ class PyKEENModelWrapper:
         return str(self.model)
 
     def __getstate__(self):
-        state = {
-            "trained": getattr(self, "trained", False),
-            "model_type": getattr(self, "model_type", None),
-            "embedding_dim": getattr(self, "embedding_dim", None),
-            "entity_to_id": getattr(self, "entity_to_id", None),
-            "relation_to_id": getattr(self, "relation_to_id", None),
-            "edges_data": getattr(self, "edges_data", None),
-        }
+        state = dict(self.__dict__)
+        del state["model"]
         if self.trained:
             state["model_state_dict"] = _torch_save(self.model.state_dict())
 
@@ -243,6 +254,7 @@ class PyKEENModelWrapper:
                     create_inverse_triples=req_inverse_triples(self.model_type),
                 ),
                 embedding_dim=self.embedding_dim,
+                seed=self.seed,
             )
             if self.trained and model_state_dict is not None:
                 self.model.load_state_dict(_torch_load(model_state_dict))
@@ -277,6 +289,7 @@ def define_pykeen_model(
     *,
     model: PyKEENModel = PyKEENModel.TransE,
     embedding_dim: int = 50,
+    seed: int = 42,
     save_as: str = "PyKEENmodel",
 ):
     """Defines a PyKEEN model based on the selected model type."""
@@ -293,6 +306,7 @@ def define_pykeen_model(
             create_inverse_triples=req_inverse_triples(model),
         ),
         embedding_dim=embedding_dim,
+        seed=seed,
     )
     model_wrapper = PyKEENModelWrapper(
         model_class,
@@ -301,6 +315,7 @@ def define_pykeen_model(
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
         edges_data=edges_data,
+        seed=seed,
     )
     bundle.other[save_as] = model_wrapper
     return bundle
@@ -319,7 +334,7 @@ class PyKEENSupportedOptimizers(str, enum.Enum):
 def train_embedding_model(
     bundle: core.Bundle,
     *,
-    model: core.PyKEENModelName = "PyKEENmodel",
+    model: PyKEENModelName = "PyKEENmodel",
     training_table: core.TableName = "edges_train",
     testing_table: core.TableName = "edges_test",
     validation_table: core.TableName = "edges_val",
@@ -370,12 +385,12 @@ def train_embedding_model(
         ),
         optimizer=optimizer_type,
         evaluator=None,
-        random_seed=42,
+        random_seed=model_wrapper.seed,
         stopper="early",
         stopper_kwargs=dict(
             frequency=2,
-            patience=6,
-            relative_delta=0.001,
+            patience=15,
+            relative_delta=0.0005,
             metric="hits@k",
         ),
     )
@@ -393,7 +408,7 @@ def train_embedding_model(
 def triple_predict(
     bundle: core.Bundle,
     *,
-    model_name: core.PyKEENModelName = "PyKEENmodel",
+    model_name: PyKEENModelName = "PyKEENmodel",
     table_name: core.TableName = "edges_val",
 ):
     bundle = bundle.copy()
@@ -427,7 +442,7 @@ def triple_predict(
 def target_predict(
     bundle: core.Bundle,
     *,
-    model_name: core.PyKEENModelName = "PyKEENmodel",
+    model_name: PyKEENModelName = "PyKEENmodel",
     head: str,
     relation: str,
     tail: str,
@@ -473,7 +488,7 @@ def target_predict(
 
 @op("Full prediction", slow=True)
 def full_predict(
-    bundle: core.Bundle, *, model_name: core.PyKEENModelName = "PyKEENmodel", k: int | None = None
+    bundle: core.Bundle, *, model_name: PyKEENModelName = "PyKEENmodel", k: int | None = None
 ):
     """Pass k="" to keep all scores"""
     bundle = bundle.copy()
@@ -506,7 +521,7 @@ def full_predict(
 def extract_from_pykeen(
     bundle: core.Bundle,
     *,
-    model_name: core.PyKEENModelName = "PyKEENmodel",
+    model_name: PyKEENModelName = "PyKEENmodel",
 ):
     bundle = bundle.copy()
     model = bundle.other[model_name]
@@ -550,8 +565,6 @@ def extract_from_pykeen(
             f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
         )
 
-    print(relation_embeddings.shape)
-
     relations_table = bundle.dfs["relations"]
     if "embedding" not in relations_table.columns:
         relations_table["embedding"] = None
@@ -576,7 +589,7 @@ class EvaluatorTypes(str, enum.Enum):
 def evaluate(
     bundle: core.Bundle,
     *,
-    model_name: core.PyKEENModelName = "PyKEENmodel",
+    model_name: PyKEENModelName = "PyKEENmodel",
     evaluator_type: EvaluatorTypes = EvaluatorTypes.RankBasedEvaluator,
     metrics_str: str = "ALL",
 ):
@@ -623,7 +636,7 @@ def evaluate(
         try:
             score = evaluated.get_metric(metric)
         except Exception as e:
-            raise Exception(f"Possibly unknown metric: {metric}\nError: {e}")
+            raise Exception(f"Possibly unknown metric: {metric}") from e
         metrics_df = pd.concat(
             [metrics_df, pd.DataFrame([[metric, score]], columns=metrics_df.columns)]
         )
