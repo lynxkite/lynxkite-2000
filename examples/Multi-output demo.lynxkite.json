@@ -38,12 +38,18 @@
               "kind": "parameters",
               "value": [
                 {
-                  "annotation": "int",
+                  "annotation": {
+                    "cls": "ExprName",
+                    "name": "int"
+                  },
                   "description": "Number of elements in output \"one\".",
                   "name": "a_limit"
                 },
                 {
-                  "annotation": "int",
+                  "annotation": {
+                    "cls": "ExprName",
+                    "name": "int"
+                  },
                   "description": "Number of elements in output \"two\".",
                   "name": "b_limit"
                 }
@@ -143,7 +149,8 @@
               "df": {
                 "columns": [
                   "a"
-                ]
+                ],
+                "key": "df"
               }
             },
             "other": {},
@@ -196,6 +203,7 @@
     },
     {
       "data": {
+        "collapsed": true,
         "display": {
           "dataframes": {
             "df": {
@@ -246,7 +254,8 @@
               "df": {
                 "columns": [
                   "b"
-                ]
+                ],
+                "key": "df"
               }
             },
             "other": {},
@@ -297,5 +306,6 @@
       "type": "table_view",
       "width": 225.0
     }
-  ]
+  ],
+  "paused": false
 }

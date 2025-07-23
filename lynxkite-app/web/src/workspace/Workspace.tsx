@@ -217,11 +217,11 @@ function LynxKiteFlow() {
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-      | {
-          pos: XYPosition;
-          categoryHierarchy: CategoryHierarchy;
-        }
-      | undefined,
+    | {
+      pos: XYPosition;
+      categoryHierarchy: CategoryHierarchy;
+    }
+    | undefined,
   );
   const nodeTypes = useMemo(
     () => ({
@@ -474,12 +474,12 @@ function LynxKiteFlow() {
       ...nodes.map((n) =>
         n.selected
           ? {
-              ...n,
-              position: { x: n.position.x - left, y: n.position.y - top },
-              parentId: groupNode.id,
-              extent: "parent" as const,
-              selected: false,
-            }
+            ...n,
+            position: { x: n.position.x - left, y: n.position.y - top },
+            parentId: groupNode.id,
+            extent: "parent" as const,
+            selected: false,
+          }
           : n,
       ),
     ]);

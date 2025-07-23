@@ -150,7 +150,7 @@ export class Workspace {
       try {
         await this.tryToConnectBoxes(sourceId, targetId);
         return;
-      } catch (e) {}
+      } catch (e) { }
     }
   }
 
@@ -173,7 +173,7 @@ export class Box {
   constructor(
     readonly page: Page,
     readonly locator: Locator,
-  ) {}
+  ) { }
   getParameter(name: string) {
     return this.locator.getByLabel(name);
   }
