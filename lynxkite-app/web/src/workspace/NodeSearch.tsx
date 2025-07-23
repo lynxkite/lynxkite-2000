@@ -24,6 +24,7 @@ export type Category = {
   categories: Record<string, Category>; // Subcategories
 };
 
+
 export type CategoryHierarchy = Category;
 
 // NEW: Extracted hierarchy building logic for better performance
