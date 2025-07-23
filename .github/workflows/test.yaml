@@ -15,35 +15,24 @@ jobs:
       - name: Set up Python
         run: uv python install
 
-      # - name: Debug ty issue
-      #   run: |
-      #     uv pip install ty
-      #     uv pip list
-      #     uv run python -m ty check
-
       - name: Install dependencies
         run: |
           uv venv
           . .venv/bin/activate
-          uv pip install \
-            -e lynxkite-core/[dev] \
-            -e lynxkite-app/[dev] \
-            -e lynxkite-graph-analytics/[dev] \
-            -e lynxkite-pillow-example/
+          echo PATH=$PATH >> $GITHUB_ENV
+          uv sync
 
       - name: Run pre-commits
         run: |
-          uv pip install pre-commit
-          uv run pre-commit run --all-files
+          pre-commit run --all-files
 
       - name: Run Python unittests
         run: |
-          uv run pytest --asyncio-mode=auto
+          pytest --asyncio-mode=auto
 
       - name: Build the documentation
         run: |
-          uv pip install mkdocs-material mkdocstrings[python]
-          uv run mkdocs build
+          mkdocs build
 
       - uses: actions/setup-node@v4
         with:
@@ -57,7 +46,9 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          uv run bash -c 'cd lynxkite-app/web; npm run build; npm run test'
+          cd lynxkite-app/web
+          npm run build
+          npm run test
 
       - uses: actions/upload-artifact@v4
         name: Upload playwright report

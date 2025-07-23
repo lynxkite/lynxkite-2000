@@ -1,4 +1,4 @@
-from lynxkite.core.ops import op
+from lynxkite_core.ops import op
 from faker import Faker  # ty: ignore[unresolved-import]
 import pandas as pd
 

@@ -81,7 +81,7 @@ body {
     display: flex;
     flex-direction: column;
 
-    > :not(.title) {
+    > :not(.title, .react-flow__handle) {
       user-select: text;
       cursor: default;
     }

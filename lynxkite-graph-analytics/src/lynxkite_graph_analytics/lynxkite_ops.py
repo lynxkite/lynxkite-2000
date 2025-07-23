@@ -3,7 +3,7 @@
 import enum
 import os
 import fsspec
-from lynxkite.core import ops
+from lynxkite_core import ops
 from collections import deque
 
 from . import core
@@ -47,7 +47,7 @@ class FileFormat(enum.StrEnum):
     slow=True,
 )
 def import_file(
-    *, file_path: str, table_name: str, file_format: FileFormat, **kwargs
+    *, file_path: str, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
 ) -> core.Bundle:
     """Read the contents of the a file into a `Bundle`.
 

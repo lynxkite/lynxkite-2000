@@ -4,9 +4,9 @@ import enum
 import functools
 import numpy as np
 from . import core
-from lynxkite.core import workspace
+from lynxkite_core import workspace
 from .pytorch import pytorch_core
-from lynxkite.core import ops
+from lynxkite_core import ops
 from tqdm import tqdm
 import pandas as pd
 import pathlib
