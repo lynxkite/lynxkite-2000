@@ -36,10 +36,23 @@ class ODEMethod(str, enum.Enum):
     implicit_adams = "implicit_adams"
 
 
-reg("Input: tensor", outputs=["output"], params=[P.basic("name")], color="gray")
+_TORCH_TYPES = ["float", "double", "int", "long", "bool"]
+
+reg(
+    "Input: tensor",
+    outputs=["output"],
+    params=[P.basic("name"), P.options("type", _TORCH_TYPES, default="float")],
+    color="gray",
+)
 reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
 reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
-reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
+reg(
+    "Output",
+    inputs=["x"],
+    outputs=["x"],
+    params=[P.basic("name"), P.options("type", _TORCH_TYPES, default="float")],
+    color="gray",
+)
 reg("Output sequence", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 
 

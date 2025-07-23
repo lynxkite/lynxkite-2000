@@ -86,7 +86,7 @@ def train_model(
     """
     if input_mapping is None:
         return ops.Result(bundle, error="No inputs are selected.")
-    m = bundle.other[model_name].copy()
+    m: pytorch_core.ModelConfig = bundle.other[model_name].copy()
     num_samples = _get_num_samples(bundle, input_mapping)
     if num_samples is None:
         return ops.Result(bundle, error="No inputs are selected.")
@@ -96,7 +96,7 @@ def train_model(
     for _ in tepochs:
         total_loss = 0
         for i in tqdm(range(num_batches)):
-            inputs = pytorch_core.to_batch_tensors(bundle, batch_size, i, input_mapping)
+            inputs = m.batch_tensors_from_bundle(bundle, batch_size, i, input_mapping)
             loss = m.train(inputs)
             total_loss += loss
         mean_loss = total_loss / len(inputs)
@@ -121,7 +121,7 @@ def model_inference(
     """Executes a trained model."""
     if input_mapping is None or output_mapping is None:
         return ops.Result(bundle, error="Mapping is unset.")
-    m = bundle.other[model_name]
+    m: pytorch_core.ModelConfig = bundle.other[model_name]
     assert m.trained, "The model is not trained."
     num_samples = _get_num_samples(bundle, input_mapping)
     if num_samples is None:
@@ -129,7 +129,7 @@ def model_inference(
     num_batches = num_samples // batch_size
     outputs = {}
     for i in tqdm(range(num_batches)):
-        inputs = pytorch_core.to_batch_tensors(bundle, batch_size, i, input_mapping)
+        inputs = m.batch_tensors_from_bundle(bundle, batch_size, i, input_mapping)
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
             v = v.detach().numpy().reshape(batch_size, -1)
