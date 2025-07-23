@@ -25,4 +25,18 @@ repos:
       pass_filenames: false
       args: [--python=.venv/]
       additional_dependencies: [ty]
-
+- repo: https://github.com/fpgmaas/deptry.git
+  rev: "0.23.0"
+  hooks:
+    - id: deptry
+      name: deptry for lynxkite-app
+      entry: bash -c 'cd lynxkite-app && deptry .'
+    - id: deptry
+      name: deptry for lynxkite-core
+      entry: bash -c 'cd lynxkite-core && deptry .'
+    - id: deptry
+      name: deptry for lynxkite-graph-analytics
+      entry: bash -c 'cd lynxkite-graph-analytics && deptry .'
+    - id: deptry
+      name: deptry for lynxkite-pillow-example
+      entry: bash -c 'cd lynxkite-pillow-example && deptry .'
