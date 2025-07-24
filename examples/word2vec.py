@@ -1,4 +1,4 @@
-from lynxkite.core.ops import op
+from lynxkite_core.ops import op
 import pandas as pd
 
 ENV = "LynxKite Graph Analytics"

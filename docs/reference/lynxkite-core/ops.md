@@ -1,1 +1,1 @@
-::: lynxkite.core.ops
+::: lynxkite_core.ops

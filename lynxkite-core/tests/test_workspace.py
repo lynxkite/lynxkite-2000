@@ -1,7 +1,7 @@
 import os
 import pytest
 import tempfile
-from lynxkite.core import workspace
+from lynxkite_core import workspace
 
 
 def test_save_load():
@@ -60,7 +60,7 @@ def test_save_load():
 
 @pytest.fixture(scope="session", autouse=True)
 def populate_ops_catalog():
-    from lynxkite.core import ops
+    from lynxkite_core import ops
 
     ops.register_passive_op("test", "Test Operation", inputs=[])
 

@@ -5,7 +5,7 @@ import graphlib
 import io
 import typing
 import pydantic
-from lynxkite.core import ops, workspace
+from lynxkite_core import ops, workspace
 import torch
 import dataclasses
 from .. import core
@@ -92,6 +92,18 @@ def _torch_load(data: bytes) -> typing.Any:
     return torch.load(buffer)
 
 
+PyTorchModelName = typing.Annotated[
+    str,
+    {
+        "format": "dropdown",
+        "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key",
+    },
+]
+"""A type annotation to be used for parameters of an operation. ModelName is
+rendered as a dropdown in the frontend, listing the models in the Bundle.
+The model name is passed to the operation as a string."""
+
+
 @dataclasses.dataclass
 class ModelConfig:
     model: torch.nn.Module
@@ -99,7 +111,8 @@ class ModelConfig:
     model_outputs: list[str]
     model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
-    input_output_names: list[str]
+    input_output_names: dict[str, str]
+    input_output_types: dict[str, str]
     loss: torch.nn.Module
     source_workspace_json: str
     optimizer_parameters: dict[str, typing.Any]
@@ -154,7 +167,7 @@ class ModelConfig:
 
     def metadata(self):
         return {
-            "type": "model",
+            "type": "pytorch-model",
             "model": {
                 "model_inputs": self.model_inputs,
                 "model_outputs": self.model_outputs,
@@ -163,6 +176,29 @@ class ModelConfig:
                 "trained": self.trained,
             },
         }
+
+    def batch_tensors_from_bundle(
+        self,
+        b: core.Bundle,
+        batch_size: int,
+        batch_index: int,
+        m: ModelMapping | None,
+    ) -> dict[str, torch.Tensor]:
+        """Extracts tensors from a bundle for a specific batch using a model mapping."""
+        tensors = {}
+        for input_name, input_mapping in m.map.items():
+            df_name = input_mapping.df
+            column_name = input_mapping.column
+            if df_name in b.dfs and column_name in b.dfs[df_name]:
+                batch = b.dfs[df_name][column_name].iloc[
+                    batch_index * batch_size : (batch_index + 1) * batch_size
+                ]
+                input_type = self.input_output_types[input_name]
+                torch_type = getattr(torch, input_type)
+                tensors[input_name] = torch.tensor(batch.to_list(), dtype=torch_type)
+                if batch_size == 1:
+                    tensors[input_name] = tensors[input_name].squeeze(0)
+        return tensors
 
     # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
     # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
@@ -396,6 +432,7 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
+
         used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
@@ -406,7 +443,7 @@ class ModelBuilder:
         cfg["model_inputs"] = sorted(used_in_model - made_in_model)
         cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
         cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
-        cfg["input_output_names"] = self.get_names(
+        cfg["input_output_names"], cfg["input_output_types"] = self.get_names_and_types(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
@@ -428,16 +465,19 @@ class ModelBuilder:
         cfg["source_workspace_json"] = self.ws.model_dump_json()
         return ModelConfig(**cfg)  # ty: ignore[missing-argument]
 
-    def get_names(self, *ids: list[str]) -> dict[str, str]:
-        """Returns a mapping from internal IDs to human-readable names."""
+    def get_names_and_types(self, *ids: list[str]) -> tuple[dict[str, str], dict[str, str]]:
+        """Returns a mapping from internal IDs to human readable names and data types."""
         names = {}
+        types = {}
         for i in ids:
             for node in self.nodes.values():
                 op = self.catalog[node.data.op_id]
                 name = node.data.params.get("name") or node.data.title
+                type = node.data.params.get("type", "float").lower()
                 for output in op.outputs:
                     i2 = _to_id(node.id, output.name)
                     if i2 == i:
+                        types[i] = type  # All outputs of the same node have the same type.
                         if len(op.outputs) == 1:
                             names[i] = name
                         else:
@@ -448,20 +488,4 @@ class ModelBuilder:
                 break
             else:
                 raise ValueError(f"Cannot find name for input {i}.")
-        return names
-
-
-def to_batch_tensors(
-    b: core.Bundle, batch_size: int, batch_index: int, m: ModelMapping
-) -> dict[str, torch.Tensor]:
-    """Extracts tensors from a bundle for a specific batch using a model mapping."""
-    tensors = {}
-    for k, v in m.map.items():
-        if v.df in b.dfs and v.column in b.dfs[v.df]:
-            batch = b.dfs[v.df][v.column].iloc[
-                batch_index * batch_size : (batch_index + 1) * batch_size
-            ]
-            tensors[k] = torch.tensor(batch.to_list(), dtype=torch.float32)
-            if batch_size == 1:
-                tensors[k] = tensors[k].squeeze(0)
-    return tensors
+        return names, types

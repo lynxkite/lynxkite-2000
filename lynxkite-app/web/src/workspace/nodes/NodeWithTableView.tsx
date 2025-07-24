@@ -54,8 +54,8 @@ function NodeWithTableView(props: any) {
                 <dl key={`${name}-dl`}>
                   {df.columns.map((c: string, i: number) => (
                     <React.Fragment key={`${name}-${c}`}>
-                      <dt>{c}</dt>
-                      <dd>
+                      {df.columns.length > 1 && <dt>{c}</dt>}
+                      <dd className="prose">
                         <Markdown>{toMD(df.data[0][i])}</Markdown>
                       </dd>
                     </React.Fragment>

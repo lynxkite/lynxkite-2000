@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 import networkx as nx
 
-from lynxkite.core import workspace, ops
+from lynxkite_core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute, ENV
 from lynxkite_graph_analytics.lynxkite_ops import FileFormat, export_to_file
 

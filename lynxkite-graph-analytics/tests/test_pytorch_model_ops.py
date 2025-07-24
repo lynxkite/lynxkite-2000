@@ -1,5 +1,5 @@
 import torch_geometric.nn as pyg_nn
-from lynxkite.core import workspace
+from lynxkite_core import workspace
 from lynxkite_graph_analytics.pytorch import pytorch_core
 import torch
 import pytest

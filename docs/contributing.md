@@ -19,7 +19,7 @@ Install everything like this:
 uv venv
 source .venv/bin/activate
 uvx pre-commit install
-uv pip install -e 'lynxkite-core/[dev]' -e 'lynxkite-app/[dev]' -e 'lynxkite-graph-analytics/[dev]' -e lynxkite-pillow-example/
+uv sync
 ```
 
 This also builds the frontend, hopefully very quickly. To run it:
@@ -38,10 +38,10 @@ npm run dev
 
 ## Executing tests
 
-Run all tests with a single command, or look inside to see how to run them individually:
-
 ```bash
-./test.sh
+pytest                                # Runs all backend unit tests.
+pytest lynxkite-core                  # Runs tests for one package.
+cd lynxkite-app/web && npm run test   # Runs frontend tests.
 ```
 
 ## Documentation
@@ -49,6 +49,5 @@ Run all tests with a single command, or look inside to see how to run them indiv
 To work on the documentation:
 
 ```bash
-uv pip install mkdocs-material mkdocstrings[python]
 mkdocs serve
 ```
