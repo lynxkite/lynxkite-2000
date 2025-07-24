@@ -1,6 +1,6 @@
 import pandas as pd
 
-from lynxkite.core import workspace, ops
+from lynxkite_core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute
 
 

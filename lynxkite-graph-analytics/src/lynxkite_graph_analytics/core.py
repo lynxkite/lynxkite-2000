@@ -2,7 +2,7 @@
 
 import inspect
 import os
-from lynxkite.core import ops, workspace
+from lynxkite_core import ops, workspace
 import dataclasses
 import functools
 import networkx as nx
@@ -41,17 +41,6 @@ OtherName = typing.Annotated[str, {"format": "dropdown", "metadata_query": "[].o
 """A type annotation to be used for parameters of an operation. OtherName is
 rendered as a dropdown in the frontend, listing the keys on the "other" part of the Bundle.
 The key is passed to the operation as a string."""
-
-ModelName = typing.Annotated[
-    str,
-    {
-        "format": "dropdown",
-        "metadata_query": "[].other.*[] | [?type == 'model'].key",
-    },
-]
-"""A type annotation to be used for parameters of an operation. ModelName is
-rendered as a dropdown in the frontend, listing the models in the Bundle.
-The model name is passed to the operation as a string."""
 
 # Parameter names in angle brackets, like <table_name>, will be replaced with the parameter
 # values. (This is not part of JMESPath.)
@@ -227,7 +216,10 @@ def disambiguate_edges(ws: workspace.Workspace):
     for edge in reversed(ws.edges):
         dst_node = nodes[edge.target]
         op = catalog.get(dst_node.data.op_id)
-        if not op or op.get_input(edge.targetHandle).type == list[Bundle]:
+        if not op:
+            continue
+        t = op.get_input(edge.targetHandle).type
+        if t is list or typing.get_origin(t) is list:
             # Takes multiple bundles as an input. No need to disambiguate.
             continue
         if (edge.target, edge.targetHandle) in seen:
@@ -302,16 +294,21 @@ async def _execute_node(
         inputs = []
         missing = []
         for p in op.inputs:
+            is_list = typing.get_origin(p.type) is list
             if p.name not in input_map:
                 opt_type = ops.get_optional_type(p.type)
                 if opt_type is not None:
                     inputs.append(None)
+                elif is_list:
+                    inputs.append([])
                 else:
                     missing.append(p.name)
                 continue
             x = input_map[p.name]
             if p.type == list[Bundle]:
                 x = [_to_bundle(i) for i in x]
+            elif is_list:
+                pass
             else:
                 [x] = x  # There should never be multiple inputs.
             if p.type == nx.Graph:
@@ -346,12 +343,17 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
-    if isinstance(result.output, dict):
-        for k, v in result.output.items():
-            outputs[node.id, k] = v
-    elif result.output is not None:
-        [k] = op.outputs
-        outputs[node.id, k.name] = result.output
+    try:
+        if isinstance(result.output, dict):
+            for k, v in result.output.items():
+                outputs[node.id, k] = v
+        elif result.output is not None:
+            [k] = op.outputs
+            outputs[node.id, k.name] = result.output
+    except Exception as e:
+        if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
+            traceback.print_exc()
+        result = ops.Result(error=str(e))
     node.publish_result(result)
 
 

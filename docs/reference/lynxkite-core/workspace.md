@@ -1,1 +1,1 @@
-::: lynxkite.core.workspace
+::: lynxkite_core.workspace

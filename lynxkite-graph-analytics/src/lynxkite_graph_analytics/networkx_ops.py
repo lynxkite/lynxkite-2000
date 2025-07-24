@@ -1,6 +1,6 @@
 """Automatically wraps all NetworkX functions as LynxKite operations."""
 
-from lynxkite.core import ops
+from lynxkite_core import ops
 import collections.abc
 import enum
 import functools
@@ -327,7 +327,9 @@ def register_networkx(env: str):
                 params = _get_params(func)
             except UnsupportedParameterType:
                 continue
-            inputs = [ops.Input(name=k, type=nx.Graph) for k in func.graphs]
+            inputs = [
+                ops.Input(name=k, type=nx.Graph, position=ops.Position.LEFT) for k in func.graphs
+            ]
             nicename = name.replace("_", " ")
             for a, b in _REPLACEMENTS:
                 nicename = nicename.replace(a, b)
@@ -339,7 +341,7 @@ def register_networkx(env: str):
                 categories=_categories(func),
                 params=params,
                 inputs=inputs,
-                outputs=[ops.Output(name="output", type=nx.Graph)],
+                outputs=[ops.Output(name="output", type=nx.Graph, position=ops.Position.RIGHT)],
                 type="basic",
             )
             cat[op.id] = op

@@ -5,16 +5,17 @@ description = "A lightweight dependency for authoring LynxKite operations and ex
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "pydantic>=2.11.7",
 ]
 classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-]
+[tool.deptry.per_rule_ignores]
+DEP001 = ["matplotlib", "griffe", "pycrdt"]
+DEP003 = ["matplotlib", "griffe", "pycrdt"]
 
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
+[build-system]
+requires = ["uv_build>=0.8.0,<0.9.0"]
+build-backend = "uv_build"

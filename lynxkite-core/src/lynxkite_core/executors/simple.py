@@ -13,7 +13,7 @@ def register(env: str):
 
     Usage:
 
-        from lynxkite.core.executors import simple
+        from lynxkite_core.executors import simple
         simple.register("My Environment")
     """
     ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env])
