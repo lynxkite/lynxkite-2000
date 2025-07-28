@@ -204,6 +204,40 @@ def build_model(ws: workspace.Workspace) -> ModelConfig:
     return builder.build_model()
 
 
+def _is_submodule_type(type_: type[typing.Any]) -> bool:
+    """Returns True if the type is a submodule, i.e., it is a torch.nn.Module or list[torch.nn.Module]."""
+    if type_ is torch.nn.Module or typing.get_origin(type_) is torch.nn.Module:
+        return True
+    if type_ is list or typing.get_origin(type_) is list:
+        args = typing.get_args(type_)
+        if (
+            len(args) == 1
+            and args[0] is torch.nn.Module
+            or typing.get_origin(args[0]) is torch.nn.Module
+        ):
+            return True
+    return False
+
+
+def is_submodule_input(ops: ops.Op, input_name: str) -> bool:
+    """Returns True if the node has an input that is a submodule."""
+    # Raises if input_name is not in ops.inputs.
+    for input in ops.inputs:
+        if input.name == input_name and _is_submodule_type(input.type):
+            return True
+    return False
+
+
+@dataclasses.dataclass
+class Submodule:
+    """A submodule is a collection of nodes that form a subtree in the model graph."""
+
+    root: str
+    model: torch.nn.Module
+    inputs: list[str]
+    outputs: list[str]
+
+
 class ModelBuilder:
     """The state shared between methods that are used to build the model."""
 
@@ -282,6 +316,7 @@ class ModelBuilder:
             for i in v:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
+        self.submodules: dict[str, torch.nn.Module] = {}
         # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
@@ -300,6 +335,98 @@ class ModelBuilder:
             del self.inv_dependencies[node_id]
             del self.nodes[node_id]
 
+    def identify_submodules(self):
+        subtrees = {}
+        for e in self.ws.edges:
+            op = self.catalog[self.nodes[e.target].data.op_id]
+            input_type = op.get_input(e.targetHandle).type
+            if _is_submodule_type(input_type):
+                root = e.source
+                sub_nodes = {root} | self.all_upstream(root)
+                subtrees[_to_id(e.source, e.sourceHandle)] = sub_nodes
+        return subtrees
+
+    def build_submodel(self, subtree) -> Submodule:
+        sub_dependencies = {n: deps for n, deps in self.dependencies.items() if n in subtree}
+        ts = graphlib.TopologicalSorter(sub_dependencies)
+        layers = []
+        for node_id in ts.static_order():
+            layer = self.run_node_simple(node_id)
+            if layer:
+                layers.append(layer)
+        return self.layers_to_model(layers)
+
+    def run_node_simple(self, node_id: str) -> Layer | None:
+        """Adds the layer(s) produced by this node to self.layers."""
+        node = self.nodes[node_id]
+        t = node.data.title
+        op = self.catalog[node.data.op_id]
+        p = op.convert_params(node.data.params)
+        match t:
+            case "Repeat":
+                if node_id.startswith("END "):
+                    repeat_id = node_id.removeprefix("END ")
+                    start_id = f"START {repeat_id}"
+                    [last_output] = self.in_edges[node_id]["input"]
+                    after_start = self.all_downstream(start_id)
+                    after_end = self.all_downstream(node_id)
+                    before_end = self.all_upstream(node_id)
+                    affected_nodes = after_start - after_end - {node_id}
+                    repeated_nodes = after_start & before_end
+                    assert affected_nodes == repeated_nodes, (
+                        f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
+                    )
+                    repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
+                    assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
+                    for i in range(p["times"] - 1):
+                        # Copy repeat section's output to repeat section's input.
+                        self.layers.append(
+                            Layer(
+                                torch.nn.Identity(),
+                                origin_id=node_id,
+                                inputs=[_to_id(*last_output)],
+                                outputs=[_to_id(start_id, "output")],
+                            )
+                        )
+                        # Repeat the layers in the section.
+                        for layer in repeated_layers:
+                            if p["same_weights"]:
+                                self.layers.append(layer)
+                            else:
+                                self.run_node(layer.origin_id)
+                return self.run_op(node_id, op, p)
+            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
+                return
+            case _:
+                return self.run_op(node_id, op, p)
+
+    def layers_to_model(self, layers: list[Layer]) -> Submodule:
+        """
+        Transforms a list of Layer objects into a torch_geometric.nn.Sequential model.
+        Assumes Layer.for_sequential() returns (module, "inputs -> outputs") as required by pyg_nn.Sequential.
+        """
+        import torch_geometric.nn as pyg_nn
+
+        # Collect all input and output names from layers
+        all_inputs = set()
+        all_outputs = set()
+        for layer in layers:
+            all_inputs.update(layer.inputs)
+            all_outputs.update(layer.outputs)
+        # Model inputs are those used but not produced by any layer
+        model_inputs = sorted(all_inputs - all_outputs)
+        # Prepare layers for pyg_nn.Sequential
+        sequential_layers = [layer.for_sequential() for layer in layers]
+        # Build the model
+        model = pyg_nn.Sequential(", ".join(model_inputs), sequential_layers)
+
+        return Submodule(
+            root=layers[0].origin_id,
+            model=model,
+            inputs=model_inputs,
+            outputs=sorted(all_outputs),
+        )
+
     def all_upstream(self, node: str) -> set[str]:
         """Returns all nodes upstream of a node."""
         deps = set()
@@ -315,6 +442,17 @@ class ModelBuilder:
             deps.add(dep)
             deps.update(self.all_downstream(dep))
         return deps
+
+    def _edge_to_input(self, edge: tuple[str, str], input_type: type):
+        """Converts an edge to an input for an operation.
+        If the input is a submodule type, it returns the submodule object.
+        Otherwise, it returns the internal ID of the input.
+        """
+        source, source_handle = edge
+        if _is_submodule_type(input_type):
+            # If the input is a submodule, we need to get the module object.
+            return self.submodules[_to_id(source, source_handle)]
+        return _to_id(source, source_handle)
 
     def run_node(self, node_id: str) -> None:
         """Adds the layer(s) produced by this node to self.layers."""
@@ -362,19 +500,52 @@ class ModelBuilder:
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
-        inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
+        operation_inputs = []
+        for input in op.inputs:
+            input_edges = [
+                self._edge_to_input(edge, input.type)
+                for edge in self.in_edges[node_id].get(input.name, [])
+            ]
+            input_edges = input_edges or [
+                None
+            ]  # Nodes that are used as submodules can have no inputs.
+            if not (input.type is list or typing.get_origin(input.type) is list):
+                assert len(input_edges) <= 1, (
+                    f"Detected multiple input edges for non-list input {node_id} {input.name}."
+                )
+                [input_edges] = input_edges
+            operation_inputs.append(input_edges)
+
+        call_args = []
+        layer_inputs = []
+        for input in operation_inputs:
+            if isinstance(input, Submodule):
+                # If the input is a submodule, we need to use its model and inputs.
+                call_args.append(input.model)
+                layer_inputs.extend(input.inputs)
+            else:
+                # Otherwise, we use the internal ID of the input.
+                call_args.append(input)
+                layer_inputs.append(input)
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
-            module = op.func(*inputs, **params)
-        return Layer(module, node_id, inputs, outputs)
+            module = op.func(*call_args, **params)
+        return Layer(module, node_id, layer_inputs, outputs)
 
     def build_model(self) -> ModelConfig:
         # Walk the graph in topological order.
+        sub_trees = self.identify_submodules()
+        for sub_id, subtree in sub_trees.items():
+            sub_model = self.build_submodel(subtree)
+            self.submodules[sub_id] = sub_model
         ts = graphlib.TopologicalSorter(self.dependencies)
         for node_id in ts.static_order():
-            self.run_node(node_id)
+            if all(
+                node_id not in s for s in sub_trees.values()
+            ):  # Node does not belong to a submodule.
+                self.run_node(node_id)
         return self.get_config()
 
     def get_config(self) -> ModelConfig:
