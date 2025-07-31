@@ -170,7 +170,7 @@ class ModelConfig:
         b: core.Bundle,
         batch_size: int,
         batch_index: int,
-        m: ModelMapping | None,
+        m: ModelMapping,
     ) -> dict[str, torch.Tensor]:
         """Extracts tensors from a bundle for a specific batch using a model mapping."""
         tensors = {}

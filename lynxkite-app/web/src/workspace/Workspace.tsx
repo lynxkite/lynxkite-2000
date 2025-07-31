@@ -224,6 +224,7 @@ function LynxKiteFlow() {
       visualization: NodeWithVisualization,
       image: NodeWithImage,
       table_view: NodeWithTableView,
+      service: NodeWithTableView,
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
       comment: NodeWithComment,
