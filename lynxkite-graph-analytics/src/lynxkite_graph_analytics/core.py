@@ -445,7 +445,7 @@ async def get_node_service(request: "fastapi.Request") -> Service:
 
 async def api_service_post(request):
     service = await get_node_service(request)
-    return service.post(request)
+    return await service.post(request)
 
 
 async def api_service_get(request):

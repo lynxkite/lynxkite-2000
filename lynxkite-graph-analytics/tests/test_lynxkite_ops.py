@@ -197,8 +197,8 @@ async def test_optional_inputs():
     await execute(ws)
     assert b.data.error == "Missing input: a"
     ws.add_edge(a, "output", b, "a")
-    outputs = await execute(ws)
-    assert outputs[b.id, "output"] == 1
+    result = await execute(ws)
+    assert result.outputs[b.id, "output"] == 1
 
 
 if __name__ == "__main__":
