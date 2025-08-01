@@ -537,9 +537,8 @@ class ModelBuilder:
     def build_model(self) -> ModelConfig:
         # Walk the graph in topological order.
         sub_trees = self.identify_submodules()
-        for sub_id, subtree in sub_trees.items():
-            sub_model = self.build_submodel(subtree)
-            self.submodules[sub_id] = sub_model
+        for submod_id, submod_tree in sub_trees.items():
+            self.submodules[submod_id] = self.build_submodel(submod_tree)
         ts = graphlib.TopologicalSorter(self.dependencies)
         for node_id in ts.static_order():
             if all(
@@ -567,6 +566,8 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
+        # TODO: Use layers_to_model() to convert layers to a model.
+        # Allow to pass model and loss layers to the function.
         used_in_model = set(input for layer in layers for input in layer.inputs)
         used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
