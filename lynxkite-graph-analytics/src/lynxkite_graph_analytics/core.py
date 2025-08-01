@@ -250,11 +250,11 @@ Outputs = dict[tuple[str, str], typing.Any]
 
 class Service(typing.Protocol):
     async def get(self, request: "fastapi.Request") -> dict:
-        """Handles a GET request."""
+        """Handles a GET request. The unparsed part of the URL is available as request.state.remaining_path."""
         ...
 
     async def post(self, request: "fastapi.Request") -> dict:
-        """Handles a POST request."""
+        """Handles a POST request. The unparsed part of the URL is available as request.state.remaining_path."""
         ...
 
 
@@ -417,7 +417,7 @@ def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
     return df
 
 
-async def run_node_service(request: "fastapi.Request", method: str):
+async def get_node_service(request: "fastapi.Request") -> Service:
     parts = request.url.path.split("/")[4:]
     cwd = pathlib.Path()
     # The workspace path (which may include slashes) is followed by the rest of the URL (which may include slashes).
@@ -439,13 +439,13 @@ async def run_node_service(request: "fastapi.Request", method: str):
     wsres = await executor(ws)
     [node] = [n for n in ws.nodes if n.id == node_id]
     assert not node.data.error, f"Node {node_id} has an error: {node.data.error}"
-    service = wsres.services[node_id]
-    path_remaining = "/".join(parts[i + 1 :])
-    return await getattr(service, method)(request, path_remaining)
+    request.state.remaining_path = "/".join(parts[i + 1 :])
+    return wsres.services[node_id]
 
 
 async def api_service_post(request):
-    return await run_node_service(request, "post")
+    service = await get_node_service(request)
+    return service.post(request)
 
 
 async def api_service_get(request):
@@ -455,14 +455,15 @@ async def api_service_get(request):
     Example:
       ...
       class ChatBackend:
-        def get(self, request: fastapi.Request, path: str):
-          ...
-        def post(self, request: fastapi.Request, path: str):
-          ...
+        def get(self, request: fastapi.Request):
+          return f"Hello from {request.state.remaining_path}"
+        def post(self, request: fastapi.Request):
+          print("POST received for", request.state.remaining_path)
       @op("Chat backend", outputs=[], view="service")
       def chat_backend(input: Bundle):
           return ChatBackend()
 
       curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite.json/Chat%20backend%201/models
     """
-    return await run_node_service(request, "get")
+    service = await get_node_service(request)
+    return await service.get(request)
