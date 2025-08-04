@@ -2,17 +2,23 @@
 
 from lynxkite_core import ops
 from . import core
-from .pytorch.pytorch_core import _torch_save, _torch_load
 
 import typing
 import pandas as pd
+import io
 import enum
+import torch
+from torch import nn
+from pykeen import stoppers
 from pykeen import models
 from pykeen import evaluation
-from pykeen.pipeline import pipeline
+from pykeen.nn.modules import Interaction
+from pykeen.nn import combination
+from pykeen.pipeline import pipeline, PipelineResult
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
-from pykeen.triples import TriplesFactory
+from pykeen.triples import TriplesFactory, TriplesNumericLiteralsFactory
+from pykeen.models import LiteralModel
 
 
 op = ops.op_registration(core.ENV)
@@ -187,28 +193,86 @@ class PyKEENModel(str, enum.Enum):
         )
 
 
+class PyKEENCombinations(str, enum.Enum):
+    ComplexSeparated = "ComplexSeparated"
+    # Concat = "Concat"
+    # ConcatAggregation = "ConcatAggregation"
+    ConcatProjection = "ConcatProjection"
+    Gated = "Gated"
+
+    def to_class(
+        self, embedding_dim: int, literal_shape: int, **kwargs
+    ) -> combination.Combination:  # ty: ignore[invalid-return-type]
+        match self:
+            case "ComplexSeparated":
+                return combination.ComplexSeparatedCombination(
+                    combination=combination.ConcatProjectionCombination,
+                    combination_kwargs=dict(
+                        input_dims=[embedding_dim, literal_shape],
+                        output_dim=embedding_dim,
+                        bias=True,
+                        activation=nn.Tanh,
+                    ),
+                )
+            # case "Concat":
+            #     return combination.ConcatCombination(
+            #         dim=int(kwargs.get("dim"))
+            #     )
+            # case "ConcatAggregation":
+            #     return combination.ConcatAggregationCombination('sum', aggregation_kwargs=dict(index=torch.tensor([0,1,2,3,4,1,2,3,4])))
+            case "ConcatProjection":
+                return combination.ConcatProjectionCombination(
+                    input_dims=[embedding_dim, literal_shape],
+                    output_dim=embedding_dim,
+                    bias=kwargs.get("bias", False),
+                    dropout=float(kwargs.get("dropout", 0.0)),
+                    activation=kwargs.get("activation", "ReLU"),
+                )
+            case "Gated":
+                return combination.GatedCombination(
+                    entity_dim=embedding_dim,
+                    literal_dim=literal_shape,
+                )
+
+
 class PyKEENModelWrapper:
     """Wrapper to add metadata method to PyKEEN models for dropdown queries, and to enable caching of model"""
 
     def __init__(
         self,
         model: models.Model,
-        model_type: PyKEENModel,
         embedding_dim: int,
         entity_to_id: dict,
         relation_to_id: dict,
         edges_data: pd.DataFrame,
         seed: int,
+        model_type: typing.Optional[PyKEENModel] = None,
+        interaction: typing.Optional[Interaction] = None,
+        combination: typing.Optional[PyKEENCombinations] = None,
+        combination_kwargs: typing.Optional[dict] = None,
+        literals_data: typing.Optional[pd.DataFrame] = None,
         trained: bool = False,
     ):
+        if model_type is None:
+            assert (
+                interaction is not None and combination is not None and literals_data is not None
+            ), "Either model_type or interaction and combination must be provided"
+        else:
+            assert interaction is None and combination is None and literals_data is None, (
+                "If model_type is provided, interaction and combination must not be provided"
+            )
         self.model = model
-        self.trained = trained
-        self.model_type = model_type
         self.embedding_dim = embedding_dim
         self.entity_to_id = entity_to_id
         self.relation_to_id = relation_to_id
         self.edges_data = edges_data
         self.seed = seed
+        self.model_type = model_type
+        self.interaction = interaction
+        self.combination = combination
+        self.combination_kwargs = combination_kwargs
+        self.literals_data = literals_data
+        self.trained = trained
 
     def metadata(self) -> dict:
         return {
@@ -232,20 +296,16 @@ class PyKEENModelWrapper:
         state = dict(self.__dict__)
         del state["model"]
         if self.trained:
-            state["model_state_dict"] = _torch_save(self.model.state_dict())
+            buffer = io.BytesIO()
+            self.model.save_state(buffer)
+            state["model_state"] = buffer.getvalue()
 
         return state
 
     def __setstate__(self, state: dict) -> None:
-        model_state_dict = state.pop("model_state_dict", None)
+        model_state = state.pop("model_state", None)
         self.__dict__.update(state)
-        if (
-            self.model_type
-            and self.embedding_dim
-            and self.entity_to_id
-            and self.relation_to_id
-            and self.edges_data is not None
-        ):
+        if self.model_type is not None:
             self.model = self.model_type.to_class(
                 triples_factory=TriplesFactory.from_labeled_triples(
                     self.edges_data.to_numpy(),
@@ -256,8 +316,43 @@ class PyKEENModelWrapper:
                 embedding_dim=self.embedding_dim,
                 seed=self.seed,
             )
-            if self.trained and model_state_dict is not None:
-                self.model.load_state_dict(_torch_load(model_state_dict))
+        else:
+            combination_cls = self.combination.to_class(
+                embedding_dim=self.embedding_dim,
+                literal_shape=self.literals_data.shape[1],
+                **(self.combination_kwargs or {}),
+            )
+            self.model = models.LiteralModel(
+                triples_factory=TriplesNumericLiteralsFactory(
+                    mapped_triples=TriplesFactory.from_labeled_triples(
+                        self.edges_data.to_numpy(),
+                        entity_to_id=self.entity_to_id,
+                        relation_to_id=self.relation_to_id,
+                        create_inverse_triples=False,
+                    ).mapped_triples,
+                    entity_to_id=self.entity_to_id,
+                    relation_to_id=self.relation_to_id,
+                    numeric_literals=torch.from_numpy(self.literals_data.to_numpy())
+                    .contiguous()
+                    .detach()
+                    .cpu()
+                    .numpy(),
+                    literals_to_id={label: i for i, label in enumerate(self.literals_data.columns)},
+                ),
+                entity_representations_kwargs=dict(
+                    shape=self.embedding_dim,
+                ),
+                relation_representations_kwargs=dict(
+                    shape=self.embedding_dim,
+                ),
+                interaction=self.interaction,
+                combination=combination_cls,
+                random_seed=self.seed,
+            )
+
+        if self.trained and model_state is not None:
+            buffer = io.BytesIO(model_state)
+            self.model.load_state(buffer)
 
     def __repr__(self):
         return f"PyKEENModelWrapper({self.model.__class__.__name__})"
@@ -288,23 +383,21 @@ def define_pykeen_model(
     bundle: core.Bundle,
     *,
     model: PyKEENModel = PyKEENModel.TransE,
+    edge_data_table: core.TableName = "edges",
     embedding_dim: int = 50,
     seed: int = 42,
     save_as: str = "PyKEENmodel",
 ):
     """Defines a PyKEEN model based on the selected model type."""
     bundle = bundle.copy()
-    entity_to_id = bundle.dfs["nodes"].set_index("label")["id"].to_dict()
-    relation_to_id = bundle.dfs["relations"].set_index("label")["id"].to_dict()
-    edges_data = bundle.dfs["edges"][["head", "relation", "tail"]]
+    edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]]
+    triples_factory = TriplesFactory.from_labeled_triples(
+        edges_data.to_numpy(),
+        create_inverse_triples=req_inverse_triples(model),
+    )
 
     model_class = model.to_class(
-        triples_factory=TriplesFactory.from_labeled_triples(
-            edges_data.to_numpy(),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-            create_inverse_triples=req_inverse_triples(model),
-        ),
+        triples_factory=triples_factory,
         embedding_dim=embedding_dim,
         seed=seed,
     )
@@ -312,13 +405,116 @@ def define_pykeen_model(
         model_class,
         model_type=model,
         embedding_dim=embedding_dim,
-        entity_to_id=entity_to_id,
-        relation_to_id=relation_to_id,
+        entity_to_id=triples_factory.entity_to_id,
+        relation_to_id=triples_factory.relation_to_id,
         edges_data=edges_data,
         seed=seed,
     )
     bundle.other[save_as] = model_wrapper
     return bundle
+
+
+@op(
+    "Define PyKEEN model with node attributes",
+    params=[
+        ops.ParameterGroup(
+            name="combination_group",
+            selector=ops.Parameter(
+                name="combination_name",
+                type=PyKEENCombinations,
+                default=PyKEENCombinations.ConcatProjection,
+            ),
+            groups={
+                "ComplexSeparated": [],
+                # "Concat": [
+                #     ops.Parameter.basic(name="dim", type=int, default=-1),
+                # ],
+                # "ConcatAggregation": [],
+                "ConcatProjection": [
+                    ops.Parameter.basic(name="bias", type=bool, default=False),
+                    ops.Parameter.basic(name="dropout", type=float, default=0.0),
+                    ops.Parameter.basic(name="activation", type=str, default="ReLU"),
+                ],
+                "Gated": [],
+            },
+            default=PyKEENCombinations.ConcatProjection,
+        )
+    ],
+)
+def def_pykeen_with_attributes(
+    dataset: core.Bundle,
+    *,
+    interaction_name: PyKEENModel = PyKEENModel.TransE,
+    combination_name: PyKEENCombinations = PyKEENCombinations.ConcatProjection,
+    embedding_dim: int,
+    random_seed: int,
+    save_as: str,
+    **kwargs,
+) -> core.Bundle:
+    dataset = dataset.copy()
+
+    edges_data = dataset.dfs["edges"][["head", "relation", "tail"]]
+    num_literals = dataset.dfs["literals"]
+    literals_to_id = {label: i for i, label in enumerate(num_literals.columns)}
+    lit_tensor = torch.from_numpy(num_literals.to_numpy()).contiguous()
+
+    combination_cls = combination_name.to_class(embedding_dim, lit_tensor.shape[1], **kwargs)
+
+    triples_no_literals = TriplesFactory.from_labeled_triples(
+        triples=edges_data.to_numpy(),
+    )
+    temp_model = interaction_name.to_class(
+        triples_factory=triples_no_literals,
+        embedding_dim=embedding_dim,
+        seed=random_seed,
+    )
+    assert isinstance(temp_model, models.ERModel), "Only models derived from ERModel are supported."
+    try:
+        interaction: Interaction = temp_model.interaction
+        entity_representations = temp_model.entity_representations
+        relation_representations = temp_model.relation_representations
+        # print(
+        #     tuple(upgrade_to_sequence([entity_representation._embeddings for entity_representation in entity_representations])) + (Embedding,)
+        # )
+    except AttributeError as e:
+        raise Exception(
+            "Interaction not supported for this model type. Please use a different interaction."
+        ) from e
+
+    model = LiteralModel(
+        triples_factory=TriplesNumericLiteralsFactory(
+            mapped_triples=triples_no_literals.mapped_triples,
+            entity_to_id=triples_no_literals.entity_to_id,
+            relation_to_id=triples_no_literals.relation_to_id,
+            numeric_literals=lit_tensor.detach().cpu().numpy(),
+            literals_to_id=literals_to_id,
+        ),
+        entity_representations=[
+            entity_representation for entity_representation in entity_representations
+        ],
+        relation_representations=[
+            relation_representation for relation_representation in relation_representations
+        ],
+        interaction=interaction,
+        combination=combination_cls,
+        random_seed=random_seed,
+    )
+
+    model_wrapper = PyKEENModelWrapper(
+        model=model,
+        interaction=model.interaction,
+        combination=combination_name,
+        combination_kwargs=kwargs,
+        literals_data=num_literals,
+        embedding_dim=embedding_dim,
+        entity_to_id=triples_no_literals.entity_to_id,
+        relation_to_id=triples_no_literals.relation_to_id,
+        edges_data=edges_data,
+        seed=random_seed,
+    )
+
+    dataset.other[save_as] = model_wrapper
+    return dataset
 
 
 class PyKEENSupportedOptimizers(str, enum.Enum):
@@ -327,6 +523,31 @@ class PyKEENSupportedOptimizers(str, enum.Enum):
     Adamax = "Adamax"
     Adagrad = "Adagrad"
     SGD = "SGD"
+
+
+def prepare_triples(
+    triples_df: pd.DataFrame,
+    entity_to_id: dict,
+    relation_to_id: dict,
+    inv_triples: bool = False,
+    numeric_literals: typing.Optional[pd.DataFrame] = None,
+) -> TriplesFactory | TriplesNumericLiteralsFactory:
+    """Prepare triples for PyKEEN from a DataFrame."""
+    triples = TriplesFactory.from_labeled_triples(
+        triples_df.to_numpy(),
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
+        create_inverse_triples=inv_triples,
+    )
+    if numeric_literals is not None:
+        return TriplesNumericLiteralsFactory(
+            mapped_triples=triples.mapped_triples,
+            entity_to_id=entity_to_id,
+            relation_to_id=relation_to_id,
+            numeric_literals=numeric_literals.to_numpy(),
+            literals_to_id={label: i for i, label in enumerate(numeric_literals.columns)},
+        )
+    return triples
 
 
 # TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
@@ -339,6 +560,7 @@ def train_embedding_model(
     testing_table: core.TableName = "edges_test",
     validation_table: core.TableName = "edges_val",
     optimizer_type: PyKEENSupportedOptimizers = PyKEENSupportedOptimizers.Adam,
+    loss_function: str = "BCEWithLogitsLoss",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
@@ -353,45 +575,50 @@ def train_embedding_model(
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
 
-    training_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[training_table][["head", "relation", "tail"]].to_numpy(),
-        create_inverse_triples=req_inverse_triples(actual_model),
+    training_set = prepare_triples(
+        bundle.dfs[training_table][["head", "relation", "tail"]],
+        inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
+        numeric_literals=bundle.dfs.get("literals"),
     )
-    testing_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[testing_table][["head", "relation", "tail"]].to_numpy(),
-        create_inverse_triples=req_inverse_triples(actual_model),
+    testing_set = prepare_triples(
+        bundle.dfs[testing_table][["head", "relation", "tail"]],
+        inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
+        numeric_literals=bundle.dfs.get("literals"),
     )
-    validation_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[validation_table][["head", "relation", "tail"]].to_numpy(),
-        create_inverse_triples=req_inverse_triples(actual_model),
+    validation_set = prepare_triples(
+        bundle.dfs[validation_table][["head", "relation", "tail"]],
+        inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
+        numeric_literals=bundle.dfs.get("literals"),
     )
 
-    result = pipeline(
+    result: PipelineResult = pipeline(
         training=training_set,
         testing=testing_set,
         validation=validation_set,
         model=actual_model,
-        epochs=epochs,
+        loss=loss_function,
+        optimizer=optimizer_type,
         training_loop=training_approach,
+        negative_sampler="bernoulli" if training_approach == TrainingType.sLCWA else None,
+        epochs=epochs,
         training_kwargs=dict(
             sampler=sampler,
             continue_training=model_wrapper.trained,
         ),
-        optimizer=optimizer_type,
         evaluator=None,
         random_seed=model_wrapper.seed,
         stopper="early",
         stopper_kwargs=dict(
-            frequency=2,
-            patience=15,
+            frequency=5,
+            patience=40,
             relative_delta=0.0005,
-            metric="hits@k",
+            metric="ah@k",
         ),
     )
 
@@ -399,9 +626,25 @@ def train_embedding_model(
     model_wrapper.trained = True
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
+    if type(result.stopper) is stoppers.EarlyStopper:
+        bundle.dfs["early_stopper_metric"] = pd.DataFrame(
+            {"early_stopper_metric": result.stopper.results}
+        )
     bundle.other[model] = model_wrapper
 
     return bundle
+
+
+@op("View early stopping metric", view="visualization")
+def view_early_stopping(bundle: core.Bundle):
+    metric = bundle.dfs["early_stopper_metric"].early_stopper_metric.tolist()
+    v = {
+        "title": {"text": "Early Stopping Metric"},
+        "xAxis": {"type": "category"},
+        "yAxis": {"type": "value"},
+        "series": [{"data": metric, "type": "line"}],
+    }
+    return v
 
 
 @op("Triples prediction")
