@@ -351,54 +351,8 @@ class ModelBuilder:
         ts = graphlib.TopologicalSorter(sub_dependencies)
         layers = []
         for node_id in ts.static_order():
-            layer = self.run_node_simple(node_id)
-            if layer:
-                layers.append(layer)
+            layers += self.run_node(node_id, layers)
         return self.layers_to_model(layers)
-
-    def run_node_simple(self, node_id: str) -> Layer | None:
-        """Adds the layer(s) produced by this node to self.layers."""
-        node = self.nodes[node_id]
-        t = node.data.title
-        op = self.catalog[node.data.op_id]
-        p = op.convert_params(node.data.params)
-        match t:
-            case "Repeat":
-                if node_id.startswith("END "):
-                    repeat_id = node_id.removeprefix("END ")
-                    start_id = f"START {repeat_id}"
-                    [last_output] = self.in_edges[node_id]["input"]
-                    after_start = self.all_downstream(start_id)
-                    after_end = self.all_downstream(node_id)
-                    before_end = self.all_upstream(node_id)
-                    affected_nodes = after_start - after_end - {node_id}
-                    repeated_nodes = after_start & before_end
-                    assert affected_nodes == repeated_nodes, (
-                        f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
-                    )
-                    repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
-                    assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
-                    for i in range(p["times"] - 1):
-                        # Copy repeat section's output to repeat section's input.
-                        self.layers.append(
-                            Layer(
-                                torch.nn.Identity(),
-                                origin_id=node_id,
-                                inputs=[_to_id(*last_output)],
-                                outputs=[_to_id(start_id, "output")],
-                            )
-                        )
-                        # Repeat the layers in the section.
-                        for layer in repeated_layers:
-                            if p["same_weights"]:
-                                self.layers.append(layer)
-                            else:
-                                self.run_node(layer.origin_id)
-                return self.run_op(node_id, op, p)
-            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
-                return
-            case _:
-                return self.run_op(node_id, op, p)
 
     def layers_to_model(self, layers: list[Layer]) -> Submodule:
         """
@@ -454,12 +408,13 @@ class ModelBuilder:
             return self.submodules[_to_id(source, source_handle)]
         return _to_id(source, source_handle)
 
-    def run_node(self, node_id: str) -> None:
+    def run_node(self, node_id: str, built_layers: list) -> list:
         """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
         t = node.data.title
         op = self.catalog[node.data.op_id]
         p = op.convert_params(node.data.params)
+        new_layers = []
         match t:
             case "Repeat":
                 if node_id.startswith("END "):
@@ -474,11 +429,11 @@ class ModelBuilder:
                     assert affected_nodes == repeated_nodes, (
                         f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
                     )
-                    repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
+                    repeated_layers = [e for e in built_layers if e.origin_id in repeated_nodes]
                     assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
                     for i in range(p["times"] - 1):
                         # Copy repeat section's output to repeat section's input.
-                        self.layers.append(
+                        new_layers.append(
                             Layer(
                                 torch.nn.Identity(),
                                 origin_id=node_id,
@@ -489,14 +444,15 @@ class ModelBuilder:
                         # Repeat the layers in the section.
                         for layer in repeated_layers:
                             if p["same_weights"]:
-                                self.layers.append(layer)
+                                new_layers.append(layer)
                             else:
-                                self.run_node(layer.origin_id)
-                self.layers.append(self.run_op(node_id, op, p))
+                                new_layers += self.run_node(layer.origin_id, built_layers)
+                new_layers.append(self.run_op(node_id, op, p))
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
-                return
+                return new_layers
             case _:
-                self.layers.append(self.run_op(node_id, op, p))
+                new_layers.append(self.run_op(node_id, op, p))
+        return new_layers
 
     def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
         """Returns the layer produced by this op."""
@@ -540,11 +496,13 @@ class ModelBuilder:
         for submod_id, submod_tree in sub_trees.items():
             self.submodules[submod_id] = self.build_submodel(submod_tree)
         ts = graphlib.TopologicalSorter(self.dependencies)
+        layers = []
         for node_id in ts.static_order():
             if all(
                 node_id not in s for s in sub_trees.values()
             ):  # Node does not belong to a submodule.
-                self.run_node(node_id)
+                layers += self.run_node(node_id, layers)
+        self.layers = layers
         return self.get_config()
 
     def get_config(self) -> ModelConfig:

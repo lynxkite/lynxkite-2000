@@ -75,9 +75,9 @@ def test_identify_submodules_single_chain():
     # The subtree should be n1, n2
     assert submodules[key] == {"input", "n1", "n2"}
     submodel = builder.build_submodel(submodules[key])
-    assert isinstance(submodel, pyg_nn.Sequential)
-    assert len(submodel) == 2
-    assert all(isinstance(layer, pyg_nn.Linear) for layer in submodel)
+    assert isinstance(submodel.model, pyg_nn.Sequential)
+    assert len(submodel.model) == 2
+    assert all(isinstance(layer, pyg_nn.Linear) for layer in submodel.model)
 
 
 def test_identify_submodules_branching():
@@ -150,8 +150,8 @@ def test_identify_submodules_multiple_submodules():
     assert set(submodules.keys()) == {key1, key2}
     assert submodules[key1] == {"input", "n1"}
     assert submodules[key2] == {"input", "n4"}
-    submodel1 = builder.build_submodel(submodules[key1])
-    submodel2 = builder.build_submodel(submodules[key2])
+    submodel1 = builder.build_submodel(submodules[key1]).model
+    submodel2 = builder.build_submodel(submodules[key2]).model
     assert isinstance(submodel1, pyg_nn.Sequential)
     assert isinstance(submodel2, pyg_nn.Sequential)
     assert len(submodel1) == 1
