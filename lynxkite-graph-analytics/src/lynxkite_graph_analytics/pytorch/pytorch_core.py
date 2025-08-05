@@ -346,7 +346,14 @@ class ModelBuilder:
         return model
 
     def reduce_loss_layers(self, layers: list[Layer]) -> Layer:
-        """Reduces the loss layers to a single layer."""
+        """Reduce a list of loss layers to a single layer.
+
+        Args:
+            layers (list[Layer]): List of layers to reduce.
+
+        Returns:
+            Layer: A single layer representing the loss.
+        """
         import torch_geometric.nn as pyg_nn
 
         used_in_loss = set(input for layer in layers for input in layer.inputs)
@@ -371,9 +378,19 @@ class ModelBuilder:
     def reduce_model_layers(
         self, layers: list[Layer], loss_layers: list[Layer] | None = None
     ) -> Layer:
-        """
-        Transforms a list of Layer objects into a torch_geometric.nn.Sequential model.
-        Assumes Layer.for_sequential() returns (module, "inputs -> outputs") as required by pyg_nn.Sequential.
+        """Reduce a list of model layers to a single layer.
+
+        This combines the layers into a single torch_geometric.nn.Sequential model.
+
+        Args:
+            layers (list[Layer]): List of layers to reduce.
+            loss_layers (list[Layer] | None, optional): If the produced model is going to be
+            trained (ie. is connected to a loss box), the list of loss layers will be used to
+            ensure that the trained output is from the last layer of the model, that is, the one
+            used as loss input. Defaults to None.
+
+        Returns:
+            Layer: A single layer representing the model.
         """
         import torch_geometric.nn as pyg_nn
 
@@ -383,13 +400,14 @@ class ModelBuilder:
         used_in_model = set(input for layer in layers for input in layer.inputs)
         made_in_model = set(output for layer in layers for output in layer.outputs)
         model_inputs = sorted(used_in_model - made_in_model)
-        model_outputs = sorted(made_in_model)
         origin_id = layers[-1].origin_id
+        model_outputs = [_to_id(origin_id, output) for output in self.out_edges[origin_id].keys()]
 
         sequential_layers = [layer.for_sequential() for layer in layers]
 
-        # Make sure the trained output is output from the last model layer.
         if loss_layers:
+            # If the model is going to be trained, we need to ensure that the last layer
+            # is the one that is used as loss input.
             used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
             model_outputs = sorted(made_in_model & used_in_loss)
             outputs = ", ".join(model_outputs)
