@@ -228,16 +228,6 @@ def is_submodule_input(ops: ops.Op, input_name: str) -> bool:
     return False
 
 
-@dataclasses.dataclass
-class Submodule:
-    """A submodule is a collection of nodes that form a subtree in the model graph."""
-
-    root: str
-    model: torch.nn.Module
-    inputs: list[str]
-    outputs: list[str]
-
-
 class ModelBuilder:
     """The state shared between methods that are used to build the model."""
 
@@ -316,7 +306,7 @@ class ModelBuilder:
             for i in v:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
-        self.submodules: dict[str, torch.nn.Module] = {}
+        self.submodules: dict[str, Layer] = {}
         # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
@@ -346,40 +336,74 @@ class ModelBuilder:
                 subtrees[_to_id(e.source, e.sourceHandle)] = sub_nodes
         return subtrees
 
-    def build_submodel(self, subtree) -> Submodule:
+    def build_submodel(self, subtree) -> Layer:
         sub_dependencies = {n: deps for n, deps in self.dependencies.items() if n in subtree}
         ts = graphlib.TopologicalSorter(sub_dependencies)
         layers = []
         for node_id in ts.static_order():
             layers += self.run_node(node_id, layers)
-        return self.layers_to_model(layers)
+        model = self.reduce_model_layers(layers)
+        return model
 
-    def layers_to_model(self, layers: list[Layer]) -> Submodule:
+    def reduce_loss_layers(self, layers: list[Layer]) -> Layer:
+        """Reduces the loss layers to a single layer."""
+        import torch_geometric.nn as pyg_nn
+
+        used_in_loss = set(input for layer in layers for input in layer.inputs)
+        made_in_loss = set(output for layer in layers for output in layer.outputs)
+        loss_inputs = sorted(used_in_loss - made_in_loss)
+        origin_id = layers[-1].origin_id
+
+        sequential_layers = [layer.for_sequential() for layer in layers]
+
+        [(lossb, lossh)] = self.in_edges[self.optimizer]["loss"]
+        lossi = _to_id(lossb, lossh)
+        sequential_layers.append((torch.nn.Identity(), f"{lossi} -> loss"))
+        loss = pyg_nn.Sequential(", ".join(loss_inputs), sequential_layers)
+        loss = Layer(
+            origin_id=origin_id,
+            module=loss,
+            inputs=loss_inputs,
+            outputs=["loss"],
+        )
+        return loss
+
+    def reduce_model_layers(
+        self, layers: list[Layer], loss_layers: list[Layer] | None = None
+    ) -> Layer:
         """
         Transforms a list of Layer objects into a torch_geometric.nn.Sequential model.
         Assumes Layer.for_sequential() returns (module, "inputs -> outputs") as required by pyg_nn.Sequential.
         """
         import torch_geometric.nn as pyg_nn
 
-        # Collect all input and output names from layers
-        all_inputs = set()
-        all_outputs = set()
-        for layer in layers:
-            all_inputs.update(layer.inputs)
-            all_outputs.update(layer.outputs)
-        # Model inputs are those used but not produced by any layer
-        model_inputs = sorted(all_inputs - all_outputs)
-        # Prepare layers for pyg_nn.Sequential
-        sequential_layers = [layer.for_sequential() for layer in layers]
-        # Build the model
-        model = pyg_nn.Sequential(", ".join(model_inputs), sequential_layers)
+        if loss_layers is None:
+            loss_layers = []
 
-        return Submodule(
-            root=layers[0].origin_id,
-            model=model,
+        used_in_model = set(input for layer in layers for input in layer.inputs)
+        made_in_model = set(output for layer in layers for output in layer.outputs)
+        model_inputs = sorted(used_in_model - made_in_model)
+        model_outputs = sorted(made_in_model)
+        origin_id = layers[-1].origin_id
+
+        sequential_layers = [layer.for_sequential() for layer in layers]
+
+        # Make sure the trained output is output from the last model layer.
+        if loss_layers:
+            used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
+            model_outputs = sorted(made_in_model & used_in_loss)
+            outputs = ", ".join(model_outputs)
+            sequential_layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
+
+        model = pyg_nn.Sequential(", ".join(model_inputs), sequential_layers)
+        model = Layer(
+            origin_id=origin_id,
+            module=model,
             inputs=model_inputs,
-            outputs=sorted(all_outputs),
+            outputs=model_outputs,
         )
+
+        return model
 
     def all_upstream(self, node: str) -> set[str]:
         """Returns all nodes upstream of a node."""
@@ -475,9 +499,9 @@ class ModelBuilder:
         call_args = []
         layer_inputs = []
         for input in operation_inputs:
-            if isinstance(input, Submodule):
+            if isinstance(input, Layer):
                 # If the input is a submodule, we need to use its model and inputs.
-                call_args.append(input.model)
+                call_args.append(input.module)
                 layer_inputs.extend(input.inputs)
             else:
                 # Otherwise, we use the internal ID of the input.
@@ -506,8 +530,6 @@ class ModelBuilder:
         return self.get_config()
 
     def get_config(self) -> ModelConfig:
-        import torch_geometric.nn as pyg_nn
-
         # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:
@@ -524,41 +546,26 @@ class ModelBuilder:
                 layers.append(layer)
             else:
                 loss_layers.append(layer)
-        # TODO: Use layers_to_model() to convert layers to a model.
-        # Allow to pass model and loss layers to the function.
-        used_in_model = set(input for layer in layers for input in layer.inputs)
-        used_in_loss = set(input for layer in loss_layers for input in layer.inputs)
-        made_in_model = set(output for layer in layers for output in layer.outputs)
-        made_in_loss = set(output for layer in loss_layers for output in layer.outputs)
-        layers = [layer.for_sequential() for layer in layers]
-        loss_layers = [layer.for_sequential() for layer in loss_layers]
+        model = self.reduce_model_layers(layers, loss_layers)
+        loss = self.reduce_loss_layers(loss_layers)
         cfg = {}
-        cfg["model_inputs"] = sorted(used_in_model - made_in_model)
-        cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
-        cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
+        cfg["model_inputs"] = model.inputs
+        cfg["model_outputs"] = model.outputs
+        cfg["loss_inputs"] = loss.inputs
         cfg["input_output_names"] = self.get_names(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
-        # Make sure the trained output is output from the last model layer.
-        outputs = ", ".join(cfg["model_outputs"])
-        layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
-        # Create model.
-        cfg["model"] = pyg_nn.Sequential(", ".join(cfg["model_inputs"]), layers)
-        # Make sure the loss is output from the last loss layer.
-        [(lossb, lossh)] = self.in_edges[self.optimizer]["loss"]
-        lossi = _to_id(lossb, lossh)
-        loss_layers.append((torch.nn.Identity(), f"{lossi} -> loss"))
-        # Create loss function.
-        cfg["loss"] = pyg_nn.Sequential(", ".join(cfg["loss_inputs"]), loss_layers)
-        assert not list(cfg["loss"].parameters()), f"loss should have no parameters: {loss_layers}"
+        cfg["model"] = model.module
+        cfg["loss"] = loss.module
+        assert not list(cfg["loss"].parameters()), "loss should have no parameters"
         # Create optimizer.
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
         cfg["source_workspace_json"] = self.ws.model_dump_json()
         return ModelConfig(**cfg)  # ty: ignore[missing-argument]
 
-    def get_names(self, *ids: list[str]) -> dict[str, str]:
+    def get_names(self, *ids: str) -> dict[str, str]:
         """Returns a mapping from internal IDs to human-readable names."""
         names = {}
         for i in ids:
