@@ -325,15 +325,37 @@ class ModelBuilder:
             del self.inv_dependencies[node_id]
             del self.nodes[node_id]
 
+    def validate_submodule(self, submodule_nodes: set[str], submodules) -> bool:
+        """Ensure that the submodule does not have connections to nodes outside the submodule tree."""
+        for node_id in submodule_nodes:
+            for output in self.out_edges[node_id]:
+                for target_node, target_handle in self.out_edges[node_id][output]:
+                    op = self.catalog[self.nodes[target_node].data.op_id]
+                    input_type = op.get_input(target_handle).type
+                    if (
+                        target_node not in submodule_nodes
+                        and not _is_submodule_type(input_type)
+                        and not any(
+                            target_node in subtree_nodes for subtree_nodes in submodules.values()
+                        )
+                    ):
+                        return False
+        return True
+
     def identify_submodules(self):
         subtrees = {}
         for e in self.ws.edges:
             op = self.catalog[self.nodes[e.target].data.op_id]
             input_type = op.get_input(e.targetHandle).type
             if _is_submodule_type(input_type):
-                root = e.source
-                sub_nodes = {root} | self.all_upstream(root)
-                subtrees[_to_id(e.source, e.sourceHandle)] = sub_nodes
+                submodule_id = _to_id(e.source, e.sourceHandle)
+                sub_nodes = {e.source} | self.all_upstream(e.source)
+                subtrees[submodule_id] = sub_nodes
+        for submodule_id, sub_nodes in subtrees.items():
+            if not self.validate_submodule(sub_nodes, subtrees):
+                raise ValueError(
+                    f"Submodule {submodule_id} is not valid: it has connections outside the submodule tree."
+                )
         return subtrees
 
     def build_submodel(self, subtree) -> Layer:
@@ -491,7 +513,7 @@ class ModelBuilder:
                                 new_layers += self.run_node(layer.origin_id, built_layers)
                 new_layers.append(self.run_op(node_id, op, p))
             case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
-                return new_layers
+                pass
             case _:
                 new_layers.append(self.run_op(node_id, op, p))
         return new_layers

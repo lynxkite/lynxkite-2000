@@ -1,3 +1,4 @@
+import pytest
 import torch
 import torch_geometric.nn as pyg_nn
 from lynxkite_graph_analytics.pytorch import pytorch_core
@@ -90,6 +91,7 @@ def test_identify_submodules_branching():
         pytorch_core.ENV,
         {
             "input": {"title": "Input: tensor"},
+            "input2": {"title": "Input: tensor"},
             "n1": {"title": "Linear"},
             "n2": {"title": "Linear"},
             "n3": {"title": "Linear"},
@@ -100,7 +102,7 @@ def test_identify_submodules_branching():
             ("input:output", "n1:x"),
             ("n1:output", "n2:x"),
             ("n2:output", "n4:sub"),
-            ("input:output", "n3:x"),
+            ("input2:output", "n3:x"),
             ("n3:output", "n4:x"),
             ("n4:output", "opt:loss"),
         ],
@@ -123,6 +125,8 @@ def test_identify_submodules_multiple_submodules():
         pytorch_core.ENV,
         {
             "input": {"title": "Input: tensor"},
+            "input2": {"title": "Input: tensor"},
+            "input3": {"title": "Input: tensor"},
             "n1": {"title": "Linear"},
             "n2": {"title": "WithSubmodule"},
             "n3": {"title": "Linear"},
@@ -136,9 +140,9 @@ def test_identify_submodules_multiple_submodules():
             ("n1:output", "n2:sub"),
             ("n3:output", "n2:x"),
             ("n2:output", "opt:loss"),
-            ("input:output", "n4:x"),
+            ("input2:output", "n4:x"),
             ("n4:output", "n5:sub"),
-            ("input:output", "n6:x"),
+            ("input3:output", "n6:x"),
             ("n6:output", "n5:x"),
             ("n5:output", "opt:loss"),
         ],
@@ -149,7 +153,7 @@ def test_identify_submodules_multiple_submodules():
     key2 = pytorch_core._to_id("n4", "output")
     assert set(submodules.keys()) == {key1, key2}
     assert submodules[key1] == {"input", "n1"}
-    assert submodules[key2] == {"input", "n4"}
+    assert submodules[key2] == {"input2", "n4"}
     submodel1 = builder.build_submodel(submodules[key1]).module
     submodel2 = builder.build_submodel(submodules[key2]).module
     assert isinstance(submodel1, pyg_nn.Sequential)
@@ -234,3 +238,46 @@ async def test_build_model_w_submodules():
     o = m.inference({"input_output": x[:1]})
     error = torch.nn.functional.mse_loss(o["output_x"], x[:1] + 1)
     assert error < 0.1
+
+
+async def test_submodel_with_outgoing_connections_not_accepted():
+    # If a submodule is connected to nodes outside its subtree,
+    # and the destination node is not a submodule we should raise an error
+
+    @pytorch_core.op("WithSubmodule")
+    def with_submodule(sub: torch.nn.Module, x):
+        return sub
+
+    ws = make_ws(
+        pytorch_core.ENV,
+        {
+            "input": {"title": "Input: tensor"},
+            "lin1": {"title": "Linear", "output_dim": 4},
+            "lin2": {"title": "Linear", "output_dim": 4},
+            "sub": {"title": "WithSubmodule"},
+            "concatenate": {"title": "Concatenate"},
+            "act": {"title": "Activation", "type": "LeakyReLU"},
+            "output": {"title": "Output"},
+            "label": {"title": "Input: tensor"},
+            "loss": {"title": "MSE loss"},
+            "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
+        },
+        [
+            ("input:output", "lin1:x"),
+            ("lin1:output", "lin2:x"),
+            ("lin1:output", "concatenate:a"),
+            ("lin2:output", "concatenate:b"),
+            ("lin2:output", "sub:sub"),
+            ("concatenate:output", "sub:x"),
+            ("sub:output", "act:x"),
+            ("act:output", "output:x"),
+            ("output:x", "loss:x"),
+            ("label:output", "loss:y"),
+            ("loss:output", "optim:loss"),
+        ],
+    )
+    with pytest.raises(
+        ValueError,
+        match="Submodule lin2_output is not valid: it has connections outside the submodule tree.",
+    ):
+        pytorch_core.build_model(ws)
