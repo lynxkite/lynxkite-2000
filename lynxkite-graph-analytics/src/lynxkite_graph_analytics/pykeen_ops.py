@@ -582,7 +582,7 @@ class EvaluatorTypes(str, enum.Enum):
         return getattr(evaluation, self.name.replace(" ", ""))()
 
 
-@op("Evaluate model")
+@op("Evaluate model", slow=True)
 def evaluate(
     bundle: core.Bundle,
     *,
@@ -590,7 +590,7 @@ def evaluate(
     evaluator_type: EvaluatorTypes = EvaluatorTypes.RankBasedEvaluator,
     metrics_str: str = "ALL",
 ):
-    """Metrics are a comma separated list, "ALL" if all metrics are needed"""
+    """Metrics are a comma separated list, "ALL" if all metrics are needed. When using classification based methods, evaluation may be extremely slow."""
     bundle = bundle.copy()
     model: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model.entity_to_id
