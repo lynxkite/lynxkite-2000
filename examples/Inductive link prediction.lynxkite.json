@@ -1,0 +1,5581 @@
+{
+  "edges": [
+    {
+      "id": "Import inductive dataset 1 output Define inductive PyKEEN model 1 bundle",
+      "source": "Import inductive dataset 1",
+      "sourceHandle": "output",
+      "target": "Define inductive PyKEEN model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Evaluate inductive model 1 output View tables 1 bundle",
+      "source": "Evaluate inductive model 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define inductive PyKEEN model 1 output Train inductive model 1 bundle",
+      "source": "Define inductive PyKEEN model 1",
+      "sourceHandle": "output",
+      "target": "Train inductive model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train inductive model 1 output Evaluate inductive model 1 bundle",
+      "source": "Train inductive model 1",
+      "sourceHandle": "output",
+      "target": "Evaluate inductive model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train inductive model 1 output View early stopping metric 1 bundle",
+      "source": "Train inductive model 1",
+      "sourceHandle": "output",
+      "target": "View early stopping metric 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train inductive model 1 output Full prediction 1 bundle",
+      "source": "Train inductive model 1",
+      "sourceHandle": "output",
+      "target": "Full prediction 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Full prediction 1 output View tables 2 bundle",
+      "source": "Full prediction 1",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train inductive model 1 output View loss 1 bundle",
+      "source": "Train inductive model 1",
+      "sourceHandle": "output",
+      "target": "View loss 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Import inductive dataset",
+          "inputs": [],
+          "name": "Import inductive dataset",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ILPC2022Small",
+              "name": "dataset",
+              "type": {
+                "enum": [
+                  "ILPC2022Large",
+                  "ILPC2022Small",
+                  "InductiveFB15k237",
+                  "InductiveNELL",
+                  "InductiveWN18RR"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Import inductive dataset",
+        "params": {
+          "dataset": "InductiveWN18RR"
+        },
+        "status": "done",
+        "title": "Import inductive dataset"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 206.0,
+      "id": "Import inductive dataset 1",
+      "position": {
+        "x": -435.32639178154216,
+        "y": 214.8101677032806
+      },
+      "type": "basic",
+      "width": 241.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Define inductive PyKEEN model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Define inductive PyKEEN model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "triples_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "inference_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": "DistMult",
+              "name": "interaction",
+              "type": {
+                "enum": [
+                  "AutoSF",
+                  "BoxE",
+                  "Canonical_Tensor_Decomposition",
+                  "CompGCN",
+                  "ComplEx",
+                  "ConvE",
+                  "ConvKB",
+                  "Cooccurrence_Filtered",
+                  "CrossE",
+                  "DistMA",
+                  "DistMult",
+                  "ER_MLP",
+                  "ER_MLPE",
+                  "Fixed_Model",
+                  "HolE",
+                  "KG2E",
+                  "MuRE",
+                  "NTN",
+                  "NodePiece",
+                  "PairRE",
+                  "ProjE",
+                  "QuatE",
+                  "RGCN",
+                  "RESCAL",
+                  "RotatE",
+                  "SimplE",
+                  "Structured_Embedding",
+                  "TorusE",
+                  "TransD",
+                  "TransE",
+                  "TransF",
+                  "TransH",
+                  "TransR",
+                  "TuckER"
+                ]
+              }
+            },
+            {
+              "default": 200,
+              "name": "embedding_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 2,
+              "name": "num_tokens",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "mlp",
+              "name": "aggregation",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": false,
+              "name": "use_GNN",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            {
+              "default": 42,
+              "name": "seed",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "InductiveModel",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Define inductive PyKEEN model",
+        "params": {
+          "aggregation": "mlp",
+          "embedding_dim": "50",
+          "inference_table": "inductive_inference",
+          "interaction": "DistMult",
+          "num_tokens": 2.0,
+          "save_as": "InductiveModel",
+          "seed": "422",
+          "triples_table": "transductive_training",
+          "use_GNN": false
+        },
+        "status": "done",
+        "title": "Define inductive PyKEEN model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 742.0,
+      "id": "Define inductive PyKEEN model 1",
+      "position": {
+        "x": 24.932360413565874,
+        "y": -52.14727612270708
+      },
+      "type": "basic",
+      "width": 374.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Evaluate inductive model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Evaluate inductive model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
+              "default": null,
+              "name": "inductive_testing_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "inductive_inference_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "inductive_validation_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": "ALL",
+              "name": "metrics_str",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Evaluate inductive model",
+        "params": {
+          "inductive_inference_table": "inductive_inference",
+          "inductive_testing_table": "inductive_testing",
+          "inductive_validation_table": "inductive_validation",
+          "metrics_str": "hits@1,hits@3,hits@5,hits@10",
+          "model_name": "InductiveModel"
+        },
+        "status": "done",
+        "title": "Evaluate inductive model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 512.0,
+      "id": "Evaluate inductive model 1",
+      "position": {
+        "x": 1188.2853096490614,
+        "y": 104.48233325196145
+      },
+      "type": "basic",
+      "width": 340.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "early_stopper_metric": {
+              "columns": [
+                "early_stopper_metric"
+              ],
+              "data": [
+                [
+                  0.008239947264337522
+                ],
+                [
+                  0.02841133816743574
+                ]
+              ]
+            },
+            "inductive_inference": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00017222",
+                  "_derivationally_related_form",
+                  "01567275"
+                ],
+                [
+                  "00038849",
+                  "_derivationally_related_form",
+                  "05256862"
+                ],
+                [
+                  "00040152",
+                  "_derivationally_related_form",
+                  "02257370"
+                ],
+                [
+                  "00040152",
+                  "_derivationally_related_form",
+                  "02372326"
+                ],
+                [
+                  "00040152",
+                  "_hypernym",
+                  "00039021"
+                ],
+                [
+                  "00040804",
+                  "_hypernym",
+                  "00040152"
+                ],
+                [
+                  "00040962",
+                  "_derivationally_related_form",
+                  "02458103"
+                ],
+                [
+                  "00040962",
+                  "_derivationally_related_form",
+                  "13928668"
+                ],
+                [
+                  "00043683",
+                  "_hypernym",
+                  "00044149"
+                ],
+                [
+                  "00043683",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00044149",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00044797",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00044797",
+                  "_verb_group",
+                  "00044149"
+                ],
+                [
+                  "00044797",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00046109",
+                  "_derivationally_related_form",
+                  "00150287"
+                ],
+                [
+                  "00046109",
+                  "_derivationally_related_form",
+                  "00299580"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "00828237"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "10033082"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00043683"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00044797"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00047945"
+                ],
+                [
+                  "00047317",
+                  "_hypernym",
+                  "00050652"
+                ],
+                [
+                  "00047745",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00047745",
+                  "_hypernym",
+                  "02630189"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "00828237"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "10033082"
+                ],
+                [
+                  "00047945",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00049197",
+                  "_hypernym",
+                  "00047945"
+                ],
+                [
+                  "00050652",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00050652",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00052043",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00052043",
+                  "_hypernym",
+                  "00047945"
+                ],
+                [
+                  "00052374",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00052374",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "00354884"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "00355547"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "07493280"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "09784443"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "04033995"
+                ],
+                [
+                  "00082308",
+                  "_hypernym",
+                  "00064095"
+                ],
+                [
+                  "00082714",
+                  "_derivationally_related_form",
+                  "00696882"
+                ],
+                [
+                  "00082714",
+                  "_derivationally_related_form",
+                  "03237639"
+                ],
+                [
+                  "00082714",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00083124",
+                  "_derivationally_related_form",
+                  "02785648"
+                ],
+                [
+                  "00083124",
+                  "_hypernym",
+                  "00082714"
+                ],
+                [
+                  "00083124",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00083334",
+                  "_hypernym",
+                  "00083124"
+                ],
+                [
+                  "00083334",
+                  "_synset_domain_topic_of",
+                  "06063588"
+                ],
+                [
+                  "00083809",
+                  "_derivationally_related_form",
+                  "01169194"
+                ],
+                [
+                  "00084230",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00088481",
+                  "_hypernym",
+                  "00041899"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "00462092"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "01114303"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "02272549"
+                ],
+                [
+                  "00089027",
+                  "_hypernym",
+                  "00088481"
+                ],
+                [
+                  "00100044",
+                  "_verb_group",
+                  "00833702"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "05748285"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "07366289"
+                ],
+                [
+                  "00119266",
+                  "_derivationally_related_form",
+                  "13559782"
+                ],
+                [
+                  "00119524",
+                  "_derivationally_related_form",
+                  "04748836"
+                ],
+                [
+                  "00119524",
+                  "_derivationally_related_form",
+                  "13559782"
+                ],
+                [
+                  "00119524",
+                  "_hypernym",
+                  "00252019"
+                ],
+                [
+                  "00119873",
+                  "_derivationally_related_form",
+                  "10341660"
+                ],
+                [
+                  "00140393",
+                  "_derivationally_related_form",
+                  "01510827"
+                ],
+                [
+                  "00140652",
+                  "_derivationally_related_form",
+                  "01211699"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01069190"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01069391"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01291069"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01295275"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "02389346"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "02622234"
+                ],
+                [
+                  "00147595",
+                  "_derivationally_related_form",
+                  "01296462"
+                ],
+                [
+                  "00147595",
+                  "_derivationally_related_form",
+                  "01340439"
+                ],
+                [
+                  "00147595",
+                  "_hypernym",
+                  "00145218"
+                ],
+                [
+                  "00148978",
+                  "_derivationally_related_form",
+                  "01354673"
+                ],
+                [
+                  "00148978",
+                  "_hypernym",
+                  "00147595"
+                ],
+                [
+                  "00149084",
+                  "_derivationally_related_form",
+                  "00083334"
+                ],
+                [
+                  "00149084",
+                  "_hypernym",
+                  "00147595"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "00046109"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "01027263"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "13427078"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "00351638"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "05109808"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "07355887"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "13457378"
+                ],
+                [
+                  "00151689",
+                  "_hypernym",
+                  "00169651"
+                ],
+                [
+                  "00152887",
+                  "_hypernym",
+                  "00151689"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "01711749"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02286204"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02509919"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02694933"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02695895"
+                ],
+                [
+                  "00170844",
+                  "_hypernym",
+                  "00059552"
+                ],
+                [
+                  "00185104",
+                  "_derivationally_related_form",
+                  "00482473"
+                ],
+                [
+                  "00185104",
+                  "_derivationally_related_form",
+                  "00482893"
+                ],
+                [
+                  "00185104",
+                  "_hypernym",
+                  "00044673"
+                ]
+              ]
+            },
+            "inductive_testing": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00040962",
+                  "_hypernym",
+                  "00040804"
+                ],
+                [
+                  "00044149",
+                  "_verb_group",
+                  "00044797"
+                ],
+                [
+                  "00046534",
+                  "_also_see",
+                  "00044149"
+                ],
+                [
+                  "00047745",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "03879854"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "00354884"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "03075768"
+                ],
+                [
+                  "00083334",
+                  "_derivationally_related_form",
+                  "00149084"
+                ],
+                [
+                  "00087152",
+                  "_also_see",
+                  "01922763"
+                ],
+                [
+                  "00088481",
+                  "_derivationally_related_form",
+                  "02272549"
+                ],
+                [
+                  "00100044",
+                  "_derivationally_related_form",
+                  "00893955"
+                ],
+                [
+                  "00119873",
+                  "_derivationally_related_form",
+                  "02987454"
+                ],
+                [
+                  "00149084",
+                  "_derivationally_related_form",
+                  "01285440"
+                ],
+                [
+                  "00152887",
+                  "_derivationally_related_form",
+                  "07355887"
+                ],
+                [
+                  "00169651",
+                  "_hypernym",
+                  "00170844"
+                ],
+                [
+                  "00201923",
+                  "_derivationally_related_form",
+                  "00462092"
+                ],
+                [
+                  "00224901",
+                  "_derivationally_related_form",
+                  "09476521"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "05162455"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "15224293"
+                ],
+                [
+                  "00236289",
+                  "_derivationally_related_form",
+                  "04181228"
+                ],
+                [
+                  "00236289",
+                  "_hypernym",
+                  "00233335"
+                ],
+                [
+                  "00267349",
+                  "_derivationally_related_form",
+                  "01590171"
+                ],
+                [
+                  "00290740",
+                  "_derivationally_related_form",
+                  "00351638"
+                ],
+                [
+                  "00290740",
+                  "_derivationally_related_form",
+                  "00355252"
+                ],
+                [
+                  "00299580",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00321956",
+                  "_derivationally_related_form",
+                  "00187526"
+                ],
+                [
+                  "00353782",
+                  "_derivationally_related_form",
+                  "00429060"
+                ],
+                [
+                  "00354884",
+                  "_derivationally_related_form",
+                  "01815185"
+                ],
+                [
+                  "00413876",
+                  "_derivationally_related_form",
+                  "01051331"
+                ],
+                [
+                  "00429060",
+                  "_derivationally_related_form",
+                  "00359903"
+                ],
+                [
+                  "00443384",
+                  "_derivationally_related_form",
+                  "14110411"
+                ],
+                [
+                  "00444519",
+                  "_derivationally_related_form",
+                  "05085572"
+                ],
+                [
+                  "00445169",
+                  "_similar_to",
+                  "00444519"
+                ],
+                [
+                  "00456740",
+                  "_derivationally_related_form",
+                  "05696020"
+                ],
+                [
+                  "00456740",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00462092",
+                  "_derivationally_related_form",
+                  "01070892"
+                ],
+                [
+                  "00482893",
+                  "_derivationally_related_form",
+                  "00185104"
+                ],
+                [
+                  "00527572",
+                  "_derivationally_related_form",
+                  "13491060"
+                ],
+                [
+                  "00595146",
+                  "_derivationally_related_form",
+                  "10164233"
+                ],
+                [
+                  "00650016",
+                  "_derivationally_related_form",
+                  "10012815"
+                ],
+                [
+                  "00651991",
+                  "_derivationally_related_form",
+                  "05748285"
+                ],
+                [
+                  "00661213",
+                  "_derivationally_related_form",
+                  "05748786"
+                ],
+                [
+                  "00696518",
+                  "_also_see",
+                  "02564986"
+                ],
+                [
+                  "00709625",
+                  "_derivationally_related_form",
+                  "00928077"
+                ],
+                [
+                  "00751887",
+                  "_derivationally_related_form",
+                  "09941383"
+                ],
+                [
+                  "00751887",
+                  "_derivationally_related_form",
+                  "09941964"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "00759551"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "01205827"
+                ],
+                [
+                  "00795008",
+                  "_derivationally_related_form",
+                  "00047317"
+                ],
+                [
+                  "00833702",
+                  "_derivationally_related_form",
+                  "00893955"
+                ],
+                [
+                  "00847340",
+                  "_derivationally_related_form",
+                  "01428853"
+                ],
+                [
+                  "00859325",
+                  "_derivationally_related_form",
+                  "04630689"
+                ],
+                [
+                  "00898804",
+                  "_derivationally_related_form",
+                  "01697027"
+                ],
+                [
+                  "00915722",
+                  "_derivationally_related_form",
+                  "01742726"
+                ],
+                [
+                  "00922438",
+                  "_hypernym",
+                  "00921738"
+                ],
+                [
+                  "01021128",
+                  "_derivationally_related_form",
+                  "05925366"
+                ],
+                [
+                  "01029852",
+                  "_derivationally_related_form",
+                  "07202579"
+                ],
+                [
+                  "01059400",
+                  "_also_see",
+                  "02095311"
+                ],
+                [
+                  "01130607",
+                  "_derivationally_related_form",
+                  "03878963"
+                ],
+                [
+                  "01146039",
+                  "_derivationally_related_form",
+                  "02553697"
+                ],
+                [
+                  "01149494",
+                  "_also_see",
+                  "01364008"
+                ],
+                [
+                  "01167146",
+                  "_derivationally_related_form",
+                  "01612053"
+                ],
+                [
+                  "01240432",
+                  "_hypernym",
+                  "01240210"
+                ],
+                [
+                  "01292885",
+                  "_derivationally_related_form",
+                  "07976936"
+                ],
+                [
+                  "01301410",
+                  "_derivationally_related_form",
+                  "13998781"
+                ],
+                [
+                  "01320009",
+                  "_derivationally_related_form",
+                  "00921790"
+                ],
+                [
+                  "01340439",
+                  "_derivationally_related_form",
+                  "10080337"
+                ],
+                [
+                  "01340439",
+                  "_hypernym",
+                  "01296462"
+                ],
+                [
+                  "01364008",
+                  "_also_see",
+                  "01368192"
+                ],
+                [
+                  "01410363",
+                  "_derivationally_related_form",
+                  "04750164"
+                ],
+                [
+                  "01428853",
+                  "_derivationally_related_form",
+                  "10300303"
+                ],
+                [
+                  "01467370",
+                  "_derivationally_related_form",
+                  "08512736"
+                ],
+                [
+                  "01474513",
+                  "_also_see",
+                  "02451113"
+                ],
+                [
+                  "01531375",
+                  "_also_see",
+                  "01508719"
+                ],
+                [
+                  "01551871",
+                  "_verb_group",
+                  "01684337"
+                ],
+                [
+                  "01582645",
+                  "_derivationally_related_form",
+                  "03234306"
+                ],
+                [
+                  "01612053",
+                  "_also_see",
+                  "01123148"
+                ],
+                [
+                  "01643464",
+                  "_derivationally_related_form",
+                  "10029068"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "13913566"
+                ],
+                [
+                  "01667449",
+                  "_derivationally_related_form",
+                  "04033995"
+                ],
+                [
+                  "01684337",
+                  "_derivationally_related_form",
+                  "04157320"
+                ],
+                [
+                  "01687569",
+                  "_derivationally_related_form",
+                  "01159964"
+                ],
+                [
+                  "01697027",
+                  "_derivationally_related_form",
+                  "00898804"
+                ],
+                [
+                  "01753596",
+                  "_derivationally_related_form",
+                  "03178782"
+                ],
+                [
+                  "01753596",
+                  "_derivationally_related_form",
+                  "09972157"
+                ],
+                [
+                  "01779165",
+                  "_derivationally_related_form",
+                  "04143712"
+                ],
+                [
+                  "01779165",
+                  "_derivationally_related_form",
+                  "07520612"
+                ],
+                [
+                  "01780941",
+                  "_hypernym",
+                  "01779165"
+                ],
+                [
+                  "01782218",
+                  "_hypernym",
+                  "01780202"
+                ],
+                [
+                  "01819554",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "01834304",
+                  "_derivationally_related_form",
+                  "00410247"
+                ],
+                [
+                  "02064745",
+                  "_derivationally_related_form",
+                  "02666239"
+                ],
+                [
+                  "02204692",
+                  "_derivationally_related_form",
+                  "10389398"
+                ],
+                [
+                  "02441022",
+                  "_derivationally_related_form",
+                  "09941964"
+                ],
+                [
+                  "02443049",
+                  "_derivationally_related_form",
+                  "01135529"
+                ],
+                [
+                  "02447001",
+                  "_derivationally_related_form",
+                  "10298912"
+                ],
+                [
+                  "02502536",
+                  "_derivationally_related_form",
+                  "00320852"
+                ],
+                [
+                  "02506555",
+                  "_also_see",
+                  "02064745"
+                ],
+                [
+                  "02509287",
+                  "_derivationally_related_form",
+                  "00808182"
+                ]
+              ]
+            },
+            "inductive_validation": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00043683",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00047317",
+                  "_derivationally_related_form",
+                  "00795008"
+                ],
+                [
+                  "00050652",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "14445379"
+                ],
+                [
+                  "00083809",
+                  "_derivationally_related_form",
+                  "00671351"
+                ],
+                [
+                  "00083809",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00084230",
+                  "_derivationally_related_form",
+                  "00612160"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "04748836"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "09957614"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "05111835"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "13458571"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "05846355"
+                ],
+                [
+                  "00262703",
+                  "_derivationally_related_form",
+                  "03745285"
+                ],
+                [
+                  "00267349",
+                  "_hypernym",
+                  "00266806"
+                ],
+                [
+                  "00300537",
+                  "_derivationally_related_form",
+                  "04930307"
+                ],
+                [
+                  "00321956",
+                  "_derivationally_related_form",
+                  "01580467"
+                ],
+                [
+                  "00364479",
+                  "_also_see",
+                  "01368192"
+                ],
+                [
+                  "00409211",
+                  "_derivationally_related_form",
+                  "02443849"
+                ],
+                [
+                  "00462092",
+                  "_derivationally_related_form",
+                  "04361641"
+                ],
+                [
+                  "00482473",
+                  "_hypernym",
+                  "00296178"
+                ],
+                [
+                  "00590626",
+                  "_derivationally_related_form",
+                  "09780828"
+                ],
+                [
+                  "00650016",
+                  "_derivationally_related_form",
+                  "05748054"
+                ],
+                [
+                  "00651991",
+                  "_derivationally_related_form",
+                  "07270179"
+                ],
+                [
+                  "00696518",
+                  "_also_see",
+                  "01612053"
+                ],
+                [
+                  "00696882",
+                  "_derivationally_related_form",
+                  "00082714"
+                ],
+                [
+                  "00708017",
+                  "_similar_to",
+                  "00709625"
+                ],
+                [
+                  "00730301",
+                  "_derivationally_related_form",
+                  "08512736"
+                ],
+                [
+                  "00730499",
+                  "_derivationally_related_form",
+                  "08592656"
+                ],
+                [
+                  "00751887",
+                  "_hypernym",
+                  "02539334"
+                ],
+                [
+                  "00761713",
+                  "_derivationally_related_form",
+                  "10351874"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "01026262"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "07151122"
+                ],
+                [
+                  "00765213",
+                  "_derivationally_related_form",
+                  "09800249"
+                ],
+                [
+                  "00795008",
+                  "_derivationally_related_form",
+                  "02659763"
+                ],
+                [
+                  "00796047",
+                  "_derivationally_related_form",
+                  "06893885"
+                ],
+                [
+                  "00815644",
+                  "_derivationally_related_form",
+                  "01150559"
+                ],
+                [
+                  "00898804",
+                  "_derivationally_related_form",
+                  "01743784"
+                ],
+                [
+                  "00909363",
+                  "_also_see",
+                  "01149494"
+                ],
+                [
+                  "00915722",
+                  "_hypernym",
+                  "00913705"
+                ],
+                [
+                  "00916464",
+                  "_has_part",
+                  "00921790"
+                ],
+                [
+                  "00919513",
+                  "_derivationally_related_form",
+                  "01567275"
+                ],
+                [
+                  "00921790",
+                  "_derivationally_related_form",
+                  "01320009"
+                ],
+                [
+                  "00933566",
+                  "_derivationally_related_form",
+                  "05117660"
+                ],
+                [
+                  "01020936",
+                  "_derivationally_related_form",
+                  "01742886"
+                ],
+                [
+                  "01020936",
+                  "_hypernym",
+                  "01019524"
+                ],
+                [
+                  "01027263",
+                  "_derivationally_related_form",
+                  "00299580"
+                ],
+                [
+                  "01051331",
+                  "_derivationally_related_form",
+                  "01496630"
+                ],
+                [
+                  "01051331",
+                  "_derivationally_related_form",
+                  "02333689"
+                ],
+                [
+                  "01052853",
+                  "_derivationally_related_form",
+                  "01613239"
+                ],
+                [
+                  "01069190",
+                  "_verb_group",
+                  "01069391"
+                ],
+                [
+                  "01135529",
+                  "_derivationally_related_form",
+                  "02443049"
+                ],
+                [
+                  "01148283",
+                  "_also_see",
+                  "00362467"
+                ],
+                [
+                  "01148283",
+                  "_also_see",
+                  "00999817"
+                ],
+                [
+                  "01151110",
+                  "_hypernym",
+                  "01987160"
+                ],
+                [
+                  "01159964",
+                  "_derivationally_related_form",
+                  "01687569"
+                ],
+                [
+                  "01167146",
+                  "_derivationally_related_form",
+                  "02542795"
+                ],
+                [
+                  "01190884",
+                  "_hypernym",
+                  "01187810"
+                ],
+                [
+                  "01222477",
+                  "_derivationally_related_form",
+                  "01819554"
+                ],
+                [
+                  "01224744",
+                  "_derivationally_related_form",
+                  "10378412"
+                ],
+                [
+                  "01248191",
+                  "_derivationally_related_form",
+                  "02502536"
+                ],
+                [
+                  "01256157",
+                  "_derivationally_related_form",
+                  "10566072"
+                ],
+                [
+                  "01291069",
+                  "_derivationally_related_form",
+                  "00145218"
+                ],
+                [
+                  "01291069",
+                  "_hypernym",
+                  "01354673"
+                ],
+                [
+                  "01301051",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "01340439",
+                  "_derivationally_related_form",
+                  "00147595"
+                ],
+                [
+                  "01363613",
+                  "_also_see",
+                  "01148283"
+                ],
+                [
+                  "01410905",
+                  "_derivationally_related_form",
+                  "04750164"
+                ],
+                [
+                  "01492052",
+                  "_derivationally_related_form",
+                  "04612840"
+                ],
+                [
+                  "01612053",
+                  "_derivationally_related_form",
+                  "02542795"
+                ],
+                [
+                  "01624568",
+                  "_derivationally_related_form",
+                  "13913566"
+                ],
+                [
+                  "01640550",
+                  "_derivationally_related_form",
+                  "09972157"
+                ],
+                [
+                  "01647867",
+                  "_derivationally_related_form",
+                  "13970236"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "00909899"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "03779370"
+                ],
+                [
+                  "01684337",
+                  "_verb_group",
+                  "01551871"
+                ],
+                [
+                  "01693881",
+                  "_derivationally_related_form",
+                  "03104594"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "05075602"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "08664443"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "08677628"
+                ],
+                [
+                  "01739814",
+                  "_derivationally_related_form",
+                  "00916464"
+                ],
+                [
+                  "01743784",
+                  "_derivationally_related_form",
+                  "05902327"
+                ],
+                [
+                  "01765392",
+                  "_derivationally_related_form",
+                  "01151407"
+                ],
+                [
+                  "01765392",
+                  "_derivationally_related_form",
+                  "07515790"
+                ],
+                [
+                  "01780941",
+                  "_derivationally_related_form",
+                  "01222666"
+                ],
+                [
+                  "01813884",
+                  "_derivationally_related_form",
+                  "07527352"
+                ],
+                [
+                  "01819554",
+                  "_derivationally_related_form",
+                  "01222477"
+                ],
+                [
+                  "01876907",
+                  "_derivationally_related_form",
+                  "00348571"
+                ],
+                [
+                  "01922763",
+                  "_also_see",
+                  "01740892"
+                ],
+                [
+                  "01922763",
+                  "_derivationally_related_form",
+                  "07515560"
+                ],
+                [
+                  "02003725",
+                  "_derivationally_related_form",
+                  "00236592"
+                ],
+                [
+                  "02372326",
+                  "_derivationally_related_form",
+                  "00040152"
+                ],
+                [
+                  "02388145",
+                  "_derivationally_related_form",
+                  "04905842"
+                ],
+                [
+                  "02389346",
+                  "_derivationally_related_form",
+                  "00145218"
+                ],
+                [
+                  "02420232",
+                  "_derivationally_related_form",
+                  "10078806"
+                ],
+                [
+                  "02512305",
+                  "_derivationally_related_form",
+                  "10012815"
+                ],
+                [
+                  "02539359",
+                  "_derivationally_related_form",
+                  "00047745"
+                ],
+                [
+                  "02657219",
+                  "_derivationally_related_form",
+                  "03728811"
+                ],
+                [
+                  "02671279",
+                  "_derivationally_related_form",
+                  "13321495"
+                ],
+                [
+                  "02695895",
+                  "_hypernym",
+                  "02694933"
+                ],
+                [
+                  "02840361",
+                  "_hypernym",
+                  "03496892"
+                ]
+              ]
+            },
+            "metrics": {
+              "columns": [
+                "metric",
+                "score"
+              ],
+              "data": [
+                [
+                  "hits@1",
+                  0.007978723404255319
+                ],
+                [
+                  "hits@3",
+                  0.05851063829787234
+                ],
+                [
+                  "hits@5",
+                  0.10372340425531915
+                ],
+                [
+                  "hits@10",
+                  0.18351063829787234
+                ]
+              ]
+            },
+            "training": {
+              "columns": [
+                "training_loss"
+              ],
+              "data": [
+                [
+                  0.822054383366607
+                ],
+                [
+                  0.6774082696715067
+                ],
+                [
+                  0.6474697132443272
+                ],
+                [
+                  0.6299631429273028
+                ],
+                [
+                  0.6206574481587077
+                ],
+                [
+                  0.6080278574034225
+                ],
+                [
+                  0.5999708951905717
+                ],
+                [
+                  0.5960384967715241
+                ],
+                [
+                  0.583724623502687
+                ],
+                [
+                  0.5848835595818453
+                ]
+              ]
+            },
+            "transductive_training": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00001740",
+                  "_also_see",
+                  "00004227"
+                ],
+                [
+                  "00001740",
+                  "_also_see",
+                  "00005041"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "04080833"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "05200169"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "05616246"
+                ],
+                [
+                  "00001740",
+                  "_verb_group",
+                  "00002325"
+                ],
+                [
+                  "00001740",
+                  "_verb_group",
+                  "00002573"
+                ],
+                [
+                  "00001930",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002137",
+                  "_derivationally_related_form",
+                  "00692329"
+                ],
+                [
+                  "00002137",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002325",
+                  "_derivationally_related_form",
+                  "00831191"
+                ],
+                [
+                  "00002325",
+                  "_derivationally_related_form",
+                  "03110322"
+                ],
+                [
+                  "00002325",
+                  "_hypernym",
+                  "02108377"
+                ],
+                [
+                  "00002452",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00002573",
+                  "_derivationally_related_form",
+                  "03110322"
+                ],
+                [
+                  "00002573",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002573",
+                  "_verb_group",
+                  "00001740"
+                ],
+                [
+                  "00002684",
+                  "_derivationally_related_form",
+                  "00532607"
+                ],
+                [
+                  "00002684",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00003316",
+                  "_derivationally_related_form",
+                  "00836788"
+                ],
+                [
+                  "00003316",
+                  "_hypernym",
+                  "00005041"
+                ],
+                [
+                  "00003356",
+                  "_similar_to",
+                  "00003553"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "00367685"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "00368109"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "02625016"
+                ],
+                [
+                  "00003553",
+                  "_has_part",
+                  "03892891"
+                ],
+                [
+                  "00003553",
+                  "_has_part",
+                  "04164989"
+                ],
+                [
+                  "00003553",
+                  "_hypernym",
+                  "00002684"
+                ],
+                [
+                  "00003553",
+                  "_similar_to",
+                  "00003356"
+                ],
+                [
+                  "00004227",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00004258",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00004475",
+                  "_has_part",
+                  "00006484"
+                ],
+                [
+                  "00004475",
+                  "_has_part",
+                  "05220461"
+                ],
+                [
+                  "00004605",
+                  "_derivationally_related_form",
+                  "14842091"
+                ],
+                [
+                  "00004605",
+                  "_derivationally_related_form",
+                  "15109745"
+                ],
+                [
+                  "00004605",
+                  "_hypernym",
+                  "00105333"
+                ],
+                [
+                  "00005041",
+                  "_derivationally_related_form",
+                  "04080833"
+                ],
+                [
+                  "00006484",
+                  "_derivationally_related_form",
+                  "00327031"
+                ],
+                [
+                  "00006484",
+                  "_derivationally_related_form",
+                  "02685299"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05432948"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05434927"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05445668"
+                ],
+                [
+                  "00006484",
+                  "_hypernym",
+                  "00004258"
+                ],
+                [
+                  "00006484",
+                  "_synset_domain_topic_of",
+                  "06037666"
+                ],
+                [
+                  "00007347",
+                  "_derivationally_related_form",
+                  "01645601"
+                ],
+                [
+                  "00007347",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "00388065"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "00727573"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "01557614"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "04618781"
+                ],
+                [
+                  "00007846",
+                  "_has_part",
+                  "04617562"
+                ],
+                [
+                  "00007846",
+                  "_hypernym",
+                  "00007347"
+                ],
+                [
+                  "00011757",
+                  "_derivationally_related_form",
+                  "05854150"
+                ],
+                [
+                  "00013160",
+                  "_also_see",
+                  "01932973"
+                ],
+                [
+                  "00013328",
+                  "_derivationally_related_form",
+                  "00041188"
+                ],
+                [
+                  "00013328",
+                  "_derivationally_related_form",
+                  "03964744"
+                ],
+                [
+                  "00014549",
+                  "_derivationally_related_form",
+                  "00165942"
+                ],
+                [
+                  "00014549",
+                  "_derivationally_related_form",
+                  "10484526"
+                ],
+                [
+                  "00015388",
+                  "_derivationally_related_form",
+                  "01617192"
+                ],
+                [
+                  "00015388",
+                  "_derivationally_related_form",
+                  "01680756"
+                ],
+                [
+                  "00015388",
+                  "_has_part",
+                  "05538625"
+                ],
+                [
+                  "00015388",
+                  "_has_part",
+                  "05601198"
+                ],
+                [
+                  "00015388",
+                  "_hypernym",
+                  "00004475"
+                ],
+                [
+                  "00019128",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00019613",
+                  "_hypernym",
+                  "00020827"
+                ],
+                [
+                  "00019792",
+                  "_derivationally_related_form",
+                  "09821253"
+                ],
+                [
+                  "00020827",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00021939",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "01046984"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "02888133"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "04320126"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "04836683"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "05035961"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "11452218"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "14050143"
+                ],
+                [
+                  "00023100",
+                  "_hypernym",
+                  "00002137"
+                ],
+                [
+                  "00023271",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00023773",
+                  "_derivationally_related_form",
+                  "01649999"
+                ],
+                [
+                  "00023773",
+                  "_derivationally_related_form",
+                  "02766328"
+                ],
+                [
+                  "00023773",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00024720",
+                  "_hypernym",
+                  "00024264"
+                ],
+                [
+                  "00026192",
+                  "_hypernym",
+                  "00024720"
+                ],
+                [
+                  "00028565",
+                  "_derivationally_related_form",
+                  "05601357"
+                ],
+                [
+                  "00029378",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00029677",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00030358",
+                  "_derivationally_related_form",
+                  "01643657"
+                ],
+                [
+                  "00030358",
+                  "_derivationally_related_form",
+                  "01649999"
+                ],
+                [
+                  "00030358",
+                  "_hypernym",
+                  "00029378"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "00713167"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "02724417"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "13780719"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "13928388"
+                ],
+                [
+                  "00031921",
+                  "_hypernym",
+                  "00002137"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00740577"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00742320"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00760402"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "01070102"
+                ],
+                [
+                  "00033615",
+                  "_derivationally_related_form",
+                  "00647094"
+                ],
+                [
+                  "00033615",
+                  "_derivationally_related_form",
+                  "00681429"
+                ],
+                [
+                  "00033615",
+                  "_hypernym",
+                  "00002137"
+                ]
+              ]
+            }
+          },
+          "other": {
+            "InductiveModel": "InductiveNodePiece(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): NodePieceRepresentation(\n      (base): ModuleList(\n        (0): TokenizationRepresentation(\n          (vocabulary): Embedding(\n            (_embeddings): Embedding(19, 50)\n          )\n        )\n      )\n      (combination): ConcatAggregationCombination(\n        (aggregation): ConcatMLP(\n          (0): Linear(in_features=100, out_features=100, bias=True)\n          (1): Dropout(p=0.1, inplace=False)\n          (2): ReLU()\n          (3): Linear(in_features=100, out_features=50, bias=True)\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SubsetRepresentation(\n      (base): Embedding(\n        (_embeddings): Embedding(19, 50)\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n  (_mode_to_representations): ModuleDict(\n    (training_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n    (validation_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n    (testing_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n  )\n)"
+          },
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "metrics": {
+                "columns": [
+                  "metric",
+                  "score"
+                ],
+                "key": "metrics"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "op_id": "View tables",
+        "params": {
+          "_tables_open": {
+            "metrics": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 301.0,
+      "id": "View tables 1",
+      "position": {
+        "x": 1630.4324846879174,
+        "y": 142.8807064492878
+      },
+      "type": "table_view",
+      "width": 370.0
+    },
+    {
+      "data": {
+        "display": {
+          "series": [
+            {
+              "data": [
+                0.008239947264337522,
+                0.02841133816743574
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Early Stopping Metric"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "View early stopping metric",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View early stopping metric",
+          "outputs": [],
+          "params": [],
+          "type": "visualization"
+        },
+        "op_id": "View early stopping metric",
+        "params": {},
+        "status": "done",
+        "title": "View early stopping metric"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 357.0,
+      "id": "View early stopping metric 1",
+      "position": {
+        "x": 1191.713463465271,
+        "y": -322.4100783520495
+      },
+      "type": "visualization",
+      "width": 417.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Train inductive model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train inductive model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
+              "default": null,
+              "name": "transductive_table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "inductive_inference_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "inductive_validation_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": "Adam",
+              "name": "optimizer_type",
+              "type": {
+                "enum": [
+                  "Adam",
+                  "AdamW",
+                  "Adamax",
+                  "Adagrad",
+                  "SGD"
+                ]
+              }
+            },
+            {
+              "default": "BCEWithLogitsLoss",
+              "name": "loss_function",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 5,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "sLCWA",
+              "name": "training_approach",
+              "type": {
+                "enum": [
+                  "sLCWA",
+                  "LCWA"
+                ]
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Train inductive model",
+        "params": {
+          "epochs": "10",
+          "inductive_inference_table": "inductive_inference",
+          "inductive_validation_table": "inductive_validation",
+          "loss_function": "BCEWithLogitsLoss",
+          "model_name": "InductiveModel",
+          "optimizer_type": "Adam",
+          "training_approach": "sLCWA",
+          "transductive_table_name": "transductive_training"
+        },
+        "status": "done",
+        "title": "Train inductive model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 721.0,
+      "id": "Train inductive model 1",
+      "position": {
+        "x": 523.6379288980868,
+        "y": -44.52224733651798
+      },
+      "type": "basic",
+      "width": 439.0
+    },
+    {
+      "data": {
+        "display": {
+          "dataframes": {
+            "early_stopper_metric": {
+              "columns": [
+                "early_stopper_metric"
+              ],
+              "data": [
+                [
+                  0.008239947264337522
+                ],
+                [
+                  0.02841133816743574
+                ]
+              ]
+            },
+            "inductive_inference": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00017222",
+                  "_derivationally_related_form",
+                  "01567275"
+                ],
+                [
+                  "00038849",
+                  "_derivationally_related_form",
+                  "05256862"
+                ],
+                [
+                  "00040152",
+                  "_derivationally_related_form",
+                  "02257370"
+                ],
+                [
+                  "00040152",
+                  "_derivationally_related_form",
+                  "02372326"
+                ],
+                [
+                  "00040152",
+                  "_hypernym",
+                  "00039021"
+                ],
+                [
+                  "00040804",
+                  "_hypernym",
+                  "00040152"
+                ],
+                [
+                  "00040962",
+                  "_derivationally_related_form",
+                  "02458103"
+                ],
+                [
+                  "00040962",
+                  "_derivationally_related_form",
+                  "13928668"
+                ],
+                [
+                  "00043683",
+                  "_hypernym",
+                  "00044149"
+                ],
+                [
+                  "00043683",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00044149",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00044797",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00044797",
+                  "_verb_group",
+                  "00044149"
+                ],
+                [
+                  "00044797",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00046109",
+                  "_derivationally_related_form",
+                  "00150287"
+                ],
+                [
+                  "00046109",
+                  "_derivationally_related_form",
+                  "00299580"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "00828237"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00046534",
+                  "_derivationally_related_form",
+                  "10033082"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00043683"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00044797"
+                ],
+                [
+                  "00046534",
+                  "_verb_group",
+                  "00047945"
+                ],
+                [
+                  "00047317",
+                  "_hypernym",
+                  "00050652"
+                ],
+                [
+                  "00047745",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00047745",
+                  "_hypernym",
+                  "02630189"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "00828237"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00047945",
+                  "_derivationally_related_form",
+                  "10033082"
+                ],
+                [
+                  "00047945",
+                  "_verb_group",
+                  "00046534"
+                ],
+                [
+                  "00049197",
+                  "_hypernym",
+                  "00047945"
+                ],
+                [
+                  "00050652",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00050652",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00052043",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00052043",
+                  "_hypernym",
+                  "00047945"
+                ],
+                [
+                  "00052374",
+                  "_derivationally_related_form",
+                  "02539359"
+                ],
+                [
+                  "00052374",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "00354884"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "00355547"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "07493280"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "09784443"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "04033995"
+                ],
+                [
+                  "00082308",
+                  "_hypernym",
+                  "00064095"
+                ],
+                [
+                  "00082714",
+                  "_derivationally_related_form",
+                  "00696882"
+                ],
+                [
+                  "00082714",
+                  "_derivationally_related_form",
+                  "03237639"
+                ],
+                [
+                  "00082714",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00083124",
+                  "_derivationally_related_form",
+                  "02785648"
+                ],
+                [
+                  "00083124",
+                  "_hypernym",
+                  "00082714"
+                ],
+                [
+                  "00083124",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00083334",
+                  "_hypernym",
+                  "00083124"
+                ],
+                [
+                  "00083334",
+                  "_synset_domain_topic_of",
+                  "06063588"
+                ],
+                [
+                  "00083809",
+                  "_derivationally_related_form",
+                  "01169194"
+                ],
+                [
+                  "00084230",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00088481",
+                  "_hypernym",
+                  "00041899"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "00462092"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "01114303"
+                ],
+                [
+                  "00089027",
+                  "_derivationally_related_form",
+                  "02272549"
+                ],
+                [
+                  "00089027",
+                  "_hypernym",
+                  "00088481"
+                ],
+                [
+                  "00100044",
+                  "_verb_group",
+                  "00833702"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "05748285"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "07366289"
+                ],
+                [
+                  "00119266",
+                  "_derivationally_related_form",
+                  "13559782"
+                ],
+                [
+                  "00119524",
+                  "_derivationally_related_form",
+                  "04748836"
+                ],
+                [
+                  "00119524",
+                  "_derivationally_related_form",
+                  "13559782"
+                ],
+                [
+                  "00119524",
+                  "_hypernym",
+                  "00252019"
+                ],
+                [
+                  "00119873",
+                  "_derivationally_related_form",
+                  "10341660"
+                ],
+                [
+                  "00140393",
+                  "_derivationally_related_form",
+                  "01510827"
+                ],
+                [
+                  "00140652",
+                  "_derivationally_related_form",
+                  "01211699"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01069190"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01069391"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01291069"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "01295275"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "02389346"
+                ],
+                [
+                  "00145218",
+                  "_derivationally_related_form",
+                  "02622234"
+                ],
+                [
+                  "00147595",
+                  "_derivationally_related_form",
+                  "01296462"
+                ],
+                [
+                  "00147595",
+                  "_derivationally_related_form",
+                  "01340439"
+                ],
+                [
+                  "00147595",
+                  "_hypernym",
+                  "00145218"
+                ],
+                [
+                  "00148978",
+                  "_derivationally_related_form",
+                  "01354673"
+                ],
+                [
+                  "00148978",
+                  "_hypernym",
+                  "00147595"
+                ],
+                [
+                  "00149084",
+                  "_derivationally_related_form",
+                  "00083334"
+                ],
+                [
+                  "00149084",
+                  "_hypernym",
+                  "00147595"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "00046109"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "01027263"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "13427078"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "00351638"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "05109808"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "07355887"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "13457378"
+                ],
+                [
+                  "00151689",
+                  "_hypernym",
+                  "00169651"
+                ],
+                [
+                  "00152887",
+                  "_hypernym",
+                  "00151689"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "01711749"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02286204"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02509919"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02694933"
+                ],
+                [
+                  "00155487",
+                  "_derivationally_related_form",
+                  "02695895"
+                ],
+                [
+                  "00170844",
+                  "_hypernym",
+                  "00059552"
+                ],
+                [
+                  "00185104",
+                  "_derivationally_related_form",
+                  "00482473"
+                ],
+                [
+                  "00185104",
+                  "_derivationally_related_form",
+                  "00482893"
+                ],
+                [
+                  "00185104",
+                  "_hypernym",
+                  "00044673"
+                ]
+              ]
+            },
+            "inductive_testing": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00040962",
+                  "_hypernym",
+                  "00040804"
+                ],
+                [
+                  "00044149",
+                  "_verb_group",
+                  "00044797"
+                ],
+                [
+                  "00046534",
+                  "_also_see",
+                  "00044149"
+                ],
+                [
+                  "00047745",
+                  "_derivationally_related_form",
+                  "03051540"
+                ],
+                [
+                  "00064095",
+                  "_derivationally_related_form",
+                  "03879854"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "00354884"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "03075768"
+                ],
+                [
+                  "00083334",
+                  "_derivationally_related_form",
+                  "00149084"
+                ],
+                [
+                  "00087152",
+                  "_also_see",
+                  "01922763"
+                ],
+                [
+                  "00088481",
+                  "_derivationally_related_form",
+                  "02272549"
+                ],
+                [
+                  "00100044",
+                  "_derivationally_related_form",
+                  "00893955"
+                ],
+                [
+                  "00119873",
+                  "_derivationally_related_form",
+                  "02987454"
+                ],
+                [
+                  "00149084",
+                  "_derivationally_related_form",
+                  "01285440"
+                ],
+                [
+                  "00152887",
+                  "_derivationally_related_form",
+                  "07355887"
+                ],
+                [
+                  "00169651",
+                  "_hypernym",
+                  "00170844"
+                ],
+                [
+                  "00201923",
+                  "_derivationally_related_form",
+                  "00462092"
+                ],
+                [
+                  "00224901",
+                  "_derivationally_related_form",
+                  "09476521"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "05162455"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "15224293"
+                ],
+                [
+                  "00236289",
+                  "_derivationally_related_form",
+                  "04181228"
+                ],
+                [
+                  "00236289",
+                  "_hypernym",
+                  "00233335"
+                ],
+                [
+                  "00267349",
+                  "_derivationally_related_form",
+                  "01590171"
+                ],
+                [
+                  "00290740",
+                  "_derivationally_related_form",
+                  "00351638"
+                ],
+                [
+                  "00290740",
+                  "_derivationally_related_form",
+                  "00355252"
+                ],
+                [
+                  "00299580",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00321956",
+                  "_derivationally_related_form",
+                  "00187526"
+                ],
+                [
+                  "00353782",
+                  "_derivationally_related_form",
+                  "00429060"
+                ],
+                [
+                  "00354884",
+                  "_derivationally_related_form",
+                  "01815185"
+                ],
+                [
+                  "00413876",
+                  "_derivationally_related_form",
+                  "01051331"
+                ],
+                [
+                  "00429060",
+                  "_derivationally_related_form",
+                  "00359903"
+                ],
+                [
+                  "00443384",
+                  "_derivationally_related_form",
+                  "14110411"
+                ],
+                [
+                  "00444519",
+                  "_derivationally_related_form",
+                  "05085572"
+                ],
+                [
+                  "00445169",
+                  "_similar_to",
+                  "00444519"
+                ],
+                [
+                  "00456740",
+                  "_derivationally_related_form",
+                  "05696020"
+                ],
+                [
+                  "00456740",
+                  "_derivationally_related_form",
+                  "07369604"
+                ],
+                [
+                  "00462092",
+                  "_derivationally_related_form",
+                  "01070892"
+                ],
+                [
+                  "00482893",
+                  "_derivationally_related_form",
+                  "00185104"
+                ],
+                [
+                  "00527572",
+                  "_derivationally_related_form",
+                  "13491060"
+                ],
+                [
+                  "00595146",
+                  "_derivationally_related_form",
+                  "10164233"
+                ],
+                [
+                  "00650016",
+                  "_derivationally_related_form",
+                  "10012815"
+                ],
+                [
+                  "00651991",
+                  "_derivationally_related_form",
+                  "05748285"
+                ],
+                [
+                  "00661213",
+                  "_derivationally_related_form",
+                  "05748786"
+                ],
+                [
+                  "00696518",
+                  "_also_see",
+                  "02564986"
+                ],
+                [
+                  "00709625",
+                  "_derivationally_related_form",
+                  "00928077"
+                ],
+                [
+                  "00751887",
+                  "_derivationally_related_form",
+                  "09941383"
+                ],
+                [
+                  "00751887",
+                  "_derivationally_related_form",
+                  "09941964"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "00759551"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "01205827"
+                ],
+                [
+                  "00795008",
+                  "_derivationally_related_form",
+                  "00047317"
+                ],
+                [
+                  "00833702",
+                  "_derivationally_related_form",
+                  "00893955"
+                ],
+                [
+                  "00847340",
+                  "_derivationally_related_form",
+                  "01428853"
+                ],
+                [
+                  "00859325",
+                  "_derivationally_related_form",
+                  "04630689"
+                ],
+                [
+                  "00898804",
+                  "_derivationally_related_form",
+                  "01697027"
+                ],
+                [
+                  "00915722",
+                  "_derivationally_related_form",
+                  "01742726"
+                ],
+                [
+                  "00922438",
+                  "_hypernym",
+                  "00921738"
+                ],
+                [
+                  "01021128",
+                  "_derivationally_related_form",
+                  "05925366"
+                ],
+                [
+                  "01029852",
+                  "_derivationally_related_form",
+                  "07202579"
+                ],
+                [
+                  "01059400",
+                  "_also_see",
+                  "02095311"
+                ],
+                [
+                  "01130607",
+                  "_derivationally_related_form",
+                  "03878963"
+                ],
+                [
+                  "01146039",
+                  "_derivationally_related_form",
+                  "02553697"
+                ],
+                [
+                  "01149494",
+                  "_also_see",
+                  "01364008"
+                ],
+                [
+                  "01167146",
+                  "_derivationally_related_form",
+                  "01612053"
+                ],
+                [
+                  "01240432",
+                  "_hypernym",
+                  "01240210"
+                ],
+                [
+                  "01292885",
+                  "_derivationally_related_form",
+                  "07976936"
+                ],
+                [
+                  "01301410",
+                  "_derivationally_related_form",
+                  "13998781"
+                ],
+                [
+                  "01320009",
+                  "_derivationally_related_form",
+                  "00921790"
+                ],
+                [
+                  "01340439",
+                  "_derivationally_related_form",
+                  "10080337"
+                ],
+                [
+                  "01340439",
+                  "_hypernym",
+                  "01296462"
+                ],
+                [
+                  "01364008",
+                  "_also_see",
+                  "01368192"
+                ],
+                [
+                  "01410363",
+                  "_derivationally_related_form",
+                  "04750164"
+                ],
+                [
+                  "01428853",
+                  "_derivationally_related_form",
+                  "10300303"
+                ],
+                [
+                  "01467370",
+                  "_derivationally_related_form",
+                  "08512736"
+                ],
+                [
+                  "01474513",
+                  "_also_see",
+                  "02451113"
+                ],
+                [
+                  "01531375",
+                  "_also_see",
+                  "01508719"
+                ],
+                [
+                  "01551871",
+                  "_verb_group",
+                  "01684337"
+                ],
+                [
+                  "01582645",
+                  "_derivationally_related_form",
+                  "03234306"
+                ],
+                [
+                  "01612053",
+                  "_also_see",
+                  "01123148"
+                ],
+                [
+                  "01643464",
+                  "_derivationally_related_form",
+                  "10029068"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "13913566"
+                ],
+                [
+                  "01667449",
+                  "_derivationally_related_form",
+                  "04033995"
+                ],
+                [
+                  "01684337",
+                  "_derivationally_related_form",
+                  "04157320"
+                ],
+                [
+                  "01687569",
+                  "_derivationally_related_form",
+                  "01159964"
+                ],
+                [
+                  "01697027",
+                  "_derivationally_related_form",
+                  "00898804"
+                ],
+                [
+                  "01753596",
+                  "_derivationally_related_form",
+                  "03178782"
+                ],
+                [
+                  "01753596",
+                  "_derivationally_related_form",
+                  "09972157"
+                ],
+                [
+                  "01779165",
+                  "_derivationally_related_form",
+                  "04143712"
+                ],
+                [
+                  "01779165",
+                  "_derivationally_related_form",
+                  "07520612"
+                ],
+                [
+                  "01780941",
+                  "_hypernym",
+                  "01779165"
+                ],
+                [
+                  "01782218",
+                  "_hypernym",
+                  "01780202"
+                ],
+                [
+                  "01819554",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "01834304",
+                  "_derivationally_related_form",
+                  "00410247"
+                ],
+                [
+                  "02064745",
+                  "_derivationally_related_form",
+                  "02666239"
+                ],
+                [
+                  "02204692",
+                  "_derivationally_related_form",
+                  "10389398"
+                ],
+                [
+                  "02441022",
+                  "_derivationally_related_form",
+                  "09941964"
+                ],
+                [
+                  "02443049",
+                  "_derivationally_related_form",
+                  "01135529"
+                ],
+                [
+                  "02447001",
+                  "_derivationally_related_form",
+                  "10298912"
+                ],
+                [
+                  "02502536",
+                  "_derivationally_related_form",
+                  "00320852"
+                ],
+                [
+                  "02506555",
+                  "_also_see",
+                  "02064745"
+                ],
+                [
+                  "02509287",
+                  "_derivationally_related_form",
+                  "00808182"
+                ]
+              ]
+            },
+            "inductive_validation": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00043683",
+                  "_derivationally_related_form",
+                  "02728440"
+                ],
+                [
+                  "00047317",
+                  "_derivationally_related_form",
+                  "00795008"
+                ],
+                [
+                  "00050652",
+                  "_hypernym",
+                  "00046534"
+                ],
+                [
+                  "00082308",
+                  "_derivationally_related_form",
+                  "14445379"
+                ],
+                [
+                  "00083809",
+                  "_derivationally_related_form",
+                  "00671351"
+                ],
+                [
+                  "00083809",
+                  "_synset_domain_topic_of",
+                  "00612160"
+                ],
+                [
+                  "00084230",
+                  "_derivationally_related_form",
+                  "00612160"
+                ],
+                [
+                  "00119074",
+                  "_derivationally_related_form",
+                  "04748836"
+                ],
+                [
+                  "00150287",
+                  "_derivationally_related_form",
+                  "09957614"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "05111835"
+                ],
+                [
+                  "00151689",
+                  "_derivationally_related_form",
+                  "13458571"
+                ],
+                [
+                  "00233335",
+                  "_derivationally_related_form",
+                  "05846355"
+                ],
+                [
+                  "00262703",
+                  "_derivationally_related_form",
+                  "03745285"
+                ],
+                [
+                  "00267349",
+                  "_hypernym",
+                  "00266806"
+                ],
+                [
+                  "00300537",
+                  "_derivationally_related_form",
+                  "04930307"
+                ],
+                [
+                  "00321956",
+                  "_derivationally_related_form",
+                  "01580467"
+                ],
+                [
+                  "00364479",
+                  "_also_see",
+                  "01368192"
+                ],
+                [
+                  "00409211",
+                  "_derivationally_related_form",
+                  "02443849"
+                ],
+                [
+                  "00462092",
+                  "_derivationally_related_form",
+                  "04361641"
+                ],
+                [
+                  "00482473",
+                  "_hypernym",
+                  "00296178"
+                ],
+                [
+                  "00590626",
+                  "_derivationally_related_form",
+                  "09780828"
+                ],
+                [
+                  "00650016",
+                  "_derivationally_related_form",
+                  "05748054"
+                ],
+                [
+                  "00651991",
+                  "_derivationally_related_form",
+                  "07270179"
+                ],
+                [
+                  "00696518",
+                  "_also_see",
+                  "01612053"
+                ],
+                [
+                  "00696882",
+                  "_derivationally_related_form",
+                  "00082714"
+                ],
+                [
+                  "00708017",
+                  "_similar_to",
+                  "00709625"
+                ],
+                [
+                  "00730301",
+                  "_derivationally_related_form",
+                  "08512736"
+                ],
+                [
+                  "00730499",
+                  "_derivationally_related_form",
+                  "08592656"
+                ],
+                [
+                  "00751887",
+                  "_hypernym",
+                  "02539334"
+                ],
+                [
+                  "00761713",
+                  "_derivationally_related_form",
+                  "10351874"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "01026262"
+                ],
+                [
+                  "00764902",
+                  "_derivationally_related_form",
+                  "07151122"
+                ],
+                [
+                  "00765213",
+                  "_derivationally_related_form",
+                  "09800249"
+                ],
+                [
+                  "00795008",
+                  "_derivationally_related_form",
+                  "02659763"
+                ],
+                [
+                  "00796047",
+                  "_derivationally_related_form",
+                  "06893885"
+                ],
+                [
+                  "00815644",
+                  "_derivationally_related_form",
+                  "01150559"
+                ],
+                [
+                  "00898804",
+                  "_derivationally_related_form",
+                  "01743784"
+                ],
+                [
+                  "00909363",
+                  "_also_see",
+                  "01149494"
+                ],
+                [
+                  "00915722",
+                  "_hypernym",
+                  "00913705"
+                ],
+                [
+                  "00916464",
+                  "_has_part",
+                  "00921790"
+                ],
+                [
+                  "00919513",
+                  "_derivationally_related_form",
+                  "01567275"
+                ],
+                [
+                  "00921790",
+                  "_derivationally_related_form",
+                  "01320009"
+                ],
+                [
+                  "00933566",
+                  "_derivationally_related_form",
+                  "05117660"
+                ],
+                [
+                  "01020936",
+                  "_derivationally_related_form",
+                  "01742886"
+                ],
+                [
+                  "01020936",
+                  "_hypernym",
+                  "01019524"
+                ],
+                [
+                  "01027263",
+                  "_derivationally_related_form",
+                  "00299580"
+                ],
+                [
+                  "01051331",
+                  "_derivationally_related_form",
+                  "01496630"
+                ],
+                [
+                  "01051331",
+                  "_derivationally_related_form",
+                  "02333689"
+                ],
+                [
+                  "01052853",
+                  "_derivationally_related_form",
+                  "01613239"
+                ],
+                [
+                  "01069190",
+                  "_verb_group",
+                  "01069391"
+                ],
+                [
+                  "01135529",
+                  "_derivationally_related_form",
+                  "02443049"
+                ],
+                [
+                  "01148283",
+                  "_also_see",
+                  "00362467"
+                ],
+                [
+                  "01148283",
+                  "_also_see",
+                  "00999817"
+                ],
+                [
+                  "01151110",
+                  "_hypernym",
+                  "01987160"
+                ],
+                [
+                  "01159964",
+                  "_derivationally_related_form",
+                  "01687569"
+                ],
+                [
+                  "01167146",
+                  "_derivationally_related_form",
+                  "02542795"
+                ],
+                [
+                  "01190884",
+                  "_hypernym",
+                  "01187810"
+                ],
+                [
+                  "01222477",
+                  "_derivationally_related_form",
+                  "01819554"
+                ],
+                [
+                  "01224744",
+                  "_derivationally_related_form",
+                  "10378412"
+                ],
+                [
+                  "01248191",
+                  "_derivationally_related_form",
+                  "02502536"
+                ],
+                [
+                  "01256157",
+                  "_derivationally_related_form",
+                  "10566072"
+                ],
+                [
+                  "01291069",
+                  "_derivationally_related_form",
+                  "00145218"
+                ],
+                [
+                  "01291069",
+                  "_hypernym",
+                  "01354673"
+                ],
+                [
+                  "01301051",
+                  "_derivationally_related_form",
+                  "10525134"
+                ],
+                [
+                  "01340439",
+                  "_derivationally_related_form",
+                  "00147595"
+                ],
+                [
+                  "01363613",
+                  "_also_see",
+                  "01148283"
+                ],
+                [
+                  "01410905",
+                  "_derivationally_related_form",
+                  "04750164"
+                ],
+                [
+                  "01492052",
+                  "_derivationally_related_form",
+                  "04612840"
+                ],
+                [
+                  "01612053",
+                  "_derivationally_related_form",
+                  "02542795"
+                ],
+                [
+                  "01624568",
+                  "_derivationally_related_form",
+                  "13913566"
+                ],
+                [
+                  "01640550",
+                  "_derivationally_related_form",
+                  "09972157"
+                ],
+                [
+                  "01647867",
+                  "_derivationally_related_form",
+                  "13970236"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "00909899"
+                ],
+                [
+                  "01662771",
+                  "_derivationally_related_form",
+                  "03779370"
+                ],
+                [
+                  "01684337",
+                  "_verb_group",
+                  "01551871"
+                ],
+                [
+                  "01693881",
+                  "_derivationally_related_form",
+                  "03104594"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "05075602"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "08664443"
+                ],
+                [
+                  "01711749",
+                  "_derivationally_related_form",
+                  "08677628"
+                ],
+                [
+                  "01739814",
+                  "_derivationally_related_form",
+                  "00916464"
+                ],
+                [
+                  "01743784",
+                  "_derivationally_related_form",
+                  "05902327"
+                ],
+                [
+                  "01765392",
+                  "_derivationally_related_form",
+                  "01151407"
+                ],
+                [
+                  "01765392",
+                  "_derivationally_related_form",
+                  "07515790"
+                ],
+                [
+                  "01780941",
+                  "_derivationally_related_form",
+                  "01222666"
+                ],
+                [
+                  "01813884",
+                  "_derivationally_related_form",
+                  "07527352"
+                ],
+                [
+                  "01819554",
+                  "_derivationally_related_form",
+                  "01222477"
+                ],
+                [
+                  "01876907",
+                  "_derivationally_related_form",
+                  "00348571"
+                ],
+                [
+                  "01922763",
+                  "_also_see",
+                  "01740892"
+                ],
+                [
+                  "01922763",
+                  "_derivationally_related_form",
+                  "07515560"
+                ],
+                [
+                  "02003725",
+                  "_derivationally_related_form",
+                  "00236592"
+                ],
+                [
+                  "02372326",
+                  "_derivationally_related_form",
+                  "00040152"
+                ],
+                [
+                  "02388145",
+                  "_derivationally_related_form",
+                  "04905842"
+                ],
+                [
+                  "02389346",
+                  "_derivationally_related_form",
+                  "00145218"
+                ],
+                [
+                  "02420232",
+                  "_derivationally_related_form",
+                  "10078806"
+                ],
+                [
+                  "02512305",
+                  "_derivationally_related_form",
+                  "10012815"
+                ],
+                [
+                  "02539359",
+                  "_derivationally_related_form",
+                  "00047745"
+                ],
+                [
+                  "02657219",
+                  "_derivationally_related_form",
+                  "03728811"
+                ],
+                [
+                  "02671279",
+                  "_derivationally_related_form",
+                  "13321495"
+                ],
+                [
+                  "02695895",
+                  "_hypernym",
+                  "02694933"
+                ],
+                [
+                  "02840361",
+                  "_hypernym",
+                  "03496892"
+                ]
+              ]
+            },
+            "pred": {
+              "columns": [
+                "head_label",
+                "relation_label",
+                "tail_label",
+                "score"
+              ],
+              "data": [
+                [
+                  "03385557",
+                  "_has_part",
+                  "07519253",
+                  7.834212303161621
+                ],
+                [
+                  "07519253",
+                  "_has_part",
+                  "03385557",
+                  7.834212303161621
+                ],
+                [
+                  "04377057",
+                  "_has_part",
+                  "03309808",
+                  7.834212303161621
+                ],
+                [
+                  "03385557",
+                  "_has_part",
+                  "03385557",
+                  7.834212303161621
+                ],
+                [
+                  "04377057",
+                  "_has_part",
+                  "04377057",
+                  7.834212303161621
+                ],
+                [
+                  "03309808",
+                  "_has_part",
+                  "07519253",
+                  7.834212303161621
+                ],
+                [
+                  "07519253",
+                  "_has_part",
+                  "07519253",
+                  7.834212303161621
+                ],
+                [
+                  "03309808",
+                  "_has_part",
+                  "03385557",
+                  7.834212303161621
+                ],
+                [
+                  "07519253",
+                  "_has_part",
+                  "03309808",
+                  7.834212303161621
+                ],
+                [
+                  "03309808",
+                  "_has_part",
+                  "03309808",
+                  7.834212303161621
+                ],
+                [
+                  "03385557",
+                  "_has_part",
+                  "03309808",
+                  7.834212303161621
+                ],
+                [
+                  "04377057",
+                  "_has_part",
+                  "07519253",
+                  7.834212303161621
+                ],
+                [
+                  "07519253",
+                  "_has_part",
+                  "04377057",
+                  7.834212303161621
+                ],
+                [
+                  "03385557",
+                  "_has_part",
+                  "04377057",
+                  7.834212303161621
+                ],
+                [
+                  "04377057",
+                  "_has_part",
+                  "03385557",
+                  7.834212303161621
+                ]
+              ]
+            },
+            "training": {
+              "columns": [
+                "training_loss"
+              ],
+              "data": [
+                [
+                  0.822054383366607
+                ],
+                [
+                  0.6774082696715067
+                ],
+                [
+                  0.6474697132443272
+                ],
+                [
+                  0.6299631429273028
+                ],
+                [
+                  0.6206574481587077
+                ],
+                [
+                  0.6080278574034225
+                ],
+                [
+                  0.5999708951905717
+                ],
+                [
+                  0.5960384967715241
+                ],
+                [
+                  0.583724623502687
+                ],
+                [
+                  0.5848835595818453
+                ]
+              ]
+            },
+            "transductive_training": {
+              "columns": [
+                "head",
+                "relation",
+                "tail"
+              ],
+              "data": [
+                [
+                  "00001740",
+                  "_also_see",
+                  "00004227"
+                ],
+                [
+                  "00001740",
+                  "_also_see",
+                  "00005041"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "04080833"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "05200169"
+                ],
+                [
+                  "00001740",
+                  "_derivationally_related_form",
+                  "05616246"
+                ],
+                [
+                  "00001740",
+                  "_verb_group",
+                  "00002325"
+                ],
+                [
+                  "00001740",
+                  "_verb_group",
+                  "00002573"
+                ],
+                [
+                  "00001930",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002137",
+                  "_derivationally_related_form",
+                  "00692329"
+                ],
+                [
+                  "00002137",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002325",
+                  "_derivationally_related_form",
+                  "00831191"
+                ],
+                [
+                  "00002325",
+                  "_derivationally_related_form",
+                  "03110322"
+                ],
+                [
+                  "00002325",
+                  "_hypernym",
+                  "02108377"
+                ],
+                [
+                  "00002452",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00002573",
+                  "_derivationally_related_form",
+                  "03110322"
+                ],
+                [
+                  "00002573",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00002573",
+                  "_verb_group",
+                  "00001740"
+                ],
+                [
+                  "00002684",
+                  "_derivationally_related_form",
+                  "00532607"
+                ],
+                [
+                  "00002684",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00003316",
+                  "_derivationally_related_form",
+                  "00836788"
+                ],
+                [
+                  "00003316",
+                  "_hypernym",
+                  "00005041"
+                ],
+                [
+                  "00003356",
+                  "_similar_to",
+                  "00003553"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "00367685"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "00368109"
+                ],
+                [
+                  "00003553",
+                  "_derivationally_related_form",
+                  "02625016"
+                ],
+                [
+                  "00003553",
+                  "_has_part",
+                  "03892891"
+                ],
+                [
+                  "00003553",
+                  "_has_part",
+                  "04164989"
+                ],
+                [
+                  "00003553",
+                  "_hypernym",
+                  "00002684"
+                ],
+                [
+                  "00003553",
+                  "_similar_to",
+                  "00003356"
+                ],
+                [
+                  "00004227",
+                  "_hypernym",
+                  "00001740"
+                ],
+                [
+                  "00004258",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00004475",
+                  "_has_part",
+                  "00006484"
+                ],
+                [
+                  "00004475",
+                  "_has_part",
+                  "05220461"
+                ],
+                [
+                  "00004605",
+                  "_derivationally_related_form",
+                  "14842091"
+                ],
+                [
+                  "00004605",
+                  "_derivationally_related_form",
+                  "15109745"
+                ],
+                [
+                  "00004605",
+                  "_hypernym",
+                  "00105333"
+                ],
+                [
+                  "00005041",
+                  "_derivationally_related_form",
+                  "04080833"
+                ],
+                [
+                  "00006484",
+                  "_derivationally_related_form",
+                  "00327031"
+                ],
+                [
+                  "00006484",
+                  "_derivationally_related_form",
+                  "02685299"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05432948"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05434927"
+                ],
+                [
+                  "00006484",
+                  "_has_part",
+                  "05445668"
+                ],
+                [
+                  "00006484",
+                  "_hypernym",
+                  "00004258"
+                ],
+                [
+                  "00006484",
+                  "_synset_domain_topic_of",
+                  "06037666"
+                ],
+                [
+                  "00007347",
+                  "_derivationally_related_form",
+                  "01645601"
+                ],
+                [
+                  "00007347",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "00388065"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "00727573"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "01557614"
+                ],
+                [
+                  "00007846",
+                  "_derivationally_related_form",
+                  "04618781"
+                ],
+                [
+                  "00007846",
+                  "_has_part",
+                  "04617562"
+                ],
+                [
+                  "00007846",
+                  "_hypernym",
+                  "00007347"
+                ],
+                [
+                  "00011757",
+                  "_derivationally_related_form",
+                  "05854150"
+                ],
+                [
+                  "00013160",
+                  "_also_see",
+                  "01932973"
+                ],
+                [
+                  "00013328",
+                  "_derivationally_related_form",
+                  "00041188"
+                ],
+                [
+                  "00013328",
+                  "_derivationally_related_form",
+                  "03964744"
+                ],
+                [
+                  "00014549",
+                  "_derivationally_related_form",
+                  "00165942"
+                ],
+                [
+                  "00014549",
+                  "_derivationally_related_form",
+                  "10484526"
+                ],
+                [
+                  "00015388",
+                  "_derivationally_related_form",
+                  "01617192"
+                ],
+                [
+                  "00015388",
+                  "_derivationally_related_form",
+                  "01680756"
+                ],
+                [
+                  "00015388",
+                  "_has_part",
+                  "05538625"
+                ],
+                [
+                  "00015388",
+                  "_has_part",
+                  "05601198"
+                ],
+                [
+                  "00015388",
+                  "_hypernym",
+                  "00004475"
+                ],
+                [
+                  "00019128",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00019613",
+                  "_hypernym",
+                  "00020827"
+                ],
+                [
+                  "00019792",
+                  "_derivationally_related_form",
+                  "09821253"
+                ],
+                [
+                  "00020827",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00021939",
+                  "_hypernym",
+                  "00003553"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "01046984"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "02888133"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "04320126"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "04836683"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "05035961"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "11452218"
+                ],
+                [
+                  "00022686",
+                  "_derivationally_related_form",
+                  "14050143"
+                ],
+                [
+                  "00023100",
+                  "_hypernym",
+                  "00002137"
+                ],
+                [
+                  "00023271",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00023773",
+                  "_derivationally_related_form",
+                  "01649999"
+                ],
+                [
+                  "00023773",
+                  "_derivationally_related_form",
+                  "02766328"
+                ],
+                [
+                  "00023773",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00024720",
+                  "_hypernym",
+                  "00024264"
+                ],
+                [
+                  "00026192",
+                  "_hypernym",
+                  "00024720"
+                ],
+                [
+                  "00028565",
+                  "_derivationally_related_form",
+                  "05601357"
+                ],
+                [
+                  "00029378",
+                  "_hypernym",
+                  "00023100"
+                ],
+                [
+                  "00029677",
+                  "_hypernym",
+                  "00001930"
+                ],
+                [
+                  "00030358",
+                  "_derivationally_related_form",
+                  "01643657"
+                ],
+                [
+                  "00030358",
+                  "_derivationally_related_form",
+                  "01649999"
+                ],
+                [
+                  "00030358",
+                  "_hypernym",
+                  "00029378"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "00713167"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "02724417"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "13780719"
+                ],
+                [
+                  "00031921",
+                  "_derivationally_related_form",
+                  "13928388"
+                ],
+                [
+                  "00031921",
+                  "_hypernym",
+                  "00002137"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00740577"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00742320"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "00760402"
+                ],
+                [
+                  "00033020",
+                  "_derivationally_related_form",
+                  "01070102"
+                ],
+                [
+                  "00033615",
+                  "_derivationally_related_form",
+                  "00647094"
+                ],
+                [
+                  "00033615",
+                  "_derivationally_related_form",
+                  "00681429"
+                ],
+                [
+                  "00033615",
+                  "_hypernym",
+                  "00002137"
+                ]
+              ]
+            }
+          },
+          "other": {
+            "InductiveModel": "InductiveNodePiece(\n  (loss): MarginRankingLoss(\n    (margin_activation): ReLU()\n  )\n  (interaction): DistMultInteraction()\n  (entity_representations): ModuleList(\n    (0): NodePieceRepresentation(\n      (base): ModuleList(\n        (0): TokenizationRepresentation(\n          (vocabulary): Embedding(\n            (_embeddings): Embedding(19, 50)\n          )\n        )\n      )\n      (combination): ConcatAggregationCombination(\n        (aggregation): ConcatMLP(\n          (0): Linear(in_features=100, out_features=100, bias=True)\n          (1): Dropout(p=0.1, inplace=False)\n          (2): ReLU()\n          (3): Linear(in_features=100, out_features=50, bias=True)\n        )\n      )\n    )\n  )\n  (relation_representations): ModuleList(\n    (0): SubsetRepresentation(\n      (base): Embedding(\n        (_embeddings): Embedding(19, 50)\n      )\n    )\n  )\n  (weight_regularizers): ModuleList()\n  (_mode_to_representations): ModuleDict(\n    (training_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n    (validation_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n    (testing_representations): ModuleList(\n      (0): NodePieceRepresentation(\n        (base): ModuleList(\n          (0): TokenizationRepresentation(\n            (vocabulary): Embedding(\n              (_embeddings): Embedding(19, 50)\n            )\n          )\n        )\n        (combination): ConcatAggregationCombination(\n          (aggregation): ConcatMLP(\n            (0): Linear(in_features=100, out_features=100, bias=True)\n            (1): Dropout(p=0.1, inplace=False)\n            (2): ReLU()\n            (3): Linear(in_features=100, out_features=50, bias=True)\n          )\n        )\n      )\n    )\n  )\n)"
+          },
+          "relations": []
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "pred": {
+                "columns": [
+                  "head_label",
+                  "relation_label",
+                  "score",
+                  "tail_label"
+                ],
+                "key": "pred"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "type": "table_view"
+        },
+        "op_id": "View tables",
+        "params": {
+          "_tables_open": {
+            "pred": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "title": "View tables"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 407.0,
+      "id": "View tables 2",
+      "position": {
+        "x": 1531.5153773236264,
+        "y": 655.7013688466908
+      },
+      "type": "table_view",
+      "width": 685.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Pass k=\"\" to keep all scores"
+            }
+          ],
+          "id": "Full prediction",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Full prediction",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "PyKEENmodel",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pykeen-model'].key"
+              }
+            },
+            {
+              "default": null,
+              "name": "k",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": false,
+              "name": "inductive_setting",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Full prediction",
+        "params": {
+          "inductive_setting": true,
+          "k": "15",
+          "model_name": "InductiveModel"
+        },
+        "status": "done",
+        "title": "Full prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 333.0,
+      "id": "Full prediction 1",
+      "position": {
+        "x": 1163.9430867784786,
+        "y": 701.8539403426871
+      },
+      "type": "basic",
+      "width": 303.0
+    },
+    {
+      "data": {
+        "display": {
+          "series": [
+            {
+              "data": [
+                0.822054383366607,
+                0.6774082696715067,
+                0.6474697132443272,
+                0.6299631429273028,
+                0.6206574481587077,
+                0.6080278574034225,
+                0.5999708951905717,
+                0.5960384967715241,
+                0.583724623502687,
+                0.5848835595818453
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Training loss"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "early_stopper_metric": {
+                "columns": [
+                  "early_stopper_metric"
+                ],
+                "key": "early_stopper_metric"
+              },
+              "inductive_inference": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_inference"
+              },
+              "inductive_testing": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_testing"
+              },
+              "inductive_validation": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "inductive_validation"
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training"
+              },
+              "transductive_training": {
+                "columns": [
+                  "head",
+                  "relation",
+                  "tail"
+                ],
+                "key": "transductive_training"
+              }
+            },
+            "other": {
+              "InductiveModel": {
+                "embedding_dim": 50,
+                "key": "InductiveModel",
+                "model_class": "InductiveNodePiece",
+                "module": "pykeen.models.inductive.inductive_nodepiece",
+                "trained": true,
+                "type": "pykeen-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "View loss",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "View loss",
+          "outputs": [],
+          "params": [],
+          "type": "visualization"
+        },
+        "op_id": "View loss",
+        "params": {},
+        "status": "done",
+        "title": "View loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 280.0,
+      "id": "View loss 1",
+      "position": {
+        "x": 590.3323487294055,
+        "y": -395.48213133562666
+      },
+      "type": "visualization",
+      "width": 471.0
+    }
+  ],
+  "paused": true
+}
