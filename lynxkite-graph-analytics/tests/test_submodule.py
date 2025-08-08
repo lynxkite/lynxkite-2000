@@ -281,3 +281,81 @@ async def test_submodel_with_outgoing_connections_not_accepted():
         match="Submodule lin2_output is not valid: it has connections outside the submodule tree.",
     ):
         pytorch_core.build_model(ws)
+
+
+async def test_submodel_with_outgoing_connections_to_submodule_accepted():
+    # If a submodule is connected to nodes outside its subtree,
+    # and the destination node is not a submodule we should raise an error
+
+    @pytorch_core.op("WithSubmodule")
+    def with_submodule(first: torch.nn.Module, second: torch.nn.Module):
+        return first
+
+    ws = make_ws(
+        pytorch_core.ENV,
+        {
+            "input": {"title": "Input: tensor"},
+            "lin1": {"title": "Linear", "output_dim": 4},
+            "lin2": {"title": "Linear", "output_dim": 4},
+            "sub": {"title": "WithSubmodule"},
+            "sub2": {"title": "WithSubmodule"},
+            "act": {"title": "Activation", "type": "LeakyReLU"},
+            "output": {"title": "Output"},
+            "label": {"title": "Input: tensor"},
+            "loss": {"title": "MSE loss"},
+            "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
+        },
+        [
+            ("input:output", "lin1:x"),
+            ("lin1:output", "lin2:x"),
+            ("lin1:output", "sub2:first"),
+            ("lin2:output", "sub:first"),
+            ("lin2:output", "sub2:second"),
+            ("sub:output", "act:x"),
+            ("sub2:output", "sub:second"),
+            ("act:output", "output:x"),
+            ("output:x", "loss:x"),
+            ("label:output", "loss:y"),
+            ("loss:output", "optim:loss"),
+        ],
+    )
+    m = pytorch_core.build_model(ws)
+    assert m
+
+
+async def test_submodel_list_input():
+    # If a submodule is connected to nodes outside its subtree,
+    # and the destination node is not a submodule we should raise an error
+
+    @pytorch_core.op("WithSubmodule")
+    def with_submodule(modules: list[torch.nn.Module]):
+        return modules[0]
+
+    ws = make_ws(
+        pytorch_core.ENV,
+        {
+            "input": {"title": "Input: tensor"},
+            "input2": {"title": "Input: tensor"},
+            "lin1": {"title": "Linear", "output_dim": 4},
+            "lin2": {"title": "Linear", "output_dim": 4},
+            "sub": {"title": "WithSubmodule"},
+            "act": {"title": "Activation", "type": "LeakyReLU"},
+            "output": {"title": "Output"},
+            "label": {"title": "Input: tensor"},
+            "loss": {"title": "MSE loss"},
+            "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
+        },
+        [
+            ("input:output", "lin1:x"),
+            ("input2:output", "lin2:x"),
+            ("lin1:output", "sub:modules"),
+            ("lin2:output", "sub:modules"),
+            ("sub:output", "act:x"),
+            ("act:output", "output:x"),
+            ("output:x", "loss:x"),
+            ("label:output", "loss:y"),
+            ("loss:output", "optim:loss"),
+        ],
+    )
+    m = pytorch_core.build_model(ws)
+    assert m

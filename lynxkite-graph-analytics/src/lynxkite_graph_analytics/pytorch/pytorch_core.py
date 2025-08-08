@@ -52,14 +52,40 @@ def _to_id(*strings: str) -> str:
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(init=False)
 class Layer:
     """Temporary data structure used by ModelBuilder."""
 
-    module: torch.nn.Module
-    origin_id: str
-    inputs: list[str]
-    outputs: list[str]
+    def __init__(
+        self,
+        module: torch.nn.Module,
+        origin_id: str,
+        inputs: list[str | list[str]],
+        outputs: list[str],
+    ):
+        self.module = module
+        self.origin_id = origin_id
+        print(f"Layer {self.origin_id} inputs {inputs} outputs {outputs}")
+        self.inputs = self.flatten_inputs(inputs)
+        self.outputs = outputs
+
+    @staticmethod
+    def flatten_inputs(inputs: list[str | list[str]]) -> list[str]:
+        """Flattens the input list, since some inputs can be lists.
+        We need to flatten them to make sure the signature for pyg.nn.Sequential. is correct.
+        For example, if the inputs are ['a', ['b', 'c']], we want to return ['a', 'b', 'c'].
+        """
+        inputs_flat = []
+        for input_item in inputs:
+            if isinstance(input_item, (list, tuple)):
+                inputs_flat.extend(input_item)
+            elif input_item is None:
+                # Nonne inputs come from submodules that have no inputs.
+                # We can ignore them, since they are not used in the model.
+                continue
+            else:
+                inputs_flat.append(input_item)
+        return inputs_flat
 
     def for_sequential(self):
         """The layer signature for pyg.nn.Sequential."""
@@ -305,6 +331,7 @@ class ModelBuilder:
         for k, v in self.dependencies.items():
             for i in v:
                 self.inv_dependencies[i].append(k)
+        self.submodule_trees = self.identify_submodules()
         self.layers: list[Layer] = []
         self.submodules: dict[str, Layer] = {}
         # Clean up disconnected nodes.
@@ -315,7 +342,9 @@ class ModelBuilder:
                 to_delete.add(node_id)
                 continue
             op = self.catalog[op_id]
-            if len(self.in_edges[node_id]) != len(op.inputs):  # Unconnected inputs.
+            if len(self.in_edges[node_id]) != len(op.inputs) and all(
+                node_id not in s for s in self.submodule_trees.values()
+            ):  # Unconnected inputs.
                 to_delete.add(node_id)
                 to_delete |= self.all_upstream(node_id)
         for node_id in to_delete:
@@ -526,9 +555,9 @@ class ModelBuilder:
                 self._edge_to_input(edge, input.type)
                 for edge in self.in_edges[node_id].get(input.name, [])
             ]
-            input_edges = input_edges or [
-                None
-            ]  # Nodes that are used as submodules can have no inputs.
+            # Nodes that are used as submodules can have no inputs, but we still need
+            # to provide some value to comply with the function signature.
+            input_edges = input_edges or [None]
             if not (input.type is list or typing.get_origin(input.type) is list):
                 assert len(input_edges) <= 1, (
                     f"Detected multiple input edges for non-list input {node_id} {input.name}."
@@ -543,6 +572,10 @@ class ModelBuilder:
                 # If the input is a submodule, we need to use its model and inputs.
                 call_args.append(input.module)
                 layer_inputs.extend(input.inputs)
+            elif isinstance(input, list) and all(isinstance(i, Layer) for i in input):
+                # If the input is a list of submodules, we need to use their models and inputs.
+                call_args.append([i.module for i in input])
+                layer_inputs.extend([i.inputs for i in input])
             else:
                 # Otherwise, we use the internal ID of the input.
                 call_args.append(input)
@@ -563,7 +596,7 @@ class ModelBuilder:
         layers = []
         for node_id in ts.static_order():
             if all(
-                node_id not in s for s in sub_trees.values()
+                node_id not in s for s in self.submodule_trees.values()
             ):  # Node does not belong to a submodule.
                 layers += self.run_node(node_id, layers)
         self.layers = layers
