@@ -280,8 +280,6 @@ class PyKEENModelWrapper:
                 ),
                 inference_factory=TriplesFactory.from_labeled_triples(
                     self.inductive_inference.to_numpy(),
-                    entity_to_id=self.entity_to_id,
-                    relation_to_id=self.relation_to_id,
                     create_inverse_triples=True,
                 ),
                 interaction=self.interaction,
@@ -461,19 +459,38 @@ def triple_predict(
     *,
     model_name: PyKEENModelName = "PyKEENmodel",
     table_name: core.TableName = "edges_val",
+    inductive_setting: bool = False,
 ):
     bundle = bundle.copy()
     model: PyKEENModelWrapper = bundle.other.get(model_name)
-
+    actual_model = model.model
     entity_to_id = model.entity_to_id
     relation_to_id = model.relation_to_id
+    triples_to_predict_tf = TriplesFactory.from_labeled_triples(
+        bundle.dfs[table_name][["head", "relation", "tail"]].to_numpy(),
+        create_inverse_triples=req_inverse_triples(actual_model) or inductive_setting,
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
+    )
+    print(relation_to_id)
+    print(actual_model.num_real_relations, actual_model.num_relations)
+
+    if inductive_setting and isinstance(actual_model, models.InductiveERModel):
+        original_repr = actual_model._get_entity_representations_from_inductive_mode(
+            mode="validation"
+        )
+        actual_model.replace_entity_representations_(
+            mode="validation",
+            representation=actual_model.create_entity_representation_for_new_triples(
+                triples_to_predict_tf
+            ),
+        )
 
     pred_df = (
         predict_triples(
             model=model,
-            triples=TriplesFactory.from_labeled_triples(
-                bundle.dfs[table_name][["head", "relation", "tail"]].to_numpy()[12:],
-            ),
+            triples_factory=triples_to_predict_tf,
+            mode="validation" if inductive_setting else None,
         )
         .process(
             factory=TriplesFactory(
@@ -485,6 +502,11 @@ def triple_predict(
         .df[["head_label", "relation_label", "tail_label", "score"]]
     )
     bundle.dfs["pred"] = pred_df
+    if inductive_setting and isinstance(actual_model, models.InductiveERModel):
+        # Restore the original entity representations after prediction
+        actual_model.replace_entity_representations_(
+            mode="validation", representation=original_repr
+        )
     return bundle
 
 
@@ -496,6 +518,7 @@ def target_predict(
     head: str,
     relation: str,
     tail: str,
+    inductive_setting: bool = False,
 ):
     """
     Leave the target prediction field empty
@@ -514,24 +537,28 @@ def target_predict(
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
         ),
-    )
-    # TODO: I am still not sure if we want this, or just leave it to the user to annotate tables
-    pred_annotated = pred.add_membership_columns(
-        validation=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_val"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-        ),
-        testing=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_test"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-        ),
+        mode="validation" if inductive_setting else None,
     )
     col = "head_label" if head == "" else "tail_label" if tail == "" else "relation_label"
-    bundle.dfs["pred"] = pred_annotated.df[[col, "score", "in_testing", "in_validation"]]
+    # TODO: I am still not sure if we want this, or just leave it to the user to annotate tables
+    if not inductive_setting:
+        pred_annotated = pred.add_membership_columns(
+            validation=TriplesFactory.from_labeled_triples(
+                bundle.dfs["edges_val"][["head", "relation", "tail"]].to_numpy(),
+                create_inverse_triples=req_inverse_triples(model),
+                entity_to_id=entity_to_id,
+                relation_to_id=relation_to_id,
+            ),
+            testing=TriplesFactory.from_labeled_triples(
+                bundle.dfs["edges_test"][["head", "relation", "tail"]].to_numpy(),
+                create_inverse_triples=req_inverse_triples(model),
+                entity_to_id=entity_to_id,
+                relation_to_id=relation_to_id,
+            ),
+        )
+        df = pred_annotated.df[[col, "score", "in_testing", "in_validation"]]
+
+    bundle.dfs["pred"] = pred.df[[col, "score"]] if inductive_setting else df
 
     return bundle
 

@@ -106,7 +106,7 @@ def get_inductive_model(
         model=model,
         embedding_dim=embedding_dim,
         entity_to_id=inductive_inference.entity_to_id,
-        relation_to_id=inductive_inference.relation_to_id,
+        relation_to_id=transductive_training.relation_to_id,
         edges_data=bundle.dfs[triples_table][["head", "relation", "tail"]],
         seed=seed,
         interaction=model.interaction,
