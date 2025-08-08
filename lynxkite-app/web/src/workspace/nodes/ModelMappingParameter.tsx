@@ -39,7 +39,7 @@ function getModelBindings(
   for (const input of inputs) {
     const other = input.other ?? {};
     for (const e of Object.values(other) as any[]) {
-      if (e.type === "model") {
+      if (e.type === "pytorch-model") {
         for (const id of bindingsOfModel(e.model)) {
           bindings.add({ id, name: e.model.input_output_names[id] ?? id });
         }

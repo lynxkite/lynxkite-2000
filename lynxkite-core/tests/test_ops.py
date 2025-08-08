@@ -1,5 +1,5 @@
 import inspect
-from lynxkite.core import ops
+from lynxkite_core import ops
 import enum
 
 

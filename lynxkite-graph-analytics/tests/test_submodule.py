@@ -2,7 +2,7 @@ import pytest
 import torch
 import torch_geometric.nn as pyg_nn
 from lynxkite_graph_analytics.pytorch import pytorch_core
-from lynxkite.core import workspace
+from lynxkite_core import workspace
 
 
 def make_ws(env, nodes: dict[str, dict], edges: list[tuple[str, str]]):
