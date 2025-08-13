@@ -68,6 +68,91 @@ def import_inductive_dataset(*, dataset: InductiveDataset = InductiveDataset.ILP
     return bundle
 
 
+@op("Split inductive dataset")
+def inductively_split_dataset(
+    bundle: core.Bundle,
+    *,
+    dataset_table: core.TableName,
+    entity_ratio: float = 0.5,
+    training_ratio: float = 0.8,
+    testing_ratio: float = 0.1,
+    validation_ratio: float = 0.1,
+    seed: int = 42,
+):
+    """
+    test.
+
+    Args:
+        entity_ratio: How many percent of the entities in the dataset should be in the transductive training graph. If `0` semi-inductive split is applied, else fully-inductive split is applied
+        training_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference training split
+        testing_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference testing split
+        validation_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference validation split
+    """
+    bundle = bundle.copy()
+    # put E infront of all entities in head and tail
+    bundle.dfs[dataset_table]["head"] = bundle.dfs[dataset_table]["head"].astype(str)
+    bundle.dfs[dataset_table]["tail"] = bundle.dfs[dataset_table]["tail"].astype(str)
+    tf_all = TriplesFactory.from_labeled_triples(
+        bundle.dfs[dataset_table][["head", "relation", "tail"]].to_numpy(),
+    )
+    ratios = (training_ratio, testing_ratio, validation_ratio)
+    if entity_ratio == 0:
+        tf_training, tf_validation, tf_testing = tf_all.split_semi_inductive(
+            ratios=ratios, random_state=seed
+        )
+        training_set = mapped_triples_to_df(
+            tf_training.mapped_triples,
+            tf_training.entity_to_id,
+            tf_training.relation_to_id,
+        )
+        testing_set = mapped_triples_to_df(
+            tf_testing.mapped_triples,
+            tf_testing.entity_to_id,
+            tf_testing.relation_to_id,
+        )
+        validation_set = mapped_triples_to_df(
+            tf_validation.mapped_triples,
+            tf_validation.entity_to_id,
+            tf_validation.relation_to_id,
+        )
+        bundle.dfs["transductive_training"] = training_set
+        bundle.dfs["inductive_inference"] = training_set
+        bundle.dfs["inductive_testing"] = testing_set
+        bundle.dfs["inductive_validation"] = validation_set
+        return bundle
+
+    tf_training, tf_inference, tf_validation, tf_testing = tf_all.split_fully_inductive(
+        entity_split_train_ratio=entity_ratio, evaluation_triples_ratios=ratios, random_state=seed
+    )
+    transductive = mapped_triples_to_df(
+        tf_training.mapped_triples,
+        entity_to_id=tf_training.entity_to_id,
+        relation_to_id=tf_training.relation_to_id,
+    )
+    inductive_inference = mapped_triples_to_df(
+        tf_inference.mapped_triples,
+        entity_to_id=tf_inference.entity_to_id,
+        relation_to_id=tf_inference.relation_to_id,
+    )
+    inductive_testing = mapped_triples_to_df(
+        tf_testing.mapped_triples,
+        entity_to_id=tf_testing.entity_to_id,
+        relation_to_id=tf_testing.relation_to_id,
+    )
+    inductive_validation = mapped_triples_to_df(
+        tf_validation.mapped_triples,
+        entity_to_id=tf_validation.entity_to_id,
+        relation_to_id=tf_validation.relation_to_id,
+    )
+
+    bundle.dfs["transductive_training"] = transductive
+    bundle.dfs["inductive_inference"] = inductive_inference
+    bundle.dfs["inductive_testing"] = inductive_testing
+    bundle.dfs["inductive_validation"] = inductive_validation
+
+    return bundle
+
+
 @op("Define inductive PyKEEN model")
 def get_inductive_model(
     bundle: core.Bundle,
@@ -82,6 +167,16 @@ def get_inductive_model(
     seed: int = 42,
     save_as: str = "InductiveModel",
 ):
+    """
+    Defines an InductiveNodePiece(GNN) model for inductive link prediction tasks.
+
+    Args:
+        triples_table: The transductive edges of the graph.
+        inference_table: The inductive edges of the graph.
+        interaction: Type of interaction the model will use for link prediction scoring.
+        num_tokens: Number of hash tokens for each node representation, usually 66th percentiles of the number of unique incident relations per node.
+        aggregation: Aggregation of multiple token representations to a single entity representation. The module assumes that this refers to a top-level torch function, or use 'mlp' for a two-layer built-in mlp aggregator.
+    """
     bundle = bundle.copy()
     transductive_training = TriplesFactory.from_labeled_triples(
         bundle.dfs[triples_table][["head", "relation", "tail"]].to_numpy(),
@@ -92,10 +187,13 @@ def get_inductive_model(
         create_inverse_triples=True,
     )
     model_cls = models.InductiveNodePieceGNN if use_GNN else models.InductiveNodePiece
+    base_model_cls = interaction.to_class(transductive_training, embedding_dim, 42)
+    assert isinstance(base_model_cls, models.ERModel), "Base model class is not an ERModel"
+    interaction_cls = base_model_cls.interaction
     model = model_cls(
         triples_factory=transductive_training,  # training factory, used to tokenize training nodes
         inference_factory=inductive_inference,  # inference factory, used to tokenize inference nodes
-        interaction=interaction,
+        interaction=interaction_cls,
         embedding_dim=embedding_dim,
         num_tokens=num_tokens,  # length of a node hash - how many unique relations per node will be used
         aggregation=aggregation,  # aggregation function, defaults to an MLP, can be any PyTorch function

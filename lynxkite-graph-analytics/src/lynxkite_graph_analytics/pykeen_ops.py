@@ -559,7 +559,7 @@ def target_predict(
         df = pred_annotated.df[[col, "score", "in_testing", "in_validation"]]
 
     bundle.dfs["pred"] = pred.df[[col, "score"]] if inductive_setting else df
-
+    bundle.dfs["pred"].sort_values(by="score", ascending=False, inplace=True)
     return bundle
 
 
@@ -598,7 +598,7 @@ def full_predict(
     )
     bundle.dfs["pred"] = pred_annotated.df[
         ["head_label", "relation_label", "tail_label", "score", "in_training"]
-    ]
+    ].sort_values(by="score", ascending=False)
 
     return bundle
 
