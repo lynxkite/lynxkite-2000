@@ -15,9 +15,12 @@ def random_sample(
     ratio: float,
     seed: int,
 ):
+    """
+    This WILL overwrite your original table.
+    """
     bundle = bundle.copy()
     sampled = bundle.dfs[table_name].sample(frac=ratio, random_state=seed)
-    bundle.dfs[f"{table_name}_sampled"] = sampled
+    bundle.dfs[table_name] = sampled
     return bundle
 
 

@@ -14,7 +14,7 @@ from pykeen import evaluation
 from pykeen.pipeline import pipeline
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
-from pykeen.triples import TriplesFactory
+from pykeen.triples import TriplesFactory, leakage
 
 
 op = ops.op_registration(core.ENV)
@@ -376,6 +376,9 @@ def train_embedding_model(
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
+    training_set, testing_set, validation_set = leakage.unleak(
+        training_set, testing_set, validation_set
+    )
 
     result = pipeline(
         training=training_set,
@@ -385,6 +388,10 @@ def train_embedding_model(
         loss=loss_function,
         optimizer=optimizer_type,
         training_loop=training_approach,
+        negative_sampler="bernoulli" if training_approach == TrainingType.sLCWA else None,
+        negative_sampler_kwargs=dict(
+            num_negs_per_pos=32,
+        ),
         epochs=epochs,
         training_kwargs=dict(
             sampler=sampler,
@@ -392,10 +399,10 @@ def train_embedding_model(
         ),
         stopper="early",
         stopper_kwargs=dict(
-            frequency=2,
-            patience=15,
+            frequency=5,
+            patience=40,
             relative_delta=0.0005,
-            metric="hits@k",
+            metric="ah@k",
         ),
         random_seed=model_wrapper.seed,
     )
@@ -404,7 +411,7 @@ def train_embedding_model(
     model_wrapper.trained = True
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
-    if result.stopper is stoppers.EarlyStopper:
+    if isinstance(result.stopper, stoppers.EarlyStopper):
         bundle.dfs["early_stopper_metric"] = pd.DataFrame(
             {"early_stopper_metric": result.stopper.results}
         )
@@ -448,12 +455,11 @@ def triple_predict(
         ),
     )
     df = pred.process(
-        factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_test"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model_wrapper),
+        factory=TriplesFactory(
+            [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
-        )
+        ),
     ).df
     bundle.dfs["pred"] = df
     return bundle
@@ -475,34 +481,19 @@ def target_predict(
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
-    pred = predict_target(
+    pred_df = predict_target(
         model=model_wrapper,
         head=head if head != "" else None,
         relation=relation if relation != "" else None,
         tail=tail if tail != "" else None,
-        triples_factory=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_train"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model_wrapper),
+        triples_factory=TriplesFactory(
+            [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
         ),
-    )
+    ).df
 
-    pred_annotated = pred.add_membership_columns(
-        validation=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_val"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model_wrapper),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-        ),
-        testing=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_test"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model_wrapper),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-        ),
-    )
-    bundle.dfs["pred"] = pred_annotated.df
+    bundle.dfs["pred"] = pred_df
 
     return bundle
 
@@ -511,7 +502,12 @@ def target_predict(
 def full_predict(
     bundle: core.Bundle, *, model_name: PyKEENModelName = "PyKEENmodel", k: int | None = None
 ):
-    """Pass k="" to keep all scores"""
+    """
+    Warning: This prediction can be a very expensive operation!
+
+    Args:
+        k: Pass "" to keep all scores
+    """
     bundle = bundle.copy()
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id
@@ -612,6 +608,8 @@ def evaluate(
     *,
     model_name: PyKEENModelName = "PyKEENmodel",
     evaluator_type: EvaluatorTypes = EvaluatorTypes.RankBasedEvaluator,
+    eval_table: core.TableName = "edges_test",
+    additional_true_triples_table: core.TableName = "edges_train",
     metrics_str: str = "ALL",
 ):
     """Metrics are a comma separated list, "ALL" if all metrics are needed"""
@@ -621,17 +619,12 @@ def evaluate(
     relation_to_id = model_wrapper.relation_to_id
     evaluator = evaluator_type.to_class()
     testing_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_test"][["head", "relation", "tail"]].to_numpy(),
+        bundle.dfs[eval_table][["head", "relation", "tail"]].to_numpy(),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
-    training_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_train"][["head", "relation", "tail"]].to_numpy(),
-        entity_to_id=entity_to_id,
-        relation_to_id=relation_to_id,
-    )
-    validation_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs["edges_val"][["head", "relation", "tail"]].to_numpy(),
+    additional_filters = TriplesFactory.from_labeled_triples(
+        bundle.dfs[additional_true_triples_table][["head", "relation", "tail"]].to_numpy(),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
@@ -639,11 +632,8 @@ def evaluate(
     evaluated = evaluator.evaluate(
         model=model_wrapper.model,
         mapped_triples=testing_triples.mapped_triples,
-        additional_filter_triples=[
-            training_triples.mapped_triples,
-            validation_triples.mapped_triples,
-        ],
-        batch_size=32,
+        additional_filter_triples=additional_filters.mapped_triples,
+        # batch_size=32,
     )
     if metrics_str == "ALL":
         bundle.dfs["metrics"] = evaluated.to_df()
