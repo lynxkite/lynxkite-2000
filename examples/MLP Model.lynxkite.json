@@ -78,13 +78,6 @@
       "targetHandle": "x"
     },
     {
-      "id": "Concatenate 1 output Linear 1 x",
-      "source": "Concatenate 1",
-      "sourceHandle": "output",
-      "target": "Linear 1",
-      "targetHandle": "x"
-    },
-    {
       "id": "Input: tensor 4 output Concatenate 1 b",
       "source": "Input: tensor 4",
       "sourceHandle": "output",
@@ -139,6 +132,13 @@
       "sourceHandle": "output",
       "target": "Optimizer 1",
       "targetHandle": "loss"
+    },
+    {
+      "id": "Concatenate 1 output Linear 1 x",
+      "source": "Concatenate 1",
+      "sourceHandle": "output",
+      "target": "Linear 1",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -210,8 +210,8 @@
       "height": 219.0,
       "id": "Input: tensor 1",
       "position": {
-        "x": -221.95232044246433,
-        "y": 1414.0505859268865
+        "x": -418.369870565324,
+        "y": 1785.7988214742338
       },
       "type": "basic",
       "width": 236.0
@@ -235,8 +235,8 @@
       "height": 236.0,
       "id": "Optimizer 1",
       "position": {
-        "x": 1168.8467965415452,
-        "y": -862.9716709128189
+        "x": 1163.1893369725544,
+        "y": -887.4873290451129
       },
       "type": "basic",
       "width": 240.0
@@ -448,8 +448,8 @@
       "height": 304.0,
       "id": "Input: tensor 3",
       "position": {
-        "x": 1432.5652404402288,
-        "y": -301.8543464673156
+        "x": 1409.8161928974803,
+        "y": -348.59420087691456
       },
       "type": "basic",
       "width": 282.0
@@ -470,14 +470,14 @@
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 205.0,
+      "height": 254.0,
       "id": "Output 1",
       "position": {
         "x": 904.0310484636334,
-        "y": -311.6063399183846
+        "y": -354.2447714571602
       },
       "type": "basic",
-      "width": 275.0
+      "width": 290.0
     },
     {
       "data": {
@@ -545,8 +545,8 @@
       "height": 218.0,
       "id": "Input: tensor 4",
       "position": {
-        "x": 35.338158477145754,
-        "y": 1412.4901683371704
+        "x": 41.690686175658485,
+        "y": 1798.4944421236335
       },
       "type": "basic",
       "width": 233.0
@@ -567,8 +567,8 @@
       "height": 200.0,
       "id": "Concatenate 1",
       "position": {
-        "x": -82.54543413577315,
-        "y": 1271.9645646140407
+        "x": -73.33009013345125,
+        "y": 1279.570882494342
       },
       "type": "basic",
       "width": 200.0

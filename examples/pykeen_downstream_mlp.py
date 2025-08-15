@@ -52,6 +52,7 @@ def merge_feature_with_embedding(
     features_table: core.TableName,
     on_column: str,
 ):
+    features.dfs[features_table][on_column] = features.dfs[features_table][on_column].astype(str)
     combined_df = features.dfs[features_table].merge(embeddings.dfs[embeddings_table], on=on_column)
     bundle = embeddings.copy()
     bundle.dfs["combined"] = combined_df
@@ -173,17 +174,12 @@ def permute_and_corrupt_data(
         if isinstance(col, str) and col.startswith("feature_")
     ]
 
-    if permute == "features":
+    if permute == "features" or permute == "both":
         # Permute original feature columns
         for col in original_feature_columns:
             permuted_df[col] = permuted_df[col].sample(frac=1, random_state=seed).values
-    elif permute == "edges":
+    if permute == "edges" or permute == "both":
         # Permute the 'label' column
-        permuted_df["label"] = permuted_df["label"].sample(frac=1, random_state=seed).values
-    elif permute == "both":
-        # Permute both original feature columns and the 'label' column
-        for col in original_feature_columns:
-            permuted_df[col] = permuted_df[col].sample(frac=1, random_state=seed).values
         permuted_df["label"] = permuted_df["label"].sample(frac=1, random_state=seed + seed).values
 
     bundle.dfs["permuted_data"] = permuted_df

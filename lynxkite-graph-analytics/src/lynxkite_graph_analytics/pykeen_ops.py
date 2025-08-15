@@ -296,9 +296,7 @@ def define_pykeen_model(
 ):
     """Defines a PyKEEN model based on the selected model type."""
     bundle = bundle.copy()
-    edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]]
-    edges_data["head"] = edges_data["head"].astype(str)
-    edges_data["tail"] = edges_data["tail"].astype(str)
+    edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]].astype(str)
     triples_factory = TriplesFactory.from_labeled_triples(
         edges_data.to_numpy(),
         create_inverse_triples=req_inverse_triples(model),
@@ -354,21 +352,21 @@ def train_embedding_model(
 
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
-
+    # print types of columns
     training_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[training_table][["head", "relation", "tail"]].to_numpy(),
+        bundle.dfs[training_table][["head", "relation", "tail"]].astype(str).to_numpy(),
         create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
     testing_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[testing_table][["head", "relation", "tail"]].to_numpy(),
+        bundle.dfs[testing_table][["head", "relation", "tail"]].astype(str).to_numpy(),
         create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
     validation_set = TriplesFactory.from_labeled_triples(
-        bundle.dfs[validation_table][["head", "relation", "tail"]].to_numpy(),
+        bundle.dfs[validation_table][["head", "relation", "tail"]].astype(str).to_numpy(),
         create_inverse_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
@@ -403,7 +401,7 @@ def train_embedding_model(
     model_wrapper.trained = True
 
     bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
-    if type(result.stopper) is stoppers.EarlyStopper:
+    if isinstance(result.stopper, stoppers.EarlyStopper):
         bundle.dfs["early_stopper_metric"] = pd.DataFrame(
             {"early_stopper_metric": result.stopper.results}
         )
