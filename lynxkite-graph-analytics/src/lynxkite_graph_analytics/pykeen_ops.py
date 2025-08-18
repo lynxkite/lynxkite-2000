@@ -9,11 +9,8 @@ import io
 import enum
 import torch
 from torch import nn
-from pykeen import stoppers
-from pykeen import models
-from pykeen import evaluation
-from pykeen.nn.modules import Interaction
-from pykeen.nn import combination
+from pykeen import models, evaluation, stoppers
+from pykeen.nn import Interaction, combination
 from pykeen.pipeline import pipeline, PipelineResult
 from pykeen.datasets import get_dataset
 from pykeen.predict import predict_triples, predict_target, predict_all
@@ -255,6 +252,8 @@ class PyKEENModelWrapper:
         seed: int,
         model_type: typing.Optional[PyKEENModel] = None,
         interaction: typing.Optional[Interaction] = None,
+        inductive_inference: typing.Optional[pd.DataFrame] = None,
+        inductive_kwargs: typing.Optional[dict] = None,
         combination: typing.Optional[PyKEENCombinations] = None,
         combination_kwargs: typing.Optional[dict] = None,
         literals_data: typing.Optional[pd.DataFrame] = None,
@@ -279,6 +278,8 @@ class PyKEENModelWrapper:
         self.combination = combination
         self.combination_kwargs = combination_kwargs
         self.literals_data = literals_data
+        self.inductive_inference = inductive_inference
+        self.inductive_kwargs = inductive_kwargs
         self.trained = trained
 
     def metadata(self) -> dict:
@@ -322,6 +323,28 @@ class PyKEENModelWrapper:
                 ),
                 embedding_dim=self.embedding_dim,
                 seed=self.seed,
+            )
+        elif self.inductive_inference is not None:
+            print(self.inductive_kwargs)
+            model_cls = (
+                models.InductiveNodePieceGNN
+                if self.inductive_kwargs.get("use_GNN", False) == "True"
+                else models.InductiveNodePiece
+            )
+            kwargs = self.inductive_kwargs
+            kwargs.pop("use_GNN", None)
+            self.model = model_cls(
+                triples_factory=TriplesFactory.from_labeled_triples(
+                    self.edges_data.to_numpy(),
+                    create_inverse_triples=True,
+                ),
+                inference_factory=TriplesFactory.from_labeled_triples(
+                    self.inductive_inference.to_numpy(),
+                    create_inverse_triples=True,
+                ),
+                interaction=self.interaction,
+                embedding_dim=self.embedding_dim,
+                **kwargs,
             )
         else:
             combination_cls = self.combination.to_class(
@@ -369,12 +392,10 @@ def req_inverse_triples(model: models.Model | PyKEENModel) -> bool:
     """
     Check if the model requires inverse triples.
     """
-    return model in {
-        models.CompGCN,
-        models.NodePiece,
-        PyKEENModel.CompGCN,
-        PyKEENModel.NodePiece,
-    }
+    return isinstance(
+        model,
+        (models.CompGCN, models.NodePiece, models.InductiveNodePiece, models.InductiveNodePieceGNN),
+    ) or model in {PyKEENModel.CompGCN, PyKEENModel.NodePiece}
 
 
 class TrainingType(str, enum.Enum):
@@ -398,6 +419,8 @@ def define_pykeen_model(
     """Defines a PyKEEN model based on the selected model type."""
     bundle = bundle.copy()
     edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]]
+    edges_data["head"] = edges_data["head"].astype(str)
+    edges_data["tail"] = edges_data["tail"].astype(str)
     triples_factory = TriplesFactory.from_labeled_triples(
         edges_data.to_numpy(),
         create_inverse_triples=req_inverse_triples(model),
@@ -597,7 +620,7 @@ def train_embedding_model(
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model)
     actual_model = model_wrapper.model
     sampler = None
-    if actual_model is models.RGCN and training_approach == TrainingType.sLCWA:
+    if isinstance(actual_model, models.RGCN) and training_approach == TrainingType.sLCWA:
         # Currently RGCN is the only model that requires a sampler and only when using sLCWA
         sampler = "schlichtkrull"
 
@@ -687,22 +710,36 @@ def triple_predict(
     *,
     model_name: PyKEENModelName = "PyKEENmodel",
     table_name: core.TableName = "edges_val",
+    inductive_setting: bool = False,
 ):
     bundle = bundle.copy()
-    model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
+    model: PyKEENModelWrapper = bundle.other.get(model_name)
+    actual_model = model.model
+    entity_to_id = model.entity_to_id
+    relation_to_id = model.relation_to_id
+    triples_to_predict_tf = TriplesFactory.from_labeled_triples(
+        bundle.dfs[table_name][["head", "relation", "tail"]].to_numpy(),
+        create_inverse_triples=req_inverse_triples(actual_model) or inductive_setting,
+        entity_to_id=entity_to_id,
+        relation_to_id=relation_to_id,
+    )
 
-    entity_to_id = model_wrapper.entity_to_id
-    relation_to_id = model_wrapper.relation_to_id
+    if inductive_setting and isinstance(actual_model, models.InductiveERModel):
+        original_repr = actual_model._get_entity_representations_from_inductive_mode(
+            mode="validation"
+        )
+        actual_model.replace_entity_representations_(
+            mode="validation",
+            representation=actual_model.create_entity_representation_for_new_triples(
+                triples_to_predict_tf
+            ),
+        )
 
     pred_df = (
         predict_triples(
-            model=model_wrapper,
-            triples=TriplesFactory.from_labeled_triples(
-                bundle.dfs[table_name][["head", "relation", "tail"]].to_numpy(),
-                create_inverse_triples=req_inverse_triples(model_wrapper),
-                entity_to_id=entity_to_id,
-                relation_to_id=relation_to_id,
-            ),
+            model=model,
+            triples_factory=triples_to_predict_tf,
+            mode="validation" if inductive_setting else None,
         )
         .process(
             factory=TriplesFactory(
@@ -714,6 +751,11 @@ def triple_predict(
         .df[["head_label", "relation_label", "tail_label", "score"]]
     )
     bundle.dfs["pred"] = pred_df
+    if inductive_setting and isinstance(actual_model, models.InductiveERModel):
+        # Restore the original entity representations after prediction
+        actual_model.replace_entity_representations_(
+            mode="validation", representation=original_repr
+        )
     return bundle
 
 
@@ -725,6 +767,7 @@ def target_predict(
     head: str,
     relation: str,
     tail: str,
+    inductive_setting: bool = False,
 ):
     """
     Leave the target prediction field empty
@@ -743,6 +786,7 @@ def target_predict(
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
         ),
+        mode="validation" if inductive_setting else None,
     )
 
     col = "head_label" if head == "" else "tail_label" if tail == "" else "relation_label"
@@ -755,7 +799,11 @@ def target_predict(
 
 @op("Full prediction", slow=True)
 def full_predict(
-    bundle: core.Bundle, *, model_name: PyKEENModelName = "PyKEENmodel", k: int | None = None
+    bundle: core.Bundle,
+    *,
+    model_name: PyKEENModelName = "PyKEENmodel",
+    k: int | None = None,
+    inductive_setting: bool = False,
 ):
     """
     Warning: This prediction can be a very expensive operation!
@@ -775,6 +823,10 @@ def full_predict(
             relation_to_id=relation_to_id,
         ),
     )
+    if inductive_setting:
+        bundle.dfs["pred"] = pack.df[["head_label", "relation_label", "tail_label", "score"]]
+        return bundle
+
     pred_annotated = pack.add_membership_columns(
         training=TriplesFactory.from_labeled_triples(
             bundle.dfs["edges_train"][["head", "relation", "tail"]].to_numpy(),
@@ -830,6 +882,7 @@ class EvaluatorTypes(str, enum.Enum):
     ClassificationEvaluator = "Classification Evaluator"
     MacroRankBasedEvaluator = "Macro Rank Based Evaluator"
     RankBasedEvaluator = "Rank Based Evaluator"
+    SampledRankBasedEvaluator = "Sampled Rank Based Evaluator"
 
     def to_class(self) -> evaluation.Evaluator:
         return getattr(evaluation, self.name.replace(" ", ""))()
@@ -845,7 +898,13 @@ def evaluate(
     additional_true_triples_table: core.TableName = "edges_train",
     metrics_str: str = "ALL",
 ):
-    """Metrics are a comma separated list, "ALL" if all metrics are needed. When using classification based methods, evaluation may be extremely slow."""
+    """
+    Evaluates the given model on the test set using the specified evaluator type.
+    Args:
+        evaluator_type: The type of evaluator to use. Note: When using classification based methods, evaluation may be extremely slow.
+        metrics_str: Comma separated list, "ALL" if all metrics are needed.
+    """
+
     bundle = bundle.copy()
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id
