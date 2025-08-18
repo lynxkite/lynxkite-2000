@@ -11,6 +11,7 @@ import pandas as pd
 import polars as pl
 import traceback
 import typing
+import urllib.parse
 
 if typing.TYPE_CHECKING:
     import fastapi
@@ -257,6 +258,9 @@ class Service(typing.Protocol):
         """Handles a POST request. The unparsed part of the URL is available as request.state.remaining_path."""
         ...
 
+    def get_description(self, url: str) -> str:
+        return f"URL: [{url}]({url})"
+
 
 @dataclasses.dataclass
 class WorkspaceResult:
@@ -380,9 +384,13 @@ async def _execute_node(
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"
             wsres.services[node.id] = result.output
-            result.output = None
             url = f"/api/service/lynxkite_graph_analytics/{ws.path}/{node.id}"
-            result.display = {"dataframes": {"service": {"columns": ["url"], "data": [[url]]}}}
+            url = urllib.parse.quote_plus(url)
+            markdown = result.output.get_description(url)
+            result.display = {
+                "dataframes": {"service": {"columns": ["markdown"], "data": [[markdown]]}}
+            }
+            result.output = None
         elif len(op.outputs) > 1:
             assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
             for k, v in result.output.items():
