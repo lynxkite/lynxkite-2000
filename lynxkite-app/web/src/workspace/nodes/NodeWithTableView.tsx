@@ -51,7 +51,7 @@ function NodeWithTableView(props: any) {
               (df.data.length > 1 ? (
                 <Table key={`${name}-table`} columns={df.columns} data={df.data} />
               ) : df.data.length ? (
-                <dl key={`${name}-dl`}>
+                <dl className="markdown-table prose" key={`${name}-dl`}>
                   {df.columns.map((c: string, i: number) => (
                     <React.Fragment key={`${name}-${c}`}>
                       {df.columns.length > 1 && <dt>{c}</dt>}
