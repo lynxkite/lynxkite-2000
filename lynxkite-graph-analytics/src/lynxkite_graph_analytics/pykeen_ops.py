@@ -783,54 +783,31 @@ def extract_from_pykeen(
     model_name: PyKEENModelName = "PyKEENmodel",
 ):
     bundle = bundle.copy()
-    model = bundle.other[model_name]
+    model_wrapper = bundle.other[model_name]
+    model = model_wrapper.model
+    state_dict = model.state_dict()
 
-    actual_model = model
-    while hasattr(actual_model, "base"):
-        actual_model = actual_model.base
+    entity_embeddings = []
+    for key in state_dict.keys():
+        if "entity" in key.lower() and "embedding" in key.lower():
+            entity_embeddings.append(state_dict[key].cpu().detach().numpy())
 
-    entity_labels = list(bundle.dfs["nodes"]["label"])
-    entity_embeddings = None
-    if (
-        hasattr(actual_model, "entity_representations")
-        and len(actual_model.entity_representations) > 0
-    ):
-        entity_embeddings = actual_model.entity_representations[0]().detach().cpu()
+    id_to_entity = {v: k for k, v in model_wrapper.entity_to_id.items()}
+    for i, embedding in enumerate(entity_embeddings):
+        entity_embedding_df = pd.DataFrame({"embedding": list(embedding)})
+        entity_embedding_df["node_label"] = entity_embedding_df.index.map(id_to_entity)
+        bundle.dfs[f"node_embedding_{i}"] = entity_embedding_df
 
-    if entity_embeddings is None:
-        raise AttributeError(
-            f"Cannot extract entity embeddings from model type: {type(actual_model)}. "
-            f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
-        )
+    relation_embeddings = []
+    for key in state_dict.keys():
+        if "relation" in key.lower() and "embedding" in key.lower():
+            relation_embeddings.append(state_dict[key].cpu().detach().numpy())
 
-    nodes_table = bundle.dfs["nodes"]
-    if "embedding" not in nodes_table.columns:
-        nodes_table["embedding"] = None
-    nodes_table["embedding"] = pd.Series(
-        [entity_embeddings[entity_labels.index(label)].numpy() for label in entity_labels]
-    )
-    bundle.dfs["nodes"] = nodes_table
-
-    relation_labels = list(bundle.dfs["relations"]["label"])
-    relation_embeddings = None
-    if (
-        hasattr(actual_model, "relation_representations")
-        and len(actual_model.relation_representations) > 0
-    ):
-        relation_embeddings = actual_model.relation_representations[0]().detach().cpu()
-    if relation_embeddings is None:
-        raise AttributeError(
-            f"Cannot extract relation embeddings from model type: {type(actual_model)}. "
-            f"Available attributes: {[attr for attr in dir(actual_model) if not attr.startswith('_')]}"
-        )
-
-    relations_table = bundle.dfs["relations"]
-    if "embedding" not in relations_table.columns:
-        relations_table["embedding"] = None
-    relations_table["embedding"] = pd.Series(
-        [relation_embeddings[relation_labels.index(label)].numpy() for label in relation_labels]
-    )
-    bundle.dfs["relations"] = relations_table
+    id_to_relation = {v: k for k, v in model_wrapper.relation_to_id.items()}
+    for i, embedding in enumerate(relation_embeddings):
+        relation_embedding_df = pd.DataFrame({"embedding": list(embedding)})
+        relation_embedding_df["relation_label"] = relation_embedding_df.index.map(id_to_relation)
+        bundle.dfs[f"relation_embedding_{i}"] = relation_embedding_df
 
     return bundle
 
@@ -854,7 +831,7 @@ def evaluate(
     additional_true_triples_table: core.TableName = "edges_train",
     metrics_str: str = "ALL",
 ):
-    """Metrics are a comma separated list, "ALL" if all metrics are needed"""
+    """Metrics are a comma separated list, "ALL" if all metrics are needed. When using classification based methods, evaluation may be extremely slow."""
     bundle = bundle.copy()
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id

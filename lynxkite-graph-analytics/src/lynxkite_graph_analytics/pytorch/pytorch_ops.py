@@ -168,6 +168,11 @@ def mse_loss(x, y):
     return torch.nn.functional.mse_loss
 
 
+@op("Binary cross-entropy loss")
+def binary_cross_entropy_loss(x, y):
+    return torch.nn.BCELoss()
+
+
 @op("Constant vector")
 def constant_vector(*, value=0, size=1):
     return lambda _: torch.full((size,), value)
