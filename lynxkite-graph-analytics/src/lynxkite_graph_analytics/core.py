@@ -249,6 +249,7 @@ def disambiguate_edges(ws: workspace.Workspace):
 Outputs = dict[tuple[str, str], typing.Any]
 
 
+@typing.runtime_checkable
 class Service(typing.Protocol):
     async def get(self, request: "fastapi.Request") -> dict:
         """Handles a GET request. The unparsed part of the URL is available as request.state.remaining_path."""
@@ -383,6 +384,9 @@ async def _execute_node(
     try:
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"
+            assert isinstance(result.output, Service), (
+                f"{node.id} must return a Service. Current output: {result.output}"
+            )
             wsres.services[node.id] = result.output
             url = f"/api/service/lynxkite_graph_analytics/{ws.path}/{node.id}"
             url = urllib.parse.quote_plus(url)
