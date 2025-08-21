@@ -118,6 +118,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
+    path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
     def normalize(self):
@@ -150,6 +151,8 @@ class Workspace(BaseConfig):
         """Returns the workspace as JSON."""
         # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
         j = self.model_dump()
+        if "path" in j:
+            del j["path"]
         j = json.dumps(j, indent=2, sort_keys=True) + "\n"
         return j
 
@@ -184,6 +187,7 @@ class Workspace(BaseConfig):
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()
+        ws.path = path
         return ws
 
     def update_metadata(self):
@@ -239,7 +243,9 @@ class Workspace(BaseConfig):
             )
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
-                title=kwargs["title"], op_id=kwargs["title"], params=kwargs.get("params", {})
+                title=kwargs["title"],
+                op_id=kwargs["title"],
+                params=kwargs.get("params", {}),
             )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")

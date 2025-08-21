@@ -262,7 +262,7 @@ def op(
         env: The environment (workspace type) to which the operation belongs.
         names: The list of categories this operation belongs to, followed by the name of the operation.
         view: How the operation will be displayed in the UI. One of "basic", "visualization",
-              "table_view", "graph_creation_view", "image", "molecule", "matplotlib".
+              "table_view", "graph_creation_view", "image", "molecule", "matplotlib", "service".
         outputs: A list of output names. If not provided, defaults to ["output"] for "basic" view.
         params: Normally the parameters are taken from the function signature.
                 Use "params" to override this.
@@ -520,6 +520,7 @@ def run_user_script(script_path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
+    assert spec.loader
     spec.loader.exec_module(module)
 
 

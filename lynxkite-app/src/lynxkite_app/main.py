@@ -130,6 +130,8 @@ async def upload(req: fastapi.Request):
     """Receives file uploads and stores them in DATA_PATH."""
     form = await req.form()
     for file in form.values():
+        if isinstance(file, str):
+            continue
         file_path = data_path / "uploads" / file.filename
         assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
         with file_path.open("wb") as buffer:
