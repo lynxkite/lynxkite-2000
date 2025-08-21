@@ -43,8 +43,8 @@ async def test_multi_input_box():
             id="2", source="2", target="3", sourceHandle="output", targetHandle="bundles"
         ),
     ]
-    output = await execute(ws)
+    result = await execute(ws)
     assert all([node.data.error is None for node in ws.nodes])
-    assert output[("3", "output")] == 2, (
+    assert result.outputs[("3", "output")] == 2, (
         "Multi input op should return the correct number of bundles"
     )
