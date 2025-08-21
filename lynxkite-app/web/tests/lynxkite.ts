@@ -170,10 +170,12 @@ export class Workspace {
 }
 
 export class Box {
-  constructor(
-    readonly page: Page,
-    readonly locator: Locator,
-  ) {}
+  readonly page;
+  readonly locator;
+  constructor(page: Page, locator: Locator) {
+    this.page = page;
+    this.locator = locator;
+  }
   getParameter(name: string) {
     return this.locator.getByLabel(name);
   }

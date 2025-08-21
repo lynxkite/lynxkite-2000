@@ -141,7 +141,7 @@ def doc_to_type(name: str, type_hint: str) -> type | types.UnionType | Failure:
     return Failure.SKIP
 
 
-def types_from_doc(doc: str) -> dict[str, type]:
+def types_from_doc(doc: str) -> dict[str, type | types.UnionType | Failure]:
     types = {}
     for line in doc.splitlines():
         if ":" in line:

@@ -520,6 +520,7 @@ def run_user_script(script_path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
+    assert spec.loader
     spec.loader.exec_module(module)
 
 
