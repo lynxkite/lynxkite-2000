@@ -139,7 +139,7 @@ def layernorm(x, *, normalized_shape=""):
     return torch.nn.LayerNorm(normalized_shape)
 
 
-@op("Dropout", outputs=["outputs", "weights"])
+@op("Dropout")
 def dropout(x, *, p=0.0):
     return torch.nn.Dropout(p)
 
@@ -168,9 +168,9 @@ def mse_loss(x, y):
     return torch.nn.functional.mse_loss
 
 
-@op("Binary cross-entropy loss")
+@op("Binary cross-entropy with logits loss", outputs=["loss"])
 def binary_cross_entropy_loss(x, y):
-    return torch.nn.BCELoss()
+    return torch.nn.BCEWithLogitsLoss()
 
 
 @op("Constant vector")

@@ -67,7 +67,7 @@ def gen_pos_and_neg_sample(
     features_and_embeddings_table: core.TableName,
     seed: int = 1234,
 ):
-    edges_df = bundle.dfs[edges_table]
+    edges_df = bundle.dfs[edges_table].astype(str)
     combined_df = bundle.dfs[features_and_embeddings_table]
 
     positive_samples = edges_df.merge(
@@ -153,9 +153,10 @@ def model_eval_(
             "score": [accuracy, precision, recall, f1],
         }
     )
-    bundle.dfs["metrics"] = metrics_df
+    metric_bundle = core.Bundle()
+    metric_bundle.dfs["metrics"] = metrics_df
 
-    return bundle
+    return metric_bundle
 
 
 @op("Permute and corrupt data")

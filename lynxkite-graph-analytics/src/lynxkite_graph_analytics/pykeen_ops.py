@@ -260,13 +260,31 @@ class PyKEENModelWrapper:
         trained: bool = False,
     ):
         if model_type is None:
-            assert (
-                interaction is not None and combination is not None and literals_data is not None
-            ), "Either model_type or interaction and combination must be provided"
+            # either inductive or literals model
+            if inductive_inference is not None:
+                assert (
+                    interaction is not None
+                    and inductive_inference is not None
+                    and combination is None
+                    and literals_data is None
+                ), (
+                    "For inductive models, interaction and inductive inference table must be provided"
+                )
+            else:
+                assert (
+                    interaction is not None
+                    and combination is not None
+                    and literals_data is not None
+                ), (
+                    "For a model with literals, interaction, combination and literals data must be provided"
+                )
         else:
-            assert interaction is None and combination is None and literals_data is None, (
-                "If model_type is provided, interaction and combination must not be provided"
-            )
+            assert (
+                interaction is None
+                and combination is None
+                and literals_data is None
+                and inductive_inference is None
+            ), "For transdutive models, only model_type must be provided"
         self.model = model
         self.embedding_dim = embedding_dim
         self.entity_to_id = entity_to_id
@@ -815,7 +833,7 @@ def full_predict(
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
-    pred = predict_all(model=model_wrapper, k=k)
+    pred = predict_all(model=model_wrapper, k=k, mode="validation" if inductive_setting else None)
     pack = pred.process(
         factory=TriplesFactory(
             [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
@@ -823,20 +841,8 @@ def full_predict(
             relation_to_id=relation_to_id,
         ),
     )
-    if inductive_setting:
-        bundle.dfs["pred"] = pack.df[["head_label", "relation_label", "tail_label", "score"]]
-        return bundle
-
-    pred_annotated = pack.add_membership_columns(
-        training=TriplesFactory.from_labeled_triples(
-            bundle.dfs["edges_train"][["head", "relation", "tail"]].to_numpy(),
-            create_inverse_triples=req_inverse_triples(model_wrapper),
-            entity_to_id=entity_to_id,
-            relation_to_id=relation_to_id,
-        )
-    )
-    bundle.dfs["pred"] = pred_annotated.df[
-        ["head_label", "relation_label", "tail_label", "score", "in_training"]
+    bundle.dfs["pred"] = pack.df[
+        ["head_label", "relation_label", "tail_label", "score"]
     ].sort_values(by="score", ascending=False)
 
     return bundle
@@ -910,6 +916,12 @@ def evaluate(
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
     evaluator = evaluator_type.to_class()
+    if isinstance(evaluator, evaluation.ClassificationEvaluator):
+        from pykeen.metrics.classification import classification_metric_resolver
+
+        evaluator.metrics = tuple(
+            classification_metric_resolver.make(metric_cls) for metric_cls in metrics_str.split(",")
+        )
     testing_triples = TriplesFactory.from_labeled_triples(
         bundle.dfs[eval_table][["head", "relation", "tail"]].astype(str).to_numpy(dtype=str),
         entity_to_id=entity_to_id,

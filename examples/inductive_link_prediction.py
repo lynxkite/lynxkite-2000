@@ -16,8 +16,7 @@ from pykeen.triples import TriplesFactory
 from pykeen.datasets import inductive
 from pykeen.evaluation.rank_based_evaluator import SampledRankBasedEvaluator
 from pykeen.stoppers import EarlyStopper
-from pykeen.training import SLCWATrainingLoop
-from torch.optim import Adam
+from pykeen.training import SLCWATrainingLoop, LCWATrainingLoop
 
 
 op = ops.op_registration("LynxKite Graph Analytics")
@@ -30,7 +29,7 @@ class InductiveDataset(str, enum.Enum):
     InductiveNELL = "InductiveNELL"
     InductiveWN18RR = "InductiveWN18RR"
 
-    def to_dataset(self) -> inductive.InductiveDataset:
+    def to_dataset(self) -> inductive.LazyInductiveDataset:
         return getattr(inductive, self.value)()
 
 
@@ -89,7 +88,7 @@ def inductively_split_dataset(
         validation_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference validation split
     """
     bundle = bundle.copy()
-    # put E infront of all entities in head and tail
+
     bundle.dfs[dataset_table]["head"] = bundle.dfs[dataset_table]["head"].astype(str)
     bundle.dfs[dataset_table]["tail"] = bundle.dfs[dataset_table]["tail"].astype(str)
     tf_all = TriplesFactory.from_labeled_triples(
@@ -100,7 +99,7 @@ def inductively_split_dataset(
         tf_training, tf_validation, tf_testing = tf_all.split_semi_inductive(
             ratios=ratios, random_state=seed
         )
-        training_set = mapped_triples_to_df(
+        inference_set = mapped_triples_to_df(
             tf_training.mapped_triples,
             tf_training.entity_to_id,
             tf_training.relation_to_id,
@@ -115,8 +114,9 @@ def inductively_split_dataset(
             tf_validation.entity_to_id,
             tf_validation.relation_to_id,
         )
+        training_set = inference_set.sample(frac=0.7, random_state=seed)
         bundle.dfs["transductive_training"] = training_set
-        bundle.dfs["inductive_inference"] = training_set
+        bundle.dfs["inductive_inference"] = inference_set
         bundle.dfs["inductive_testing"] = testing_set
         bundle.dfs["inductive_validation"] = validation_set
         return bundle
@@ -153,6 +153,7 @@ def inductively_split_dataset(
     return bundle
 
 
+# TODO: Move Loss HERE
 @op("Define inductive PyKEEN model")
 def get_inductive_model(
     bundle: core.Bundle,
@@ -184,6 +185,7 @@ def get_inductive_model(
     )
     inductive_inference = TriplesFactory.from_labeled_triples(
         bundle.dfs[inference_table][["head", "relation", "tail"]].to_numpy(),
+        relation_to_id=transductive_training.relation_to_id,
         create_inverse_triples=True,
     )
     model_cls = models.InductiveNodePieceGNN if use_GNN else models.InductiveNodePiece
@@ -193,6 +195,7 @@ def get_inductive_model(
     model = model_cls(
         triples_factory=transductive_training,  # training factory, used to tokenize training nodes
         inference_factory=inductive_inference,  # inference factory, used to tokenize inference nodes
+        loss="Pairwise Hinge Loss",
         interaction=interaction_cls,
         embedding_dim=embedding_dim,
         num_tokens=num_tokens,  # length of a node hash - how many unique relations per node will be used
@@ -220,6 +223,7 @@ def get_inductive_model(
     return bundle
 
 
+# TODO: Move loss_function away from here to `define inductive model`
 @op("Train inductive model", slow=True)
 def train_inductive_pykeen_model(
     bundle: core.Bundle,
@@ -238,24 +242,37 @@ def train_inductive_pykeen_model(
     model = model_wrapper.model
     transductive_training = TriplesFactory.from_labeled_triples(
         bundle.dfs[transductive_table_name][["head", "relation", "tail"]].to_numpy(),
+        relation_to_id=model_wrapper.relation_to_id,
         create_inverse_triples=True,
     )
     inductive_inference = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_inference_table][["head", "relation", "tail"]].to_numpy(),
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
         create_inverse_triples=True,
     )
     inductive_validation = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_validation_table][["head", "relation", "tail"]].to_numpy(),
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
         create_inverse_triples=True,
     )
-
-    optimizer = Adam(params=model.parameters(), lr=0.0005)
-    training_loop = SLCWATrainingLoop(
+    training_loop_cls = (
+        SLCWATrainingLoop if training_approach == TrainingType.sLCWA else LCWATrainingLoop
+    )
+    loop_kwargs = (
+        dict(
+            negative_sampler_kwargs=dict(num_negs_per_pos=32),
+        )
+        if training_approach == TrainingType.sLCWA
+        else dict()
+    )
+    training_loop = training_loop_cls(
         triples_factory=transductive_training,  # training triples
         model=model,
-        optimizer=optimizer,
-        negative_sampler_kwargs=dict(num_negs_per_pos=32),
+        optimizer=optimizer_type,
         mode="training",  # necessary to specify for the inductive mode - training has its own set of nodes
+        **loop_kwargs,
     )
 
     # Validation and Test evaluators use a restricted protocol ranking against 50 random negatives
@@ -309,14 +326,20 @@ def eval_inductive_model(
     model = bundle.other.get(model_name)
     inductive_testing = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_testing_table][["head", "relation", "tail"]].to_numpy(),
+        entity_to_id=model.entity_to_id,
+        relation_to_id=model.relation_to_id,
         create_inverse_triples=True,
     )
     inductive_inference = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_inference_table][["head", "relation", "tail"]].to_numpy(),
+        entity_to_id=model.entity_to_id,
+        relation_to_id=model.relation_to_id,
         create_inverse_triples=True,
     )
     inductive_validation = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_validation_table][["head", "relation", "tail"]].to_numpy(),
+        entity_to_id=model.entity_to_id,
+        relation_to_id=model.relation_to_id,
         create_inverse_triples=True,
     )
 
