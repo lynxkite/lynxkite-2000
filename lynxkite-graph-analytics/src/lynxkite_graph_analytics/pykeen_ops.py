@@ -333,11 +333,11 @@ class PyKEENModelWrapper:
         self.__dict__.update(state)
         if self.model_type is not None:
             self.model = self.model_type.to_class(
-                triples_factory=TriplesFactory.from_labeled_triples(
-                    self.edges_data.to_numpy(),
+                triples_factory=prepare_triples(
+                    self.edges_data,
                     entity_to_id=self.entity_to_id,
                     relation_to_id=self.relation_to_id,
-                    create_inverse_triples=req_inverse_triples(self.model_type),
+                    inv_triples=req_inverse_triples(self.model_type),
                 ),
                 embedding_dim=self.embedding_dim,
                 seed=self.seed,
@@ -354,11 +354,14 @@ class PyKEENModelWrapper:
             self.model = model_cls(
                 triples_factory=TriplesFactory.from_labeled_triples(
                     self.edges_data.to_numpy(),
+                    relation_to_id=self.relation_to_id,
                     create_inverse_triples=True,
                 ),
-                inference_factory=TriplesFactory.from_labeled_triples(
+                inference_factory=prepare_triples(
                     self.inductive_inference.to_numpy(),
-                    create_inverse_triples=True,
+                    entity_to_id=self.entity_to_id,
+                    relation_to_id=self.relation_to_id,
+                    inv_triples=True,
                 ),
                 interaction=self.interaction,
                 embedding_dim=self.embedding_dim,
@@ -371,21 +374,11 @@ class PyKEENModelWrapper:
                 **(self.combination_kwargs or {}),
             )
             self.model = models.LiteralModel(
-                triples_factory=TriplesNumericLiteralsFactory(
-                    mapped_triples=TriplesFactory.from_labeled_triples(
-                        self.edges_data.to_numpy(),
-                        entity_to_id=self.entity_to_id,
-                        relation_to_id=self.relation_to_id,
-                        create_inverse_triples=False,
-                    ).mapped_triples,
+                triples_factory=prepare_triples(  # type: ignore[invalid-argument-type]
+                    self.edges_data,
                     entity_to_id=self.entity_to_id,
                     relation_to_id=self.relation_to_id,
-                    numeric_literals=torch.from_numpy(self.literals_data.to_numpy())
-                    .contiguous()
-                    .detach()
-                    .cpu()
-                    .numpy(),
-                    literals_to_id={label: i for i, label in enumerate(self.literals_data.columns)},
+                    numeric_literals=self.literals_data,
                 ),
                 entity_representations_kwargs=dict(
                     shape=self.embedding_dim,
@@ -614,7 +607,11 @@ def prepare_triples(
             mapped_triples=triples.mapped_triples,
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
-            numeric_literals=numeric_literals.to_numpy(),
+            numeric_literals=torch.from_numpy(numeric_literals.to_numpy())
+            .contiguous()
+            .detach()
+            .cpu()
+            .numpy(),
             literals_to_id={label: i for i, label in enumerate(numeric_literals.columns)},
         )
     return triples
@@ -650,21 +647,21 @@ def train_embedding_model(
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
-        numeric_literals=bundle.dfs.get("literals"),
+        numeric_literals=model_wrapper.literals_data,
     )
     testing_set = prepare_triples(
         bundle.dfs[testing_table][["head", "relation", "tail"]],
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
-        numeric_literals=bundle.dfs.get("literals"),
+        numeric_literals=model_wrapper.literals_data,
     )
     validation_set = prepare_triples(
         bundle.dfs[validation_table][["head", "relation", "tail"]],
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
-        numeric_literals=bundle.dfs.get("literals"),
+        numeric_literals=model_wrapper.literals_data,
     )
     training_set, testing_set, validation_set = leakage.unleak(
         training_set, testing_set, validation_set
@@ -677,10 +674,13 @@ def train_embedding_model(
         model=actual_model,
         loss=loss_function,
         optimizer=optimizer_type,
+        optimizer_kwargs=dict(
+            lr=0.00005,
+        ),
         training_loop=training_approach,
         negative_sampler="bernoulli" if training_approach == TrainingType.sLCWA else None,
         negative_sampler_kwargs=dict(
-            num_negs_per_pos=32,
+            num_negs_per_pos=64,
         ),
         epochs=epochs,
         training_kwargs=dict(
@@ -735,11 +735,11 @@ def triple_predict(
     actual_model = model.model
     entity_to_id = model.entity_to_id
     relation_to_id = model.relation_to_id
-    triples_to_predict_tf = TriplesFactory.from_labeled_triples(
-        bundle.dfs[table_name][["head", "relation", "tail"]].to_numpy(),
-        create_inverse_triples=req_inverse_triples(actual_model) or inductive_setting,
+    triples_to_predict_tf = prepare_triples(
+        bundle.dfs[table_name][["head", "relation", "tail"]],
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
+        inv_triples=req_inverse_triples(actual_model) or inductive_setting,
     )
 
     if inductive_setting and isinstance(actual_model, models.InductiveERModel):
@@ -922,15 +922,13 @@ def evaluate(
         evaluator.metrics = tuple(
             classification_metric_resolver.make(metric_cls) for metric_cls in metrics_str.split(",")
         )
-    testing_triples = TriplesFactory.from_labeled_triples(
-        bundle.dfs[eval_table][["head", "relation", "tail"]].astype(str).to_numpy(dtype=str),
+    testing_triples = prepare_triples(
+        bundle.dfs[eval_table][["head", "relation", "tail"]],
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )
-    additional_filters = TriplesFactory.from_labeled_triples(
-        bundle.dfs[additional_true_triples_table][["head", "relation", "tail"]]
-        .astype(str)
-        .to_numpy(dtype=str),
+    additional_filters = prepare_triples(
+        bundle.dfs[additional_true_triples_table][["head", "relation", "tail"]],
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
     )

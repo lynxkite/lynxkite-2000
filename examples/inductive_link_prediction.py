@@ -328,19 +328,16 @@ def eval_inductive_model(
         bundle.dfs[inductive_testing_table][["head", "relation", "tail"]].to_numpy(),
         entity_to_id=model.entity_to_id,
         relation_to_id=model.relation_to_id,
-        create_inverse_triples=True,
     )
     inductive_inference = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_inference_table][["head", "relation", "tail"]].to_numpy(),
         entity_to_id=model.entity_to_id,
         relation_to_id=model.relation_to_id,
-        create_inverse_triples=True,
     )
     inductive_validation = TriplesFactory.from_labeled_triples(
         bundle.dfs[inductive_validation_table][["head", "relation", "tail"]].to_numpy(),
         entity_to_id=model.entity_to_id,
         relation_to_id=model.relation_to_id,
-        create_inverse_triples=True,
     )
 
     test_evaluator = SampledRankBasedEvaluator(
