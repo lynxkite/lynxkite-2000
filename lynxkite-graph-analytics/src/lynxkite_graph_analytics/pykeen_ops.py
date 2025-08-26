@@ -148,50 +148,57 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     return bundle
 
 
-class PyKEENModel(str, enum.Enum):
-    AutoSF = "AutoSF"
-    BoxE = "BoxE"
-    Canonical_Tensor_Decomposition = "CP"
+class PyKEENModelMixin(str):
+    def to_class(
+        self, triples_factory: TriplesFactory, loss_func: str, embedding_dim: int, seed: int = 42
+    ) -> models.Model:
+        return getattr(models, self.value)(
+            triples_factory=triples_factory,
+            loss=loss_func,
+            embedding_dim=embedding_dim,
+            random_seed=seed,
+        )
+
+
+class PyKEENModel1D(PyKEENModelMixin, enum.Enum):
     CompGCN = "CompGCN"
     ComplEx = "ComplEx"
-    ConvE = "ConvE"
     ConvKB = "ConvKB"
     Cooccurrence_Filtered = "CooccurrenceFilteredModel"
-    CrossE = "CrossE"
     DistMA = "DistMA"
     DistMult = "DistMult"
     ER_MLP = "ERMLP"
     ER_MLPE = "ERMLPE"
     Fixed_Model = "FixedModel"
     HolE = "HolE"
-    KG2E = "KG2E"
-    MuRE = "MuRE"
-    NTN = "NTN"
     NodePiece = "NodePiece"
-    PairRE = "PairRE"
     ProjE = "ProjE"
     QuatE = "QuatE"
     RGCN = "RGCN"
     RESCAL = "RESCAL"
     RotatE = "RotatE"
-    SimplE = "SimplE"
-    Structured_Embedding = "SE"
     TorusE = "TorusE"
-    TransD = "TransD"
     TransE = "TransE"
     TransF = "TransF"
-    TransH = "TransH"
-    TransR = "TransR"
     TuckER = "TuckER"
 
-    def to_class(
-        self, triples_factory: TriplesFactory, embedding_dim: int, seed: int = 42
-    ) -> models.Model:
-        return getattr(models, self.value)(
-            triples_factory=triples_factory,
-            embedding_dim=embedding_dim,
-            random_seed=seed,
-        )
+
+class PyKEENModelMoreD(PyKEENModelMixin, enum.Enum):
+    locals().update({m.name: m.value for m in PyKEENModel1D})
+    AutoSF = "AutoSF"
+    BoxE = "BoxE"
+    ConvE = "ConvE"
+    Canonical_Tensor_Decomposition = "CP"
+    CrossE = "CrossE"
+    KG2E = "KG2E"
+    MuRE = "MuRE"
+    NTN = "NTN"
+    PairRE = "PairRE"
+    SimplE = "SimplE"
+    Structured_Embedding = "SE"
+    TransD = "TransD"
+    TransH = "TransH"
+    TransR = "TransR"
 
 
 class PyKEENCombinations(str, enum.Enum):
@@ -245,12 +252,13 @@ class PyKEENModelWrapper:
     def __init__(
         self,
         model: models.Model,
+        loss: str,
         embedding_dim: int,
         entity_to_id: dict,
         relation_to_id: dict,
         edges_data: pd.DataFrame,
         seed: int,
-        model_type: typing.Optional[PyKEENModel] = None,
+        model_type: typing.Optional[PyKEENModelMoreD] = None,
         interaction: typing.Optional[Interaction] = None,
         inductive_inference: typing.Optional[pd.DataFrame] = None,
         inductive_kwargs: typing.Optional[dict] = None,
@@ -286,6 +294,7 @@ class PyKEENModelWrapper:
                 and inductive_inference is None
             ), "For transdutive models, only model_type must be provided"
         self.model = model
+        self.loss = loss
         self.embedding_dim = embedding_dim
         self.entity_to_id = entity_to_id
         self.relation_to_id = relation_to_id
@@ -339,6 +348,7 @@ class PyKEENModelWrapper:
                     relation_to_id=self.relation_to_id,
                     inv_triples=req_inverse_triples(self.model_type),
                 ),
+                loss_func=self.loss,
                 embedding_dim=self.embedding_dim,
                 seed=self.seed,
             )
@@ -358,7 +368,7 @@ class PyKEENModelWrapper:
                     create_inverse_triples=True,
                 ),
                 inference_factory=prepare_triples(
-                    self.inductive_inference.to_numpy(),
+                    self.inductive_inference,
                     entity_to_id=self.entity_to_id,
                     relation_to_id=self.relation_to_id,
                     inv_triples=True,
@@ -388,6 +398,7 @@ class PyKEENModelWrapper:
                 ),
                 interaction=self.interaction,
                 combination=combination_cls,
+                loss=self.loss,
                 random_seed=self.seed,
             )
 
@@ -399,14 +410,14 @@ class PyKEENModelWrapper:
         return f"PyKEENModelWrapper({self.model.__class__.__name__})"
 
 
-def req_inverse_triples(model: models.Model | PyKEENModel) -> bool:
+def req_inverse_triples(model: models.Model | PyKEENModel1D | PyKEENModelMoreD) -> bool:
     """
     Check if the model requires inverse triples.
     """
     return isinstance(
         model,
         (models.CompGCN, models.NodePiece, models.InductiveNodePiece, models.InductiveNodePieceGNN),
-    ) or model in {PyKEENModel.CompGCN, PyKEENModel.NodePiece}
+    ) or model in {PyKEENModel1D.CompGCN, PyKEENModel1D.NodePiece}
 
 
 class TrainingType(str, enum.Enum):
@@ -421,9 +432,10 @@ class TrainingType(str, enum.Enum):
 def define_pykeen_model(
     bundle: core.Bundle,
     *,
-    model: PyKEENModel = PyKEENModel.TransE,
+    model: PyKEENModelMoreD = PyKEENModelMoreD.TransE,
     edge_data_table: core.TableName = "edges",
     embedding_dim: int = 50,
+    loss_function: str,
     seed: int = 42,
     save_as: str = "PyKEENmodel",
 ):
@@ -439,11 +451,13 @@ def define_pykeen_model(
 
     model_class = model.to_class(
         triples_factory=triples_factory,
+        loss_func=loss_function,
         embedding_dim=embedding_dim,
         seed=seed,
     )
     model_wrapper = PyKEENModelWrapper(
         model_class,
+        loss=loss_function,
         model_type=model,
         embedding_dim=embedding_dim,
         entity_to_id=triples_factory.entity_to_id,
@@ -489,9 +503,10 @@ def define_pykeen_model(
 def def_pykeen_with_attributes(
     dataset: core.Bundle,
     *,
-    interaction_name: PyKEENModel = PyKEENModel.TransE,
+    interaction_name: PyKEENModel1D = PyKEENModel1D.TransE,
     combination_name: PyKEENCombinations = PyKEENCombinations.ConcatProjection,
     embedding_dim: int,
+    loss_function: str,
     random_seed: int,
     save_as: str,
     **kwargs,
@@ -504,6 +519,7 @@ def def_pykeen_with_attributes(
     )
     temp_model = interaction_name.to_class(
         triples_factory=triples_no_literals,
+        loss_func=loss_function,
         embedding_dim=embedding_dim,
         seed=random_seed,
     )
@@ -560,11 +576,13 @@ def def_pykeen_with_attributes(
         ],
         interaction=interaction,
         combination=combination_cls,
+        loss=loss_function,
         random_seed=random_seed,
     )
 
     model_wrapper = PyKEENModelWrapper(
         model=model,
+        loss=loss_function,
         interaction=model.interaction,
         combination=combination_name,
         combination_kwargs=kwargs,

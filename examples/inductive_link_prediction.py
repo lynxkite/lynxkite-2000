@@ -1,7 +1,7 @@
 from lynxkite_core import ops
 from lynxkite_graph_analytics import core
 from lynxkite_graph_analytics.pykeen_ops import (
-    PyKEENModel,
+    PyKEENModel1D,
     PyKEENModelWrapper,
     PyKEENModelName,
     mapped_triples_to_df,
@@ -96,44 +96,30 @@ def inductively_split_dataset(
     )
     ratios = (training_ratio, testing_ratio, validation_ratio)
     if entity_ratio == 0:
-        tf_training, tf_validation, tf_testing = tf_all.split_semi_inductive(
+        tf_inference, tf_validation, tf_testing = tf_all.split_semi_inductive(
             ratios=ratios, random_state=seed
         )
-        inference_set = mapped_triples_to_df(
-            tf_training.mapped_triples,
-            tf_training.entity_to_id,
-            tf_training.relation_to_id,
+    else:
+        tf_training, tf_inference, tf_validation, tf_testing = tf_all.split_fully_inductive(
+            entity_split_train_ratio=entity_ratio,
+            evaluation_triples_ratios=ratios,
+            random_state=seed,
         )
-        testing_set = mapped_triples_to_df(
-            tf_testing.mapped_triples,
-            tf_testing.entity_to_id,
-            tf_testing.relation_to_id,
-        )
-        validation_set = mapped_triples_to_df(
-            tf_validation.mapped_triples,
-            tf_validation.entity_to_id,
-            tf_validation.relation_to_id,
-        )
-        training_set = inference_set.sample(frac=0.7, random_state=seed)
-        bundle.dfs["transductive_training"] = training_set
-        bundle.dfs["inductive_inference"] = inference_set
-        bundle.dfs["inductive_testing"] = testing_set
-        bundle.dfs["inductive_validation"] = validation_set
-        return bundle
-
-    tf_training, tf_inference, tf_validation, tf_testing = tf_all.split_fully_inductive(
-        entity_split_train_ratio=entity_ratio, evaluation_triples_ratios=ratios, random_state=seed
-    )
-    transductive = mapped_triples_to_df(
-        tf_training.mapped_triples,
-        entity_to_id=tf_training.entity_to_id,
-        relation_to_id=tf_training.relation_to_id,
-    )
     inductive_inference = mapped_triples_to_df(
         tf_inference.mapped_triples,
         entity_to_id=tf_inference.entity_to_id,
         relation_to_id=tf_inference.relation_to_id,
     )
+    transductive = (
+        inductive_inference.sample(frac=0.7, random_state=seed)
+        if entity_ratio == 0
+        else mapped_triples_to_df(
+            tf_training.mapped_triples,
+            entity_to_id=tf_training.entity_to_id,
+            relation_to_id=tf_training.relation_to_id,
+        )
+    )
+
     inductive_testing = mapped_triples_to_df(
         tf_testing.mapped_triples,
         entity_to_id=tf_testing.entity_to_id,
@@ -153,15 +139,15 @@ def inductively_split_dataset(
     return bundle
 
 
-# TODO: Move Loss HERE
 @op("Define inductive PyKEEN model")
 def get_inductive_model(
     bundle: core.Bundle,
     *,
     triples_table: core.TableName,
     inference_table: core.TableName,
-    interaction: PyKEENModel = PyKEENModel.DistMult,
+    interaction: PyKEENModel1D = PyKEENModel1D.DistMult,
     embedding_dim: int = 200,
+    loss_function: str,
     num_tokens: int = 2,
     aggregation: str = "mlp",
     use_GNN: bool = False,
@@ -189,22 +175,24 @@ def get_inductive_model(
         create_inverse_triples=True,
     )
     model_cls = models.InductiveNodePieceGNN if use_GNN else models.InductiveNodePiece
-    base_model_cls = interaction.to_class(transductive_training, embedding_dim, 42)
+    base_model_cls = interaction.to_class(transductive_training, loss_function, embedding_dim, 42)
     assert isinstance(base_model_cls, models.ERModel), "Base model class is not an ERModel"
     interaction_cls = base_model_cls.interaction
+
     model = model_cls(
-        triples_factory=transductive_training,  # training factory, used to tokenize training nodes
-        inference_factory=inductive_inference,  # inference factory, used to tokenize inference nodes
-        loss="Pairwise Hinge Loss",
+        triples_factory=transductive_training,
+        inference_factory=inductive_inference,
+        loss=loss_function,
         interaction=interaction_cls,
         embedding_dim=embedding_dim,
-        num_tokens=num_tokens,  # length of a node hash - how many unique relations per node will be used
-        aggregation=aggregation,  # aggregation function, defaults to an MLP, can be any PyTorch function
+        num_tokens=num_tokens,
+        aggregation=aggregation,
         random_seed=seed,
     )
 
     model_wrapper = PyKEENModelWrapper(
         model=model,
+        loss=loss_function,
         embedding_dim=embedding_dim,
         entity_to_id=inductive_inference.entity_to_id,
         relation_to_id=transductive_training.relation_to_id,
@@ -223,7 +211,6 @@ def get_inductive_model(
     return bundle
 
 
-# TODO: Move loss_function away from here to `define inductive model`
 @op("Train inductive model", slow=True)
 def train_inductive_pykeen_model(
     bundle: core.Bundle,
@@ -233,7 +220,6 @@ def train_inductive_pykeen_model(
     inductive_inference_table: core.TableName,
     inductive_validation_table: core.TableName,
     optimizer_type: PyKEENSupportedOptimizers = PyKEENSupportedOptimizers.Adam,
-    loss_function: str = "BCEWithLogitsLoss",
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
@@ -268,18 +254,17 @@ def train_inductive_pykeen_model(
         else dict()
     )
     training_loop = training_loop_cls(
-        triples_factory=transductive_training,  # training triples
+        triples_factory=transductive_training,
         model=model,
         optimizer=optimizer_type,
-        mode="training",  # necessary to specify for the inductive mode - training has its own set of nodes
+        mode="training",
         **loop_kwargs,
     )
 
-    # Validation and Test evaluators use a restricted protocol ranking against 50 random negatives
     valid_evaluator = SampledRankBasedEvaluator(
-        mode="validation",  # necessary to specify for the inductive mode - this will use inference nodes
-        evaluation_factory=inductive_validation,  # validation triples to predict
-        additional_filter_triples=inductive_inference.mapped_triples,  # filter out true inference triples
+        mode="validation",
+        evaluation_factory=inductive_validation,
+        additional_filter_triples=inductive_inference.mapped_triples,
     )
 
     early_stopper = EarlyStopper(
@@ -294,7 +279,6 @@ def train_inductive_pykeen_model(
         evaluator=valid_evaluator,
     )
 
-    # Training starts here
     losses = training_loop.train(
         triples_factory=transductive_training,
         stopper=early_stopper,
@@ -341,15 +325,14 @@ def eval_inductive_model(
     )
 
     test_evaluator = SampledRankBasedEvaluator(
-        mode="testing",  # necessary to specify for the inductive mode - this will use inference nodes
-        evaluation_factory=inductive_testing,  # test triples to predict
+        mode="testing",
+        evaluation_factory=inductive_testing,
         additional_filter_triples=[
             inductive_inference.mapped_triples,
             inductive_validation.mapped_triples,
         ],
     )
 
-    # Test evaluation
     result = test_evaluator.evaluate(
         model=model,
         mapped_triples=inductive_testing.mapped_triples,
