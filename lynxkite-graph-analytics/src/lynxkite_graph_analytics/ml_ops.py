@@ -186,7 +186,7 @@ VIRIDIS = [
 ]
 
 
-class UMAPMetric(str, enum.Enum):
+class UMAPMetric(enum.StrEnum):
     l1 = "l1"
     cityblock = "cityblock"
     taxicab = "taxicab"

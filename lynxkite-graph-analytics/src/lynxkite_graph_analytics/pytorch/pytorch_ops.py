@@ -7,7 +7,7 @@ import torch
 from .pytorch_core import op, reg, ENV
 
 
-class ActivationTypes(str, enum.Enum):
+class ActivationTypes(enum.StrEnum):
     ELU = "ELU"
     GELU = "GELU"
     LeakyReLU = "Leaky ReLU"
@@ -23,7 +23,7 @@ class ActivationTypes(str, enum.Enum):
         return getattr(torch.nn, self.name.replace(" ", ""))()
 
 
-class ODEMethod(str, enum.Enum):
+class ODEMethod(enum.StrEnum):
     dopri8 = "dopri8"
     dopri5 = "dopri5"
     bosh3 = "bosh3"
