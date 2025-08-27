@@ -38,7 +38,7 @@ def _cache_wrap(func):
 
 def type_to_json(t):
     if isinstance(t, type) and issubclass(t, enum.Enum):
-        return {"enum": list(t.__members__.keys())}
+        return {"enum": list(t.__members__.values())}
     if getattr(t, "__metadata__", None):
         return t.__metadata__[-1]
     return {"type": str(t)}
@@ -97,7 +97,7 @@ class ParameterGroup(BaseConfig):
     type: str = "group"
 
 
-class Position(str, enum.Enum):
+class Position(enum.StrEnum):
     """Defines the position of an input or output in the UI."""
 
     LEFT = "left"
@@ -162,7 +162,8 @@ def get_optional_type(type):
 
 
 def _param_to_type(name, value, type):
-    value = value or ""
+    if value is None:
+        value = ""
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
@@ -170,8 +171,7 @@ def _param_to_type(name, value, type):
         assert value != "", f"{name} is unset."
         return float(value)
     if isinstance(type, enum.EnumMeta):
-        assert value in type.__members__, f"{value} is not an option for {name}."
-        return type[value]
+        return type(value)
     opt_type = get_optional_type(type)
     if opt_type:
         return None if value == "" else _param_to_type(name, value, opt_type)

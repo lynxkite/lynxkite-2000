@@ -17,7 +17,7 @@ class UnsupportedParameterType(Exception):
     pass
 
 
-class Failure(str, enum.Enum):
+class Failure(enum.StrEnum):
     UNSUPPORTED = "unsupported"  # This parameter will be hidden.
     SKIP = "skip"  # We have to skip the whole function.
 

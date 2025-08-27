@@ -25,7 +25,7 @@ class Position(BaseConfig):
     y: float
 
 
-class NodeStatus(str, enum.Enum):
+class NodeStatus(enum.StrEnum):
     planned = "planned"
     active = "active"
     done = "done"
