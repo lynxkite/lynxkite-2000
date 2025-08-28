@@ -12,10 +12,16 @@ from torch import nn
 from pykeen import models, evaluation, stoppers
 from pykeen.nn import Interaction, combination
 from pykeen.pipeline import pipeline, PipelineResult
-from pykeen.datasets import get_dataset
+from pykeen.datasets import get_dataset, inductive
 from pykeen.predict import predict_triples, predict_target, predict_all
-from pykeen.triples import TriplesFactory, TriplesNumericLiteralsFactory, leakage
+from pykeen.triples import (
+    CoreTriplesFactory,
+    TriplesFactory,
+    TriplesNumericLiteralsFactory,
+    leakage,
+)
 from pykeen.models import LiteralModel
+from pykeen.training import SLCWATrainingLoop, LCWATrainingLoop
 
 
 op = ops.op_registration(core.ENV)
@@ -33,19 +39,11 @@ rendered as a dropdown in the frontend, listing the PyKEEN models in the Bundle.
 The model name is passed to the operation as a string."""
 
 
-def mapped_triples_to_df(
-    triples: torch.Tensor,
-    entity_to_id: typing.Mapping[str, int],
-    relation_to_id: typing.Mapping[str, int],
-) -> pd.DataFrame:
-    df = pd.DataFrame(triples.numpy(), columns=["head", "relation", "tail"])
-    entity_label_mapping = {idx: label for label, idx in entity_to_id.items()}
-    relation_label_mapping = {idx: label for label, idx in relation_to_id.items()}
-
-    df["head"] = df["head"].map(entity_label_mapping)
-    df["relation"] = df["relation"].map(relation_label_mapping)
-    df["tail"] = df["tail"].map(entity_label_mapping)
-    return df
+def factory_to_df(factory: CoreTriplesFactory) -> pd.DataFrame:
+    df = factory.tensor_to_df(factory.mapped_triples)
+    return df[["head_label", "relation_label", "tail_label"]].rename(
+        columns={"head_label": "head", "relation_label": "relation", "tail_label": "tail"}
+    )
 
 
 class PyKEENDataset(str, enum.Enum):
@@ -91,38 +89,26 @@ class PyKEENDataset(str, enum.Enum):
         return get_dataset(dataset=self.value)
 
 
+class InductiveDataset(str, enum.Enum):
+    ILPC2022Large = "ILPC2022Large"
+    ILPC2022Small = "ILPC2022Small"
+    InductiveFB15k237 = "InductiveFB15k237"
+    InductiveNELL = "InductiveNELL"
+    InductiveWN18RR = "InductiveWN18RR"
+
+    def to_dataset(self) -> inductive.LazyInductiveDataset:
+        return getattr(inductive, self.value)()
+
+
 @op("Import PyKEEN dataset")
 def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
     ds = dataset.to_dataset()
     bundle = core.Bundle()
 
-    # Training -------------
-    triples = ds.training.mapped_triples
-    df_train = mapped_triples_to_df(
-        triples=triples,
-        entity_to_id=ds.entity_to_id,
-        relation_to_id=ds.relation_to_id,
-    )
-    bundle.dfs["edges_train"] = df_train
-
-    # Testing -------------
-    triples = ds.testing.mapped_triples
-    df_test = mapped_triples_to_df(
-        triples=triples,
-        entity_to_id=ds.entity_to_id,
-        relation_to_id=ds.relation_to_id,
-    )
-    bundle.dfs["edges_test"] = df_test
-
-    # Validation -----------
+    bundle.dfs["edges_train"] = factory_to_df(factory=ds.training)
+    bundle.dfs["edges_test"] = factory_to_df(factory=ds.testing)
     if ds.validation:
-        triples = ds.validation.mapped_triples
-        df_val = mapped_triples_to_df(
-            triples=triples,
-            entity_to_id=ds.entity_to_id,
-            relation_to_id=ds.relation_to_id,
-        )
-        bundle.dfs["edges_val"] = df_val
+        bundle.dfs["edges_val"] = factory_to_df(factory=ds.validation)
 
     bundle.dfs["nodes"] = pd.DataFrame(
         {
@@ -137,7 +123,10 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
         }
     )
 
-    df_all = pd.concat([df_train, df_test, df_val], ignore_index=True)
+    df_all = pd.concat(
+        [bundle.dfs["edges_train"], bundle.dfs["edges_test"], bundle.dfs["edges_val"]],
+        ignore_index=True,
+    )
     bundle.dfs["edges"] = pd.DataFrame(
         {
             "head": df_all["head"].tolist(),
@@ -145,6 +134,82 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
             "relation": df_all["relation"].tolist(),
         }
     )
+    return bundle
+
+
+@op("Import inductive dataset")
+def import_inductive_dataset(*, dataset: InductiveDataset = InductiveDataset.ILPC2022Small):
+    ds = dataset.to_dataset()
+    bundle = core.Bundle()
+    bundle.dfs["transductive_training"] = pd.DataFrame(
+        ds.transductive_training.triples, columns=["head", "relation", "tail"]
+    )
+    bundle.dfs["inductive_inference"] = pd.DataFrame(
+        ds.inductive_inference.triples, columns=["head", "relation", "tail"]
+    )
+    bundle.dfs["inductive_testing"] = pd.DataFrame(
+        ds.inductive_testing.triples, columns=["head", "relation", "tail"]
+    )
+    assert ds.inductive_validation is not None
+    bundle.dfs["inductive_validation"] = pd.DataFrame(
+        ds.inductive_validation.triples, columns=["head", "relation", "tail"]
+    )
+    return bundle
+
+
+@op("Split inductive dataset")
+def inductively_split_dataset(
+    bundle: core.Bundle,
+    *,
+    dataset_table: core.TableName,
+    entity_ratio: float = 0.5,
+    training_ratio: float = 0.8,
+    testing_ratio: float = 0.1,
+    validation_ratio: float = 0.1,
+    seed: int = 42,
+):
+    """
+    Splits incoming data into 4 subsets. Transductive training on which training should be run, inductive inference on which during training inference is done.
+    Inference testing and validation sets that can be used to evaluate model performance.
+
+    Args:
+        entity_ratio: How many percent of the entities in the dataset should be in the transductive training graph. If `0` semi-inductive split is applied, else fully-inductive split is applied
+        training_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference training split
+        testing_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference testing split
+        validation_ratio: When semi-inductive this is *entity* ratio, when fully-inductive this is the inference validation split
+    """
+    bundle = bundle.copy()
+
+    bundle.dfs[dataset_table] = bundle.dfs[dataset_table].astype(str)
+    tf_all = TriplesFactory.from_labeled_triples(
+        bundle.dfs[dataset_table][["head", "relation", "tail"]].to_numpy(),
+    )
+    ratios = (training_ratio, testing_ratio, validation_ratio)
+    if entity_ratio == 0:
+        tf_training, tf_validation, tf_testing = tf_all.split_semi_inductive(
+            ratios=ratios, random_state=seed
+        )
+    else:
+        tf_training, tf_inference, tf_validation, tf_testing = tf_all.split_fully_inductive(
+            entity_split_train_ratio=entity_ratio,
+            evaluation_triples_ratios=ratios,
+            random_state=seed,
+        )
+    transductive = pd.DataFrame(tf_training.triples, columns=["head", "relation", "tail"])
+    inductive_testing = pd.DataFrame(tf_testing.triples, columns=["head", "relation", "tail"])
+    inductive_val = pd.DataFrame(tf_validation.triples, columns=["head", "relation", "tail"])
+
+    inductive_inference = (
+        pd.concat([inductive_val, inductive_testing], ignore_index=True)
+        if entity_ratio == 0
+        else pd.DataFrame(tf_inference.triples, columns=["head", "relation", "tail"])
+    )
+
+    bundle.dfs["transductive_training"] = transductive
+    bundle.dfs["inductive_inference"] = inductive_inference
+    bundle.dfs["inductive_testing"] = inductive_testing
+    bundle.dfs["inductive_validation"] = inductive_val
+
     return bundle
 
 
@@ -254,8 +319,8 @@ class PyKEENModelWrapper:
         model: models.Model,
         loss: str,
         embedding_dim: int,
-        entity_to_id: dict,
-        relation_to_id: dict,
+        entity_to_id: typing.Mapping[str, int],
+        relation_to_id: typing.Mapping[str, int],
         edges_data: pd.DataFrame,
         seed: int,
         model_type: typing.Optional[PyKEENModelMoreD] = None,
@@ -353,19 +418,18 @@ class PyKEENModelWrapper:
                 seed=self.seed,
             )
         elif self.inductive_inference is not None:
-            print(self.inductive_kwargs)
             model_cls = (
                 models.InductiveNodePieceGNN
-                if self.inductive_kwargs.get("use_GNN", False) == "True"
+                if self.inductive_kwargs.get("use_GNN", "False") == "True"
                 else models.InductiveNodePiece
             )
             kwargs = self.inductive_kwargs
             kwargs.pop("use_GNN", None)
             self.model = model_cls(
-                triples_factory=TriplesFactory.from_labeled_triples(
-                    self.edges_data.to_numpy(),
+                triples_factory=prepare_triples(
+                    self.edges_data,
                     relation_to_id=self.relation_to_id,
-                    create_inverse_triples=True,
+                    inv_triples=True,
                 ),
                 inference_factory=prepare_triples(
                     self.inductive_inference,
@@ -432,7 +496,7 @@ class TrainingType(str, enum.Enum):
 def define_pykeen_model(
     bundle: core.Bundle,
     *,
-    model: PyKEENModelMoreD = PyKEENModelMoreD.TransE,
+    model: PyKEENModelMoreD = PyKEENModelMoreD.MuRE,
     edge_data_table: core.TableName = "edges",
     embedding_dim: int = 50,
     loss_function: str,
@@ -442,11 +506,9 @@ def define_pykeen_model(
     """Defines a PyKEEN model based on the selected model type."""
     bundle = bundle.copy()
     edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]]
-    edges_data["head"] = edges_data["head"].astype(str)
-    edges_data["tail"] = edges_data["tail"].astype(str)
-    triples_factory = TriplesFactory.from_labeled_triples(
-        edges_data.to_numpy(),
-        create_inverse_triples=req_inverse_triples(model),
+    triples_factory = prepare_triples(
+        edges_data,
+        inv_triples=req_inverse_triples(model),
     )
 
     model_class = model.to_class(
@@ -514,8 +576,8 @@ def def_pykeen_with_attributes(
     dataset = dataset.copy()
 
     edges_data = dataset.dfs["edges"][["head", "relation", "tail"]].astype(str)
-    triples_no_literals = TriplesFactory.from_labeled_triples(
-        triples=edges_data.to_numpy(),
+    triples_no_literals = prepare_triples(
+        edges_data,
     )
     temp_model = interaction_name.to_class(
         triples_factory=triples_no_literals,
@@ -548,9 +610,6 @@ def def_pykeen_with_attributes(
         interaction: Interaction = temp_model.interaction
         entity_representations = temp_model.entity_representations
         relation_representations = temp_model.relation_representations
-        # print(
-        #     tuple(upgrade_to_sequence([entity_representation._embeddings for entity_representation in entity_representations])) + (Embedding,)
-        # )
     except AttributeError as e:
         raise Exception(
             "Interaction not supported for this model type. Please use a different interaction."
@@ -598,6 +657,78 @@ def def_pykeen_with_attributes(
     return dataset
 
 
+@op("Define inductive PyKEEN model")
+def get_inductive_model(
+    bundle: core.Bundle,
+    *,
+    triples_table: core.TableName,
+    inference_table: core.TableName,
+    interaction: PyKEENModel1D = PyKEENModel1D.DistMult,
+    embedding_dim: int = 200,
+    loss_function: str,
+    num_tokens: int = 2,
+    aggregation: str = "mlp",
+    use_GNN: bool = False,
+    seed: int = 42,
+    save_as: str = "InductiveModel",
+):
+    """
+    Defines an InductiveNodePiece model (with an optional GNN message passing layer) for inductive link prediction tasks.
+
+    Args:
+        triples_table: The transductive edges of the graph.
+        inference_table: The inductive edges of the graph.
+        interaction: Type of interaction the model will use for link prediction scoring.
+        num_tokens: Number of hash tokens for each node representation, usually 66th percentiles of the number of unique incident relations per node.
+        aggregation: Aggregation of multiple token representations to a single entity representation. The module assumes that this refers to a top-level torch function, or use 'mlp' for a two-layer built-in mlp aggregator.
+    """
+    bundle = bundle.copy()
+    transductive_training = prepare_triples(
+        bundle.dfs[triples_table][["head", "relation", "tail"]],
+        inv_triples=True,
+    )
+    inductive_inference = prepare_triples(
+        bundle.dfs[inference_table][["head", "relation", "tail"]],
+        relation_to_id=transductive_training.relation_to_id,
+        inv_triples=True,
+    )
+    model_cls = models.InductiveNodePieceGNN if use_GNN else models.InductiveNodePiece
+    base_model_cls = interaction.to_class(transductive_training, loss_function, embedding_dim, 42)
+    assert isinstance(base_model_cls, models.ERModel), "Base model class is not an ERModel"
+    interaction_cls = base_model_cls.interaction
+
+    model = model_cls(
+        triples_factory=transductive_training,
+        inference_factory=inductive_inference,
+        loss=loss_function,
+        interaction=interaction_cls,
+        embedding_dim=embedding_dim,
+        num_tokens=num_tokens,
+        aggregation=aggregation,
+        random_seed=seed,
+    )
+
+    model_wrapper = PyKEENModelWrapper(
+        model=model,
+        loss=loss_function,
+        embedding_dim=embedding_dim,
+        entity_to_id=inductive_inference.entity_to_id,
+        relation_to_id=transductive_training.relation_to_id,
+        edges_data=bundle.dfs[triples_table][["head", "relation", "tail"]],
+        seed=seed,
+        interaction=model.interaction,
+        inductive_inference=bundle.dfs[inference_table][["head", "relation", "tail"]],
+        inductive_kwargs=dict(
+            num_tokens=num_tokens,
+            aggregation=aggregation,
+            use_GNN="True" if use_GNN else "False",
+        ),
+    )
+
+    bundle.other[save_as] = model_wrapper
+    return bundle
+
+
 class PyKEENSupportedOptimizers(str, enum.Enum):
     Adam = "Adam"
     AdamW = "AdamW"
@@ -608,8 +739,8 @@ class PyKEENSupportedOptimizers(str, enum.Enum):
 
 def prepare_triples(
     triples_df: pd.DataFrame,
-    entity_to_id: dict,
-    relation_to_id: dict,
+    entity_to_id: typing.Optional[typing.Mapping[str, int]] = None,
+    relation_to_id: typing.Optional[typing.Mapping[str, int]] = None,
     inv_triples: bool = False,
     numeric_literals: typing.Optional[pd.DataFrame] = None,
 ) -> TriplesFactory | TriplesNumericLiteralsFactory:
@@ -645,7 +776,7 @@ def train_embedding_model(
     testing_table: core.TableName = "edges_test",
     validation_table: core.TableName = "edges_val",
     optimizer_type: PyKEENSupportedOptimizers = PyKEENSupportedOptimizers.Adam,
-    loss_function: str = "BCEWithLogitsLoss",
+    learning_rate: float = 0.0001,
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
@@ -684,21 +815,25 @@ def train_embedding_model(
     training_set, testing_set, validation_set = leakage.unleak(
         training_set, testing_set, validation_set
     )
-
     result: PipelineResult = pipeline(
         training=training_set,
         testing=testing_set,
         validation=validation_set,
         model=actual_model,
-        loss=loss_function,
+        loss=model_wrapper.loss,
         optimizer=optimizer_type,
         optimizer_kwargs=dict(
-            lr=0.00005,
+            lr=learning_rate,
+        ),
+        lr_scheduler="PolynomialLR",
+        lr_scheduler_kwargs=dict(
+            total_iters=epochs,
+            power=0.95,
         ),
         training_loop=training_approach,
         negative_sampler="bernoulli" if training_approach == TrainingType.sLCWA else None,
         negative_sampler_kwargs=dict(
-            num_negs_per_pos=64,
+            num_negs_per_pos=512,
         ),
         epochs=epochs,
         training_kwargs=dict(
@@ -724,6 +859,91 @@ def train_embedding_model(
             {"early_stopper_metric": result.stopper.results}
         )
     bundle.other[model] = model_wrapper
+
+    return bundle
+
+
+@op("Train inductive model", slow=True)
+def train_inductive_pykeen_model(
+    bundle: core.Bundle,
+    *,
+    model_name: PyKEENModelName,
+    transductive_table_name: core.TableName,
+    inductive_inference_table: core.TableName,
+    inductive_validation_table: core.TableName,
+    optimizer_type: PyKEENSupportedOptimizers = PyKEENSupportedOptimizers.Adam,
+    epochs: int = 5,
+    training_approach: TrainingType = TrainingType.sLCWA,
+):
+    bundle = bundle.copy()
+    model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
+    model = model_wrapper.model
+    transductive_training = prepare_triples(
+        bundle.dfs[transductive_table_name][["head", "relation", "tail"]],
+        relation_to_id=model_wrapper.relation_to_id,
+        inv_triples=True,
+    )
+    inductive_inference = prepare_triples(
+        bundle.dfs[inductive_inference_table][["head", "relation", "tail"]],
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
+        inv_triples=True,
+    )
+    inductive_validation = prepare_triples(
+        bundle.dfs[inductive_validation_table][["head", "relation", "tail"]],
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
+        inv_triples=True,
+    )
+    training_loop_cls = (
+        SLCWATrainingLoop if training_approach == TrainingType.sLCWA else LCWATrainingLoop
+    )
+    loop_kwargs = (
+        dict(
+            negative_sampler_kwargs=dict(num_negs_per_pos=32),
+        )
+        if training_approach == TrainingType.sLCWA
+        else dict()
+    )
+    training_loop = training_loop_cls(
+        triples_factory=transductive_training,
+        model=model,
+        optimizer=optimizer_type,
+        mode="training",
+        **loop_kwargs,
+    )
+
+    valid_evaluator = evaluation.SampledRankBasedEvaluator(
+        mode="validation",
+        evaluation_factory=inductive_validation,
+        additional_filter_triples=inductive_inference.mapped_triples,
+    )
+
+    early_stopper = stoppers.EarlyStopper(
+        model=model,
+        training_triples_factory=inductive_inference,
+        evaluation_triples_factory=inductive_validation,
+        frequency=5,
+        patience=40,
+        metric="ah@k",
+        result_tracker=None,
+        evaluation_batch_size=256,
+        evaluator=valid_evaluator,
+    )
+
+    losses = training_loop.train(
+        triples_factory=transductive_training,
+        stopper=early_stopper,
+        num_epochs=epochs,
+    )
+
+    model_wrapper.trained = True
+
+    bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})
+    bundle.dfs["early_stopper_metric"] = pd.DataFrame(
+        {"early_stopper_metric": early_stopper.results}
+    )
+    bundle.other[model_name] = model_wrapper
 
     return bundle
 
@@ -968,6 +1188,74 @@ def evaluate(
         metric = metric.strip()
         try:
             score = evaluated.get_metric(metric)
+        except Exception as e:
+            raise Exception(f"Possibly unknown metric: {metric}") from e
+        metrics_df = pd.concat(
+            [metrics_df, pd.DataFrame([[metric, score]], columns=metrics_df.columns)]
+        )
+
+    bundle.dfs["metrics"] = metrics_df
+
+    return bundle
+
+
+@op("Evaluate inductive model")
+def eval_inductive_model(
+    bundle: core.Bundle,
+    *,
+    model_name: PyKEENModelName,
+    inductive_testing_table: core.TableName,
+    inductive_inference_table: core.TableName,
+    inductive_validation_table: core.TableName,
+    metrics_str: str = "ALL",
+):
+    bundle = bundle.copy()
+    model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
+    inductive_testing = prepare_triples(
+        bundle.dfs[inductive_testing_table][["head", "relation", "tail"]],
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
+    )
+    inductive_inference = prepare_triples(
+        bundle.dfs[inductive_inference_table][["head", "relation", "tail"]],
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
+    )
+    inductive_validation = prepare_triples(
+        bundle.dfs[inductive_validation_table][["head", "relation", "tail"]],
+        entity_to_id=model_wrapper.entity_to_id,
+        relation_to_id=model_wrapper.relation_to_id,
+    )
+
+    test_evaluator = evaluation.SampledRankBasedEvaluator(
+        mode="testing",
+        evaluation_factory=inductive_testing,
+        additional_filter_triples=[
+            inductive_inference.mapped_triples,
+            inductive_validation.mapped_triples,
+        ],
+    )
+
+    result = test_evaluator.evaluate(
+        model=model_wrapper,
+        mapped_triples=inductive_testing.mapped_triples,
+        additional_filter_triples=[
+            inductive_inference.mapped_triples,
+            inductive_validation.mapped_triples,
+        ],
+        batch_size=256,
+    )
+    if metrics_str == "ALL":
+        bundle.dfs["metrics"] = result.to_df()
+        return bundle
+
+    metrics = metrics_str.split(",")
+    metrics_df = pd.DataFrame(columns=["metric", "score"])
+
+    for metric in metrics:
+        metric = metric.strip()
+        try:
+            score = result.get_metric(metric)
         except Exception as e:
             raise Exception(f"Possibly unknown metric: {metric}") from e
         metrics_df = pd.concat(

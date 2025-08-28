@@ -533,7 +533,6 @@
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
-      "extent": null,
       "height": 218.0,
       "id": "Input: tensor 4",
       "parentId": null,

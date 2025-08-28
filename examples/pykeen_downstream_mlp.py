@@ -131,6 +131,7 @@ def model_eval_(
     table_name: core.TableName,
     labels_column: core.ColumnNameByTableName,
     predictions_column: core.ColumnNameByTableName,
+    save_as: str = "metrics",
 ):
     bundle = bundle.copy()
 
@@ -154,7 +155,7 @@ def model_eval_(
         }
     )
     metric_bundle = core.Bundle()
-    metric_bundle.dfs["metrics"] = metrics_df
+    metric_bundle.dfs[save_as] = metrics_df
 
     return metric_bundle
 
@@ -185,3 +186,72 @@ def permute_and_corrupt_data(
 
     bundle.dfs["permuted_data"] = permuted_df
     return bundle
+
+
+@op("Plot results", view="matplotlib")
+def plot_results(bundle: core.Bundle):
+    # all tables in bundle.dfs will contain two columns metric and score, this function will plot the scores side-by-side for all metrics in a bar-graph
+    # for example i have a metric with accuracy in 3 tables then i want one label 'accuracy' and 3 bars for the 3 different tables
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Collect all unique metrics
+    all_metrics = set()
+    for df in bundle.dfs.values():
+        if "metric" in df.columns and "score" in df.columns:
+            all_metrics.update(df["metric"])
+    all_metrics = sorted(list(all_metrics))
+
+    # Get relevant table names
+    table_names = [
+        name for name, df in bundle.dfs.items() if "metric" in df.columns and "score" in df.columns
+    ]
+
+    # Bar width and positions
+    bar_width = 0.2
+    x = np.arange(len(all_metrics))
+
+    # Plot bars for each table with offset
+    for i, table_name in enumerate(table_names):
+        df = bundle.dfs[table_name]
+        offset = bar_width * (i - len(table_names) / 2 + 0.5)
+
+        scores = []
+        for metric in all_metrics:
+            mask = df["metric"] == metric
+            score = df.loc[mask, "score"].values[0] if mask.any() else 0
+            scores.append(score)
+
+        ax.bar(x + offset, scores, bar_width, label=table_name)
+
+    # Set the x-axis ticks and labels
+    ax.set_xticks(x)
+    ax.set_xticklabels(all_metrics)
+
+    # Draw horizontal dotted line at 0.5
+    ax.axhline(y=0.5, color="r", linestyle="--")
+
+    # Set the title and labels
+    ax.set_title("Model Evaluation Metrics")
+    ax.set_xlabel("Metrics")
+    ax.set_ylabel("Scores")
+
+    # Shrink current axis's height by 10% on the bottom
+    box = ax.get_position()
+    ax.set_position(
+        [
+            box.x0,
+            box.y0 + box.height * 0.1,
+            box.width,
+            box.height * 0.9,
+        ]  # ty: ignore[invalid-argument-type]
+    )
+
+    # Put a legend below current axis
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=5)
+
+    # Return the figure for display
+    return fig
