@@ -2,6 +2,7 @@
 
 import inspect
 import os
+import pathlib
 from lynxkite_core import ops, workspace
 import dataclasses
 import functools
@@ -10,7 +11,10 @@ import pandas as pd
 import polars as pl
 import traceback
 import typing
+import urllib.parse
 
+if typing.TYPE_CHECKING:
+    import fastapi
 
 ENV = "LynxKite Graph Analytics"
 
@@ -234,11 +238,31 @@ def disambiguate_edges(ws: workspace.Workspace):
 Outputs = dict[tuple[str, str], typing.Any]
 
 
+@typing.runtime_checkable
+class Service(typing.Protocol):
+    async def get(self, request: "fastapi.Request") -> dict:
+        """Handles a GET request. The unparsed part of the URL is available as request.state.remaining_path."""
+        ...
+
+    async def post(self, request: "fastapi.Request") -> dict:
+        """Handles a POST request. The unparsed part of the URL is available as request.state.remaining_path."""
+        ...
+
+    def get_description(self, url: str) -> str:
+        return f"URL: [{url}]({url})"
+
+
+@dataclasses.dataclass
+class WorkspaceResult:
+    outputs: Outputs
+    services: dict[str, Service]
+
+
 @ops.register_executor(ENV)
-async def execute(ws: workspace.Workspace):
+async def execute(ws: workspace.Workspace) -> WorkspaceResult:
     catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
-    outputs: Outputs = {}
+    wsres = WorkspaceResult(outputs={}, services={})
     nodes = {node.id: node for node in ws.nodes}
     todo = set(nodes.keys())
     progress = True
@@ -247,7 +271,7 @@ async def execute(ws: workspace.Workspace):
         for id in list(todo):
             node = nodes[id]
             inputs_done = [
-                (edge.source, edge.sourceHandle) in outputs
+                (edge.source, edge.sourceHandle) in wsres.outputs
                 for edge in ws.edges
                 if edge.target == id
             ]
@@ -255,8 +279,8 @@ async def execute(ws: workspace.Workspace):
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
-                await _execute_node(node, ws, catalog, outputs)
-    return outputs
+                await _execute_node(node, ws, catalog, wsres)
+    return wsres
 
 
 async def await_if_needed(obj):
@@ -275,7 +299,10 @@ def _to_bundle(x):
 
 
 async def _execute_node(
-    node: workspace.WorkspaceNode, ws: workspace.Workspace, catalog: ops.Catalog, outputs: Outputs
+    node: workspace.WorkspaceNode,
+    ws: workspace.Workspace,
+    catalog: ops.Catalog,
+    wsres: WorkspaceResult,
 ):
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
@@ -287,7 +314,7 @@ async def _execute_node(
     for edge in ws.edges:
         if edge.target == node.id:
             input_map.setdefault(edge.targetHandle, []).append(
-                outputs[edge.source, edge.sourceHandle]
+                wsres.outputs[edge.source, edge.sourceHandle]
             )
     # Convert inputs types to match operation signature.
     try:
@@ -344,12 +371,26 @@ async def _execute_node(
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
     try:
-        if isinstance(result.output, dict):
+        if node.type == "service":
+            assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"
+            assert isinstance(result.output, Service), (
+                f"{node.id} must return a Service. Current output: {result.output}"
+            )
+            wsres.services[node.id] = result.output
+            url = f"/api/service/lynxkite_graph_analytics/{ws.path}/{node.id}"
+            url = urllib.parse.quote_plus(url)
+            markdown = result.output.get_description(url)
+            result.display = {
+                "dataframes": {"service": {"columns": ["markdown"], "data": [[markdown]]}}
+            }
+            result.output = None
+        elif len(op.outputs) > 1:
+            assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
             for k, v in result.output.items():
-                outputs[node.id, k] = v
-        elif result.output is not None:
+                wsres.outputs[node.id, k] = v
+        elif len(op.outputs) == 1:
             [k] = op.outputs
-            outputs[node.id, k.name] = result.output
+            wsres.outputs[node.id, k.name] = result.output
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
@@ -375,3 +416,55 @@ def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
         if not pd.api.types.is_numeric_dtype(df[c]):
             df[c] = df[c].astype(str)
     return df
+
+
+async def get_node_service(request: "fastapi.Request") -> Service:
+    parts = request.url.path.split("/")[4:]
+    cwd = pathlib.Path()
+    # The workspace path (which may include slashes) is followed by the rest of the URL (which may include slashes).
+    # To tell them apart, we take path elements until we find a file.
+    path = cwd
+    i = 0
+    while path.is_dir():
+        path = path / parts[i]
+        i += 1
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
+    assert path.exists(), f"Workspace {path} does not exist"
+    ws = workspace.Workspace.load(str(path))
+    assert ws.env == ENV, f"Workspace {path} is not a LynxKite Graph Analytics workspace"
+    node_id = parts[i]
+    ops.load_user_scripts(str(path))
+    ws.update_metadata()
+    ws.normalize()
+    executor = ops.EXECUTORS[ws.env]
+    wsres = await executor(ws)
+    [node] = [n for n in ws.nodes if n.id == node_id]
+    assert not node.data.error, f"Node {node_id} has an error: {node.data.error}"
+    request.state.remaining_path = "/".join(parts[i + 1 :])
+    return wsres.services[node_id]
+
+
+async def api_service_post(request):
+    service = await get_node_service(request)
+    return await service.post(request)
+
+
+async def api_service_get(request):
+    """
+    Boxes can expose HTTP endpoints.
+
+    Example:
+      ...
+      class ChatBackend:
+        def get(self, request: fastapi.Request):
+          return f"Hello from {request.state.remaining_path}"
+        def post(self, request: fastapi.Request):
+          print("POST received for", request.state.remaining_path)
+      @op("Chat backend", outputs=[], view="service")
+      def chat_backend(input: Bundle):
+          return ChatBackend()
+
+      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite.json/Chat%20backend%201/models
+    """
+    service = await get_node_service(request)
+    return await service.get(request)
