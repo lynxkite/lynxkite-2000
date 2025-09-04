@@ -40,7 +40,7 @@ export default function Code() {
   }
   function onMount(_editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
     // Do nothing on Ctrl+S. We save after every keypress anyway.
-    _editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => { });
+    _editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {});
     editorRef.current = _editor;
     initCRDT();
   }
