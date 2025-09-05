@@ -1,11 +1,11 @@
 import { useReactFlow } from "@xyflow/react";
 import { useState } from "react";
-// @ts-ignore
+// @ts-expect-error
 import Palette from "~icons/tabler/palette-filled.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Square from "~icons/tabler/square-filled.jsx";
-import Tooltip from "../../Tooltip.tsx";
 import { COLORS } from "../../common.ts";
+import Tooltip from "../../Tooltip.tsx";
 
 export default function Group(props: any) {
   const reactFlow = useReactFlow();

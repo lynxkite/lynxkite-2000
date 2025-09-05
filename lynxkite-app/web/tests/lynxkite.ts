@@ -1,5 +1,5 @@
 // Shared testing utilities.
-import { type Locator, type Page, expect } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 // Mirrors the "id" filter.
 export function toId(x) {
@@ -150,7 +150,7 @@ export class Workspace {
       try {
         await this.tryToConnectBoxes(sourceId, targetId);
         return;
-      } catch (e) {}
+      } catch (_) {}
     }
   }
 
@@ -160,7 +160,7 @@ export class Workspace {
     await request;
   }
 
-  async expectErrorFree(executionWaitTime?) {
+  async expectErrorFree() {
     await expect(this.getBoxes().locator("text=⚠️").first()).not.toBeVisible();
   }
 

@@ -1,9 +1,9 @@
 import Fuse from "fuse.js"; // Added back fuzzy search for better user experience with typos
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-// @ts-ignore
+// @ts-expect-error
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
-// @ts-ignore
+// @ts-expect-error
 import FolderIcon from "~icons/tabler/folder.jsx";
 
 export type OpsOp = {
@@ -23,7 +23,6 @@ export type Category = {
   ops: OpsOp[]; // Operations at this level
   categories: Record<string, Category>; // Subcategories
 };
-
 
 export type CategoryHierarchy = Category;
 
@@ -95,15 +94,6 @@ export default function NodeSearch(props: {
   // REMOVED: hoveredItem state - now using CSS :hover for better performance
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  // NEW: Safety check to prevent crashes from invalid hierarchy data
-  if (
-    !props.categoryHierarchy ||
-    !props.categoryHierarchy.categories ||
-    !props.categoryHierarchy.ops
-  ) {
-    return null;
-  }
 
   useEffect(() => {
     if (searchInputRef.current) {
@@ -180,7 +170,10 @@ export default function NodeSearch(props: {
         .map((key) => ({ item: key, isCategory: true as const }));
 
       // NEW: Direct access to ops array, no conditional checks needed
-      const opMatches = currentLevel.ops.map((op: OpsOp) => ({ item: op.name, op }));
+      const opMatches = currentLevel.ops.map((op: OpsOp) => ({
+        item: op.name,
+        op,
+      }));
 
       // CHANGED: Using spread operator instead of push operations
       return [...categoryMatches, ...opMatches];

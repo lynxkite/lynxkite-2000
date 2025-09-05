@@ -1,4 +1,4 @@
-import React, { useEffect, type CSSProperties } from "react";
+import React, { type CSSProperties, useEffect } from "react";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 

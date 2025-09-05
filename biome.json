@@ -1,14 +1,14 @@
 {
   "files": {
-    "ignore": ["**/*.lynxkite.json"]
+    "includes": ["**", "!**/*.lynxkite.json"]
   },
   "formatter": {
-    "ignore": ["**/node_modules/**", "**/dist/**"],
+    "includes": ["**", "!**/node_modules/**", "!**/dist/**"],
     "lineWidth": 100,
     "indentStyle": "space"
   },
   "linter": {
-    "ignore": ["**/node_modules/**", "**/dist/**"],
+    "includes": ["**", "!**/node_modules/**", "!**/dist/**"],
     "rules": {
       "suspicious": {
         "noExplicitAny": "off",
@@ -26,7 +26,11 @@
         "useButtonType": "off",
         "noAutofocus": "off",
         "noLabelWithoutControl": "off",
+        "noStaticElementInteractions": "off",
         "noNoninteractiveTabindex": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     }
   }
