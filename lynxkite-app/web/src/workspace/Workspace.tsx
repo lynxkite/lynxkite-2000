@@ -45,7 +45,7 @@ import { LynxKiteState } from "./LynxKiteState";
 import NodeSearch, {
   buildCategoryHierarchy,
   type Catalogs,
-  type CategoryHierarchy,
+  type Category,
   type OpsOp,
 } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
@@ -221,7 +221,7 @@ function LynxKiteFlow() {
     undefined as
       | {
           pos: XYPosition;
-          categoryHierarchy: CategoryHierarchy;
+          categoryHierarchy: Category;
         }
       | undefined,
   );
