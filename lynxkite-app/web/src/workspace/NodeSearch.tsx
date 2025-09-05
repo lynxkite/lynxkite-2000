@@ -1,4 +1,4 @@
-import Fuse from "fuse.js"; // Added back fuzzy search for better user experience with typos
+import Fuse from "fuse.js";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 // @ts-expect-error
@@ -17,8 +17,6 @@ export type OpsOp = {
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
 
-// NEW: Better type structure instead of Record<string, any>
-// This provides type safety and eliminates the need for __operations magic strings
 export type Category = {
   ops: OpsOp[]; // Operations at this level
   categories: Record<string, Category>; // Subcategories
@@ -26,17 +24,12 @@ export type Category = {
 
 export type CategoryHierarchy = Category;
 
-// NEW: Extracted hierarchy building logic for better performance
-// This can now be pre-computed in the parent component instead of on every render
 export function buildCategoryHierarchy(boxes: Catalog): CategoryHierarchy {
   const hierarchy: CategoryHierarchy = { ops: [], categories: {} };
 
-  // CHANGED: Using for...of loop instead of forEach for better performance
   for (const op of Object.values(boxes)) {
     const categories = op.categories;
-
     if (!categories || categories.length === 0) {
-      // NEW: Always initialize ops array, no need for conditional checks
       if (!hierarchy.ops.find((existing: OpsOp) => existing.id === op.id)) {
         hierarchy.ops.push(op);
       }
@@ -44,16 +37,12 @@ export function buildCategoryHierarchy(boxes: Catalog): CategoryHierarchy {
     }
 
     let currentLevel = hierarchy;
-
-    // CHANGED: Using regular for loop instead of forEach for better performance
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i];
       if (!currentLevel.categories[category]) {
-        // NEW: Always initialize both ops and categories arrays
         currentLevel.categories[category] = { ops: [], categories: {} };
       }
       if (i === categories.length - 1) {
-        // NEW: Direct access to ops array, no __operations magic string
         if (
           !currentLevel.categories[category].ops.find((existing: OpsOp) => existing.id === op.id)
         ) {
@@ -65,33 +54,26 @@ export function buildCategoryHierarchy(boxes: Catalog): CategoryHierarchy {
     }
   }
 
-  // NEW: Pre-sort all operations alphabetically to avoid runtime sorting
-  // CHANGED: Using function declaration instead of arrow function for better readability
   function sortHierarchy(level: CategoryHierarchy): CategoryHierarchy {
     const sortedOps = [...level.ops].sort((a, b) => a.name.localeCompare(b.name));
     const sortedCategories: Record<string, Category> = {};
-
-    // CHANGED: Using for...of loop instead of forEach for better performance
     for (const key of Object.keys(level.categories).sort((a, b) => a.localeCompare(b))) {
       sortedCategories[key] = sortHierarchy(level.categories[key]);
     }
-
     return { ops: sortedOps, categories: sortedCategories };
   }
 
   return sortHierarchy(hierarchy);
 }
 
-// CHANGED: Updated props interface to accept pre-computed hierarchy instead of raw boxes
 export default function NodeSearch(props: {
-  categoryHierarchy: CategoryHierarchy; // NEW: Pre-computed hierarchy for better performance
+  categoryHierarchy: CategoryHierarchy;
   onCancel: any;
   onAdd: any;
   pos: { x: number; y: number };
 }) {
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  // REMOVED: hoveredItem state - now using CSS :hover for better performance
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -118,24 +100,19 @@ export default function NodeSearch(props: {
     props.onAdd(op);
   };
 
-  // NEW: Robust path traversal with error handling
   const getCurrentLevel = (): CategoryHierarchy => {
     try {
-      // CHANGED: Using reduce instead of forEach for functional approach
       return categoryPath.reduce((currentLevel, category) => {
         if (!currentLevel?.categories[category]) {
           throw new Error("Category not found");
         }
-        // NEW: Direct access to categories property instead of magic string access
         return currentLevel.categories[category];
       }, props.categoryHierarchy);
     } catch {
-      // NEW: Fallback to root level if path becomes invalid
       return props.categoryHierarchy;
     }
   };
 
-  // NEW: Proactive validation to reset invalid paths
   useEffect(() => {
     const isValidPath = categoryPath.every((_, index) => {
       const partialPath = categoryPath.slice(0, index + 1);
@@ -157,38 +134,27 @@ export default function NodeSearch(props: {
     isCategory?: boolean;
   }[] => {
     const currentLevel = getCurrentLevel();
-
-    // NEW: Additional safety check to prevent crashes
     if (!currentLevel || !currentLevel.categories || !currentLevel.ops) {
       return [];
     }
 
     if (!searchTerm) {
-      // CHANGED: Using map instead of forEach + push for functional approach
       const categoryMatches = Object.keys(currentLevel.categories)
         .sort((a, b) => a.localeCompare(b))
         .map((key) => ({ item: key, isCategory: true as const }));
-
-      // NEW: Direct access to ops array, no conditional checks needed
       const opMatches = currentLevel.ops.map((op: OpsOp) => ({
         item: op.name,
         op,
       }));
-
-      // CHANGED: Using spread operator instead of push operations
       return [...categoryMatches, ...opMatches];
     }
-    // CHANGED: Using function declaration instead of arrow function
     function searchAllOperations(
       level: CategoryHierarchy,
       path: string[] = [],
     ): { item: string; op: OpsOp; category?: string }[] {
-      // NEW: Safety check for each level during recursion
       if (!level || !level.categories || !level.ops) {
         return [];
       }
-
-      // NEW: Fuzzy search using Fuse.js for better user experience
       const fuse = new Fuse(level.ops, {
         keys: ["name"],
         threshold: 0.4, // Balanced fuzziness for typos like "Dijkstra" → "Dikstra"
@@ -196,19 +162,14 @@ export default function NodeSearch(props: {
       });
 
       const fuzzyResults = fuse.search(searchTerm);
-      // CHANGED: Using map instead of filter + map for better performance
       const opsFromThisLevel = fuzzyResults.map((result) => ({
         item: result.item.name,
         op: result.item,
         category: path.length > 0 ? path.join(" > ") : undefined,
       }));
-
-      // CHANGED: Using flatMap for cleaner recursive collection
       const opsFromCategories = Object.keys(level.categories)
         .sort((a, b) => a.localeCompare(b))
         .flatMap((key) => searchAllOperations(level.categories[key], [...path, key]));
-
-      // CHANGED: Using spread operator instead of concatenation
       return [...opsFromThisLevel, ...opsFromCategories];
     }
 
@@ -252,8 +213,6 @@ export default function NodeSearch(props: {
     setSearchTerm(e.target.value);
     setSelectedIndex(0);
   };
-
-  // REMOVED: setTimeout delay - now using onMouseDown to eliminate race conditions
   const handleBlur = () => {
     if (document.activeElement?.closest(".node-search")) return;
     props.onCancel();
@@ -264,7 +223,6 @@ export default function NodeSearch(props: {
       className="node-search"
       style={{ ...styles.container, top: props.pos.y, left: props.pos.x }}
     >
-      {/* NEW: Moved hover styles to CSS for better performance */}
       <style>
         {`
           .node-search-item {
@@ -297,7 +255,6 @@ export default function NodeSearch(props: {
         onBlur={handleBlur}
       />
 
-      {/* NEW: Added breadcrumb navigation for better UX */}
       {categoryPath.length > 0 && (
         <div
           style={styles.backButton}
@@ -314,12 +271,10 @@ export default function NodeSearch(props: {
       )}
 
       <div style={styles.list}>
-        {/* CHANGED: Using map instead of forEach for better performance */}
         {results.map((result, index) => (
           <div
             key={result.category ? `${result.category}-${result.item}` : result.item}
             className={`node-search-item ${result.isCategory ? "node-search-item-category" : ""} ${index === selectedIndex ? "node-search-item-selected" : ""}`}
-            /* NEW: Using onMouseDown instead of onClick to prevent blur/select race condition */
             onMouseDown={(e) => {
               e.preventDefault();
               if (result.op) {
@@ -332,7 +287,6 @@ export default function NodeSearch(props: {
               setSelectedIndex(index);
             }}
           >
-            {/* NEW: Added icons for better visual distinction */}
             {result.isCategory ? (
               <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <FolderIcon style={{ width: "16px", height: "16px", color: "#007bff" }} />
@@ -353,7 +307,6 @@ export default function NodeSearch(props: {
   );
 }
 
-// NEW: Using CSS-in-JS object for better maintainability
 const styles: Record<string, React.CSSProperties> = {
   container: {
     position: "absolute",
@@ -377,7 +330,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: "4px",
     border: "1px solid #ccc",
   },
-  // NEW: Added styled back button for better navigation UX
   backButton: {
     marginBottom: "10px",
     cursor: "pointer",
@@ -388,7 +340,6 @@ const styles: Record<string, React.CSSProperties> = {
     display: "inline-block",
     fontSize: "0.9em",
   },
-  // NEW: Using flexbox for better layout control
   list: {
     display: "flex",
     flexDirection: "column",
