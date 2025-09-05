@@ -1,6 +1,8 @@
+/* biome-ignore-start lint/suspicious/noUnknownAtRules: tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* biome-ignore-end lint/suspicious/noUnknownAtRules: tailwind */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -171,7 +173,10 @@ body {
     --status-color-1: #0000;
     --status-color-2: #0000;
     --status-color-3: #0000;
-    transition: --status-color-1 0.3s, --status-color-2 0.3s, --status-color-3 0.3s;
+    transition:
+      --status-color-1 0.3s,
+      --status-color-2 0.3s,
+      --status-color-3 0.3s;
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -287,8 +292,7 @@ body {
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
-    max-height: -webkit-fill-available;
-    max-height: -moz-available;
+    max-height: stretch;
     display: flex;
     flex-direction: column;
 
