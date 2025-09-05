@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 // @ts-expect-error
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
 // @ts-expect-error
@@ -18,61 +18,51 @@ export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
 
 export type Category = {
-  ops: OpsOp[]; // Operations at this level
-  categories: Record<string, Category>; // Subcategories
+  name: string;
+  ops: OpsOp[]; // Operations at this level.
+  categories: Category[]; // Subcategories.
 };
 
-export type CategoryHierarchy = Category;
+function sortHierarchy(level: Category): Category {
+  const sortedOps = [...level.ops];
+  sortedOps.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedCategories = level.categories.map(sortHierarchy);
+  sortedCategories.sort((a, b) => a.name.localeCompare(b.name));
+  return { name: level.name, ops: sortedOps, categories: sortedCategories };
+}
 
-export function buildCategoryHierarchy(boxes: Catalog): CategoryHierarchy {
-  const hierarchy: CategoryHierarchy = { ops: [], categories: {} };
-
+export function buildCategoryHierarchy(boxes: Catalog): Category {
+  const hierarchy: Category = { name: "<<root>>", ops: [], categories: [] };
   for (const op of Object.values(boxes)) {
     const categories = op.categories;
-    if (!categories || categories.length === 0) {
-      if (!hierarchy.ops.find((existing: OpsOp) => existing.id === op.id)) {
-        hierarchy.ops.push(op);
-      }
-      continue;
-    }
-
     let currentLevel = hierarchy;
-    for (let i = 0; i < categories.length; i++) {
-      const category = categories[i];
-      if (!currentLevel.categories[category]) {
-        currentLevel.categories[category] = { ops: [], categories: {} };
-      }
-      if (i === categories.length - 1) {
-        if (
-          !currentLevel.categories[category].ops.find((existing: OpsOp) => existing.id === op.id)
-        ) {
-          currentLevel.categories[category].ops.push(op);
-        }
+    for (const category of categories) {
+      const existingCategory = currentLevel.categories.find((cat) => cat.name === category);
+      if (!existingCategory) {
+        const newCategory: Category = { name: category, ops: [], categories: [] };
+        currentLevel.categories.push(newCategory);
+        currentLevel = newCategory;
       } else {
-        currentLevel = currentLevel.categories[category];
+        currentLevel = existingCategory;
       }
     }
+    currentLevel.ops.push(op);
   }
-
-  function sortHierarchy(level: CategoryHierarchy): CategoryHierarchy {
-    const sortedOps = [...level.ops].sort((a, b) => a.name.localeCompare(b.name));
-    const sortedCategories: Record<string, Category> = {};
-    for (const key of Object.keys(level.categories).sort((a, b) => a.localeCompare(b))) {
-      sortedCategories[key] = sortHierarchy(level.categories[key]);
-    }
-    return { ops: sortedOps, categories: sortedCategories };
-  }
-
   return sortHierarchy(hierarchy);
 }
 
 export default function NodeSearch(props: {
-  categoryHierarchy: CategoryHierarchy;
+  categoryHierarchy: Category;
   onCancel: any;
-  onAdd: any;
+  onAdd: (op: OpsOp) => void;
   pos: { x: number; y: number };
 }) {
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
+  const currentLevel = useMemo(() => {
+    return categoryPath.reduce((currentLevel: Category | undefined, nextStep: string) => {
+      return currentLevel?.categories.find((cat) => cat.name === nextStep);
+    }, props.categoryHierarchy);
+  }, [props.categoryHierarchy, categoryPath]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -100,32 +90,11 @@ export default function NodeSearch(props: {
     props.onAdd(op);
   }
 
-  function getCurrentLevel(): CategoryHierarchy {
-    try {
-      return categoryPath.reduce((currentLevel, category) => {
-        if (!currentLevel?.categories[category]) {
-          throw new Error("Category not found");
-        }
-        return currentLevel.categories[category];
-      }, props.categoryHierarchy);
-    } catch {
-      return props.categoryHierarchy;
-    }
-  }
-
   useEffect(() => {
-    const isValidPath = categoryPath.every((_, index) => {
-      const partialPath = categoryPath.slice(0, index + 1);
-      const level = partialPath.reduce((currentLevel, cat) => {
-        return currentLevel?.categories[cat];
-      }, props.categoryHierarchy);
-      return level !== undefined;
-    });
-
-    if (!isValidPath && categoryPath.length > 0) {
+    if (!currentLevel && categoryPath.length > 0) {
       setCategoryPath([]);
     }
-  }, [categoryPath, props.categoryHierarchy]);
+  }, [currentLevel, categoryPath]);
 
   function filteredList(): {
     item: string;
@@ -133,15 +102,15 @@ export default function NodeSearch(props: {
     category?: string;
     isCategory?: boolean;
   }[] {
-    const currentLevel = getCurrentLevel();
-    if (!currentLevel || !currentLevel.categories || !currentLevel.ops) {
+    if (!currentLevel) {
       return [];
     }
 
     if (!searchTerm) {
-      const categoryMatches = Object.keys(currentLevel.categories)
-        .sort((a, b) => a.localeCompare(b))
-        .map((key) => ({ item: key, isCategory: true as const }));
+      const categoryMatches = currentLevel.categories.map((cat: Category) => ({
+        item: cat.name,
+        isCategory: true as const,
+      }));
       const opMatches = currentLevel.ops.map((op: OpsOp) => ({
         item: op.name,
         op,
@@ -149,10 +118,10 @@ export default function NodeSearch(props: {
       return [...categoryMatches, ...opMatches];
     }
     function searchAllOperations(
-      level: CategoryHierarchy,
+      level: Category,
       path: string[] = [],
     ): { item: string; op: OpsOp; category?: string }[] {
-      if (!level || !level.categories || !level.ops) {
+      if (!level) {
         return [];
       }
       const fuse = new Fuse(level.ops, {
@@ -167,13 +136,13 @@ export default function NodeSearch(props: {
         op: result.item,
         category: path.length > 0 ? path.join(" > ") : undefined,
       }));
-      const opsFromCategories = Object.keys(level.categories)
-        .sort((a, b) => a.localeCompare(b))
-        .flatMap((key) => searchAllOperations(level.categories[key], [...path, key]));
+      const opsFromCategories = level.categories.flatMap((cat) =>
+        searchAllOperations(cat, [...path, cat.name]),
+      );
       return [...opsFromThisLevel, ...opsFromCategories];
     }
 
-    return searchAllOperations(props.categoryHierarchy);
+    return searchAllOperations(currentLevel);
   }
 
   const results = filteredList();
