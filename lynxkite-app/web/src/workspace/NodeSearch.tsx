@@ -16,6 +16,14 @@ export type OpsOp = {
 };
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
+type SearchResult = {
+  name: string;
+  item: OpsOp | Category;
+  parentPath: string[];
+  score: number;
+  isCategory?: boolean;
+  isBack?: boolean;
+};
 
 export type Category = {
   name: string;
@@ -51,6 +59,63 @@ export function buildCategoryHierarchy(boxes: Catalog): Category {
   return sortHierarchy(hierarchy);
 }
 
+function categoryByPath(rootCategory: Category, categoryPath: string[]): Category | undefined {
+  let currentLevel: Category | undefined = rootCategory;
+  for (const cat of categoryPath) {
+    currentLevel = currentLevel?.categories.find((c) => c.name === cat);
+  }
+  return currentLevel;
+}
+
+function filteredList(currentLevel: Category | undefined, searchTerm: string): SearchResult[] {
+  if (!currentLevel) {
+    return [];
+  }
+
+  if (!searchTerm) {
+    const categoryMatches = currentLevel.categories.map((cat: Category) => ({
+      name: cat.name,
+      item: cat,
+      parentPath: [],
+      isCategory: true as const,
+      score: 0,
+    }));
+    const opMatches = currentLevel.ops.map((op: OpsOp) => ({
+      name: op.name,
+      item: op,
+      parentPath: [],
+      score: 0,
+    }));
+    return [...categoryMatches, ...opMatches];
+  }
+  function searchAllOperations(level: Category, path: string[] = []): SearchResult[] {
+    if (!level) {
+      return [];
+    }
+    const fuse = new Fuse([...level.ops, ...level.categories], {
+      keys: ["name"],
+      threshold: 0.4, // Balanced fuzziness for typos like "Dijkstra" → "Dikstra"
+      includeScore: true,
+    });
+    const fuzzyResults = fuse.search(searchTerm);
+    const opsFromThisLevel = fuzzyResults.map((result) => ({
+      name: result.item.name,
+      item: result.item,
+      isCategory: "ops" in result.item,
+      parentPath: [...path],
+      score: result.score ?? 0,
+    }));
+    const opsFromCategories = level.categories.flatMap((cat) =>
+      searchAllOperations(cat, [...path, cat.name]),
+    );
+    return [...opsFromThisLevel, ...opsFromCategories];
+  }
+
+  const results = searchAllOperations(currentLevel);
+  results.sort((a, b) => a.score - b.score);
+  return results;
+}
+
 export default function NodeSearch(props: {
   categoryHierarchy: Category;
   onCancel: any;
@@ -58,13 +123,13 @@ export default function NodeSearch(props: {
   pos: { x: number; y: number };
 }) {
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
-  const currentLevel = useMemo(() => {
-    return categoryPath.reduce((currentLevel: Category | undefined, nextStep: string) => {
-      return currentLevel?.categories.find((cat) => cat.name === nextStep);
-    }, props.categoryHierarchy);
-  }, [props.categoryHierarchy, categoryPath]);
+  const currentLevel = useMemo(
+    () => categoryByPath(props.categoryHierarchy, categoryPath),
+    [props.categoryHierarchy, categoryPath],
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -73,16 +138,22 @@ export default function NodeSearch(props: {
     }
   }, []);
 
-  function handleCategoryClick(category: string) {
-    setCategoryPath([...categoryPath, category]);
+  function handleCategoryClick(category: SearchResult) {
+    setCategoryPath([...categoryPath, ...category.parentPath, category.name]);
     setSearchTerm("");
     setSelectedIndex(0);
   }
 
   function handleBackClick() {
     if (categoryPath.length > 0) {
-      setCategoryPath(categoryPath.slice(0, -1));
-      setSelectedIndex(0);
+      const last = categoryPath.at(-1);
+      const newPath = categoryPath.slice(0, -1);
+      setCategoryPath(newPath);
+      const cat = categoryByPath(props.categoryHierarchy, newPath);
+      const results = filteredList(cat, searchTerm);
+      let index = results.findIndex((r) => r.isCategory && r.name === last);
+      if (newPath.length > 0) index += 1; // Account for the "Back" button.
+      setSelectedIndex(index);
     }
   }
 
@@ -96,59 +167,27 @@ export default function NodeSearch(props: {
     }
   }, [currentLevel, categoryPath]);
 
-  function filteredList(): {
-    item: string;
-    op?: OpsOp;
-    category?: string;
-    isCategory?: boolean;
-  }[] {
-    if (!currentLevel) {
-      return [];
-    }
-
-    if (!searchTerm) {
-      const categoryMatches = currentLevel.categories.map((cat: Category) => ({
-        item: cat.name,
-        isCategory: true as const,
-      }));
-      const opMatches = currentLevel.ops.map((op: OpsOp) => ({
-        item: op.name,
-        op,
-      }));
-      return [...categoryMatches, ...opMatches];
-    }
-    function searchAllOperations(
-      level: Category,
-      path: string[] = [],
-    ): { item: string; op: OpsOp; category?: string }[] {
-      if (!level) {
-        return [];
-      }
-      const fuse = new Fuse(level.ops, {
-        keys: ["name"],
-        threshold: 0.4, // Balanced fuzziness for typos like "Dijkstra" → "Dikstra"
-        includeScore: true,
-      });
-
-      const fuzzyResults = fuse.search(searchTerm);
-      const opsFromThisLevel = fuzzyResults.map((result) => ({
-        item: result.item.name,
-        op: result.item,
-        category: path.length > 0 ? path.join(" > ") : undefined,
-      }));
-      const opsFromCategories = level.categories.flatMap((cat) =>
-        searchAllOperations(cat, [...path, cat.name]),
-      );
-      return [...opsFromThisLevel, ...opsFromCategories];
-    }
-
-    return searchAllOperations(currentLevel);
-  }
-
-  const results = filteredList();
-
+  const results: SearchResult[] = [
+    ...(categoryPath.length > 0
+      ? [
+          {
+            name: "Back",
+            item: {} as Category,
+            isBack: true,
+            parentPath: categoryPath,
+            score: 0,
+          },
+        ]
+      : []),
+    ...filteredList(currentLevel, searchTerm),
+  ];
   useEffect(() => {
-    setSelectedIndex(Math.max(0, Math.min(selectedIndex, results.length - 1)));
+    const index = Math.max(0, Math.min(selectedIndex, results.length - 1));
+    setSelectedIndex(index);
+    itemRefs.current[index]?.scrollIntoView({
+      behavior: "instant",
+      block: "nearest",
+    });
   }, [results.length, selectedIndex]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -159,22 +198,18 @@ export default function NodeSearch(props: {
       e.preventDefault();
       setSelectedIndex(Math.max(selectedIndex - 1, 0));
     } else if (e.key === "Enter") {
-      e.preventDefault();
       const selected = results[selectedIndex];
       if (selected) {
-        if (selected.op) {
-          handleItemClick(selected.op);
-        } else if (selected.isCategory) {
-          handleCategoryClick(selected.item);
-        }
+        handleClick(e, selected);
       }
-    } else if (e.key === "Escape") {
+    } else if (e.key === "Backspace" && searchTerm === "") {
       e.preventDefault();
       if (categoryPath.length > 0) {
         handleBackClick();
-      } else {
-        props.onCancel();
       }
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      props.onCancel();
     }
   }
 
@@ -186,37 +221,24 @@ export default function NodeSearch(props: {
     if (document.activeElement?.closest(".node-search")) return;
     props.onCancel();
   }
-
+  function handleClick(e: { preventDefault: () => void }, result: SearchResult) {
+    e.preventDefault();
+    if (result.isCategory) {
+      handleCategoryClick(result);
+    } else if (result.isBack) {
+      handleBackClick();
+    } else {
+      handleItemClick(result.item as OpsOp);
+    }
+  }
   return (
     <div
       className="node-search"
-      style={{ ...styles.container, top: props.pos.y, left: props.pos.x }}
+      style={{ top: props.pos.y, left: props.pos.x }}
+      onMouseDown={(e) => e.preventDefault()}
     >
-      <style>
-        {`
-          .node-search-item {
-            padding: 6px;
-            cursor: pointer;
-            border-radius: 4px;
-          }
-          .node-search-item:hover {
-            background-color: orange;
-            color: black;
-          }
-          .node-search-item-category {
-            font-weight: bold;
-            color: #444;
-            background-color: #f8f9fa;
-          }
-          .node-search-item-selected {
-            background-color: rgba(0, 123, 255, 0.2);
-            color: black;
-          }
-        `}
-      </style>
       <input
         ref={searchInputRef}
-        style={styles.search}
         placeholder="Search for box"
         value={searchTerm}
         onChange={handleSearchChange}
@@ -224,94 +246,28 @@ export default function NodeSearch(props: {
         onBlur={handleBlur}
       />
 
-      {categoryPath.length > 0 && (
-        <div
-          style={styles.backButton}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            handleBackClick();
-          }}
-        >
-          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <ArrowLeftIcon style={{ width: "14px", height: "14px" }} />
-            Back
-          </span>
-        </div>
-      )}
-
-      <div style={styles.list}>
+      <div className="matches">
         {results.map((result, index) => (
-          <div
-            key={result.category ? `${result.category}-${result.item}` : result.item}
-            className={`node-search-item ${result.isCategory ? "node-search-item-category" : ""} ${index === selectedIndex ? "node-search-item-selected" : ""}`}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              if (result.op) {
-                handleItemClick(result.op);
-              } else if (result.isCategory) {
-                handleCategoryClick(result.item);
-              }
+          <button
+            key={result.parentPath ? `${result.parentPath.join("-")}-${result.name}` : result.name}
+            className={`
+              search-result
+              ${result.isCategory || result.isBack ? "search-result-category" : ""}
+              ${index === selectedIndex ? "selected" : ""}`}
+            ref={(el) => {
+              itemRefs.current[index] = el;
             }}
-            onMouseEnter={() => {
-              setSelectedIndex(index);
-            }}
+            onMouseDown={(e) => handleClick(e, result)}
+            onMouseEnter={() => setSelectedIndex(index)}
           >
-            {result.isCategory ? (
-              <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <FolderIcon style={{ width: "16px", height: "16px", color: "#007bff" }} />
-                {result.item}
-              </span>
-            ) : result.category ? (
-              <span>
-                {result.item}{" "}
-                <span style={{ color: "#666", fontSize: "0.8em" }}>({result.category})</span>
-              </span>
-            ) : (
-              result.item
-            )}
-          </div>
+            {result.isCategory ? <FolderIcon /> : result.isBack ? <ArrowLeftIcon /> : null}
+            {result.name}{" "}
+            {result.parentPath.length ? (
+              <span className="search-result-path">({result.parentPath.join(" › ")})</span>
+            ) : null}
+          </button>
         ))}
       </div>
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    position: "absolute",
-    border: "1px solid #aaa",
-    width: "300px",
-    maxHeight: "400px",
-    overflowY: "auto",
-    overflowX: "hidden",
-    padding: "8px",
-    background: "#fff",
-    fontFamily: "sans-serif",
-    borderRadius: "6px",
-    zIndex: 1000,
-    resize: "none",
-  },
-  search: {
-    marginBottom: "8px",
-    width: "100%",
-    padding: "6px",
-    boxSizing: "border-box",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-  },
-  backButton: {
-    marginBottom: "10px",
-    cursor: "pointer",
-    color: "#007bff",
-    border: "1px solid #007bff",
-    padding: "4px 8px",
-    borderRadius: "4px",
-    display: "inline-block",
-    fontSize: "0.9em",
-  },
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-  },
-};
