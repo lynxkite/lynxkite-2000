@@ -250,7 +250,10 @@ def visualize_graph(
         pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = core.df_for_frontend(graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000)
+    deduped_edges = graph.dfs["edges"].drop_duplicates(
+        ["source", "target"]
+    )  # ty: ignore[no-matching-overload] (https://github.com/astral-sh/ty/issues/1132)
+    edges = core.df_for_frontend(deduped_edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
