@@ -83,24 +83,24 @@ export default function NodeSearch(props: {
     }
   }, []);
 
-  const handleCategoryClick = (category: string) => {
+  function handleCategoryClick(category: string) {
     setCategoryPath([...categoryPath, category]);
     setSearchTerm("");
     setSelectedIndex(0);
-  };
+  }
 
-  const handleBackClick = () => {
+  function handleBackClick() {
     if (categoryPath.length > 0) {
       setCategoryPath(categoryPath.slice(0, -1));
       setSelectedIndex(0);
     }
-  };
+  }
 
-  const handleItemClick = (op: OpsOp) => {
+  function handleItemClick(op: OpsOp) {
     props.onAdd(op);
-  };
+  }
 
-  const getCurrentLevel = (): CategoryHierarchy => {
+  function getCurrentLevel(): CategoryHierarchy {
     try {
       return categoryPath.reduce((currentLevel, category) => {
         if (!currentLevel?.categories[category]) {
@@ -111,7 +111,7 @@ export default function NodeSearch(props: {
     } catch {
       return props.categoryHierarchy;
     }
-  };
+  }
 
   useEffect(() => {
     const isValidPath = categoryPath.every((_, index) => {
@@ -127,12 +127,12 @@ export default function NodeSearch(props: {
     }
   }, [categoryPath, props.categoryHierarchy]);
 
-  const filteredList = (): {
+  function filteredList(): {
     item: string;
     op?: OpsOp;
     category?: string;
     isCategory?: boolean;
-  }[] => {
+  }[] {
     const currentLevel = getCurrentLevel();
     if (!currentLevel || !currentLevel.categories || !currentLevel.ops) {
       return [];
@@ -174,7 +174,7 @@ export default function NodeSearch(props: {
     }
 
     return searchAllOperations(props.categoryHierarchy);
-  };
+  }
 
   const results = filteredList();
 
@@ -182,7 +182,7 @@ export default function NodeSearch(props: {
     setSelectedIndex(Math.max(0, Math.min(selectedIndex, results.length - 1)));
   }, [results.length, selectedIndex]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1));
@@ -207,16 +207,16 @@ export default function NodeSearch(props: {
         props.onCancel();
       }
     }
-  };
+  }
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
     setSelectedIndex(0);
-  };
-  const handleBlur = () => {
+  }
+  function handleBlur() {
     if (document.activeElement?.closest(".node-search")) return;
     props.onCancel();
-  };
+  }
 
   return (
     <div
