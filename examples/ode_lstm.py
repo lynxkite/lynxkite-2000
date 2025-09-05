@@ -26,7 +26,7 @@ def sort_by(df: pd.DataFrame, *, key_columns: str):
 
 @op("Group by")
 def group_by(df: pd.DataFrame, *, key_columns: str, aggregation: LongStr):
-    key_columns = [k.strip() for k in key_columns.split(",")]
+    key_columns: list[str] = [k.strip() for k in key_columns.split(",")]
     j = json.loads(aggregation)
     for k, vs in j.items():
         j[k] = [list if v == "list" else v for v in vs]
@@ -45,7 +45,7 @@ def take_first_element(df: pd.DataFrame, *, column: str):
 @op("Plot time series", view="matplotlib")
 def plot_time_series(bundle: Bundle, *, table_name: str, index: int, x_column: str, y_columns: str):
     df = bundle.dfs[table_name]
-    y_columns = [y.strip() for y in y_columns.split(",")]
+    y_columns: list[str] = [y.strip() for y in y_columns.split(",")]
     x = df[x_column].iloc[index]
     for y_column in y_columns:
         y = df[y_column].iloc[index]

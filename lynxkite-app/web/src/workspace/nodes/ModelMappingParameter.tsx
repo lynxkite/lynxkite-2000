@@ -1,8 +1,6 @@
 import { useRef } from "react";
 // @ts-expect-error
 import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
-// @ts-expect-error
-import Help from "~icons/tabler/question-mark.jsx";
 import ParameterInput from "./ParameterInput";
 
 type Bindings = {
@@ -61,7 +59,7 @@ function parseJsonOrEmpty(json: string): object {
     if (j !== null && typeof j === "object") {
       return j;
     }
-  } catch (e) {}
+  } catch (_) {}
   return {};
 }
 

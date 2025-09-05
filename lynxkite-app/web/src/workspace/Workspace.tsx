@@ -428,6 +428,7 @@ function LynxKiteFlow() {
       addNode(node);
     } catch (error) {
       setMessage("File upload failed.");
+      console.error("File upload failed.", error);
     }
   }
   async function executeWorkspace() {
