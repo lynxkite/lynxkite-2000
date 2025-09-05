@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
+
 const echarts = await import("echarts");
 
 function NodeWithVisualization(props: any) {
