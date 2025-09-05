@@ -2,26 +2,25 @@ import { useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
-import type { DirectoryEntry } from "./apiTypes.ts";
-import { usePath } from "./common.ts";
-
-// @ts-ignore
+// @ts-expect-error
 import File from "~icons/tabler/file";
-// @ts-ignore
+// @ts-expect-error
 import FilePlus from "~icons/tabler/file-plus";
-// @ts-ignore
+// @ts-expect-error
 import Folder from "~icons/tabler/folder";
-// @ts-ignore
+// @ts-expect-error
 import FolderPlus from "~icons/tabler/folder-plus";
-// @ts-ignore
+// @ts-expect-error
 import Home from "~icons/tabler/home";
-// @ts-ignore
+// @ts-expect-error
 import LayoutGrid from "~icons/tabler/layout-grid";
-// @ts-ignore
+// @ts-expect-error
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
-// @ts-ignore
+// @ts-expect-error
 import Trash from "~icons/tabler/trash";
+import type { DirectoryEntry } from "./apiTypes.ts";
 import logo from "./assets/logo.png";
+import { usePath } from "./common.ts";
 
 function EntryCreator(props: {
   label: string;
