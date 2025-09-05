@@ -15,18 +15,16 @@ export default function LynxKiteEdge(props: any) {
   const t = addOffset(props.targetX, props.targetY, props.targetPosition, 0);
   const path = `M${s} C${sc} ${tc} ${t}`;
   return (
-    <>
-      <BaseEdge
-        path={path}
-        labelX={props.labelX}
-        labelY={props.labelY}
-        markerStart={props.markerStart}
-        markerEnd={props.markerEnd}
-        style={{
-          strokeWidth: 2,
-          stroke: "black",
-        }}
-      />
-    </>
+    <BaseEdge
+      path={path}
+      labelX={props.labelX}
+      labelY={props.labelY}
+      markerStart={props.markerStart}
+      markerEnd={props.markerEnd}
+      style={{
+        strokeWidth: 2,
+        stroke: "black",
+      }}
+    />
   );
 }
