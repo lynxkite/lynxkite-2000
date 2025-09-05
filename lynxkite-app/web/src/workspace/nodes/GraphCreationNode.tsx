@@ -1,8 +1,7 @@
 import { useReactFlow } from "@xyflow/react";
-import { useState } from "react";
-import React from "react";
+import React, { type FormEventHandler, useState } from "react";
 import Markdown from "react-markdown";
-// @ts-ignore
+// @ts-expect-error
 import Trash from "~icons/tabler/trash";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";
@@ -48,6 +47,125 @@ function relationsToDict(relations: any[]) {
 }
 
 export type UpdateOptions = { delay?: number };
+
+function RelationView({
+  relation,
+  tables,
+  onSubmit,
+}: {
+  relation: any;
+  tables: { [name: string]: any };
+  onSubmit: FormEventHandler<HTMLFormElement>;
+}) {
+  const idPrefix = React.useId();
+  const ids = {
+    name: `${idPrefix}-name`,
+    df: `${idPrefix}-df`,
+    source_column: `${idPrefix}-source_column`,
+    target_column: `${idPrefix}-target_column`,
+    source_table: `${idPrefix}-source_table`,
+    target_table: `${idPrefix}-target_table`,
+    source_key: `${idPrefix}-source_key`,
+    target_key: `${idPrefix}-target_key`,
+    df_options: `${idPrefix}-df-options`,
+    edges_column_options: `${idPrefix}-edges-column-options`,
+    source_node_column_options: `${idPrefix}-source-node-column-options`,
+    target_node_column_options: `${idPrefix}-target-node-column-options`,
+  };
+  return (
+    <form className="graph-relation-attributes" onSubmit={onSubmit}>
+      <label htmlFor={ids.name}>Name:</label>
+      <input type="text" id={ids.name} name="name" defaultValue={relation.name} />
+      <label htmlFor={ids.df}>DataFrame:</label>
+      <input
+        type="text"
+        id={ids.df}
+        name="df"
+        defaultValue={relation.df}
+        list={ids.df_options}
+        required
+      />
+      <label htmlFor={ids.source_column}>Source Column:</label>
+      <input
+        type="text"
+        id={ids.source_column}
+        name="source_column"
+        defaultValue={relation.source_column}
+        list={ids.edges_column_options}
+        required
+      />
+      <label htmlFor={ids.target_column}>Target Column:</label>
+      <input
+        type="text"
+        id={ids.target_column}
+        name="target_column"
+        defaultValue={relation.target_column}
+        list={ids.edges_column_options}
+        required
+      />
+      <label htmlFor={ids.source_table}>Source Table:</label>
+      <input
+        type="text"
+        id={ids.source_table}
+        name="source_table"
+        defaultValue={relation.source_table}
+        list={ids.df_options}
+        required
+      />
+      <label htmlFor={ids.target_table}>Target Table:</label>
+      <input
+        type="text"
+        id={ids.target_table}
+        name="target_table"
+        defaultValue={relation.target_table}
+        list={ids.df_options}
+        required
+      />
+      <label htmlFor={ids.source_key}>Source Key:</label>
+      <input
+        type="text"
+        id={ids.source_key}
+        name="source_key"
+        defaultValue={relation.source_key}
+        list={ids.source_node_column_options}
+        required
+      />
+      <label htmlFor={ids.target_key}>Target Key:</label>
+      <input
+        type="text"
+        id={ids.target_key}
+        name="target_key"
+        defaultValue={relation.target_key}
+        list={ids.target_node_column_options}
+        required
+      />
+      <datalist id={ids.df_options}>
+        {Object.keys(tables).map((name) => (
+          <option key={name} value={name} />
+        ))}
+      </datalist>
+      <datalist id={ids.edges_column_options}>
+        {tables[relation.source_table] &&
+          tables[relation.df].columns.map((name: string) => <option key={name} value={name} />)}
+      </datalist>
+      <datalist id={ids.source_node_column_options}>
+        {tables[relation.source_table] &&
+          tables[relation.source_table].columns.map((name: string) => (
+            <option key={name} value={name} />
+          ))}
+      </datalist>
+      <datalist id={ids.target_node_column_options}>
+        {tables[relation.source_table] &&
+          tables[relation.target_table].columns.map((name: string) => (
+            <option key={name} value={name} />
+          ))}
+      </datalist>
+      <button className="submit-relationship-button" type="submit">
+        Create
+      </button>
+    </form>
+  );
+}
 
 function NodeWithGraphCreationView(props: any) {
   const reactFlow = useReactFlow();
@@ -114,120 +232,6 @@ function NodeWithGraphCreationView(props: any) {
     setParam("relations", JSON.stringify(newRelations), {});
   };
 
-  function displayRelation(relation: any) {
-    // TODO: Dynamic autocomplete
-    return (
-      <form
-        className="graph-relation-attributes"
-        onSubmit={(e) => {
-          updateRelation(e, relation);
-        }}
-      >
-        <label htmlFor="name">Name:</label>
-        <input type="text" id="name" name="name" defaultValue={relation.name} />
-
-        <label htmlFor="df">DataFrame:</label>
-        <input
-          type="text"
-          id="df"
-          name="df"
-          defaultValue={relation.df}
-          list="df-options"
-          required
-        />
-
-        <label htmlFor="source_column">Source Column:</label>
-        <input
-          type="text"
-          id="source_column"
-          name="source_column"
-          defaultValue={relation.source_column}
-          list="edges-column-options"
-          required
-        />
-
-        <label htmlFor="target_column">Target Column:</label>
-        <input
-          type="text"
-          id="target_column"
-          name="target_column"
-          defaultValue={relation.target_column}
-          list="edges-column-options"
-          required
-        />
-
-        <label htmlFor="source_table">Source Table:</label>
-        <input
-          type="text"
-          id="source_table"
-          name="source_table"
-          defaultValue={relation.source_table}
-          list="df-options"
-          required
-        />
-
-        <label htmlFor="target_table">Target Table:</label>
-        <input
-          type="text"
-          id="target_table"
-          name="target_table"
-          defaultValue={relation.target_table}
-          list="df-options"
-          required
-        />
-
-        <label htmlFor="source_key">Source Key:</label>
-        <input
-          type="text"
-          id="source_key"
-          name="source_key"
-          defaultValue={relation.source_key}
-          list="source-node-column-options"
-          required
-        />
-
-        <label htmlFor="target_key">Target Key:</label>
-        <input
-          type="text"
-          id="target_key"
-          name="target_key"
-          defaultValue={relation.target_key}
-          list="target-node-column-options"
-          required
-        />
-
-        <datalist id="df-options">
-          {Object.keys(tables).map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
-
-        <datalist id="edges-column-options">
-          {tables[relation.source_table] &&
-            tables[relation.df].columns.map((name: string) => <option key={name} value={name} />)}
-        </datalist>
-
-        <datalist id="source-node-column-options">
-          {tables[relation.source_table] &&
-            tables[relation.source_table].columns.map((name: string) => (
-              <option key={name} value={name} />
-            ))}
-        </datalist>
-
-        <datalist id="target-node-column-options">
-          {tables[relation.source_table] &&
-            tables[relation.target_table].columns.map((name: string) => (
-              <option key={name} value={name} />
-            ))}
-        </datalist>
-
-        <button className="submit-relationship-button" type="submit">
-          Create
-        </button>
-      </form>
-    );
-  }
-
   return (
     <div className="graph-creation-view">
       <div className="graph-tables">
@@ -285,7 +289,13 @@ function NodeWithGraphCreationView(props: any) {
                   <Trash />
                 </button>
               </div>
-              {(singleRelation || open[name]) && displayRelation(relation)}
+              {(singleRelation || open[name]) && (
+                <RelationView
+                  relation={relation}
+                  tables={tables}
+                  onSubmit={(e) => updateRelation(e, relation)}
+                />
+              )}
             </React.Fragment>
           ))}
       </div>

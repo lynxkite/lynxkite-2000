@@ -1,7 +1,5 @@
 import jmespath from "jmespath";
-// @ts-ignore
-import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Help from "~icons/tabler/question-mark.jsx";
 import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";

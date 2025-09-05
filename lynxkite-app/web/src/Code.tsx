@@ -6,11 +6,11 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-// @ts-ignore
+// @ts-expect-error
 import Atom from "~icons/tabler/atom.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Backspace from "~icons/tabler/backspace.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
 import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
