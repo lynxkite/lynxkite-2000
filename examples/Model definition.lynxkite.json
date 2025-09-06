@@ -80,48 +80,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "green",
-          "doc": null,
-          "id": "Optimizer",
-          "inputs": [
-            {
-              "name": "loss",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "name": "Optimizer",
-          "outputs": [],
-          "params": [
-            {
-              "default": "AdamW",
-              "name": "type",
-              "type": {
-                "enum": [
-                  "AdamW",
-                  "Adafactor",
-                  "Adagrad",
-                  "SGD",
-                  "Lion",
-                  "Paged AdamW",
-                  "Galore AdamW"
-                ]
-              }
-            },
-            {
-              "default": 0.0001,
-              "name": "lr",
-              "type": {
-                "type": "<class 'float'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Optimizer",
         "params": {
           "lr": "0.1",
@@ -147,52 +106,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "Activation",
-          "inputs": [
-            {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "Activation",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "ReLU",
-              "name": "type",
-              "type": {
-                "enum": [
-                  "ELU",
-                  "GELU",
-                  "LeakyReLU",
-                  "Mish",
-                  "PReLU",
-                  "ReLU",
-                  "Sigmoid",
-                  "SiLU",
-                  "Softplus",
-                  "Tanh"
-                ]
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Activation",
         "params": {
           "type": "LeakyReLU"
@@ -217,33 +131,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "gray",
-          "doc": null,
-          "id": "Input: tensor",
-          "inputs": [],
-          "name": "Input: tensor",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Input: tensor",
         "params": {
           "name": "Y"
@@ -252,14 +140,14 @@
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 229.0,
       "id": "Input: tensor 3",
       "position": {
         "x": 454.7823474758749,
         "y": -212.0655794519241
       },
       "type": "basic",
-      "width": 200.0
+      "width": 238.0
     },
     {
       "data": {
@@ -268,40 +156,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "MSE loss",
-          "inputs": [
-            {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            },
-            {
-              "name": "y",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "MSE loss",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "MSE loss",
         "params": {},
         "status": "done",
@@ -324,48 +179,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "Repeat",
-          "inputs": [
-            {
-              "name": "input",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "name": "Repeat",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 1.0,
-              "name": "times",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": false,
-              "name": "same_weights",
-              "type": {
-                "type": "<class 'bool'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Repeat",
         "params": {
           "same_weights": false,
@@ -391,41 +205,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "id": "Linear",
-          "inputs": [
-            {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "Linear",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 1024.0,
-              "name": "output_dim",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Linear",
         "params": {
           "output_dim": "4"
@@ -450,33 +230,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "gray",
-          "doc": null,
-          "id": "Input: tensor",
-          "inputs": [],
-          "name": "Input: tensor",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Input: tensor",
         "params": {
           "name": "X"
@@ -501,40 +255,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "Constant vector",
-          "inputs": [],
-          "name": "Constant vector",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 0.0,
-              "name": "value",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": 1.0,
-              "name": "size",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Constant vector",
         "params": {
           "size": "1",
@@ -560,40 +281,7 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "Add",
-          "inputs": [
-            {
-              "name": "a",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            },
-            {
-              "name": "b",
-              "position": "bottom",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "Add",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "top",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Add",
         "params": {},
         "status": "done",
@@ -616,55 +304,21 @@
         "display": null,
         "error": null,
         "input_metadata": null,
-        "meta": {
-          "categories": [],
-          "color": "gray",
-          "doc": null,
-          "id": "Output",
-          "inputs": [
-            {
-              "name": "x",
-              "position": "bottom",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "name": "Output",
-          "outputs": [
-            {
-              "name": "x",
-              "position": "top",
-              "type": {
-                "type": "tensor"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Output",
         "params": {},
         "status": "done",
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 234.0,
       "id": "Output 1",
       "position": {
-        "x": 119.83887514325258,
-        "y": -453.23756095856885
+        "x": 108.18701117589333,
+        "y": -542.5685180416564
       },
       "type": "basic",
-      "width": 200.0
+      "width": 236.0
     }
   ],
   "paused": false
