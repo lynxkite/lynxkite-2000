@@ -1,5 +1,10 @@
 import Fuse from "fuse.js";
+import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+// @ts-expect-error
+import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
+// @ts-expect-error
+import FolderIcon from "~icons/tabler/folder.jsx";
 
 export type OpsOp = {
   name: string;
@@ -11,81 +16,256 @@ export type OpsOp = {
 };
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
+type SearchResult = {
+  name: string;
+  item: OpsOp | Category;
+  parentPath: string[];
+  score: number;
+  isCategory?: boolean;
+  isBack?: boolean;
+};
+
+export type Category = {
+  name: string;
+  ops: OpsOp[]; // Operations at this level.
+  categories: Category[]; // Subcategories.
+};
+
+function sortHierarchy(level: Category): Category {
+  const sortedOps = [...level.ops];
+  sortedOps.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedCategories = level.categories.map(sortHierarchy);
+  sortedCategories.sort((a, b) => a.name.localeCompare(b.name));
+  return { name: level.name, ops: sortedOps, categories: sortedCategories };
+}
+
+export function buildCategoryHierarchy(boxes: Catalog): Category {
+  const hierarchy: Category = { name: "<<root>>", ops: [], categories: [] };
+  for (const op of Object.values(boxes)) {
+    const categories = op.categories;
+    let currentLevel = hierarchy;
+    for (const category of categories) {
+      const existingCategory = currentLevel.categories.find((cat) => cat.name === category);
+      if (!existingCategory) {
+        const newCategory: Category = { name: category, ops: [], categories: [] };
+        currentLevel.categories.push(newCategory);
+        currentLevel = newCategory;
+      } else {
+        currentLevel = existingCategory;
+      }
+    }
+    currentLevel.ops.push(op);
+  }
+  return sortHierarchy(hierarchy);
+}
+
+function categoryByPath(rootCategory: Category, categoryPath: string[]): Category | undefined {
+  let currentLevel: Category | undefined = rootCategory;
+  for (const cat of categoryPath) {
+    currentLevel = currentLevel?.categories.find((c) => c.name === cat);
+  }
+  return currentLevel;
+}
+
+function filteredList(currentLevel: Category | undefined, searchTerm: string): SearchResult[] {
+  if (!currentLevel) {
+    return [];
+  }
+
+  if (!searchTerm) {
+    const categoryMatches = currentLevel.categories.map((cat: Category) => ({
+      name: cat.name,
+      item: cat,
+      parentPath: [],
+      isCategory: true as const,
+      score: 0,
+    }));
+    const opMatches = currentLevel.ops.map((op: OpsOp) => ({
+      name: op.name,
+      item: op,
+      parentPath: [],
+      score: 0,
+    }));
+    return [...categoryMatches, ...opMatches];
+  }
+  function searchAllOperations(level: Category, path: string[] = []): SearchResult[] {
+    if (!level) {
+      return [];
+    }
+    const fuse = new Fuse([...level.ops, ...level.categories], {
+      keys: ["name"],
+      threshold: 0.4, // Balanced fuzziness for typos like "Dijkstra" → "Dikstra"
+      includeScore: true,
+    });
+    const fuzzyResults = fuse.search(searchTerm);
+    const opsFromThisLevel = fuzzyResults.map((result) => ({
+      name: result.item.name,
+      item: result.item,
+      isCategory: "ops" in result.item,
+      parentPath: [...path],
+      score: result.score ?? 0,
+    }));
+    const opsFromCategories = level.categories.flatMap((cat) =>
+      searchAllOperations(cat, [...path, cat.name]),
+    );
+    return [...opsFromThisLevel, ...opsFromCategories];
+  }
+
+  const results = searchAllOperations(currentLevel);
+  results.sort((a, b) => a.score - b.score);
+  return results;
+}
 
 export default function NodeSearch(props: {
-  boxes: Catalog;
+  categoryHierarchy: Category;
   onCancel: any;
-  onAdd: any;
+  onAdd: (op: OpsOp) => void;
   pos: { x: number; y: number };
 }) {
-  const searchBox = useRef(null as unknown as HTMLInputElement);
-  const [searchText, setSearchText] = useState("");
-  const fuse = useMemo(
-    () =>
-      new Fuse(Object.values(props.boxes), {
-        keys: ["name"],
-      }),
-    [props.boxes],
+  const [categoryPath, setCategoryPath] = useState<string[]>([]);
+  const currentLevel = useMemo(
+    () => categoryByPath(props.categoryHierarchy, categoryPath),
+    [props.categoryHierarchy, categoryPath],
   );
-  const allOps = useMemo(() => {
-    const boxes = Object.values(props.boxes).map((box) => ({ item: box }));
-    boxes.sort((a, b) => a.item.name.localeCompare(b.item.name));
-    return boxes;
-  }, [props.boxes]);
-  const hits: { item: OpsOp }[] = searchText ? fuse.search<OpsOp>(searchText) : allOps;
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  useEffect(() => searchBox.current.focus());
-  function typed(text: string) {
-    setSearchText(text);
-    setSelectedIndex(Math.max(0, Math.min(selectedIndex, hits.length - 1)));
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+
+  function handleCategoryClick(category: SearchResult) {
+    setCategoryPath([...categoryPath, ...category.parentPath, category.name]);
+    setSearchTerm("");
+    setSelectedIndex(0);
   }
-  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+
+  function handleBackClick() {
+    if (categoryPath.length > 0) {
+      const last = categoryPath.at(-1);
+      const newPath = categoryPath.slice(0, -1);
+      setCategoryPath(newPath);
+      const cat = categoryByPath(props.categoryHierarchy, newPath);
+      const results = filteredList(cat, searchTerm);
+      let index = results.findIndex((r) => r.isCategory && r.name === last);
+      if (newPath.length > 0) index += 1; // Account for the "Back" button.
+      setSelectedIndex(index);
+    }
+  }
+
+  function handleItemClick(op: OpsOp) {
+    props.onAdd(op);
+  }
+
+  useEffect(() => {
+    if (!currentLevel && categoryPath.length > 0) {
+      setCategoryPath([]);
+    }
+  }, [currentLevel, categoryPath]);
+
+  const results: SearchResult[] = [
+    ...(categoryPath.length > 0
+      ? [
+          {
+            name: "Back",
+            item: {} as Category,
+            isBack: true,
+            parentPath: categoryPath,
+            score: 0,
+          },
+        ]
+      : []),
+    ...filteredList(currentLevel, searchTerm),
+  ];
+  useEffect(() => {
+    const index = Math.max(0, Math.min(selectedIndex, results.length - 1));
+    setSelectedIndex(index);
+    itemRefs.current[index]?.scrollIntoView({
+      behavior: "instant",
+      block: "nearest",
+    });
+  }, [results.length, selectedIndex]);
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedIndex(Math.min(selectedIndex + 1, hits.length - 1));
+      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex(Math.max(selectedIndex - 1, 0));
     } else if (e.key === "Enter") {
-      addSelected();
+      const selected = results[selectedIndex];
+      if (selected) {
+        handleClick(e, selected);
+      }
+    } else if (e.key === "Backspace" && searchTerm === "") {
+      e.preventDefault();
+      if (categoryPath.length > 0) {
+        handleBackClick();
+      }
     } else if (e.key === "Escape") {
+      e.preventDefault();
       props.onCancel();
     }
   }
-  function addSelected() {
-    const node = { ...hits[selectedIndex].item };
-    node.position = props.pos;
-    props.onAdd(node);
+
+  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchTerm(e.target.value);
+    setSelectedIndex(0);
   }
-  async function lostFocus(e: any) {
-    // If it's a click on a result, let the click handler handle it.
-    if (e.relatedTarget?.closest(".node-search")) return;
+  function handleBlur() {
+    if (document.activeElement?.closest(".node-search")) return;
     props.onCancel();
   }
-
+  function handleClick(e: { preventDefault: () => void }, result: SearchResult) {
+    e.preventDefault();
+    if (result.isCategory) {
+      handleCategoryClick(result);
+    } else if (result.isBack) {
+      handleBackClick();
+    } else {
+      handleItemClick(result.item as OpsOp);
+    }
+  }
   return (
-    <div className="node-search" style={{ top: props.pos.y, left: props.pos.x }}>
+    <div
+      className="node-search"
+      style={{ top: props.pos.y, left: props.pos.x }}
+      onMouseDown={(e) => e.preventDefault()}
+    >
       <input
-        ref={searchBox}
-        value={searchText}
-        onChange={(event) => typed(event.target.value)}
-        onKeyDown={onKeyDown}
-        onBlur={lostFocus}
+        ref={searchInputRef}
         placeholder="Search for box"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
       />
+
       <div className="matches">
-        {hits.map((box, index) => (
-          <div
-            key={box.item.name}
-            tabIndex={0}
-            onFocus={() => setSelectedIndex(index)}
+        {results.map((result, index) => (
+          <button
+            key={result.parentPath ? `${result.parentPath.join("-")}-${result.name}` : result.name}
+            className={`
+              search-result
+              ${result.isCategory || result.isBack ? "search-result-category" : "search-result-op"}
+              ${index === selectedIndex ? "selected" : ""}`}
+            ref={(el) => {
+              itemRefs.current[index] = el;
+            }}
+            onMouseDown={(e) => handleClick(e, result)}
             onMouseEnter={() => setSelectedIndex(index)}
-            onClick={addSelected}
-            className={`search-result ${index === selectedIndex ? "selected" : ""}`}
           >
-            {box.item.categories.map((category) => `${category}\u00A0›\u00A0`)}
-            {box.item.name}
-          </div>
+            {result.isCategory ? <FolderIcon /> : result.isBack ? <ArrowLeftIcon /> : null}
+            {result.name}{" "}
+            {result.parentPath.length ? (
+              <span className="search-result-path">({result.parentPath.join(" › ")})</span>
+            ) : null}
+          </button>
         ))}
       </div>
     </div>
