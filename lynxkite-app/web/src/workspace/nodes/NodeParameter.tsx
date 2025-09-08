@@ -8,10 +8,10 @@ import ParameterInput from "./ParameterInput";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>";
+  "lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping | None";
 const MODEL_INFERENCE_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>";
-const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
+  "lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping | None";
+const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
   const help = doc && (

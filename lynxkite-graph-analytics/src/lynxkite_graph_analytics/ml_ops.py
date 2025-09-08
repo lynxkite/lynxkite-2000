@@ -75,7 +75,7 @@ def train_model(
     bundle: core.Bundle,
     *,
     model_name: pytorch_core.PyTorchModelName = "model",
-    input_mapping: ModelTrainingInputMapping,
+    input_mapping: ModelTrainingInputMapping | None,
     epochs: int = 1,
     batch_size: int = 1,
 ):
@@ -114,8 +114,8 @@ def model_inference(
     bundle: core.Bundle,
     *,
     model_name: pytorch_core.PyTorchModelName = "model",
-    input_mapping: ModelInferenceInputMapping,
-    output_mapping: ModelOutputMapping,
+    input_mapping: ModelInferenceInputMapping | None,
+    output_mapping: ModelOutputMapping | None,
     batch_size: int = 1,
 ):
     """Executes a trained model."""
