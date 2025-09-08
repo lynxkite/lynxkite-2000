@@ -74,8 +74,8 @@ class Parameter(BaseConfig):
     type: Type = None
 
     @staticmethod
-    def options(name, options, default=None):
-        e = enum.Enum(f"OptionsFor_{name}", options)
+    def options(name, options: list[str], default=None):
+        e = enum.StrEnum(f"OptionsFor_{name}", [(o, o) for o in options])
         return Parameter.basic(name, default or options[0], e)
 
     @staticmethod
@@ -171,6 +171,9 @@ def _param_to_type(name, value, type):
         assert value != "", f"{name} is unset."
         return float(value)
     if isinstance(type, enum.EnumMeta):
+        assert value in type, (
+            f'Parameter "{name}" must be one of {[t.value for t in type]}. Found: {value}'
+        )
         return type(value)
     opt_type = get_optional_type(type)
     if opt_type:

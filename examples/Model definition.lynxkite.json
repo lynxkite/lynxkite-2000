@@ -179,7 +179,7 @@
                 "enum": [
                   "ELU",
                   "GELU",
-                  "LeakyReLU",
+                  "Leaky ReLU",
                   "Mish",
                   "PReLU",
                   "ReLU",
@@ -195,7 +195,7 @@
         },
         "op_id": "Activation",
         "params": {
-          "type": "LeakyReLU"
+          "type": "Leaky ReLU"
         },
         "status": "done",
         "title": "Activation"
