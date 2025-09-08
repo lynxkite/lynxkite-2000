@@ -307,7 +307,23 @@ body {
 
     .search-result {
       padding: 4px;
-      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      margin: 3px 0;
+    }
+
+    .search-result-path {
+      color: #0008;
+      font-size: 80%;
+    }
+
+    .back-button,
+    .search-result-category {
+      background-color: oklch(90% 0.05 55);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .search-result.selected {

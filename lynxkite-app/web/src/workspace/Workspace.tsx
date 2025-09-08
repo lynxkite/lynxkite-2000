@@ -21,8 +21,6 @@ import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { WebsocketProvider } from "y-websocket";
 // @ts-expect-error
-import Atom from "~icons/tabler/atom.jsx";
-// @ts-expect-error
 import Backspace from "~icons/tabler/backspace.jsx";
 // @ts-expect-error
 import UngroupIcon from "~icons/tabler/library-minus.jsx";
@@ -44,7 +42,7 @@ import Tooltip from "../Tooltip.tsx";
 import EnvironmentSelector from "./EnvironmentSelector";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { type Catalog, type Catalogs, type OpsOp } from "./NodeSearch.tsx";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs, type OpsOp } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
@@ -209,12 +207,15 @@ function LynxKiteFlow() {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
   const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
+  const categoryHierarchy = useMemo(() => {
+    if (!catalog.data || !state.workspace.env) return undefined;
+    return buildCategoryHierarchy(catalog.data[state.workspace.env]);
+  }, [catalog.data, state.workspace.env]);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
       | {
           pos: XYPosition;
-          boxes: Catalog;
         }
       | undefined,
   );
@@ -244,11 +245,10 @@ function LynxKiteFlow() {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
-      if (event.key === "/") {
+      if (event.key === "/" && categoryHierarchy) {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
-          boxes: catalog.data![state.workspace.env!],
         });
       } else if (event.key === "r") {
         event.preventDefault();
@@ -260,7 +260,7 @@ function LynxKiteFlow() {
     return () => {
       document.removeEventListener("keyup", handleKeyDown);
     };
-  }, [catalog.data, nodeSearchSettings, state.workspace.env]);
+  }, [categoryHierarchy, nodeSearchSettings]);
 
   function getBestPosition() {
     const W = reactFlowContainer.current!.clientWidth;
@@ -311,6 +311,7 @@ function LynxKiteFlow() {
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
+      if (!categoryHierarchy) return;
       if (suppressSearchUntil > Date.now()) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
@@ -319,10 +320,9 @@ function LynxKiteFlow() {
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
-        boxes: catalog.data![state.workspace.env!],
       });
     },
-    [catalog, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [categoryHierarchy, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
@@ -636,10 +636,10 @@ function LynxKiteFlow() {
             fitViewOptions={{ maxZoom: 1 }}
           >
             <Controls />
-            {nodeSearchSettings && (
+            {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
-                boxes={nodeSearchSettings.boxes}
+                categoryHierarchy={categoryHierarchy}
                 onCancel={closeNodeSearch}
                 onAdd={addNodeFromSearch}
               />

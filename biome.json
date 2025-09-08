@@ -28,6 +28,9 @@
         "noLabelWithoutControl": "off",
         "noStaticElementInteractions": "off",
         "noNoninteractiveTabindex": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     }
   }
