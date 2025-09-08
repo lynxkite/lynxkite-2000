@@ -57,14 +57,17 @@ export class Workspace {
     const allBoxes = await this.getBoxes().all();
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();
+    const parts = boxName.split(" › ");
+    for (const part of parts) {
+      await this.page.locator(".node-search").getByText(part.trim(), { exact: true }).click();
+    }
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
   async getCatalog() {
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    const results = this.page.locator(".node-search .matches .search-result");
+    const results = this.page.locator(".node-search .matches .search-result-op");
     await expect(results.first()).toBeVisible();
     const catalog = await results.allInnerTexts();
     // Dismiss the catalog menu

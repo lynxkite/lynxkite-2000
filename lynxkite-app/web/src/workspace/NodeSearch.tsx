@@ -252,7 +252,7 @@ export default function NodeSearch(props: {
             key={result.parentPath ? `${result.parentPath.join("-")}-${result.name}` : result.name}
             className={`
               search-result
-              ${result.isCategory || result.isBack ? "search-result-category" : ""}
+              ${result.isCategory || result.isBack ? "search-result-category" : "search-result-op"}
               ${index === selectedIndex ? "selected" : ""}`}
             ref={(el) => {
               itemRefs.current[index] = el;

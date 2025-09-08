@@ -42,12 +42,7 @@ import Tooltip from "../Tooltip.tsx";
 import EnvironmentSelector from "./EnvironmentSelector";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, {
-  buildCategoryHierarchy,
-  type Catalogs,
-  type Category,
-  type OpsOp,
-} from "./NodeSearch.tsx";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs, type OpsOp } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
@@ -215,13 +210,12 @@ function LynxKiteFlow() {
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !state.workspace.env) return undefined;
     return buildCategoryHierarchy(catalog.data[state.workspace.env]);
-  }, [catalog, state.workspace.env]);
+  }, [catalog.data, state.workspace.env]);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
       | {
           pos: XYPosition;
-          categoryHierarchy: Category;
         }
       | undefined,
   );
@@ -255,7 +249,6 @@ function LynxKiteFlow() {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
-          categoryHierarchy,
         });
       } else if (event.key === "r") {
         event.preventDefault();
@@ -267,7 +260,7 @@ function LynxKiteFlow() {
     return () => {
       document.removeEventListener("keyup", handleKeyDown);
     };
-  }, [categoryHierarchy, nodeSearchSettings, state.workspace.env]);
+  }, [categoryHierarchy, nodeSearchSettings]);
 
   function getBestPosition() {
     const W = reactFlowContainer.current!.clientWidth;
@@ -327,7 +320,6 @@ function LynxKiteFlow() {
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
-        categoryHierarchy,
       });
     },
     [categoryHierarchy, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
@@ -644,10 +636,10 @@ function LynxKiteFlow() {
             fitViewOptions={{ maxZoom: 1 }}
           >
             <Controls />
-            {nodeSearchSettings && (
+            {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
-                categoryHierarchy={nodeSearchSettings.categoryHierarchy}
+                categoryHierarchy={categoryHierarchy}
                 onCancel={closeNodeSearch}
                 onAdd={addNodeFromSearch}
               />
