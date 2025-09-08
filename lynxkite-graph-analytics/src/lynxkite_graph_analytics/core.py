@@ -354,6 +354,7 @@ async def _execute_node(
             inputs.append(x)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
+            print(f"Failed to execute node {node.id}:")
             traceback.print_exc()
         node.publish_error(e)
         return

@@ -99,7 +99,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     </label>
   ) : meta?.type?.type === BOOLEAN ? (
     <div className="form-control">
-      <label className="label cursor-pointer">
+      <label className="label cursor-pointer checkbox-param">
         {name.replace(/_/g, " ")}
         <input
           className="checkbox"
