@@ -63,7 +63,7 @@ def import_file(
         names = kwargs.get("columns", "<from file>")
         names = pd.api.extensions.no_default if names == "<from file>" else names.split(",")
         sep = kwargs.get("separator", "<auto>")
-        sep = pd.api.extensions.no_default if sep == "<auto>" else sep
+        sep = pd.api.extensions.no_default if sep == "<auto>" else sep.replace("\\t", "\t")
         df = pd.read_csv(file_path, names=names, sep=sep)
     elif file_format == "json":
         df = pd.read_json(file_path)
