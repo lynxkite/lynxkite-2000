@@ -105,6 +105,7 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
               </td>
               <td>
                 <select
+                  required
                   className="select select-ghost"
                   value={v.map?.[binding.id]?.df}
                   ref={(el) => {
@@ -112,7 +113,9 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
                   }}
                   onChange={() => onChange(JSON.stringify({ map: getMap() }))}
                 >
-                  <option key="" value="" />
+                  <option key="" value="" disabled hidden>
+                    Choose table
+                  </option>
                   {Object.keys(dfs).map((df: string) => (
                     <option key={df} value={df}>
                       {df}
@@ -138,6 +141,7 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
                   />
                 ) : (
                   <select
+                    required
                     className="select select-ghost"
                     value={v.map?.[binding.id]?.column}
                     ref={(el) => {
@@ -145,7 +149,9 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
                     }}
                     onChange={() => onChange(JSON.stringify({ map: getMap() }))}
                   >
-                    <option key="" value="" />
+                    <option key="" value="" disabled hidden>
+                      Choose column
+                    </option>
                     {dfs[v.map?.[binding.id]?.df]?.map((col: string) => (
                       <option key={col} value={col}>
                         {col}
