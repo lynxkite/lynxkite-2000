@@ -863,7 +863,7 @@
           "batch_size": "8",
           "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"df_test\",\"column_name\":\"x\"}}}",
           "model_name": "model",
-          "output_mapping": "{\"map\":{}}"
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"column\":\"pred\",\"table_name\":\"df_test\"}}}"
         },
         "status": "done",
         "title": "Model inference"
@@ -1476,16 +1476,16 @@
           "series": [
             {
               "data": [
-                0.5428614071437291,
-                0.28575820411954606,
-                0.20915107045854842,
-                0.20864584956850324,
-                0.20825039659227643,
-                0.20788077116012574,
-                0.1685935637780598,
-                0.010650465690663883,
-                0.008138380944728851,
-                0.007638821644442422
+                0.23116109456334796,
+                0.01009342281946114,
+                0.009657759325844902,
+                0.00933432142649378,
+                0.009062763303518295,
+                0.008805850094982555,
+                0.0085621534713677,
+                0.008300620689988136,
+                0.008065116990889822,
+                0.007845455993499074
               ],
               "type": "line"
             }
@@ -2157,158 +2157,189 @@
               "columns": [
                 "index",
                 "x",
-                "y"
+                "y",
+                "pred"
               ],
               "data": [
                 [
                   13,
                   "[0.48959708 0.48549271 0.32688856 0.356677  ]",
-                  "[1.48959708 1.48549271 1.32688856 1.35667706]"
+                  "[1.48959708 1.48549271 1.32688856 1.35667706]",
+                  "[2.441622734069824, 2.367551326751709, 2.3409814834594727, 2.3307294845581055]"
                 ],
                 [
                   46,
                   "[0.34084332 0.73018837 0.54168713 0.91440833]",
-                  "[1.34084332 1.73018837 1.54168713 1.91440833]"
+                  "[1.34084332 1.73018837 1.54168713 1.91440833]",
+                  "[2.6837680339813232, 2.637910842895508, 2.563434600830078, 2.59102463722229]"
                 ],
                 [
                   89,
                   "[0.47856545 0.46267092 0.6376707  0.84747767]",
-                  "[1.47856545 1.46267092 1.63767076 1.84747767]"
+                  "[1.47856545 1.46267092 1.63767076 1.84747767]",
+                  "[2.6154048442840576, 2.584937334060669, 2.5623574256896973, 2.6477530002593994]"
                 ],
                 [
                   88,
                   "[0.72470158 0.4940322  0.41027349 0.89364016]",
-                  "[1.72470164 1.49403214 1.41027355 1.89364016]"
+                  "[1.72470164 1.49403214 1.41027355 1.89364016]",
+                  "[2.7037532329559326, 2.6972227096557617, 2.6481575965881348, 2.660750150680542]"
                 ],
                 [
                   99,
                   "[0.68891573 0.25576538 0.96339929 0.503833  ]",
-                  "[1.68891573 1.25576544 1.96339929 1.50383306]"
+                  "[1.68891573 1.25576544 1.96339929 1.50383306]",
+                  "[2.581444263458252, 2.565849781036377, 2.5813755989074707, 2.718942165374756]"
                 ],
                 [
                   37,
                   "[0.78956431 0.87284744 0.06880784 0.03455889]",
-                  "[1.78956437 1.87284744 1.06880784 1.03455889]"
+                  "[1.78956437 1.87284744 1.06880784 1.03455889]",
+                  "[2.4753382205963135, 2.4085323810577393, 2.3775269985198975, 2.3652825355529785]"
                 ],
                 [
                   49,
                   "[0.08107251 0.2602725  0.18861133 0.44833237]",
-                  "[1.08107257 1.2602725  1.18861127 1.44833231]"
+                  "[1.08107257 1.2602725  1.18861127 1.44833231]",
+                  "[2.1631505489349365, 2.0397775173187256, 2.082122564315796, 2.1458680629730225]"
                 ],
                 [
                   85,
                   "[0.40234613 0.54987347 0.49542785 0.54153186]",
-                  "[1.40234613 1.54987347 1.49542785 1.5415318 ]"
+                  "[1.40234613 1.54987347 1.49542785 1.5415318 ]",
+                  "[2.534731149673462, 2.4689974784851074, 2.4214086532592773, 2.425079584121704]"
                 ],
                 [
                   6,
                   "[0.18686318 0.49356437 0.51323432 0.75392658]",
-                  "[1.18686318 1.49356437 1.51323438 1.75392652]"
+                  "[1.18686318 1.49356437 1.51323438 1.75392652]",
+                  "[2.436952590942383, 2.360389471054077, 2.3632893562316895, 2.473715305328369]"
                 ],
                 [
                   21,
                   "[0.56922203 0.98222166 0.76851749 0.28615737]",
-                  "[1.56922197 1.9822216  1.76851749 1.28615737]"
+                  "[1.56922197 1.9822216  1.76851749 1.28615737]",
+                  "[2.7133023738861084, 2.663489818572998, 2.5751566886901855, 2.6010518074035645]"
                 ],
                 [
                   65,
                   "[0.39147133 0.29854035 0.84663737 0.58175623]",
-                  "[1.39147139 1.29854035 1.84663737 1.58175623]"
+                  "[1.39147139 1.29854035 1.84663737 1.58175623]",
+                  "[2.442594051361084, 2.3921024799346924, 2.436041831970215, 2.6235694885253906]"
                 ],
                 [
                   5,
                   "[0.67269951 0.10478973 0.5584439  0.83605725]",
-                  "[1.67269945 1.10478973 1.5584439  1.83605719]"
+                  "[1.67269945 1.10478973 1.5584439  1.83605719]",
+                  "[2.5280537605285645, 2.5161490440368652, 2.5453386306762695, 2.6504786014556885]"
                 ],
                 [
                   17,
                   "[0.40167677 0.25953674 0.9407078  0.76308483]",
-                  "[1.40167677 1.25953674 1.9407078  1.76308489]"
+                  "[1.40167677 1.25953674 1.9407078  1.76308489]",
+                  "[2.4740099906921387, 2.440723180770874, 2.5055952072143555, 2.7568471431732178]"
                 ],
                 [
                   29,
                   "[0.23942459 0.90487361 0.69337189 0.65089428]",
-                  "[1.23942459 1.90487361 1.69337189 1.65089428]"
+                  "[1.23942459 1.90487361 1.69337189 1.65089428]",
+                  "[2.6691157817840576, 2.599971294403076, 2.509016990661621, 2.5356383323669434]"
                 ],
                 [
                   28,
                   "[0.79423058 0.07138705 0.061777   0.18766576]",
-                  "[1.79423058 1.07138705 1.061777   1.1876657 ]"
+                  "[1.79423058 1.07138705 1.061777   1.1876657 ]",
+                  "[2.3001792430877686, 2.2400286197662354, 2.267683982849121, 2.229426622390747]"
                 ],
                 [
                   11,
                   "[0.98324287 0.99464184 0.14008355 0.47651017]",
-                  "[1.98324287 1.99464178 1.14008355 1.47651017]"
+                  "[1.98324287 1.99464178 1.14008355 1.47651017]",
+                  "[2.7233822345733643, 2.712832450866699, 2.6540966033935547, 2.6651153564453125]"
                 ],
                 [
                   97,
                   "[0.72795159 0.79317838 0.27832931 0.96576637]",
-                  "[1.72795153 1.79317832 1.27832937 1.96576643]"
+                  "[1.72795153 1.79317832 1.27832937 1.96576643]",
+                  "[2.7691664695739746, 2.7641971111297607, 2.6966195106506348, 2.717238664627075]"
                 ],
                 [
                   79,
                   "[0.91730917 0.22574073 0.09591609 0.33056474]",
-                  "[1.91730917 1.22574067 1.09591603 1.33056474]"
+                  "[1.91730917 1.22574067 1.09591603 1.33056474]",
+                  "[2.435002088546753, 2.401393175125122, 2.4105424880981445, 2.3853840827941895]"
                 ],
                 [
                   62,
                   "[0.81788456 0.58174163 0.29376316 0.7971254 ]",
-                  "[1.81788456 1.58174157 1.29376316 1.79712534]"
+                  "[1.81788456 1.58174157 1.29376316 1.79712534]",
+                  "[2.695620536804199, 2.6900405883789062, 2.6441211700439453, 2.6534476280212402]"
                 ],
                 [
                   70,
                   "[0.47963417 0.81818312 0.48720706 0.49339259]",
-                  "[1.47963417 1.81818318 1.48720706 1.49339259]"
+                  "[1.47963417 1.81818318 1.48720706 1.49339259]",
+                  "[2.6170434951782227, 2.5585153102874756, 2.4920105934143066, 2.505030393600464]"
                 ],
                 [
                   38,
                   "[0.94221359 0.57740951 0.98649532 0.40934443]",
-                  "[1.94221354 1.57740951 1.98649526 1.40934443]"
+                  "[1.94221354 1.57740951 1.98649526 1.40934443]",
+                  "[2.8252272605895996, 2.835540533065796, 2.763793468475342, 2.7918217182159424]"
                 ],
                 [
                   35,
                   "[0.98033333 0.97656083 0.38939917 0.81491041]",
-                  "[1.98033333 1.97656083 1.38939917 1.81491041]"
+                  "[1.98033333 1.97656083 1.38939917 1.81491041]",
+                  "[2.8905680179595947, 2.911530017852783, 2.828864574432373, 2.859713554382324]"
                 ],
                 [
                   74,
                   "[0.70167565 0.26930219 0.5660674  0.61194974]",
-                  "[1.70167565 1.26930213 1.56606746 1.61194968]"
+                  "[1.70167565 1.26930213 1.56606746 1.61194968]",
+                  "[2.584242105484009, 2.5612704753875732, 2.539546012878418, 2.558955430984497]"
                 ],
                 [
                   86,
                   "[0.80893755 0.92237449 0.88346356 0.93164903]",
-                  "[1.80893755 1.92237449 1.88346362 1.93164897]"
+                  "[1.80893755 1.92237449 1.88346362 1.93164897]",
+                  "[2.99945068359375, 3.0258188247680664, 2.915024757385254, 2.9658010005950928]"
                 ],
                 [
                   81,
                   "[0.6032477  0.83361369 0.18538666 0.19108021]",
-                  "[1.60324764 1.83361363 1.18538666 1.19108021]"
+                  "[1.60324764 1.83361363 1.18538666 1.19108021]",
+                  "[2.4838857650756836, 2.4089648723602295, 2.3687314987182617, 2.362222909927368]"
                 ],
                 [
                   94,
                   "[0.68094063 0.45189077 0.22661722 0.37354094]",
-                  "[1.68094063 1.45189071 1.22661722 1.37354088]"
+                  "[1.68094063 1.45189071 1.22661722 1.37354088]",
+                  "[2.4706077575683594, 2.417038679122925, 2.398805618286133, 2.385998010635376]"
                 ],
                 [
                   48,
                   "[0.77427191 0.21829212 0.12769502 0.74303615]",
-                  "[1.77427197 1.21829212 1.12769508 1.74303615]"
+                  "[1.77427197 1.21829212 1.12769508 1.74303615]",
+                  "[2.5168190002441406, 2.494265556335449, 2.4881527423858643, 2.474606513977051]"
                 ],
                 [
                   96,
                   "[0.47870928 0.17129105 0.27300501 0.20634609]",
-                  "[1.47870922 1.17129111 1.27300501 1.20634604]"
+                  "[1.47870922 1.17129111 1.27300501 1.20634604]",
+                  "[2.291788101196289, 2.202873945236206, 2.2091240882873535, 2.1800763607025146]"
                 ],
                 [
                   50,
                   "[0.59812403 0.78395379 0.0291847  0.81814629]",
-                  "[1.59812403 1.78395379 1.0291847  1.81814623]"
+                  "[1.59812403 1.78395379 1.0291847  1.81814623]",
+                  "[2.607156276702881, 2.5669894218444824, 2.5188026428222656, 2.5226168632507324]"
                 ],
                 [
                   58,
                   "[0.79905868 0.89367443 0.75429088 0.3190186 ]",
-                  "[1.79905868 1.89367437 1.75429082 1.3190186 ]"
+                  "[1.79905868 1.89367437 1.75429082 1.3190186 ]",
+                  "[2.7699241638183594, 2.7493999004364014, 2.6684370040893555, 2.6942501068115234]"
                 ]
               ]
             },
@@ -2677,40 +2708,40 @@
               ],
               "data": [
                 [
-                  0.5428614071437291
+                  0.23116109456334796
                 ],
                 [
-                  0.28575820411954606
+                  0.01009342281946114
                 ],
                 [
-                  0.20915107045854842
+                  0.009657759325844902
                 ],
                 [
-                  0.20864584956850324
+                  0.00933432142649378
                 ],
                 [
-                  0.20825039659227643
+                  0.009062763303518295
                 ],
                 [
-                  0.20788077116012574
+                  0.008805850094982555
                 ],
                 [
-                  0.1685935637780598
+                  0.0085621534713677
                 ],
                 [
-                  0.010650465690663883
+                  0.008300620689988136
                 ],
                 [
-                  0.008138380944728851
+                  0.008065116990889822
                 ],
                 [
-                  0.007638821644442422
+                  0.007845455993499074
                 ]
               ]
             }
           },
           "other": {
-            "model": "{'model_inputs': ['Input__tensor_2_input'], 'model_outputs': ['Output_1_x'], 'model_sequence_outputs': [], 'loss_inputs': ['Input__tensor_1_input', 'Output_1_x'], 'input_output_names': {'Input__tensor_2_input': 'X', 'Output_1_x': 'Output', 'Input__tensor_1_input': 'Y'}, 'input_handlers': {'Input__tensor_2_input': {'categories': [], 'name': 'X', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'doc': [{'kind': 'text', 'value': 'An input tensor.'}, {'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'X'}, 'Input__tensor_1_input': {'categories': [], 'name': 'Y', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'doc': [{'kind': 'text', 'value': 'An input tensor.'}, {'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'Y'}}, 'source_workspace_json': '{\\n  \"edges\": [\\n    {\\n      \"id\": \"MSE loss 2 Optimizer 2\",\\n      \"source\": \"MSE loss 2\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Optimizer 2\",\\n      \"targetHandle\": \"loss\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Repeat 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Repeat 1\",\\n      \"targetHandle\": \"input\"\\n    },\\n    {\\n      \"id\": \"Linear 1 Activation 1\",\\n      \"source\": \"Linear 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Activation 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Repeat 1 Linear 1\",\\n      \"source\": \"Repeat 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Constant vector 1 Add 1\",\\n      \"source\": \"Constant vector 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"b\"\\n    },\\n    {\\n      \"id\": \"Add 1 MSE loss 2\",\\n      \"source\": \"Add 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"y\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Output 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Output 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Output 1 MSE loss 2\",\\n      \"source\": \"Output 1\",\\n      \"sourceHandle\": \"x\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 2 input Linear 1 x\",\\n      \"source\": \"Input: tensor 2\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 1 input Add 1 a\",\\n      \"source\": \"Input: tensor 1\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"a\"\\n    }\\n  ],\\n  \"env\": \"PyTorch model\",\\n  \"nodes\": [\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"green\",\\n          \"doc\": null,\\n          \"id\": \"Optimizer\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"loss\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Optimizer\",\\n          \"outputs\": [],\\n          \"params\": [\\n            {\\n              \"default\": \"AdamW\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"AdamW\",\\n                  \"Adafactor\",\\n                  \"Adagrad\",\\n                  \"SGD\",\\n                  \"Lion\",\\n                  \"Paged AdamW\",\\n                  \"Galore AdamW\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": 0.0001,\\n              \"name\": \"lr\",\\n              \"type\": {\\n                \"type\": \"<class \\'float\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Optimizer\",\\n        \"params\": {\\n          \"lr\": \"0.1\",\\n          \"type\": \"SGD\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Optimizer\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 250.0,\\n      \"id\": \"Optimizer 2\",\\n      \"position\": {\\n        \"x\": 359.75221367487865,\\n        \"y\": -1150.2183224762075\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 232.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Activation\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Activation\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"ReLU\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"ELU\",\\n                  \"GELU\",\\n                  \"Leaky ReLU\",\\n                  \"Mish\",\\n                  \"PReLU\",\\n                  \"ReLU\",\\n                  \"Sigmoid\",\\n                  \"SiLU\",\\n                  \"Softplus\",\\n                  \"Tanh\"\\n                ]\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Activation\",\\n        \"params\": {\\n          \"type\": \"Leaky ReLU\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Activation\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Activation 1\",\\n      \"position\": {\\n        \"x\": 99.77615018185415,\\n        \"y\": -249.43925929074078\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"MSE loss\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"y\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"MSE loss\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"MSE loss\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"MSE loss\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"MSE loss 2\",\\n      \"position\": {\\n        \"x\": 375.21624462193034,\\n        \"y\": -721.0552036572305\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Repeat\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Repeat\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1,\\n              \"name\": \"times\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": false,\\n              \"name\": \"same_weights\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Repeat\",\\n        \"params\": {\\n          \"same_weights\": false,\\n          \"times\": \"2\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Repeat\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Repeat 1\",\\n      \"position\": {\\n        \"x\": -210.0,\\n        \"y\": -135.0\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"blue\",\\n          \"doc\": null,\\n          \"id\": \"Linear\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Linear\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1024,\\n              \"name\": \"output_dim\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Linear\",\\n        \"params\": {\\n          \"output_dim\": \"4\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Linear\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 189.0,\\n      \"id\": \"Linear 1\",\\n      \"position\": {\\n        \"x\": 98.54861342271252,\\n        \"y\": 14.121603973834155\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 199.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Constant vector\",\\n          \"inputs\": [],\\n          \"name\": \"Constant vector\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 0,\\n              \"name\": \"value\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": 1,\\n              \"name\": \"size\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Constant vector\",\\n        \"params\": {\\n          \"size\": \"1\",\\n          \"value\": \"1\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Constant vector\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 258.0,\\n      \"id\": \"Constant vector 1\",\\n      \"position\": {\\n        \"x\": 846.2767459753351,\\n        \"y\": -226.90556526533476\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 238.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Add\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"a\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"b\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Add\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Add\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Add\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Add 1\",\\n      \"position\": {\\n        \"x\": 631.934390777073,\\n        \"y\": -395.6855954439944\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"gray\",\\n          \"doc\": null,\\n          \"id\": \"Output\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Output\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": null,\\n              \"name\": \"name\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Output\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Output\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Output 1\",\\n      \"position\": {\\n        \"x\": 119.83887514325258,\\n        \"y\": -453.23756095856885\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"Y\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 311.0,\\n      \"id\": \"Input: tensor 1\",\\n      \"position\": {\\n        \"x\": 520.44444095888,\\n        \"y\": -230.68805322434085\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 210.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"X\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 326.0,\\n      \"id\": \"Input: tensor 2\",\\n      \"position\": {\\n        \"x\": 88.09649326018129,\\n        \"y\": 321.87371407838634\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 221.0\\n    }\\n  ],\\n  \"paused\": false\\n}\\n', 'source_workspace': 'Model definition', 'trained': True, 'model_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02ccollections\\nOrderedDict\\nq\\x00)Rq\\x01(X\\x0f\\x00\\x00\\x00module_1.weightq\\x02ctorch._utils\\n_rebuild_tensor_v2\\nq\\x03((X\\x07\\x00\\x00\\x00storageq\\x04ctorch\\nFloatStorage\\nq\\x05X\\x01\\x00\\x00\\x000q\\x06X\\x03\\x00\\x00\\x00cpuq\\x07K\\x10tq\\x08QK\\x00K\\x04K\\x04\\x86q\\tK\\x04K\\x01\\x86q\\n\\x89h\\x00)Rq\\x0btq\\x0cRq\\rX\\r\\x00\\x00\\x00module_1.biasq\\x0eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x001q\\x0fh\\x07K\\x04tq\\x10QK\\x00K\\x04\\x85q\\x11K\\x01\\x85q\\x12\\x89h\\x00)Rq\\x13tq\\x14Rq\\x15X\\x0f\\x00\\x00\\x00module_4.weightq\\x16h\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x002q\\x17h\\x07K\\x10tq\\x18QK\\x00K\\x04K\\x04\\x86q\\x19K\\x04K\\x01\\x86q\\x1a\\x89h\\x00)Rq\\x1btq\\x1cRq\\x1dX\\r\\x00\\x00\\x00module_4.biasq\\x1eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x003q\\x1fh\\x07K\\x04tq QK\\x00K\\x04\\x85q!K\\x01\\x85q\"\\x89h\\x00)Rq#tq$Rq%u}q&X\\t\\x00\\x00\\x00_metadataq\\'h\\x00)Rq((X\\x00\\x00\\x00\\x00q)}q*X\\x07\\x00\\x00\\x00versionq+K\\x01sX\\x08\\x00\\x00\\x00module_0q,}q-h+K\\x01sX\\x08\\x00\\x00\\x00module_1q.}q/h+K\\x01sX\\x08\\x00\\x00\\x00module_2q0}q1h+K\\x01sX\\x08\\x00\\x00\\x00module_3q2}q3h+K\\x01sX\\x08\\x00\\x00\\x00module_4q4}q5h+K\\x01sX\\x08\\x00\\x00\\x00module_5q6}q7h+K\\x01sX\\x08\\x00\\x00\\x00module_6q8}q9h+K\\x01sX\\x08\\x00\\x00\\x00module_7q:}q;h+K\\x01sX\\x08\\x00\\x00\\x00module_8q<}q=h+K\\x01susb.PK\\x07\\x08<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\'\\x00archive/.format_versionFB#\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00>\\x00archive/data/0FB:\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ\\x97\\xf6\\x1a?]d\\xb4>*\\x04\\xc9>\\x0b\\xeb\\'?\\x13\\x91\\x98\\xbez\\xfd\\x9d>2\\x1dD>\\n\\xb0\\x12\\xbfpWS>\\xbb=\\xae>\\xa0\\x05\\xbd\\xbe\\x10\\xb7D\\xbe\\xee\\x93{\\xbe\\r\\xb8\\xa5\\xbeQ\\x19\\xe4\\xbd\\x10\\xef\\xa6>PK\\x07\\x08\\xb6=\\xb4\\xaf@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/1FB\\x00\\x00\\x9b\\x85\\xaa?i=,>\\x18 \\xd9>\\x94\\xc3\\xd4>PK\\x07\\x08\\xcd;9\\xe6\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x004\\x00archive/data/2FB0\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ#\\xadD?\\x08Z\\x8e\\xbe5\\xfa\\xb4>fZc\\xbe\\x07\\xa7=?u\\xd5<\\xbc\\xe9Y\\xe7>\\xbb\\x1d\\x92\\xbe\\xdbje?{t\\r\\xbd\\x1f\\xc3\\x05>*\\xbc8=\\x01\\x14v?D\\xb0\\xcb\\xbe\\xa4-\\xde\\xbdg\\x91\\x8f>PK\\x07\\x08G\\x0b\\x000@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/3FB\\x00\\x00\\x99\\x07\\x1b?\\xea\\xdb\\x18?t$y>\\xd4WO>PK\\x07\\x08\\x98l$\\x05\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x003\\x00archive/versionFB/\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1077862729799854162511988910145210601308PK\\x07\\x08\\x8c;\\xe2\\x19(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xe4\\x02\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00Q\\x03\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x03\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb6=\\xb4\\xaf@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00V\\x04\\x00\\x00archive/data/0PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xcd;9\\xe6\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x05\\x00\\x00archive/data/1PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00G\\x0b\\x000@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x05\\x00\\x00archive/data/2PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x98l$\\x05\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x06\\x00\\x00archive/data/3PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x06\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x8c;\\xe2\\x19(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x06\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x83\\x02\\x00\\x00\\x00\\x00\\x00\\x00x\\x07\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00\\xfb\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\n\\x00\\n\\x00\\x83\\x02\\x00\\x00x\\x07\\x00\\x00\\x00\\x00', 'optimizer_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02}q\\x00(X\\x05\\x00\\x00\\x00stateq\\x01}q\\x02X\\x0c\\x00\\x00\\x00param_groupsq\\x03]q\\x04}q\\x05(X\\x02\\x00\\x00\\x00lrq\\x06G?\\xb9\\x99\\x99\\x99\\x99\\x99\\x9aX\\x08\\x00\\x00\\x00momentumq\\x07K\\x00X\\t\\x00\\x00\\x00dampeningq\\x08K\\x00X\\x0c\\x00\\x00\\x00weight_decayq\\tK\\x00X\\x08\\x00\\x00\\x00nesterovq\\n\\x89X\\x08\\x00\\x00\\x00maximizeq\\x0b\\x89X\\x07\\x00\\x00\\x00foreachq\\x0cNX\\x0e\\x00\\x00\\x00differentiableq\\r\\x89X\\x05\\x00\\x00\\x00fusedq\\x0eNX\\x06\\x00\\x00\\x00paramsq\\x0f]q\\x10(K\\x00K\\x01K\\x02K\\x03euau.PK\\x07\\x089\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\x12\\x00archive/.format_versionFB\\x0e\\x00ZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00=\\x00archive/versionFB9\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ0290846867776292310400064744647197776100PK\\x07\\x08\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x009\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x009\\x01\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x91\\x01\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x02\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x96\\x02\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x03\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x93\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00K\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\x06\\x00\\x06\\x00\\x93\\x01\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00'}"
+            "model": "{'model_inputs': ['Input__tensor_2_input'], 'model_outputs': ['Output_1_x'], 'model_sequence_outputs': [], 'loss_inputs': ['Input__tensor_1_input', 'Output_1_x'], 'input_output_names': {'Input__tensor_2_input': 'X', 'Output_1_x': 'Output', 'Input__tensor_1_input': 'Y'}, 'input_handlers': {'Input__tensor_2_input': {'categories': [], 'name': 'X', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'doc': [{'kind': 'text', 'value': 'An input tensor.'}, {'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'X'}, 'Input__tensor_1_input': {'categories': [], 'name': 'Y', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'doc': [{'kind': 'text', 'value': 'An input tensor.'}, {'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'Y'}}, 'source_workspace_json': '{\\n  \"edges\": [\\n    {\\n      \"id\": \"MSE loss 2 Optimizer 2\",\\n      \"source\": \"MSE loss 2\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Optimizer 2\",\\n      \"targetHandle\": \"loss\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Repeat 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Repeat 1\",\\n      \"targetHandle\": \"input\"\\n    },\\n    {\\n      \"id\": \"Linear 1 Activation 1\",\\n      \"source\": \"Linear 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Activation 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Repeat 1 Linear 1\",\\n      \"source\": \"Repeat 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Constant vector 1 Add 1\",\\n      \"source\": \"Constant vector 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"b\"\\n    },\\n    {\\n      \"id\": \"Add 1 MSE loss 2\",\\n      \"source\": \"Add 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"y\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Output 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Output 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Output 1 MSE loss 2\",\\n      \"source\": \"Output 1\",\\n      \"sourceHandle\": \"x\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 2 input Linear 1 x\",\\n      \"source\": \"Input: tensor 2\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 1 input Add 1 a\",\\n      \"source\": \"Input: tensor 1\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"a\"\\n    }\\n  ],\\n  \"env\": \"PyTorch model\",\\n  \"nodes\": [\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"green\",\\n          \"doc\": null,\\n          \"id\": \"Optimizer\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"loss\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Optimizer\",\\n          \"outputs\": [],\\n          \"params\": [\\n            {\\n              \"default\": \"AdamW\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"AdamW\",\\n                  \"Adafactor\",\\n                  \"Adagrad\",\\n                  \"SGD\",\\n                  \"Lion\",\\n                  \"Paged AdamW\",\\n                  \"Galore AdamW\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": 0.0001,\\n              \"name\": \"lr\",\\n              \"type\": {\\n                \"type\": \"<class \\'float\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Optimizer\",\\n        \"params\": {\\n          \"lr\": \"0.1\",\\n          \"type\": \"SGD\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Optimizer\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 250.0,\\n      \"id\": \"Optimizer 2\",\\n      \"position\": {\\n        \"x\": 359.75221367487865,\\n        \"y\": -1150.2183224762075\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 232.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Activation\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Activation\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"ReLU\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"ELU\",\\n                  \"GELU\",\\n                  \"Leaky ReLU\",\\n                  \"Mish\",\\n                  \"PReLU\",\\n                  \"ReLU\",\\n                  \"Sigmoid\",\\n                  \"SiLU\",\\n                  \"Softplus\",\\n                  \"Tanh\"\\n                ]\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Activation\",\\n        \"params\": {\\n          \"type\": \"Leaky ReLU\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Activation\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Activation 1\",\\n      \"position\": {\\n        \"x\": 99.77615018185415,\\n        \"y\": -249.43925929074078\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"MSE loss\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"y\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"MSE loss\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"MSE loss\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"MSE loss\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"MSE loss 2\",\\n      \"position\": {\\n        \"x\": 375.21624462193034,\\n        \"y\": -721.0552036572305\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Repeat\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Repeat\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1,\\n              \"name\": \"times\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": false,\\n              \"name\": \"same_weights\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Repeat\",\\n        \"params\": {\\n          \"same_weights\": false,\\n          \"times\": \"2\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Repeat\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Repeat 1\",\\n      \"position\": {\\n        \"x\": -210.0,\\n        \"y\": -135.0\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"blue\",\\n          \"doc\": null,\\n          \"id\": \"Linear\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Linear\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1024,\\n              \"name\": \"output_dim\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Linear\",\\n        \"params\": {\\n          \"output_dim\": \"4\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Linear\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 189.0,\\n      \"id\": \"Linear 1\",\\n      \"position\": {\\n        \"x\": 98.54861342271252,\\n        \"y\": 14.121603973834155\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 199.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Constant vector\",\\n          \"inputs\": [],\\n          \"name\": \"Constant vector\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 0,\\n              \"name\": \"value\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": 1,\\n              \"name\": \"size\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Constant vector\",\\n        \"params\": {\\n          \"size\": \"1\",\\n          \"value\": \"1\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Constant vector\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 258.0,\\n      \"id\": \"Constant vector 1\",\\n      \"position\": {\\n        \"x\": 846.2767459753351,\\n        \"y\": -226.90556526533476\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 238.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"id\": \"Add\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"a\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"b\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Add\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Add\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Add\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Add 1\",\\n      \"position\": {\\n        \"x\": 631.934390777073,\\n        \"y\": -395.6855954439944\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"gray\",\\n          \"doc\": null,\\n          \"id\": \"Output\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Output\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": null,\\n              \"name\": \"name\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Output\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Output\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Output 1\",\\n      \"position\": {\\n        \"x\": 119.83887514325258,\\n        \"y\": -453.23756095856885\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"Y\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 311.0,\\n      \"id\": \"Input: tensor 1\",\\n      \"position\": {\\n        \"x\": 520.44444095888,\\n        \"y\": -230.68805322434085\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 210.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"display\": null,\\n        \"error\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"X\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 326.0,\\n      \"id\": \"Input: tensor 2\",\\n      \"position\": {\\n        \"x\": 88.09649326018129,\\n        \"y\": 321.87371407838634\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 221.0\\n    }\\n  ],\\n  \"paused\": false\\n}\\n', 'source_workspace': 'Model definition', 'trained': True, 'model_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02ccollections\\nOrderedDict\\nq\\x00)Rq\\x01(X\\x0f\\x00\\x00\\x00module_1.weightq\\x02ctorch._utils\\n_rebuild_tensor_v2\\nq\\x03((X\\x07\\x00\\x00\\x00storageq\\x04ctorch\\nFloatStorage\\nq\\x05X\\x01\\x00\\x00\\x000q\\x06X\\x03\\x00\\x00\\x00cpuq\\x07K\\x10tq\\x08QK\\x00K\\x04K\\x04\\x86q\\tK\\x04K\\x01\\x86q\\n\\x89h\\x00)Rq\\x0btq\\x0cRq\\rX\\r\\x00\\x00\\x00module_1.biasq\\x0eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x001q\\x0fh\\x07K\\x04tq\\x10QK\\x00K\\x04\\x85q\\x11K\\x01\\x85q\\x12\\x89h\\x00)Rq\\x13tq\\x14Rq\\x15X\\x0f\\x00\\x00\\x00module_4.weightq\\x16h\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x002q\\x17h\\x07K\\x10tq\\x18QK\\x00K\\x04K\\x04\\x86q\\x19K\\x04K\\x01\\x86q\\x1a\\x89h\\x00)Rq\\x1btq\\x1cRq\\x1dX\\r\\x00\\x00\\x00module_4.biasq\\x1eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x003q\\x1fh\\x07K\\x04tq QK\\x00K\\x04\\x85q!K\\x01\\x85q\"\\x89h\\x00)Rq#tq$Rq%u}q&X\\t\\x00\\x00\\x00_metadataq\\'h\\x00)Rq((X\\x00\\x00\\x00\\x00q)}q*X\\x07\\x00\\x00\\x00versionq+K\\x01sX\\x08\\x00\\x00\\x00module_0q,}q-h+K\\x01sX\\x08\\x00\\x00\\x00module_1q.}q/h+K\\x01sX\\x08\\x00\\x00\\x00module_2q0}q1h+K\\x01sX\\x08\\x00\\x00\\x00module_3q2}q3h+K\\x01sX\\x08\\x00\\x00\\x00module_4q4}q5h+K\\x01sX\\x08\\x00\\x00\\x00module_5q6}q7h+K\\x01sX\\x08\\x00\\x00\\x00module_6q8}q9h+K\\x01sX\\x08\\x00\\x00\\x00module_7q:}q;h+K\\x01sX\\x08\\x00\\x00\\x00module_8q<}q=h+K\\x01susb.PK\\x07\\x08<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\'\\x00archive/.format_versionFB#\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00>\\x00archive/data/0FB:\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZJ\\xd6\\x9b\\xbe\\x9b\\xf6\\xad\\xbed0b>\\xadu\\x01\\xbdlW\\xf4\\xbe\\x87\\xc1\\x01\\xbf\\xf8\\xd8\\xd8>\\xef\\x020>\\xc5\\x16,?!_\\x19>f0\\x9d>\\x7f\\xc0\\xd8>\\x14,\\xa0\\xbe\\xac\\x85\\xbe>\\xd5\\x19<>\\xa8^\\xff:PK\\x07\\x08\\xaf\\xea\\xa1\\x15@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/1FB\\x00\\x00\\xe0QO\\xbeU.\\x1d>\"\\xca\\xab?\\xee\\x996?PK\\x07\\x08\\x0ei\\xa0\\xc8\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x004\\x00archive/data/2FB0\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ<f.>W\\xeb\\xfe\\xbe#\\t2?\\x80)\\xe7>\\xbe9\\x9b\\xbc\\x86\\xba\\xfb\\xbe\\x18&Z?\\xcd\\x8c\\xcc>\\xc9\\xd3\\xe9\\xbe\\xde[\\x18\\xbe-\\xedE?\\xd0\\xf7`>\\xdc\\x99}>\\xa1\\x9a\\x01?IeW?\\xe4i\\x9e>PK\\x07\\x08\\xbf\\xddQ\\xb8@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/3FB\\x00\\x00\\xdf71?rT\\xb1>\\xaa\\xb5\\x1e?\\x11\\xb6\\xcf>PK\\x07\\x08\\xeb\\xc3J\\xc7\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x003\\x00archive/versionFB/\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1077862729799854162511964710113763243017PK\\x07\\x08\\xbd<\\x9eP(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xe4\\x02\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00Q\\x03\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x03\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xaf\\xea\\xa1\\x15@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00V\\x04\\x00\\x00archive/data/0PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x0ei\\xa0\\xc8\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x05\\x00\\x00archive/data/1PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xbf\\xddQ\\xb8@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x05\\x00\\x00archive/data/2PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xeb\\xc3J\\xc7\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x06\\x00\\x00archive/data/3PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x06\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xbd<\\x9eP(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x06\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x83\\x02\\x00\\x00\\x00\\x00\\x00\\x00x\\x07\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00\\xfb\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\n\\x00\\n\\x00\\x83\\x02\\x00\\x00x\\x07\\x00\\x00\\x00\\x00', 'optimizer_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02}q\\x00(X\\x05\\x00\\x00\\x00stateq\\x01}q\\x02X\\x0c\\x00\\x00\\x00param_groupsq\\x03]q\\x04}q\\x05(X\\x02\\x00\\x00\\x00lrq\\x06G?\\xb9\\x99\\x99\\x99\\x99\\x99\\x9aX\\x08\\x00\\x00\\x00momentumq\\x07K\\x00X\\t\\x00\\x00\\x00dampeningq\\x08K\\x00X\\x0c\\x00\\x00\\x00weight_decayq\\tK\\x00X\\x08\\x00\\x00\\x00nesterovq\\n\\x89X\\x08\\x00\\x00\\x00maximizeq\\x0b\\x89X\\x07\\x00\\x00\\x00foreachq\\x0cNX\\x0e\\x00\\x00\\x00differentiableq\\r\\x89X\\x05\\x00\\x00\\x00fusedq\\x0eNX\\x06\\x00\\x00\\x00paramsq\\x0f]q\\x10(K\\x00K\\x01K\\x02K\\x03euau.PK\\x07\\x089\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\x12\\x00archive/.format_versionFB\\x0e\\x00ZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00=\\x00archive/versionFB9\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ0290846867776292310400064744647197776100PK\\x07\\x08\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x009\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x009\\x01\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x91\\x01\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x02\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x96\\x02\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x03\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x93\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00K\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\x06\\x00\\x06\\x00\\x93\\x01\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00'}"
           },
           "relations": []
         },
@@ -2728,6 +2759,7 @@
               "df_test": {
                 "columns": [
                   "index",
+                  "pred",
                   "x",
                   "y"
                 ],
@@ -2970,8 +3002,235 @@
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
-        "display": null,
-        "error": "'pred'",
+        "display": {
+          "series": [
+            {
+              "data": [
+                [
+                  784.726806640625,
+                  -687.5562744140625,
+                  "",
+                  4.888896942138672
+                ],
+                [
+                  949.2489013671875,
+                  192.14910888671875,
+                  "",
+                  -9.90570068359375
+                ],
+                [
+                  969.2213134765625,
+                  -506.15850830078125,
+                  "",
+                  -10.771198272705078
+                ],
+                [
+                  -886.2398681640625,
+                  -861.196533203125,
+                  "",
+                  -8.649742126464844
+                ],
+                [
+                  -592.8663330078125,
+                  -518.1484375,
+                  "",
+                  -10.483016967773438
+                ],
+                [
+                  118.70751190185547,
+                  -1063.4384765625,
+                  "",
+                  3.6701812744140625
+                ],
+                [
+                  343.972412109375,
+                  487.505859375,
+                  "",
+                  4.161994934082031
+                ],
+                [
+                  -698.4522705078125,
+                  359.14447021484375,
+                  "",
+                  5.080474853515625
+                ],
+                [
+                  -889.1639404296875,
+                  882.2132568359375,
+                  "",
+                  5.442922592163086
+                ],
+                [
+                  -25.69422149658203,
+                  -923.476318359375,
+                  "",
+                  -9.354869842529297
+                ],
+                [
+                  697.7949829101562,
+                  -98.80491638183594,
+                  "",
+                  6.017425537109375
+                ],
+                [
+                  349.07720947265625,
+                  -928.8577880859375,
+                  "",
+                  -11.297489166259766
+                ],
+                [
+                  -384.45379638671875,
+                  436.60101318359375,
+                  "",
+                  -11.221881866455078
+                ],
+                [
+                  -51.34544372558594,
+                  377.5789794921875,
+                  "",
+                  -11.854963302612305
+                ],
+                [
+                  -463.2926025390625,
+                  20.692108154296875,
+                  "",
+                  4.6005859375
+                ],
+                [
+                  -631.9508056640625,
+                  804.72314453125,
+                  "",
+                  -7.080650329589844
+                ],
+                [
+                  350.92803955078125,
+                  751.532470703125,
+                  "",
+                  -7.620082855224609
+                ],
+                [
+                  -599.760009765625,
+                  -960.778564453125,
+                  "",
+                  3.9043731689453125
+                ],
+                [
+                  1017.634521484375,
+                  947.1817626953125,
+                  "",
+                  -6.651760101318359
+                ],
+                [
+                  746.768310546875,
+                  1028.5517578125,
+                  "",
+                  -12.61212158203125
+                ],
+                [
+                  -617.337646484375,
+                  -245.6479034423828,
+                  "",
+                  -7.937229156494141
+                ],
+                [
+                  332.7252197265625,
+                  -458.30841064453125,
+                  "",
+                  -8.290361404418945
+                ],
+                [
+                  -1060.521728515625,
+                  1106.2098388671875,
+                  "",
+                  -12.146600723266602
+                ],
+                [
+                  -459.32940673828125,
+                  385.4976806640625,
+                  "",
+                  -7.817493438720703
+                ],
+                [
+                  113.89027404785156,
+                  943.360595703125,
+                  "",
+                  3.094095230102539
+                ],
+                [
+                  1015.837646484375,
+                  573.0166015625,
+                  "",
+                  3.5229663848876953
+                ],
+                [
+                  -958.1341552734375,
+                  -949.0701904296875,
+                  "",
+                  -13.146242141723633
+                ],
+                [
+                  300.625,
+                  -390.422607421875,
+                  "",
+                  4.461738586425781
+                ],
+                [
+                  -971.5811767578125,
+                  -258.25762939453125,
+                  "",
+                  -12.284408569335938
+                ],
+                [
+                  887.9586181640625,
+                  -907.9091796875,
+                  "",
+                  -7.318695068359375
+                ]
+              ],
+              "symbolSize": 25.65378780242026,
+              "type": "scatter"
+            }
+          ],
+          "title": {
+            "text": "UMAP projection of pred"
+          },
+          "tooltip": {
+            "show": false
+          },
+          "visualMap": {
+            "calculable": true,
+            "dimension": 3,
+            "inRange": {
+              "color": [
+                "#440154",
+                "#482777",
+                "#3E4989",
+                "#31688E",
+                "#26828E",
+                "#1F9E89",
+                "#35B779",
+                "#6CCE59",
+                "#B4DE2C",
+                "#FDE725"
+              ]
+            },
+            "max": 6.017425537109375,
+            "min": -13.146242141723633,
+            "right": 10,
+            "top": "center"
+          },
+          "xAxis": [
+            {
+              "type": "value"
+            }
+          ],
+          "yAxis": [
+            {
+              "type": "value"
+            }
+          ]
+        },
+        "error": null,
         "input_metadata": [
           {
             "dataframes": {
@@ -2985,6 +3244,7 @@
               "df_test": {
                 "columns": [
                   "index",
+                  "pred",
                   "x",
                   "y"
                 ],

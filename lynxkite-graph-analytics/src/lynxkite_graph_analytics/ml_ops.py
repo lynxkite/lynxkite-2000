@@ -127,18 +127,20 @@ def model_inference(
         tbatch.total = num_batches
         batch_outputs = m.inference(input_ctx.tensors)
         for k, v in batch_outputs.items():
-            v = v.detach().numpy().reshape(batch_size, -1)
+            v = v.detach().numpy()
             outputs.setdefault(k, []).extend(v.tolist())
         input_ctx.batch_index += 1
     bundle = bundle.copy()
-    # copied = set()
-    # for k, v in output_mapping.map.items():
-    #     if not v.df or not v.column:
-    #         continue
-    #     if v.df not in copied:
-    #         bundle.dfs[v.df] = bundle.dfs[v.df].copy()
-    #         copied.add(v.df)
-    #     bundle.dfs[v.df][v.column] = outputs[k]
+    copied = set()
+    for k, v in output_mapping.map.items():
+        df = v.get("table_name")
+        col = v.get("column")
+        if not df or not col:
+            continue
+        if df not in copied:
+            bundle.dfs[df] = bundle.dfs[df].copy()
+            copied.add(df)
+        bundle.dfs[df][col] = outputs[k]
     return bundle
 
 

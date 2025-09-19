@@ -146,7 +146,7 @@ function getDropDownValues(data: any, meta: any): string[] {
     const res = ["", ...jmespath.search(metadata, query)];
     res.sort();
     return res;
-  } catch (e) {
+  } catch (_) {
     return [""];
   }
 }
