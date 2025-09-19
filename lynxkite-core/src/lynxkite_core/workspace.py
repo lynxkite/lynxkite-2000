@@ -1,6 +1,7 @@
 """For working with LynxKite workspaces."""
 
 import json
+import pathlib
 from typing import Optional, TYPE_CHECKING
 import dataclasses
 import enum
@@ -156,8 +157,9 @@ class Workspace(BaseConfig):
         j = json.dumps(j, indent=2, sort_keys=True) + "\n"
         return j
 
-    def save(self, path: str):
+    def save(self, path: str | pathlib.Path):
         """Persist the workspace to a local file in JSON format."""
+        path = str(path)
         j = self.model_dump_json()
         dirname, basename = os.path.split(path)
         if dirname:
@@ -171,17 +173,18 @@ class Workspace(BaseConfig):
         os.replace(temp_name, path)
 
     @staticmethod
-    def load(path: str) -> "Workspace":
+    def load(path: str | pathlib.Path) -> "Workspace":
         """Load a workspace from a file.
 
         After loading the workspace, the metadata of the workspace is updated.
 
         Args:
-            path (str): The path to the file to load the workspace from.
+            path: The path to the file to load the workspace from.
 
         Returns:
             Workspace: The loaded workspace object, with updated metadata.
         """
+        path = str(path)
         with open(path, encoding="utf-8") as f:
             j = f.read()
         ws = Workspace.model_validate_json(j)
