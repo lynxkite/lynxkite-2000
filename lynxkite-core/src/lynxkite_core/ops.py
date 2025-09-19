@@ -245,7 +245,7 @@ class Op(BaseConfig):
 
 
 def op(
-    env: str,
+    env: str | None,
     *names: str,
     view: str = "basic",
     outputs: list[str] | None = None,
@@ -259,7 +259,8 @@ def op(
     Decorator for defining an operation.
 
     Parameters:
-        env: The environment (workspace type) to which the operation belongs.
+        env: The environment (workspace type) to which the operation belongs. If None, the operation
+             is not registered in any catalog.
         names: The list of categories this operation belongs to, followed by the name of the operation.
         view: How the operation will be displayed in the UI. One of "basic", "visualization",
               "table_view", "graph_creation_view", "image", "molecule", "matplotlib", "service".
@@ -316,8 +317,9 @@ def op(
             type=_view,
             color=color or "orange",
         )
-        CATALOGS.setdefault(env, {})
-        CATALOGS[env][op.id] = op
+        if env is not None:
+            CATALOGS.setdefault(env, {})
+            CATALOGS[env][op.id] = op
         func.__op__ = op
         return func
 
