@@ -348,7 +348,9 @@ async def _execute_node(
                 if isinstance(x, nx.Graph):
                     x = Bundle.from_nx(x)
                 if isinstance(x, Bundle):
-                    assert len(x.dfs) == 1, "Bundle must contain a single DataFrame."
+                    assert len(x.dfs) == 1, (
+                        f"Bundle must contain a single DataFrame. Found: {sorted(x.dfs.keys())}"
+                    )
                     [x] = list(x.dfs.values())
                 assert isinstance(x, pd.DataFrame), f"Input must be a DataFrame. Got: {x}"
             inputs.append(x)

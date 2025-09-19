@@ -179,10 +179,7 @@ def _param_to_type(name, value, type):
     if opt_type:
         return None if value == "" else _param_to_type(name, value, opt_type)
     if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
-        try:
-            return type.model_validate_json(value)
-        except pydantic.ValidationError:
-            return None
+        return type.model_validate_json(value)
     return value
 
 

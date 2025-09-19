@@ -402,6 +402,10 @@ body {
     width: 100%;
   }
 
+  select:invalid {
+    color: #aaa;
+  }
+
   .table-viewer {
     td {
       padding: 5px 10px;
