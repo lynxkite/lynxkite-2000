@@ -1,6 +1,8 @@
 import { useRef } from "react";
 // @ts-expect-error
-import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
+import Close from "~icons/tabler/x.jsx";
+import type { WorkspaceNodeData } from "../../apiTypes";
+import NodeParameter from "./NodeParameter";
 import ParameterInput from "./ParameterInput";
 
 type Bindings = {
@@ -15,8 +17,33 @@ type NamedId = {
   id: string;
 };
 
+function getInputs(data: WorkspaceNodeData): any[] {
+  return (data?.input_metadata as any)?.value ?? data?.input_metadata ?? [];
+}
+
+function getAllModels(data: WorkspaceNodeData): any[] {
+  const models: any[] = [];
+  for (const input of getInputs(data)) {
+    const other = input.other ?? {};
+    for (const e of Object.values(other) as any[]) {
+      if (e.type === "pytorch-model") {
+        models.push(e.model);
+      }
+    }
+  }
+  return models;
+}
+
+function getHandlers(data: WorkspaceNodeData): any {
+  const handlers = {};
+  for (const model of getAllModels(data)) {
+    Object.assign(handlers, model.input_handlers);
+  }
+  return handlers;
+}
+
 function getModelBindings(
-  data: any,
+  data: WorkspaceNodeData,
   variant: "training input" | "inference input" | "output",
 ): NamedId[] {
   function bindingsOfModel(m: any): string[] {
@@ -33,15 +60,9 @@ function getModelBindings(
     }
   }
   const bindings = new Set<NamedId>();
-  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
-  for (const input of inputs) {
-    const other = input.other ?? {};
-    for (const e of Object.values(other) as any[]) {
-      if (e.type === "pytorch-model") {
-        for (const id of bindingsOfModel(e.model)) {
-          bindings.add({ id, name: e.model.input_output_names[id] ?? id });
-        }
-      }
+  for (const model of getAllModels(data)) {
+    for (const id of bindingsOfModel(model)) {
+      bindings.add({ id, name: model.input_output_names[id] ?? id });
     }
   }
   const list = [...bindings];
@@ -63,16 +84,11 @@ function parseJsonOrEmpty(json: string): object {
   return {};
 }
 
-export default function ModelMapping({ value, onChange, data, variant }: any) {
-  const dfsRef = useRef({} as { [binding: string]: HTMLSelectElement | null });
-  const columnsRef = useRef(
-    {} as { [binding: string]: HTMLSelectElement | HTMLInputElement | null },
-  );
-  const v: any = parseJsonOrEmpty(value);
-  v.map ??= {};
+function getInputDataFrames(data: WorkspaceNodeData): {
+  [df: string]: string[];
+} {
   const dfs: { [df: string]: string[] } = {};
-  const inputs = data?.input_metadata?.value ?? data?.input_metadata ?? [];
-  for (const input of inputs) {
+  for (const input of getInputs(data)) {
     if (!input.dataframes) continue;
     const dataframes = input.dataframes as {
       [df: string]: { columns: string[] };
@@ -81,93 +97,112 @@ export default function ModelMapping({ value, onChange, data, variant }: any) {
       dfs[df] = columns;
     }
   }
+  return dfs;
+}
+
+function InputMapping({ meta, params, data, setParam }: any) {
+  params = { ...params };
+  for (const p of meta?.params ?? []) {
+    params[p.name] = params[p.name] ?? p.default;
+  }
+  return meta.params.map((paramMeta: any) => (
+    <NodeParameter
+      name={paramMeta.name}
+      key={meta.name + "-" + paramMeta.name}
+      value={params[paramMeta.name]}
+      data={{ ...data, params, meta: { value: meta } }}
+      meta={paramMeta}
+      setParam={setParam}
+    />
+  ));
+}
+
+function OutputMapping(props: any) {
+  return (
+    <>
+      {/* <select
+				required
+				className="select select-ghost"
+				value={v.map?.[binding.id]?.df}
+				ref={(el) => {
+					dfsRef.current[binding.id] = el;
+				}}
+				onChange={() => onChange(JSON.stringify({ map: getMap() }))}
+			>
+				<option key="" value="" disabled hidden>
+					Choose table
+				</option>
+				{Object.keys(dfs).map((df: string) => (
+					<option key={df} value={df}>
+						{df}
+					</option>
+				))}
+			</select>
+			<ParameterInput
+				inputRef={(el) => {
+					columnsRef.current[binding.id] = el;
+				}}
+				value={v.map?.[binding.id]?.column}
+				onChange={onChange}
+			/>
+			; */}
+    </>
+  );
+}
+
+export default function ModelMapping({ value, onChange, data, variant }: any) {
+  const v: any = parseJsonOrEmpty(value);
+  v.map ??= {};
   const bindings = getModelBindings(data, variant);
-  function getMap() {
-    const map: Bindings = {};
-    for (const binding of bindings) {
-      const df = dfsRef.current[binding.id]?.value ?? "";
-      const column = columnsRef.current[binding.id]?.value ?? "";
-      if (df.length || column.length) {
-        map[binding.id] = { df, column };
-      }
-    }
-    return map;
+  const handlers = getHandlers(data);
+  function setInputParam(bindingId: string, name: string, newValue: any) {
+    const newMap = {
+      ...v.map,
+      [bindingId]: { ...v.map[bindingId], [name]: newValue },
+    };
+    onChange(JSON.stringify({ map: newMap }));
   }
   return (
-    <table className="model-mapping-param">
-      <tbody>
-        {bindings.length > 0 ? (
-          bindings.map((binding: NamedId) => (
-            <tr key={binding.id}>
-              <td>{binding.name}</td>
-              <td>
-                <ArrowsHorizontal />
-              </td>
-              <td>
-                <select
-                  required
-                  className="select select-ghost"
-                  value={v.map?.[binding.id]?.df}
-                  ref={(el) => {
-                    dfsRef.current[binding.id] = el;
-                  }}
-                  onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                >
-                  <option key="" value="" disabled hidden>
-                    Choose table
-                  </option>
-                  {Object.keys(dfs).map((df: string) => (
-                    <option key={df} value={df}>
-                      {df}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                {variant === "output" ? (
-                  <ParameterInput
-                    inputRef={(el) => {
-                      columnsRef.current[binding.id] = el;
-                    }}
-                    value={v.map?.[binding.id]?.column}
-                    onChange={(column, options) => {
-                      const map = getMap();
-                      // At this point the <input> has not been updated yet. We use the value from the event.
-                      const df = dfsRef.current[binding.id]?.value ?? "";
-                      map[binding.id] ??= { df, column };
-                      map[binding.id].column = column;
-                      onChange(JSON.stringify({ map }), options);
-                    }}
-                  />
-                ) : (
-                  <select
-                    required
-                    className="select select-ghost"
-                    value={v.map?.[binding.id]?.column}
-                    ref={(el) => {
-                      columnsRef.current[binding.id] = el;
-                    }}
-                    onChange={() => onChange(JSON.stringify({ map: getMap() }))}
-                  >
-                    <option key="" value="" disabled hidden>
-                      Choose column
-                    </option>
-                    {dfs[v.map?.[binding.id]?.df]?.map((col: string) => (
-                      <option key={col} value={col}>
-                        {col}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </td>
+    <div className="model-mapping-param">
+      <div className="model-mapping-param-tools">
+        <button onClick={() => onChange('{"map":{}}')}>
+          <Close />
+        </button>
+      </div>
+      <table>
+        <tbody>
+          {bindings.length > 0 ? (
+            bindings.map((binding: NamedId) => (
+              <tr key={binding.id}>
+                <td className="model-mapping-param-label">{binding.name}:</td>
+                <td className="model-mapping-param-inputs">
+                  {variant === "output" ? (
+                    <OutputMapping
+                      value={value}
+                      onChange={onChange}
+                      data={data}
+                      variant={variant}
+                    />
+                  ) : (
+                    <InputMapping
+                      data={data}
+                      meta={handlers[binding.id]}
+                      params={v.map[binding.id] ?? {}}
+                      setParam={(name: string, newValue: any) =>
+                        setInputParam(binding.id, name, newValue)
+                      }
+                    />
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>no bindings</td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td>no bindings</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
