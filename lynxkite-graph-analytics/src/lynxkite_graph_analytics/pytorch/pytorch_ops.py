@@ -67,19 +67,17 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
         table_name: core.TableName = "",
         column_name: core.ColumnNameByTableName = "",
     ):
-        """An input tensor.
-
+        """
         Args:
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        if table_name in b.dfs and column_name in b.dfs[table_name]:
-            df = b.dfs[table_name][column_name]
-            batch = ctx.batch_df(df) if per_sample else df
-            t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
-            if ctx.batch_size == 1:
-                t = t.squeeze(0)
-            return t
+        df = b.dfs[table_name][column_name]
+        batch = ctx.batch_df(df) if per_sample else df
+        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        if ctx.batch_size == 1:
+            t = t.squeeze(0)
+        return t
 
     return from_bundle
 
@@ -96,21 +94,15 @@ def graph_edges_input():
         source_column_name: core.ColumnNameByTableName = "",
         target_column_name: core.ColumnNameByTableName = "",
     ):
-        """An input for indexed graph edges.
-
+        """
         Args:
             table_name: The table with the edges.
             source_column_name: The column with source node indices.
             target_column_name: The column with target node indices.
         """
-        if (
-            table_name in b.dfs
-            and source_column_name in b.dfs[table_name]
-            and target_column_name in b.dfs[table_name]
-        ):
-            src = b.dfs[table_name][source_column_name]
-            dst = b.dfs[table_name][target_column_name]
-            return torch.tensor([src, dst], dtype=torch.long)
+        src = b.dfs[table_name][source_column_name]
+        dst = b.dfs[table_name][target_column_name]
+        return torch.tensor([src, dst], dtype=torch.long)
 
     return from_bundle
 
@@ -131,19 +123,17 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
         table_name: core.TableName = "",
         column_name: core.ColumnNameByTableName = "",
     ):
-        """An input tensor.
-
+        """
         Args:
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        if table_name in b.dfs and column_name in b.dfs[table_name]:
-            df = b.dfs[table_name][column_name]
-            batch = ctx.batch_df(df) if per_sample else df
-            t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
-            if ctx.batch_size == 1:
-                t = t.squeeze(0)
-            return t
+        df = b.dfs[table_name][column_name]
+        batch = ctx.batch_df(df) if per_sample else df
+        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        if ctx.batch_size == 1:
+            t = t.squeeze(0)
+        return t
 
     return from_bundle
 
