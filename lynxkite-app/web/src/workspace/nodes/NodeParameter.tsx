@@ -142,7 +142,11 @@ function getDropDownValues(data: any, meta: any): string[] {
   for (const p in data.params) {
     query = query.replace(`<${p}>`, data.params[p]);
   }
-  const res = ["", ...jmespath.search(metadata, query)];
-  res.sort();
-  return res;
+  try {
+    const res = ["", ...jmespath.search(metadata, query)];
+    res.sort();
+    return res;
+  } catch (_) {
+    return [""];
+  }
 }
