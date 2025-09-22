@@ -69,7 +69,6 @@ class InputContext:
     batch_size: int
     batch_index: int
     total_samples: int | None = None
-    tensors: dict[str, torch.Tensor] = dataclasses.field(default_factory=dict)
 
     def batch_df(self, df: "core.pd.DataFrame") -> "core.pd.DataFrame":
         if self.total_samples is None:
@@ -214,14 +213,16 @@ class ModelConfig:
         b: core.Bundle,
         m: ModelMapping,
         input_ctx: InputContext,
-    ) -> None:
-        """Extracts tensors from a bundle for a specific batch using a model mapping. Puts the results in input_ctx."""
-        input_ctx.tensors = {}
+    ) -> dict[str, torch.Tensor]:
+        """Extracts tensors from a bundle for a specific batch using a model mapping."""
+        tensors = {}
         for input_name, input_params in m.map.items():
             handler = self.input_handlers[input_name]
             input_params = handler.convert_params(input_params)
-            t = handler.func(b, input_ctx, **input_params)
-            input_ctx.tensors[input_name] = t
+            get_input_tensors = handler.func
+            t = get_input_tensors(b, input_ctx, **input_params)
+            tensors[input_name] = t
+        return tensors
 
     # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
     # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
