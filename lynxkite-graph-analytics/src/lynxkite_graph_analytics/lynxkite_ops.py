@@ -66,7 +66,8 @@ def import_file(
         sep = pd.api.extensions.no_default if sep == "<auto>" else sep.replace("\\t", "\t")
         df = pd.read_csv(file_path, names=names, sep=sep)
     elif file_format == "json":
-        df = pd.read_json(file_path)
+        with open(file_path, "r") as f:
+            df = pd.read_json(f)
     elif file_format == "parquet":
         df = pd.read_parquet(file_path)
     elif file_format == "excel":
