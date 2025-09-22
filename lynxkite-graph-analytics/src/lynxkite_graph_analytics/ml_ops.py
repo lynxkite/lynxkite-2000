@@ -55,21 +55,6 @@ class ModelOutputMapping(pytorch_core.ModelMapping):
     pass
 
 
-def _get_num_samples(bundle: core.Bundle, input_mapping: pytorch_core.ModelMapping):
-    """Returns the number of samples in the input mapping."""
-    num_samples = None
-    for k, v in input_mapping.map.items():
-        if v.df in bundle.dfs and v.column in bundle.dfs[v.df]:
-            if num_samples is None:
-                num_samples = len(bundle.dfs[v.df][v.column])
-            else:
-                assert num_samples == len(bundle.dfs[v.df][v.column]), (
-                    f"Input '{k}' has different number of samples ({len(bundle.dfs[v.df][v.column])}) "
-                    f"than other inputs ({num_samples})."
-                )
-    return num_samples
-
-
 @op("Train model", slow=True)
 def train_model(
     bundle: core.Bundle,
@@ -87,19 +72,24 @@ def train_model(
     if input_mapping is None:
         return ops.Result(bundle, error="No inputs are selected.")
     m: pytorch_core.ModelConfig = bundle.other[model_name].copy()
-    num_samples = _get_num_samples(bundle, input_mapping)
-    if num_samples is None:
-        return ops.Result(bundle, error="No inputs are selected.")
-    num_batches = num_samples // batch_size
     tepochs = tqdm(range(epochs), desc="Training model")
     losses = []
+    input_ctx = pytorch_core.InputContext(batch_size=batch_size, batch_index=0)
     for _ in tepochs:
         total_loss = 0
-        for i in tqdm(range(num_batches)):
-            inputs = m.batch_tensors_from_bundle(bundle, batch_size, i, input_mapping)
+        tbatch = tqdm(total=100)  # Initial guess. Will update after the first iteration.
+        input_ctx.batch_index = 0
+        while (
+            input_ctx.total_samples is None
+            or input_ctx.batch_index * batch_size < input_ctx.total_samples
+        ):
+            inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+            assert input_ctx.total_samples is not None
+            tbatch.total = input_ctx.total_samples // batch_size
             loss = m.train(inputs)
             total_loss += loss
-        mean_loss = total_loss / len(inputs)
+            input_ctx.batch_index += 1
+        mean_loss = total_loss / input_ctx.total_samples
         tepochs.set_postfix({"loss": mean_loss})
         losses.append(mean_loss)
     m.trained = True
@@ -123,26 +113,34 @@ def model_inference(
         return ops.Result(bundle, error="Mapping is unset.")
     m: pytorch_core.ModelConfig = bundle.other[model_name]
     assert m.trained, "The model is not trained."
-    num_samples = _get_num_samples(bundle, input_mapping)
-    if num_samples is None:
-        return ops.Result(bundle, error="No inputs are selected.")
-    num_batches = num_samples // batch_size
+    num_batches = 100  # Initial guess. Will update after the first iteration.
+    input_ctx = pytorch_core.InputContext(batch_size=batch_size, batch_index=0)
     outputs = {}
-    for i in tqdm(range(num_batches)):
-        inputs = m.batch_tensors_from_bundle(bundle, batch_size, i, input_mapping)
+    tbatch = tqdm(total=100)  # Initial guess. Will update after the first iteration.
+    while (
+        input_ctx.total_samples is None
+        or input_ctx.batch_index * batch_size < input_ctx.total_samples
+    ):
+        inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+        assert input_ctx.total_samples is not None
+        num_batches = input_ctx.total_samples // batch_size
+        tbatch.total = num_batches
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
-            v = v.detach().numpy().reshape(batch_size, -1)
+            v = v.detach().numpy()
             outputs.setdefault(k, []).extend(v.tolist())
+        input_ctx.batch_index += 1
     bundle = bundle.copy()
     copied = set()
     for k, v in output_mapping.map.items():
-        if not v.df or not v.column:
+        df = v.get("table_name")
+        col = v.get("column")
+        if not df or not col:
             continue
-        if v.df not in copied:
-            bundle.dfs[v.df] = bundle.dfs[v.df].copy()
-            copied.add(v.df)
-        bundle.dfs[v.df][v.column] = outputs[k]
+        if df not in copied:
+            bundle.dfs[df] = bundle.dfs[df].copy()
+            copied.add(df)
+        bundle.dfs[df][col] = outputs[k]
     return bundle
 
 

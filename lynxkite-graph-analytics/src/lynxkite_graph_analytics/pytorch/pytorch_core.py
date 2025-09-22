@@ -47,6 +47,41 @@ def reg(name, inputs=[], outputs=None, params=[], **kwargs):
     )
 
 
+def input_op(op_name: str, outputs: list[str] | None = None):
+    outputs = outputs or ["input"]
+
+    def decorator(func):
+        func = ops.op(ENV, f"Input: {op_name}", outputs=outputs)(func)
+        op = func.__op__
+        op.params.insert(0, ops.Parameter.basic("_input_name", ""))
+        op.func = lambda *, _input_name, **kwargs: func(**kwargs)
+        for v in op.outputs:
+            v.position = ops.Position.TOP
+        return func
+
+    return decorator
+
+
+@dataclasses.dataclass
+class InputContext:
+    """Passed to input ops as the second parameter. Describes batching."""
+
+    batch_size: int
+    batch_index: int
+    total_samples: int | None = None
+
+    def batch_df(self, df: "core.pd.DataFrame") -> "core.pd.DataFrame":
+        if self.total_samples is None:
+            self.total_samples = len(df)
+        else:
+            assert len(df) == self.total_samples, (
+                f"Expected {self.total_samples} samples, found {len(df)}"
+            )
+        return df.iloc[
+            self.batch_index * self.batch_size : (self.batch_index + 1) * self.batch_size
+        ]
+
+
 def _to_id(*strings: str) -> str:
     """Replaces all non-alphanumeric characters with underscores."""
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
@@ -70,13 +105,8 @@ class Layer:
         return self.module, f"{inputs} -> {outputs}"
 
 
-class ColumnSpec(pydantic.BaseModel):
-    df: str
-    column: str
-
-
 class ModelMapping(pydantic.BaseModel):
-    map: dict[str, ColumnSpec]
+    map: dict[str, dict]
 
 
 def _torch_save(data) -> bytes:
@@ -112,7 +142,7 @@ class ModelConfig:
     model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
     input_output_names: dict[str, str]
-    input_output_types: dict[str, str]
+    input_handlers: dict[str, ops.Op]
     loss: torch.nn.Module
     source_workspace_json: str
     optimizer_parameters: dict[str, typing.Any]
@@ -173,31 +203,25 @@ class ModelConfig:
                 "model_outputs": self.model_outputs,
                 "loss_inputs": self.loss_inputs,
                 "input_output_names": self.input_output_names,
+                "input_handlers": {k: v.model_dump() for k, v in self.input_handlers.items()},
                 "trained": self.trained,
             },
         }
 
-    def batch_tensors_from_bundle(
+    def inputs_from_bundle(
         self,
         b: core.Bundle,
-        batch_size: int,
-        batch_index: int,
         m: ModelMapping,
+        input_ctx: InputContext,
     ) -> dict[str, torch.Tensor]:
         """Extracts tensors from a bundle for a specific batch using a model mapping."""
         tensors = {}
-        for input_name, input_mapping in m.map.items():
-            df_name = input_mapping.df
-            column_name = input_mapping.column
-            if df_name in b.dfs and column_name in b.dfs[df_name]:
-                batch = b.dfs[df_name][column_name].iloc[
-                    batch_index * batch_size : (batch_index + 1) * batch_size
-                ]
-                input_type = self.input_output_types[input_name]
-                torch_type = getattr(torch, input_type)
-                tensors[input_name] = torch.tensor(batch.to_list(), dtype=torch_type)
-                if batch_size == 1:
-                    tensors[input_name] = tensors[input_name].squeeze(0)
+        for input_name, input_params in m.map.items():
+            handler = self.input_handlers[input_name]
+            input_params = handler.convert_params(input_params)
+            get_input_tensors = handler.func
+            t = get_input_tensors(b, input_ctx, **input_params)
+            tensors[input_name] = t
         return tensors
 
     # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
@@ -216,6 +240,7 @@ class ModelConfig:
         if self.trained:
             state["model_state_dict"] = _torch_save(self.model.state_dict())
             state["optimizer_state_dict"] = _torch_save(self.optimizer.state_dict())
+        state["input_handlers"] = {k: v.model_dump() for k, v in state["input_handlers"].items()}
         return state
 
     def __setstate__(self, state):
@@ -229,6 +254,7 @@ class ModelConfig:
         self.optimizer = cfg.optimizer
         self.optimizer_parameters = cfg.optimizer_parameters
         self.loss = cfg.loss
+        self.input_handlers = cfg.input_handlers
         if self.trained:
             self.model.load_state_dict(_torch_load(model_state_dict))
             self.optimizer.load_state_dict(_torch_load(optimizer_state_dict))
@@ -236,6 +262,7 @@ class ModelConfig:
 
 def build_model(ws: workspace.Workspace) -> ModelConfig:
     """Builds the model described in the workspace."""
+    ws.normalize()
     builder = ModelBuilder(ws)
     return builder.build_model()
 
@@ -358,45 +385,47 @@ class ModelBuilder:
         t = node.data.title
         op = self.catalog[node.data.op_id]
         p = op.convert_params(node.data.params)
-        match t:
-            case "Repeat":
-                if node_id.startswith("END "):
-                    repeat_id = node_id.removeprefix("END ")
-                    start_id = f"START {repeat_id}"
-                    [last_output] = self.in_edges[node_id]["input"]
-                    after_start = self.all_downstream(start_id)
-                    after_end = self.all_downstream(node_id)
-                    before_end = self.all_upstream(node_id)
-                    affected_nodes = after_start - after_end - {node_id}
-                    repeated_nodes = after_start & before_end
-                    assert affected_nodes == repeated_nodes, (
-                        f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
-                    )
-                    repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
-                    assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
-                    for i in range(p["times"] - 1):
-                        # Copy repeat section's output to repeat section's input.
-                        self.layers.append(
-                            Layer(
-                                torch.nn.Identity(),
-                                origin_id=node_id,
-                                inputs=[_to_id(*last_output)],
-                                outputs=[_to_id(start_id, "output")],
-                            )
-                        )
-                        # Repeat the layers in the section.
-                        for layer in repeated_layers:
-                            if p["same_weights"]:
-                                self.layers.append(layer)
-                            else:
-                                self.run_node(layer.origin_id)
-                self.layers.append(self.run_op(node_id, op, p))
-            case "Optimizer" | "Input: tensor" | "Input: graph edges" | "Input: sequential":
-                return
-            case _:
-                self.layers.append(self.run_op(node_id, op, p))
+        if t == "Repeat":
+            self.repeat_node(node_id, op, p)
+        elif t == "Optimizer" or any(param.name == "_input_name" for param in op.params):
+            return
+        else:
+            self.layers.append(self.run_op(node_id, op, p))
 
-    def run_op(self, node_id: str, op: ops.Op, params) -> Layer:
+    def repeat_node(self, node_id: str, op: ops.Op, p: dict) -> None:
+        if node_id.startswith("END "):
+            repeat_id = node_id.removeprefix("END ")
+            start_id = f"START {repeat_id}"
+            [last_output] = self.in_edges[node_id]["input"]
+            after_start = self.all_downstream(start_id)
+            after_end = self.all_downstream(node_id)
+            before_end = self.all_upstream(node_id)
+            affected_nodes = after_start - after_end - {node_id}
+            repeated_nodes = after_start & before_end
+            assert affected_nodes == repeated_nodes, (
+                f"edges leave repeated section '{repeat_id}':\n{affected_nodes - repeated_nodes}"
+            )
+            repeated_layers = [e for e in self.layers if e.origin_id in repeated_nodes]
+            assert p["times"] >= 1, f"Cannot repeat {repeat_id} {p['times']} times."
+            for _ in range(p["times"] - 1):
+                # Copy repeat section's output to repeat section's input.
+                self.layers.append(
+                    Layer(
+                        torch.nn.Identity(),
+                        origin_id=node_id,
+                        inputs=[_to_id(*last_output)],
+                        outputs=[_to_id(start_id, "output")],
+                    )
+                )
+                # Repeat the layers in the section.
+                for layer in repeated_layers:
+                    if p["same_weights"]:
+                        self.layers.append(layer)
+                    else:
+                        self.run_node(layer.origin_id)
+        self.layers.append(self.run_op(node_id, op, p))
+
+    def run_op(self, node_id: str, op: ops.Op, params: dict) -> Layer:
         """Returns the layer produced by this op."""
         inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
@@ -443,7 +472,7 @@ class ModelBuilder:
         cfg["model_inputs"] = sorted(used_in_model - made_in_model)
         cfg["model_outputs"] = sorted(made_in_model & used_in_loss)
         cfg["loss_inputs"] = sorted(used_in_loss - made_in_loss)
-        cfg["input_output_names"], cfg["input_output_types"] = self.get_names_and_types(
+        cfg["input_output_names"], cfg["input_handlers"] = self.get_names_and_handlers(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
@@ -465,27 +494,36 @@ class ModelBuilder:
         cfg["source_workspace_json"] = self.ws.model_dump_json()
         return ModelConfig(**cfg)  # ty: ignore[missing-argument]
 
-    def get_names_and_types(self, *ids: list[str]) -> tuple[dict[str, str], dict[str, str]]:
-        """Returns a mapping from internal IDs to human readable names and data types."""
+    def get_names_and_handlers(self, *ids: list[str]) -> tuple[dict[str, str], dict[str, ops.Op]]:
+        """Returns a mapping from internal IDs to human readable names and the handlers for inputs."""
         names = {}
-        types = {}
+        handlers = {}
         for i in ids:
             for node in self.nodes.values():
                 op = self.catalog[node.data.op_id]
-                name = node.data.params.get("name") or node.data.title
-                type = node.data.params.get("type", "float").lower()
+                name = (
+                    node.data.params.get("name")
+                    or node.data.params.get("_input_name")
+                    or node.data.title
+                )
                 for output in op.outputs:
                     i2 = _to_id(node.id, output.name)
                     if i2 == i:
-                        types[i] = type  # All outputs of the same node have the same type.
                         if len(op.outputs) == 1:
                             names[i] = name
                         else:
                             names[i] = f"{name} ({output.name})"
+                        if "_input_name" in node.data.params:
+                            # For input nodes we generate the handlers here.
+                            # Handlers are similar to ops, but they don't have separate
+                            # boxes. Instead they appear in the input mapping.
+                            params = op.convert_params(node.data.params)
+                            func = op.func(**params)
+                            handlers[i] = ops.op(None, name)(func).__op__
                         break
                 else:
                     continue
                 break
             else:
                 raise ValueError(f"Cannot find name for input {i}.")
-        return names, types
+        return names, handlers

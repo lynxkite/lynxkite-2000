@@ -4,7 +4,8 @@ import enum
 from lynxkite_core import ops
 from lynxkite_core.ops import Parameter as P
 import torch
-from .pytorch_core import op, reg, ENV
+from .pytorch_core import op, reg, ENV, input_op, InputContext
+from .. import core
 
 
 class ActivationTypes(enum.StrEnum):
@@ -36,23 +37,108 @@ class ODEMethod(enum.StrEnum):
     implicit_adams = "implicit_adams"
 
 
-_TORCH_TYPES = ["float", "double", "int", "long", "bool"]
+class TorchTypes(enum.StrEnum):
+    float = "float"
+    double = "double"
+    int = "int"
+    long = "long"
+    bool = "bool"
 
-reg(
-    "Input: tensor",
-    outputs=["output"],
-    params=[P.basic("name"), P.options("type", _TORCH_TYPES, default="float")],
-    color="gray",
-)
-reg("Input: graph edges", outputs=["edges"], params=[P.basic("name")], color="gray")
-reg("Input: sequential", outputs=["y"], params=[P.basic("name")], color="gray")
-reg(
-    "Output",
-    inputs=["x"],
-    outputs=["x"],
-    params=[P.basic("name"), P.options("type", _TORCH_TYPES, default="float")],
-    color="gray",
-)
+    def to_dtype(self):
+        return getattr(torch, self.value)
+
+
+_type = type
+
+
+@input_op("tensor")
+def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
+    """An input tensor.
+
+    Args:
+        type: The data type of the tensor.
+        per_sample: Whether this has a different value for each sample, or is constant across the dataset.
+    """
+
+    def from_bundle(
+        b: core.Bundle,
+        ctx: InputContext,
+        *,
+        table_name: core.TableName = "",
+        column_name: core.ColumnNameByTableName = "",
+    ):
+        """
+        Args:
+            table_name: One column of this table will be used as input.
+            column_name: The name of the column to use as input.
+        """
+        df = b.dfs[table_name][column_name]
+        batch = ctx.batch_df(df) if per_sample else df
+        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        if ctx.batch_size == 1:
+            t = t.squeeze(0)
+        return t
+
+    return from_bundle
+
+
+@input_op("graph edges")
+def graph_edges_input():
+    """The edges of a graph as input. A 2xE tensor of src/dst indices. Not batched."""
+
+    def from_bundle(
+        b: core.Bundle,
+        ctx: InputContext,
+        *,
+        table_name: core.TableName = "",
+        source_column_name: core.ColumnNameByTableName = "",
+        target_column_name: core.ColumnNameByTableName = "",
+    ):
+        """
+        Args:
+            table_name: The table with the edges.
+            source_column_name: The column with source node indices.
+            target_column_name: The column with target node indices.
+        """
+        src = b.dfs[table_name][source_column_name]
+        dst = b.dfs[table_name][target_column_name]
+        return torch.tensor([src, dst], dtype=torch.long)
+
+    return from_bundle
+
+
+@input_op("sequential")
+def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
+    """An input tensor with a sequence for each sample.
+
+    Args:
+        type: The data type of the tensor.
+        per_sample: Whether this has a different value for each sample, or is constant across the dataset.
+    """
+
+    def from_bundle(
+        b: core.Bundle,
+        ctx: InputContext,
+        *,
+        table_name: core.TableName = "",
+        column_name: core.ColumnNameByTableName = "",
+    ):
+        """
+        Args:
+            table_name: One column of this table will be used as input.
+            column_name: The name of the column to use as input.
+        """
+        df = b.dfs[table_name][column_name]
+        batch = ctx.batch_df(df) if per_sample else df
+        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        if ctx.batch_size == 1:
+            t = t.squeeze(0)
+        return t
+
+    return from_bundle
+
+
+reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 reg("Output sequence", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 
 
