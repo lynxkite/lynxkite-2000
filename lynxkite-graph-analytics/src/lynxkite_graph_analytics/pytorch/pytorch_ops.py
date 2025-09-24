@@ -48,9 +48,6 @@ class TorchTypes(enum.StrEnum):
         return getattr(torch, self.value)
 
 
-_type = type
-
-
 @input_op("tensor")
 def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor.
