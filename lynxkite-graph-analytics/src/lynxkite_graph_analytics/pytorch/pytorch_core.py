@@ -216,7 +216,8 @@ class ModelConfig:
     ) -> dict[str, torch.Tensor]:
         """Extracts tensors from a bundle for a specific batch using a model mapping."""
         tensors = {}
-        for input_name, input_params in m.map.items():
+        for input_name, handler in self.input_handlers.items():
+            input_params = m.map.get(input_name, {})
             handler = self.input_handlers[input_name]
             input_params = handler.convert_params(input_params)
             get_input_tensors = handler.func

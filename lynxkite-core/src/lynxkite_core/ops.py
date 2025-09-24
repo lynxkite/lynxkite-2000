@@ -30,7 +30,7 @@ typeof = type  # We have some arguments called "type".
 CACHE_WRAPPER = None  # Overwrite this to configure a caching mechanism.
 
 
-def _cache_wrap(func):
+def cached(func):
     if CACHE_WRAPPER is None:
         return func
     return CACHE_WRAPPER(func)
@@ -288,7 +288,7 @@ def op(
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = _cache_wrap(func)
+                func = cached(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
