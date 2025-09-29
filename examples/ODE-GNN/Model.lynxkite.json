@@ -185,7 +185,8 @@
         "meta": null,
         "op_id": "Input: sequential",
         "params": {
-          "_input_name": "future volumes"
+          "_input_name": "future volumes",
+          "per_sample": true
         },
         "status": "done",
         "title": "Input: sequential"
@@ -268,7 +269,8 @@
         "meta": null,
         "op_id": "Input: sequential",
         "params": {
-          "_input_name": "future timestamps"
+          "_input_name": "future timestamps",
+          "per_sample": true
         },
         "status": "done",
         "title": "Input: sequential"
@@ -299,7 +301,7 @@
           "mlp_hidden_size": "64 ",
           "mlp_layers": "2",
           "relative_tolerance": "0.001                                                                 ",
-          "state_dimensions": "129"
+          "state_dimensions": "192"
         },
         "status": "done",
         "title": "Neural ODE with MLP"
@@ -324,7 +326,8 @@
         "meta": null,
         "op_id": "Input: sequential",
         "params": {
-          "_input_name": "past volumes"
+          "_input_name": "past volumes",
+          "per_sample": true
         },
         "status": "done",
         "title": "Input: sequential"
@@ -502,15 +505,15 @@
       "data": {
         "__execution_delay": 0.0,
         "display": null,
-        "error": "Unknown operation.",
+        "error": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Drug, disease, gene GNN",
         "params": {
-          "gene_in_dim": "64",
+          "gene_in_dim": "1281",
           "hidden_dim": "64",
           "num_diseases": "6",
-          "num_drugs": "6",
+          "num_drugs": "62",
           "out_dim": "64"
         },
         "status": "done",
@@ -530,7 +533,7 @@
       "data": {
         "__execution_delay": 0.0,
         "display": null,
-        "error": "Unknown operation.",
+        "error": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: disease-assoc-gene graph",
@@ -554,7 +557,7 @@
       "data": {
         "__execution_delay": 0.0,
         "display": null,
-        "error": "Unknown operation.",
+        "error": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: drug-targets-gene graph",
@@ -578,7 +581,7 @@
       "data": {
         "__execution_delay": 0.0,
         "display": null,
-        "error": "Unknown operation.",
+        "error": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: gene features",
@@ -602,7 +605,7 @@
       "data": {
         "__execution_delay": 0.0,
         "display": null,
-        "error": "Unknown operation.",
+        "error": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: gene-interacts-gene graph",
