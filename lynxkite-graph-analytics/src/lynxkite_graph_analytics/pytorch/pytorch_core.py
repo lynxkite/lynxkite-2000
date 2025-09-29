@@ -211,14 +211,15 @@ class ModelConfig:
     def inputs_from_bundle(
         self,
         b: core.Bundle,
+        inputs: list[str],
         m: ModelMapping,
         input_ctx: InputContext,
     ) -> dict[str, torch.Tensor]:
         """Extracts tensors from a bundle for a specific batch using a model mapping."""
         tensors = {}
-        for input_name, handler in self.input_handlers.items():
-            input_params = m.map.get(input_name, {})
+        for input_name in inputs:
             handler = self.input_handlers[input_name]
+            input_params = m.map.get(input_name, {})
             input_params = handler.convert_params(input_params)
             get_input_tensors = handler.func
             t = get_input_tensors(b, input_ctx, **input_params)
