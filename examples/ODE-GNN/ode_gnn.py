@@ -12,16 +12,12 @@ import os.path
 import pandas as pd
 
 
-@op("LynxKite Graph Analytics", "Load PDX data", slow=True)
-def load_pdx_data(*, root_path: str, seed: int) -> core.Bundle:
+@op("LynxKite Graph Analytics", "PDX", "Load disease-gene data", slow=True)
+def load_disease_gene_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
     DIS_GENE_ROOT = root_path
-    PPI_ROOT = DIS_GENE_ROOT + "/Tissue"
-
-    # Disease–gene
     disease_dfs = []
-
     for file in os.listdir(DIS_GENE_ROOT):
         if file.endswith(("OT.tsv")):
             file_path = os.path.join(DIS_GENE_ROOT, file)
@@ -48,52 +44,87 @@ def load_pdx_data(*, root_path: str, seed: int) -> core.Bundle:
         .query("globalScore >= 0.5")
         .loc[:, ["symbol", "globalScore", "disease"]]
     )
+    b.dfs["disease"] = disease_df
+    return b
 
-    # Drug–gene
-    drug_gene_df = pd.read_csv(f"{DIS_GENE_ROOT}/DGIdb_interactions.tsv", sep="\t")[
+
+@op("LynxKite Graph Analytics", "PDX", "Load drug-gene data", slow=True)
+def load_drug_gene_data(*, root_path: str) -> core.Bundle:
+    b = core.Bundle()
+    b.other["root_path"] = root_path
+    drug_gene_df = pd.read_csv(f"{root_path}/DGIdb_interactions.tsv", sep="\t")[
         ["gene_name", "drug_name"]
     ].assign(drug_name=lambda d: d.drug_name.str.lower())
+    b.dfs["drug_gene"] = drug_gene_df
+    return b
 
+
+@op("LynxKite Graph Analytics", "PDX", "Load RNA data", slow=True)
+def load_rna_data(*, root_path: str) -> core.Bundle:
+    b = core.Bundle()
+    b.other["root_path"] = root_path
+    rna_df = pd.read_excel(f"{root_path}/rna_data.xlsx", sheet_name="RNAseq_fpkm")
+    b.dfs["rna_df"] = rna_df.set_index("Sample")
+    return b
+
+
+@op("LynxKite Graph Analytics", "PDX", "Load ESM2 data", slow=True)
+def load_esm2_data(*, root_path: str) -> core.Bundle:
+    b = core.Bundle()
+    b.other["root_path"] = root_path
     # RNA + ESM2 embeddings
-    rna_df = pd.read_excel(f"{DIS_GENE_ROOT}/rna_data.xlsx", sheet_name="RNAseq_fpkm")
-    esm2_df = pd.read_parquet(f"{DIS_GENE_ROOT}/esm2-gene-embeddings.parquet")
+    esm2_df = pd.read_parquet(f"{root_path}/esm2-gene-embeddings.parquet")
     gene2esm2 = dict(zip(esm2_df["genes"], esm2_df["embeddings"]))
-
-    all_rna_genes = set(rna_df["Sample"])
-    all_ppi_genes = set(
-        itertools.chain.from_iterable(
-            load_ppi_for_tissue(root_path, t)[["gene1", "gene2"]].values.flatten()
-            for t in os.listdir(PPI_ROOT)
-        )
+    b.dfs["gene2esm2"] = pd.DataFrame(
+        {"embedding": list(gene2esm2.values())}, index=gene2esm2.keys()
     )
+    return b
 
-    clin_df = pd.read_excel(f"{DIS_GENE_ROOT}/rna_data.xlsx", sheet_name="PCT raw data")
+
+@op("LynxKite Graph Analytics", "PDX", "Load PCT data", slow=True)
+def load_pct_data(*, root_path: str) -> core.Bundle:
+    b = core.Bundle()
+    b.other["root_path"] = root_path
+    clin_df = pd.read_excel(f"{root_path}/rna_data.xlsx", sheet_name="PCT raw data")
     clin_df = clin_df[
         clin_df["Tumor Type"].notna()  # Not NaN
         & (clin_df["Tumor Type"].astype(str).str.strip() != "")  # Not empty
     ].copy()
+    b.dfs["clin_df"] = clin_df
+    b.dfs["meta"] = (
+        clin_df[["Model", "Treatment", "Tumor Type"]].drop_duplicates().reset_index(drop=True)
+    )
+    return b
 
-    esm2_genes = set(gene2esm2.keys())
+
+@op("LynxKite Graph Analytics", "PDX", "Index genes", slow=True)
+def index_genes(b: core.Bundle) -> core.Bundle:
+    """Enumerates all the genes we have data for, and gives the sequential numbers."""
+    root_path = b.other["root_path"]
+    all_rna_genes = set(b.dfs["rna_df"]["Sample"])
+    all_ppi_genes = set(
+        itertools.chain.from_iterable(
+            load_ppi_for_tissue(root_path, t)[["gene1", "gene2"]].values.flatten()
+            for t in os.listdir(root_path + "/Tissue")
+        )
+    )
+    esm2_genes = set(b.dfs["gene2esm2"].index)
     avail_genes = sorted(all_rna_genes & all_ppi_genes & esm2_genes)
     gene_to_idx = {g: i for i, g in enumerate(avail_genes)}
     b.dfs["gene_to_idx"] = pd.DataFrame(
         gene_to_idx.values(), index=gene_to_idx.keys(), columns=["idx"]
     )
-
-    b.dfs["clin_df"] = clin_df
-    b.dfs["meta"] = (
-        clin_df[["Model", "Treatment", "Tumor Type"]].drop_duplicates().reset_index(drop=True)
-    )
-    b.dfs["gene2esm2"] = pd.DataFrame(
-        {"embedding": gene2esm2.values()}, index=gene2esm2.keys(), columns=["idx"]
-    )
-    b.dfs["rna_df"] = rna_df
-    b.dfs["drug_gene"] = drug_gene_df
-    b.dfs["disease"] = disease_df
     return b
 
 
-@op("LynxKite Graph Analytics", "Split timeseries", slow=True)
+@op("LynxKite Graph Analytics", "View other", view="table_view")
+def view_other(b: core.Bundle):
+    b = b.copy()
+    b.dfs = {"other": pd.DataFrame(list(b.other.items()), columns=["key", "value"])}
+    return b.to_dict()
+
+
+@op("LynxKite Graph Analytics", "PDX", "Split timeseries", slow=True)
 def split_timeseries(b: core.Bundle, *, num_timestamps_in_past: int = 5) -> core.Bundle:
     clin_df = b.dfs["clin_df"]
     times_col = []
@@ -123,6 +154,14 @@ def split_timeseries(b: core.Bundle, *, num_timestamps_in_past: int = 5) -> core
     return b
 
 
+@op("LynxKite Graph Analytics", "PDX", "Filter to samples with RNA data", slow=True)
+def filter_to_samples_with_rna_data(b: core.Bundle) -> core.Bundle:
+    b = b.copy()
+    valid_pdx = set(b.dfs["rna_df"].columns)
+    b.dfs["meta"] = b.dfs["meta"][b.dfs["meta"]["Model"].isin(valid_pdx)].reset_index(drop=True)
+    return b
+
+
 @cached
 def load_ppi_for_tissue(root_path: str, tissue: str) -> pd.DataFrame:
     path = os.path.join(root_path, "Tissue", tissue, "edges.tsv")
@@ -148,7 +187,7 @@ def gene_interacts_gene_input():
         )
         row = b.dfs[table_name].iloc[ctx.batch_index]
         ppi_df = load_ppi_for_tissue(b.other["root_path"], row[tumor_type_column_name])
-        gene_to_idx = b.dfs["gene_to_idx"]
+        gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
         rows, cols = [], []
         for u, v in zip(ppi_df.gene1, ppi_df.gene2):
             if u in gene_to_idx and v in gene_to_idx:
@@ -179,7 +218,7 @@ def drug_targets_gene_input():
         assert ctx.batch_size == 1, (
             "Batch size must be 1. We're loading a different graph for each sample."
         )
-        gene_to_idx = b.dfs["gene_to_idx"]
+        gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
         row = b.dfs[table_name].iloc[ctx.batch_index]
         drug = row[treatment_column_name]
         df = b.dfs["drug_gene"]
@@ -211,7 +250,7 @@ def disease_assoc_gene_input():
         assert ctx.batch_size == 1, (
             "Batch size must be 1. We're loading a different graph for each sample."
         )
-        gene_to_idx = b.dfs["gene_to_idx"]
+        gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
         row = b.dfs[table_name].iloc[ctx.batch_index]
         tumor = row[tumor_type_column_name]
         df = b.dfs["disease"]
@@ -245,8 +284,7 @@ def gene_features_input():
         )
         row = b.dfs[table_name].iloc[ctx.batch_index]
         pdx_id = row[pdx_id_column_name]
-        avail_genes = b.dfs["gene_to_idx"]
-        print("gene2esm2 in input", b.dfs["gene2esm2"].head(2))
+        avail_genes = b.dfs["gene_to_idx"].index
         gene2esm2 = b.dfs["gene2esm2"]["embedding"]
         rna_df = b.dfs["rna_df"]
         expr = rna_df[pdx_id].reindex(avail_genes).fillna(0).values
@@ -299,6 +337,10 @@ class HeteroGraphEncoder(nn.Module):
         self.fuse = nn.Linear(hidden_dim * 3, out_dim)
 
     def forward(self, gene_nodes, drug_edges, disease_edges, gene_edges):
+        print("gene_nodes", gene_nodes.shape)
+        print("drug_edges", drug_edges.shape)
+        print("disease_edges", disease_edges.shape)
+        print("gene_edges", gene_edges.shape)
         data = pyg_data.HeteroData()
         data["drug"].num_nodes = 1
         data["disease"].num_nodes = 1
@@ -323,4 +365,6 @@ class HeteroGraphEncoder(nn.Module):
         bc = pyg_nn.global_mean_pool(
             out["disease"], torch.zeros(out["disease"].size(0), dtype=torch.long, device=x.device)
         )
-        return self.fuse(torch.cat([bg, bd, bc], dim=-1))
+        r = self.fuse(torch.cat([bg, bd, bc], dim=-1))
+        print("result", r.shape)
+        return r
