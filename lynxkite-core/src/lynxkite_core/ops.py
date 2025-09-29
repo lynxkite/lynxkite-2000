@@ -61,9 +61,7 @@ ReadOnlyJSON: typing.TypeAlias = (
 
 
 class BaseConfig(pydantic.BaseModel):
-    model_config = pydantic.ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    model_config = pydantic.ConfigDict()
 
 
 class Parameter(BaseConfig):

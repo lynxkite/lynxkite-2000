@@ -83,7 +83,12 @@ def train_model(
             input_ctx.total_samples is None
             or input_ctx.batch_index * batch_size < input_ctx.total_samples
         ):
-            inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+            inputs = m.inputs_from_bundle(
+                bundle,
+                list(set(m.model_inputs) | set(m.loss_inputs) - set(m.model_outputs)),
+                input_mapping,
+                input_ctx,
+            )
             assert input_ctx.total_samples is not None
             tbatch.total = input_ctx.total_samples // batch_size
             loss = m.train(inputs)
@@ -120,7 +125,7 @@ def model_inference(
         input_ctx.total_samples is None
         or input_ctx.batch_index * batch_size < input_ctx.total_samples
     ):
-        inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+        inputs = m.inputs_from_bundle(bundle, m.model_inputs, input_mapping, input_ctx)
         assert input_ctx.total_samples is not None
         tbatch.total = input_ctx.total_samples // batch_size
         batch_outputs = m.inference(inputs)
