@@ -178,6 +178,8 @@ class ODEWithMLP(torch.nn.Module):
     def forward(self, state0, times):
         import torchdiffeq
 
+        assert state0.shape[0] == 1, "Batch size must be 1 for ODE solver."
+        # Squeeze and unsqueeze for the 1-element batch.
         state0 = state0.squeeze(0)
         times = times.squeeze(0)
         sol = torchdiffeq.odeint_adjoint(
@@ -188,7 +190,7 @@ class ODEWithMLP(torch.nn.Module):
             atol=self.atol,
             method=self.method.value,
         )
-        return sol[..., 0].squeeze(-1)
+        return sol[..., 0].unsqueeze(0)
 
 
 @op("Neural ODE with MLP", weights=True)
