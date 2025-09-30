@@ -139,7 +139,6 @@ class ModelConfig:
     model: torch.nn.Module
     model_inputs: list[str]
     model_outputs: list[str]
-    model_sequence_outputs: list[str]  # A subset of model_outputs.
     loss_inputs: list[str]
     input_output_names: dict[str, str]
     input_handlers: dict[str, ops.Op]
@@ -275,7 +274,6 @@ class ModelBuilder:
     def __init__(self, ws: workspace.Workspace):
         self.ws = ws
         self.catalog = ops.CATALOGS[ENV]
-        self.model_sequence_outputs = []
         optimizers = []
         self.nodes: dict[str, workspace.WorkspaceNode] = {}
         repeats: list[str] = []
@@ -453,8 +451,6 @@ class ModelBuilder:
             if self.nodes[node_id].data.title.startswith("Output"):
                 model_nodes.add(node_id)
                 model_nodes |= self.all_upstream(node_id)
-                if self.nodes[node_id].data.title == "Output sequence":
-                    self.model_sequence_outputs.append(_to_id(node_id, "x"))
         assert model_nodes, "The model definition must have at least one Output node."
         layers = []
         loss_layers = []
@@ -477,7 +473,6 @@ class ModelBuilder:
         cfg["input_output_names"], cfg["input_handlers"] = self.get_names_and_handlers(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
-        cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
         layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
