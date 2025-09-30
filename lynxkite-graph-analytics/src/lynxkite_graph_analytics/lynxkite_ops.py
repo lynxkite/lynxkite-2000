@@ -195,6 +195,13 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     return nx.Graph(graph.subgraph(sample))
 
 
+@op("Sample table")
+def sample_table(b: core.Bundle, *, table_name: core.TableName = "meta", fraction: float = 0.1):
+    b = b.copy()
+    b.dfs[table_name] = b.dfs[table_name].sample(frac=fraction)
+    return b
+
+
 def _map_color(value):
     if pd.api.types.is_numeric_dtype(value):
         cmap = matplotlib.cm.get_cmap("viridis")
