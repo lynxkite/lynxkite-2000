@@ -101,7 +101,7 @@ def load_pct_data(*, root_path: str) -> core.Bundle:
 def index_genes(b: core.Bundle) -> core.Bundle:
     """Enumerates all the genes we have data for, and gives the sequential numbers."""
     root_path = b.other["root_path"]
-    all_rna_genes = set(b.dfs["rna_df"]["Sample"])
+    all_rna_genes = set(b.dfs["rna_df"].index)
     all_ppi_genes = set(
         itertools.chain.from_iterable(
             load_ppi_for_tissue(root_path, t)[["gene1", "gene2"]].values.flatten()
@@ -368,3 +368,26 @@ class HeteroGraphEncoder(nn.Module):
         r = self.fuse(torch.cat([bg, bd, bc], dim=-1))
         print("result", r.shape)
         return r
+
+
+@op("LynxKite Graph Analytics", "PDX", "Draw timeseries", view="matplotlib")
+def draw_timeseries(
+    b: core.Bundle,
+    *,
+    index: int = 0,
+    table_name: core.TableName = "meta",
+    predicted_column: core.ColumnNameByTableName = "predicted",
+):
+    import matplotlib.pyplot as plt
+
+    row = b.dfs[table_name].iloc[index]
+    future = row["future_volumes"]
+    pred = row[predicted_column]
+    times = row["future_timestamps"]
+    plt.plot(times, future, "o-")
+    plt.plot(times, pred, "o--")
+    plt.xlabel("Days Post T0")
+    plt.ylabel("Volume (mm3)")
+    plt.title(f"PDX {row['Model']} treated with {row['Treatment']}")
+    plt.legend(["True", "Predicted"])
+    return plt.gcf()
