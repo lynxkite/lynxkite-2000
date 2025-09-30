@@ -132,7 +132,6 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
 
 
 reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
-reg("Output sequence", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
 
 
 @op("LSTM", weights=True)
