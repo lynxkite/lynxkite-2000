@@ -83,7 +83,12 @@ def train_model(
             input_ctx.total_samples is None
             or input_ctx.batch_index * batch_size < input_ctx.total_samples
         ):
-            inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+            inputs = m.inputs_from_bundle(
+                bundle,
+                list(set(m.model_inputs) | set(m.loss_inputs) - set(m.model_outputs)),
+                input_mapping,
+                input_ctx,
+            )
             assert input_ctx.total_samples is not None
             tbatch.total = input_ctx.total_samples // batch_size
             loss = m.train(inputs)
@@ -113,7 +118,6 @@ def model_inference(
         return ops.Result(bundle, error="Mapping is unset.")
     m: pytorch_core.ModelConfig = bundle.other[model_name]
     assert m.trained, "The model is not trained."
-    num_batches = 100  # Initial guess. Will update after the first iteration.
     input_ctx = pytorch_core.InputContext(batch_size=batch_size, batch_index=0)
     outputs = {}
     tbatch = tqdm(total=100)  # Initial guess. Will update after the first iteration.
@@ -121,10 +125,9 @@ def model_inference(
         input_ctx.total_samples is None
         or input_ctx.batch_index * batch_size < input_ctx.total_samples
     ):
-        inputs = m.inputs_from_bundle(bundle, input_mapping, input_ctx)
+        inputs = m.inputs_from_bundle(bundle, m.model_inputs, input_mapping, input_ctx)
         assert input_ctx.total_samples is not None
-        num_batches = input_ctx.total_samples // batch_size
-        tbatch.total = num_batches
+        tbatch.total = input_ctx.total_samples // batch_size
         batch_outputs = m.inference(inputs)
         for k, v in batch_outputs.items():
             v = v.detach().numpy()
