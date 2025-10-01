@@ -142,9 +142,11 @@ def lstm(x, *, input_size=1024, hidden_size=1024, dropout=0.0):
     return lambda x: lstm(x)[1][0].squeeze(0)
 
 
-class ODEFunc(torch.nn.Module):
+class MLPODEFunc(torch.nn.Module):
     def __init__(self, *, input_dim, hidden_dim, output_dim, num_layers, activation_type):
         super().__init__()
+        assert num_layers >= 2, "must have at least 2 layers for MLP"
+        assert output_dim <= input_dim, "output dim must be <= input dim"
         self.input_dim = input_dim
         self.output_dim = output_dim
         layers = [torch.nn.Linear(input_dim, hidden_dim)]
@@ -163,7 +165,7 @@ class ODEFunc(torch.nn.Module):
 class ODEWithMLP(torch.nn.Module):
     def __init__(self, *, rtol, atol, input_dim, hidden_dim, num_layers, activation_type, method):
         super().__init__()
-        self.func = ODEFunc(
+        self.func = MLPODEFunc(
             input_dim=input_dim,
             hidden_dim=hidden_dim,
             output_dim=1,
@@ -205,6 +207,10 @@ def neural_ode_mlp(
     mlp_hidden_size=64,
     mlp_activation=ActivationTypes.ReLU,
 ):
+    """A neural ODE for predicting a 1-dimensional value over time, using an MLP to model the derivative.
+
+    Must be used with batch size 1.
+    """
     return ODEWithMLP(
         rtol=relative_tolerance,
         atol=absolute_tolerance,
