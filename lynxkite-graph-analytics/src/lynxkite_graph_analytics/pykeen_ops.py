@@ -608,8 +608,6 @@ def def_pykeen_with_attributes(
     assert isinstance(temp_model, models.ERModel), "Only models derived from ERModel are supported."
     try:
         interaction: Interaction = temp_model.interaction
-        entity_representations = temp_model.entity_representations
-        relation_representations = temp_model.relation_representations
     except AttributeError as e:
         raise Exception(
             "Interaction not supported for this model type. Please use a different interaction."
@@ -627,12 +625,12 @@ def def_pykeen_with_attributes(
             .numpy(),
             literals_to_id=literals_to_id,
         ),
-        entity_representations=[
-            entity_representation for entity_representation in entity_representations
-        ],
-        relation_representations=[
-            relation_representation for relation_representation in relation_representations
-        ],
+        entity_representations_kwargs=dict(
+            shape=embedding_dim,
+        ),
+        relation_representations_kwargs=dict(
+            shape=embedding_dim,
+        ),
         interaction=interaction,
         combination=combination_cls,
         loss=loss_function,
