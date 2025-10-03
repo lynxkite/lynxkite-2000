@@ -30,7 +30,7 @@ typeof = type  # We have some arguments called "type".
 CACHE_WRAPPER = None  # Overwrite this to configure a caching mechanism.
 
 
-def _cache_wrap(func):
+def cached(func):
     if CACHE_WRAPPER is None:
         return func
     return CACHE_WRAPPER(func)
@@ -38,7 +38,7 @@ def _cache_wrap(func):
 
 def type_to_json(t):
     if isinstance(t, type) and issubclass(t, enum.Enum):
-        return {"enum": list(t.__members__.keys())}
+        return {"enum": list(t.__members__.values())}
     if getattr(t, "__metadata__", None):
         return t.__metadata__[-1]
     return {"type": str(t)}
@@ -61,9 +61,7 @@ ReadOnlyJSON: typing.TypeAlias = (
 
 
 class BaseConfig(pydantic.BaseModel):
-    model_config = pydantic.ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    model_config = pydantic.ConfigDict()
 
 
 class Parameter(BaseConfig):
@@ -74,8 +72,8 @@ class Parameter(BaseConfig):
     type: Type = None
 
     @staticmethod
-    def options(name, options, default=None):
-        e = enum.Enum(f"OptionsFor_{name}", options)
+    def options(name, options: list[str], default=None):
+        e = enum.StrEnum(f"OptionsFor_{name}", [(o, o) for o in options])
         return Parameter.basic(name, default or options[0], e)
 
     @staticmethod
@@ -97,7 +95,7 @@ class ParameterGroup(BaseConfig):
     type: str = "group"
 
 
-class Position(str, enum.Enum):
+class Position(enum.StrEnum):
     """Defines the position of an input or output in the UI."""
 
     LEFT = "left"
@@ -162,7 +160,8 @@ def get_optional_type(type):
 
 
 def _param_to_type(name, value, type):
-    value = value or ""
+    if value is None:
+        value = ""
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
@@ -170,16 +169,15 @@ def _param_to_type(name, value, type):
         assert value != "", f"{name} is unset."
         return float(value)
     if isinstance(type, enum.EnumMeta):
-        assert value in type.__members__, f"{value} is not an option for {name}."
-        return type[value]
+        assert value in type, (
+            f'Parameter "{name}" must be one of {[t.value for t in type]}. Found: {value}'
+        )
+        return type(value)
     opt_type = get_optional_type(type)
     if opt_type:
         return None if value == "" else _param_to_type(name, value, opt_type)
     if isinstance(type, typeof) and issubclass(type, pydantic.BaseModel):
-        try:
-            return type.model_validate_json(value)
-        except pydantic.ValidationError:
-            return None
+        return type.model_validate_json(value)
     return value
 
 
@@ -245,7 +243,7 @@ class Op(BaseConfig):
 
 
 def op(
-    env: str,
+    env: str | None,
     *names: str,
     view: str = "basic",
     outputs: list[str] | None = None,
@@ -259,10 +257,11 @@ def op(
     Decorator for defining an operation.
 
     Parameters:
-        env: The environment (workspace type) to which the operation belongs.
+        env: The environment (workspace type) to which the operation belongs. If None, the operation
+             is not registered in any catalog.
         names: The list of categories this operation belongs to, followed by the name of the operation.
         view: How the operation will be displayed in the UI. One of "basic", "visualization",
-              "table_view", "graph_creation_view", "image", "molecule", "matplotlib".
+              "table_view", "graph_creation_view", "image", "molecule", "matplotlib", "service".
         outputs: A list of output names. If not provided, defaults to ["output"] for "basic" view.
         params: Normally the parameters are taken from the function signature.
                 Use "params" to override this.
@@ -287,7 +286,7 @@ def op(
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = _cache_wrap(func)
+                func = cached(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
@@ -316,8 +315,9 @@ def op(
             type=_view,
             color=color or "orange",
         )
-        CATALOGS.setdefault(env, {})
-        CATALOGS[env][op.id] = op
+        if env is not None:
+            CATALOGS.setdefault(env, {})
+            CATALOGS[env][op.id] = op
         func.__op__ = op
         return func
 
@@ -520,6 +520,7 @@ def run_user_script(script_path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
+    assert spec.loader
     spec.loader.exec_module(module)
 
 

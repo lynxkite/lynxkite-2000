@@ -1,5 +1,5 @@
 // Test the execution of the example workspaces
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import { Workspace } from "./lynxkite";
 
 const WORKSPACES = [

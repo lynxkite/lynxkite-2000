@@ -63,10 +63,11 @@ def import_file(
         names = kwargs.get("columns", "<from file>")
         names = pd.api.extensions.no_default if names == "<from file>" else names.split(",")
         sep = kwargs.get("separator", "<auto>")
-        sep = pd.api.extensions.no_default if sep == "<auto>" else sep
+        sep = pd.api.extensions.no_default if sep == "<auto>" else sep.replace("\\t", "\t")
         df = pd.read_csv(file_path, names=names, sep=sep)
     elif file_format == "json":
-        df = pd.read_json(file_path)
+        with open(file_path, "r") as f:
+            df = pd.read_json(f)
     elif file_format == "parquet":
         df = pd.read_parquet(file_path)
     elif file_format == "excel":
@@ -194,6 +195,13 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     return nx.Graph(graph.subgraph(sample))
 
 
+@op("Sample table")
+def sample_table(b: core.Bundle, *, table_name: core.TableName = "meta", fraction: float = 0.1):
+    b = b.copy()
+    b.dfs[table_name] = b.dfs[table_name].sample(frac=fraction)
+    return b
+
+
 def _map_color(value):
     if pd.api.types.is_numeric_dtype(value):
         cmap = matplotlib.cm.get_cmap("viridis")
@@ -250,7 +258,10 @@ def visualize_graph(
         pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
     nodes = nodes.to_records()
-    edges = core.df_for_frontend(graph.dfs["edges"].drop_duplicates(["source", "target"]), 10_000)
+    deduped_edges = graph.dfs["edges"].drop_duplicates(
+        ["source", "target"]
+    )  # ty: ignore[no-matching-overload] (https://github.com/astral-sh/ty/issues/1132)
+    edges = core.df_for_frontend(deduped_edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()

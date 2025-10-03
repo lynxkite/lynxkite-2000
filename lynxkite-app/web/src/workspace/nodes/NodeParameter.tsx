@@ -1,7 +1,5 @@
 import jmespath from "jmespath";
-// @ts-ignore
-import ArrowsHorizontal from "~icons/tabler/arrows-horizontal.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Help from "~icons/tabler/question-mark.jsx";
 import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";
@@ -10,10 +8,10 @@ import ParameterInput from "./ParameterInput";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping'>";
+  "lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping | None";
 const MODEL_INFERENCE_INPUT_MAPPING =
-  "<class 'lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping'>";
-const MODEL_OUTPUT_MAPPING = "<class 'lynxkite_graph_analytics.ml_ops.ModelOutputMapping'>";
+  "lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping | None";
+const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
   const help = doc && (
@@ -101,7 +99,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     </label>
   ) : meta?.type?.type === BOOLEAN ? (
     <div className="form-control">
-      <label className="label cursor-pointer">
+      <label className="label cursor-pointer checkbox-param">
         {name.replace(/_/g, " ")}
         <input
           className="checkbox"
@@ -135,13 +133,20 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
 }
 
 function getDropDownValues(data: any, meta: any): string[] {
-  const metadata = data.input_metadata.value;
-  let query = meta.type.metadata_query;
+  const metadata = data.input_metadata?.value;
+  let query = meta?.type?.metadata_query;
+  if (!metadata || !query) {
+    return [];
+  }
   // Substitute parameters in the query.
   for (const p in data.params) {
     query = query.replace(`<${p}>`, data.params[p]);
   }
-  const res = ["", ...jmespath.search(metadata, query)];
-  res.sort();
-  return res;
+  try {
+    const res = ["", ...jmespath.search(metadata, query)];
+    res.sort();
+    return res;
+  } catch (_) {
+    return [""];
+  }
 }

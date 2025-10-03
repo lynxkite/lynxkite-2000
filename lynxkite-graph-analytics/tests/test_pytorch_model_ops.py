@@ -47,18 +47,18 @@ async def test_build_model():
         {
             "input": {"title": "Input: tensor"},
             "lin": {"title": "Linear", "output_dim": 4},
-            "act": {"title": "Activation", "type": "LeakyReLU"},
+            "act": {"title": "Activation", "type": "Leaky ReLU"},
             "output": {"title": "Output"},
             "label": {"title": "Input: tensor"},
             "loss": {"title": "MSE loss"},
             "optim": {"title": "Optimizer", "type": "SGD", "lr": 0.1},
         },
         [
-            ("input:output", "lin:x"),
+            ("input:input", "lin:x"),
             ("lin:output", "act:x"),
             ("act:output", "output:x"),
             ("output:x", "loss:x"),
-            ("label:output", "loss:y"),
+            ("label:input", "loss:y"),
             ("loss:output", "optim:loss"),
         ],
     )
@@ -66,9 +66,9 @@ async def test_build_model():
     y = x + 1
     m = pytorch_core.build_model(ws)
     for i in range(1000):
-        loss = m.train({"input_output": x, "label_output": y})
+        loss = m.train({"input_input": x, "label_input": y})
     assert loss < 0.1
-    o = m.inference({"input_output": x[:1]})
+    o = m.inference({"input_input": x[:1]})
     error = torch.nn.functional.mse_loss(o["output_x"], x[:1] + 1)
     assert error < 0.1
 
@@ -80,7 +80,7 @@ async def test_build_model_with_repeat():
             {
                 "input": {"title": "Input: tensor"},
                 "lin": {"title": "Linear", "output_dim": 8},
-                "act": {"title": "Activation", "type": "LeakyReLU"},
+                "act": {"title": "Activation", "type": "Leaky ReLU"},
                 "output": {"title": "Output"},
                 "label": {"title": "Input: tensor"},
                 "loss": {"title": "MSE loss"},
@@ -88,11 +88,11 @@ async def test_build_model_with_repeat():
                 "repeat": {"title": "Repeat", "times": times, "same_weights": False},
             },
             [
-                ("input:output", "lin:x"),
+                ("input:input", "lin:x"),
                 ("lin:output", "act:x"),
                 ("act:output", "output:x"),
                 ("output:x", "loss:x"),
-                ("label:output", "loss:y"),
+                ("label:input", "loss:y"),
                 ("loss:output", "optim:loss"),
                 ("repeat:output", "lin:x"),
                 ("act:output", "repeat:input"),

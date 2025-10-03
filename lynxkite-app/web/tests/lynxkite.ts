@@ -1,5 +1,5 @@
 // Shared testing utilities.
-import { type Locator, type Page, expect } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 // Mirrors the "id" filter.
 export function toId(x) {
@@ -57,14 +57,17 @@ export class Workspace {
     const allBoxes = await this.getBoxes().all();
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    await this.page.locator(".node-search").getByText(boxName, { exact: true }).click();
+    const parts = boxName.split(" › ");
+    for (const part of parts) {
+      await this.page.locator(".node-search").getByText(part.trim(), { exact: true }).click();
+    }
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
 
   async getCatalog() {
     await this.page.locator(".ws-name").click();
     await this.page.keyboard.press("/");
-    const results = this.page.locator(".node-search .matches .search-result");
+    const results = this.page.locator(".node-search .matches .search-result-op");
     await expect(results.first()).toBeVisible();
     const catalog = await results.allInnerTexts();
     // Dismiss the catalog menu
@@ -150,7 +153,7 @@ export class Workspace {
       try {
         await this.tryToConnectBoxes(sourceId, targetId);
         return;
-      } catch (e) {}
+      } catch (_) {}
     }
   }
 
@@ -160,7 +163,7 @@ export class Workspace {
     await request;
   }
 
-  async expectErrorFree(executionWaitTime?) {
+  async expectErrorFree() {
     await expect(this.getBoxes().locator("text=⚠️").first()).not.toBeVisible();
   }
 
@@ -170,10 +173,12 @@ export class Workspace {
 }
 
 export class Box {
-  constructor(
-    readonly page: Page,
-    readonly locator: Locator,
-  ) {}
+  readonly page;
+  readonly locator;
+  constructor(page: Page, locator: Locator) {
+    this.page = page;
+    this.locator = locator;
+  }
   getParameter(name: string) {
     return this.locator.getByLabel(name);
   }

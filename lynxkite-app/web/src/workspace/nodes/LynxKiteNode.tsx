@@ -1,18 +1,18 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-// @ts-ignore
+// @ts-expect-error
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
-// @ts-ignore
+// @ts-expect-error
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Dots from "~icons/tabler/dots.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Help from "~icons/tabler/question-mark.jsx";
-// @ts-ignore
+// @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
-import Tooltip from "../../Tooltip";
 import { COLORS } from "../../common.ts";
+import Tooltip from "../../Tooltip";
 
 interface LynxKiteNodeProps {
   id: string;

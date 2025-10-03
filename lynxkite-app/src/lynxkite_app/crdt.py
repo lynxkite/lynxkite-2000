@@ -282,12 +282,13 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     ops.load_user_scripts(name)
     ws_pyd.connect_crdt(ws_crdt)
     ws_pyd.update_metadata()
+    ws_pyd.path = name
+    ws_pyd.normalize()
     if not ws_pyd.has_executor():
         return
     with ws_crdt.doc.transaction():
         for nc in ws_crdt["nodes"]:
             nc["data"]["status"] = "planned"
-    ws_pyd.normalize()
     await ws_pyd.execute()
     ws_pyd.save(path)
     print(f"Finished running {name} in {ws_pyd.env}.")
