@@ -587,6 +587,8 @@ class ModelBuilder:
         """Returns the layer produced by this op."""
         operation_inputs = []
         for input in op.inputs:
+            # TODO: modify _edge_to_input to handle submodules. If no input edges are found,
+            # default input names should be used.
             input_edges = [
                 self._edge_to_input(edge, input.type)
                 for edge in self.in_edges[node_id].get(input.name, [])
@@ -661,7 +663,7 @@ class ModelBuilder:
         cfg["model_inputs"] = model.inputs
         cfg["model_outputs"] = model.outputs
         cfg["loss_inputs"] = loss.inputs
-        cfg["input_output_names"] = self.get_names_and_types(
+        cfg["input_output_names"], cfg["input_output_types"] = self.get_names_and_types(
             *cfg["model_inputs"], *cfg["model_outputs"], *cfg["loss_inputs"]
         )
         cfg["model_sequence_outputs"] = sorted(self.model_sequence_outputs)
