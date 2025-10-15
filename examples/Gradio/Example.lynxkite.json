@@ -1,5 +1,13 @@
 {
-  "edges": [],
+  "edges": [
+    {
+      "id": "Karate club graph 1 output Gradio DataFrame 1 bundle",
+      "source": "Karate club graph 1",
+      "sourceHandle": "output",
+      "target": "Gradio DataFrame 1",
+      "targetHandle": "bundle"
+    }
+  ],
   "env": "LynxKite Graph Analytics",
   "nodes": [
     {
@@ -37,136 +45,121 @@
     },
     {
       "data": {
-        "__execution_delay": 0.0,
         "display": null,
-        "error": "Missing input: input",
-        "input_metadata": null,
+        "error": null,
+        "input_metadata": [],
         "meta": {
-          "categories": [],
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Social"
+          ],
           "color": "orange",
           "doc": null,
-          "id": "Plain example",
-          "inputs": [
-            {
-              "name": "input",
-              "position": "left",
-              "type": {
-                "type": "<class 'inspect._empty'>"
-              }
-            }
-          ],
-          "name": "Plain example",
+          "id": "NetworkX > Generators > Social > Karate club graph",
+          "inputs": [],
+          "name": "Karate club graph",
           "outputs": [
             {
               "name": "output",
               "position": "right",
               "type": {
-                "type": "None"
+                "type": "<class 'networkx.classes.graph.Graph'>"
               }
             }
           ],
-          "params": [
-            {
-              "default": 123,
-              "name": "param1",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": "hello",
-              "name": "param2",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
+          "params": [],
           "type": "basic"
         },
-        "op_id": "Plain example",
-        "params": {
-          "param1": "12334234",
-          "param2": "hello"
-        },
+        "op_id": "NetworkX > Generators > Social > Karate club graph",
+        "params": {},
         "status": "done",
-        "title": "Plain example"
+        "title": "Karate club graph"
       },
       "dragHandle": ".drag-handle",
-      "height": 324.0,
-      "id": "Plain example 1",
+      "height": 200.0,
+      "id": "Karate club graph 1",
       "position": {
-        "x": 1173.636507601351,
-        "y": -26.24355996621621
+        "x": 1457.0215816117916,
+        "y": 183.58356136741287
       },
       "type": "basic",
-      "width": 271.0
+      "width": 200.0
     },
     {
       "data": {
-        "__execution_delay": 0.0,
-        "display": null,
-        "error": "Missing input: input",
-        "input_metadata": null,
+        "display": {
+          "backend": "/api/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio_DataFrame_1"
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target",
+                  "weight"
+                ],
+                "key": "edges"
+              },
+              "nodes": {
+                "columns": [
+                  "club",
+                  "id"
+                ],
+                "key": "nodes"
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": null,
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
         "meta": {
           "categories": [],
           "color": "orange",
           "doc": null,
-          "id": "Plain example",
+          "id": "Gradio DataFrame",
           "inputs": [
             {
-              "name": "input",
+              "name": "bundle",
               "position": "left",
               "type": {
-                "type": "<class 'inspect._empty'>"
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
               }
             }
           ],
-          "name": "Plain example",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 123,
-              "name": "param1",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": "hello",
-              "name": "param2",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "basic"
+          "name": "Gradio DataFrame",
+          "outputs": [],
+          "params": [],
+          "type": "gradio"
         },
-        "op_id": "Plain example",
-        "params": {
-          "param1": "23",
-          "param2": "hello"
-        },
+        "op_id": "Gradio DataFrame",
+        "params": {},
         "status": "done",
-        "title": "Plain example"
+        "title": "Gradio DataFrame"
       },
       "dragHandle": ".drag-handle",
-      "height": 270.0,
-      "id": "Plain example 2",
+      "height": 473.0,
+      "id": "Gradio DataFrame 1",
       "position": {
-        "x": 1174.2422930743244,
-        "y": 315.4555532094594
+        "x": 1874.5111268036615,
+        "y": 52.54841790387843
       },
-      "type": "basic",
-      "width": 280.0
+      "type": "gradio",
+      "width": 554.0
     }
   ],
-  "paused": true
+  "paused": false
 }

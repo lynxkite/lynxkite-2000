@@ -17,6 +17,9 @@ declare global {
 
 function NodeWithGradio(props: any) {
   const path = props.data?.display?.value?.backend;
+  if (!path) {
+    return <div style={{ margin: "16px" }}>nothing yet...</div>;
+  }
   const basePath = `${window.location.protocol}//${window.location.host}`;
   const src = `${basePath}${path}/`;
   return (
