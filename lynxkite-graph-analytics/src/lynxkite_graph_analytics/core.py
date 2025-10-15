@@ -261,7 +261,7 @@ class WorkspaceResult:
 
 @ops.register_executor(ENV)
 async def execute(
-    ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext
+    ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext | None = None
 ) -> WorkspaceResult:
     catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
@@ -302,7 +302,7 @@ def _to_bundle(x):
 
 
 async def _execute_node(
-    ctx: workspace.WorkspaceExecutionContext,
+    ctx: workspace.WorkspaceExecutionContext | None,
     node: workspace.WorkspaceNode,
     ws: workspace.Workspace,
     catalog: ops.Catalog,
@@ -503,7 +503,7 @@ class _ProxyApp:
                 router.routes[i] = route
                 break
         else:
-            router.routes.append(route)
+            router.routes.insert(0, route)
 
 
 async def mount_gradio(app, gradio_app, path: str):
