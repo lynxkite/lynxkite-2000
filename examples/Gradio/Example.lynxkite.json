@@ -1,0 +1,172 @@
+{
+  "edges": [],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "display": {
+          "backend": "/api/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio_example_1"
+        },
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Gradio example",
+          "inputs": [],
+          "name": "Gradio example",
+          "outputs": [],
+          "params": [],
+          "type": "gradio"
+        },
+        "op_id": "Gradio example",
+        "params": {},
+        "status": "done",
+        "title": "Gradio example"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 466.0,
+      "id": "Gradio example 1",
+      "position": {
+        "x": 420.3487119932432,
+        "y": -14.135874155405414
+      },
+      "type": "gradio",
+      "width": 475.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": "Missing input: input",
+        "input_metadata": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Plain example",
+          "inputs": [
+            {
+              "name": "input",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Plain example",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 123,
+              "name": "param1",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "hello",
+              "name": "param2",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Plain example",
+        "params": {
+          "param1": "12334234",
+          "param2": "hello"
+        },
+        "status": "done",
+        "title": "Plain example"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 324.0,
+      "id": "Plain example 1",
+      "position": {
+        "x": 1173.636507601351,
+        "y": -26.24355996621621
+      },
+      "type": "basic",
+      "width": 271.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": "Missing input: input",
+        "input_metadata": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Plain example",
+          "inputs": [
+            {
+              "name": "input",
+              "position": "left",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Plain example",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 123,
+              "name": "param1",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "hello",
+              "name": "param2",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "type": "basic"
+        },
+        "op_id": "Plain example",
+        "params": {
+          "param1": "23",
+          "param2": "hello"
+        },
+        "status": "done",
+        "title": "Plain example"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 270.0,
+      "id": "Plain example 2",
+      "position": {
+        "x": 1174.2422930743244,
+        "y": 315.4555532094594
+      },
+      "type": "basic",
+      "width": 280.0
+    }
+  ],
+  "paused": true
+}
