@@ -1,0 +1,630 @@
+{
+  "edges": [
+    {
+      "id": "MSE loss 1 Optimizer 1",
+      "source": "MSE loss 1",
+      "sourceHandle": "output",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Output 1 x MSE loss 1 x",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "MSE loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "LSTM 1 output Linear 1 x",
+      "source": "LSTM 1",
+      "sourceHandle": "output",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Neural ODE with MLP 1 output Output 1 x",
+      "source": "Neural ODE with MLP 1",
+      "sourceHandle": "output",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 1 output Concatenate 2 b",
+      "source": "Linear 1",
+      "sourceHandle": "output",
+      "target": "Concatenate 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Drug, disease, gene GNN 1 output Concatenate 2 a",
+      "source": "Drug, disease, gene GNN 1",
+      "sourceHandle": "output",
+      "target": "Concatenate 2",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: sequential 2 input Neural ODE with MLP 1 timestamps",
+      "source": "Input: sequential 2",
+      "sourceHandle": "input",
+      "target": "Neural ODE with MLP 1",
+      "targetHandle": "timestamps"
+    },
+    {
+      "id": "Input: sequential 1 input MSE loss 1 y",
+      "source": "Input: sequential 1",
+      "sourceHandle": "input",
+      "target": "MSE loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "Input: sequential 3 input LSTM 1 x",
+      "source": "Input: sequential 3",
+      "sourceHandle": "input",
+      "target": "LSTM 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: drug-targets-gene graph 1 input Drug, disease, gene GNN 1 drug_edges",
+      "source": "Input: drug-targets-gene graph 1",
+      "sourceHandle": "input",
+      "target": "Drug, disease, gene GNN 1",
+      "targetHandle": "drug_edges"
+    },
+    {
+      "id": "Input: gene-interacts-gene graph 1 input Drug, disease, gene GNN 1 gene_edges",
+      "source": "Input: gene-interacts-gene graph 1",
+      "sourceHandle": "input",
+      "target": "Drug, disease, gene GNN 1",
+      "targetHandle": "gene_edges"
+    },
+    {
+      "id": "Input: disease-assoc-gene graph 1 input Drug, disease, gene GNN 1 disease_edges",
+      "source": "Input: disease-assoc-gene graph 1",
+      "sourceHandle": "input",
+      "target": "Drug, disease, gene GNN 1",
+      "targetHandle": "disease_edges"
+    },
+    {
+      "id": "Input: gene features 1 input Drug, disease, gene GNN 1 gene_nodes",
+      "source": "Input: gene features 1",
+      "sourceHandle": "input",
+      "target": "Drug, disease, gene GNN 1",
+      "targetHandle": "gene_nodes"
+    },
+    {
+      "id": "Concatenate 2 output Neural ODE with MLP 1 state_0",
+      "source": "Concatenate 2",
+      "sourceHandle": "output",
+      "target": "Neural ODE with MLP 1",
+      "targetHandle": "state_0"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Group",
+        "params": {
+          "color": "blue"
+        },
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 1072.0,
+      "id": "Group 1",
+      "position": {
+        "x": 504.62545496173914,
+        "y": -48.52927736567699
+      },
+      "type": "node_group",
+      "width": 420.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Group",
+        "params": {},
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 801.0,
+      "id": "Group 5",
+      "position": {
+        "x": 653.8616229610058,
+        "y": -2144.434037892992
+      },
+      "type": "node_group",
+      "width": 686.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "LSTM",
+        "params": {
+          "dropout": "0",
+          "hidden_size": "32",
+          "input_size": "1"
+        },
+        "status": "done",
+        "title": "LSTM"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 312.0,
+      "id": "LSTM 1",
+      "parentId": "Group 1",
+      "position": {
+        "x": 26.276553085873843,
+        "y": 293.63470189604885
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 204.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: sequential",
+        "params": {
+          "_input_name": "future volumes",
+          "per_sample": true
+        },
+        "status": "done",
+        "title": "Input: sequential"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 280.0,
+      "id": "Input: sequential 1",
+      "parentId": "Group 5",
+      "position": {
+        "x": 283.4106994360478,
+        "y": 521.0747592757436
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 237.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "MSE loss",
+        "params": {},
+        "status": "done",
+        "title": "MSE loss"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 200.0,
+      "id": "MSE loss 1",
+      "parentId": "Group 5",
+      "position": {
+        "x": 10.0,
+        "y": 369.6042243521049
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Optimizer",
+        "params": {
+          "lr": "0.0001",
+          "type": "AdamW"
+        },
+        "status": "done",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 247.0,
+      "id": "Optimizer 1",
+      "parentId": "Group 5",
+      "position": {
+        "x": 10.380437966635554,
+        "y": 10.0
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 190.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: sequential",
+        "params": {
+          "_input_name": "future timestamps",
+          "per_sample": true
+        },
+        "status": "done",
+        "title": "Input: sequential"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 299.0,
+      "id": "Input: sequential 2",
+      "position": {
+        "x": 1248.253547891751,
+        "y": -168.41648271530312
+      },
+      "type": "basic",
+      "width": 230.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Neural ODE with MLP",
+        "params": {
+          "absolute_tolerance": "0.001",
+          "method": "dopri5",
+          "mlp_activation": "ReLU",
+          "mlp_hidden_size": "64 ",
+          "mlp_layers": "2",
+          "relative_tolerance": "0.001                                                                 ",
+          "state_dimensions": "192"
+        },
+        "status": "done",
+        "title": "Neural ODE with MLP"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 612.0,
+      "id": "Neural ODE with MLP 1",
+      "position": {
+        "x": 592.4620140488937,
+        "y": -1016.8211014059549
+      },
+      "type": "basic",
+      "width": 284.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: sequential",
+        "params": {
+          "_input_name": "past volumes",
+          "per_sample": true
+        },
+        "status": "done",
+        "title": "Input: sequential"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 288.0,
+      "id": "Input: sequential 3",
+      "parentId": "Group 1",
+      "position": {
+        "x": 25.67871348492065,
+        "y": 781.2490351268727
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 210.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Output",
+        "params": {
+          "name": "future volume predictions"
+        },
+        "status": "done",
+        "title": "Output"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 155.0,
+      "id": "Output 1",
+      "position": {
+        "x": 577.8578811319113,
+        "y": -1217.3477063035696
+      },
+      "type": "basic",
+      "width": 304.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": "# Past tumor volume embedding with LSTM"
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 130.0,
+      "id": "Comment 1",
+      "parentId": "Group 1",
+      "position": {
+        "x": 10.0,
+        "y": 631.4483599348773
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": "# Tumor volume trajectory predictions with ODE\n\nAn MLP is used to predict the derivative of the tumor volume at different stages, based on the knowledge graph embedding and the past tumor volume embeddings."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 274.0,
+      "id": "Comment 6",
+      "position": {
+        "x": -0.7721924881518737,
+        "y": -865.6155529412208
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": "# Training configuration\n\nThe loss for the whole model is simply the MSE loss over the future volume measurements."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 138.0,
+      "id": "Comment 7",
+      "parentId": "Group 5",
+      "position": {
+        "x": 276.18914557042024,
+        "y": 267.8721350317928
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "128"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "dragHandle": ".drag-handle",
+      "extent": "parent",
+      "height": 200.0,
+      "id": "Linear 1",
+      "parentId": "Group 1",
+      "position": {
+        "x": 27.772628898929725,
+        "y": 40.074439147430084
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Concatenate 2",
+      "position": {
+        "x": 210.60112224325755,
+        "y": -268.54490939988654
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Drug, disease, gene GNN",
+        "params": {
+          "gene_in_dim": "1281",
+          "hidden_dim": "64",
+          "num_diseases": "6",
+          "num_drugs": "62",
+          "out_dim": "64"
+        },
+        "status": "done",
+        "title": "Drug, disease, gene GNN"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 490.0,
+      "id": "Drug, disease, gene GNN 1",
+      "position": {
+        "x": -583.5676556501203,
+        "y": -84.21136904212074
+      },
+      "type": "basic",
+      "width": 893.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: disease-assoc-gene graph",
+        "params": {
+          "_input_name": "disease-assoc-gene"
+        },
+        "status": "done",
+        "title": "Input: disease-assoc-gene graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: disease-assoc-gene graph 1",
+      "position": {
+        "x": -119.87986821422116,
+        "y": 911.1301909596511
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: drug-targets-gene graph",
+        "params": {
+          "_input_name": "drug-targets-gene"
+        },
+        "status": "done",
+        "title": "Input: drug-targets-gene graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: drug-targets-gene graph 1",
+      "position": {
+        "x": -325.16409632206444,
+        "y": 603.5102221441206
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: gene features",
+        "params": {
+          "_input_name": "gene-embeddings"
+        },
+        "status": "done",
+        "title": "Input: gene features"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: gene features 1",
+      "position": {
+        "x": -534.1741060427338,
+        "y": 868.7309370669959
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: gene-interacts-gene graph",
+        "params": {
+          "_input_name": "gene-interacts-gene"
+        },
+        "status": "done",
+        "title": "Input: gene-interacts-gene graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Input: gene-interacts-gene graph 1",
+      "position": {
+        "x": 62.296062215582026,
+        "y": 631.295115268128
+      },
+      "type": "basic",
+      "width": 200.0
+    }
+  ],
+  "paused": false
+}
