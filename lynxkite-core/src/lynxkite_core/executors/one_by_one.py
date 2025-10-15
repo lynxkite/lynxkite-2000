@@ -40,7 +40,7 @@ def register(env: str, cache: bool = True):
         from lynxkite_core.executors import one_by_one
         one_by_one.register("My Environment")
     """
-    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env])
+    ops.EXECUTORS[env] = lambda ws, _ctx: _execute(ws, ops.CATALOGS[env])
 
 
 def _get_stages(ws, catalog: ops.Catalog):
