@@ -12,6 +12,7 @@ from . import ops
 
 if TYPE_CHECKING:
     import pycrdt
+    import fastapi
     from lynxkite_core import ops
 
 
@@ -108,6 +109,13 @@ class WorkspaceEdge(BaseConfig):
     targetHandle: str
 
 
+@dataclasses.dataclass
+class WorkspaceExecutionContext:
+    """Context passed to ops during execution."""
+
+    app: "fastapi.FastAPI | None"
+
+
 class Workspace(BaseConfig):
     """A workspace is a representation of a computational graph that consists of nodes and edges.
 
@@ -145,8 +153,8 @@ class Workspace(BaseConfig):
     def has_executor(self):
         return self.env in ops.EXECUTORS
 
-    async def execute(self):
-        return await ops.EXECUTORS[self.env](self)
+    async def execute(self, ctx: WorkspaceExecutionContext | None = None):
+        return await ops.EXECUTORS[self.env](self, ctx)
 
     def model_dump_json(self) -> str:
         """Returns the workspace as JSON."""

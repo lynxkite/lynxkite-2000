@@ -265,7 +265,7 @@ A custom executor can be registered using
 
 ```python
 @ops.register_executor(ENV)
-async def execute(ws: workspace.Workspace):
+async def execute(ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext | None):
     catalog = ops.CATALOGS[ws.env]
     ...
 ```
