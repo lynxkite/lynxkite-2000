@@ -113,7 +113,7 @@ class WorkspaceEdge(BaseConfig):
 class WorkspaceExecutionContext:
     """Context passed to ops during execution."""
 
-    app: "fastapi.FastAPI" | None
+    app: "fastapi.FastAPI | None"
 
 
 class Workspace(BaseConfig):

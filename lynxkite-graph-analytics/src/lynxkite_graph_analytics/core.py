@@ -391,7 +391,7 @@ async def _execute_node(
                 "dataframes": {"service": {"columns": ["markdown"], "data": [[markdown]]}}
             }
             result.output = None
-        elif node.type == "gradio":
+        elif node.type == "gradio" and result.output and ctx and ctx.app:
             url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
             url = url.replace(" ", "_")
             await mount_gradio(ctx.app, result.output, url)
