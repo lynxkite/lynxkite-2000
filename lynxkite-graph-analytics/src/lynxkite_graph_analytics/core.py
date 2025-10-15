@@ -1,10 +1,10 @@
 """Graph analytics executor and data types."""
 
-import contextlib
 import inspect
 import os
 import pathlib
 from lynxkite_core import ops, workspace
+from lynxkite_core.executors.one_by_one import mount_gradio
 import dataclasses
 import functools
 import networkx as nx
@@ -393,9 +393,8 @@ async def _execute_node(
             result.output = None
         elif node.type == "gradio" and result.output and ctx and ctx.app:
             url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
-            url = url.replace(" ", "_")
             await mount_gradio(ctx.app, result.output, url)
-            result.display = {"backend": url}
+            result.display = {"backend": urllib.parse.quote(url)}
             result.output = None
         elif len(op.outputs) > 1:
             assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
@@ -481,36 +480,3 @@ async def api_service_get(request):
     """
     service = await get_node_service(request)
     return await service.get(request)
-
-
-class _ProxyApp:
-    def __init__(self, app):
-        self._app = app
-        self.router = self
-
-    @contextlib.asynccontextmanager
-    async def lifespan_context(self, app):
-        yield
-
-    def mount(self, path, gradio_app):
-        import starlette.routing  # ty: ignore[unresolved-import]
-
-        router = self._app.router
-        route = starlette.routing.Mount(path, gradio_app)
-        # Overwrite existing route if it exists.
-        for i, r in enumerate(router.routes):
-            if r.path == path:
-                router.routes[i] = route
-                break
-        else:
-            router.routes.insert(0, route)
-
-
-async def mount_gradio(app, gradio_app, path: str):
-    import gradio as gr  # ty: ignore[unresolved-import]
-
-    app = _ProxyApp(app)
-    gr.mount_gradio_app(app, gradio_app, path=path)
-    # Trigger Gradio lifetime hooks.
-    async with app.lifespan_context(app):
-        pass
