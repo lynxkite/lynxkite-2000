@@ -145,8 +145,8 @@ class Workspace(BaseConfig):
     def has_executor(self):
         return self.env in ops.EXECUTORS
 
-    async def execute(self):
-        return await ops.EXECUTORS[self.env](self)
+    async def execute(self, router):
+        return await ops.EXECUTORS[self.env](self, router)
 
     def model_dump_json(self) -> str:
         """Returns the workspace as JSON."""

@@ -1,5 +1,6 @@
 """Graph analytics executor and data types."""
 
+import contextlib
 import inspect
 import os
 import pathlib
@@ -259,7 +260,7 @@ class WorkspaceResult:
 
 
 @ops.register_executor(ENV)
-async def execute(ws: workspace.Workspace) -> WorkspaceResult:
+async def execute(ws: workspace.Workspace, router) -> WorkspaceResult:
     catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
     wsres = WorkspaceResult(outputs={}, services={})
@@ -279,7 +280,7 @@ async def execute(ws: workspace.Workspace) -> WorkspaceResult:
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
-                await _execute_node(node, ws, catalog, wsres)
+                await _execute_node(router, node, ws, catalog, wsres)
     return wsres
 
 
@@ -299,6 +300,7 @@ def _to_bundle(x):
 
 
 async def _execute_node(
+    router,
     node: workspace.WorkspaceNode,
     ws: workspace.Workspace,
     catalog: ops.Catalog,
@@ -387,6 +389,13 @@ async def _execute_node(
                 "dataframes": {"service": {"columns": ["markdown"], "data": [[markdown]]}}
             }
             result.output = None
+        elif node.type == "gradio":
+            url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
+            url = url.replace(" ", "_")
+            await mount_gradio(router, result.output, url)
+            print(f"Mounted Gradio app at {url}")
+            result.display = {"backend": url}
+            result.output = None
         elif len(op.outputs) > 1:
             assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
             for k, v in result.output.items():
@@ -471,3 +480,19 @@ async def api_service_get(request):
     """
     service = await get_node_service(request)
     return await service.get(request)
+
+
+@contextlib.asynccontextmanager
+async def fake_lifespan(app):
+    yield
+
+
+async def mount_gradio(app, gradio_app, path: str):
+    import gradio as gr  # ty: ignore[unresolved-import]
+
+    ctx = app.router.lifespan_context
+    app.router.lifespan_context = fake_lifespan
+    gr.mount_gradio_app(app, gradio_app, path=path)
+    async with app.router.lifespan_context(app):
+        pass
+    app.router.lifespan_context = ctx
