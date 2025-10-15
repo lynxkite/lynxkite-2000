@@ -46,6 +46,7 @@ import NodeSearch, { buildCategoryHierarchy, type Catalogs, type OpsOp } from ".
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
+import NodeWithGradio from "./nodes/NodeWithGradio.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
@@ -226,6 +227,7 @@ function LynxKiteFlow() {
       image: NodeWithImage,
       table_view: NodeWithTableView,
       service: NodeWithTableView,
+      gradio: NodeWithGradio,
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
       comment: NodeWithComment,

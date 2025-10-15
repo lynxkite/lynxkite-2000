@@ -164,4 +164,4 @@ class SPAStaticFiles(StaticFiles):
 
 
 static_dir = SPAStaticFiles(packages=[("lynxkite_app", "web_assets")], html=True)
-app.mount("/", static_dir, name="web_assets")
+# app.mount("/", static_dir, name="web_assets")
