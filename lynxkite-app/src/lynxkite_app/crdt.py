@@ -289,7 +289,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, d
     with ws_crdt.doc.transaction():
         for nc in ws_crdt["nodes"]:
             nc["data"]["status"] = "planned"
-    await ws_pyd.execute(app)
+    await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
     ws_pyd.save(path)
     print(f"Finished running {name} in {ws_pyd.env}.")
 
@@ -329,7 +329,7 @@ def sanitize_path(path):
     return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
 
 
-app = None
+app: fastapi.FastAPI | None = None
 
 
 @router.websocket("/ws/crdt/{room_name:path}")

@@ -260,7 +260,9 @@ class WorkspaceResult:
 
 
 @ops.register_executor(ENV)
-async def execute(ws: workspace.Workspace, router) -> WorkspaceResult:
+async def execute(
+    ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext
+) -> WorkspaceResult:
     catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
     wsres = WorkspaceResult(outputs={}, services={})
@@ -280,7 +282,7 @@ async def execute(ws: workspace.Workspace, router) -> WorkspaceResult:
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
-                await _execute_node(router, node, ws, catalog, wsres)
+                await _execute_node(ctx, node, ws, catalog, wsres)
     return wsres
 
 
@@ -300,7 +302,7 @@ def _to_bundle(x):
 
 
 async def _execute_node(
-    router,
+    ctx: workspace.WorkspaceExecutionContext,
     node: workspace.WorkspaceNode,
     ws: workspace.Workspace,
     catalog: ops.Catalog,
@@ -392,8 +394,7 @@ async def _execute_node(
         elif node.type == "gradio":
             url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
             url = url.replace(" ", "_")
-            await mount_gradio(router, result.output, url)
-            print(f"Mounted Gradio app at {url}")
+            await mount_gradio(ctx.app, result.output, url)
             result.display = {"backend": url}
             result.output = None
         elif len(op.outputs) > 1:
@@ -482,17 +483,34 @@ async def api_service_get(request):
     return await service.get(request)
 
 
-@contextlib.asynccontextmanager
-async def fake_lifespan(app):
-    yield
+class _ProxyApp:
+    def __init__(self, app):
+        self._app = app
+        self.router = self
+
+    @contextlib.asynccontextmanager
+    async def lifespan_context(self, app):
+        yield
+
+    def mount(self, path, gradio_app):
+        import starlette.routing  # ty: ignore[unresolved-import]
+
+        router = self._app.router
+        route = starlette.routing.Mount(path, gradio_app)
+        # Overwrite existing route if it exists.
+        for i, r in enumerate(router.routes):
+            if r.path == path:
+                router.routes[i] = route
+                break
+        else:
+            router.routes.append(route)
 
 
 async def mount_gradio(app, gradio_app, path: str):
     import gradio as gr  # ty: ignore[unresolved-import]
 
-    ctx = app.router.lifespan_context
-    app.router.lifespan_context = fake_lifespan
+    app = _ProxyApp(app)
     gr.mount_gradio_app(app, gradio_app, path=path)
-    async with app.router.lifespan_context(app):
+    # Trigger Gradio lifetime hooks.
+    async with app.lifespan_context(app):
         pass
-    app.router.lifespan_context = ctx

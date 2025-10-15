@@ -16,7 +16,7 @@ def register(env: str):
         from lynxkite_core.executors import simple
         simple.register("My Environment")
     """
-    ops.EXECUTORS[env] = lambda ws: execute(ws, ops.CATALOGS[env])
+    ops.EXECUTORS[env] = lambda ws, _ctx: execute(ws, ops.CATALOGS[env])
 
 
 async def await_if_needed(obj):

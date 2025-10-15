@@ -2,6 +2,9 @@
 import WindowMaximize from "~icons/tabler/window-maximize.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 
+// @ts-expect-error
+await import("https://gradio.s3-us-west-2.amazonaws.com/5.49.1/gradio.js");
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -17,7 +20,7 @@ function NodeWithGradio(props: any) {
   const basePath = `${window.location.protocol}//${window.location.host}`;
   const src = `${basePath}${path}/`;
   return (
-    <div>
+    <>
       <div style={{ margin: "16px" }}>
         <a href={src} target="_blank">
           <WindowMaximize style={{ marginRight: "5px" }} />
@@ -25,7 +28,7 @@ function NodeWithGradio(props: any) {
         </a>
       </div>
       <gradio-app src={src}></gradio-app>
-    </div>
+    </>
   );
 }
 
