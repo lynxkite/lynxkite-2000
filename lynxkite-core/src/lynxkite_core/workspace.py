@@ -37,9 +37,10 @@ class WorkspaceNodeData(BaseConfig):
     title: str
     op_id: str
     params: dict
-    display: Optional[object] = None
-    input_metadata: Optional[object] = None
+    display: Optional[dict] = None
+    input_metadata: Optional[dict] = None
     error: Optional[str] = None
+    collapsed: Optional[bool] = None
     status: NodeStatus = NodeStatus.done
     meta: Optional["ops.Op"] = None
 

@@ -9,6 +9,7 @@ import json
 import importlib.util
 import inspect
 import pathlib
+import pkgutil
 import subprocess
 import traceback
 import types
@@ -191,7 +192,7 @@ class Op(BaseConfig):
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
-    doc: object = None
+    doc: list | None = None
     # ID is automatically set from the name and categories.
     id: str = pydantic.Field(default=None)
 
@@ -568,3 +569,20 @@ def _get_griffe_function(func):
         parameters=griffe.Parameters(*parameters),
         returns=str(sig.return_annotation),
     )
+
+
+def detect_plugins():
+    """Imports all installed LynxKite plugins."""
+    plugins = {}
+    for _, name, _ in pkgutil.iter_modules():
+        if (
+            name.startswith("lynxkite_")
+            and name != "lynxkite_app"
+            and name != "lynxkite_core"
+            and name != "lynxkite_mcp"
+        ):
+            # print(f"Importing {name}")
+            plugins[name] = importlib.import_module(name)
+    if not plugins:
+        print("No LynxKite plugins found. Be sure to install some!")
+    return plugins
