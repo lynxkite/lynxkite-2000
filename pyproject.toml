@@ -3,13 +3,20 @@
 name = "lynxkite-workspace"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["lynxkite-app", "lynxkite-core", "lynxkite-graph-analytics[gpu]", "lynxkite-pillow-example"]
+dependencies = [
+    "lynxkite-app",
+    "lynxkite-core",
+    "lynxkite-graph-analytics[gpu]",
+    "lynxkite-mcp",
+    "lynxkite-pillow-example",
+]
 classifiers = ["Private :: Do Not Upload"]
 
 [tool.uv.sources]
 lynxkite-app = { workspace = true }
 lynxkite-core = { workspace = true }
 lynxkite-graph-analytics = { workspace = true }
+lynxkite-mcp = { workspace = true }
 lynxkite-pillow-example = { workspace = true }
 
 [tool.uv.workspace]
@@ -17,6 +24,7 @@ members = [
     "lynxkite-app",
     "lynxkite-core",
     "lynxkite-graph-analytics",
+    "lynxkite-mcp",
     "lynxkite-pillow-example",
 ]
 
