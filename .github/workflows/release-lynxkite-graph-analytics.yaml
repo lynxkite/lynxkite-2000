@@ -11,8 +11,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Build
-        working-directory: lynxkite-graph-analytics
-        run: uv build
+        run: uv build lynxkite-graph-analytics
       - name: Publish
-        working-directory: lynxkite-graph-analytics
         run: uv publish
