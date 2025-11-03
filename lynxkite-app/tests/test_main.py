@@ -1,25 +1,13 @@
 import pathlib
 import uuid
 from fastapi.testclient import TestClient
-from lynxkite_app.main import app, detect_plugins
+from lynxkite_app.main import app
 from lynxkite_core import ops
 import os
 
 
 ops.user_script_root = None
 client = TestClient(app)
-
-
-def test_detect_plugins_with_plugins():
-    # This test assumes that these plugins are installed as part of the testing process.
-    plugins = detect_plugins()
-    assert all(
-        plugin in plugins.keys()
-        for plugin in [
-            "lynxkite_graph_analytics",
-            "lynxkite_pillow_example",
-        ]
-    )
 
 
 def test_get_catalog():

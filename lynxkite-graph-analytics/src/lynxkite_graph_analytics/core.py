@@ -410,7 +410,7 @@ async def _execute_node(
     node.publish_result(result)
 
 
-def _get_metadata(x):
+def _get_metadata(x) -> dict:
     if hasattr(x, "metadata"):
         return x.metadata()
     return {}
