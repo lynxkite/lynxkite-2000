@@ -526,7 +526,7 @@ def run_user_script(script_path: pathlib.Path):
 
 
 @functools.cache
-def parse_doc(func):
+def parse_doc(func) -> list:
     """Griffe is an optional dependency. When available, we return the parsed docstring."""
     doc = func.__doc__
     try:
