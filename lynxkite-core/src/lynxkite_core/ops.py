@@ -147,7 +147,7 @@ class Result:
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
-    input_metadata: ReadOnlyJSON | None = None
+    input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
 
 def get_optional_type(type):
@@ -581,7 +581,6 @@ def detect_plugins():
             and name != "lynxkite_core"
             and name != "lynxkite_mcp"
         ):
-            # print(f"Importing {name}")
             plugins[name] = importlib.import_module(name)
     if not plugins:
         print("No LynxKite plugins found. Be sure to install some!")

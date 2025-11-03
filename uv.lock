@@ -1436,7 +1436,7 @@ dev = [
 
 [[package]]
 name = "lynxkite-core"
-version = "0.2.0"
+version = "0.1.0"
 source = { editable = "lynxkite-core" }
 dependencies = [
     { name = "pydantic" },

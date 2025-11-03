@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
@@ -37,8 +37,8 @@ class WorkspaceNodeData(BaseConfig):
     title: str
     op_id: str
     params: dict
-    display: Optional[dict] = None
-    input_metadata: Optional[dict] = None
+    display: Optional[Any] = None
+    input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
     collapsed: Optional[bool] = None
     status: NodeStatus = NodeStatus.done
