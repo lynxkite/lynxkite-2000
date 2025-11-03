@@ -3,10 +3,8 @@
 import shutil
 import pydantic
 import fastapi
-import importlib
 import joblib
 import pathlib
-import pkgutil
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
@@ -16,20 +14,7 @@ from . import crdt
 
 mem = joblib.Memory(".joblib-cache")
 ops.CACHE_WRAPPER = mem.cache
-
-
-def detect_plugins():
-    plugins = {}
-    for _, name, _ in pkgutil.iter_modules():
-        if name.startswith("lynxkite_") and name != "lynxkite_app" and name != "lynxkite_core":
-            print(f"Importing {name}")
-            plugins[name] = importlib.import_module(name)
-    if not plugins:
-        print("No LynxKite plugins found. Be sure to install some!")
-    return plugins
-
-
-lynxkite_plugins = detect_plugins()
+lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)

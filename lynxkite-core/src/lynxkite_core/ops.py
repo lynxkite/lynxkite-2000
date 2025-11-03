@@ -9,6 +9,7 @@ import json
 import importlib.util
 import inspect
 import pathlib
+import pkgutil
 import subprocess
 import traceback
 import types
@@ -146,7 +147,7 @@ class Result:
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
-    input_metadata: ReadOnlyJSON | None = None
+    input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
 
 def get_optional_type(type):
@@ -191,7 +192,7 @@ class Op(BaseConfig):
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
-    doc: object = None
+    doc: list | None = None
     # ID is automatically set from the name and categories.
     id: str = pydantic.Field(default=None)
 
@@ -525,13 +526,13 @@ def run_user_script(script_path: pathlib.Path):
 
 
 @functools.cache
-def parse_doc(func):
+def parse_doc(func) -> list | None:
     """Griffe is an optional dependency. When available, we return the parsed docstring."""
     doc = func.__doc__
     try:
         import griffe
     except ImportError:
-        return doc
+        return None
     if doc is None:
         return None
     griffe.logger.setLevel("ERROR")
@@ -568,3 +569,19 @@ def _get_griffe_function(func):
         parameters=griffe.Parameters(*parameters),
         returns=str(sig.return_annotation),
     )
+
+
+def detect_plugins():
+    """Imports all installed LynxKite plugins."""
+    plugins = {}
+    for _, name, _ in pkgutil.iter_modules():
+        if (
+            name.startswith("lynxkite_")
+            and name != "lynxkite_app"
+            and name != "lynxkite_core"
+            and name != "lynxkite_mcp"
+        ):
+            plugins[name] = importlib.import_module(name)
+    if not plugins:
+        print("No LynxKite plugins found. Be sure to install some!")
+    return plugins

@@ -47,7 +47,7 @@ class FileFormat(enum.StrEnum):
     slow=True,
 )
 def import_file(
-    *, file_path: str, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
+    *, file_path: ops.PathStr, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
 ) -> core.Bundle:
     """Read the contents of the a file into a `Bundle`.
 
@@ -82,7 +82,7 @@ def export_to_file(
     bundle: core.Bundle,
     *,
     table_name: str,
-    filename: str,
+    filename: ops.PathStr,
     file_format: FileFormat = FileFormat.csv,
 ):
     """Exports a DataFrame to a file.
@@ -108,13 +108,13 @@ def export_to_file(
 
 
 @op("Import Parquet")
-def import_parquet(*, filename: str):
+def import_parquet(*, filename: ops.PathStr):
     """Imports a Parquet file."""
     return pd.read_parquet(filename)
 
 
 @op("Import CSV", slow=True)
-def import_csv(*, filename: str, columns: str = "<from file>", separator: str = "<auto>"):
+def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
     return pd.read_csv(
         filename,
@@ -124,7 +124,7 @@ def import_csv(*, filename: str, columns: str = "<from file>", separator: str = 
 
 
 @op("Import GraphML", slow=True)
-def import_graphml(*, filename: str):
+def import_graphml(*, filename: ops.PathStr):
     """Imports a GraphML file."""
     files = fsspec.open_files(filename, compression="infer")
     for f in files:

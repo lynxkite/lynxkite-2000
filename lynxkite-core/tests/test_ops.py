@@ -111,3 +111,15 @@ def test_visualization_operations_display_is_populated_automatically():
     result = ops.CATALOGS["test"]["display_op"]()
     assert isinstance(result, ops.Result)
     assert result.display == {"display_value": 1}
+
+
+def test_detect_plugins_with_plugins():
+    # This test assumes that these plugins are installed as part of the testing process.
+    plugins = ops.detect_plugins()
+    assert all(
+        plugin in plugins
+        for plugin in [
+            "lynxkite_graph_analytics",
+            "lynxkite_pillow_example",
+        ]
+    )
