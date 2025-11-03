@@ -11,8 +11,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Build
-        working-directory: lynxkite-mcp
-        run: uv build
+        run: uv build lynxkite-mcp
       - name: Publish
-        working-directory: lynxkite-mcp
         run: uv publish
