@@ -526,13 +526,13 @@ def run_user_script(script_path: pathlib.Path):
 
 
 @functools.cache
-def parse_doc(func) -> list:
+def parse_doc(func) -> list | None:
     """Griffe is an optional dependency. When available, we return the parsed docstring."""
     doc = func.__doc__
     try:
         import griffe
     except ImportError:
-        return doc
+        return None
     if doc is None:
         return None
     griffe.logger.setLevel("ERROR")
