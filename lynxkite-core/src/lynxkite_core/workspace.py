@@ -101,6 +101,14 @@ class WorkspaceNode(BaseConfig):
         result = ops.Result(error=str(error) if error else None)
         self.publish_result(result)
 
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def before_load(cls, data: dict) -> dict:
+        # Not quite sure where extent=null comes from, but it crashes the frontend.
+        if "extent" in data and not data["extent"]:
+            del data["extent"]
+        return data
+
 
 class WorkspaceEdge(BaseConfig):
     id: str
