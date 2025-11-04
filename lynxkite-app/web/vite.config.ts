@@ -6,6 +6,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     chunkSizeWarningLimit: 3000,
+    sourcemap: true,
   },
   esbuild: {
     supported: {
