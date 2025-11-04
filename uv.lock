@@ -1395,7 +1395,7 @@ wheels = [
 
 [[package]]
 name = "lynxkite-app"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "lynxkite-app" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
@@ -1436,7 +1436,7 @@ dev = [
 
 [[package]]
 name = "lynxkite-core"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "lynxkite-core" }
 dependencies = [
     { name = "pydantic" },
