@@ -167,6 +167,9 @@ function LynxKiteFlow() {
               // Update edge positions when node collapses/expands.
               setTimeout(() => updateNodeInternals(ch.id), 0);
             }
+            if (node.data.expanded_height !== ch.item.data.expanded_height) {
+              node.data.expanded_height = ch.item.data.expanded_height;
+            }
             if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
               node.data.__execution_delay = ch.item.data.__execution_delay;
             }

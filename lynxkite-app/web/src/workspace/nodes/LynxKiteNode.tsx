@@ -111,8 +111,20 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       containerRef.current?.removeEventListener("wheel", onWheel);
     };
   }, [containerRef]);
+  const node = reactFlow.getNode(props.id);
   function titleClicked() {
-    reactFlow.updateNodeData(props.id, { collapsed: !data.collapsed });
+    const dataUpdate = {
+      collapsed: !data.collapsed,
+      expanded_height: data.expanded_height,
+    };
+    if (data.collapsed) {
+      reactFlow.updateNode(props.id, {
+        height: data.expanded_height || 200,
+      });
+    } else {
+      dataUpdate.expanded_height = props.height;
+    }
+    reactFlow.updateNodeData(props.id, dataUpdate);
   }
   const handleOffsetDirection = {
     top: "left",
@@ -129,7 +141,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"} ${props.parentId ? "in-group" : ""}`}
       style={{
         width: props.width || 200,
-        height: data.collapsed ? undefined : props.height || 200,
+        height: data.collapsed ? undefined : (node?.height ?? props.height ?? 200),
       }}
       ref={containerRef}
     >

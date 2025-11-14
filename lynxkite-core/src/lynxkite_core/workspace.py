@@ -41,6 +41,7 @@ class WorkspaceNodeData(BaseConfig):
     input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
     collapsed: Optional[bool] = None
+    expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
     meta: Optional["ops.Op"] = None
 

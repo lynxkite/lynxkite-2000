@@ -6,14 +6,17 @@
 */
 
 export type NodeStatus = "planned" | "active" | "done";
+/**
+ * Defines the position of an input or output in the UI.
+ */
+export type Position1 = "left" | "right" | "top" | "bottom";
 
-export interface DirectoryEntry {
-  name: string;
-  type: string;
+export interface BaseConfig {
+  [k: string]: unknown;
 }
-export interface SaveRequest {
-  path: string;
-  ws: Workspace;
+export interface Position {
+  x: number;
+  y: number;
   [k: string]: unknown;
 }
 /**
@@ -25,9 +28,9 @@ export interface SaveRequest {
  */
 export interface Workspace {
   env?: string;
-  paused?: boolean;
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
+  path?: string | null;
   [k: string]: unknown;
 }
 export interface WorkspaceNode {
@@ -35,24 +38,79 @@ export interface WorkspaceNode {
   type: string;
   data: WorkspaceNodeData;
   position: Position;
-  width: number;
-  height: number;
+  width?: number | null;
+  height?: number | null;
   [k: string]: unknown;
 }
 export interface WorkspaceNodeData {
   title: string;
+  op_id: string;
   params: {
     [k: string]: unknown;
   };
   display?: unknown;
-  input_metadata?: unknown;
+  input_metadata?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
   error?: string | null;
+  collapsed?: boolean | null;
+  expanded_height?: number | null;
   status?: NodeStatus;
+  meta?: Op | null;
   [k: string]: unknown;
 }
-export interface Position {
-  x: number;
-  y: number;
+export interface Op {
+  categories: string[];
+  name: string;
+  params: (Parameter | ParameterGroup)[];
+  inputs: Input[];
+  outputs: Output[];
+  type?: string;
+  color?: string;
+  doc?: unknown[] | null;
+  id?: string;
+  [k: string]: unknown;
+}
+/**
+ * Defines a parameter for an operation.
+ */
+export interface Parameter {
+  name: string;
+  default: unknown;
+  type?: {
+    [k: string]: unknown;
+  };
+  [k: string]: unknown;
+}
+/**
+ * Defines a group of parameters for an operation.
+ */
+export interface ParameterGroup {
+  name: string;
+  selector: Parameter;
+  default: unknown;
+  groups: {
+    [k: string]: Parameter[];
+  };
+  type?: string;
+  [k: string]: unknown;
+}
+export interface Input {
+  name: string;
+  type: {
+    [k: string]: unknown;
+  };
+  position: Position1;
+  [k: string]: unknown;
+}
+export interface Output {
+  name: string;
+  type: {
+    [k: string]: unknown;
+  };
+  position: Position1;
   [k: string]: unknown;
 }
 export interface WorkspaceEdge {
