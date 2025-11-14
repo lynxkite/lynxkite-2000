@@ -99,7 +99,6 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const expanded = !data.collapsed;
   const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
@@ -113,7 +112,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     };
   }, [containerRef]);
   function titleClicked() {
-    reactFlow.updateNodeData(props.id, { collapsed: expanded });
+    reactFlow.updateNodeData(props.id, { collapsed: !data.collapsed });
   }
   const handleOffsetDirection = {
     top: "left",
@@ -127,10 +126,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   }
   return (
     <div
-      className={`node-container ${expanded ? "expanded" : "collapsed"} ${props.parentId ? "in-group" : ""}`}
+      className={`node-container ${data.collapsed ? "collapsed" : "expanded"} ${props.parentId ? "in-group" : ""}`}
       style={{
         width: props.width || 200,
-        height: expanded ? props.height || 200 : undefined,
+        height: data.collapsed ? undefined : props.height || 200,
       }}
       ref={containerRef}
     >
@@ -146,7 +145,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
               <AlertTriangle />
             </Tooltip>
           )}
-          {expanded || (
+          {data.collapsed && (
             <Tooltip doc="Click to expand node">
               <Dots />
             </Tooltip>
@@ -155,7 +154,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
             <Help />
           </Tooltip>
         </div>
-        {expanded && (
+        {!data.collapsed && (
           <>
             {data.error && <div className="error">{data.error}</div>}
             <ErrorBoundary
