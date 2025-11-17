@@ -282,9 +282,9 @@ function LynxKiteFlow() {
         const np = n.position;
         return (
           np.x < fpos.x + w + GAP &&
-          np.x + n.width + GAP > fpos.x &&
+          np.x + (n.width ?? 0) + GAP > fpos.x &&
           np.y < fpos.y + h + GAP &&
-          np.y + n.height + GAP > fpos.y
+          np.y + (n.height ?? 0) + GAP > fpos.y
         );
       });
       if (!occupied) {
@@ -341,12 +341,13 @@ function LynxKiteFlow() {
   }
   function addNode(node: Partial<WorkspaceNode>) {
     state.workspace.nodes!.push(node as WorkspaceNode);
-    setNodes([...nodes, node as WorkspaceNode]);
+    setNodes([...nodes, node as Node]);
   }
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
       data: {
+        // @ts-expect-error (meta is passed as a black box through CRDT)
         meta: { value: meta },
         title: meta.name,
         op_id: meta.id,
@@ -472,7 +473,7 @@ function LynxKiteFlow() {
     groupNode.width = right - left;
     groupNode.height = bottom - top;
     setNodes([
-      { ...(groupNode as WorkspaceNode), selected: true },
+      { ...(groupNode as Node), selected: true },
       ...nodes.map((n) =>
         n.selected
           ? {

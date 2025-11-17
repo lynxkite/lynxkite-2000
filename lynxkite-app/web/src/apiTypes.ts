@@ -5,19 +5,62 @@
 /* Do not modify it by hand - just update the pydantic models and then re-run the script
 */
 
-export type NodeStatus = "planned" | "active" | "done";
 /**
  * Defines the position of an input or output in the UI.
  */
-export type Position1 = "left" | "right" | "top" | "bottom";
+export type Position = "left" | "right" | "top" | "bottom";
+export type NodeStatus = "planned" | "active" | "done";
 
-export interface BaseConfig {
-  [k: string]: unknown;
+export interface DirectoryEntry {
+  name: string;
+  type: string;
 }
-export interface Position {
-  x: number;
-  y: number;
-  [k: string]: unknown;
+export interface Input {
+  name: string;
+  type: {
+    [k: string]: unknown;
+  };
+  position: Position;
+}
+export interface Op {
+  categories: string[];
+  name: string;
+  params: (Parameter | ParameterGroup)[];
+  inputs: Input[];
+  outputs: Output[];
+  type?: string;
+  color?: string;
+  doc?: unknown[] | null;
+  id?: string;
+}
+/**
+ * Defines a parameter for an operation.
+ */
+export interface Parameter {
+  name: string;
+  default: unknown;
+  type?: {
+    [k: string]: unknown;
+  };
+}
+/**
+ * Defines a group of parameters for an operation.
+ */
+export interface ParameterGroup {
+  name: string;
+  selector: Parameter;
+  default: unknown;
+  groups: {
+    [k: string]: Parameter[];
+  };
+  type?: string;
+}
+export interface Output {
+  name: string;
+  type: {
+    [k: string]: unknown;
+  };
+  position: Position;
 }
 /**
  * A workspace is a representation of a computational graph that consists of nodes and edges.
@@ -30,6 +73,7 @@ export interface Workspace {
   env?: string;
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
+  paused?: boolean | null;
   path?: string | null;
   [k: string]: unknown;
 }
@@ -37,7 +81,7 @@ export interface WorkspaceNode {
   id: string;
   type: string;
   data: WorkspaceNodeData;
-  position: Position;
+  position: Position1;
   width?: number | null;
   height?: number | null;
   [k: string]: unknown;
@@ -61,56 +105,9 @@ export interface WorkspaceNodeData {
   meta?: Op | null;
   [k: string]: unknown;
 }
-export interface Op {
-  categories: string[];
-  name: string;
-  params: (Parameter | ParameterGroup)[];
-  inputs: Input[];
-  outputs: Output[];
-  type?: string;
-  color?: string;
-  doc?: unknown[] | null;
-  id?: string;
-  [k: string]: unknown;
-}
-/**
- * Defines a parameter for an operation.
- */
-export interface Parameter {
-  name: string;
-  default: unknown;
-  type?: {
-    [k: string]: unknown;
-  };
-  [k: string]: unknown;
-}
-/**
- * Defines a group of parameters for an operation.
- */
-export interface ParameterGroup {
-  name: string;
-  selector: Parameter;
-  default: unknown;
-  groups: {
-    [k: string]: Parameter[];
-  };
-  type?: string;
-  [k: string]: unknown;
-}
-export interface Input {
-  name: string;
-  type: {
-    [k: string]: unknown;
-  };
-  position: Position1;
-  [k: string]: unknown;
-}
-export interface Output {
-  name: string;
-  type: {
-    [k: string]: unknown;
-  };
-  position: Position1;
+export interface Position1 {
+  x: number;
+  y: number;
   [k: string]: unknown;
 }
 export interface WorkspaceEdge {
