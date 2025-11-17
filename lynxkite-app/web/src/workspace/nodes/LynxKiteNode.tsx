@@ -126,6 +126,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     }
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
+  const height = Math.max(56, node?.height ?? props.height ?? 200);
   const handleOffsetDirection = {
     top: "left",
     bottom: "left",
@@ -141,7 +142,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"} ${props.parentId ? "in-group" : ""}`}
       style={{
         width: props.width || 200,
-        height: data.collapsed ? undefined : (node?.height ?? props.height ?? 200),
+        height: data.collapsed ? undefined : height,
       }}
       ref={containerRef}
     >

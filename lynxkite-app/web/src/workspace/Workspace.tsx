@@ -346,6 +346,7 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
+      height: 200,
       data: {
         // @ts-expect-error (meta is passed as a black box through CRDT)
         meta: { value: meta },
