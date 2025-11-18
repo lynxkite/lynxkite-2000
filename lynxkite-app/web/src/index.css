@@ -170,6 +170,7 @@ body {
     );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
+    background-color: oklch(95% 0 0);
     --status-color-1: #0000;
     --status-color-2: #0000;
     --status-color-3: #0000;
@@ -181,8 +182,52 @@ body {
     flex-direction: row;
     gap: 10px;
 
+    .title-right-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      justify-content: center;
+    }
+
+    .title-right-side-top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-icon {
+      flex: none;
+      width: 55px;
+      height: 55px;
+      border-radius: 10px;
+      background-color: oklch(75% 0.2 55);
+      padding: 5px;
+
+      img {
+        filter: invert(100%);
+      }
+    }
+
     .title-title {
       flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title-summary {
+      flex: 1;
+      font-weight: normal;
+      font-size: 0.6em;
+      opacity: 0.7;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
   }
 

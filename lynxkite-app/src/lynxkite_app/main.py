@@ -11,6 +11,7 @@ import starlette.exceptions
 from lynxkite_core import ops
 from lynxkite_core import workspace
 from . import crdt
+from . import icons
 
 mem = joblib.Memory(".joblib-cache")
 ops.CACHE_WRAPPER = mem.cache
@@ -19,6 +20,7 @@ ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
+app.include_router(icons.router)
 app.add_middleware(GZipMiddleware)
 
 

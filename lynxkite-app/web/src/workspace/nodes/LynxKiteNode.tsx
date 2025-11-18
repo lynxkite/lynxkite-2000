@@ -11,6 +11,7 @@ import Dots from "~icons/tabler/dots.jsx";
 import Help from "~icons/tabler/question-mark.jsx";
 // @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
+import type { WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS } from "../../common.ts";
 import Tooltip from "../../Tooltip";
 
@@ -22,6 +23,26 @@ interface LynxKiteNodeProps {
   data: any;
   children: any;
   parentId?: string;
+}
+
+function paramSummary(data: WorkspaceNodeData): string {
+  const lines = [];
+  for (const [key, value] of Object.entries(data.params || {})) {
+    const displayValue = value;
+    if (typeof value === "object") {
+      continue;
+    }
+    lines.push(`${key}: ${displayValue}`);
+  }
+  return lines.join(", ");
+}
+
+function docToString(doc: any): string {
+  if (!doc) return "";
+  return (
+    doc.map?.((section: any) => (section.kind === "text" ? section.value : "")).join("\n") ??
+    String(doc)
+  );
 }
 
 function getHandles(inputs: any[], outputs: any[]) {
@@ -127,6 +148,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
   const height = Math.max(56, node?.height ?? props.height ?? 200);
+  const icon = data.meta?.value?.icon;
+  const summary: string = data.error
+    ? `Error: ${data.error}`
+    : (data.collapsed && paramSummary(data)) || docToString(data.meta?.value?.doc);
   const handleOffsetDirection = {
     top: "left",
     bottom: "left",
@@ -135,7 +160,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   };
   const titleStyle: { backgroundColor?: string } = {};
   if (data.meta?.value?.color) {
-    titleStyle.backgroundColor = COLORS[data.meta.value.color] || data.meta.value.color;
+    titleStyle.backgroundColor = COLORS[data.meta.value.color] ?? data.meta.value.color;
   }
   return (
     <div
@@ -147,25 +172,31 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={props.nodeStyle}>
-        <div
-          className={`title bg-primary drag-handle ${data.status}`}
-          style={titleStyle}
-          onClick={titleClicked}
-        >
-          <span className="title-title">{data.title}</span>
-          {data.error && (
-            <Tooltip doc={`Error: ${data.error}`}>
-              <AlertTriangle />
-            </Tooltip>
+        <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
+          {icon && (
+            <div style={titleStyle} className="title-icon">
+              <img src={`/api/icons/${icon}`} alt="" />
+            </div>
           )}
-          {data.collapsed && (
-            <Tooltip doc="Click to expand node">
-              <Dots />
-            </Tooltip>
-          )}
-          <Tooltip doc={data.meta?.value?.doc}>
-            <Help />
-          </Tooltip>
+          <div className="title-right-side">
+            <div className="title-right-side-top">
+              <span className="title-title">{data.title}</span>
+              {data.error && (
+                <Tooltip doc={`Error: ${data.error}`}>
+                  <AlertTriangle />
+                </Tooltip>
+              )}
+              {data.collapsed && (
+                <Tooltip doc="Click to expand node">
+                  <Dots />
+                </Tooltip>
+              )}
+              <Tooltip doc={data.meta?.value?.doc}>
+                <Help />
+              </Tooltip>
+            </div>
+            {summary && <span className="title-summary">{summary}</span>}
+          </div>
         </div>
         {!data.collapsed && (
           <>
