@@ -222,7 +222,7 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization")
+@op("Visualize graph", view="visualization", icon="eye", color="blue")
 def visualize_graph(
     graph: core.Bundle,
     *,
