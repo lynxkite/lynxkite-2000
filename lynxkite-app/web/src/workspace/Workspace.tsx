@@ -632,13 +632,9 @@ function LynxKiteFlow() {
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
-                color: "black",
+                color: "#888",
                 width: 15,
                 height: 15,
-              },
-              style: {
-                strokeWidth: 2,
-                stroke: "black",
               },
             }}
             fitViewOptions={{ maxZoom: 1 }}
