@@ -1,5 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@fontsource/inter";
+import "@fontsource/inter/500.css";
 import "@xyflow/react/dist/style.css";
 import "./index.css";
 import {
