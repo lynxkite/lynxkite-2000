@@ -210,6 +210,11 @@ body {
       }
     }
 
+    .title-icon-placeholder {
+      flex: none;
+      width: 0;
+    }
+
     .title-title {
       flex: 1;
       white-space: nowrap;

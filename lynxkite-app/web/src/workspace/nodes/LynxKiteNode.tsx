@@ -182,11 +182,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     >
       <div className="lynxkite-node" style={nodeStyle}>
         <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-          {meta.icon && (
+          {(meta.icon && (
             <div style={titleStyle} className="title-icon">
               <img src={`/api/icons/${meta.icon}`} alt="" />
             </div>
-          )}
+          )) || <div className="title-icon-placeholder" />}
           <div className="title-right-side">
             <div className="title-right-side-top">
               <span className="title-title">{data.title}</span>
