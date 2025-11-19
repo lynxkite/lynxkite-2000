@@ -21,7 +21,7 @@ function ParamName({ name, doc }: { name: string; doc: string }) {
   );
   return (
     <div className="param-name-row">
-      <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>
+      <span className="param-name">{name.replace(/_/g, " ")}</span>
       {help}
     </div>
   );
