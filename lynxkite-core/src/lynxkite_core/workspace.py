@@ -41,6 +41,7 @@ class WorkspaceNodeData(BaseConfig):
     input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
     collapsed: Optional[bool] = None
+    expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
     meta: Optional["ops.Op"] = None
 
@@ -136,6 +137,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
+    paused: Optional[bool] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
