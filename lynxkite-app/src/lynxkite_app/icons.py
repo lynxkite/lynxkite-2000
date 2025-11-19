@@ -27,4 +27,8 @@ def _get_icon(icon_name: str):
 @router.get("/api/icons/{icon_name}")
 def get_icon(icon_name: str):
     svg = _get_icon(icon_name)
-    return fastapi.Response(content=svg, media_type="image/svg+xml")
+    return fastapi.Response(
+        content=svg,
+        media_type="image/svg+xml",
+        headers={"Cache-Control": "public, max-age=2592000"},
+    )
