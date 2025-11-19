@@ -164,6 +164,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   color.l = 0.25;
   color.alpha = 0.5;
   const borderColor = color.toString();
+  color.c = 0.1;
   color.alpha = 0.25;
   const nodeStyle = {
     ...props.nodeStyle,
