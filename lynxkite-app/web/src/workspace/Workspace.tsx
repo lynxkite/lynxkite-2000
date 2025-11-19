@@ -4,6 +4,7 @@ import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   applyEdgeChanges,
   applyNodeChanges,
+  Background,
   type Connection,
   Controls,
   type Edge,
@@ -642,6 +643,7 @@ function LynxKiteFlow() {
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
+            <Background size={6} gap={40} color="#f0f0f0" bgColor="#fafafa" />
             <Controls />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch

@@ -75,9 +75,9 @@ body {
   }
 
   .lynxkite-node {
-    box-shadow: 0px 5px 50px 0px oklch(25% 0.2 55 / 0.3);
+    box-shadow: 0px 5px 30px 0px oklch(10% 0.2 55 / 0.25);
     border: 0.1px solid #000;
-    border-radius: 14px 14px 14px 14px;
+    border-radius: 14px;
     overflow: hidden;
     background: white;
     display: flex;
