@@ -75,8 +75,9 @@ body {
   }
 
   .lynxkite-node {
-    box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
+    box-shadow: 0px 5px 50px 0px oklch(25% 0.2 55 / 0.3);
+    border: 0.1px solid #000;
+    border-radius: 14px 14px 14px 14px;
     overflow: hidden;
     background: white;
     display: flex;
@@ -169,7 +170,7 @@ body {
     );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
-    background-color: oklch(95% 0 0);
+    background-color: oklch(97% 0 0);
     --status-color-1: #0000;
     --status-color-2: #0000;
     --status-color-3: #0000;
@@ -198,9 +199,9 @@ body {
 
     .title-icon {
       flex: none;
-      width: 55px;
-      height: 55px;
-      border-radius: 10px;
+      width: 35px;
+      height: 35px;
+      border-radius: 7px;
       background-color: oklch(75% 0.2 55);
       padding: 5px;
 
@@ -223,10 +224,7 @@ body {
       opacity: 0.7;
       text-overflow: ellipsis;
       overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
+      white-space: nowrap;
     }
   }
 
@@ -301,6 +299,7 @@ body {
     position: absolute;
     bottom: 8px;
     right: 8px;
+    opacity: 0;
     cursor: nwse-resize;
   }
 

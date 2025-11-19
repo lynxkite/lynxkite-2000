@@ -1,4 +1,5 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import Color from "colorjs.io";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 // @ts-expect-error
@@ -147,21 +148,28 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     }
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
-  const height = Math.max(56, node?.height ?? props.height ?? 200);
-  const icon = data.meta?.value?.icon;
+  const height = Math.max(67, node?.height ?? props.height ?? 200);
+  const meta = data.meta?.value ?? {};
   const summary: string = data.error
     ? `Error: ${data.error}`
-    : (data.collapsed && paramSummary(data)) || docToString(data.meta?.value?.doc);
+    : (data.collapsed && paramSummary(data)) || docToString(meta.doc);
   const handleOffsetDirection = {
     top: "left",
     bottom: "left",
     left: "top",
     right: "top",
   };
-  const titleStyle: { backgroundColor?: string } = {};
-  if (data.meta?.value?.color) {
-    titleStyle.backgroundColor = COLORS[data.meta.value.color] ?? data.meta.value.color;
-  }
+  const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
+  const titleStyle = { backgroundColor: color.toString() };
+  color.l = 0.25;
+  color.alpha = 0.5;
+  const borderColor = color.toString();
+  color.alpha = 0.25;
+  const nodeStyle = {
+    ...props.nodeStyle,
+    borderColor,
+    boxShadow: `0px 5px 30px 0px ${color.toString()}`,
+  };
   return (
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"} ${props.parentId ? "in-group" : ""}`}
@@ -171,11 +179,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       }}
       ref={containerRef}
     >
-      <div className="lynxkite-node" style={props.nodeStyle}>
+      <div className="lynxkite-node" style={nodeStyle}>
         <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-          {icon && (
+          {meta.icon && (
             <div style={titleStyle} className="title-icon">
-              <img src={`/api/icons/${icon}`} alt="" />
+              <img src={`/api/icons/${meta.icon}`} alt="" />
             </div>
           )}
           <div className="title-right-side">
