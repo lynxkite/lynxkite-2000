@@ -17,7 +17,11 @@
       "correctness": {
         "useExhaustiveDependencies": "off"
       },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
       "style": {
+        "noDescendingSpecificity": "off",
         "noNonNullAssertion": "off"
       },
       "a11y": {

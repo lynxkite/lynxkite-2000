@@ -14,6 +14,7 @@ import Help from "~icons/tabler/question-mark.jsx";
 import Skull from "~icons/tabler/skull.jsx";
 import type { WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS } from "../../common.ts";
+import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
 
 interface LynxKiteNodeProps {
@@ -183,9 +184,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       <div className="lynxkite-node" style={nodeStyle}>
         <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
           {(meta.icon && (
-            <div style={titleStyle} className="title-icon">
-              <img src={`/api/icons/${meta.icon}`} alt="" />
-            </div>
+            <InlineSVG style={titleStyle} className="title-icon" src={`/api/icons/${meta.icon}`} />
           )) || <div className="title-icon-placeholder" />}
           <div className="title-right-side">
             <div className="title-right-side-top">

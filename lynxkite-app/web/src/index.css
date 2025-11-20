@@ -204,10 +204,7 @@ body {
       border-radius: 7px;
       background-color: oklch(75% 0.2 55);
       padding: 5px;
-
-      img {
-        filter: invert(100%);
-      }
+      color: white;
     }
 
     .title-icon-placeholder {
