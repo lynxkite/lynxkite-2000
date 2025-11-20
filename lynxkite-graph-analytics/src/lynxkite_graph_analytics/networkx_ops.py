@@ -318,6 +318,19 @@ def _categories(func) -> list[str]:
     return cats
 
 
+CATEGORY_ICONS_AND_COLORS = {
+    "Algorithms": ("cpu", "orange"),
+    "Classes": ("tags", "orange"),
+    "Convert": ("transform", "orange"),
+    "Convert matrix": ("matrix", "orange"),
+    "Drawing": ("pencil", "orange"),
+    "Generators": ("fountain", "green"),
+    "Linalg": ("geometry", "orange"),
+    "Readwrite": ("file", "orange"),
+    "Relabel": ("label", "orange"),
+}
+
+
 def register_networkx(env: str):
     cat = ops.CATALOGS.setdefault(env, {})
     counter = 0
@@ -335,10 +348,15 @@ def register_networkx(env: str):
                 nicename = nicename.replace(a, b)
             if nicename[1] != "-":
                 nicename = nicename[0].upper() + nicename[1:]
+            cats = _categories(func)
+            icon, color = CATEGORY_ICONS_AND_COLORS.get(len(cats) >= 2 and cats[1], (None, None))
             op = ops.Op(
                 func=wrapped(name, func),
                 name=nicename,
-                categories=_categories(func),
+                categories=cats,
+                doc=ops.parse_doc(func),
+                icon=icon,
+                color=color,
                 params=params,
                 inputs=inputs,
                 outputs=[ops.Output(name="output", type=nx.Graph, position=ops.Position.RIGHT)],

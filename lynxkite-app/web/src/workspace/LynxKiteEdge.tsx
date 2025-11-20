@@ -23,7 +23,7 @@ export default function LynxKiteEdge(props: any) {
       markerEnd={props.markerEnd}
       style={{
         strokeWidth: 2,
-        stroke: "black",
+        stroke: "#888",
       }}
     />
   );
