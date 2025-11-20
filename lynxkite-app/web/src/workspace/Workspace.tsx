@@ -4,6 +4,8 @@ import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   applyEdgeChanges,
   applyNodeChanges,
+  Background,
+  BackgroundVariant,
   type Connection,
   Controls,
   type Edge,
@@ -67,6 +69,7 @@ function LynxKiteFlow() {
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
   const path = usePath().replace(/^[/]edit[/]/, "");
   const shortPath = path!
     .split("/")
@@ -125,14 +128,62 @@ function LynxKiteFlow() {
     };
   }, [path, updateNodeInternals]);
 
+  // Track Shift key state
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Shift") {
+        setIsShiftPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === "Shift") {
+        setIsShiftPressed(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   const onNodesChange = useCallback(
     (changes: any[]) => {
+      // Grid size for snapping
+      const GRID_SIZE = 50;
+
+      const snapToGrid = (position: { x: number; y: number }) => ({
+        x: Math.round(position.x / GRID_SIZE) * GRID_SIZE,
+        y: Math.round(position.y / GRID_SIZE) * GRID_SIZE,
+      });
+
+      const processedChanges = changes.map((ch) => {
+        if (
+          ch.type === "position" &&
+          !Number.isNaN(ch.position.x) &&
+          !Number.isNaN(ch.position.y) &&
+          isShiftPressed
+        ) {
+          // Snap to grid when Shift is pressed
+          return {
+            ...ch,
+            position: snapToGrid(ch.position),
+          };
+        }
+        return ch;
+      });
+
       // An update from the UI. Apply it to the local state...
       setNodes((nds) => applyNodeChanges(changes, nds));
       // ...and to the CRDT state. (Which could be the same, except for ReactFlow's internal copies.)
       const wnodes = state.workspace?.nodes;
       if (!wnodes) return;
-      for (const ch of changes) {
+
+      for (const ch of processedChanges) {
         const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
         if (nodeIndex === -1) continue;
         const node = wnodes[nodeIndex];
@@ -181,7 +232,7 @@ function LynxKiteFlow() {
         }
       }
     },
-    [state, updateNodeInternals],
+    [state, updateNodeInternals, isShiftPressed],
   );
   const onEdgesChange = useCallback(
     (changes: any[]) => {
@@ -637,6 +688,13 @@ function LynxKiteFlow() {
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={50}
+              size={3}
+              color="#999"
+              offset={0}
+            />
             <Controls />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
