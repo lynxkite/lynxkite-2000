@@ -126,6 +126,8 @@ def clean_input(ws_pyd):
         node.data.display = None
         node.data.input_metadata = None
         node.data.error = None
+        node.data.collapsed = False
+        node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
         for p in list(node.data.params):
             if p.startswith("_"):
