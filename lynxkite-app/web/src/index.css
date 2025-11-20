@@ -340,6 +340,11 @@ body {
     }
   }
 
+  .react-flow__node {
+    width: auto !important;
+    height: auto !important;
+  }
+
   .react-flow__node-table_view {
     .df-head {
       font-weight: bold;

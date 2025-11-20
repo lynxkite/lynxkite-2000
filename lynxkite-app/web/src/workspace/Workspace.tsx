@@ -167,6 +167,9 @@ function LynxKiteFlow() {
               // Update edge positions when node collapses/expands.
               setTimeout(() => updateNodeInternals(ch.id), 0);
             }
+            if (node.data.expanded_height !== ch.item.data.expanded_height) {
+              node.data.expanded_height = ch.item.data.expanded_height;
+            }
             if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
               node.data.__execution_delay = ch.item.data.__execution_delay;
             }
@@ -279,9 +282,9 @@ function LynxKiteFlow() {
         const np = n.position;
         return (
           np.x < fpos.x + w + GAP &&
-          np.x + n.width + GAP > fpos.x &&
+          np.x + (n.width ?? 0) + GAP > fpos.x &&
           np.y < fpos.y + h + GAP &&
-          np.y + n.height + GAP > fpos.y
+          np.y + (n.height ?? 0) + GAP > fpos.y
         );
       });
       if (!occupied) {
@@ -338,12 +341,14 @@ function LynxKiteFlow() {
   }
   function addNode(node: Partial<WorkspaceNode>) {
     state.workspace.nodes!.push(node as WorkspaceNode);
-    setNodes([...nodes, node as WorkspaceNode]);
+    setNodes([...nodes, node as Node]);
   }
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
+      height: 200,
       data: {
+        // @ts-expect-error (meta is passed as a black box through CRDT)
         meta: { value: meta },
         title: meta.name,
         op_id: meta.id,
@@ -469,7 +474,7 @@ function LynxKiteFlow() {
     groupNode.width = right - left;
     groupNode.height = bottom - top;
     setNodes([
-      { ...(groupNode as WorkspaceNode), selected: true },
+      { ...(groupNode as Node), selected: true },
       ...nodes.map((n) =>
         n.selected
           ? {
