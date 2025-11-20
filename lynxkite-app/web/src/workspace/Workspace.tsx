@@ -4,6 +4,7 @@ import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   applyEdgeChanges,
   applyNodeChanges,
+  Background,
   type Connection,
   Controls,
   type Edge,
@@ -631,17 +632,14 @@ function LynxKiteFlow() {
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
-                color: "black",
+                color: "#888",
                 width: 15,
                 height: 15,
-              },
-              style: {
-                strokeWidth: 2,
-                stroke: "black",
               },
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
+            <Background size={6} gap={40} color="#f0f0f0" bgColor="#fafafa" />
             <Controls />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch

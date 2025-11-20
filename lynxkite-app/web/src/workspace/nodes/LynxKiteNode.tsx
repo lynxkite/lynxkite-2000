@@ -1,4 +1,5 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import Color from "colorjs.io";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 // @ts-expect-error
@@ -11,7 +12,9 @@ import Dots from "~icons/tabler/dots.jsx";
 import Help from "~icons/tabler/question-mark.jsx";
 // @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
+import type { WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS } from "../../common.ts";
+import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
 
 interface LynxKiteNodeProps {
@@ -22,6 +25,26 @@ interface LynxKiteNodeProps {
   data: any;
   children: any;
   parentId?: string;
+}
+
+function paramSummary(data: WorkspaceNodeData): string {
+  const lines = [];
+  for (const [key, value] of Object.entries(data.params || {})) {
+    const displayValue = value;
+    if (typeof value === "object") {
+      continue;
+    }
+    lines.push(`${key}: ${displayValue}`);
+  }
+  return lines.join(", ");
+}
+
+function docToString(doc: any): string {
+  if (!doc) return "";
+  return (
+    doc.map?.((section: any) => (section.kind === "text" ? section.value : "")).join("\n") ??
+    String(doc)
+  );
 }
 
 function getHandles(inputs: any[], outputs: any[]) {
@@ -126,17 +149,29 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     }
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
-  const height = Math.max(56, node?.height ?? props.height ?? 200);
+  const height = Math.max(67, node?.height ?? props.height ?? 200);
+  const meta = data.meta?.value ?? {};
+  const summary: string = data.error
+    ? `Error: ${data.error}`
+    : (data.collapsed && paramSummary(data)) || docToString(meta.doc);
   const handleOffsetDirection = {
     top: "left",
     bottom: "left",
     left: "top",
     right: "top",
   };
-  const titleStyle: { backgroundColor?: string } = {};
-  if (data.meta?.value?.color) {
-    titleStyle.backgroundColor = COLORS[data.meta.value.color] || data.meta.value.color;
-  }
+  const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
+  const titleStyle = { backgroundColor: color.toString() };
+  color.l = 0.25;
+  color.alpha = 0.5;
+  const borderColor = color.toString();
+  color.c = 0.1;
+  color.alpha = 0.25;
+  const nodeStyle = {
+    ...props.nodeStyle,
+    borderColor,
+    boxShadow: `0px 5px 30px 0px ${color.toString()}`,
+  };
   return (
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"} ${props.parentId ? "in-group" : ""}`}
@@ -146,26 +181,30 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       }}
       ref={containerRef}
     >
-      <div className="lynxkite-node" style={props.nodeStyle}>
-        <div
-          className={`title bg-primary drag-handle ${data.status}`}
-          style={titleStyle}
-          onClick={titleClicked}
-        >
-          <span className="title-title">{data.title}</span>
-          {data.error && (
-            <Tooltip doc={`Error: ${data.error}`}>
-              <AlertTriangle />
-            </Tooltip>
-          )}
-          {data.collapsed && (
-            <Tooltip doc="Click to expand node">
-              <Dots />
-            </Tooltip>
-          )}
-          <Tooltip doc={data.meta?.value?.doc}>
-            <Help />
-          </Tooltip>
+      <div className="lynxkite-node" style={nodeStyle}>
+        <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
+          {(meta.icon && (
+            <InlineSVG style={titleStyle} className="title-icon" src={`/api/icons/${meta.icon}`} />
+          )) || <div className="title-icon-placeholder" />}
+          <div className="title-right-side">
+            <div className="title-right-side-top">
+              <span className="title-title">{data.title}</span>
+              {data.error && (
+                <Tooltip doc={`Error: ${data.error}`}>
+                  <AlertTriangle />
+                </Tooltip>
+              )}
+              {data.collapsed && (
+                <Tooltip doc="Click to expand node">
+                  <Dots />
+                </Tooltip>
+              )}
+              <Tooltip doc={data.meta?.value?.doc}>
+                <Help />
+              </Tooltip>
+            </div>
+            {summary && <span className="title-summary">{summary}</span>}
+          </div>
         </div>
         {!data.collapsed && (
           <>
