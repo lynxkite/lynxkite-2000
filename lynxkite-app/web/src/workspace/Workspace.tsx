@@ -670,7 +670,7 @@ function LynxKiteFlow() {
             minZoom={0.2}
             zoomOnScroll={false}
             panOnScroll={true}
-            panOnDrag={false}
+            panOnDrag={[1]}
             selectionOnDrag={true}
             panOnScrollSpeed={1}
             preventScrolling={false}
