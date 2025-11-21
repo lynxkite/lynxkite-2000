@@ -266,7 +266,7 @@
         "params": {
           "file_format": "csv",
           "file_format_group": "csv",
-          "file_path": "uploads/tkgl-smallpedia_edgelist.csv",
+          "file_path": "https://huggingface.co/datasets/andrewsleader/TGB/resolve/main/tkgl-smallpedia/tkgl-smallpedia_edgelist.csv",
           "separator": "<auto>",
           "table_name": "edges"
         },

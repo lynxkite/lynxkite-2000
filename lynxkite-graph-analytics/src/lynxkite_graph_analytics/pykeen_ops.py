@@ -1,4 +1,4 @@
-"""PyKEEN operations."""
+"""PyKEEN graph embedding operations."""
 
 from lynxkite_core import ops
 from . import core
@@ -40,6 +40,7 @@ The model name is passed to the operation as a string."""
 
 
 def factory_to_df(factory: CoreTriplesFactory) -> pd.DataFrame:
+    """Convert a TriplesFactory to a DataFrame with labeled columns."""
     df = factory.tensor_to_df(factory.mapped_triples)
     return df[["head_label", "relation_label", "tail_label"]].rename(
         columns={"head_label": "head", "relation_label": "relation", "tail_label": "tail"}
@@ -102,6 +103,7 @@ class InductiveDataset(str, enum.Enum):
 
 @op("Import PyKEEN dataset")
 def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
+    """Imports a dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
     bundle = core.Bundle()
 
@@ -139,6 +141,7 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
 
 @op("Import inductive dataset")
 def import_inductive_dataset(*, dataset: InductiveDataset = InductiveDataset.ILPC2022Small):
+    """Imports an inductive dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
     bundle = core.Bundle()
     bundle.dfs["transductive_training"] = pd.DataFrame(
@@ -268,8 +271,6 @@ class PyKEENModelMoreD(PyKEENModelMixin, enum.Enum):
 
 class PyKEENCombinations(str, enum.Enum):
     ComplexSeparated = "ComplexSeparated"
-    # Concat = "Concat"
-    # ConcatAggregation = "ConcatAggregation"
     ConcatProjection = "ConcatProjection"
     Gated = "Gated"
 
@@ -287,12 +288,6 @@ class PyKEENCombinations(str, enum.Enum):
                         activation=nn.Tanh,
                     ),
                 )
-            # case "Concat":
-            #     return combination.ConcatCombination(
-            #         dim=int(kwargs.get("dim"))
-            #     )
-            # case "ConcatAggregation":
-            #     return combination.ConcatAggregationCombination('sum', aggregation_kwargs=dict(index=torch.tensor([0,1,2,3,4,1,2,3,4])))
             case "ConcatProjection":
                 return combination.ConcatProjectionCombination(
                     input_dims=[embedding_dim, literal_shape],
@@ -473,6 +468,13 @@ class PyKEENModelWrapper:
     def __repr__(self):
         return f"PyKEENModelWrapper({self.model.__class__.__name__})"
 
+    def copy(self, deep: bool = True):
+        import copy as _copy
+
+        new_wrapper = PyKEENModelWrapper.__new__(PyKEENModelWrapper)
+        new_wrapper.__dict__ = _copy.deepcopy(self.__dict__) if deep else self.__dict__.copy()
+        return new_wrapper
+
 
 def req_inverse_triples(model: models.Model | PyKEENModel1D | PyKEENModelMoreD) -> bool:
     """
@@ -492,6 +494,33 @@ class TrainingType(str, enum.Enum):
         return self.value
 
 
+class PyKEENSupportedLosses(str, enum.Enum):
+    PointwiseLoss = "PointwiseLoss"
+    DeltaPointwiseLoss = "DeltaPointwiseLoss"
+    MarginPairwiseLoss = "MarginPairwiseLoss"
+    PairwiseLoss = "PairwiseLoss"
+    SetwiseLoss = "SetwiseLoss"
+    AdversarialLoss = "AdversarialLoss"
+    AdversarialBCEWithLogitsLoss = "AdversarialBCEWithLogitsLoss"
+    BCEAfterSigmoidLoss = "BCEAfterSigmoidLoss"
+    BCEWithLogitsLoss = "BCEWithLogitsLoss"
+    CrossEntropyLoss = "CrossEntropyLoss"
+    FocalLoss = "FocalLoss"
+    InfoNCELoss = "InfoNCELoss"
+    MarginRankingLoss = "MarginRankingLoss"
+    MSELoss = "MSELoss"
+    NSSALoss = "NSSALoss"
+    SoftplusLoss = "SoftplusLoss"
+    SoftPointwiseHingeLoss = "SoftPointwiseHingeLoss"
+    PointwiseHingeLoss = "PointwiseHingeLoss"
+    DoubleMarginLoss = "DoubleMarginLoss"
+    SoftMarginRankingLoss = "SoftMarginRankingLoss"
+    PairwiseLogisticLoss = "PairwiseLogisticLoss"
+
+    def __str__(self):
+        return self.value
+
+
 @op("Define PyKEEN model")
 def define_pykeen_model(
     bundle: core.Bundle,
@@ -499,7 +528,7 @@ def define_pykeen_model(
     model: PyKEENModelMoreD = PyKEENModelMoreD.MuRE,
     edge_data_table: core.TableName = "edges",
     embedding_dim: int = 50,
-    loss_function: str,
+    loss_function: PyKEENSupportedLosses = PyKEENSupportedLosses.NSSALoss,
     seed: int = 42,
     save_as: str = "PyKEENmodel",
 ):
@@ -573,6 +602,7 @@ def def_pykeen_with_attributes(
     save_as: str,
     **kwargs,
 ) -> core.Bundle:
+    """Defines a PyKEEN model capable of using numeric literals as node attributes."""
     dataset = dataset.copy()
 
     edges_data = dataset.dfs["edges"][["head", "relation", "tail"]].astype(str)
@@ -655,6 +685,17 @@ def def_pykeen_with_attributes(
     return dataset
 
 
+class PyTorchAggregationFunctions(str, enum.Enum):
+    MLP = "mlp"
+    torch.sum
+    torch.mean
+    torch.amin
+    torch.amax
+    torch.prod
+    torch.var
+    torch.std
+
+
 @op("Define inductive PyKEEN model")
 def get_inductive_model(
     bundle: core.Bundle,
@@ -665,7 +706,7 @@ def get_inductive_model(
     embedding_dim: int = 200,
     loss_function: str,
     num_tokens: int = 2,
-    aggregation: str = "mlp",
+    aggregation: PyTorchAggregationFunctions = PyTorchAggregationFunctions.MLP,
     use_GNN: bool = False,
     seed: int = 42,
     save_as: str = "InductiveModel",
@@ -678,7 +719,7 @@ def get_inductive_model(
         inference_table: The inductive edges of the graph.
         interaction: Type of interaction the model will use for link prediction scoring.
         num_tokens: Number of hash tokens for each node representation, usually 66th percentiles of the number of unique incident relations per node.
-        aggregation: Aggregation of multiple token representations to a single entity representation. The module assumes that this refers to a top-level torch function, or use 'mlp' for a two-layer built-in mlp aggregator.
+        aggregation: Aggregation of multiple token representations to a single entity representation. Pick a top-level torch function, or use 'mlp' for a two-layer built-in mlp aggregator.
     """
     bundle = bundle.copy()
     transductive_training = prepare_triples(
@@ -764,7 +805,6 @@ def prepare_triples(
     return triples
 
 
-# TODO: Make the pipeline more customizable, e.g. by allowing to pass additional parameters to the pipeline function.
 @op("Train embedding model", slow=True)
 def train_embedding_model(
     bundle: core.Bundle,
@@ -777,9 +817,15 @@ def train_embedding_model(
     learning_rate: float = 0.0001,
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
+    number_of_negative_samples_per_positive: int = 512,
 ):
-    bundle = bundle.copy()
-    model_wrapper: PyKEENModelWrapper = bundle.other.get(model)
+    bundle_copy = bundle.copy()
+    for key, value in bundle.dfs.items():
+        bundle_copy.dfs[key] = value.copy(deep=True)
+
+    model_wrapper: PyKEENModelWrapper = bundle_copy.other.get(model)
+    bundle_copy.other[model] = model_wrapper.copy(deep=True)
+    model_wrapper = bundle_copy.other[model]
     actual_model = model_wrapper.model
     sampler = None
     if isinstance(actual_model, models.RGCN) and training_approach == TrainingType.sLCWA:
@@ -790,21 +836,21 @@ def train_embedding_model(
     relation_to_id = model_wrapper.relation_to_id
 
     training_set = prepare_triples(
-        bundle.dfs[training_table][["head", "relation", "tail"]],
+        bundle_copy.dfs[training_table][["head", "relation", "tail"]],
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
         numeric_literals=model_wrapper.literals_data,
     )
     testing_set = prepare_triples(
-        bundle.dfs[testing_table][["head", "relation", "tail"]],
+        bundle_copy.dfs[testing_table][["head", "relation", "tail"]],
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
         numeric_literals=model_wrapper.literals_data,
     )
     validation_set = prepare_triples(
-        bundle.dfs[validation_table][["head", "relation", "tail"]],
+        bundle_copy.dfs[validation_table][["head", "relation", "tail"]],
         inv_triples=req_inverse_triples(actual_model),
         entity_to_id=entity_to_id,
         relation_to_id=relation_to_id,
@@ -831,7 +877,7 @@ def train_embedding_model(
         training_loop=training_approach,
         negative_sampler="bernoulli" if training_approach == TrainingType.sLCWA else None,
         negative_sampler_kwargs=dict(
-            num_negs_per_pos=512,
+            num_negs_per_pos=number_of_negative_samples_per_positive,
         ),
         epochs=epochs,
         training_kwargs=dict(
@@ -851,14 +897,14 @@ def train_embedding_model(
     model_wrapper.model = result.model
     model_wrapper.trained = True
 
-    bundle.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
+    bundle_copy.dfs["training"] = pd.DataFrame({"training_loss": result.losses})
     if isinstance(result.stopper, stoppers.EarlyStopper):
-        bundle.dfs["early_stopper_metric"] = pd.DataFrame(
+        bundle_copy.dfs["early_stopper_metric"] = pd.DataFrame(
             {"early_stopper_metric": result.stopper.results}
         )
-    bundle.other[model] = model_wrapper
+    bundle_copy.other[model] = model_wrapper
 
-    return bundle
+    return bundle_copy
 
 
 @op("Train inductive model", slow=True)
@@ -873,22 +919,28 @@ def train_inductive_pykeen_model(
     epochs: int = 5,
     training_approach: TrainingType = TrainingType.sLCWA,
 ):
-    bundle = bundle.copy()
-    model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
+    bundle_copy = bundle.copy()
+    for key, value in bundle.dfs.items():
+        bundle_copy.dfs[key] = value.copy(deep=True)
+
+    model_wrapper: PyKEENModelWrapper = bundle_copy.other.get(model_name)
+    bundle_copy.other[model_name] = model_wrapper.copy(deep=True)
+    model_wrapper = bundle_copy.other[model_name]
+
     model = model_wrapper.model
     transductive_training = prepare_triples(
-        bundle.dfs[transductive_table_name][["head", "relation", "tail"]],
+        bundle_copy.dfs[transductive_table_name][["head", "relation", "tail"]],
         relation_to_id=model_wrapper.relation_to_id,
         inv_triples=True,
     )
     inductive_inference = prepare_triples(
-        bundle.dfs[inductive_inference_table][["head", "relation", "tail"]],
+        bundle_copy.dfs[inductive_inference_table][["head", "relation", "tail"]],
         entity_to_id=model_wrapper.entity_to_id,
         relation_to_id=model_wrapper.relation_to_id,
         inv_triples=True,
     )
     inductive_validation = prepare_triples(
-        bundle.dfs[inductive_validation_table][["head", "relation", "tail"]],
+        bundle_copy.dfs[inductive_validation_table][["head", "relation", "tail"]],
         entity_to_id=model_wrapper.entity_to_id,
         relation_to_id=model_wrapper.relation_to_id,
         inv_triples=True,
@@ -937,13 +989,13 @@ def train_inductive_pykeen_model(
 
     model_wrapper.trained = True
 
-    bundle.dfs["training"] = pd.DataFrame({"training_loss": losses})
-    bundle.dfs["early_stopper_metric"] = pd.DataFrame(
+    bundle_copy.dfs["training"] = pd.DataFrame({"training_loss": losses})
+    bundle_copy.dfs["early_stopper_metric"] = pd.DataFrame(
         {"early_stopper_metric": early_stopper.results}
     )
-    bundle.other[model_name] = model_wrapper
+    bundle_copy.other[model_name] = model_wrapper
 
-    return bundle
+    return bundle_copy
 
 
 @op("View early stopping metric", view="visualization")
@@ -1139,6 +1191,7 @@ def evaluate(
     eval_table: core.TableName = "edges_test",
     additional_true_triples_table: core.TableName = "edges_train",
     metrics_str: str = "ALL",
+    batch_size: int = 32,
 ):
     """
     Evaluates the given model on the test set using the specified evaluator type.
@@ -1173,7 +1226,7 @@ def evaluate(
         model=model_wrapper.model,
         mapped_triples=testing_triples.mapped_triples,
         additional_filter_triples=additional_filters.mapped_triples,
-        # batch_size=32,
+        batch_size=batch_size,
     )
     if metrics_str == "ALL":
         bundle.dfs["metrics"] = evaluated.to_df()
@@ -1206,6 +1259,7 @@ def eval_inductive_model(
     inductive_inference_table: core.TableName,
     inductive_validation_table: core.TableName,
     metrics_str: str = "ALL",
+    batch_size: int = 32,
 ):
     bundle = bundle.copy()
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
@@ -1241,7 +1295,7 @@ def eval_inductive_model(
             inductive_inference.mapped_triples,
             inductive_validation.mapped_triples,
         ],
-        batch_size=256,
+        batch_size=batch_size,
     )
     if metrics_str == "ALL":
         bundle.dfs["metrics"] = result.to_df()

@@ -102,9 +102,7 @@ def model_eval_(
     bundle = bundle.copy()
 
     df = bundle.dfs[table_name]
-    # Extract label values directly
     all_labels = df[labels_column].apply(lambda x: x[0] if isinstance(x, list) else x).values
-    # Extract prediction values and convert to binary predictions
     all_predictions = (
         df[predictions_column].apply(lambda x: x[0] if isinstance(x, list) else x).values
     )
@@ -161,7 +159,6 @@ def plot_results(bundle: core.Bundle):
     import matplotlib.pyplot as plt
     import numpy as np
 
-    # Create a figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Collect all unique metrics
@@ -171,12 +168,10 @@ def plot_results(bundle: core.Bundle):
             all_metrics.update(df["metric"])
     all_metrics = sorted(list(all_metrics))
 
-    # Get relevant table names
     table_names = [
         name for name, df in bundle.dfs.items() if "metric" in df.columns and "score" in df.columns
     ]
 
-    # Bar width and positions
     bar_width = 0.2
     x = np.arange(len(all_metrics))
 
@@ -193,14 +188,9 @@ def plot_results(bundle: core.Bundle):
 
         ax.bar(x + offset, scores, bar_width, label=table_name)
 
-    # Set the x-axis ticks and labels
     ax.set_xticks(x)
     ax.set_xticklabels(all_metrics)
-
-    # Draw horizontal dotted line at 0.5
     ax.axhline(y=0.5, color="r", linestyle="--")
-
-    # Set the title and labels
     ax.set_title("Model Evaluation Metrics")
     ax.set_xlabel("Metrics")
     ax.set_ylabel("Scores")
@@ -216,8 +206,5 @@ def plot_results(bundle: core.Bundle):
         ]  # ty: ignore[invalid-argument-type]
     )
 
-    # Put a legend below current axis
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=5)
-
-    # Return the figure for display
     return fig
