@@ -35,24 +35,16 @@ export default function Group(props: any) {
         width: props.width,
         height: props.height,
         backgroundColor: COLORS[currentColor],
-        position: "relative",
       }}
     >
       <button
         ref={buttonRef}
         onClick={toggleColorPicker}
         aria-label="Change group color"
-        style={{
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          zIndex: 10,
-          transform: "scale(1.25)",
-          transformOrigin: "center",
-        }}
+        className="node-group-color-picker-icon"
       >
         <Tooltip doc="Change color">
-          <Palette />
+          <Palette width={30} height={30} />
         </Tooltip>
       </button>
 
@@ -131,14 +123,11 @@ function ColorPickerPortal({
   return createPortal(
     <div
       ref={portalRef}
+      className="color-picker-portal"
       style={{
-        position: "fixed",
         left: pos.left,
         top: pos.top,
-        zIndex: 200000,
-
         transform: `scale(${zoom})`,
-        transformOrigin: "top left",
       }}
     >
       <ColorPicker currentColor={currentColor} onPick={onPick} />
@@ -147,40 +136,17 @@ function ColorPickerPortal({
   );
 }
 
-function ColorPicker({
-  currentColor,
-  onPick,
-}: {
-  currentColor: string;
-  onPick: (color: string) => void;
-}) {
-  const colors = Object.keys(COLORS).filter((c) => c !== currentColor);
+function ColorPicker(props: { currentColor: string; onPick: (color: string) => void }) {
+  const colors = Object.keys(COLORS).filter((color) => color !== props.currentColor);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-        padding: "10px 12px",
-        background: "white",
-        borderRadius: 12,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08)",
-        border: "1px solid rgba(0,0,0,0.06)",
-      }}
-    >
+    <div className="color-picker">
       {colors.map((color) => (
         <button
           key={color}
-          onClick={() => onPick(color)}
-          aria-label={`Pick ${color}`}
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 6,
-            background: COLORS[color],
-            border: "none",
-            cursor: "pointer",
-          }}
+          className="color-picker-button"
+          style={{ background: COLORS[color] }}
+          onClick={() => props.onPick(color)}
         />
       ))}
     </div>
