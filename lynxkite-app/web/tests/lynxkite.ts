@@ -96,7 +96,8 @@ export class Workspace {
   }
   boxByTitle(title: string): Box {
     const titleLocator = this.page.getByText(title, { exact: true });
-    return new Box(this.page, titleLocator.locator("../.."));
+    const nodeLocator = this.page.locator(".lynxkite-node", { has: titleLocator });
+    return new Box(this.page, nodeLocator);
   }
 
   getBoxes() {

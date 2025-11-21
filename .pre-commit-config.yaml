@@ -12,7 +12,7 @@ repos:
       args: [ --fix ]
     - id: ruff-format
 - repo: https://github.com/biomejs/pre-commit
-  rev: v2.2.4
+  rev: v2.3.6
   hooks:
     - id: biome-check
 # https://github.com/astral-sh/ty/issues/269
