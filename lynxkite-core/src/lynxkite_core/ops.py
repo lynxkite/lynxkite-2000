@@ -192,6 +192,7 @@ class Op(BaseConfig):
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
+    icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
     # ID is automatically set from the name and categories.
     id: str = pydantic.Field(default=None)
@@ -251,6 +252,7 @@ def op(
     params: list[Parameter] | None = None,
     slow: bool = False,
     color: str | None = None,
+    icon: str | None = None,
     cache: bool | None = None,
     dir: str = "left-to-right",
 ):
@@ -269,6 +271,7 @@ def op(
         slow: If True, the operation results will be cached.
               If the function is not async, it will be run in a separate thread.
         color: The color of the operation in the UI. Defaults to "orange".
+        icon: The icon of the operation in the UI. Names of Tabler icons are accepted.
         cache: Set to False to disable caching for a slow operation.
                You may need this for slow operations with parameters/outputs that can't be serialized.
         dir: Sets the default input and output positions. The default is "left-to-right", meaning
@@ -315,6 +318,7 @@ def op(
             outputs=_outputs,
             type=_view,
             color=color or "orange",
+            icon=icon,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
@@ -397,7 +401,13 @@ def no_op(*args, **kwargs):
 
 
 def register_passive_op(
-    env: str, *names: str, inputs=[], outputs=["output"], params=[], dir="left-to-right", **kwargs
+    env: str,
+    *names: str,
+    inputs=[],
+    outputs=["output"],
+    params=[],
+    dir="left-to-right",
+    **kwargs,
 ):
     """A passive operation has no associated code."""
     ipos, opos = Position.from_dir(dir)
