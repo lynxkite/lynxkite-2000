@@ -225,6 +225,10 @@ class Workspace(BaseConfig):
         for node in self.nodes:
             data = node.data
             op = catalog.get(data.op_id)
+            if not op:
+                op = try_to_find_in_other_categories(catalog, data.op_id)
+                if op:
+                    data.op_id = op.id
             if op:
                 if getattr(data, "meta", None) != op:
                     data.meta = op
@@ -295,3 +299,15 @@ class Workspace(BaseConfig):
         )
         self.edges.append(edge)
         return edge
+
+
+def try_to_find_in_other_categories(catalog: ops.Catalog, op_id: str):
+    """Tries to find an operation in other categories of the catalog.
+
+    When an operation has been moved to a different category,
+    we can still find it by its name this way.
+    """
+    op_name = op_id.split(" > ")[-1]
+    for other_op_id, op in catalog.items():
+        if other_op_id.split(" > ")[-1] == op_name:
+            return op
