@@ -1,8 +1,7 @@
-/* biome-ignore-start lint/suspicious/noUnknownAtRules: tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* biome-ignore-end lint/suspicious/noUnknownAtRules: tailwind */
+@import "tailwindcss";
+/* biome-ignore-start lint/suspicious/noUnknownAtRules: plugin */
+@plugin "daisyui";
+/* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
