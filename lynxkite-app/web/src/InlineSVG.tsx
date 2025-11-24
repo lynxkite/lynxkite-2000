@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 
 interface InlineSvgProps {
@@ -15,5 +16,11 @@ export default function InlineSvg({ src, className, ...props }: InlineSvgProps) 
       .then((text) => setSvg(text))
       .catch((err) => console.error("Error loading SVG:", err));
   }, [src]);
-  return <span className={className} {...props} dangerouslySetInnerHTML={{ __html: svg || "" }} />;
+  return (
+    <span
+      className={className}
+      {...props}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg || "") }}
+    />
+  );
 }
