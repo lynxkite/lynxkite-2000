@@ -23,21 +23,21 @@ test.afterEach(async () => {
 
 test("Tables are displayed in the Graph creation box", async () => {
   const graphBox = await workspace.getBox("Organize 1");
-  const nodesTableHeader = graphBox.locator(".graph-tables .df-head", {
+  const nodesTableDiv = graphBox.locator(".graph-table", {
     hasText: "nodes",
   });
-  const edgesTableHeader = graphBox.locator(".graph-tables .df-head", {
+  const edgesTableDiv = graphBox.locator(".graph-table", {
     hasText: "edges",
   });
-  const nodesTable = nodesTableHeader.locator("xpath=//following-sibling::table[1]");
-  const edgesTable = edgesTableHeader.locator("xpath=//following-sibling::table[1]");
-  await expect(nodesTableHeader).toBeVisible();
-  await expect(edgesTableHeader).toBeVisible();
+  const nodesTable = nodesTableDiv.locator("table");
+  const edgesTable = edgesTableDiv.locator("table");
+  await expect(nodesTableDiv).toBeVisible();
+  await expect(edgesTableDiv).toBeVisible();
   await expect(nodesTable).not.toBeVisible();
   await expect(edgesTable).not.toBeVisible();
-  await nodesTableHeader.click();
+  await nodesTableDiv.locator(".df-head").click();
   await expect(nodesTable).toBeVisible();
-  await edgesTableHeader.click();
+  await edgesTableDiv.locator(".df-head").click();
   await expect(edgesTable).toBeVisible();
 });
 
