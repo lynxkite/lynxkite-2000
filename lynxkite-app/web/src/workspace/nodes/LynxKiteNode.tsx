@@ -183,9 +183,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     >
       <div className="lynxkite-node" style={nodeStyle}>
         <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-          {(meta.icon && (
-            <InlineSVG style={titleStyle} className="title-icon" src={`/api/icons/${meta.icon}`} />
-          )) || <div className="title-icon-placeholder" />}
+          <Icon style={titleStyle} name={meta.icon} />
           <div className="title-right-side">
             <div className="title-right-side-top">
               <span className="title-title">{data.title}</span>
@@ -247,6 +245,16 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       </div>
     </div>
   );
+}
+
+function Icon({ style, name }: { style: object; name: string }) {
+  if (!name) {
+    return <div className="title-icon-placeholder" />;
+  }
+  if (name.startsWith("<svg")) {
+    return <span style={style} className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
+  }
+  return <InlineSVG style={style} className="title-icon" src={`/api/icons/${name}`} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {

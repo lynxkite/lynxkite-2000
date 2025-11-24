@@ -480,10 +480,18 @@ body {
     color: #aaa;
   }
 
+  .table-viewer-container {
+    overflow-x: auto;
+  }
+
   .table-viewer {
     td {
       padding: 5px 10px;
       vertical-align: top;
+      white-space: nowrap;
+      max-width: 100vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .image-in-table {
