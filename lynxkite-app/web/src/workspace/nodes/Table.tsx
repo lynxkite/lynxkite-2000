@@ -43,30 +43,32 @@ export default function Table(props: any) {
     });
   }
   return (
-    <table className="table-viewer">
-      <thead>
-        <tr>
-          {props.columns.map((column: string) => (
-            <th key={column} onClick={() => onClick(column)}>
-              {column}
-              {sortColumn === column && (
-                <span className="sort-indicator">{sortDirection === "asc" ? "▲" : "▼"}</span>
-              )}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row: { [column: string]: any }, i: number) => (
-          <tr key={`row-${i}`}>
-            {props.columns.map((_column: string, j: number) => (
-              <td key={`cell ${i}, ${j}`}>
-                <Cell value={row[j]} />
-              </td>
+    <div className="table-viewer-container">
+      <table className="table-viewer">
+        <thead>
+          <tr>
+            {props.columns.map((column: string) => (
+              <th key={column} onClick={() => onClick(column)}>
+                {column}
+                {sortColumn === column && (
+                  <span className="sort-indicator">{sortDirection === "asc" ? "▲" : "▼"}</span>
+                )}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((row: { [column: string]: any }, i: number) => (
+            <tr key={`row-${i}`}>
+              {props.columns.map((_column: string, j: number) => (
+                <td key={`cell ${i}, ${j}`}>
+                  <Cell value={row[j]} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
