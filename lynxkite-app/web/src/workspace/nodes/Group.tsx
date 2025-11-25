@@ -1,5 +1,5 @@
-import { NodeResizeControl, useReactFlow, useViewport } from "@xyflow/react";
-import { useEffect, useRef, useState } from "react";
+import { NodeResizeControl, useReactFlow } from "@xyflow/react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 // @ts-expect-error
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
@@ -8,147 +8,76 @@ import Palette from "~icons/tabler/palette-filled.jsx";
 import { COLORS } from "../../common.ts";
 import Tooltip from "../../Tooltip.tsx";
 
-export default function Group(props: any) {
-  const reactFlow = useReactFlow();
-  const [displayingColorPicker, setDisplayingColorPicker] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+export default function Group({ id, data, width, height, parentId }: any) {
+  const rf = useReactFlow();
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const portalRef = useRef<HTMLDivElement | null>(null);
+  const [pos, setPos] = useState({ left: 0, top: 0 });
+  const color = data?.params?.color || "gray";
 
-  function setColor(newValue: string) {
-    reactFlow.updateNodeData(props.id, (prevData: any) => ({
-      ...prevData,
-      params: { color: newValue },
-    }));
-    setDisplayingColorPicker(false);
-  }
+  const setColor = (c: string) => {
+    rf.updateNodeData(id, (d: any) => ({ ...d, params: { color: c } }));
+    setOpen(false);
+  };
 
-  function toggleColorPicker(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.stopPropagation();
-    setDisplayingColorPicker((s) => !s);
-  }
-
-  const currentColor = props.data?.params?.color || "gray";
+  useLayoutEffect(() => {
+    if (!open || !btnRef.current || !portalRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    setPos({ left: r.right - portalRef.current.offsetWidth, top: r.bottom + 6 });
+  }, [open]);
 
   return (
     <div
-      className={`node-group ${props.parentId ? "in-group" : ""}`}
-      style={{
-        width: props.width,
-        height: props.height,
-        backgroundColor: COLORS[currentColor],
-      }}
+      className={`node-group ${parentId ? "in-group" : ""}`}
+      style={{ width, height, backgroundColor: COLORS[color] }}
     >
       <button
-        ref={buttonRef}
-        onClick={toggleColorPicker}
-        aria-label="Change group color"
+        ref={btnRef}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
         className="node-group-color-picker-icon"
+        aria-label="Change group color"
       >
         <Tooltip doc="Change color">
           <Palette width={30} height={30} />
         </Tooltip>
       </button>
 
-      {displayingColorPicker && (
-        <ColorPickerPortal
-          anchorRef={buttonRef}
-          currentColor={currentColor}
-          onPick={setColor}
-          onRequestClose={() => setDisplayingColorPicker(false)}
-        />
-      )}
+      {open &&
+        btnRef.current &&
+        createPortal(
+          <div
+            ref={portalRef}
+            className="menu p-2 shadow-sm bg-base-100 rounded-box"
+            style={{
+              position: "absolute",
+              left: pos.left,
+              top: pos.top,
+              zIndex: 9999,
+            }}
+          >
+            <div className="flex gap-2">
+              {Object.keys(COLORS)
+                .filter((c) => c !== color)
+                .map((c) => (
+                  <button
+                    key={c}
+                    style={{ backgroundColor: COLORS[c] }}
+                    className="w-7 h-7 rounded"
+                    onClick={() => setColor(c)}
+                  />
+                ))}
+            </div>
+          </div>,
+          document.body,
+        )}
 
       <NodeResizeControl minWidth={100} minHeight={100}>
         <ChevronDownRight className="node-resizer" />
       </NodeResizeControl>
-    </div>
-  );
-}
-
-function ColorPickerPortal({
-  anchorRef,
-  currentColor,
-  onPick,
-  onRequestClose,
-}: {
-  anchorRef: React.RefObject<HTMLElement | null>;
-  currentColor: string;
-  onPick: (c: string) => void;
-  onRequestClose: () => void;
-}) {
-  const portalRef = useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = useState({ left: 0, top: 0 });
-  const { zoom } = useViewport();
-
-  useEffect(() => {
-    const anchor = anchorRef.current;
-    const portalEl = portalRef.current;
-    if (!anchor || !portalEl) return;
-
-    const update = () => {
-      const aRect = anchor.getBoundingClientRect();
-      const pRect = portalEl.getBoundingClientRect();
-      const margin = 6;
-
-      const left = aRect.right - pRect.width;
-
-      const top = aRect.bottom + margin;
-
-      setPos({ left, top });
-    };
-
-    update();
-    window.addEventListener("scroll", update, true);
-    window.addEventListener("resize", update);
-
-    return () => {
-      window.removeEventListener("scroll", update, true);
-      window.removeEventListener("resize", update);
-    };
-  }, [anchorRef]);
-
-  useEffect(() => {
-    function onDocMouseDown(e: MouseEvent) {
-      const portalEl = portalRef.current;
-      const anchorEl = anchorRef.current;
-      if (portalEl?.contains(e.target as Node)) return;
-      if (anchorEl?.contains(e.target as Node)) return;
-
-      onRequestClose();
-    }
-
-    document.addEventListener("mousedown", onDocMouseDown);
-    return () => document.removeEventListener("mousedown", onDocMouseDown);
-  }, [onRequestClose, anchorRef]);
-
-  return createPortal(
-    <div
-      ref={portalRef}
-      className="color-picker-portal"
-      style={{
-        left: pos.left,
-        top: pos.top,
-        transform: `scale(${zoom})`,
-      }}
-    >
-      <ColorPicker currentColor={currentColor} onPick={onPick} />
-    </div>,
-    document.body,
-  );
-}
-
-function ColorPicker(props: { currentColor: string; onPick: (color: string) => void }) {
-  const colors = Object.keys(COLORS).filter((color) => color !== props.currentColor);
-
-  return (
-    <div className="color-picker">
-      {colors.map((color) => (
-        <button
-          key={color}
-          className="color-picker-button"
-          style={{ background: COLORS[color] }}
-          onClick={() => props.onPick(color)}
-        />
-      ))}
     </div>
   );
 }
