@@ -8,36 +8,50 @@ import Palette from "~icons/tabler/palette-filled.jsx";
 import { COLORS } from "../../common.ts";
 import Tooltip from "../../Tooltip.tsx";
 
-export default function Group({ id, data, width, height, parentId }: any) {
-  const rf = useReactFlow();
-  const [open, setOpen] = useState(false);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
+export default function Group(props: any) {
+  const reactFlow = useReactFlow();
+  const [displayingColorPicker, setDisplayingColorPicker] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const portalRef = useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = useState({ left: 0, top: 0 });
-  const color = data?.params?.color || "gray";
+  const [portalPos, setPortalPos] = useState({ left: 0, top: 0 });
 
-  const setColor = (c: string) => {
-    rf.updateNodeData(id, (d: any) => ({ ...d, params: { color: c } }));
-    setOpen(false);
-  };
+  const currentColor = props.data?.params?.color || "gray";
+
+  function setColor(newColor: string) {
+    reactFlow.updateNodeData(props.id, (prevData: any) => ({
+      ...prevData,
+      params: { color: newColor },
+    }));
+    setDisplayingColorPicker(false);
+  }
+
+  function toggleColorPicker(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    setDisplayingColorPicker((s) => !s);
+  }
 
   useLayoutEffect(() => {
-    if (!open || !btnRef.current || !portalRef.current) return;
-    const r = btnRef.current.getBoundingClientRect();
-    setPos({ left: r.right - portalRef.current.offsetWidth, top: r.bottom + 6 });
-  }, [open]);
+    if (!displayingColorPicker || !buttonRef.current || !portalRef.current) return;
+
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    setPortalPos({
+      left: buttonRect.right - portalRef.current.offsetWidth,
+      top: buttonRect.bottom + 6,
+    });
+  }, [displayingColorPicker]);
 
   return (
     <div
-      className={`node-group ${parentId ? "in-group" : ""}`}
-      style={{ width, height, backgroundColor: COLORS[color] }}
+      className={`node-group ${props.parentId ? "in-group" : ""}`}
+      style={{
+        width: props.width,
+        height: props.height,
+        backgroundColor: COLORS[currentColor],
+      }}
     >
       <button
-        ref={btnRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen((o) => !o);
-        }}
+        ref={buttonRef}
+        onClick={toggleColorPicker}
         className="node-group-color-picker-icon"
         aria-label="Change group color"
       >
@@ -46,31 +60,20 @@ export default function Group({ id, data, width, height, parentId }: any) {
         </Tooltip>
       </button>
 
-      {open &&
-        btnRef.current &&
+      {displayingColorPicker &&
+        buttonRef.current &&
         createPortal(
           <div
             ref={portalRef}
-            className="menu p-2 shadow-sm bg-base-100 rounded-box"
+            className="dropdown-content menu p-2 shadow-sm bg-base-100 rounded-box"
             style={{
               position: "absolute",
-              left: pos.left,
-              top: pos.top,
+              left: portalPos.left,
+              top: portalPos.top,
               zIndex: 9999,
             }}
           >
-            <div className="flex gap-2">
-              {Object.keys(COLORS)
-                .filter((c) => c !== color)
-                .map((c) => (
-                  <button
-                    key={c}
-                    style={{ backgroundColor: COLORS[c] }}
-                    className="w-7 h-7 rounded"
-                    onClick={() => setColor(c)}
-                  />
-                ))}
-            </div>
+            <ColorPicker currentColor={currentColor} onPick={setColor} />
           </div>,
           document.body,
         )}
@@ -78,6 +81,23 @@ export default function Group({ id, data, width, height, parentId }: any) {
       <NodeResizeControl minWidth={100} minHeight={100}>
         <ChevronDownRight className="node-resizer" />
       </NodeResizeControl>
+    </div>
+  );
+}
+
+function ColorPicker(props: { currentColor: string; onPick: (color: string) => void }) {
+  const colors = Object.keys(COLORS).filter((color) => color !== props.currentColor);
+
+  return (
+    <div className="flex gap-2">
+      {colors.map((color) => (
+        <button
+          key={color}
+          style={{ backgroundColor: COLORS[color] }}
+          className="w-7 h-7 rounded"
+          onClick={() => props.onPick(color)}
+        />
+      ))}
     </div>
   );
 }
