@@ -116,6 +116,7 @@ body {
     flex-direction: column;
     align-items: end;
     padding: 10px 20px;
+    position: relative;
   }
 
   .node-group.in-group {
@@ -123,13 +124,10 @@ body {
   }
 
   .node-group-color-picker-icon {
-    font-size: 30px;
-    opacity: 0.1;
-    transition: opacity 0.3s;
-  }
-
-  .node-group:hover .node-group-color-picker-icon {
-    opacity: 1;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
   }
 
   .color-picker-button {
