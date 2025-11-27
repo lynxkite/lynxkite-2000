@@ -779,30 +779,3 @@ body {
   border-color: #dc2626;
   box-shadow: 0 0 0 1px #dc2626;
 }
-
-/* Color picker styles */
-.color-picker-portal {
-  position: fixed;
-  z-index: 200000;
-  transform-origin: top left;
-}
-
-.color-picker {
-  display: flex;
-  gap: 8px;
-  padding: 10px 12px;
-  background: white;
-  border-radius: 12px;
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.06),
-    0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.color-picker-button {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
