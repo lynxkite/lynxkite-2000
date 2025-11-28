@@ -28,6 +28,8 @@ class FileFormat(enum.StrEnum):
 
 @op(
     "Import file",
+    color="green",
+    icon="file-filled",
     params=[
         ops.ParameterGroup(
             name="file_format_group",
@@ -153,7 +155,7 @@ def discard_parallel_edges(graph: nx.Graph):
     return nx.DiGraph(graph)
 
 
-@op("SQL")
+@op("SQL", icon="database")
 def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
@@ -222,7 +224,7 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization")
+@op("Visualize graph", view="visualization", icon="eye", color="blue")
 def visualize_graph(
     graph: core.Bundle,
     *,
@@ -314,7 +316,7 @@ def visualize_graph(
     return v
 
 
-@op("View tables", view="table_view")
+@op("View tables", view="table_view", color="blue", icon="table-filled")
 def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
     _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
     return bundle.to_dict(limit=limit)
@@ -324,6 +326,7 @@ def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100
     "Organize",
     view="graph_creation_view",
     outputs=["output"],
+    icon="settings-filled",
 )
 def organize(bundles: list[core.Bundle], *, relations: str = ""):
     """Merge multiple inputs and construct graphs from the tables.

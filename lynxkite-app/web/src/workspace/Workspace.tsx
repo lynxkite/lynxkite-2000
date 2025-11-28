@@ -4,6 +4,8 @@ import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
   applyEdgeChanges,
   applyNodeChanges,
+  Background,
+  BackgroundVariant,
   type Connection,
   type Edge,
   MarkerType,
@@ -66,6 +68,7 @@ function LynxKiteFlow() {
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const [nodes, setNodes] = useState([] as Node[]);
   const [edges, setEdges] = useState([] as Edge[]);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
   const path = usePath().replace(/^[/]edit[/]/, "");
   const shortPath = path!
     .split("/")
@@ -124,13 +127,96 @@ function LynxKiteFlow() {
     };
   }, [path, updateNodeInternals]);
 
+  // Track Shift key state
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === "Shift") {
+        setIsShiftPressed(true);
+      }
+    }
+
+    function handleKeyUp(event: KeyboardEvent): void {
+      if (event.key === "Shift") {
+        setIsShiftPressed(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   const onNodesChange = useCallback(
     (changes: any[]) => {
+      // Grid size for snapping
+      const GRID_SIZE = 40;
+
+      const snapToGrid = (position: { x: number; y: number }) => ({
+        x: Math.round(position.x / GRID_SIZE) * GRID_SIZE,
+        y: Math.round(position.y / GRID_SIZE) * GRID_SIZE,
+      });
+
+      const snapDimensionsToGrid = (
+        dimensions: { width: number; height: number },
+        nodePosition: { x: number; y: number },
+      ) => {
+        // Calculate where the bottom-right corner should be
+        const rightEdge = nodePosition.x + dimensions.width;
+        const bottomEdge = nodePosition.y + dimensions.height;
+
+        // Snap the bottom-right corner to grid
+        const snappedRightEdge = Math.round(rightEdge / GRID_SIZE) * GRID_SIZE;
+        const snappedBottomEdge = Math.round(bottomEdge / GRID_SIZE) * GRID_SIZE;
+
+        // Calculate new dimensions based on snapped edges
+        return {
+          width: Math.max(GRID_SIZE, snappedRightEdge - nodePosition.x),
+          height: Math.max(GRID_SIZE, snappedBottomEdge - nodePosition.y),
+        };
+      };
+
+      changes = changes.map((ch) => {
+        if (
+          ch.type === "position" &&
+          !Number.isNaN(ch.position.x) &&
+          !Number.isNaN(ch.position.y) &&
+          isShiftPressed
+        ) {
+          // Snap to grid when Shift is pressed
+          return {
+            ...ch,
+            position: snapToGrid(ch.position),
+          };
+        } else if (
+          ch.type === "dimensions" &&
+          ch.dimensions &&
+          !Number.isNaN(ch.dimensions.width) &&
+          !Number.isNaN(ch.dimensions.height) &&
+          isShiftPressed
+        ) {
+          // Find the node to get its position
+          const node = nodes.find((n) => n.id === ch.id);
+          if (node) {
+            // Snap dimensions to grid when Shift is pressed
+            return {
+              ...ch,
+              dimensions: snapDimensionsToGrid(ch.dimensions, node.position),
+            };
+          }
+        }
+        return ch;
+      });
+
       // An update from the UI. Apply it to the local state...
       setNodes((nds) => applyNodeChanges(changes, nds));
       // ...and to the CRDT state. (Which could be the same, except for ReactFlow's internal copies.)
       const wnodes = state.workspace?.nodes;
       if (!wnodes) return;
+
       for (const ch of changes) {
         const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
         if (nodeIndex === -1) continue;
@@ -183,7 +269,7 @@ function LynxKiteFlow() {
         }
       }
     },
-    [state, updateNodeInternals],
+    [state, updateNodeInternals, isShiftPressed],
   );
   const onEdgesChange = useCallback(
     (changes: any[]) => {
@@ -623,23 +709,27 @@ function LynxKiteFlow() {
             minZoom={0.2}
             zoomOnScroll={true}
             panOnScroll={false}
-            panOnDrag={false}
+            panOnDrag={[1]}
             selectionOnDrag={true}
             preventScrolling={true}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
-                color: "black",
+                color: "#888",
                 width: 15,
                 height: 15,
-              },
-              style: {
-                strokeWidth: 2,
-                stroke: "black",
               },
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={40}
+              size={6}
+              color="#f0f0f0"
+              bgColor="#fafafa"
+              offset={3}
+            />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}

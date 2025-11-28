@@ -12,7 +12,7 @@ repos:
       args: [ --fix ]
     - id: ruff-format
 - repo: https://github.com/biomejs/pre-commit
-  rev: v2.2.4
+  rev: v2.3.6
   hooks:
     - id: biome-check
 # https://github.com/astral-sh/ty/issues/269
@@ -30,13 +30,13 @@ repos:
   hooks:
     - id: deptry
       name: deptry for lynxkite-app
-      entry: bash -c 'cd lynxkite-app && deptry .'
+      entry: bash -c 'cd lynxkite-app && uv run deptry .'
     - id: deptry
       name: deptry for lynxkite-core
-      entry: bash -c 'cd lynxkite-core && deptry .'
+      entry: bash -c 'cd lynxkite-core && uv run deptry .'
     - id: deptry
       name: deptry for lynxkite-graph-analytics
-      entry: bash -c 'cd lynxkite-graph-analytics && deptry .'
+      entry: bash -c 'cd lynxkite-graph-analytics && uv run deptry .'
     - id: deptry
       name: deptry for lynxkite-pillow-example
-      entry: bash -c 'cd lynxkite-pillow-example && deptry .'
+      entry: bash -c 'cd lynxkite-pillow-example && uv run deptry .'

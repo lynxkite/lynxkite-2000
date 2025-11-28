@@ -238,7 +238,7 @@ function NodeWithGraphCreationView(props: any) {
         <div className="graph-table-header">Node Tables</div>
         {display && [
           Object.entries(tables).map(([name, df]: [string, any]) => (
-            <React.Fragment key={name}>
+            <div className="graph-table" key={name}>
               {!singleTable && (
                 <div
                   key={`${name}-header`}
@@ -249,7 +249,7 @@ function NodeWithGraphCreationView(props: any) {
                 </div>
               )}
               {(singleTable || open[name]) && displayTable(name, df)}
-            </React.Fragment>
+            </div>
           )),
           Object.entries(display.others || {}).map(([name, o]) => (
             <>
