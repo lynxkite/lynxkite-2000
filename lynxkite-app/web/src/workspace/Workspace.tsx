@@ -5,7 +5,6 @@ import {
   applyEdgeChanges,
   applyNodeChanges,
   type Connection,
-  Controls,
   type Edge,
   MarkerType,
   type Node,
@@ -622,12 +621,11 @@ function LynxKiteFlow() {
             proOptions={{ hideAttribution: true }}
             maxZoom={10}
             minZoom={0.2}
-            zoomOnScroll={false}
-            panOnScroll={true}
+            zoomOnScroll={true}
+            panOnScroll={false}
             panOnDrag={false}
             selectionOnDrag={true}
-            panOnScrollSpeed={1}
-            preventScrolling={false}
+            preventScrolling={true}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
@@ -642,7 +640,6 @@ function LynxKiteFlow() {
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
-            <Controls />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
