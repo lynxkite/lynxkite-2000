@@ -7,7 +7,7 @@ import NodeParameter, { type UpdateOptions } from "./NodeParameter";
 
 export function NodeWithParams(props: any) {
   const reactFlow = useReactFlow();
-  const metaParams = props.data.meta?.value?.params ?? [];
+  const metaParams = props.data.meta?.params ?? [];
   const [collapsed, setCollapsed] = React.useState(props.collapsed);
 
   function setParam(name: string, newValue: any, opts: UpdateOptions) {
