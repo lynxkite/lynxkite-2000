@@ -133,7 +133,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
 }
 
 function getDropDownValues(data: any, meta: any): string[] {
-  const metadata = data.input_metadata?.value;
+  const metadata = data.input_metadata;
   let query = meta?.type?.metadata_query;
   if (!metadata || !query) {
     return [];
