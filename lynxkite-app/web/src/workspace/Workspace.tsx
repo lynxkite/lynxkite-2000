@@ -7,7 +7,6 @@ import {
   Background,
   BackgroundVariant,
   type Connection,
-  Controls,
   type Edge,
   MarkerType,
   type Node,
@@ -708,12 +707,11 @@ function LynxKiteFlow() {
             proOptions={{ hideAttribution: true }}
             maxZoom={10}
             minZoom={0.2}
-            zoomOnScroll={false}
-            panOnScroll={true}
+            zoomOnScroll={true}
+            panOnScroll={false}
             panOnDrag={[1]}
             selectionOnDrag={true}
-            panOnScrollSpeed={1}
-            preventScrolling={false}
+            preventScrolling={true}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
@@ -732,7 +730,6 @@ function LynxKiteFlow() {
               bgColor="#fafafa"
               offset={3}
             />
-            <Controls />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
