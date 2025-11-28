@@ -5,7 +5,7 @@ import LynxKiteNode from "./LynxKiteNode";
 // @ts-expect-error
 await import("https://gradio.s3-us-west-2.amazonaws.com/5.49.1/gradio.js");
 
-declare global {
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "gradio-app": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
@@ -18,7 +18,7 @@ declare global {
 }
 
 function NodeWithGradio(props: any) {
-  const path = props.data?.display?.value?.backend;
+  const path = props.data?.display?.backend;
   if (!path) {
     return <div style={{ margin: "16px" }}>nothing yet...</div>;
   }
