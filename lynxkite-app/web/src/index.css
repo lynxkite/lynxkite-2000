@@ -96,16 +96,6 @@ body {
     }
   }
 
-  .in-group .lynxkite-node {
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.3);
-    opacity: 0.3;
-    transition: opacity 0.3s;
-  }
-
-  .in-group .lynxkite-node:hover {
-    opacity: 1;
-  }
-
   .node-group {
     box-shadow: 0px 3px 30px 0px rgba(0, 0, 0, 0.3);
     border-radius: 20px;
@@ -117,10 +107,6 @@ body {
     align-items: end;
     padding: 10px 20px;
     position: relative;
-  }
-
-  .node-group.in-group {
-    opacity: 0.5;
   }
 
   .node-group-color-picker-icon {

@@ -42,7 +42,7 @@ export default function Group(props: any) {
 
   return (
     <div
-      className={`node-group ${props.parentId ? "in-group" : ""}`}
+      className="node-group"
       style={{
         width: props.width,
         height: props.height,
