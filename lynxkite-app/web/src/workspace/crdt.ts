@@ -61,21 +61,25 @@ class CRDTConnection {
       feEdges: [],
       setPausedState: (paused: boolean) => {
         that.ws.set("paused", paused);
+        that.updateState();
       },
       setEnv: (env: string) => {
         that.ws.set("env", env);
+        that.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
         that.doc.transact(() => {
           const wnodes = that.ws.get("nodes") as Y.Array<WorkspaceNode>;
           wnodes.push([node as WorkspaceNode]);
         });
+        that.updateState();
       },
       addEdge(edge) {
         that.doc.transact(() => {
           const wedges = that.ws.get("edges") as Y.Array<Edge>;
           wedges.push([edge]);
         });
+        that.updateState();
       },
       onFENodesChange: that.onFENodesChange,
       onFEEdgesChange: that.onFEEdgesChange,
@@ -107,6 +111,9 @@ class CRDTConnection {
         feNodes: newNodes as Node[],
         feEdges: ws.edges as Edge[],
       });
+      for (const node of ws.nodes || []) {
+        this.updateNodeInternals(node.id);
+      }
     }
   };
   onFENodesChange = (changes: any[]) => {
@@ -195,18 +202,16 @@ class CRDTConnection {
       this.observers.delete(onStorageChange);
     };
   };
-  updateState = (newState: CRDTWorkspace) => {
+  updateState = (newState?: CRDTWorkspace) => {
+    if (!newState) newState = { ...this.state, ws: this.ws.toJSON() as CRDTWorkspace };
     this.state = newState;
-    for (const node of newState.ws?.nodes || []) {
-      this.updateNodeInternals(node.id);
-    }
     for (const observer of this.observers) {
       observer();
     }
   };
 }
 
-export function useCRDTWorkspace(path: string): CRDTWorkspace | null {
+export function useCRDTWorkspace(path: string): CRDTWorkspace {
   const reactFlow = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const connection = useRef<CRDTConnection | null>(null);
