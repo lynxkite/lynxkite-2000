@@ -20,11 +20,32 @@ type CRDTWorkspace = {
   feEdges: Edge[];
   setPausedState: (paused: boolean) => void;
   setEnv: (env: string) => void;
+  applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
   addEdge: (edge: Edge) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
 };
+
+function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
+  const data = node.data ?? {};
+  const params = data.params ?? {};
+  const yparams = new Y.Map<any>();
+  for (const [key, value] of Object.entries(params)) {
+    yparams.set(key, value);
+  }
+  const ydata = new Y.Map<any>();
+  for (const [key, value] of Object.entries(data)) {
+    ydata.set(key, value);
+  }
+  ydata.set("params", yparams);
+  const ynode = new Y.Map<any>();
+  for (const [key, value] of Object.entries(node)) {
+    ynode.set(key, value);
+  }
+  ynode.set("data", ydata);
+  return ynode;
+}
 
 // The CRDT connection and keeping it in sync with ReactFlow.
 class CRDTConnection {
@@ -68,21 +89,32 @@ class CRDTConnection {
         that.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
+        const ynode = nodeToYMap(node);
         that.doc.transact(() => {
-          const wnodes = that.ws.get("nodes") as Y.Array<WorkspaceNode>;
-          wnodes.push([node as WorkspaceNode]);
+          const wnodes = that.ws.get("nodes") as Y.Array<any>;
+          wnodes.push([ynode]);
         });
         that.updateState();
       },
       addEdge(edge) {
+        const yedge = new Y.Map<any>();
+        for (const [key, value] of Object.entries(edge)) {
+          yedge.set(key, value);
+        }
         that.doc.transact(() => {
-          const wedges = that.ws.get("edges") as Y.Array<Edge>;
-          wedges.push([edge]);
+          const wedges = that.ws.get("edges") as Y.Array<any>;
+          wedges.push([yedge]);
         });
         that.updateState();
       },
       onFENodesChange: that.onFENodesChange,
       onFEEdgesChange: that.onFEEdgesChange,
+      applyChange: (fn: (conn: CRDTConnection) => void) => {
+        that.doc.transact(() => {
+          fn(that);
+        });
+        that.updateState();
+      },
     };
   }
   onDestroy = () => {
@@ -144,7 +176,6 @@ class CRDTConnection {
       } else if (ch.type === "remove") {
         wnodes.delete(nodeIndex);
       } else if (ch.type === "replace") {
-        // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
         this.doc.transact(() => {
           const data = ch.item.data;
           const wdata = node.get("data") as Y.Map<any>;
@@ -159,7 +190,11 @@ class CRDTConnection {
           if (wdata.get("__execution_delay") !== data.__execution_delay) {
             wdata.set("__execution_delay", data.__execution_delay);
           }
-          const wparams = wdata.get("params") as Y.Map<any>;
+          let wparams = wdata.get("params") as Y.Map<any>;
+          if (!wparams) {
+            wparams = new Y.Map<any>();
+            wdata.set("params", wparams);
+          }
           for (const [key, value] of Object.entries(data.params)) {
             if (wparams.get(key) !== value) {
               wparams.set(key, value);

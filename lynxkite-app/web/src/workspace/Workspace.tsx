@@ -29,7 +29,7 @@ import Play from "~icons/tabler/player-play.jsx";
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
-import type { WorkspaceNode } from "../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
@@ -38,7 +38,7 @@ import EnvironmentSelector from "./EnvironmentSelector";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { buildCategoryHierarchy, type Catalogs, type OpsOp } from "./NodeSearch.tsx";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
@@ -237,10 +237,9 @@ function LynxKiteFlow() {
       type: meta.type,
       height: 200,
       data: {
-        // @ts-expect-error (meta is passed as a black box through CRDT)
-        meta: { value: meta },
+        meta: meta,
         title: meta.name,
-        op_id: meta.id,
+        op_id: meta.id || meta.name,
         params: Object.fromEntries(meta.params.map((p) => [p.name, p.default])),
       },
     };
@@ -363,73 +362,51 @@ function LynxKiteFlow() {
     };
     groupNode.width = right - left;
     groupNode.height = bottom - top;
-    // setNodes([
-    // 	{ ...(groupNode as Node), selected: true },
-    // 	...nodes.map((n) =>
-    // 		n.selected
-    // 			? {
-    // 					...n,
-    // 					position: { x: n.position.x - left, y: n.position.y - top },
-    // 					parentId: groupNode.id,
-    // 					extent: "parent" as const,
-    // 					selected: false,
-    // 				}
-    // 			: n,
-    // 	),
-    // ]);
-    // getYjsDoc(state).transact(() => {
-    // 	state.workspace.nodes!.unshift(groupNode as WorkspaceNode);
-    // 	const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
-    // 	for (const node of state.workspace.nodes!) {
-    // 		if (selectedNodeIds.has(node.id)) {
-    // 			node.position.x -= left;
-    // 			node.position.y -= top;
-    // 			node.parentId = groupNode.id;
-    // 			node.extent = "parent";
-    // 			node.selected = false;
-    // 		}
-    // 	}
-    // });
+    crdt.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes");
+      wnodes.unshift([groupNode as WorkspaceNode]);
+      const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
+      for (const node of wnodes) {
+        if (selectedNodeIds.has(node.id)) {
+          node.set("position", {
+            x: node.position.x - left,
+            y: node.position.y - top,
+          });
+          node.set("parentId", groupNode.id);
+          node.set("extent", "parent");
+          node.set("selected", false);
+        }
+      }
+    });
   }
   function ungroupSelection() {
-    // const groups = Object.fromEntries(
-    // 	nodes
-    // 		.filter((n) => n.selected && n.type === "node_group" && !n.parentId)
-    // 		.map((n) => [n.id, n]),
-    // );
-    // setNodes(
-    // 	nodes
-    // 		.filter((n) => !groups[n.id])
-    // 		.map((n) => {
-    // 			const g = groups[n.parentId!];
-    // 			if (!g) return n;
-    // 			return {
-    // 				...n,
-    // 				position: {
-    // 					x: n.position.x + g.position.x,
-    // 					y: n.position.y + g.position.y,
-    // 				},
-    // 				parentId: undefined,
-    // 				extent: undefined,
-    // 				selected: true,
-    // 			};
-    // 		}),
-    // );
-    // getYjsDoc(state).transact(() => {
-    // 	const wnodes = state.workspace.nodes!;
-    // 	for (const node of state.workspace.nodes!) {
-    // 		const g = groups[node.parentId as string];
-    // 		if (!g) continue;
-    // 		node.position.x += g.position.x;
-    // 		node.position.y += g.position.y;
-    // 		node.parentId = undefined;
-    // 		node.extent = undefined;
-    // 	}
-    // 	for (const groupId in groups) {
-    // 		const groupIdx = wnodes.findIndex((n) => n.id === groupId);
-    // 		wnodes.splice(groupIdx, 1);
-    // 	}
-    // });
+    const groups = Object.fromEntries(
+      nodes
+        .filter((n) => n.selected && n.type === "node_group" && !n.parentId)
+        .map((n) => [n.id, n]),
+    );
+    crdt.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes");
+      for (const node of wnodes) {
+        const g = groups[node.get("parentId") as string];
+        if (!g) continue;
+        const pos = node.get("position") as XYPosition;
+        node.set("position", {
+          x: pos.x + g.position.x,
+          y: pos.y + g.position.y,
+        });
+        node.set("parentId", undefined);
+        node.set("extent", undefined);
+      }
+      const groupIndices: number[] = wnodes
+        .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
+        .filter(({ id }: { id: string }) => id in groups)
+        .map(({ idx }: { idx: number }) => idx);
+      groupIndices.sort((a, b) => b - a);
+      for (const groupIdx of groupIndices) {
+        wnodes.delete(groupIdx, 1);
+      }
+    });
   }
   const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
