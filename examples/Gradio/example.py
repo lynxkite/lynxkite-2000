@@ -1,6 +1,6 @@
 from lynxkite_core.ops import op
 from lynxkite_graph_analytics import Bundle
-import gradio as gr  # ty: ignore[unresolved-import]
+import gradio as gr
 
 
 def flip_text(x):
