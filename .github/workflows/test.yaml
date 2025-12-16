@@ -20,6 +20,7 @@ jobs:
           uv venv
           . .venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
+          sed -i 's|https://pypi.org/simple|https://download.pytorch.org/whl/cpu|g' pyproject.toml
           uv sync
 
       - name: Run pre-commits
