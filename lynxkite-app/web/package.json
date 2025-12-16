@@ -10,7 +10,6 @@
     "preview": "npx vite preview"
   },
   "dependencies": {
-    "@esbuild/linux-x64": "^0.27.0",
     "@fontsource/inter": "^5.2.8",
     "@iconify-json/tabler": "^1.2.23",
     "@monaco-editor/react": "^4.7.0",
@@ -52,6 +51,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "autoprefixer": "^10.4.22",
+    "esbuild": "^0.27.1",
     "globals": "^16.5.0",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",
