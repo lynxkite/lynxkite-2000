@@ -134,19 +134,6 @@ body {
     font-size: 30px;
   }
 
-  .react-tooltip {
-    padding: 8px;
-    border-radius: 4px;
-    opacity: 1;
-    text-align: left;
-    background: #fff;
-    color: black;
-    box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    font-weight: initial;
-    max-width: 300px;
-  }
-
   .prose p {
     margin-bottom: 0;
   }
@@ -831,4 +818,25 @@ body {
 .input-error {
   border-color: #dc2626;
   box-shadow: 0 0 0 1px #dc2626;
+}
+
+#tooltip-global {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  text-align: left;
+  background: #fff;
+  color: black;
+  font-size: 16px;
+  font-weight: initial;
+  max-width: 300px;
+
+  .react-tooltip-arrow {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+  }
+
+  p:not(:last-child) {
+    margin-bottom: 10px;
+  }
 }

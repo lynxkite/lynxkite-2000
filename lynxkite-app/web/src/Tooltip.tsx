@@ -1,28 +1,16 @@
-import { useMemo } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import Markdown from "react-markdown";
-import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function Tooltip(props: any) {
-  const id = useMemo(
-    () => props.id || `tooltip-${JSON.stringify(props.doc).substring(0, 20)}`,
-    [props.id, props.doc],
-  );
-
   if (!props.doc) return props.children;
-
+  const md =
+    props.doc.map && typeof props.doc.map === "function"
+      ? props.doc.map((section: any) => (section.kind === "text" ? section.value : "")).join("\n")
+      : String(props.doc);
+  const html = renderToStaticMarkup(<Markdown>{md}</Markdown>);
   return (
-    <>
-      <a data-tooltip-id={id}>{props.children}</a>
-      <ReactTooltip id={id} delayShow={1000}>
-        {props.doc.map && typeof props.doc.map === "function" ? (
-          props.doc.map(
-            (section: any, i: number) =>
-              section.kind === "text" && <Markdown key={i}>{section.value}</Markdown>,
-          )
-        ) : (
-          <Markdown>{props.doc}</Markdown>
-        )}
-      </ReactTooltip>
-    </>
+    <div data-tooltip-id="tooltip-global" data-tooltip-delay-show={1000} data-tooltip-html={html}>
+      {props.children}
+    </div>
   );
 }
