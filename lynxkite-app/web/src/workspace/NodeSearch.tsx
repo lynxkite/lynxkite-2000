@@ -131,16 +131,14 @@ export default function NodeSearch(props: {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   // Calculate adjusted position to keep the component visible
-  const adjustedPos = useMemo(() => {
+  function adjustPosition(pos: { x: number; y: number }) {
     const estimatedHeight = 300; // Approximate height of the search component
     const estimatedWidth = 400; // Approximate width of the search component
     const padding = 20; // Padding from screen edges
-
-    let x = props.pos.x;
-    let y = props.pos.y;
+    let x = pos.x;
+    let y = pos.y;
 
     // Adjust horizontal position if it would go off-screen
     if (x + estimatedWidth > window.innerWidth - padding) {
@@ -159,7 +157,8 @@ export default function NodeSearch(props: {
     }
 
     return { x, y };
-  }, [props.pos.x, props.pos.y]);
+  }
+  const adjustedPos = adjustPosition(props.pos);
 
   useEffect(() => {
     if (searchInputRef.current) {
@@ -262,7 +261,6 @@ export default function NodeSearch(props: {
   }
   return (
     <div
-      ref={containerRef}
       className="node-search"
       style={{ top: adjustedPos.y, left: adjustedPos.x }}
       onMouseDown={(e) => e.preventDefault()}
