@@ -1,6 +1,4 @@
 import jmespath from "jmespath";
-// @ts-expect-error
-import Help from "~icons/tabler/question-mark.jsx";
 import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
@@ -14,15 +12,15 @@ const MODEL_INFERENCE_INPUT_MAPPING =
 const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
-  const help = doc && (
-    <Tooltip doc={doc} width={200}>
-      <Help />
-    </Tooltip>
-  );
   return (
     <div className="param-name-row">
-      <span className="param-name">{name.replace(/_/g, " ")}</span>
-      {help}
+      {doc ? (
+        <Tooltip doc={doc}>
+          <span className="param-name">{name.replace(/_/g, " ")}</span>
+        </Tooltip>
+      ) : (
+        <span className="param-name">{name.replace(/_/g, " ")}</span>
+      )}
     </div>
   );
 }
