@@ -134,15 +134,14 @@ body {
     font-size: 30px;
   }
 
-  .tooltip {
+  .react-tooltip {
     padding: 8px;
     border-radius: 4px;
     opacity: 1;
     text-align: left;
-    background: #fffa;
+    background: #fff;
     color: black;
     box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
     font-size: 16px;
     font-weight: initial;
     max-width: 300px;
