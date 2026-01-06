@@ -709,8 +709,8 @@ function LynxKiteFlow() {
             minZoom={0.2}
             zoomOnScroll={true}
             panOnScroll={false}
-            panOnDrag={[1]}
-            selectionOnDrag={true}
+            panOnDrag={[0]}
+            selectionOnDrag={false}
             preventScrolling={true}
             defaultEdgeOptions={{
               markerEnd: {
