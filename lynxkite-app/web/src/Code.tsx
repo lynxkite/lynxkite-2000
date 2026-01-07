@@ -19,12 +19,12 @@ import { usePath } from "./common.ts";
 export default function Code() {
   const path = usePath().replace(/^[/]code[/]/, "");
   const parentDir = path!.split("/").slice(0, -1).join("/");
-  const yDocRef = useRef<any>();
-  const wsProviderRef = useRef<any>();
-  const monacoBindingRef = useRef<any>();
-  const yMonacoRef = useRef<any>();
+  const yDocRef = useRef<any>(null);
+  const wsProviderRef = useRef<any>(null);
+  const monacoBindingRef = useRef<any>(null);
+  const yMonacoRef = useRef<any>(null);
   const yMonacoLoadingRef = useRef(false);
-  const editorRef = useRef<any>();
+  const editorRef = useRef<any>(null);
   useEffect(() => {
     const loadMonaco = async () => {
       if (yMonacoLoadingRef.current) return;
