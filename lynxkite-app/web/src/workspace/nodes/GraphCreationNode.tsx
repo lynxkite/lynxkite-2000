@@ -170,7 +170,7 @@ function RelationView({
 function NodeWithGraphCreationView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState({} as { [name: string]: boolean });
-  const display = props.data.display?.value;
+  const display = props.data.display;
   const tables = display?.dataframes || {};
   const singleTable = tables && Object.keys(tables).length === 1;
   const [relations, setRelations] = useState(relationsToDict(display?.relations) || {});

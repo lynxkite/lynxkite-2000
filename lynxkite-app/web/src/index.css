@@ -1,8 +1,13 @@
-/* biome-ignore-start lint/suspicious/noUnknownAtRules: tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* biome-ignore-end lint/suspicious/noUnknownAtRules: tailwind */
+@import "tailwindcss";
+
+/* biome-ignore-start lint/suspicious/noUnknownAtRules: plugin */
+/* biome-ignore-start lint/correctness/noUnknownProperty: themes */
+@plugin "daisyui" {
+  themes: light;
+}
+
+/* biome-ignore-end lint/correctness/noUnknownProperty: themes */
+/* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,16 +20,13 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --border: 1px;
+  --radius-field: 0.5rem;
 }
 
 img,
 svg {
   display: inline-block;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
 }
 
 .workspace {
@@ -293,6 +295,10 @@ body {
     .param {
       padding: 4px 8px 4px 8px;
       display: block;
+
+      input {
+        border-color: oklch(90% 0 0);
+      }
     }
 
     .param-name-row {

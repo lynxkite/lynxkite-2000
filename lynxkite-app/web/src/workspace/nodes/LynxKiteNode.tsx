@@ -122,7 +122,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
+  const handles = getHandles(data.meta?.inputs || [], data.meta?.outputs || []);
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
     // To stop the event from reaching ReactFlow, we stop propagation on the wheel event.
@@ -150,7 +150,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
   const height = Math.max(67, node?.height ?? props.height ?? 200);
-  const meta = data.meta?.value ?? {};
+  const meta = data.meta ?? {};
   const summary: string = data.error
     ? `Error: ${data.error}`
     : (data.collapsed && paramSummary(data)) || docToString(meta.doc);
@@ -182,7 +182,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={data.meta && data.meta.value && data.meta.value.doc}>
+        <Tooltip doc={data.meta?.doc}>
           <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
             <Icon style={titleStyle} name={meta.icon} />
             <div className="title-right-side">

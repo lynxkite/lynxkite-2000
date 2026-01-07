@@ -5,15 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
 // @ts-expect-error
 import FolderIcon from "~icons/tabler/folder.jsx";
+import type { Op as OpsOp } from "../apiTypes.ts";
 
-export type OpsOp = {
-  name: string;
-  id: string;
-  categories: string[];
-  type: string;
-  position: { x: number; y: number };
-  params: { name: string; default: any }[];
-};
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
 type SearchResult = {
@@ -47,7 +40,11 @@ export function buildCategoryHierarchy(boxes: Catalog): Category {
     for (const category of categories) {
       const existingCategory = currentLevel.categories.find((cat) => cat.name === category);
       if (!existingCategory) {
-        const newCategory: Category = { name: category, ops: [], categories: [] };
+        const newCategory: Category = {
+          name: category,
+          ops: [],
+          categories: [],
+        };
         currentLevel.categories.push(newCategory);
         currentLevel = newCategory;
       } else {
