@@ -1,21 +1,16 @@
-import { useId } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import Markdown from "react-markdown";
-import { Tooltip as ReactTooltip } from "react-tooltip";
 
 export default function Tooltip(props: any) {
-  const id = useId();
-  if (!props.doc) return null;
+  if (!props.doc) return props.children;
+  const md =
+    props.doc.map && typeof props.doc.map === "function"
+      ? props.doc.map((section: any) => (section.kind === "text" ? section.value : "")).join("\n")
+      : String(props.doc);
+  const html = renderToStaticMarkup(<Markdown>{md}</Markdown>);
   return (
-    <>
-      <span data-tooltip-id={id} tabIndex={0}>
-        {props.children}
-      </span>
-      <ReactTooltip id={id} className="tooltip prose" place="top-end">
-        {props.doc.map?.(
-          (section: any, i: number) =>
-            section.kind === "text" && <Markdown key={i}>{section.value}</Markdown>,
-        ) ?? <Markdown>{props.doc}</Markdown>}
-      </ReactTooltip>
-    </>
+    <div data-tooltip-id="tooltip-global" data-tooltip-delay-show={1000} data-tooltip-html={html}>
+      {props.children}
+    </div>
   );
 }
