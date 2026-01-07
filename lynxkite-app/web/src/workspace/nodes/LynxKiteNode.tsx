@@ -182,28 +182,27 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-          <Icon style={titleStyle} name={meta.icon} />
-          <div className="title-right-side">
-            <div className="title-right-side-top">
-              <span className="title-title">{data.title}</span>
-              {data.error && (
-                <Tooltip doc={`Error: ${data.error}`}>
-                  <AlertTriangle />
-                </Tooltip>
-              )}
-              {data.collapsed && (
-                <Tooltip doc="Click to expand node">
-                  <Dots />
-                </Tooltip>
-              )}
-              <Tooltip doc={data.meta?.doc}>
-                <Help />
-              </Tooltip>
+        <Tooltip doc={data.meta?.doc}>
+          <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
+            <Icon style={titleStyle} name={meta.icon} />
+            <div className="title-right-side">
+              <div className="title-right-side-top">
+                <span className="title-title">{data.title}</span>
+                {data.error && (
+                  <Tooltip doc={`Error: ${data.error}`}>
+                    <AlertTriangle />
+                  </Tooltip>
+                )}
+                {data.collapsed && (
+                  <Tooltip doc="Click to expand node">
+                    <Dots />
+                  </Tooltip>
+                )}
+              </div>
+              {summary && <span className="title-summary">{summary}</span>}
             </div>
-            {summary && <span className="title-summary">{summary}</span>}
           </div>
-        </div>
+        </Tooltip>
         {!data.collapsed && (
           <>
             {data.error && <div className="error">{data.error}</div>}
