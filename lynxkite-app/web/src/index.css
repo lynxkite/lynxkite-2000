@@ -296,7 +296,9 @@ svg {
       padding: 4px 8px 4px 8px;
       display: block;
 
-      input {
+      input,
+      textarea,
+      select {
         border-color: oklch(90% 0 0);
       }
     }
@@ -845,4 +847,9 @@ svg {
   p:not(:last-child) {
     margin-bottom: 10px;
   }
+}
+
+select,
+textarea {
+  border: var(--border) solid #0000;
 }
