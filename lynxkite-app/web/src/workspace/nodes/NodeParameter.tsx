@@ -14,13 +14,9 @@ const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping
 function ParamName({ name, doc }: { name: string; doc: string }) {
   return (
     <div className="param-name-row">
-      {doc ? (
-        <Tooltip doc={doc}>
-          <span className="param-name">{name.replace(/_/g, " ")}</span>
-        </Tooltip>
-      ) : (
+      <Tooltip doc={doc}>
         <span className="param-name">{name.replace(/_/g, " ")}</span>
-      )}
+      </Tooltip>
     </div>
   );
 }
