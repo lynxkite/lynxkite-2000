@@ -82,7 +82,7 @@ class RelationDefinition:
     target_table: str
     source_key: str
     target_key: str
-    name: str | None = None
+    name: str
 
 
 @dataclasses.dataclass
@@ -118,6 +118,7 @@ class Bundle:
             dfs={"edges": edges, "nodes": nodes},
             relations=[
                 RelationDefinition(
+                    name="edges",
                     df="edges",
                     source_column="source",
                     target_column="target",
