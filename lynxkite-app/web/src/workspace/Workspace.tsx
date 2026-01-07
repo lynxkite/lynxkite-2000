@@ -521,7 +521,7 @@ function LynxKiteFlow() {
                 pos={nodeSearchSettings.pos}
                 categoryHierarchy={categoryHierarchy}
                 onCancel={closeNodeSearch}
-                onAdd={addNodeFromSearch}
+                onClick={addNodeFromSearch}
               />
             )}
           </ReactFlow>
