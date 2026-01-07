@@ -1,4 +1,7 @@
-// The LynxKite workspace editor.
+// CRDT (via Y.js) is a way to synchronize a document between the backend and the frontend.
+// (Or multiple frontends, providing collaborative editing.)
+// We need to update the ReactFlow state when we get updates from the backend,
+// and we need to update the CRDT state when the user makes changes in the UI.
 
 import {
   applyEdgeChanges,
