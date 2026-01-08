@@ -27,6 +27,8 @@ import Play from "~icons/tabler/player-play.jsx";
 // @ts-expect-error
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-expect-error
+import Transfer from "~icons/tabler/transfer.jsx";
+// @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
@@ -333,6 +335,10 @@ function LynxKiteFlow() {
     const selectedEdges = edges.filter((e) => e.selected);
     reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
   }
+  function changeBox() {
+    const [selectedNode] = nodes.filter((n) => n.selected);
+    reactFlow.updateNodeData(selectedNode.id, { op_id: "" });
+  }
   function groupSelection() {
     const selectedNodes = nodes.filter((n) => n.selected && !n.parentId);
     const groupNode = {
@@ -407,7 +413,7 @@ function LynxKiteFlow() {
       }
     });
   }
-  const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
+  const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
   return (
     <div className="workspace">
@@ -423,23 +429,36 @@ function LynxKiteFlow() {
           onChange={crdt.setEnv}
         />
         <div className="tools text-secondary">
-          {areMultipleNodesSelected && (
-            <Tooltip doc="Group selected nodes">
-              <button className="btn btn-link" onClick={groupSelection}>
-                <GroupIcon />
-              </button>
-            </Tooltip>
-          )}
-          {isAnyGroupSelected && (
-            <Tooltip doc="Ungroup selected nodes">
-              <button className="btn btn-link" onClick={ungroupSelection}>
-                <UngroupIcon />
-              </button>
-            </Tooltip>
-          )}
+          <Tooltip doc="Group selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={selected.length < 2}
+              onClick={groupSelection}
+            >
+              <GroupIcon />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Ungroup selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={!isAnyGroupSelected}
+              onClick={ungroupSelection}
+            >
+              <UngroupIcon />
+            </button>
+          </Tooltip>
           <Tooltip doc="Delete selected nodes and edges">
-            <button className="btn btn-link" onClick={deleteSelection}>
+            <button
+              className="btn btn-link"
+              disabled={selected.length === 0}
+              onClick={deleteSelection}
+            >
               <Backspace />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Change selected box to a different box">
+            <button className="btn btn-link" disabled={selected.length !== 1} onClick={changeBox}>
+              <Transfer />
             </button>
           </Tooltip>
           <Tooltip

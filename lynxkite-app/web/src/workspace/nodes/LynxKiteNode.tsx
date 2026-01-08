@@ -184,6 +184,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   function setNewOpId(newOpId: string) {
     reactFlow.updateNodeData(props.id, {
       op_id: newOpId,
+      error: undefined,
     });
   }
   const height = Math.max(67, node?.height ?? props.height ?? 200);
@@ -315,9 +316,15 @@ function UnknownOperationNode(props: { op_id: string; onChange: (newName: string
     categoryHierarchy && (
       <div className="node-search" style={{ overflowY: "auto" }}>
         <div style={{ marginBottom: 20 }}>
-          "{props.op_id}" is not a known box. You may need to install an extension, or fix an issue
-          with a code file that defined it. Or perhaps the box has a new name. You can choose a
-          replacement from the list below:
+          {props.op_id ? (
+            <>
+              "{props.op_id}" is not a known box. You may need to install an extension, or fix an
+              issue with a code file that defined it. Or perhaps the box has a new name. You can
+              choose a replacement from the list below:
+            </>
+          ) : (
+            <>Choose a replacement from the list below:</>
+          )}
         </div>
         <NodeSearchInternal
           onCancel={() => {}}
