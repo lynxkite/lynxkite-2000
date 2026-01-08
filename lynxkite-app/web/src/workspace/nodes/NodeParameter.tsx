@@ -63,7 +63,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <select
-        className="select select-bordered w-full"
+        className="select select-bordered appearance-none w-full"
         value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
@@ -80,7 +80,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <select
-        className="select select-bordered w-full"
+        className="select select-bordered appearance-none w-full"
         value={value || meta.type.enum[0]}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
