@@ -182,6 +182,9 @@ class CRDTConnection {
         this.doc.transact(() => {
           const data = ch.item.data;
           const wdata = node.get("data") as Y.Map<any>;
+          if (wdata.get("op_id") !== data.op_id) {
+            wdata.set("op_id", data.op_id);
+          }
           if (wdata.get("collapsed") !== data.collapsed) {
             wdata.set("collapsed", data.collapsed);
             // Update edge positions when node collapses/expands.
