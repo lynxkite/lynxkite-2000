@@ -115,20 +115,10 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
 
 export default function NodeSearch(props: {
   categoryHierarchy: Category;
-  onCancel: any;
-  onAdd: (op: OpsOp) => void;
+  onCancel: () => void;
+  onClick: (op: OpsOp) => void;
   pos: { x: number; y: number };
 }) {
-  const [categoryPath, setCategoryPath] = useState<string[]>([]);
-  const currentLevel = useMemo(
-    () => categoryByPath(props.categoryHierarchy, categoryPath),
-    [props.categoryHierarchy, categoryPath],
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
   // Calculate adjusted position to keep the component visible
   function adjustPosition(pos: { x: number; y: number }) {
     const estimatedHeight = 300; // Approximate height of the search component
@@ -157,8 +147,34 @@ export default function NodeSearch(props: {
   }
   const adjustedPos = adjustPosition(props.pos);
 
+  return (
+    <div
+      className="node-search node-search-panel"
+      style={{ top: adjustedPos.y, left: adjustedPos.x }}
+      onMouseDown={(e) => e.preventDefault()}
+    >
+      <NodeSearchInternal {...props} autoFocus={true} />
+    </div>
+  );
+}
+
+export function NodeSearchInternal(props: {
+  categoryHierarchy: Category;
+  onCancel: any;
+  onClick: (op: OpsOp) => void;
+  autoFocus?: boolean;
+}) {
+  const [categoryPath, setCategoryPath] = useState<string[]>([]);
+  const currentLevel = useMemo(
+    () => categoryByPath(props.categoryHierarchy, categoryPath),
+    [props.categoryHierarchy, categoryPath],
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (searchInputRef.current) {
+    if (searchInputRef.current && props.autoFocus) {
       searchInputRef.current.focus();
     }
   }, []);
@@ -183,7 +199,7 @@ export default function NodeSearch(props: {
   }
 
   function handleItemClick(op: OpsOp) {
-    props.onAdd(op);
+    props.onClick(op);
   }
 
   useEffect(() => {
@@ -257,11 +273,7 @@ export default function NodeSearch(props: {
     }
   }
   return (
-    <div
-      className="node-search"
-      style={{ top: adjustedPos.y, left: adjustedPos.x }}
-      onMouseDown={(e) => e.preventDefault()}
-    >
+    <>
       <input
         ref={searchInputRef}
         placeholder="Search for box"
@@ -293,6 +305,6 @@ export default function NodeSearch(props: {
           </button>
         ))}
       </div>
-    </div>
+    </>
   );
 }

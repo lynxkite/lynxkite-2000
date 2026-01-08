@@ -326,15 +326,23 @@ svg {
     }
   }
 
-  .node-search {
+  .node-search-panel {
     position: fixed;
     width: 300px;
     z-index: 5;
-    padding: 4px;
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
     max-height: stretch;
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
+
+  .node-search {
+    padding: 8px;
+    background-color: white;
     display: flex;
     flex-direction: column;
 
@@ -344,7 +352,6 @@ svg {
       padding: 8px;
       border-radius: 4px;
       border: 1px solid #eee;
-      margin: 4px;
     }
 
     .search-result {
@@ -371,10 +378,6 @@ svg {
     .search-result.selected {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
-    }
-
-    .matches {
-      overflow-y: auto;
     }
   }
 
