@@ -172,6 +172,12 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     borderColor,
     boxShadow: `0px 5px 30px 0px ${color.toString()}`,
   };
+  const titleTooltip = data.collapsed
+    ? "Click to expand node"
+    : data.error
+      ? `Error: ${data.error}`
+      : data.meta && data.meta.value && data.meta.value.doc;
+
   return (
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
@@ -182,22 +188,14 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={data.meta && data.meta.value && data.meta.value.doc}>
+        <Tooltip doc={titleTooltip}>
           <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
             <Icon style={titleStyle} name={meta.icon} />
             <div className="title-right-side">
               <div className="title-right-side-top">
                 <span className="title-title">{data.title}</span>
-                {data.error && (
-                  <Tooltip doc={`Error: ${data.error}`}>
-                    <AlertTriangle />
-                  </Tooltip>
-                )}
-                {data.collapsed && (
-                  <Tooltip doc="Click to expand node">
-                    <Dots />
-                  </Tooltip>
-                )}
+                {data.error && <AlertTriangle />}
+                {data.collapsed && <Dots />}
               </div>
               {summary && <span className="title-summary">{summary}</span>}
             </div>
