@@ -79,7 +79,7 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
-@op("Export to file")
+@op("Export to file", icon="file-filled")
 def export_to_file(
     bundle: core.Bundle,
     *,
@@ -109,13 +109,13 @@ def export_to_file(
         raise ValueError(f"Unsupported file format: {file_format}")
 
 
-@op("Import Parquet")
+@op("Import Parquet", color="green", icon="file-filled")
 def import_parquet(*, filename: ops.PathStr):
     """Imports a Parquet file."""
     return pd.read_parquet(filename)
 
 
-@op("Import CSV", slow=True)
+@op("Import CSV", slow=True, color="green", icon="file-filled")
 def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
     return pd.read_csv(
@@ -125,7 +125,7 @@ def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator
     )
 
 
-@op("Import GraphML", slow=True)
+@op("Import GraphML", slow=True, color="green", icon="topology-star-3")
 def import_graphml(*, filename: ops.PathStr):
     """Imports a GraphML file."""
     files = fsspec.open_files(filename, compression="infer")
@@ -143,14 +143,14 @@ def import_osm(*, location: str):
     return ox.graph.graph_from_place(location, network_type="drive")
 
 
-@op("Discard loop edges")
+@op("Discard loop edges", icon="filter-filled")
 def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
 
 
-@op("Discard parallel edges")
+@op("Discard parallel edges", icon="filter-filled")
 def discard_parallel_edges(graph: nx.Graph):
     return nx.DiGraph(graph)
 
@@ -171,7 +171,7 @@ def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
-@op("Cypher")
+@op("Cypher", icon="topology-star-3")
 def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
@@ -181,7 +181,7 @@ def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
-@op("Sample graph")
+@op("Sample graph", icon="filter-filled")
 def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     """Takes a (preferably connected) subgraph."""
     sample = set()
@@ -197,7 +197,7 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     return nx.Graph(graph.subgraph(sample))
 
 
-@op("Sample table")
+@op("Sample table", icon="filter-filled")
 def sample_table(b: core.Bundle, *, table_name: core.TableName = "meta", fraction: float = 0.1):
     b = b.copy()
     b.dfs[table_name] = b.dfs[table_name].sample(frac=fraction)

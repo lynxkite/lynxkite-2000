@@ -19,7 +19,7 @@ type OpenState = { [name: string]: boolean };
 function NodeWithTableView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
-  const display = props.data.display?.value;
+  const display = props.data.display;
   const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();

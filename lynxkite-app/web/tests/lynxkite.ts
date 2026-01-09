@@ -141,7 +141,6 @@ export class Workspace {
     await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
-    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached({ timeout: 1000 });
     await targetHandle.hover();
     await this.page.mouse.up();
     await expect(

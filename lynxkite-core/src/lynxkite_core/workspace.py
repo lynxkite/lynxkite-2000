@@ -241,8 +241,11 @@ class Workspace(BaseConfig):
                         node._crdt["data"]["error"] = None
             else:
                 data.error = "Unknown operation."
+                data.meta = ops.Op.placeholder_from_id(data.op_id)
                 if node._crdt:
-                    node._crdt["data"]["meta"] = {}
+                    import pycrdt
+
+                    node._crdt["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
                     node._crdt["data"]["error"] = "Unknown operation."
 
     def connect_crdt(self, ws_crdt: "pycrdt.Map"):
