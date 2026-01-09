@@ -1,8 +1,13 @@
-/* biome-ignore-start lint/suspicious/noUnknownAtRules: tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* biome-ignore-end lint/suspicious/noUnknownAtRules: tailwind */
+@import "tailwindcss";
+
+/* biome-ignore-start lint/suspicious/noUnknownAtRules: plugin */
+/* biome-ignore-start lint/correctness/noUnknownProperty: themes */
+@plugin "daisyui" {
+  themes: light;
+}
+
+/* biome-ignore-end lint/correctness/noUnknownProperty: themes */
+/* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,16 +20,13 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --border: 1px;
+  --radius-field: 0.5rem;
 }
 
 img,
 svg {
   display: inline-block;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
 }
 
 .workspace {
@@ -293,6 +295,12 @@ body {
     .param {
       padding: 4px 8px 4px 8px;
       display: block;
+
+      input,
+      textarea,
+      select {
+        border-color: oklch(90% 0 0);
+      }
     }
 
     .param-name-row {
@@ -318,15 +326,23 @@ body {
     }
   }
 
-  .node-search {
+  .node-search-panel {
     position: fixed;
     width: 300px;
     z-index: 5;
-    padding: 4px;
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
     max-height: stretch;
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
+
+  .node-search {
+    padding: 8px;
+    background-color: white;
     display: flex;
     flex-direction: column;
 
@@ -336,7 +352,6 @@ body {
       padding: 8px;
       border-radius: 4px;
       border: 1px solid #eee;
-      margin: 4px;
     }
 
     .search-result {
@@ -363,10 +378,6 @@ body {
     .search-result.selected {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
-    }
-
-    .matches {
-      overflow-y: auto;
     }
   }
 
@@ -839,4 +850,9 @@ body {
   p:not(:last-child) {
     margin-bottom: 10px;
   }
+}
+
+select,
+textarea {
+  border: var(--border) solid #0000;
 }

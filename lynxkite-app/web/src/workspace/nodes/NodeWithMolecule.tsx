@@ -7,7 +7,7 @@ const NodeWithMolecule = (props: any) => {
   const viewerRef = React.useRef<any>(null);
 
   useEffect(() => {
-    const config = props.data?.display?.value;
+    const config = props.data?.display;
     if (!config || !containerRef.current) return;
     async function run() {
       const $3Dmol = await import("3dmol");
@@ -47,7 +47,7 @@ const NodeWithMolecule = (props: any) => {
         viewerRef.current.clear();
       }
     };
-  }, [props.data?.display?.value]);
+  }, [props.data?.display]);
 
   const vizStyle: CSSProperties = {
     flex: 1,
