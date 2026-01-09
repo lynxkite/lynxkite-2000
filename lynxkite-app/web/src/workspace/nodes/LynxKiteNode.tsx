@@ -1,6 +1,6 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
 import Color from "colorjs.io";
-import React from "react";
+import React, { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 // @ts-expect-error
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
@@ -9,13 +9,13 @@ import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 // @ts-expect-error
 import Dots from "~icons/tabler/dots.jsx";
 // @ts-expect-error
-import Help from "~icons/tabler/question-mark.jsx";
-// @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
-import type { WorkspaceNodeData } from "../../apiTypes.ts";
-import { COLORS } from "../../common.ts";
+import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
+import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
+import { LynxKiteState } from "../LynxKiteState.ts";
+import { NodeSearchInternal } from "../NodeSearch.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -47,7 +47,7 @@ function docToString(doc: any): string {
   );
 }
 
-function getHandles(inputs: any[], outputs: any[]) {
+function getHandles(ws: Workspace, id: string, inputs: any[], outputs: any[]) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
     name: string;
@@ -74,6 +74,32 @@ function getHandles(inputs: any[], outputs: any[]) {
   for (const e of handles) {
     e.offsetPercentage = (100 * (e.index + 1)) / (counts[e.position] + 1);
     e.showLabel = !simpleHorizontal && !simpleVertical;
+  }
+  // Add handles for connections that exist but are not defined in inputs/outputs.
+  // This can happen on unknown operations, or when the inputs/outputs are renamed.
+  for (const e of ws.edges ?? []) {
+    if (e.target === id && !handles.find((h) => h.name === e.targetHandle)) {
+      handles.push({
+        position: "left",
+        name: e.targetHandle,
+        index: counts.left,
+        offsetPercentage: 50,
+        showLabel: true,
+        type: "target",
+      });
+      counts.left++;
+    }
+    if (e.source === id && !handles.find((h) => h.name === e.sourceHandle)) {
+      handles.push({
+        position: "right",
+        name: e.sourceHandle,
+        index: counts.right,
+        offsetPercentage: 50,
+        showLabel: true,
+        type: "source",
+      });
+      counts.right++;
+    }
   }
   return handles;
 }
@@ -122,7 +148,13 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const handles = getHandles(data.meta?.value?.inputs || [], data.meta?.value?.outputs || []);
+  const state = useContext(LynxKiteState);
+  const handles = getHandles(
+    state.workspace,
+    props.id,
+    data.meta?.inputs || [],
+    data.meta?.outputs || [],
+  );
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
     // To stop the event from reaching ReactFlow, we stop propagation on the wheel event.
@@ -149,8 +181,13 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     }
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
+  function setNewOpId(newOpId: string) {
+    reactFlow.updateNodeData(props.id, {
+      op_id: newOpId,
+    });
+  }
   const height = Math.max(67, node?.height ?? props.height ?? 200);
-  const meta = data.meta?.value ?? {};
+  const meta = data.meta ?? {};
   const summary: string = data.error
     ? `Error: ${data.error}`
     : (data.collapsed && paramSummary(data)) || docToString(meta.doc);
@@ -203,18 +240,24 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         </Tooltip>
         {!data.collapsed && (
           <>
-            {data.error && <div className="error">{data.error}</div>}
-            <ErrorBoundary
-              resetKeys={[props]}
-              fallback={
-                <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <Skull style={{ fontSize: 20 }} />
-                  Failed to display this node.
-                </p>
-              }
-            >
-              <div className="node-content">{props.children}</div>
-            </ErrorBoundary>
+            {data.error === "Unknown operation." ? (
+              <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
+            ) : (
+              <>
+                {data.error && <div className="error">{data.error}</div>}
+                <ErrorBoundary
+                  resetKeys={[props]}
+                  fallback={
+                    <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <Skull style={{ fontSize: 20 }} />
+                      Failed to display this node.
+                    </p>
+                  }
+                >
+                  <div className="node-content">{props.children}</div>
+                </ErrorBoundary>
+              </>
+            )}
             <NodeResizeControl
               minWidth={100}
               minHeight={50}
@@ -262,4 +305,24 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
       </LynxKiteNodeComponent>
     );
   };
+}
+
+function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {
+  const categoryHierarchy = useCategoryHierarchy();
+  return (
+    categoryHierarchy && (
+      <div className="node-search" style={{ overflowY: "auto" }}>
+        <div style={{ marginBottom: 20 }}>
+          "{props.op_id}" is not a known box. You may need to install an extension, or fix an issue
+          with a code file that defined it. Or perhaps the box has a new name. You can choose a
+          replacement from the list below:
+        </div>
+        <NodeSearchInternal
+          onCancel={() => {}}
+          onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
+          categoryHierarchy={categoryHierarchy}
+        />
+      </div>
+    )
+  );
 }

@@ -240,8 +240,27 @@ class Op(BaseConfig):
 
     @pydantic.model_validator(mode="after")
     def compute_id(self):
+        assert " > " not in self.name, "Operation name cannot contain ' > '"
+        for c in self.categories:
+            assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         return self
+
+    @staticmethod
+    def placeholder_from_id(op_id: str) -> Op:
+        """Returns a placeholder operation for the given operation ID."""
+        [*categories, name] = op_id.split(" > ")
+        return Op(
+            func=lambda *args, **kwargs: Result(),
+            name=name,
+            categories=categories,
+            params=[],
+            inputs=[],
+            outputs=[],
+            type="basic",
+            color="red",
+            icon="x",
+        )
 
 
 def op(
