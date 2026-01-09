@@ -209,11 +209,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     borderColor,
     boxShadow: `0px 5px 30px 0px ${color.toString()}`,
   };
-  const titleTooltip = data.collapsed
-    ? "Click to expand node"
-    : data.error
-      ? `Error: ${data.error}`
-      : data.meta && data.meta.value && data.meta.value.doc;
+  const titleTooltip = data.collapsed ? "Click to expand node" : summary;
 
   return (
     <div
