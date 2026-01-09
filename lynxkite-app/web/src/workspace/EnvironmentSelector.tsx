@@ -5,7 +5,7 @@ export default function EnvironmentSelector(props: {
 }) {
   return (
     <select
-      className="env-select select w-full max-w-xs"
+      className="env-select select appearance-none w-full max-w-xs"
       name="workspace-env"
       value={props.value}
       onChange={(evt) => props.onChange(evt.currentTarget.value)}

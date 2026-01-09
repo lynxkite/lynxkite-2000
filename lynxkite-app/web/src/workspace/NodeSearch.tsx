@@ -5,15 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
 // @ts-expect-error
 import FolderIcon from "~icons/tabler/folder.jsx";
+import type { Op as OpsOp } from "../apiTypes.ts";
 
-export type OpsOp = {
-  name: string;
-  id: string;
-  categories: string[];
-  type: string;
-  position: { x: number; y: number };
-  params: { name: string; default: any }[];
-};
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
 type SearchResult = {
@@ -47,7 +40,11 @@ export function buildCategoryHierarchy(boxes: Catalog): Category {
     for (const category of categories) {
       const existingCategory = currentLevel.categories.find((cat) => cat.name === category);
       if (!existingCategory) {
-        const newCategory: Category = { name: category, ops: [], categories: [] };
+        const newCategory: Category = {
+          name: category,
+          ops: [],
+          categories: [],
+        };
         currentLevel.categories.push(newCategory);
         currentLevel = newCategory;
       } else {
@@ -118,20 +115,10 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
 
 export default function NodeSearch(props: {
   categoryHierarchy: Category;
-  onCancel: any;
-  onAdd: (op: OpsOp) => void;
+  onCancel: () => void;
+  onClick: (op: OpsOp) => void;
   pos: { x: number; y: number };
 }) {
-  const [categoryPath, setCategoryPath] = useState<string[]>([]);
-  const currentLevel = useMemo(
-    () => categoryByPath(props.categoryHierarchy, categoryPath),
-    [props.categoryHierarchy, categoryPath],
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
   // Calculate adjusted position to keep the component visible
   function adjustPosition(pos: { x: number; y: number }) {
     const estimatedHeight = 300; // Approximate height of the search component
@@ -160,8 +147,34 @@ export default function NodeSearch(props: {
   }
   const adjustedPos = adjustPosition(props.pos);
 
+  return (
+    <div
+      className="node-search node-search-panel"
+      style={{ top: adjustedPos.y, left: adjustedPos.x }}
+      onMouseDown={(e) => e.preventDefault()}
+    >
+      <NodeSearchInternal {...props} autoFocus={true} />
+    </div>
+  );
+}
+
+export function NodeSearchInternal(props: {
+  categoryHierarchy: Category;
+  onCancel: any;
+  onClick: (op: OpsOp) => void;
+  autoFocus?: boolean;
+}) {
+  const [categoryPath, setCategoryPath] = useState<string[]>([]);
+  const currentLevel = useMemo(
+    () => categoryByPath(props.categoryHierarchy, categoryPath),
+    [props.categoryHierarchy, categoryPath],
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (searchInputRef.current) {
+    if (searchInputRef.current && props.autoFocus) {
       searchInputRef.current.focus();
     }
   }, []);
@@ -186,7 +199,7 @@ export default function NodeSearch(props: {
   }
 
   function handleItemClick(op: OpsOp) {
-    props.onAdd(op);
+    props.onClick(op);
   }
 
   useEffect(() => {
@@ -260,11 +273,7 @@ export default function NodeSearch(props: {
     }
   }
   return (
-    <div
-      className="node-search"
-      style={{ top: adjustedPos.y, left: adjustedPos.x }}
-      onMouseDown={(e) => e.preventDefault()}
-    >
+    <>
       <input
         ref={searchInputRef}
         placeholder="Search for box"
@@ -296,6 +305,6 @@ export default function NodeSearch(props: {
           </button>
         ))}
       </div>
-    </div>
+    </>
   );
 }
