@@ -301,6 +301,21 @@ svg {
       select {
         border-color: oklch(90% 0 0);
       }
+
+      .double-dropdown {
+        display: flex;
+
+        .double-dropdown-first {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+
+        .double-dropdown-second {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          margin-left: -1px;
+        }
+      }
     }
 
     .param-name-row {
