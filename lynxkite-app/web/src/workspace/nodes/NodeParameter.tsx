@@ -67,12 +67,42 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
-        {getDropDownValues(data, meta).map((option: string) => (
+        {getDropDownValues(data, meta?.type?.metadata_query).map((option: string) => (
           <option key={option} value={option}>
             {option}
           </option>
         ))}
       </select>
+    </label>
+  ) : meta?.type?.format === "double-dropdown" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <div className="double-dropdown">
+        <select
+          className="select select-bordered appearance-none double-dropdown-first"
+          value={value?.[0] ?? ""}
+          onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
+        >
+          {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select select-bordered appearance-none double-dropdown-second"
+          value={value?.[1] ?? ""}
+          onChange={(evt) => onChange([value?.[0], evt.currentTarget.value])}
+        >
+          {getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] }).map(
+            (option: string) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ),
+          )}
+        </select>
+      </div>
     </label>
   ) : meta?.type === "group" ? (
     <NodeGroupParameter meta={meta} data={data} setParam={setParam} />
@@ -126,15 +156,19 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   );
 }
 
-function getDropDownValues(data: any, meta: any): string[] {
+function getDropDownValues(
+  data: any,
+  query: string,
+  substitutions?: Record<string, string>,
+): string[] {
   const metadata = data.input_metadata;
-  let query = meta?.type?.metadata_query;
   if (!metadata || !query) {
     return [];
   }
   // Substitute parameters in the query.
-  for (const p in data.params) {
-    query = query.replace(`<${p}>`, data.params[p]);
+  const ss = { ...data.params, ...substitutions };
+  for (const k in ss) {
+    query = query.replace(`<${k}>`, ss[k]);
   }
   try {
     const res = ["", ...jmespath.search(metadata, query)];

@@ -49,7 +49,7 @@ Type = typing.Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, retur
 LongStr = typing.Annotated[str, {"format": "textarea"}]
 """LongStr is a string type for parameters that will be displayed as a multiline text area in the UI."""
 PathStr = typing.Annotated[str, {"format": "path"}]
-# https://github.com/python/typing/issues/182#issuecomment-1320974824
+# JSON type from https://github.com/python/typing/issues/182#issuecomment-1320974824.
 ReadOnlyJSON: typing.TypeAlias = (
     typing.Mapping[str, "ReadOnlyJSON"]
     | typing.Sequence["ReadOnlyJSON"]
