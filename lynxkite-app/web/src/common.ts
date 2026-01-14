@@ -30,10 +30,10 @@ export function useCategoryHierarchy() {
 
 export const COLORS: { [key: string]: string } = {
   gray: "oklch(95% 0 0)",
-  pink: "oklch(70% 0.15 0)",
-  orange: "oklch(70% 0.15 55)",
-  green: "oklch(70% 0.15 150)",
-  blue: "oklch(70% 0.15 230)",
-  purple: "oklch(70% 0.15 290)",
-  red: "oklch(70% 0.25 30)",
+  pink: "oklch(75% 0.2 0)",
+  orange: "oklch(75% 0.2 55)",
+  green: "oklch(75% 0.2 130)",
+  blue: "oklch(75% 0.2 230)",
+  purple: "oklch(75% 0.2 290)",
+  red: "oklch(75% 0.25 30)",
 };

@@ -200,10 +200,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   };
   const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
   const titleStyle = { backgroundColor: color.toString() };
-  color.l = 0.25;
+  color.lch[0] = 20;
   color.alpha = 0.5;
   const borderColor = color.toString();
-  color.c = 0.1;
+  color.lch[1] = 50;
   color.alpha = 0.25;
   const nodeStyle = {
     ...props.nodeStyle,
@@ -223,8 +223,12 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     >
       <div className="lynxkite-node" style={nodeStyle}>
         <Tooltip doc={titleTooltip}>
-          <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-            <Icon style={titleStyle} name={meta.icon} />
+          <div
+            style={titleStyle}
+            className={`title drag-handle ${data.status}`}
+            onClick={titleClicked}
+          >
+            <Icon name={meta.icon} />
             <div className="title-right-side">
               <div className="title-right-side-top">
                 <span className="title-title">{data.title}</span>
@@ -284,14 +288,14 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   );
 }
 
-function Icon({ style, name }: { style: object; name: string }) {
+function Icon({ name }: { name: string }) {
   if (!name) {
     return <div className="title-icon-placeholder" />;
   }
   if (name.startsWith("<svg")) {
-    return <span style={style} className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
+    return <span className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
   }
-  return <InlineSVG style={style} className="title-icon" src={`/api/icons/${name}`} />;
+  return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
