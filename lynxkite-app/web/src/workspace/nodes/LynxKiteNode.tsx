@@ -200,10 +200,10 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   };
   const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
   const titleStyle = { backgroundColor: color.toString() };
-  color.l = 0.25;
+  color.lch[0] = 20;
   color.alpha = 0.5;
   const borderColor = color.toString();
-  color.c = 0.1;
+  color.lch[1] = 50;
   color.alpha = 0.25;
   const nodeStyle = {
     ...props.nodeStyle,
