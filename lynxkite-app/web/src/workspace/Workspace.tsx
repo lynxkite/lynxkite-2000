@@ -348,6 +348,7 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
+      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -360,6 +361,7 @@ function LynxKiteFlow() {
       if (node.position.y + PAD + node.height! > bottom)
         bottom = node.position.y + PAD + node.height!;
       if (node.position.x + PAD + node.width! > right) right = node.position.x + PAD + node.width!;
+      node.selected = false;
     }
     groupNode.position = {
       x: left,
@@ -402,6 +404,7 @@ function LynxKiteFlow() {
         });
         node.set("parentId", undefined);
         node.set("extent", undefined);
+        node.set("selected", true);
       }
       const groupIndices: number[] = wnodes
         .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
