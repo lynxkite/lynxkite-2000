@@ -34,7 +34,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import { useCRDTWorkspace } from "./crdt.ts";
+import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
@@ -369,13 +369,13 @@ function LynxKiteFlow() {
     groupNode.height = bottom - top;
     crdt.applyChange((conn) => {
       const wnodes = conn.ws.get("nodes");
-      wnodes.unshift([groupNode as WorkspaceNode]);
+      wnodes.unshift([nodeToYMap(groupNode)]);
       const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
       for (const node of wnodes) {
-        if (selectedNodeIds.has(node.id)) {
+        if (selectedNodeIds.has(node.get("id"))) {
           node.set("position", {
-            x: node.position.x - left,
-            y: node.position.y - top,
+            x: node.get("position").x - left,
+            y: node.get("position").y - top,
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");
