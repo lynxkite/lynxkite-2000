@@ -58,6 +58,19 @@ ColumnNameByTableName = typing.Annotated[
 rendered as a dropdown in the frontend, listing the columns of the DataFrame
 named by the "table_name" parameter. The column name is passed to the operation as a string."""
 
+TableColumn = typing.Annotated[
+    tuple[str, str],
+    {
+        "format": "double-dropdown",
+        "metadata_query1": "[].dataframes[].keys(@)[]",
+        "metadata_query2": "[].dataframes[].<first>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. TableColumn is
+rendered as a pair of dropdowns for selecting a table in the Bundle and a column inside of
+that table. Effectively "TableName" and "ColumnNameByTableName" combined.
+The selected table and column name is passed to the operation as a 2-tuple of strings."""
+
 
 @dataclasses.dataclass
 class RelationDefinition:
