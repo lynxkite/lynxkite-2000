@@ -30,7 +30,7 @@ type CRDTWorkspace = {
   onFEEdgesChange?: (changes: any[]) => void;
 };
 
-function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
+export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
   const data = node.data ?? {};
   const params = data.params ?? {};
   const yparams = new Y.Map<any>();
