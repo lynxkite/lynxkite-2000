@@ -185,6 +185,9 @@ class CRDTConnection {
           if (wdata.get("op_id") !== data.op_id) {
             wdata.set("op_id", data.op_id);
           }
+          if (wdata.get("error") !== data.error) {
+            wdata.set("error", data.error);
+          }
           if (wdata.get("collapsed") !== data.collapsed) {
             wdata.set("collapsed", data.collapsed);
             // Update edge positions when node collapses/expands.
