@@ -97,11 +97,7 @@ class CRDTConnection {
           const wnodes = that.ws.get("nodes") as Y.Array<any>;
           wnodes.push([ynode]);
         });
-        that.updateState({
-          ...that.state,
-          ws: that.ws.toJSON() as CRDTWorkspace,
-          feNodes: [...that.state.feNodes, node as Node],
-        });
+        that.updateState();
       },
       addEdge(edge) {
         const yedge = new Y.Map<any>();
@@ -112,11 +108,7 @@ class CRDTConnection {
           const wedges = that.ws.get("edges") as Y.Array<any>;
           wedges.push([yedge]);
         });
-        that.updateState({
-          ...that.state,
-          ws: that.ws.toJSON() as CRDTWorkspace,
-          feEdges: [...that.state.feEdges, edge],
-        });
+        that.updateState();
       },
       onFENodesChange: that.onFENodesChange,
       onFEEdgesChange: that.onFEEdgesChange,
@@ -135,26 +127,8 @@ class CRDTConnection {
   onBackendChange = (_update: any, origin: any, _doc: any, _tr: any) => {
     if (origin === this.wsProvider) {
       if (!this.ws) return;
-      const ws = this.ws.toJSON() as WorkspaceType;
-      if (!ws.nodes) return;
-      if (!ws.edges) return;
-      for (const n of ws.nodes) {
-        if (n.type !== "node_group" && n.dragHandle !== ".drag-handle") {
-          n.dragHandle = ".drag-handle";
-        }
-      }
-      const nodes = this.reactFlow.getNodes();
-      const selection = nodes.filter((n) => n.selected).map((n) => n.id);
-      const newNodes = ws.nodes.map((n) =>
-        selection.includes(n.id) ? { ...n, selected: true } : n,
-      );
-      this.updateState({
-        ...this.state,
-        ws,
-        feNodes: newNodes as Node[],
-        feEdges: ws.edges as Edge[],
-      });
-      for (const node of ws.nodes || []) {
+      this.updateState();
+      for (const node of this.state.feNodes || []) {
         this.updateNodeInternals(node.id);
       }
     }
@@ -162,15 +136,20 @@ class CRDTConnection {
   onFENodesChange = (changes: any[]) => {
     // An update from the UI.
     // Apply it to the local state...
-    const newFENodes = applyNodeChanges(changes, this.state.feNodes);
+    this.state.feNodes = applyNodeChanges(changes, this.state.feNodes);
     // ...and to the CRDT state.
     const wnodes = this.ws.get("nodes") as Y.Array<any>;
+    let wsChanged = false;
     for (const ch of changes) {
       const nodeIndex = wnodes.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
       if (nodeIndex === -1) continue;
       const node = wnodes.get(nodeIndex) as Y.Map<any>;
       // Position events sometimes come with NaN values. Ignore them.
       if (ch.type === "position" && !Number.isNaN(ch.position.x) && !Number.isNaN(ch.position.y)) {
+        if (node.get("position").x === ch.position.x && node.get("position").y === ch.position.y) {
+          continue;
+        }
+        wsChanged = true;
         this.doc.transact(() => {
           node.set("position", { x: ch.position.x, y: ch.position.y });
         });
@@ -178,6 +157,13 @@ class CRDTConnection {
         this.updateNodeInternals(ch.id);
       } else if (ch.type === "select") {
       } else if (ch.type === "dimensions") {
+        if (
+          node.get("width") === ch.dimensions.width &&
+          node.get("height") === ch.dimensions.height
+        ) {
+          continue;
+        }
+        wsChanged = true;
         this.doc.transact(() => {
           node.set("width", ch.dimensions.width);
           node.set("height", ch.dimensions.height);
@@ -186,6 +172,7 @@ class CRDTConnection {
         this.updateNodeInternals(ch.id);
       } else if (ch.type === "remove") {
         wnodes.delete(nodeIndex);
+        wsChanged = true;
       } else if (ch.type === "replace") {
         this.doc.transact(() => {
           const data = ch.item.data;
@@ -218,32 +205,33 @@ class CRDTConnection {
             }
           }
         });
+        wsChanged = true;
       } else {
         console.log("Unknown node change", ch);
       }
     }
-    this.updateState({
-      ...this.state,
-      feNodes: newFENodes,
-    });
+    if (wsChanged) {
+      this.updateState();
+    }
   };
   onFEEdgesChange = (changes: any[]) => {
-    const newFEEdges = applyEdgeChanges(changes, this.state.feEdges);
+    this.state.feEdges = applyEdgeChanges(changes, this.state.feEdges);
     const wedges = this.ws.get("edges") as Y.Array<any>;
     if (!wedges) return;
+    let wsChanged = false;
     for (const ch of changes) {
       if (ch.type === "remove") {
         const edgeIndex = wedges.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
         wedges.delete(edgeIndex);
+        wsChanged = true;
       } else if (ch.type === "select") {
       } else {
         console.log("Unknown edge change", ch);
       }
     }
-    this.updateState({
-      ...this.state,
-      feEdges: newFEEdges,
-    });
+    if (wsChanged) {
+      this.updateState();
+    }
   };
   getSnapshot = (): CRDTWorkspace => {
     return this.state;
@@ -254,9 +242,26 @@ class CRDTConnection {
       this.observers.delete(onStorageChange);
     };
   };
-  updateState = (newState?: CRDTWorkspace) => {
-    if (!newState) newState = { ...this.state, ws: this.ws.toJSON() as CRDTWorkspace };
-    this.state = newState;
+  updateState = () => {
+    const ws = this.ws.toJSON() as WorkspaceType;
+    if (!ws.nodes) return;
+    if (!ws.edges) return;
+    const oldNodes = this.state?.feNodes || [];
+    const selection = new Set(oldNodes.filter((n) => n.selected).map((n) => n.id));
+    for (const n of ws.nodes) {
+      if (n.type !== "node_group") {
+        n.dragHandle = ".drag-handle";
+      }
+      if (selection.has(n.id)) {
+        n.selected = true;
+      }
+    }
+    this.state = {
+      ...this.state,
+      ws,
+      feNodes: ws.nodes as Node[],
+      feEdges: ws.edges as Edge[],
+    };
     for (const observer of this.observers) {
       observer();
     }
