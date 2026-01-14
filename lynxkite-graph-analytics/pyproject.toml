@@ -39,7 +39,6 @@ gpu = [
 ]
 
 [tool.uv.sources]
-lynxkite-core = { workspace = true }
 pylibcugraph-cu12 = { index = "nvidia" }
 
 [tool.pytest.ini_options]

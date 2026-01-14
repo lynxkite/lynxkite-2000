@@ -26,9 +26,6 @@ dev = [
     "setuptools>=80.9.0",
 ]
 
-[tool.uv.sources]
-lynxkite-core = { workspace = true }
-
 [build-system]
 requires = ["setuptools", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"

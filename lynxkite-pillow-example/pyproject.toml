@@ -13,9 +13,6 @@ classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
-[tool.uv.sources]
-lynxkite-core = { workspace = true }
-
 [tool.deptry.package_module_name_map]
 lynxkite-core = "lynxkite"
 pillow = "PIL"
