@@ -97,7 +97,11 @@ class CRDTConnection {
           const wnodes = that.ws.get("nodes") as Y.Array<any>;
           wnodes.push([ynode]);
         });
-        that.updateState();
+        that.updateState({
+          ...that.state,
+          ws: that.ws.toJSON() as CRDTWorkspace,
+          feNodes: [...that.state.feNodes, node as Node],
+        });
       },
       addEdge(edge) {
         const yedge = new Y.Map<any>();
@@ -108,7 +112,11 @@ class CRDTConnection {
           const wedges = that.ws.get("edges") as Y.Array<any>;
           wedges.push([yedge]);
         });
-        that.updateState();
+        that.updateState({
+          ...that.state,
+          ws: that.ws.toJSON() as CRDTWorkspace,
+          feEdges: [...that.state.feEdges, edge],
+        });
       },
       onFENodesChange: that.onFENodesChange,
       onFEEdgesChange: that.onFEEdgesChange,
@@ -221,12 +229,12 @@ class CRDTConnection {
   };
   onFEEdgesChange = (changes: any[]) => {
     const newFEEdges = applyEdgeChanges(changes, this.state.feEdges);
-    const wedges = this.state.ws?.edges;
+    const wedges = this.ws.get("edges") as Y.Array<any>;
     if (!wedges) return;
     for (const ch of changes) {
-      const edgeIndex = wedges.findIndex((e) => e.id === ch.id);
       if (ch.type === "remove") {
-        wedges.splice(edgeIndex, 1);
+        const edgeIndex = wedges.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
+        wedges.delete(edgeIndex);
       } else if (ch.type === "select") {
       } else {
         console.log("Unknown edge change", ch);
