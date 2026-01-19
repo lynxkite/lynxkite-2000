@@ -1,25 +1,19 @@
 // The LynxKite workspace editor.
 
-import { getYjsDoc, syncedStore } from "@syncedstore/core";
 import {
-  applyEdgeChanges,
-  applyNodeChanges,
+  Background,
+  BackgroundVariant,
   type Connection,
-  Controls,
-  type Edge,
   MarkerType,
-  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
-  useUpdateNodeInternals,
   type XYPosition,
 } from "@xyflow/react";
 import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
-import { WebsocketProvider } from "y-websocket";
 // @ts-expect-error
 import Backspace from "~icons/tabler/backspace.jsx";
 // @ts-expect-error
@@ -33,19 +27,23 @@ import Play from "~icons/tabler/player-play.jsx";
 // @ts-expect-error
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-expect-error
+import Transfer from "~icons/tabler/transfer.jsx";
+// @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
-import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-// import NodeWithTableView from './NodeWithTableView';
+import { useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
+import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { buildCategoryHierarchy, type Catalogs, type OpsOp } from "./NodeSearch.tsx";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
+import NodeWithGradio from "./nodes/NodeWithGradio.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
@@ -61,144 +59,41 @@ export default function Workspace(props: any) {
 }
 
 function LynxKiteFlow() {
-  const updateNodeInternals = useUpdateNodeInternals();
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes] = useState([] as Node[]);
-  const [edges, setEdges] = useState([] as Edge[]);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
   const path = usePath().replace(/^[/]edit[/]/, "");
+  const [message, setMessage] = useState(null as string | null);
   const shortPath = path!
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const [state, setState] = useState({ workspace: {} as WorkspaceType });
-  const [message, setMessage] = useState(null as string | null);
-  const [pausedUIState, setPausedUIState] = useState(false);
-  useEffect(() => {
-    const state = syncedStore({ workspace: {} as WorkspaceType });
-    setState(state);
-    const doc = getYjsDoc(state);
-    const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    const encodedPath = path!
-      .split("/")
-      .map((segment) => encodeURIComponent(segment))
-      .join("/");
-    const wsProvider = new WebsocketProvider(
-      `${proto}//${location.host}/ws/crdt`,
-      encodedPath,
-      doc,
-    );
-    if (state.workspace && typeof state.workspace.paused === "undefined") {
-      state.workspace.paused = false;
-    }
-    const onChange = (_update: any, origin: any, _doc: any, _tr: any) => {
-      if (origin === wsProvider) {
-        // An update from the CRDT. Apply it to the local state.
-        // This is only necessary because ReactFlow keeps secret internal copies of our stuff.
-        if (!state.workspace) return;
-        if (!state.workspace.nodes) return;
-        if (!state.workspace.edges) return;
-        for (const n of state.workspace.nodes) {
-          if (n.type !== "node_group" && n.dragHandle !== ".drag-handle") {
-            n.dragHandle = ".drag-handle";
-          }
-        }
-        const nodes = reactFlow.getNodes();
-        const selection = nodes.filter((n) => n.selected).map((n) => n.id);
-        const newNodes = state.workspace.nodes.map((n) =>
-          selection.includes(n.id) ? { ...n, selected: true } : n,
-        );
-        setNodes([...newNodes] as Node[]);
-        setEdges([...state.workspace.edges] as Edge[]);
-        for (const node of state.workspace.nodes) {
-          // Make sure the internal copies are updated.
-          updateNodeInternals(node.id);
-        }
-        setPausedUIState(state.workspace.paused || false);
-      }
-    };
-    doc.on("update", onChange);
-    return () => {
-      doc.destroy();
-      wsProvider.destroy();
-    };
-  }, [path, updateNodeInternals]);
+  const crdt = useCRDTWorkspace(path);
+  const nodes = crdt.feNodes;
+  const edges = crdt.feEdges;
 
-  const onNodesChange = useCallback(
-    (changes: any[]) => {
-      // An update from the UI. Apply it to the local state...
-      setNodes((nds) => applyNodeChanges(changes, nds));
-      // ...and to the CRDT state. (Which could be the same, except for ReactFlow's internal copies.)
-      const wnodes = state.workspace?.nodes;
-      if (!wnodes) return;
-      for (const ch of changes) {
-        const nodeIndex = wnodes.findIndex((n) => n.id === ch.id);
-        if (nodeIndex === -1) continue;
-        const node = wnodes[nodeIndex];
-        if (!node) continue;
-        // Position events sometimes come with NaN values. Ignore them.
-        if (
-          ch.type === "position" &&
-          !Number.isNaN(ch.position.x) &&
-          !Number.isNaN(ch.position.y)
-        ) {
-          getYjsDoc(state).transact(() => {
-            node.position.x = ch.position.x;
-            node.position.y = ch.position.y;
-          });
-          // Update edge positions.
-          updateNodeInternals(ch.id);
-        } else if (ch.type === "select") {
-        } else if (ch.type === "dimensions") {
-          getYjsDoc(state).transact(() => {
-            node.width = ch.dimensions.width;
-            node.height = ch.dimensions.height;
-          });
-          // Update edge positions when node size changes.
-          updateNodeInternals(ch.id);
-        } else if (ch.type === "remove") {
-          wnodes.splice(nodeIndex, 1);
-        } else if (ch.type === "replace") {
-          // Ideally we would only update the parameter that changed. But ReactFlow does not give us that detail.
-          getYjsDoc(state).transact(() => {
-            if (node.data.collapsed !== ch.item.data.collapsed) {
-              node.data.collapsed = ch.item.data.collapsed;
-              // Update edge positions when node collapses/expands.
-              setTimeout(() => updateNodeInternals(ch.id), 0);
-            }
-            if (node.data.__execution_delay !== ch.item.data.__execution_delay) {
-              node.data.__execution_delay = ch.item.data.__execution_delay;
-            }
-            for (const [key, value] of Object.entries(ch.item.data.params)) {
-              if (node.data.params[key] !== value) {
-                node.data.params[key] = value;
-              }
-            }
-          });
-        } else {
-          console.log("Unknown node change", ch);
-        }
+  // Track Shift key state
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === "Shift") {
+        setIsShiftPressed(true);
       }
-    },
-    [state, updateNodeInternals],
-  );
-  const onEdgesChange = useCallback(
-    (changes: any[]) => {
-      setEdges((eds) => applyEdgeChanges(changes, eds));
-      const wedges = state.workspace?.edges;
-      if (!wedges) return;
-      for (const ch of changes) {
-        const edgeIndex = wedges.findIndex((e) => e.id === ch.id);
-        if (ch.type === "remove") {
-          wedges.splice(edgeIndex, 1);
-        } else if (ch.type === "select") {
-        } else {
-          console.log("Unknown edge change", ch);
-        }
+    }
+
+    function handleKeyUp(event: KeyboardEvent): void {
+      if (event.key === "Shift") {
+        setIsShiftPressed(false);
       }
-    },
-    [state],
-  );
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
@@ -208,9 +103,9 @@ function LynxKiteFlow() {
     .join("/");
   const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
   const categoryHierarchy = useMemo(() => {
-    if (!catalog.data || !state.workspace.env) return undefined;
-    return buildCategoryHierarchy(catalog.data[state.workspace.env]);
-  }, [catalog.data, state.workspace.env]);
+    if (!catalog.data || !crdt?.ws?.env) return undefined;
+    return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
+  }, [catalog, crdt]);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
@@ -226,6 +121,7 @@ function LynxKiteFlow() {
       image: NodeWithImage,
       table_view: NodeWithTableView,
       service: NodeWithTableView,
+      gradio: NodeWithGradio,
       graph_creation_view: NodeWithGraphCreationView,
       molecule: NodeWithMolecule,
       comment: NodeWithComment,
@@ -273,13 +169,13 @@ function LynxKiteFlow() {
     while (pos.y < H) {
       // Find a position that is not occupied by a node.
       const fpos = reactFlow.screenToFlowPosition(pos);
-      const occupied = state.workspace.nodes!.some((n) => {
+      const occupied = crdt?.ws?.nodes?.some((n) => {
         const np = n.position;
         return (
           np.x < fpos.x + w + GAP &&
-          np.x + n.width + GAP > fpos.x &&
+          np.x + (n.width ?? 0) + GAP > fpos.x &&
           np.y < fpos.y + h + GAP &&
-          np.y + n.height + GAP > fpos.y
+          np.y + (n.height ?? 0) + GAP > fpos.y
         );
       });
       if (!occupied) {
@@ -322,12 +218,12 @@ function LynxKiteFlow() {
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [categoryHierarchy, state, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [categoryHierarchy, crdt.ws, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
     let id = `${prefix} ${i}`;
-    const used = new Set(state.workspace.nodes!.map((n) => n.id));
+    const used = new Set(crdt?.ws?.nodes?.map((n) => n.id));
     while (used.has(id)) {
       i += 1;
       id = `${prefix} ${i}`;
@@ -335,16 +231,16 @@ function LynxKiteFlow() {
     return id;
   }
   function addNode(node: Partial<WorkspaceNode>) {
-    state.workspace.nodes!.push(node as WorkspaceNode);
-    setNodes([...nodes, node as WorkspaceNode]);
+    crdt?.addNode(node);
   }
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
+      height: 200,
       data: {
-        meta: { value: meta },
+        meta: meta,
         title: meta.name,
-        op_id: meta.id,
+        op_id: meta.id || meta.name,
         params: Object.fromEntries(meta.params.map((p) => [p.name, p.default])),
       },
     };
@@ -362,7 +258,7 @@ function LynxKiteFlow() {
       addNode(node);
       closeNodeSearch();
     },
-    [nodeSearchSettings, state, reactFlow, nodes, closeNodeSearch],
+    [nodeSearchSettings, reactFlow, closeNodeSearch],
   );
 
   const onConnect = useCallback(
@@ -375,11 +271,13 @@ function LynxKiteFlow() {
         target: connection.target,
         targetHandle: connection.targetHandle!,
       };
-      state.workspace.edges!.push(edge);
-      setEdges((oldEdges) => [...oldEdges, edge]);
+      crdt?.addEdge(edge);
     },
-    [state],
+    [crdt],
   );
+  if (!crdt?.ws) {
+    return <div>Loading workspace...</div>;
+  }
   const parentDir = path!.split("/").slice(0, -1).join("/");
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
@@ -391,6 +289,9 @@ function LynxKiteFlow() {
     const file = e.dataTransfer.files[0];
     const formData = new FormData();
     formData.append("file", file);
+    if (!catalog.data || !crdt?.ws?.env) {
+      return;
+    }
     try {
       await axios.post("/api/upload", formData, {
         onUploadProgress: (progressEvent) => {
@@ -400,7 +301,7 @@ function LynxKiteFlow() {
         },
       });
       setMessage(null);
-      const cat = catalog.data![state.workspace.env!];
+      const cat = catalog.data[crdt.ws.env];
       const node = nodeFromMeta(cat["Import file"]);
       node.id = findFreeId(node.data!.title);
       node.position = reactFlow.screenToFlowPosition({
@@ -429,14 +330,14 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
-  function togglePause() {
-    state.workspace.paused = !state.workspace.paused;
-    setPausedUIState(state.workspace.paused);
-  }
   function deleteSelection() {
     const selectedNodes = nodes.filter((n) => n.selected);
     const selectedEdges = edges.filter((e) => e.selected);
     reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+  }
+  function changeBox() {
+    const [selectedNode] = nodes.filter((n) => n.selected);
+    reactFlow.updateNodeData(selectedNode.id, { op_id: "" });
   }
   function groupSelection() {
     const selectedNodes = nodes.filter((n) => n.selected && !n.parentId);
@@ -466,30 +367,19 @@ function LynxKiteFlow() {
     };
     groupNode.width = right - left;
     groupNode.height = bottom - top;
-    setNodes([
-      { ...(groupNode as WorkspaceNode), selected: true },
-      ...nodes.map((n) =>
-        n.selected
-          ? {
-              ...n,
-              position: { x: n.position.x - left, y: n.position.y - top },
-              parentId: groupNode.id,
-              extent: "parent" as const,
-              selected: false,
-            }
-          : n,
-      ),
-    ]);
-    getYjsDoc(state).transact(() => {
-      state.workspace.nodes!.unshift(groupNode as WorkspaceNode);
+    crdt.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes");
+      wnodes.unshift([groupNode as WorkspaceNode]);
       const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
-      for (const node of state.workspace.nodes!) {
+      for (const node of wnodes) {
         if (selectedNodeIds.has(node.id)) {
-          node.position.x -= left;
-          node.position.y -= top;
-          node.parentId = groupNode.id;
-          node.extent = "parent";
-          node.selected = false;
+          node.set("position", {
+            x: node.position.x - left,
+            y: node.position.y - top,
+          });
+          node.set("parentId", groupNode.id);
+          node.set("extent", "parent");
+          node.set("selected", false);
         }
       }
     });
@@ -500,41 +390,30 @@ function LynxKiteFlow() {
         .filter((n) => n.selected && n.type === "node_group" && !n.parentId)
         .map((n) => [n.id, n]),
     );
-    setNodes(
-      nodes
-        .filter((n) => !groups[n.id])
-        .map((n) => {
-          const g = groups[n.parentId!];
-          if (!g) return n;
-          return {
-            ...n,
-            position: {
-              x: n.position.x + g.position.x,
-              y: n.position.y + g.position.y,
-            },
-            parentId: undefined,
-            extent: undefined,
-            selected: true,
-          };
-        }),
-    );
-    getYjsDoc(state).transact(() => {
-      const wnodes = state.workspace.nodes!;
-      for (const node of state.workspace.nodes!) {
-        const g = groups[node.parentId as string];
+    crdt.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes");
+      for (const node of wnodes) {
+        const g = groups[node.get("parentId") as string];
         if (!g) continue;
-        node.position.x += g.position.x;
-        node.position.y += g.position.y;
-        node.parentId = undefined;
-        node.extent = undefined;
+        const pos = node.get("position") as XYPosition;
+        node.set("position", {
+          x: pos.x + g.position.x,
+          y: pos.y + g.position.y,
+        });
+        node.set("parentId", undefined);
+        node.set("extent", undefined);
       }
-      for (const groupId in groups) {
-        const groupIdx = wnodes.findIndex((n) => n.id === groupId);
-        wnodes.splice(groupIdx, 1);
+      const groupIndices: number[] = wnodes
+        .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
+        .filter(({ id }: { id: string }) => id in groups)
+        .map(({ idx }: { idx: number }) => idx);
+      groupIndices.sort((a, b) => b - a);
+      for (const groupIdx of groupIndices) {
+        wnodes.delete(groupIdx, 1);
       }
     });
   }
-  const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
+  const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
   return (
     <div className="workspace">
@@ -546,34 +425,47 @@ function LynxKiteFlow() {
         <title>{shortPath}</title>
         <EnvironmentSelector
           options={Object.keys(catalog.data || {})}
-          value={state.workspace.env!}
-          onChange={(env) => {
-            state.workspace.env = env;
-          }}
+          value={crdt.ws.env || ""}
+          onChange={crdt.setEnv}
         />
         <div className="tools text-secondary">
-          {areMultipleNodesSelected && (
-            <Tooltip doc="Group selected nodes">
-              <button className="btn btn-link" onClick={groupSelection}>
-                <GroupIcon />
-              </button>
-            </Tooltip>
-          )}
-          {isAnyGroupSelected && (
-            <Tooltip doc="Ungroup selected nodes">
-              <button className="btn btn-link" onClick={ungroupSelection}>
-                <UngroupIcon />
-              </button>
-            </Tooltip>
-          )}
+          <Tooltip doc="Group selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={selected.length < 2}
+              onClick={groupSelection}
+            >
+              <GroupIcon />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Ungroup selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={!isAnyGroupSelected}
+              onClick={ungroupSelection}
+            >
+              <UngroupIcon />
+            </button>
+          </Tooltip>
           <Tooltip doc="Delete selected nodes and edges">
-            <button className="btn btn-link" onClick={deleteSelection}>
+            <button
+              className="btn btn-link"
+              disabled={selected.length === 0}
+              onClick={deleteSelection}
+            >
               <Backspace />
             </button>
           </Tooltip>
-          <Tooltip doc={pausedUIState ? "Resume automatic execution" : "Pause automatic execution"}>
-            <button className="btn btn-link" onClick={togglePause}>
-              {pausedUIState ? <Play /> : <Pause />}
+          <Tooltip doc="Change selected box to a different box">
+            <button className="btn btn-link" disabled={selected.length !== 1} onClick={changeBox}>
+              <Transfer />
+            </button>
+          </Tooltip>
+          <Tooltip
+            doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
+          >
+            <button className="btn btn-link" onClick={() => crdt.setPausedState(!crdt.ws?.paused)}>
+              {crdt.ws.paused ? <Play /> : <Pause />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">
@@ -601,47 +493,54 @@ function LynxKiteFlow() {
         onDrop={onDrop}
         ref={reactFlowContainer}
       >
-        <LynxKiteState.Provider value={state}>
+        <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             fitView
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
+            onNodesChange={(changes) => {
+              if (isShiftPressed) {
+                changes = snapChangesToGrid(changes, isShiftPressed, crdt?.ws?.nodes || []);
+              }
+              crdt?.onFENodesChange?.(changes);
+            }}
+            onEdgesChange={crdt?.onFEEdgesChange}
             onPaneClick={toggleNodeSearch}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
             maxZoom={10}
             minZoom={0.2}
-            zoomOnScroll={false}
-            panOnScroll={true}
-            panOnDrag={false}
-            selectionOnDrag={true}
-            panOnScrollSpeed={1}
-            preventScrolling={false}
+            zoomOnScroll={true}
+            panOnScroll={false}
+            panOnDrag={[0]}
+            selectionOnDrag={false}
+            preventScrolling={true}
             defaultEdgeOptions={{
               markerEnd: {
                 type: MarkerType.ArrowClosed,
-                color: "black",
+                color: "#888",
                 width: 15,
                 height: 15,
-              },
-              style: {
-                strokeWidth: 2,
-                stroke: "black",
               },
             }}
             fitViewOptions={{ maxZoom: 1 }}
           >
-            <Controls />
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={40}
+              size={6}
+              color="#f0f0f0"
+              bgColor="#fafafa"
+              offset={3}
+            />
             {nodeSearchSettings && categoryHierarchy && (
               <NodeSearch
                 pos={nodeSearchSettings.pos}
                 categoryHierarchy={categoryHierarchy}
                 onCancel={closeNodeSearch}
-                onAdd={addNodeFromSearch}
+                onClick={addNodeFromSearch}
               />
             )}
           </ReactFlow>

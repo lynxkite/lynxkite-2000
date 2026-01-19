@@ -1,0 +1,27 @@
+[project]
+name = "lynxkite-mcp"
+version = "0.2.0"
+description = "A command-line tool and MCP server for running LynxKite workspaces."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lynxkite-core",
+    "mcp>=1.20.0",
+]
+classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
+
+[tool.uv.sources]
+lynxkite-core = { workspace = true }
+
+[tool.deptry.package_module_name_map]
+lynxkite-core = "lynxkite"
+
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+lynxkite-mcp = "lynxkite_mcp.mcp_server:main"

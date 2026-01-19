@@ -9,6 +9,7 @@ import json
 import importlib.util
 import inspect
 import pathlib
+import pkgutil
 import subprocess
 import traceback
 import types
@@ -48,7 +49,7 @@ Type = typing.Annotated[typing.Any, pydantic.PlainSerializer(type_to_json, retur
 LongStr = typing.Annotated[str, {"format": "textarea"}]
 """LongStr is a string type for parameters that will be displayed as a multiline text area in the UI."""
 PathStr = typing.Annotated[str, {"format": "path"}]
-# https://github.com/python/typing/issues/182#issuecomment-1320974824
+# JSON type from https://github.com/python/typing/issues/182#issuecomment-1320974824.
 ReadOnlyJSON: typing.TypeAlias = (
     typing.Mapping[str, "ReadOnlyJSON"]
     | typing.Sequence["ReadOnlyJSON"]
@@ -146,7 +147,7 @@ class Result:
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
-    input_metadata: ReadOnlyJSON | None = None
+    input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
 
 def get_optional_type(type):
@@ -191,7 +192,8 @@ class Op(BaseConfig):
     # TODO: Make type an enum with the possible values.
     type: str = "basic"  # The UI to use for this operation.
     color: str = "orange"  # The color of the operation in the UI.
-    doc: object = None
+    icon: str | None = None  # The icon of the operation in the UI.
+    doc: list | None = None
     # ID is automatically set from the name and categories.
     id: str = pydantic.Field(default=None)
 
@@ -238,8 +240,27 @@ class Op(BaseConfig):
 
     @pydantic.model_validator(mode="after")
     def compute_id(self):
+        assert " > " not in self.name, "Operation name cannot contain ' > '"
+        for c in self.categories:
+            assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         return self
+
+    @staticmethod
+    def placeholder_from_id(op_id: str) -> Op:
+        """Returns a placeholder operation for the given operation ID."""
+        [*categories, name] = op_id.split(" > ")
+        return Op(
+            func=lambda *args, **kwargs: Result(),
+            name=name,
+            categories=categories,
+            params=[],
+            inputs=[],
+            outputs=[],
+            type="basic",
+            color="red",
+            icon="x",
+        )
 
 
 def op(
@@ -250,6 +271,7 @@ def op(
     params: list[Parameter] | None = None,
     slow: bool = False,
     color: str | None = None,
+    icon: str | None = None,
     cache: bool | None = None,
     dir: str = "left-to-right",
 ):
@@ -268,6 +290,7 @@ def op(
         slow: If True, the operation results will be cached.
               If the function is not async, it will be run in a separate thread.
         color: The color of the operation in the UI. Defaults to "orange".
+        icon: The icon of the operation in the UI. Names of Tabler icons are accepted.
         cache: Set to False to disable caching for a slow operation.
                You may need this for slow operations with parameters/outputs that can't be serialized.
         dir: Sets the default input and output positions. The default is "left-to-right", meaning
@@ -314,6 +337,7 @@ def op(
             outputs=_outputs,
             type=_view,
             color=color or "orange",
+            icon=icon,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
@@ -396,7 +420,13 @@ def no_op(*args, **kwargs):
 
 
 def register_passive_op(
-    env: str, *names: str, inputs=[], outputs=["output"], params=[], dir="left-to-right", **kwargs
+    env: str,
+    *names: str,
+    inputs=[],
+    outputs=["output"],
+    params=[],
+    dir="left-to-right",
+    **kwargs,
 ):
     """A passive operation has no associated code."""
     ipos, opos = Position.from_dir(dir)
@@ -525,13 +555,13 @@ def run_user_script(script_path: pathlib.Path):
 
 
 @functools.cache
-def parse_doc(func):
+def parse_doc(func) -> list | None:
     """Griffe is an optional dependency. When available, we return the parsed docstring."""
     doc = func.__doc__
     try:
         import griffe
     except ImportError:
-        return doc
+        return None
     if doc is None:
         return None
     griffe.logger.setLevel("ERROR")
@@ -568,3 +598,19 @@ def _get_griffe_function(func):
         parameters=griffe.Parameters(*parameters),
         returns=str(sig.return_annotation),
     )
+
+
+def detect_plugins():
+    """Imports all installed LynxKite plugins."""
+    plugins = {}
+    for _, name, _ in pkgutil.iter_modules():
+        if (
+            name.startswith("lynxkite_")
+            and name != "lynxkite_app"
+            and name != "lynxkite_core"
+            and name != "lynxkite_mcp"
+        ):
+            plugins[name] = importlib.import_module(name)
+    if not plugins:
+        print("No LynxKite plugins found. Be sure to install some!")
+    return plugins

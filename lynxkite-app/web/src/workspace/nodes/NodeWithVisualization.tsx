@@ -6,9 +6,9 @@ const echarts = await import("echarts");
 
 function NodeWithVisualization(props: any) {
   const chartsRef = React.useRef<HTMLDivElement>(null);
-  const chartsInstanceRef = React.useRef<echarts.ECharts>();
+  const chartsInstanceRef = React.useRef<echarts.ECharts>(null);
   useEffect(() => {
-    const opts = props.data?.display?.value;
+    const opts = props.data?.display;
     if (!opts || !chartsRef.current) return;
     if (opts.tooltip?.formatter === "GET_THIRD_VALUE") {
       // We can't pass a function from the backend, and can't get good tooltips otherwise.
@@ -33,7 +33,7 @@ function NodeWithVisualization(props: any) {
       resizeObserver.unobserve(observed);
       chartsInstanceRef.current?.dispose();
     };
-  }, [props.data?.display?.value]);
+  }, [props.data?.display]);
   return (
     <NodeWithParams collapsed {...props}>
       <div style={{ flex: 1 }} ref={chartsRef} />

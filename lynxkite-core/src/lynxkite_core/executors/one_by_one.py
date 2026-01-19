@@ -2,6 +2,8 @@
 A LynxKite executor that assumes most operations operate on their input one by one.
 """
 
+import contextlib
+import urllib.parse
 from .. import ops
 from .. import workspace
 import traceback
@@ -40,7 +42,7 @@ def register(env: str, cache: bool = True):
         from lynxkite_core.executors import one_by_one
         one_by_one.register("My Environment")
     """
-    ops.EXECUTORS[env] = lambda ws: _execute(ws, ops.CATALOGS[env])
+    ops.EXECUTORS[env] = lambda ws, ctx: _execute(ws, ops.CATALOGS[env], ctx)
 
 
 def _get_stages(ws, catalog: ops.Catalog):
@@ -78,7 +80,11 @@ async def _await_if_needed(obj):
     return obj
 
 
-async def _execute(ws: workspace.Workspace, catalog: ops.Catalog):
+async def _execute(
+    ws: workspace.Workspace,
+    catalog: ops.Catalog,
+    ctx: workspace.WorkspaceExecutionContext | None = None,
+):
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -145,6 +151,11 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog):
                     output = [output]
                 results.extend(output)
             else:  # Finished all tasks without errors.
+                if op.type == "gradio" and ctx and ctx.app:
+                    url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
+                    await mount_gradio(ctx.app, result.output, url)
+                    result.display = {"backend": urllib.parse.quote(url)}
+                    result.output = None
                 if result.display:
                     result.display = await _await_if_needed(result.display)
                 for edge in edges[node.id]:
@@ -159,3 +170,37 @@ async def _execute(ws: workspace.Workspace, catalog: ops.Catalog):
                 node.publish_result(result)
         tasks = next_stage
     return contexts
+
+
+class _ProxyApp:
+    def __init__(self, app):
+        self._app = app
+        self.router = self
+
+    @contextlib.asynccontextmanager
+    async def lifespan_context(self, app):
+        yield
+
+    def mount(self, path, gradio_app):
+        import starlette.routing  # ty: ignore[unresolved-import]
+
+        router = self._app.router
+        route = starlette.routing.Mount(path, gradio_app)
+        # Overwrite existing route if it exists.
+        for i, r in enumerate(router.routes):
+            if r.path == path:
+                router.routes[i] = route
+                break
+        else:
+            router.routes.insert(0, route)
+
+
+async def mount_gradio(app, gradio_app, path: str):
+    """Mounts a Gradio app onto a Starlette/FastAPI app at the given path."""
+    import gradio as gr  # ty: ignore[unresolved-import]
+
+    app = _ProxyApp(app)
+    gr.mount_gradio_app(app, gradio_app, path=path)
+    # Trigger Gradio lifetime hooks.
+    async with app.lifespan_context(app):
+        pass

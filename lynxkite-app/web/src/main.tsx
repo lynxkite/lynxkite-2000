@@ -1,5 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "@fontsource/inter";
+import "@fontsource/inter/500.css";
 import "@xyflow/react/dist/style.css";
 import "./index.css";
 import {
@@ -49,5 +52,6 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <ReactTooltip id="tooltip-global" opacity={1} />
   </StrictMode>,
 );

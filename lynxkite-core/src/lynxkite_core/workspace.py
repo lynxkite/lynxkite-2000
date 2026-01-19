@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
@@ -12,6 +12,7 @@ from . import ops
 
 if TYPE_CHECKING:
     import pycrdt
+    import fastapi
     from lynxkite_core import ops
 
 
@@ -36,9 +37,11 @@ class WorkspaceNodeData(BaseConfig):
     title: str
     op_id: str
     params: dict
-    display: Optional[object] = None
-    input_metadata: Optional[object] = None
+    display: Optional[Any] = None
+    input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
+    collapsed: Optional[bool] = None
+    expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
     meta: Optional["ops.Op"] = None
 
@@ -99,6 +102,14 @@ class WorkspaceNode(BaseConfig):
         result = ops.Result(error=str(error) if error else None)
         self.publish_result(result)
 
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def before_load(cls, data: dict) -> dict:
+        # Not quite sure where extent=null comes from, but it crashes the frontend.
+        if "extent" in data and not data["extent"]:
+            del data["extent"]
+        return data
+
 
 class WorkspaceEdge(BaseConfig):
     id: str
@@ -106,6 +117,13 @@ class WorkspaceEdge(BaseConfig):
     target: str
     sourceHandle: str
     targetHandle: str
+
+
+@dataclasses.dataclass
+class WorkspaceExecutionContext:
+    """Context passed to ops during execution."""
+
+    app: "fastapi.FastAPI | None"
 
 
 class Workspace(BaseConfig):
@@ -119,6 +137,7 @@ class Workspace(BaseConfig):
     env: str = ""
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
+    paused: Optional[bool] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
@@ -145,8 +164,8 @@ class Workspace(BaseConfig):
     def has_executor(self):
         return self.env in ops.EXECUTORS
 
-    async def execute(self):
-        return await ops.EXECUTORS[self.env](self)
+    async def execute(self, ctx: WorkspaceExecutionContext | None = None):
+        return await ops.EXECUTORS[self.env](self, ctx)
 
     def model_dump_json(self) -> str:
         """Returns the workspace as JSON."""
@@ -222,8 +241,11 @@ class Workspace(BaseConfig):
                         node._crdt["data"]["error"] = None
             else:
                 data.error = "Unknown operation."
+                data.meta = ops.Op.placeholder_from_id(data.op_id)
                 if node._crdt:
-                    node._crdt["data"]["meta"] = {}
+                    import pycrdt
+
+                    node._crdt["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
                     node._crdt["data"]["error"] = "Unknown operation."
 
     def connect_crdt(self, ws_crdt: "pycrdt.Map"):

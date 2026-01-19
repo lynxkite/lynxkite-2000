@@ -9,7 +9,7 @@ type NamedId = {
 };
 
 function getInputs(data: WorkspaceNodeData): any[] {
-  return (data?.input_metadata as any)?.value ?? data?.input_metadata ?? [];
+  return data?.input_metadata ?? [];
 }
 
 function getAllModels(data: WorkspaceNodeData): any[] {

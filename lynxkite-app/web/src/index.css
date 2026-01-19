@@ -1,8 +1,13 @@
-/* biome-ignore-start lint/suspicious/noUnknownAtRules: tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* biome-ignore-end lint/suspicious/noUnknownAtRules: tailwind */
+@import "tailwindcss";
+
+/* biome-ignore-start lint/suspicious/noUnknownAtRules: plugin */
+/* biome-ignore-start lint/correctness/noUnknownProperty: themes */
+@plugin "daisyui" {
+  themes: light;
+}
+
+/* biome-ignore-end lint/correctness/noUnknownProperty: themes */
+/* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,17 +20,13 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --border: 1px;
+  --radius-field: 0.5rem;
 }
 
 img,
 svg {
   display: inline-block;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .workspace {
@@ -61,6 +62,10 @@ body {
         font-size: 1.5em;
         padding: 0 10px;
       }
+
+      .btn:disabled {
+        opacity: 0.3;
+      }
     }
   }
 
@@ -76,8 +81,9 @@ body {
   }
 
   .lynxkite-node {
-    box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
+    box-shadow: 0px 5px 30px 0px oklch(10% 0.2 55 / 0.25);
+    border: 0.1px solid #000;
+    border-radius: 14px;
     overflow: hidden;
     background: white;
     display: flex;
@@ -116,6 +122,7 @@ body {
     flex-direction: column;
     align-items: end;
     padding: 10px 20px;
+    position: relative;
   }
 
   .node-group.in-group {
@@ -123,31 +130,14 @@ body {
   }
 
   .node-group-color-picker-icon {
-    font-size: 30px;
-    opacity: 0.1;
-    transition: opacity 0.3s;
-  }
-
-  .node-group:hover .node-group-color-picker-icon {
-    opacity: 1;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
   }
 
   .color-picker-button {
     font-size: 30px;
-  }
-
-  .tooltip {
-    padding: 8px;
-    border-radius: 4px;
-    opacity: 1;
-    text-align: left;
-    background: #fffa;
-    color: black;
-    box-shadow: 0px 5px 50px 0px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    font-size: 16px;
-    font-weight: initial;
-    max-width: 300px;
   }
 
   .prose p {
@@ -170,6 +160,7 @@ body {
     );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
+    background-color: oklch(97% 0 0);
     --status-color-1: #0000;
     --status-color-2: #0000;
     --status-color-3: #0000;
@@ -181,8 +172,49 @@ body {
     flex-direction: row;
     gap: 10px;
 
+    .title-right-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      justify-content: center;
+    }
+
+    .title-right-side-top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-icon {
+      flex: none;
+      width: 35px;
+      height: 35px;
+      padding: 5px;
+      color: white;
+    }
+
+    .title-icon-placeholder {
+      flex: none;
+      width: 0;
+    }
+
     .title-title {
       flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title-summary {
+      flex: 1;
+      font-weight: normal;
+      font-size: 0.6em;
+      opacity: 0.7;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 
@@ -257,6 +289,7 @@ body {
     position: absolute;
     bottom: 8px;
     right: 8px;
+    opacity: 0;
     cursor: nwse-resize;
   }
 
@@ -264,6 +297,27 @@ body {
     .param {
       padding: 4px 8px 4px 8px;
       display: block;
+
+      input,
+      textarea,
+      select {
+        border-color: oklch(90% 0 0);
+      }
+
+      .double-dropdown {
+        display: flex;
+
+        .double-dropdown-first {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+
+        .double-dropdown-second {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          margin-left: -1px;
+        }
+      }
     }
 
     .param-name-row {
@@ -275,6 +329,7 @@ body {
 
     .param-name {
       display: block;
+      background-color: oklch(97% 0 0);
       font-size: 10px;
       letter-spacing: 0.05em;
       margin-left: 10px;
@@ -288,15 +343,23 @@ body {
     }
   }
 
-  .node-search {
+  .node-search-panel {
     position: fixed;
     width: 300px;
     z-index: 5;
-    padding: 4px;
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
     max-height: stretch;
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
+
+  .node-search {
+    padding: 8px;
+    background-color: white;
     display: flex;
     flex-direction: column;
 
@@ -306,7 +369,6 @@ body {
       padding: 8px;
       border-radius: 4px;
       border: 1px solid #eee;
-      margin: 4px;
     }
 
     .search-result {
@@ -334,10 +396,11 @@ body {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
     }
+  }
 
-    .matches {
-      overflow-y: auto;
-    }
+  .react-flow__node {
+    width: auto !important;
+    height: auto !important;
   }
 
   .react-flow__node-table_view {
@@ -429,10 +492,18 @@ body {
     color: #aaa;
   }
 
+  .table-viewer-container {
+    overflow-x: auto;
+  }
+
   .table-viewer {
     td {
       padding: 5px 10px;
       vertical-align: top;
+      white-space: nowrap;
+      max-width: 100vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .image-in-table {
@@ -614,7 +685,7 @@ body {
 }
 
 .react-flow__handle {
-  border-color: black;
+  border-color: #888;
   background: white;
   width: 20px;
   height: 20px;
@@ -775,4 +846,30 @@ body {
 .input-error {
   border-color: #dc2626;
   box-shadow: 0 0 0 1px #dc2626;
+}
+
+#tooltip-global {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  text-align: left;
+  background: #fff;
+  color: black;
+  font-size: 16px;
+  font-weight: initial;
+  max-width: 300px;
+
+  .react-tooltip-arrow {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+  }
+
+  p:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+select,
+textarea {
+  border: var(--border) solid #0000;
 }

@@ -28,6 +28,8 @@ class FileFormat(enum.StrEnum):
 
 @op(
     "Import file",
+    color="green",
+    icon="file-filled",
     params=[
         ops.ParameterGroup(
             name="file_format_group",
@@ -47,7 +49,7 @@ class FileFormat(enum.StrEnum):
     slow=True,
 )
 def import_file(
-    *, file_path: str, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
+    *, file_path: ops.PathStr, table_name: str, file_format: FileFormat = FileFormat.csv, **kwargs
 ) -> core.Bundle:
     """Read the contents of the a file into a `Bundle`.
 
@@ -77,12 +79,12 @@ def import_file(
     return core.Bundle(dfs={table_name: df})
 
 
-@op("Export to file")
+@op("Export to file", icon="file-filled")
 def export_to_file(
     bundle: core.Bundle,
     *,
     table_name: str,
-    filename: str,
+    filename: ops.PathStr,
     file_format: FileFormat = FileFormat.csv,
 ):
     """Exports a DataFrame to a file.
@@ -107,14 +109,14 @@ def export_to_file(
         raise ValueError(f"Unsupported file format: {file_format}")
 
 
-@op("Import Parquet")
-def import_parquet(*, filename: str):
+@op("Import Parquet", color="green", icon="file-filled")
+def import_parquet(*, filename: ops.PathStr):
     """Imports a Parquet file."""
     return pd.read_parquet(filename)
 
 
-@op("Import CSV", slow=True)
-def import_csv(*, filename: str, columns: str = "<from file>", separator: str = "<auto>"):
+@op("Import CSV", slow=True, color="green", icon="file-filled")
+def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
     return pd.read_csv(
         filename,
@@ -123,8 +125,8 @@ def import_csv(*, filename: str, columns: str = "<from file>", separator: str = 
     )
 
 
-@op("Import GraphML", slow=True)
-def import_graphml(*, filename: str):
+@op("Import GraphML", slow=True, color="green", icon="topology-star-3")
+def import_graphml(*, filename: ops.PathStr):
     """Imports a GraphML file."""
     files = fsspec.open_files(filename, compression="infer")
     for f in files:
@@ -141,19 +143,19 @@ def import_osm(*, location: str):
     return ox.graph.graph_from_place(location, network_type="drive")
 
 
-@op("Discard loop edges")
+@op("Discard loop edges", icon="filter-filled")
 def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
 
 
-@op("Discard parallel edges")
+@op("Discard parallel edges", icon="filter-filled")
 def discard_parallel_edges(graph: nx.Graph):
     return nx.DiGraph(graph)
 
 
-@op("SQL")
+@op("SQL", icon="database")
 def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
@@ -169,7 +171,7 @@ def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
-@op("Cypher")
+@op("Cypher", icon="topology-star-3")
 def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     """Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
@@ -179,7 +181,7 @@ def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
     return bundle
 
 
-@op("Sample graph")
+@op("Sample graph", icon="filter-filled")
 def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     """Takes a (preferably connected) subgraph."""
     sample = set()
@@ -195,7 +197,7 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
     return nx.Graph(graph.subgraph(sample))
 
 
-@op("Sample table")
+@op("Sample table", icon="filter-filled")
 def sample_table(b: core.Bundle, *, table_name: core.TableName = "meta", fraction: float = 0.1):
     b = b.copy()
     b.dfs[table_name] = b.dfs[table_name].sample(frac=fraction)
@@ -222,7 +224,7 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization")
+@op("Visualize graph", view="visualization", icon="eye", color="blue")
 def visualize_graph(
     graph: core.Bundle,
     *,
@@ -314,7 +316,7 @@ def visualize_graph(
     return v
 
 
-@op("View tables", view="table_view")
+@op("View tables", view="table_view", color="blue", icon="table-filled")
 def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
     _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
     return bundle.to_dict(limit=limit)
@@ -324,6 +326,7 @@ def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100
     "Organize",
     view="graph_creation_view",
     outputs=["output"],
+    icon="settings-filled",
 )
 def organize(bundles: list[core.Bundle], *, relations: str = ""):
     """Merge multiple inputs and construct graphs from the tables.

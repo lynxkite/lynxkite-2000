@@ -170,7 +170,7 @@ function RelationView({
 function NodeWithGraphCreationView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState({} as { [name: string]: boolean });
-  const display = props.data.display?.value;
+  const display = props.data.display;
   const tables = display?.dataframes || {};
   const singleTable = tables && Object.keys(tables).length === 1;
   const [relations, setRelations] = useState(relationsToDict(display?.relations) || {});
@@ -238,7 +238,7 @@ function NodeWithGraphCreationView(props: any) {
         <div className="graph-table-header">Node Tables</div>
         {display && [
           Object.entries(tables).map(([name, df]: [string, any]) => (
-            <React.Fragment key={name}>
+            <div className="graph-table" key={name}>
               {!singleTable && (
                 <div
                   key={`${name}-header`}
@@ -249,7 +249,7 @@ function NodeWithGraphCreationView(props: any) {
                 </div>
               )}
               {(singleTable || open[name]) && displayTable(name, df)}
-            </React.Fragment>
+            </div>
           )),
           Object.entries(display.others || {}).map(([name, o]) => (
             <>

@@ -1,34 +1,54 @@
 # This is the workspace configuration. Each individual package has its own pyproject.toml.
 [project]
 name = "lynxkite-workspace"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.12"
-dependencies = ["lynxkite-app", "lynxkite-core", "lynxkite-graph-analytics[gpu]", "lynxkite-pillow-example"]
+dependencies = [
+    "lynxkite-app",
+    "lynxkite-core",
+    "lynxkite-graph-analytics",
+    "lynxkite-mcp",
+    "lynxkite-pillow-example",
+]
 classifiers = ["Private :: Do Not Upload"]
 
 [tool.uv.sources]
 lynxkite-app = { workspace = true }
 lynxkite-core = { workspace = true }
 lynxkite-graph-analytics = { workspace = true }
+lynxkite-mcp = { workspace = true }
 lynxkite-pillow-example = { workspace = true }
+torch = { index = "pytorch" }
+
+[[tool.uv.index]]
+name = "pytorch"
+# Switch to this to disable CUDA dependencies.
+# url = "https://download.pytorch.org/whl/cpu"
+url = "https://pypi.org/simple"
+explicit = true
 
 [tool.uv.workspace]
 members = [
     "lynxkite-app",
     "lynxkite-core",
     "lynxkite-graph-analytics",
+    "lynxkite-mcp",
     "lynxkite-pillow-example",
 ]
 
 [dependency-groups]
 dev = [
     "deptry>=0.23.0",
+    "gradio>=5.50.0",
     "mkdocs-material>=9.6.15",
     "mkdocstrings[python]>=0.29.1",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "ty>=0.0.1a20",
+]
+gpu = [
+    "lynxkite-graph-analytics[gpu]",
 ]
 
 [tool.pytest.ini_options]

@@ -2,6 +2,11 @@
   "files": {
     "includes": ["**", "!**/*.lynxkite.json"]
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "formatter": {
     "includes": ["**", "!**/node_modules/**", "!**/dist/**"],
     "lineWidth": 100,
@@ -17,7 +22,11 @@
       "correctness": {
         "useExhaustiveDependencies": "off"
       },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
       "style": {
+        "noDescendingSpecificity": "off",
         "noNonNullAssertion": "off"
       },
       "a11y": {

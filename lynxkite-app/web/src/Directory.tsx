@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ReactElement, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
@@ -24,7 +24,7 @@ import { usePath } from "./common.ts";
 
 function EntryCreator(props: {
   label: string;
-  icon: JSX.Element;
+  icon: ReactElement;
   onCreate: (name: string) => void;
 }) {
   const [isCreating, setIsCreating] = useState(false);
@@ -128,7 +128,9 @@ export default function Directory() {
   }
   function newCodeFile(path: string, name: string) {
     const pathSlash = path ? `${encodePathSegments(path)}/` : "";
-    navigate(`/code/${pathSlash}${encodeURIComponent(name)}`, { replace: true });
+    navigate(`/code/${pathSlash}${encodeURIComponent(name)}`, {
+      replace: true,
+    });
   }
   async function newFolderIn(path: string, folderName: string) {
     const pathSlash = path ? `${path}/` : "";

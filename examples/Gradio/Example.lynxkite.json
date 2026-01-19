@@ -1,0 +1,165 @@
+{
+  "edges": [
+    {
+      "id": "Karate club graph 1 output Gradio DataFrame 1 bundle",
+      "source": "Karate club graph 1",
+      "sourceHandle": "output",
+      "target": "Gradio DataFrame 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "nodes": [
+    {
+      "data": {
+        "display": {
+          "backend": "/api/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio_example_1"
+        },
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Gradio example",
+          "inputs": [],
+          "name": "Gradio example",
+          "outputs": [],
+          "params": [],
+          "type": "gradio"
+        },
+        "op_id": "Gradio example",
+        "params": {},
+        "status": "done",
+        "title": "Gradio example"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 466.0,
+      "id": "Gradio example 1",
+      "position": {
+        "x": 420.3487119932432,
+        "y": -14.135874155405414
+      },
+      "type": "gradio",
+      "width": 475.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": [],
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Social"
+          ],
+          "color": "orange",
+          "doc": null,
+          "id": "NetworkX > Generators > Social > Karate club graph",
+          "inputs": [],
+          "name": "Karate club graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [],
+          "type": "basic"
+        },
+        "op_id": "NetworkX > Generators > Social > Karate club graph",
+        "params": {},
+        "status": "done",
+        "title": "Karate club graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Karate club graph 1",
+      "position": {
+        "x": 1457.0215816117916,
+        "y": 183.58356136741287
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": {
+          "backend": "/api/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio_DataFrame_1"
+        },
+        "error": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target",
+                  "weight"
+                ],
+                "key": "edges"
+              },
+              "nodes": {
+                "columns": [
+                  "club",
+                  "id"
+                ],
+                "key": "nodes"
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": null,
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "id": "Gradio DataFrame",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          ],
+          "name": "Gradio DataFrame",
+          "outputs": [],
+          "params": [],
+          "type": "gradio"
+        },
+        "op_id": "Gradio DataFrame",
+        "params": {},
+        "status": "done",
+        "title": "Gradio DataFrame"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 473.0,
+      "id": "Gradio DataFrame 1",
+      "position": {
+        "x": 1874.5111268036615,
+        "y": 52.54841790387843
+      },
+      "type": "gradio",
+      "width": 554.0
+    }
+  ],
+  "paused": false
+}

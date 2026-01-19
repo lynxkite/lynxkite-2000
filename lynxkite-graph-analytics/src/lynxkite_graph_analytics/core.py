@@ -4,6 +4,7 @@ import inspect
 import os
 import pathlib
 from lynxkite_core import ops, workspace
+from lynxkite_core.executors.one_by_one import mount_gradio
 import dataclasses
 import functools
 import networkx as nx
@@ -57,6 +58,19 @@ ColumnNameByTableName = typing.Annotated[
 rendered as a dropdown in the frontend, listing the columns of the DataFrame
 named by the "table_name" parameter. The column name is passed to the operation as a string."""
 
+TableColumn = typing.Annotated[
+    tuple[str, str],
+    {
+        "format": "double-dropdown",
+        "metadata_query1": "[].dataframes[].keys(@)[]",
+        "metadata_query2": "[].dataframes[].<first>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. TableColumn is
+rendered as a pair of dropdowns for selecting a table in the Bundle and a column inside of
+that table. Effectively "TableName" and "ColumnNameByTableName" combined.
+The selected table and column name is passed to the operation as a 2-tuple of strings."""
+
 
 @dataclasses.dataclass
 class RelationDefinition:
@@ -81,7 +95,7 @@ class RelationDefinition:
     target_table: str
     source_key: str
     target_key: str
-    name: str | None = None
+    name: str
 
 
 @dataclasses.dataclass
@@ -117,6 +131,7 @@ class Bundle:
             dfs={"edges": edges, "nodes": nodes},
             relations=[
                 RelationDefinition(
+                    name="edges",
                     df="edges",
                     source_column="source",
                     target_column="target",
@@ -259,7 +274,9 @@ class WorkspaceResult:
 
 
 @ops.register_executor(ENV)
-async def execute(ws: workspace.Workspace) -> WorkspaceResult:
+async def execute(
+    ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext | None = None
+) -> WorkspaceResult:
     catalog = ops.CATALOGS[ws.env]
     disambiguate_edges(ws)
     wsres = WorkspaceResult(outputs={}, services={})
@@ -279,7 +296,7 @@ async def execute(ws: workspace.Workspace) -> WorkspaceResult:
                 # All inputs for this node are ready, we can compute the output.
                 todo.remove(id)
                 progress = True
-                await _execute_node(node, ws, catalog, wsres)
+                await _execute_node(ctx, node, ws, catalog, wsres)
     return wsres
 
 
@@ -299,6 +316,7 @@ def _to_bundle(x):
 
 
 async def _execute_node(
+    ctx: workspace.WorkspaceExecutionContext | None,
     node: workspace.WorkspaceNode,
     ws: workspace.Workspace,
     catalog: ops.Catalog,
@@ -307,7 +325,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Operation not found in catalog")
+        node.publish_error("Unknown operation.")
         return
     node.publish_started()
     input_map = {}
@@ -387,6 +405,11 @@ async def _execute_node(
                 "dataframes": {"service": {"columns": ["markdown"], "data": [[markdown]]}}
             }
             result.output = None
+        elif node.type == "gradio" and result.output and ctx and ctx.app:
+            url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
+            await mount_gradio(ctx.app, result.output, url)
+            result.display = {"backend": urllib.parse.quote(url)}
+            result.output = None
         elif len(op.outputs) > 1:
             assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
             for k, v in result.output.items():
@@ -401,7 +424,7 @@ async def _execute_node(
     node.publish_result(result)
 
 
-def _get_metadata(x):
+def _get_metadata(x) -> dict:
     if hasattr(x, "metadata"):
         return x.metadata()
     return {}

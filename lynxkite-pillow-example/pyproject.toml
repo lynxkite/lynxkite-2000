@@ -1,6 +1,6 @@
 [project]
 name = "lynxkite-pillow-example"
-version = "0.1.0"
+version = "0.2.0"
 description = "An example LynxKite plugin that wraps some Pillow image processing features in LynxKite operations"
 requires-python = ">=3.11"
 dependencies = [
@@ -21,5 +21,5 @@ lynxkite-core = "lynxkite"
 pillow = "PIL"
 
 [build-system]
-requires = ["uv_build>=0.8.0,<0.9.0"]
+requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"

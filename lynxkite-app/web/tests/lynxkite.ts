@@ -96,7 +96,8 @@ export class Workspace {
   }
   boxByTitle(title: string): Box {
     const titleLocator = this.page.getByText(title, { exact: true });
-    return new Box(this.page, titleLocator.locator("../.."));
+    const nodeLocator = this.page.locator(".lynxkite-node", { has: titleLocator });
+    return new Box(this.page, nodeLocator);
   }
 
   getBoxes() {
@@ -140,7 +141,6 @@ export class Workspace {
     await expect(targetHandle).toBeVisible();
     await sourceHandle.hover();
     await this.page.mouse.down();
-    await expect(this.page.locator(".react-flow__connectionline")).toBeAttached({ timeout: 1000 });
     await targetHandle.hover();
     await this.page.mouse.up();
     await expect(

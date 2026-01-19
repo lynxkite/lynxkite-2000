@@ -1,6 +1,4 @@
 import jmespath from "jmespath";
-// @ts-expect-error
-import Help from "~icons/tabler/question-mark.jsx";
 import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
@@ -14,15 +12,11 @@ const MODEL_INFERENCE_INPUT_MAPPING =
 const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
-  const help = doc && (
-    <Tooltip doc={doc} width={200}>
-      <Help />
-    </Tooltip>
-  );
   return (
     <div className="param-name-row">
-      <span className="param-name bg-base-200">{name.replace(/_/g, " ")}</span>
-      {help}
+      <Tooltip doc={doc}>
+        <span className="param-name">{name.replace(/_/g, " ")}</span>
+      </Tooltip>
     </div>
   );
 }
@@ -69,16 +63,46 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <select
-        className="select select-bordered w-full"
+        className="select select-bordered appearance-none w-full"
         value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
-        {getDropDownValues(data, meta).map((option: string) => (
+        {getDropDownValues(data, meta?.type?.metadata_query).map((option: string) => (
           <option key={option} value={option}>
             {option}
           </option>
         ))}
       </select>
+    </label>
+  ) : meta?.type?.format === "double-dropdown" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <div className="double-dropdown">
+        <select
+          className="select select-bordered appearance-none double-dropdown-first"
+          value={value?.[0] ?? ""}
+          onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
+        >
+          {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select select-bordered appearance-none double-dropdown-second"
+          value={value?.[1] ?? ""}
+          onChange={(evt) => onChange([value?.[0], evt.currentTarget.value])}
+        >
+          {getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] }).map(
+            (option: string) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ),
+          )}
+        </select>
+      </div>
     </label>
   ) : meta?.type === "group" ? (
     <NodeGroupParameter meta={meta} data={data} setParam={setParam} />
@@ -86,7 +110,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
     <label className="param">
       <ParamName name={name} doc={doc} />
       <select
-        className="select select-bordered w-full"
+        className="select select-bordered appearance-none w-full"
         value={value || meta.type.enum[0]}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
@@ -132,15 +156,19 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   );
 }
 
-function getDropDownValues(data: any, meta: any): string[] {
-  const metadata = data.input_metadata?.value;
-  let query = meta?.type?.metadata_query;
+function getDropDownValues(
+  data: any,
+  query: string,
+  substitutions?: Record<string, string>,
+): string[] {
+  const metadata = data.input_metadata;
   if (!metadata || !query) {
     return [];
   }
   // Substitute parameters in the query.
-  for (const p in data.params) {
-    query = query.replace(`<${p}>`, data.params[p]);
+  const ss = { ...data.params, ...substitutions };
+  for (const k in ss) {
+    query = query.replace(`<${k}>`, ss[k]);
   }
   try {
     const res = ["", ...jmespath.search(metadata, query)];
