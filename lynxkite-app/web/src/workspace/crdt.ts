@@ -210,6 +210,8 @@ class CRDTConnection {
     }
     if (wsChanged) {
       this.updateState();
+    } else {
+      this.updateFEState();
     }
   };
   onFEEdgesChange = (changes: any[]) => {
@@ -229,6 +231,8 @@ class CRDTConnection {
     }
     if (wsChanged) {
       this.updateState();
+    } else {
+      this.updateFEState();
     }
   };
   getSnapshot = (): CRDTWorkspace => {
@@ -260,6 +264,15 @@ class CRDTConnection {
       feNodes: ws.nodes as Node[],
       feEdges: ws.edges as Edge[],
     };
+    this.notifyObservers();
+  };
+  updateFEState = () => {
+    this.state = {
+      ...this.state,
+    };
+    this.notifyObservers();
+  };
+  notifyObservers = () => {
     for (const observer of this.observers) {
       observer();
     }
