@@ -702,12 +702,6 @@ svg {
   height: 30px;
 }
 
-.react-flow__resize-control.line {
-  border-color: transparent !important;
-  width: 6px;
-  height: 6px;
-}
-
 .react-flow__arrowhead * {
   stroke: none;
   fill: black;
