@@ -138,6 +138,7 @@ def clean_input(ws_pyd):
         node.position.y = 0
         node.width = 0
         node.height = 0
+        node.__execution_delay = 0
         if node.model_extra:
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
@@ -246,7 +247,7 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     # rerunning the workspace for every keystroke.
     if name in delayed_executions:
         delayed_executions[name].cancel()
-    delay = min(
+    delay = max(
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
         for change in changes
     )
