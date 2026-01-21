@@ -45,32 +45,36 @@ def register_function(source_path, mod, func_node: ast.FunctionDef) -> ops.Op:
 
 
 def code_as_workspace(source_path: str):
-    with open(source_path, "r") as f:
+    with open(source_path, "r", encoding="utf-8") as f:
         source = f.read()
     tree = ast.parse(source, filename=source_path)
     mod = load_module(source_path)
-    fs = {}
+    function_nodes = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
-            fs[node.name] = node
+            function_nodes[node.name] = node
     ws = workspace.Workspace(env=ENV, path=source_path + ".lynxkite.json", paused=True)
     saved_values = {}
     box_x = {}
     box_y = {}
-    main = fs["main"]
+    assert "main" in function_nodes, "The source file must contain a main() function."
+    main = function_nodes["main"]
     assert len(main.args.args) == 0, "The main() function must not take any arguments."
     for s in main.body:
         src = ast.get_source_segment(source, s)
         error_msg = f"Unexpected statement on line {s.lineno}:\n\n  {src}\n\nThe main() function must only contain calls to other functions."
         save_as = None
         if isinstance(s, ast.Assign):
+            assert len(s.targets) == 1, error_msg
+            assert isinstance(s.targets[0], ast.Name), error_msg
             save_as = s.targets[0].id
         assert isinstance(s, ast.Assign | ast.Expr), error_msg
         s = s.value
         assert isinstance(s, ast.Call), error_msg
-        assert s.func.id in fs, error_msg
+        assert isinstance(s.func, ast.Name), error_msg
+        assert s.func.id in function_nodes, error_msg
         box_id = f"{s.func.id} on line {s.lineno}"
-        func = fs[s.func.id]
+        func = function_nodes[s.func.id]
         op = register_function(source_path, mod, func)
         func_args = [a.arg for a in func.args.args]
         kwargs = {}
@@ -78,14 +82,14 @@ def code_as_workspace(source_path: str):
         for arg_node, arg_name in zip(s.args, func_args):
             kwargs[arg_name] = arg_node
         for kw in s.keywords:
-            kwargs[kw.arg] = kw.value
+            if kw.arg:
+                kwargs[kw.arg] = kw.value
         params = {}
         x = 0
         lowest_input = None
         for arg_name, arg_value in kwargs.items():
             assert isinstance(arg_value, ast.Constant | ast.Name), error_msg
             if isinstance(arg_value, ast.Constant):
-                print(" param:", arg_name, arg_value.value)
                 params[arg_name] = arg_value.value
                 matches = [p for p in op.params if p.name == arg_name]
                 if not matches:
@@ -124,6 +128,4 @@ def code_as_workspace(source_path: str):
         if save_as:
             saved_values[save_as] = box_id
     ws.update_metadata()
-    print("loaded")
-    print(ws.model_dump_json())
     return ws
