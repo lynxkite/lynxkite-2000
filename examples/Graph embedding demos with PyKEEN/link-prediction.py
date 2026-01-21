@@ -7,7 +7,7 @@ import numpy as np
 op = ops.op_registration("LynxKite Graph Analytics")
 
 
-@op("Randomly sample table")
+@op("Randomly sample table", color="orange", icon="filter-filled")
 def random_sample(
     bundle: core.Bundle,
     *,
@@ -24,7 +24,7 @@ def random_sample(
     return bundle
 
 
-@op("Split temporal data into test/validation")
+@op("Split temporal data into test/validation", color="orange", icon="circle-half-2")
 def split_temporal_data(
     bundle: core.Bundle,
     *,

@@ -24,7 +24,7 @@ from pykeen.models import LiteralModel
 from pykeen.training import SLCWATrainingLoop, LCWATrainingLoop
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "Graph embedding and link prediction")
 
 
 PyKEENModelName = typing.Annotated[
@@ -101,7 +101,7 @@ class InductiveDataset(str, enum.Enum):
         return getattr(inductive, self.value)()
 
 
-@op("Import PyKEEN dataset")
+@op("Import PyKEEN dataset", color="green", icon="3d-scale")
 def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
     """Imports a dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
@@ -139,7 +139,7 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
     return bundle
 
 
-@op("Import inductive dataset")
+@op("Inductive setting", "Import inductive dataset", color="green", icon="affiliate-filled")
 def import_inductive_dataset(*, dataset: InductiveDataset = InductiveDataset.ILPC2022Small):
     """Imports an inductive dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
@@ -160,7 +160,7 @@ def import_inductive_dataset(*, dataset: InductiveDataset = InductiveDataset.ILP
     return bundle
 
 
-@op("Split inductive dataset")
+@op("Inductive setting", "Split inductive dataset", color="orange", icon="circle-half-2")
 def inductively_split_dataset(
     bundle: core.Bundle,
     *,
@@ -220,12 +220,15 @@ class PyKEENModelMixin(str):
     def to_class(
         self, triples_factory: TriplesFactory, loss_func: str, embedding_dim: int, seed: int = 42
     ) -> models.Model:
-        return getattr(models, self.value)(
+        model = getattr(models, self.value)(
             triples_factory=triples_factory,
             loss=loss_func,
             embedding_dim=embedding_dim,
             random_seed=seed,
         )
+        if torch.cuda.is_available():
+            model = model.to(torch.device("cuda"))
+        return model
 
 
 class PyKEENModel1D(PyKEENModelMixin, enum.Enum):
@@ -353,6 +356,8 @@ class PyKEENModelWrapper:
                 and literals_data is None
                 and inductive_inference is None
             ), "For transdutive models, only model_type must be provided"
+        if torch.cuda.is_available():
+            model = model.to(torch.device("cuda"))
         self.model = model
         self.loss = loss
         self.embedding_dim = embedding_dim
@@ -464,6 +469,8 @@ class PyKEENModelWrapper:
         if self.trained and model_state is not None:
             buffer = io.BytesIO(model_state)
             self.model.load_state(buffer)
+            if torch.cuda.is_available():
+                self.model = self.model.to(torch.device("cuda"))
 
     def __repr__(self):
         return f"PyKEENModelWrapper({self.model.__class__.__name__})"
@@ -521,7 +528,7 @@ class PyKEENSupportedLosses(str, enum.Enum):
         return self.value
 
 
-@op("Define PyKEEN model")
+@op("Define PyKEEN model", color="green", icon="file-3d")
 def define_pykeen_model(
     bundle: core.Bundle,
     *,
@@ -562,6 +569,8 @@ def define_pykeen_model(
 
 @op(
     "Define PyKEEN model with node attributes",
+    color="green",
+    icon="file-3d",
     params=[
         ops.ParameterGroup(
             name="combination_group",
@@ -696,7 +705,7 @@ class PyTorchAggregationFunctions(str, enum.Enum):
     torch.std
 
 
-@op("Define inductive PyKEEN model")
+@op("Inductive setting", "Define inductive PyKEEN model", color="green", icon="file-3d")
 def get_inductive_model(
     bundle: core.Bundle,
     *,
@@ -805,7 +814,7 @@ def prepare_triples(
     return triples
 
 
-@op("Train embedding model", slow=True)
+@op("Train embedding model", slow=True, color="purple", icon="barbell-filled")
 def train_embedding_model(
     bundle: core.Bundle,
     *,
@@ -907,7 +916,7 @@ def train_embedding_model(
     return bundle_copy
 
 
-@op("Train inductive model", slow=True)
+@op("Inductive setting", "Train inductive model", slow=True, color="purple", icon="barbell-filled")
 def train_inductive_pykeen_model(
     bundle: core.Bundle,
     *,
@@ -998,7 +1007,7 @@ def train_inductive_pykeen_model(
     return bundle_copy
 
 
-@op("View early stopping metric", view="visualization")
+@op("View early stopping metric", view="visualization", color="blue", icon="chart-line")
 def view_early_stopping(bundle: core.Bundle):
     metric = bundle.dfs["early_stopper_metric"].early_stopper_metric.tolist()
     v = {
@@ -1010,7 +1019,7 @@ def view_early_stopping(bundle: core.Bundle):
     return v
 
 
-@op("Triples prediction")
+@op("Triples prediction", color="yellow", icon="sparkles")
 def triple_predict(
     bundle: core.Bundle,
     *,
@@ -1034,16 +1043,19 @@ def triple_predict(
         original_repr = actual_model._get_entity_representations_from_inductive_mode(
             mode="validation"
         )
+        actual_model = actual_model.to(torch.device("cpu"))
         actual_model.replace_entity_representations_(
             mode="validation",
             representation=actual_model.create_entity_representation_for_new_triples(
                 triples_to_predict_tf
             ),
         )
+        if torch.cuda.is_available():
+            actual_model = actual_model.to(torch.device("cuda"))
 
     pred_df = (
         predict_triples(
-            model=model,
+            model=actual_model,
             triples_factory=triples_to_predict_tf,
             mode="validation" if inductive_setting else None,
         )
@@ -1065,7 +1077,7 @@ def triple_predict(
     return bundle
 
 
-@op("Target prediction")
+@op("Target prediction", color="yellow", icon="sparkles")
 def target_predict(
     bundle: core.Bundle,
     *,
@@ -1103,7 +1115,7 @@ def target_predict(
     return bundle
 
 
-@op("Full prediction", slow=True)
+@op("Full prediction", slow=True, color="yellow", icon="sparkles")
 def full_predict(
     bundle: core.Bundle,
     *,
@@ -1121,7 +1133,9 @@ def full_predict(
     model_wrapper: PyKEENModelWrapper = bundle.other.get(model_name)
     entity_to_id = model_wrapper.entity_to_id
     relation_to_id = model_wrapper.relation_to_id
-    pred = predict_all(model=model_wrapper, k=k, mode="validation" if inductive_setting else None)
+    pred = predict_all(
+        model=model_wrapper, batch_size=None, k=k, mode="validation" if inductive_setting else None
+    )
     pack = pred.process(
         factory=TriplesFactory(
             [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
@@ -1136,7 +1150,7 @@ def full_predict(
     return bundle
 
 
-@op("Extract embeddings from PyKEEN model")
+@op("Extract embeddings from PyKEEN model", color="orange", icon="database-export")
 def extract_from_pykeen(
     bundle: core.Bundle,
     *,
@@ -1182,7 +1196,7 @@ class EvaluatorTypes(str, enum.Enum):
         return getattr(evaluation, self.name.replace(" ", ""))()
 
 
-@op("Evaluate model", slow=True)
+@op("Evaluate model", slow=True, color="orange", icon="microscope-filled")
 def evaluate(
     bundle: core.Bundle,
     *,
@@ -1250,7 +1264,7 @@ def evaluate(
     return bundle
 
 
-@op("Evaluate inductive model")
+@op("Inductive setting", "Evaluate inductive model", color="orange", icon="microscope-filled")
 def eval_inductive_model(
     bundle: core.Bundle,
     *,

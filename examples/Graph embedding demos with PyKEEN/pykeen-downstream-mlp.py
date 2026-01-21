@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 op = ops.op_registration("LynxKite Graph Analytics")
 
 
-@op("Merge features with embeddings")
+@op("Merge features with embeddings", color="orange", icon="arrow-merge")
 def merge_feature_with_embedding(
     embeddings: core.Bundle,
     features: core.Bundle,
@@ -25,7 +25,7 @@ def merge_feature_with_embedding(
     return bundle
 
 
-@op("Generate positive and negative samples")
+@op("Generate positive and negative samples", color="orange", icon="filter-filled")
 def gen_pos_and_neg_sample(
     bundle: core.Bundle,
     *,
@@ -90,7 +90,7 @@ def gen_pos_and_neg_sample(
     return bundle
 
 
-@op("Model evaluation")
+@op("Model evaluation", color="orange", icon="microscope-filled")
 def model_eval_(
     bundle: core.Bundle,
     *,
@@ -124,7 +124,7 @@ def model_eval_(
     return metric_bundle
 
 
-@op("Permute and corrupt data")
+@op("Permute and corrupt data", color="orange", icon="filter-filled")
 def permute_and_corrupt_data(
     bundle: core.Bundle, *, table_name: core.TableName, permute: str, seed: int
 ):
@@ -152,7 +152,7 @@ def permute_and_corrupt_data(
     return bundle
 
 
-@op("Plot results", view="matplotlib")
+@op("Plot results", view="matplotlib", color="blue", icon="chart-bar")
 def plot_results(bundle: core.Bundle):
     # all tables in bundle.dfs will contain two columns metric and score, this function will plot the scores side-by-side for all metrics in a bar-graph
     # for example i have a metric with accuracy in 3 tables then i want one label 'accuracy' and 3 bars for the 3 different tables
