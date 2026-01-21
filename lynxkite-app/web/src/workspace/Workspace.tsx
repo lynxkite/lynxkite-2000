@@ -34,7 +34,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import { useCRDTWorkspace } from "./crdt.ts";
+import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
@@ -348,6 +348,7 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
+      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -360,6 +361,7 @@ function LynxKiteFlow() {
       if (node.position.y + PAD + node.height! > bottom)
         bottom = node.position.y + PAD + node.height!;
       if (node.position.x + PAD + node.width! > right) right = node.position.x + PAD + node.width!;
+      node.selected = false;
     }
     groupNode.position = {
       x: left,
@@ -369,13 +371,13 @@ function LynxKiteFlow() {
     groupNode.height = bottom - top;
     crdt.applyChange((conn) => {
       const wnodes = conn.ws.get("nodes");
-      wnodes.unshift([groupNode as WorkspaceNode]);
+      wnodes.unshift([nodeToYMap(groupNode)]);
       const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
       for (const node of wnodes) {
-        if (selectedNodeIds.has(node.id)) {
+        if (selectedNodeIds.has(node.get("id"))) {
           node.set("position", {
-            x: node.position.x - left,
-            y: node.position.y - top,
+            x: node.get("position").x - left,
+            y: node.get("position").y - top,
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");
@@ -402,6 +404,7 @@ function LynxKiteFlow() {
         });
         node.set("parentId", undefined);
         node.set("extent", undefined);
+        node.set("selected", true);
       }
       const groupIndices: number[] = wnodes
         .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
