@@ -183,6 +183,12 @@ class CRDTConnection {
           if (wdata.get("error") !== data.error) {
             wdata.set("error", data.error);
           }
+          if (node.get("width") !== ch.item.width) {
+            node.set("width", ch.item.width);
+          }
+          if (node.get("height") !== ch.item.height) {
+            node.set("height", ch.item.height);
+          }
           if (wdata.get("collapsed") !== data.collapsed) {
             wdata.set("collapsed", data.collapsed);
             // Update edge positions when node collapses/expands.
