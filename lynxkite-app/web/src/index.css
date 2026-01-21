@@ -701,6 +701,10 @@ svg {
   z-index: -10 !important;
 }
 
+.react-flow__pane {
+  user-select: none;
+}
+
 .selected .node-group,
 .selected .comment-view,
 .selected .lynxkite-node {
