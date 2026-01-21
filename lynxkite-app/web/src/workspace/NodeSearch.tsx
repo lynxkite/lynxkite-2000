@@ -1,9 +1,7 @@
 import Fuse from "fuse.js";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-// @ts-expect-error
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
-// @ts-expect-error
 import FolderIcon from "~icons/tabler/folder.jsx";
 import type { Op as OpsOp } from "../apiTypes.ts";
 

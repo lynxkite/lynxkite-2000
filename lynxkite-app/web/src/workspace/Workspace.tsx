@@ -14,7 +14,6 @@ import axios from "axios";
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
-// @ts-expect-error
 import Backspace from "~icons/tabler/backspace.jsx";
 // @ts-expect-error
 import UngroupIcon from "~icons/tabler/library-minus.jsx";
@@ -22,13 +21,11 @@ import UngroupIcon from "~icons/tabler/library-minus.jsx";
 import GroupIcon from "~icons/tabler/library-plus.jsx";
 // @ts-expect-error
 import Pause from "~icons/tabler/player-pause.jsx";
-// @ts-expect-error
 import Play from "~icons/tabler/player-play.jsx";
 // @ts-expect-error
 import Restart from "~icons/tabler/rotate-clockwise.jsx";
 // @ts-expect-error
 import Transfer from "~icons/tabler/transfer.jsx";
-// @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
