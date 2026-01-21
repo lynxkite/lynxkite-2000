@@ -11,20 +11,15 @@ import {
   type XYPosition,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import Backspace from "~icons/tabler/backspace.jsx";
-// @ts-expect-error
-import UngroupIcon from "~icons/tabler/library-minus.jsx";
-// @ts-expect-error
-import GroupIcon from "~icons/tabler/library-plus.jsx";
-// @ts-expect-error
+import LibraryMinus from "~icons/tabler/library-minus.jsx";
+import LibraryPlus from "~icons/tabler/library-plus.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
 import Play from "~icons/tabler/player-play.jsx";
-// @ts-expect-error
-import Restart from "~icons/tabler/rotate-clockwise.jsx";
-// @ts-expect-error
+import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
@@ -46,6 +41,18 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+
+// The workspace gets re-rendered on every frame when a node is moved.
+// Surprisingly, re-rendering the icons is very expensive in dev mode.
+// Memoizing them fixes it.
+const DeleteIcon = memo(Backspace);
+const GroupIcon = memo(LibraryPlus);
+const UngroupIcon = memo(LibraryMinus);
+const RestartIcon = memo(RotateClockwise);
+const PlayIcon = memo(Play);
+const PauseIcon = memo(Pause);
+const CloseIcon = memo(Close);
+const ChangeTypeIcon = memo(Transfer);
 
 export default function Workspace(props: any) {
   return (
@@ -453,24 +460,24 @@ function LynxKiteFlow() {
               disabled={selected.length === 0}
               onClick={deleteSelection}
             >
-              <Backspace />
+              <DeleteIcon />
             </button>
           </Tooltip>
           <Tooltip doc="Change selected box to a different box">
             <button className="btn btn-link" disabled={selected.length !== 1} onClick={changeBox}>
-              <Transfer />
+              <ChangeTypeIcon />
             </button>
           </Tooltip>
           <Tooltip
             doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
           >
             <button className="btn btn-link" onClick={() => crdt.setPausedState(!crdt.ws?.paused)}>
-              {crdt.ws.paused ? <Play /> : <Pause />}
+              {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">
             <button className="btn btn-link" onClick={executeWorkspace}>
-              <Restart />
+              <RestartIcon />
             </button>
           </Tooltip>
           <Tooltip doc="Close workspace">
@@ -482,7 +489,7 @@ function LynxKiteFlow() {
                 .join("/")}`}
               aria-label="close"
             >
-              <Close />
+              <CloseIcon />
             </Link>
           </Tooltip>
         </div>
