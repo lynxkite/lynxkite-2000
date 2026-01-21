@@ -248,20 +248,19 @@ class CRDTConnection {
     const ws = this.ws.toJSON() as WorkspaceType;
     if (!ws.nodes) return;
     if (!ws.edges) return;
-    const oldNodes = this.state?.feNodes || [];
-    const selection = new Set(oldNodes.filter((n) => n.selected).map((n) => n.id));
+    // Maintain ReactFlow properties on the nodes even as they pass through CRDT.
+    const oldNodes = Object.fromEntries(this.state?.feNodes.map((n) => [n.id, n]) || []);
+    const newNodes = [];
     for (const n of ws.nodes) {
       if (n.type !== "node_group") {
         n.dragHandle = ".drag-handle";
       }
-      if (selection.has(n.id)) {
-        n.selected = true;
-      }
+      newNodes.push({ ...oldNodes[n.id], ...n });
     }
     this.state = {
       ...this.state,
       ws,
-      feNodes: ws.nodes as Node[],
+      feNodes: newNodes as Node[],
       feEdges: ws.edges as Edge[],
     };
     this.notifyObservers();
