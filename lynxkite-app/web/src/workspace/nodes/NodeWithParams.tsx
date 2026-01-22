@@ -1,6 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
 import React from "react";
-// @ts-expect-error
 import Triangle from "~icons/tabler/triangle-inverted-filled.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 import NodeParameter, { type UpdateOptions } from "./NodeParameter";

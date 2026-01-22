@@ -1,4 +1,3 @@
-// @ts-expect-error
 import Close from "~icons/tabler/x.jsx";
 import type { WorkspaceNodeData } from "../../apiTypes";
 import NodeParameter from "./NodeParameter";

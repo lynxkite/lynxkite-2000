@@ -1,4 +1,3 @@
-// @ts-expect-error
 import WindowMaximize from "~icons/tabler/window-maximize.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 

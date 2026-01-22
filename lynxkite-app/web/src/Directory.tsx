@@ -2,21 +2,13 @@ import { type ReactElement, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
-// @ts-expect-error
 import File from "~icons/tabler/file";
-// @ts-expect-error
 import FilePlus from "~icons/tabler/file-plus";
-// @ts-expect-error
 import Folder from "~icons/tabler/folder";
-// @ts-expect-error
 import FolderPlus from "~icons/tabler/folder-plus";
-// @ts-expect-error
 import Home from "~icons/tabler/home";
-// @ts-expect-error
 import LayoutGrid from "~icons/tabler/layout-grid";
-// @ts-expect-error
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
-// @ts-expect-error
 import Trash from "~icons/tabler/trash";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import logo from "./assets/logo.png";
