@@ -27,6 +27,15 @@ def register_function(source_path, mod, func_node: ast.FunctionDef) -> ops.Op:
     if op_id in ops.CATALOGS[ENV]:
         return ops.CATALOGS[ENV][op_id]
     func = getattr(mod, func_node.name)
+    if func_node.name.startswith("plot"):
+        outputs = []
+        type = "image"
+        func = ops.matplotlib_to_image(func)
+        color = "blue"
+    else:
+        outputs = [ops.Output(name="output", type=typing.Any, position=ops.Position.RIGHT)]
+        type = "basic"
+        color = "green"
     op = ops.Op(
         func=func,
         doc=[func.__doc__ or ""],
@@ -34,9 +43,9 @@ def register_function(source_path, mod, func_node: ast.FunctionDef) -> ops.Op:
         categories=[source_path],
         params=[],
         inputs=[],
-        outputs=[ops.Output(name="output", type=typing.Any, position=ops.Position.RIGHT)],
-        type="basic",
-        color="orange",
+        outputs=outputs,
+        type=type,
+        color=color,
         icon="brand-python",
     )
     ops.CATALOGS[ENV][op_id] = op
@@ -100,6 +109,7 @@ def code_as_workspace(source_path: str):
                     )
             elif isinstance(arg_value, ast.Name):
                 assert arg_value.id in saved_values, error_msg
+                op.color = "orange" if op.color == "green" else op.color
                 matches = [i for i in op.inputs if i.name == arg_name]
                 if not matches:
                     op.inputs.append(

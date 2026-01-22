@@ -63,9 +63,7 @@ def match_pokemon(heroes_df, pokemon_df):
     heroes_df = heroes_df.copy()
     heroes_df["matched_pokemon"] = matches.apply(lambda x: x[0])
     pokemon_name_to_id = pokemon_df.set_index("name")["pokemon_id"].to_dict()
-    heroes_df["matched_pokemon_id"] = (
-        heroes_df["matched_pokemon"].str.lower().map(pokemon_name_to_id)
-    )
+    heroes_df["matched_pokemon_id"] = heroes_df["matched_pokemon"].map(pokemon_name_to_id)
     heroes_df["pokemon_similarity"] = matches.apply(lambda x: x[1])
     heroes_df = heroes_df.sort_values(by="pokemon_similarity", ascending=False)
     return heroes_df
@@ -81,12 +79,11 @@ def plot_top_matches(heroes_df, n):
         ["name", "matched_pokemon", "matched_pokemon_id", "pokemon_similarity"]
     ]
 
-    # Create image URLs
-    def pokemon_image_url(pokemon_id):
-        pokemon_id = str(pokemon_id).zfill(3)
-        return f"https://raw.githubusercontent.com/HybridShivam/Pokemon/refs/heads/master/assets/images/{pokemon_id}.png"
-
-    top["image_url"] = top["matched_pokemon_id"].apply(pokemon_image_url)
+    def pokemon_image(pokemon_id):
+        pokemon_id = str(pokemon_id % 1000).zfill(3)
+        url = f"https://raw.githubusercontent.com/HybridShivam/Pokemon/refs/heads/master/assets/images/{pokemon_id}.png"
+        response = requests.get(url)
+        return io.BytesIO(response.content)
 
     # --- Plot ---
     height = 0.9
@@ -99,8 +96,7 @@ def plot_top_matches(heroes_df, n):
     plt.ylim(-1, len(top))
 
     for i, row in enumerate(top.to_records()):
-        response = requests.get(row.image_url)
-        img = plt.imread(io.BytesIO(response.content))
+        img = plt.imread(pokemon_image(row.matched_pokemon_id))
         w = row.pokemon_similarity
         plt.imshow(
             img, extent=[w - 12, w - 2, i - height / 2, i + height / 2], aspect="auto", zorder=2
@@ -117,3 +113,7 @@ def main():
     heroes_df = match_pokemon(heroes_df, pokemon_df)
     plot_match_histogram(heroes_df)
     plot_top_matches(heroes_df, n=8)
+
+
+if __name__ == "__main__":
+    main()
