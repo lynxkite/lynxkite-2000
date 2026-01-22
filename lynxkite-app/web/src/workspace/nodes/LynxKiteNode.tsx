@@ -25,6 +25,7 @@ interface LynxKiteNodeProps {
   data: any;
   children: any;
   parentId?: string;
+  dragging?: boolean;
 }
 
 function paramSummary(data: WorkspaceNodeData): string {
@@ -222,7 +223,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={titleTooltip}>
+        <Tooltip doc={titleTooltip} disabled={props.dragging}>
           <div
             style={titleStyle}
             className={`title drag-handle ${data.status}`}

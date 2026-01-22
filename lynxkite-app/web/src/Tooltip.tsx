@@ -9,7 +9,12 @@ export default function Tooltip(props: any) {
       : String(props.doc);
   const html = renderToStaticMarkup(<Markdown>{md}</Markdown>);
   return (
-    <div data-tooltip-id="tooltip-global" data-tooltip-delay-show={1000} data-tooltip-html={html}>
+    <div
+      data-tooltip-id="tooltip-global"
+      data-tooltip-delay-show={1000}
+      data-tooltip-html={html}
+      data-tooltip-hidden={props.disabled}
+    >
       {props.children}
     </div>
   );
