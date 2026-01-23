@@ -2,13 +2,9 @@ import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/
 import Color from "colorjs.io";
 import React, { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-// @ts-expect-error
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
-// @ts-expect-error
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
-// @ts-expect-error
 import Dots from "~icons/tabler/dots.jsx";
-// @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
@@ -25,6 +21,7 @@ interface LynxKiteNodeProps {
   data: any;
   children: any;
   parentId?: string;
+  dragging?: boolean;
 }
 
 function paramSummary(data: WorkspaceNodeData): string {
@@ -222,7 +219,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={titleTooltip}>
+        <Tooltip doc={titleTooltip} disabled={props.dragging}>
           <div
             style={titleStyle}
             className={`title drag-handle ${data.status}`}

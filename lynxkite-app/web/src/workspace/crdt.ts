@@ -183,6 +183,12 @@ class CRDTConnection {
           if (wdata.get("error") !== data.error) {
             wdata.set("error", data.error);
           }
+          if (node.get("width") !== ch.item.width) {
+            node.set("width", ch.item.width);
+          }
+          if (node.get("height") !== ch.item.height) {
+            node.set("height", ch.item.height);
+          }
           if (wdata.get("collapsed") !== data.collapsed) {
             wdata.set("collapsed", data.collapsed);
             // Update edge positions when node collapses/expands.
@@ -248,20 +254,19 @@ class CRDTConnection {
     const ws = this.ws.toJSON() as WorkspaceType;
     if (!ws.nodes) return;
     if (!ws.edges) return;
-    const oldNodes = this.state?.feNodes || [];
-    const selection = new Set(oldNodes.filter((n) => n.selected).map((n) => n.id));
+    // Maintain ReactFlow properties on the nodes even as they pass through CRDT.
+    const oldNodes = Object.fromEntries(this.state?.feNodes.map((n) => [n.id, n]) || []);
+    const newNodes = [];
     for (const n of ws.nodes) {
       if (n.type !== "node_group") {
         n.dragHandle = ".drag-handle";
       }
-      if (selection.has(n.id)) {
-        n.selected = true;
-      }
+      newNodes.push({ ...oldNodes[n.id], ...n });
     }
     this.state = {
       ...this.state,
       ws,
-      feNodes: ws.nodes as Node[],
+      feNodes: newNodes as Node[],
       feEdges: ws.edges as Edge[],
     };
     this.notifyObservers();
