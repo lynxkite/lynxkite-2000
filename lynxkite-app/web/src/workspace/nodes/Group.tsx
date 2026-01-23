@@ -1,7 +1,6 @@
 import { NodeResizeControl, useReactFlow } from "@xyflow/react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-// @ts-expect-error
 import Palette from "~icons/tabler/palette-filled.jsx";
 import { COLORS } from "../../common.ts";
 import Tooltip from "../../Tooltip.tsx";
