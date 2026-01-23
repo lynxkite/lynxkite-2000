@@ -692,6 +692,16 @@ svg {
   border-width: 2px;
 }
 
+.react-flow {
+  --xy-resize-background-color: transparent;
+}
+
+.react-flow__resize-control.handle {
+  border-color: transparent !important;
+  width: 30px;
+  height: 30px;
+}
+
 .react-flow__arrowhead * {
   stroke: none;
   fill: black;
