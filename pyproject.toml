@@ -9,6 +9,7 @@ dependencies = [
     "lynxkite-graph-analytics",
     "lynxkite-mcp",
     "lynxkite-pillow-example",
+    "pandas-stubs>=2.3.3.260113",
 ]
 classifiers = ["Private :: Do Not Upload"]
 
@@ -45,7 +46,7 @@ dev = [
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
-    "ty==0.0.1a20",
+    "ty==0.0.13",
 ]
 gpu = [
     "lynxkite-graph-analytics[gpu]",

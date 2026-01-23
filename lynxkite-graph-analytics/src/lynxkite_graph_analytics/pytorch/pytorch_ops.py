@@ -69,9 +69,9 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name][[column_name]]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        t = torch.tensor(batch.values, dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -123,9 +123,9 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name][[column_name]]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        t = torch.tensor(batch.values, dtype=type.to_dtype())
         return t
 
     return from_bundle

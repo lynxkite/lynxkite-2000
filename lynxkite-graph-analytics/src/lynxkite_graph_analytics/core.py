@@ -123,7 +123,7 @@ class Bundle:
     def from_nx(cls, graph: nx.Graph):
         edges = nx.to_pandas_edgelist(graph)
         d = dict(graph.nodes(data=True))
-        nodes = pd.DataFrame(d.values(), index=d.keys())
+        nodes = pd.DataFrame(d.values(), index=list(d.keys()))
         nodes["id"] = nodes.index
         if "index" in nodes.columns:
             nodes.drop(columns=["index"], inplace=True)

@@ -28,7 +28,9 @@ EXECUTORS = {}
 
 typeof = type  # We have some arguments called "type".
 
-CACHE_WRAPPER = None  # Overwrite this to configure a caching mechanism.
+FunctionWrapper = typing.Callable[[typing.Callable], typing.Callable]
+# Overwrite this to configure a caching mechanism.
+CACHE_WRAPPER: FunctionWrapper | None = None
 
 
 def cached(func):
@@ -195,7 +197,9 @@ class Op(BaseConfig):
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(default=None)
+    id: str = pydantic.Field(
+        default=None
+    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
@@ -514,7 +518,8 @@ def load_catalogs(snapshot_name: str):
 
 
 # Generally the same as the data directory, but it can be overridden.
-user_script_root = pathlib.Path()
+# Set it to None to disable user script loading.
+user_script_root: pathlib.Path | None = pathlib.Path()
 
 
 def load_user_scripts(workspace: str):
