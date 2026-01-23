@@ -1,7 +1,6 @@
 import { NodeResizeControl, useReactFlow } from "@xyflow/react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 import Palette from "~icons/tabler/palette-filled.jsx";
 import { COLORS } from "../../common.ts";
 import Tooltip from "../../Tooltip.tsx";
@@ -76,9 +75,7 @@ export default function Group(props: any) {
           document.body,
         )}
 
-      <NodeResizeControl minWidth={100} minHeight={100}>
-        <ChevronDownRight className="node-resizer" />
-      </NodeResizeControl>
+      <NodeResizeControl />
     </div>
   );
 }

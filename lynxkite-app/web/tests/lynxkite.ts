@@ -79,7 +79,7 @@ export class Workspace {
   async selectBox(boxId: string) {
     const box = this.getBox(boxId);
     // Click on the resizer, so we don't click on any parameters by accident.
-    await box.locator(".react-flow__resize-control").click();
+    await box.locator(".react-flow__resize-control.handle").click();
     await expect(box).toHaveClass(/selected/);
   }
 
