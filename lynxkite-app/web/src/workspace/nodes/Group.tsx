@@ -76,11 +76,7 @@ export default function Group(props: any) {
           document.body,
         )}
 
-      <NodeResizeControl
-        minWidth={100}
-        minHeight={100}
-        style={{ background: "transparent", border: "none" }}
-      />
+      <NodeResizeControl />
     </div>
   );
 }
