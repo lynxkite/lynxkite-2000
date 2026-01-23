@@ -261,11 +261,11 @@
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 234.0,
       "id": "Output 1",
       "position": {
-        "x": 119.83887514325258,
-        "y": -453.23756095856885
+        "x": 108.18701117589333,
+        "y": -542.5685180416564
       },
       "type": "basic",
       "width": 200.0
