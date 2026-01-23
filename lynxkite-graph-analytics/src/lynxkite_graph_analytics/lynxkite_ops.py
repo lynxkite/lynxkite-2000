@@ -66,7 +66,7 @@ def import_file(
         names = pd.api.extensions.no_default if names == "<from file>" else names.split(",")
         sep = kwargs.get("separator", "<auto>")
         sep = pd.api.extensions.no_default if sep == "<auto>" else sep.replace("\\t", "\t")
-        df = pd.read_csv(file_path, names=names, sep=sep)
+        df = pd.read_csv(file_path, names=names, sep=sep)  # ty: ignore[invalid-argument-type]
     elif file_format == "json":
         with open(file_path, "r") as f:
             df = pd.read_json(f)
@@ -75,7 +75,7 @@ def import_file(
     elif file_format == "excel":
         df = pd.read_excel(file_path, sheet_name=kwargs.get("sheet_name", "Sheet1"))
     else:
-        df = ValueError(f"Unsupported file format: {file_format}")
+        raise ValueError(f"Unsupported file format: {file_format}")
     return core.Bundle(dfs={table_name: df})
 
 
@@ -118,11 +118,9 @@ def import_parquet(*, filename: ops.PathStr):
 @op("Import CSV", slow=True, color="green", icon="file-filled")
 def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator: str = "<auto>"):
     """Imports a CSV file."""
-    return pd.read_csv(
-        filename,
-        names=pd.api.extensions.no_default if columns == "<from file>" else columns.split(","),
-        sep=pd.api.extensions.no_default if separator == "<auto>" else separator,
-    )
+    names = pd.api.extensions.no_default if columns == "<from file>" else columns.split(",")
+    sep = pd.api.extensions.no_default if separator == "<auto>" else separator
+    return pd.read_csv(filename, names=names, sep=sep)  # ty: ignore[invalid-argument-type]
 
 
 @op("Import GraphML", slow=True, color="green", icon="topology-star-3")
@@ -215,12 +213,14 @@ def _map_color(value):
         ]
     else:
         cmap = matplotlib.cm.get_cmap("Paired")
-        categories = pd.Index(value.unique())
+        categories = {k: i for i, k in enumerate(value.unique())}
         assert isinstance(cmap, matplotlib.colors.ListedColormap)
-        colors = cmap.colors[: len(categories)]
+        colors = list(
+            cmap.colors[: len(categories)]  # ty: ignore[not-subscriptable, invalid-argument-type]
+        )
         return [
             "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-            for r, g, b in [colors[min(len(colors) - 1, categories.get_loc(v))] for v in value]
+            for r, g, b in [colors[min(len(colors) - 1, categories[v])] for v in value]
         ]
 
 
@@ -228,9 +228,9 @@ def _map_color(value):
 def visualize_graph(
     graph: core.Bundle,
     *,
-    color_nodes_by: core.NodePropertyName = None,
-    label_by: core.NodePropertyName = None,
-    color_edges_by: core.EdgePropertyName = None,
+    color_nodes_by: core.NodePropertyName | None = None,
+    label_by: core.NodePropertyName | None = None,
+    color_edges_by: core.EdgePropertyName | None = None,
 ):
     nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
@@ -260,9 +260,7 @@ def visualize_graph(
         pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
     nodes = nodes.to_records()
-    deduped_edges = graph.dfs["edges"].drop_duplicates(
-        ["source", "target"]
-    )  # ty: ignore[no-matching-overload] (https://github.com/astral-sh/ty/issues/1132)
+    deduped_edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
     edges = core.df_for_frontend(deduped_edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
@@ -339,8 +337,5 @@ def organize(bundles: list[core.Bundle], *, relations: str = ""):
         bundle.relations.extend(b.relations)
         bundle.other.update(b.other)
     if relations.strip():
-        bundle.relations = [
-            core.RelationDefinition(**r)  # ty: ignore[missing-argument]
-            for r in json.loads(relations).values()
-        ]
+        bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_dict(limit=100))

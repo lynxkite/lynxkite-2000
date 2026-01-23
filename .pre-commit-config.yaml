@@ -21,10 +21,9 @@ repos:
     - id: ty-check
       name: ty-check
       language: python
-      entry: bash -c "git ls-files -- '*.py' '*.ipynb' | xargs -d '\n' uv run ty check"
-      pass_filenames: false
-      args: [--python=.venv/]
-      additional_dependencies: [ty]
+      entry: uv run ty check
+      types: [python]
+      pass_filenames: true
 - repo: https://github.com/fpgmaas/deptry.git
   rev: "0.23.0"
   hooks:
