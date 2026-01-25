@@ -13,4 +13,4 @@ jobs:
       - name: Build
         run: uv build lynxkite
       - name: Publish
-        run: uv publish
+        run: uv publish lynxkite
