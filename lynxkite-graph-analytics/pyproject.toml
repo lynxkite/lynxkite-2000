@@ -24,7 +24,7 @@ dependencies = [
     "umap-learn>=0.5.9.post2",
     "pykeen>=1.11.1"
 ]
-classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+license = "AGPL-3.0-or-later"
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"

@@ -15,7 +15,7 @@ dependencies = [
     "sse-starlette>=2.2.1",
     "uvicorn>=0.35.0",
 ]
-classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+license = "AGPL-3.0-or-later"
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
