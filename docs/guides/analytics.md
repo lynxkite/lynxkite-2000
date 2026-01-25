@@ -3,7 +3,7 @@
 Install LynxKite with the graph analytics package:
 
 ```bash
-pip install lynxkite lynxkite-graph-analytics
+pip install lynxkite-app lynxkite-graph-analytics
 ```
 
 Run LynxKite in your data directory:
@@ -22,7 +22,7 @@ To run it on a different port, set the `PORT` environment variable (e.g., `PORT=
 To make full use of your GPU, install the `lynxkite-graph-analytics` package with GPU support.
 
 ```bash
-pip install lynxkite 'lynxkite-graph-analytics[gpu]'
+pip install lynxkite-app 'lynxkite-graph-analytics[gpu]'
 ```
 
 And start it with the cuGraph backend for NetworkX:
