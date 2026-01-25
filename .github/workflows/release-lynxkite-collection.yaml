@@ -11,6 +11,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Build
-        run: uv build lynxkite
+        run: cd lynxkite && uv build
       - name: Publish
-        run: uv publish lynxkite
+        run: cd lynxkite && uv publish
