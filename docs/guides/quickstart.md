@@ -2,7 +2,7 @@
 
 Install the LynxKite application with `pip`:
 ```bash
-pip install lynxkite
+pip install lynxkite-app
 ```
 
 To be able to do anything useful, you also need to install one or more LynxKite environments.
