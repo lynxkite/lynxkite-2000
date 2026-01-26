@@ -21,7 +21,7 @@ ops.save_catalogs("plugins loaded")
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 app.include_router(icons.router)
-app.add_middleware(GZipMiddleware)
+app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
 def _get_ops(env: str):
@@ -66,15 +66,15 @@ def _get_path_type(path: pathlib.Path) -> str:
 
 @app.get("/api/dir/list")
 def list_dir(path: str):
-    path = data_path / path
-    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
+    dir_path = data_path / path
+    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
     return sorted(
         [
             DirectoryEntry(
                 name=str(p.relative_to(data_path)),
                 type=_get_path_type(p),
             )
-            for p in path.iterdir()
+            for p in dir_path.iterdir()
             if not p.name.startswith(".")
         ],
         key=lambda x: (x.type != "directory", x.name.lower()),
@@ -117,7 +117,7 @@ async def upload(req: fastapi.Request):
     """Receives file uploads and stores them in DATA_PATH."""
     form = await req.form()
     for file in form.values():
-        if isinstance(file, str):
+        if not isinstance(file, fastapi.UploadFile) or not file.filename:
             continue
         file_path = data_path / "uploads" / file.filename
         assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
