@@ -145,7 +145,7 @@ class ModelConfig:
     loss: torch.nn.Module
     source_workspace_json: str
     optimizer_parameters: dict[str, typing.Any]
-    optimizer: torch.optim.Optimizer | None = None
+    optimizer: torch.optim.Optimizer = dataclasses.field(init=False)
     source_workspace: str | None = None
     trained: bool = False
 
@@ -488,8 +488,8 @@ class ModelBuilder:
         # Create optimizer.
         op = self.catalog["Optimizer"]
         cfg["optimizer_parameters"] = op.convert_params(self.nodes[self.optimizer].data.params)
-        cfg["source_workspace_json"] = self.ws.model_dump_json()
-        return ModelConfig(**cfg)  # ty: ignore[missing-argument]
+        cfg["source_workspace_json"] = self.ws.model_dump_json_sorted()
+        return ModelConfig(**cfg)
 
     def get_names_and_handlers(self, *ids: list[str]) -> tuple[dict[str, str], dict[str, ops.Op]]:
         """Returns a mapping from internal IDs to human readable names and the handlers for inputs."""
