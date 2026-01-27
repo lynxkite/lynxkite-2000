@@ -12,7 +12,6 @@ import pycrdt.store.file
 import uvicorn.protocols.utils
 import builtins
 from lynxkite_core import workspace, ops
-from .python_to_workspace import code_as_workspace
 
 router = fastapi.APIRouter()
 
@@ -216,10 +215,7 @@ def try_to_load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     if os.path.exists(name):
-        if name.endswith(".py"):
-            ws_pyd = code_as_workspace(name)
-        else:
-            ws_pyd = workspace.Workspace.load(name)
+        ws_pyd = workspace.Workspace.load(name)
         crdt_update(
             ws,
             ws_pyd.model_dump(),
