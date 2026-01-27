@@ -17,7 +17,6 @@ Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 lynxkite-core = { workspace = true }
 
 [tool.deptry.package_module_name_map]
-lynxkite-core = "lynxkite"
 pillow = "PIL"
 
 [build-system]
