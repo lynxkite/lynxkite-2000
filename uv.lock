@@ -1643,6 +1643,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "sse-starlette" },
     { name = "uvicorn" },
+    { name = "watchdog" },
 ]
 
 [package.dev-dependencies]
@@ -1662,6 +1663,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "sse-starlette", specifier = ">=2.2.1" },
     { name = "uvicorn", specifier = ">=0.35.0" },
+    { name = "watchdog", specifier = ">=6.0.0" },
 ]
 
 [package.metadata.requires-dev]

@@ -73,7 +73,7 @@ def plot_match_histogram(heroes_df):
     heroes_df.pokemon_similarity.plot.hist(bins=20)
 
 
-def plot_top_matches(heroes_df, n):
+def plot_top_matches(heroes_df, n: int):
     # Top n matches
     top = heroes_df.nlargest(n, "pokemon_similarity")[
         ["name", "matched_pokemon", "matched_pokemon_id", "pokemon_similarity"]
