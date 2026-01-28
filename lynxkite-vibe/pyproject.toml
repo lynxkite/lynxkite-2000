@@ -1,0 +1,18 @@
+[project]
+name = "lynxkite-vibe"
+version = "0.3.0"
+description = "An experimental tool for using LynxKite with AI-generated code."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "gradio>=5.50.0",
+    "lynxkite-core",
+    "openai>=2.15.0",
+]
+license = "AGPL-3.0-or-later"
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
+
+[tool.uv.sources]
+lynxkite-core = { workspace = true }
