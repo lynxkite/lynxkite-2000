@@ -1,12 +1,13 @@
 [project]
-name = "lynxkite-mcp"
+name = "lynxkite-vibe"
 version = "0.3.0"
-description = "A command-line tool and MCP server for running LynxKite workspaces."
+description = "An experimental tool for using LynxKite with AI-generated code."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "gradio>=5.50.0",
     "lynxkite-core",
-    "mcp>=1.20.0",
+    "openai>=2.15.0",
 ]
 license = "AGPL-3.0-or-later"
 
@@ -15,10 +16,3 @@ Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [tool.uv.sources]
 lynxkite-core = { workspace = true }
-
-[build-system]
-requires = ["uv_build>=0.9.6,<0.10.0"]
-build-backend = "uv_build"
-
-[project.scripts]
-lynxkite-mcp = "lynxkite_mcp.mcp_server:main"
