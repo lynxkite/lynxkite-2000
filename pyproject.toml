@@ -35,6 +35,7 @@ members = [
     "lynxkite-graph-analytics",
     "lynxkite-mcp",
     "lynxkite-pillow-example",
+    "lynxkite-vibe",
 ]
 
 [dependency-groups]

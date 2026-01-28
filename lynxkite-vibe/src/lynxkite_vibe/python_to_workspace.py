@@ -4,14 +4,12 @@ Convert a Python source file into a LynxKite workspace by extracting functions a
 
 import importlib.util
 import ast
+import os
 import typing
 from lynxkite_core import ops, workspace
-from lynxkite_core.executors import simple
 from watchdog import events, observers
 
-ENV = "Extracted from Python"
-simple.register(ENV)
-WATCHERS = {}
+ENV = "LynxKite Graph Analytics"
 
 
 def load_module(source_path):
@@ -23,22 +21,26 @@ def load_module(source_path):
     return mod
 
 
-def register_function(catalog: dict, source_path: str, mod, func_node: ast.FunctionDef) -> ops.Op:
-    op_id = f"{source_path} > {func_node.name}"
+def register_function(
+    catalog: dict, destination_path: str, mod, func_node: ast.FunctionDef
+) -> ops.Op:
+    category = destination_path.split("/")[-1]
+    name = func_node.name.replace("_", " ")
+    op_id = f"{category} > {name}"
     if op_id in catalog:
         return catalog[op_id]
     func = getattr(mod, func_node.name)
     op = ops.Op(
         func=func,
         doc=[func.__doc__ or ""],
-        name=func_node.name,
-        categories=[source_path],
+        name=name,
+        categories=[category],
         params=[],
         inputs=[],
         outputs=[ops.Output(name="output", type=typing.Any, position=ops.Position.RIGHT)],
-        type="basic",
-        color="orange",
-        icon="python",
+        type="matplotlib" if name.startswith("plot") else "basic",
+        color="blue" if name.startswith("plot") else "green",
+        icon="brand-python",
     )
     catalog[op_id] = op
     func.__op__ = op
@@ -46,9 +48,10 @@ def register_function(catalog: dict, source_path: str, mod, func_node: ast.Funct
 
 
 class CodeConverter:
-    def __init__(self, source_path: str):
+    def __init__(self, source_path: str, destination_path: str):
         self.source_path = source_path
-        self.read_file()
+        self.destination_path = destination_path
+        self.observer = None
 
     def read_file(self):
         with open(self.source_path, "r", encoding="utf-8") as f:
@@ -82,7 +85,7 @@ class CodeConverter:
             assert s.func.id in function_nodes, error_msg
             box_id = f"{s.func.id} on line {s.lineno}"
             func = function_nodes[s.func.id]
-            op = register_function(catalog, self.source_path, mod, func)
+            op = register_function(catalog, self.destination_path, mod, func)
             func_args = [a.arg for a in func.args.args]
             kwargs = {}
             assert len(s.args) <= len(func_args), error_msg
@@ -102,7 +105,9 @@ class CodeConverter:
                     if not matches:
                         op.params.append(
                             ops.Parameter(
-                                name=arg_name, type=type(arg_value.value), default=arg_value.value
+                                name=arg_name,
+                                type=type(arg_value.value),
+                                default=arg_value.value,
                             )
                         )
                 elif isinstance(arg_value, ast.Name):
@@ -111,7 +116,11 @@ class CodeConverter:
                     matches = [i for i in op.inputs if i.name == arg_name]
                     if not matches:
                         op.inputs.append(
-                            ops.Input(name=arg_name, type=typing.Any, position=ops.Position.LEFT)
+                            ops.Input(
+                                name=arg_name,
+                                type=typing.Any,
+                                position=ops.Position.LEFT,
+                            )
                         )
                     src = saved_values[arg_value.id]
                     x = max(x, box_x[src] + 1)
@@ -126,12 +135,12 @@ class CodeConverter:
             box_y[box_id] = y
             ws.add_node(
                 id=box_id,
-                title=func.name,
+                title=op.name,
                 op_id=op.id,
                 params=params,
-                width=300,
-                height=200,
-                position=workspace.Position(x=x * 400, y=y * 250),
+                width=400,
+                height=400,
+                position=workspace.Position(x=x * 500, y=y * 450),
             )
             if save_as:
                 saved_values[save_as] = box_id
@@ -140,13 +149,14 @@ class CodeConverter:
         self.catalog = catalog
 
     def save_converted_source(self):
-        env = "Extracted from Python"
-        category = self.source_path.split("/")[-1].replace("_", " ").replace(".py", "")
+        category = self.destination_path.split("/")[-1]
         tree = ast.parse(self.source_code, filename=self.source_path)
         already_imported = False
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
-                op_id = f"{self.source_path} > {node.name}"
+                category = self.destination_path.split("/")[-1]
+                name = node.name.replace("_", " ")
+                op_id = f"{category} > {name}"
                 if op_id in self.catalog:
                     op = self.catalog[op_id]
                     inputs = {inp.name for inp in op.inputs}
@@ -168,8 +178,12 @@ class CodeConverter:
                                 node.args.kw_defaults.append(None)
                     node.args.args = new_args
                     node.args.defaults = new_defaults
-                    name = op.name.replace("_", " ")
-                    decorator = ast.parse(f"op('{env}', '{category}', '{name}')").body[0]
+                    color = f", color='{op.color}'" if op.color != "orange" else ""
+                    icon = f", icon='{op.icon}'" if op.icon else ""
+                    view = ", view='matplotlib'" if op.type != "basic" else ""
+                    decorator = ast.parse(
+                        f"op('{ENV}', '{category}', '{op.name}'{color}{icon}{view})"
+                    ).body[0]
                     assert isinstance(decorator, ast.Expr)
                     node.decorator_list.append(decorator.value)
             elif isinstance(node, ast.ImportFrom):
@@ -183,20 +197,33 @@ class CodeConverter:
             import_op = ast.parse("from lynxkite_core.ops import op").body[0]
             tree.body.insert(0, import_op)
         # TODO: Keep formatting at least inside function bodies.
-        with open(self.source_path.replace(".py", "-converted.py"), "w") as f:
+        os.makedirs(self.destination_path, exist_ok=True)
+        with open(f"{self.destination_path}/boxes.py", "w") as f:
             f.write(ast.unparse(tree))
 
     def save_workspace(self):
-        self.ws.save(self.source_path.replace(".py", ".lynxkite.json"))
+        print(f"Saving workspace to {self.destination_path}/workspace.lynxkite.json")
+        os.makedirs(self.destination_path, exist_ok=True)
+        self.ws.save(f"{self.destination_path}/workspace.lynxkite.json")
 
-    def watch_source(self):
-        if self.source_path in WATCHERS:
+    def start(self):
+        if self.observer:
             return
+        if os.path.exists(self.source_path):
+            self.read_file()
+            self.save_workspace()
+            self.save_converted_source()
+        dir_path = os.path.dirname(self.source_path)
         event_handler = SourceChangeHandler(self)
         observer = observers.Observer()
-        WATCHERS[self.source_path] = observer
-        observer.schedule(event_handler, path=self.source_path, recursive=False)
+        observer.schedule(event_handler, path=dir_path, recursive=False)
         observer.start()
+        self.observer = observer
+
+    def __del__(self):
+        if self.observer:
+            self.observer.stop()
+            self.observer.join()
 
 
 class SourceChangeHandler(events.FileSystemEventHandler):
@@ -205,7 +232,6 @@ class SourceChangeHandler(events.FileSystemEventHandler):
 
     def on_modified(self, event):
         if event.src_path == self.converter.source_path:
-            print(f"Detected changes in {event.src_path}. Updating workspace...")
             self.converter.read_file()
             self.converter.save_workspace()
             self.converter.save_converted_source()
