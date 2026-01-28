@@ -1858,7 +1858,7 @@ requires-dist = [
 [[package]]
 name = "lynxkite-vibe"
 version = "0.3.0"
-source = { virtual = "lynxkite-vibe" }
+source = { editable = "lynxkite-vibe" }
 dependencies = [
     { name = "gradio" },
     { name = "lynxkite-core" },
@@ -1882,6 +1882,7 @@ dependencies = [
     { name = "lynxkite-graph-analytics" },
     { name = "lynxkite-mcp" },
     { name = "lynxkite-pillow-example" },
+    { name = "lynxkite-vibe" },
     { name = "pandas-stubs" },
 ]
 
@@ -1907,6 +1908,7 @@ requires-dist = [
     { name = "lynxkite-graph-analytics", editable = "lynxkite-graph-analytics" },
     { name = "lynxkite-mcp", editable = "lynxkite-mcp" },
     { name = "lynxkite-pillow-example", editable = "lynxkite-pillow-example" },
+    { name = "lynxkite-vibe", editable = "lynxkite-vibe" },
     { name = "pandas-stubs", specifier = ">=2.3.3.260113" },
 ]
 
