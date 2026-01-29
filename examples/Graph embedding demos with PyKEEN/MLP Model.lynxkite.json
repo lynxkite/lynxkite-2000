@@ -1,0 +1,1068 @@
+{
+  "edges": [
+    {
+      "id": "Linear 4 output Activation 4 x",
+      "source": "Linear 4",
+      "sourceHandle": "output",
+      "target": "Activation 4",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 4 output Linear 5 x",
+      "source": "Activation 4",
+      "sourceHandle": "output",
+      "target": "Linear 5",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Subtract 1 output Multiply 1 a",
+      "source": "Subtract 1",
+      "sourceHandle": "output",
+      "target": "Multiply 1",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Subtract 1 output Multiply 1 b",
+      "source": "Subtract 1",
+      "sourceHandle": "output",
+      "target": "Multiply 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Subtract 2 output Multiply 2 a",
+      "source": "Subtract 2",
+      "sourceHandle": "output",
+      "target": "Multiply 2",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Subtract 2 output Multiply 2 b",
+      "source": "Subtract 2",
+      "sourceHandle": "output",
+      "target": "Multiply 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add 2 output Concatenate 3 a",
+      "source": "Add 2",
+      "sourceHandle": "output",
+      "target": "Concatenate 3",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Multiply 3 output Concatenate 3 b",
+      "source": "Multiply 3",
+      "sourceHandle": "output",
+      "target": "Concatenate 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Concatenate 3 output Concatenate 4 a",
+      "source": "Concatenate 3",
+      "sourceHandle": "output",
+      "target": "Concatenate 4",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Multiply 1 output Concatenate 4 b",
+      "source": "Multiply 1",
+      "sourceHandle": "output",
+      "target": "Concatenate 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add 3 output Concatenate 6 a",
+      "source": "Add 3",
+      "sourceHandle": "output",
+      "target": "Concatenate 6",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Multiply 4 output Concatenate 6 b",
+      "source": "Multiply 4",
+      "sourceHandle": "output",
+      "target": "Concatenate 6",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Concatenate 6 output Concatenate 2 a",
+      "source": "Concatenate 6",
+      "sourceHandle": "output",
+      "target": "Concatenate 2",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Multiply 2 output Concatenate 2 b",
+      "source": "Multiply 2",
+      "sourceHandle": "output",
+      "target": "Concatenate 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 1 output Add 2 a",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "Add 2",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 2 output Add 2 b",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Add 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 1 output Multiply 3 a",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "Multiply 3",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 2 output Multiply 3 b",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Multiply 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 1 output Subtract 1 a",
+      "source": "Input: tensor 1",
+      "sourceHandle": "output",
+      "target": "Subtract 1",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 2 output Subtract 1 b",
+      "source": "Input: tensor 2",
+      "sourceHandle": "output",
+      "target": "Subtract 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 4 output Add 3 a",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Add 3",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 4 output Multiply 4 a",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Multiply 4",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 4 output Subtract 2 a",
+      "source": "Input: tensor 4",
+      "sourceHandle": "output",
+      "target": "Subtract 2",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Input: tensor 5 output Add 3 b",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "Add 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 5 output Multiply 4 b",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "Multiply 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 5 output Subtract 2 b",
+      "source": "Input: tensor 5",
+      "sourceHandle": "output",
+      "target": "Subtract 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Input: tensor 3 output Binary cross-entropy with logits loss 1 y",
+      "source": "Input: tensor 3",
+      "sourceHandle": "output",
+      "target": "Binary cross-entropy with logits loss 1",
+      "targetHandle": "y"
+    },
+    {
+      "id": "Binary cross-entropy with logits loss 1 loss Optimizer 1 loss",
+      "source": "Binary cross-entropy with logits loss 1",
+      "sourceHandle": "loss",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Output 1 x Binary cross-entropy with logits loss 1 x",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "Binary cross-entropy with logits loss 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 3 output Activation 3 x",
+      "source": "Linear 3",
+      "sourceHandle": "output",
+      "target": "Activation 3",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Concatenate 4 output Concatenate 1 a",
+      "source": "Concatenate 4",
+      "sourceHandle": "output",
+      "target": "Concatenate 1",
+      "targetHandle": "a"
+    },
+    {
+      "id": "Concatenate 2 output Concatenate 1 b",
+      "source": "Concatenate 2",
+      "sourceHandle": "output",
+      "target": "Concatenate 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Activation 3 output Dropout 2 x",
+      "source": "Activation 3",
+      "sourceHandle": "output",
+      "target": "Dropout 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Dropout 2 output Linear 4 x",
+      "source": "Dropout 2",
+      "sourceHandle": "output",
+      "target": "Linear 4",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 5 output Output 1 x",
+      "source": "Linear 5",
+      "sourceHandle": "output",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 1 output Activation 1 x",
+      "source": "Linear 1",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Dropout 1 output Linear 3 x",
+      "source": "Dropout 1",
+      "sourceHandle": "output",
+      "target": "Linear 3",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 1 output Dropout 1 x",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Dropout 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Concatenate 1 output Linear 2 x",
+      "source": "Concatenate 1",
+      "sourceHandle": "output",
+      "target": "Linear 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 2 output Activation 2 x",
+      "source": "Linear 2",
+      "sourceHandle": "output",
+      "target": "Activation 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 2 output Dropout 3 x",
+      "source": "Activation 2",
+      "sourceHandle": "output",
+      "target": "Dropout 3",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Dropout 3 output Linear 1 x",
+      "source": "Dropout 3",
+      "sourceHandle": "output",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    }
+  ],
+  "env": "PyTorch model",
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "params": {
+          "name": "product1_embedding",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 219.0,
+      "id": "Input: tensor 1",
+      "position": {
+        "x": -969.3706591268473,
+        "y": 1562.3962501475567
+      },
+      "type": "basic",
+      "width": 236.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Optimizer",
+        "params": {
+          "lr": "0.0005",
+          "type": "AdamW"
+        },
+        "status": "done",
+        "title": "Optimizer"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 236.0,
+      "id": "Optimizer 1",
+      "position": {
+        "x": 1139.3898731338832,
+        "y": -1313.9873443471338
+      },
+      "type": "basic",
+      "width": 240.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "64"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Linear 3",
+      "position": {
+        "x": 506.2586730047117,
+        "y": 455.269129598022
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Activation",
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 3",
+      "position": {
+        "x": 513.5620292371923,
+        "y": 172.04081475224737
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "32"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Linear 4",
+      "position": {
+        "x": 844.4767401502626,
+        "y": 454.82232519437264
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Activation",
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Activation 4",
+      "position": {
+        "x": 839.637073002496,
+        "y": 170.36965406655878
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "1"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Linear 5",
+      "position": {
+        "x": 840.7154233583174,
+        "y": -316.2520109487639
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "params": {
+          "name": "label",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 221.0,
+      "id": "Input: tensor 3",
+      "position": {
+        "x": 1503.8786881292813,
+        "y": -787.6905698776184
+      },
+      "type": "basic",
+      "width": 286.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "params": {
+          "name": "product2_embedding",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 210.0,
+      "id": "Input: tensor 2",
+      "position": {
+        "x": -552.5067662725078,
+        "y": 1532.0915032329299
+      },
+      "type": "basic",
+      "width": 241.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "params": {
+          "name": "product1_features",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 218.0,
+      "id": "Input: tensor 4",
+      "parentId": null,
+      "position": {
+        "x": 85.45903370798584,
+        "y": 1537.572785025275
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 233.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 87.0,
+      "id": "Concatenate 2",
+      "position": {
+        "x": 306.3284461838001,
+        "y": 1004.4188234031872
+      },
+      "type": "basic",
+      "width": 203.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "params": {
+          "name": "product2_features",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Input: tensor"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 239.0,
+      "id": "Input: tensor 5",
+      "position": {
+        "x": 507.62788060072376,
+        "y": 1542.9047727445845
+      },
+      "type": "basic",
+      "width": 209.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Add",
+        "params": {},
+        "status": "done",
+        "title": "Add"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 63.0,
+      "id": "Add 2",
+      "position": {
+        "x": -990.2317867636024,
+        "y": 1309.8372436819193
+      },
+      "type": "basic",
+      "width": 193.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Add",
+        "params": {},
+        "status": "done",
+        "title": "Add"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 77.0,
+      "id": "Add 3",
+      "position": {
+        "x": -9.163104691206186,
+        "y": 1297.836433899262
+      },
+      "type": "basic",
+      "width": 203.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Subtract",
+        "params": {},
+        "status": "done",
+        "title": "Subtract"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 71.0,
+      "id": "Subtract 1",
+      "position": {
+        "x": -461.87776942650004,
+        "y": 1302.4568233493244
+      },
+      "type": "basic",
+      "width": 192.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Multiply",
+        "params": {},
+        "status": "done",
+        "title": "Multiply"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 77.0,
+      "id": "Multiply 1",
+      "position": {
+        "x": -466.9988291742298,
+        "y": 1145.8081987993196
+      },
+      "type": "basic",
+      "width": 203.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Subtract",
+        "params": {},
+        "status": "done",
+        "title": "Subtract"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 72.0,
+      "id": "Subtract 2",
+      "position": {
+        "x": 536.2446531579872,
+        "y": 1292.4631069780155
+      },
+      "type": "basic",
+      "width": 201.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Multiply",
+        "params": {},
+        "status": "done",
+        "title": "Multiply"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 87.0,
+      "id": "Multiply 2",
+      "position": {
+        "x": 497.3948006570892,
+        "y": 1129.5684096959426
+      },
+      "type": "basic",
+      "width": 243.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Multiply",
+        "params": {},
+        "status": "done",
+        "title": "Multiply"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 80.0,
+      "id": "Multiply 3",
+      "position": {
+        "x": -712.9698932556386,
+        "y": 1303.706037895738
+      },
+      "type": "basic",
+      "width": 196.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Multiply",
+        "params": {},
+        "status": "done",
+        "title": "Multiply"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 56.0,
+      "id": "Multiply 4",
+      "position": {
+        "x": 261.41745294698836,
+        "y": 1294.9615360708428
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 80.0,
+      "id": "Concatenate 3",
+      "position": {
+        "x": -859.2521967481083,
+        "y": 1138.312911520838
+      },
+      "type": "basic",
+      "width": 209.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 77.0,
+      "id": "Concatenate 4",
+      "position": {
+        "x": -685.4948547403684,
+        "y": 983.3708919334857
+      },
+      "type": "basic",
+      "width": 201.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 68.0,
+      "id": "Concatenate 6",
+      "position": {
+        "x": 124.67811806198557,
+        "y": 1146.5095844772138
+      },
+      "type": "basic",
+      "width": 206.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Concatenate",
+        "params": {},
+        "status": "done",
+        "title": "Concatenate"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 62.0,
+      "id": "Concatenate 1",
+      "position": {
+        "x": -202.78197200983328,
+        "y": 778.2717262565789
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Binary cross-entropy with logits loss",
+        "params": {},
+        "status": "done",
+        "title": "Binary cross-entropy with logits loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 111.0,
+      "id": "Binary cross-entropy with logits loss 1",
+      "position": {
+        "x": 1136.1716553901779,
+        "y": -987.992928584029
+      },
+      "type": "basic",
+      "width": 248.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Output",
+        "params": {
+          "name": "logit",
+          "type": "float"
+        },
+        "status": "done",
+        "title": "Output"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 232.0,
+      "id": "Output 1",
+      "position": {
+        "x": 708.7139125764863,
+        "y": -797.2888516416006
+      },
+      "type": "basic",
+      "width": 232.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Dropout",
+        "params": {
+          "p": "0.1"
+        },
+        "status": "done",
+        "title": "Dropout"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 200.0,
+      "id": "Dropout 2",
+      "position": {
+        "x": 515.8064955825809,
+        "y": -128.01648226762904
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "128"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "height": 200.0,
+      "id": "Linear 1",
+      "position": {
+        "x": 198.60097102595543,
+        "y": 447.9539831894246
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Activation",
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "height": 200.0,
+      "id": "Activation 1",
+      "position": {
+        "x": 200.219201683363,
+        "y": 172.85477143013136
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Dropout",
+        "params": {
+          "p": "0.1"
+        },
+        "status": "done",
+        "title": "Dropout"
+      },
+      "height": 200.0,
+      "id": "Dropout 1",
+      "position": {
+        "x": 208.31035497040108,
+        "y": -129.75436150509114
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Linear",
+        "params": {
+          "output_dim": "256"
+        },
+        "status": "done",
+        "title": "Linear"
+      },
+      "height": 200.0,
+      "id": "Linear 2",
+      "position": {
+        "x": -194.62907872409306,
+        "y": 451.1904445042398
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Activation",
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "title": "Activation"
+      },
+      "height": 200.0,
+      "id": "Activation 2",
+      "position": {
+        "x": -191.39261740927785,
+        "y": 143.7266195967944
+      },
+      "type": "basic",
+      "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "display": null,
+        "error": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Dropout",
+        "params": {
+          "p": "0.1"
+        },
+        "status": "done",
+        "title": "Dropout"
+      },
+      "height": 200.0,
+      "id": "Dropout 3",
+      "position": {
+        "x": -189.77438675187022,
+        "y": -139.46374544953676
+      },
+      "type": "basic",
+      "width": 200.0
+    }
+  ],
+  "paused": false
+}

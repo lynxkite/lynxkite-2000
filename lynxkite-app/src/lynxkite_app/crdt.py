@@ -4,6 +4,7 @@ import asyncio
 import contextlib
 import enum
 import pathlib
+from typing import Any
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -34,7 +35,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
         assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
-        ystore = pycrdt.store.file.FileYStore(path)
+        ystore = pycrdt.store.file.FileYStore(str(path))
         ydoc = pycrdt.Doc()
         ydoc["workspace"] = ws = pycrdt.Map()
         # Replay updates from the store.
@@ -91,7 +92,7 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         crdt_path = pathlib.Path(".crdt")
         path = crdt_path / f"{name}.crdt"
         assert path.is_relative_to(crdt_path), f"Path '{path}' is invalid"
-        ystore = pycrdt.store.file.FileYStore(path)
+        ystore = pycrdt.store.file.FileYStore(str(path))
         ydoc = pycrdt.Doc()
         ydoc["text"] = text = pycrdt.Text()
         # Replay updates from the store.
@@ -138,13 +139,14 @@ def clean_input(ws_pyd):
         node.position.y = 0
         node.width = 0
         node.height = 0
+        node.__execution_delay = 0
         if node.model_extra:
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
 
 
 def crdt_update(
-    crdt_obj: pycrdt.Map | pycrdt.Array,
+    crdt_obj: pycrdt.Map[Any] | pycrdt.Array[Any],
     python_obj: dict | list,
     non_collaborative_fields: set[str] = set(),
 ):
@@ -188,19 +190,19 @@ def crdt_update(
         for i, value in enumerate(python_obj):
             if isinstance(value, dict):
                 if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Map())
+                    crdt_obj.append(pycrdt.Map())  # ty: ignore[invalid-argument-type]
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             elif isinstance(value, list):
                 if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Array())
+                    crdt_obj.append(pycrdt.Array())  # ty: ignore[invalid-argument-type]
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             else:
                 if isinstance(value, enum.Enum):
                     value = str(value.value)
                 if i >= len(crdt_obj):
-                    crdt_obj.append(value)
+                    crdt_obj.append(value)  # ty: ignore[invalid-argument-type]
                 else:
-                    crdt_obj[i] = value
+                    crdt_obj[i] = value  # ty: ignore[invalid-assignment]
     else:
         raise ValueError("Invalid type:", python_obj)
 
@@ -246,7 +248,7 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     # rerunning the workspace for every keystroke.
     if name in delayed_executions:
         delayed_executions[name].cancel()
-    delay = min(
+    delay = max(
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
         for change in changes
     )

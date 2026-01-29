@@ -62,6 +62,10 @@ svg {
         font-size: 1.5em;
         padding: 0 10px;
       }
+
+      .btn:disabled {
+        opacity: 0.3;
+      }
     }
   }
 
@@ -187,8 +191,6 @@ svg {
       flex: none;
       width: 35px;
       height: 35px;
-      border-radius: 7px;
-      background-color: oklch(75% 0.2 55);
       padding: 5px;
       color: white;
     }
@@ -341,15 +343,23 @@ svg {
     }
   }
 
-  .node-search {
+  .node-search-panel {
     position: fixed;
     width: 300px;
     z-index: 5;
-    padding: 4px;
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
     max-height: stretch;
+
+    .matches {
+      overflow-y: auto;
+    }
+  }
+
+  .node-search {
+    padding: 8px;
+    background-color: white;
     display: flex;
     flex-direction: column;
 
@@ -359,7 +369,6 @@ svg {
       padding: 8px;
       border-radius: 4px;
       border: 1px solid #eee;
-      margin: 4px;
     }
 
     .search-result {
@@ -386,10 +395,6 @@ svg {
     .search-result.selected {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
-    }
-
-    .matches {
-      overflow-y: auto;
     }
   }
 
@@ -687,6 +692,16 @@ svg {
   border-width: 2px;
 }
 
+.react-flow {
+  --xy-resize-background-color: transparent;
+}
+
+.react-flow__resize-control.handle {
+  border-color: transparent !important;
+  width: 30px;
+  height: 30px;
+}
+
 .react-flow__arrowhead * {
   stroke: none;
   fill: black;
@@ -694,6 +709,10 @@ svg {
 
 .react-flow__node-area {
   z-index: -10 !important;
+}
+
+.react-flow__pane {
+  user-select: none;
 }
 
 .selected .node-group,

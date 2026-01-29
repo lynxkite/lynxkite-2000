@@ -1,7 +1,6 @@
 import { useReactFlow } from "@xyflow/react";
 import React, { type FormEventHandler, useState } from "react";
 import Markdown from "react-markdown";
-// @ts-expect-error
 import Trash from "~icons/tabler/trash";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";

@@ -11,28 +11,22 @@ import {
   type XYPosition,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
-// @ts-expect-error
 import Backspace from "~icons/tabler/backspace.jsx";
-// @ts-expect-error
-import UngroupIcon from "~icons/tabler/library-minus.jsx";
-// @ts-expect-error
-import GroupIcon from "~icons/tabler/library-plus.jsx";
-// @ts-expect-error
+import LibraryMinus from "~icons/tabler/library-minus.jsx";
+import LibraryPlus from "~icons/tabler/library-plus.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
-// @ts-expect-error
 import Play from "~icons/tabler/player-play.jsx";
-// @ts-expect-error
-import Restart from "~icons/tabler/rotate-clockwise.jsx";
-// @ts-expect-error
+import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
+import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import { useCRDTWorkspace } from "./crdt.ts";
+import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
@@ -47,6 +41,18 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+
+// The workspace gets re-rendered on every frame when a node is moved.
+// Surprisingly, re-rendering the icons is very expensive in dev mode.
+// Memoizing them fixes it.
+const DeleteIcon = memo(Backspace);
+const GroupIcon = memo(LibraryPlus);
+const UngroupIcon = memo(LibraryMinus);
+const RestartIcon = memo(RotateClockwise);
+const PlayIcon = memo(Play);
+const PauseIcon = memo(Pause);
+const CloseIcon = memo(Close);
+const ChangeTypeIcon = memo(Transfer);
 
 export default function Workspace(props: any) {
   return (
@@ -333,6 +339,10 @@ function LynxKiteFlow() {
     const selectedEdges = edges.filter((e) => e.selected);
     reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
   }
+  function changeBox() {
+    const [selectedNode] = nodes.filter((n) => n.selected);
+    reactFlow.updateNodeData(selectedNode.id, { op_id: "" });
+  }
   function groupSelection() {
     const selectedNodes = nodes.filter((n) => n.selected && !n.parentId);
     const groupNode = {
@@ -342,6 +352,7 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
+      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -354,6 +365,7 @@ function LynxKiteFlow() {
       if (node.position.y + PAD + node.height! > bottom)
         bottom = node.position.y + PAD + node.height!;
       if (node.position.x + PAD + node.width! > right) right = node.position.x + PAD + node.width!;
+      node.selected = false;
     }
     groupNode.position = {
       x: left,
@@ -363,13 +375,13 @@ function LynxKiteFlow() {
     groupNode.height = bottom - top;
     crdt.applyChange((conn) => {
       const wnodes = conn.ws.get("nodes");
-      wnodes.unshift([groupNode as WorkspaceNode]);
+      wnodes.unshift([nodeToYMap(groupNode)]);
       const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
       for (const node of wnodes) {
-        if (selectedNodeIds.has(node.id)) {
+        if (selectedNodeIds.has(node.get("id"))) {
           node.set("position", {
-            x: node.position.x - left,
-            y: node.position.y - top,
+            x: node.get("position").x - left,
+            y: node.get("position").y - top,
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");
@@ -396,6 +408,7 @@ function LynxKiteFlow() {
         });
         node.set("parentId", undefined);
         node.set("extent", undefined);
+        node.set("selected", true);
       }
       const groupIndices: number[] = wnodes
         .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
@@ -407,7 +420,7 @@ function LynxKiteFlow() {
       }
     });
   }
-  const areMultipleNodesSelected = nodes.filter((n) => n.selected).length > 1;
+  const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
   return (
     <div className="workspace">
@@ -423,35 +436,48 @@ function LynxKiteFlow() {
           onChange={crdt.setEnv}
         />
         <div className="tools text-secondary">
-          {areMultipleNodesSelected && (
-            <Tooltip doc="Group selected nodes">
-              <button className="btn btn-link" onClick={groupSelection}>
-                <GroupIcon />
-              </button>
-            </Tooltip>
-          )}
-          {isAnyGroupSelected && (
-            <Tooltip doc="Ungroup selected nodes">
-              <button className="btn btn-link" onClick={ungroupSelection}>
-                <UngroupIcon />
-              </button>
-            </Tooltip>
-          )}
+          <Tooltip doc="Group selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={selected.length < 2}
+              onClick={groupSelection}
+            >
+              <GroupIcon />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Ungroup selected nodes">
+            <button
+              className="btn btn-link"
+              disabled={!isAnyGroupSelected}
+              onClick={ungroupSelection}
+            >
+              <UngroupIcon />
+            </button>
+          </Tooltip>
           <Tooltip doc="Delete selected nodes and edges">
-            <button className="btn btn-link" onClick={deleteSelection}>
-              <Backspace />
+            <button
+              className="btn btn-link"
+              disabled={selected.length === 0}
+              onClick={deleteSelection}
+            >
+              <DeleteIcon />
+            </button>
+          </Tooltip>
+          <Tooltip doc="Change selected box to a different box">
+            <button className="btn btn-link" disabled={selected.length !== 1} onClick={changeBox}>
+              <ChangeTypeIcon />
             </button>
           </Tooltip>
           <Tooltip
             doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
           >
             <button className="btn btn-link" onClick={() => crdt.setPausedState(!crdt.ws?.paused)}>
-              {crdt.ws.paused ? <Play /> : <Pause />}
+              {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
             </button>
           </Tooltip>
           <Tooltip doc="Re-run the workspace">
             <button className="btn btn-link" onClick={executeWorkspace}>
-              <Restart />
+              <RestartIcon />
             </button>
           </Tooltip>
           <Tooltip doc="Close workspace">
@@ -463,7 +489,7 @@ function LynxKiteFlow() {
                 .join("/")}`}
               aria-label="close"
             >
-              <Close />
+              <CloseIcon />
             </Link>
           </Tooltip>
         </div>
@@ -521,7 +547,7 @@ function LynxKiteFlow() {
                 pos={nodeSearchSettings.pos}
                 categoryHierarchy={categoryHierarchy}
                 onCancel={closeNodeSearch}
-                onAdd={addNodeFromSearch}
+                onClick={addNodeFromSearch}
               />
             )}
           </ReactFlow>

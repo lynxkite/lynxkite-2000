@@ -123,7 +123,7 @@ class Bundle:
     def from_nx(cls, graph: nx.Graph):
         edges = nx.to_pandas_edgelist(graph)
         d = dict(graph.nodes(data=True))
-        nodes = pd.DataFrame(d.values(), index=d.keys())
+        nodes = pd.DataFrame(d.values(), index=list(d.keys()))
         nodes["id"] = nodes.index
         if "index" in nodes.columns:
             nodes.drop(columns=["index"], inplace=True)
@@ -325,7 +325,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Operation not found in catalog")
+        node.publish_error("Unknown operation.")
         return
     node.publish_started()
     input_map = {}

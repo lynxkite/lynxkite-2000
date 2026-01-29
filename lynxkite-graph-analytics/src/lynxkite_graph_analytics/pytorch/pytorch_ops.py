@@ -69,9 +69,10 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        col = batch[column_name]
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -123,9 +124,10 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        col = batch[column_name]
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -233,7 +235,7 @@ def layernorm(x, *, normalized_shape=""):
     return torch.nn.LayerNorm(normalized_shape)
 
 
-@op("Dropout", outputs=["outputs", "weights"])
+@op("Dropout")
 def dropout(x, *, p=0.0):
     return torch.nn.Dropout(p)
 
@@ -260,6 +262,11 @@ def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
 @op("MSE loss")
 def mse_loss(x, y):
     return torch.nn.functional.mse_loss
+
+
+@op("Binary cross-entropy with logits loss", outputs=["loss"])
+def binary_cross_entropy_loss(x, y):
+    return torch.nn.functional.binary_cross_entropy_with_logits
 
 
 @op("Constant vector")

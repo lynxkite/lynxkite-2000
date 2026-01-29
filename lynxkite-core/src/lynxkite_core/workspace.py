@@ -167,7 +167,7 @@ class Workspace(BaseConfig):
     async def execute(self, ctx: WorkspaceExecutionContext | None = None):
         return await ops.EXECUTORS[self.env](self, ctx)
 
-    def model_dump_json(self) -> str:
+    def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
         # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
         j = self.model_dump()
@@ -179,7 +179,7 @@ class Workspace(BaseConfig):
     def save(self, path: str | pathlib.Path):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
-        j = self.model_dump_json()
+        j = self.model_dump_json_sorted()
         dirname, basename = os.path.split(path)
         if dirname:
             os.makedirs(dirname, exist_ok=True)
@@ -241,8 +241,11 @@ class Workspace(BaseConfig):
                         node._crdt["data"]["error"] = None
             else:
                 data.error = "Unknown operation."
+                data.meta = ops.Op.placeholder_from_id(data.op_id)
                 if node._crdt:
-                    node._crdt["data"]["meta"] = {}
+                    import pycrdt
+
+                    node._crdt["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
                     node._crdt["data"]["error"] = "Unknown operation."
 
     def connect_crdt(self, ws_crdt: "pycrdt.Map"):
@@ -274,7 +277,7 @@ class Workspace(BaseConfig):
         kwargs.setdefault("position", Position(x=0, y=0))
         kwargs.setdefault("width", 100)
         kwargs.setdefault("height", 100)
-        node = WorkspaceNode(**kwargs)  # ty: ignore[missing-argument]
+        node = WorkspaceNode(**kwargs)
         self.nodes.append(node)
         return node
 

@@ -1,21 +1,17 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
 import Color from "colorjs.io";
-import React from "react";
+import React, { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-// @ts-expect-error
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
-// @ts-expect-error
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
-// @ts-expect-error
 import Dots from "~icons/tabler/dots.jsx";
-// @ts-expect-error
-import Help from "~icons/tabler/question-mark.jsx";
-// @ts-expect-error
 import Skull from "~icons/tabler/skull.jsx";
-import type { WorkspaceNodeData } from "../../apiTypes.ts";
-import { COLORS } from "../../common.ts";
+import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
+import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
+import { LynxKiteState } from "../LynxKiteState.ts";
+import { NodeSearchInternal } from "../NodeSearch.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -25,6 +21,7 @@ interface LynxKiteNodeProps {
   data: any;
   children: any;
   parentId?: string;
+  dragging?: boolean;
 }
 
 function paramSummary(data: WorkspaceNodeData): string {
@@ -47,7 +44,7 @@ function docToString(doc: any): string {
   );
 }
 
-function getHandles(inputs: any[], outputs: any[]) {
+function getHandles(ws: Workspace, id: string, inputs: any[], outputs: any[]) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
     name: string;
@@ -74,6 +71,32 @@ function getHandles(inputs: any[], outputs: any[]) {
   for (const e of handles) {
     e.offsetPercentage = (100 * (e.index + 1)) / (counts[e.position] + 1);
     e.showLabel = !simpleHorizontal && !simpleVertical;
+  }
+  // Add handles for connections that exist but are not defined in inputs/outputs.
+  // This can happen on unknown operations, or when the inputs/outputs are renamed.
+  for (const e of ws.edges ?? []) {
+    if (e.target === id && !handles.find((h) => h.name === e.targetHandle)) {
+      handles.push({
+        position: "left",
+        name: e.targetHandle,
+        index: counts.left,
+        offsetPercentage: 50,
+        showLabel: true,
+        type: "target",
+      });
+      counts.left++;
+    }
+    if (e.source === id && !handles.find((h) => h.name === e.sourceHandle)) {
+      handles.push({
+        position: "right",
+        name: e.sourceHandle,
+        index: counts.right,
+        offsetPercentage: 50,
+        showLabel: true,
+        type: "source",
+      });
+      counts.right++;
+    }
   }
   return handles;
 }
@@ -122,7 +145,13 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const handles = getHandles(data.meta?.inputs || [], data.meta?.outputs || []);
+  const state = useContext(LynxKiteState);
+  const handles = getHandles(
+    state.workspace,
+    props.id,
+    data.meta?.inputs || [],
+    data.meta?.outputs || [],
+  );
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
     // To stop the event from reaching ReactFlow, we stop propagation on the wheel event.
@@ -149,6 +178,12 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     }
     reactFlow.updateNodeData(props.id, dataUpdate);
   }
+  function setNewOpId(newOpId: string) {
+    reactFlow.updateNodeData(props.id, {
+      op_id: newOpId,
+      error: undefined,
+    });
+  }
   const height = Math.max(67, node?.height ?? props.height ?? 200);
   const meta = data.meta ?? {};
   const summary: string = data.error
@@ -162,16 +197,18 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   };
   const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
   const titleStyle = { backgroundColor: color.toString() };
-  color.l = 0.25;
+  color.lch[0] = 20;
   color.alpha = 0.5;
   const borderColor = color.toString();
-  color.c = 0.1;
+  color.lch[1] = 50;
   color.alpha = 0.25;
   const nodeStyle = {
     ...props.nodeStyle,
     borderColor,
     boxShadow: `0px 5px 30px 0px ${color.toString()}`,
   };
+  const titleTooltip = data.collapsed ? "Click to expand node" : summary;
+
   return (
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
@@ -182,22 +219,18 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={data.meta?.doc}>
-          <div className={`title drag-handle ${data.status}`} onClick={titleClicked}>
-            <Icon style={titleStyle} name={meta.icon} />
+        <Tooltip doc={titleTooltip} disabled={props.dragging}>
+          <div
+            style={titleStyle}
+            className={`title drag-handle ${data.status}`}
+            onClick={titleClicked}
+          >
+            <Icon name={meta.icon} />
             <div className="title-right-side">
               <div className="title-right-side-top">
                 <span className="title-title">{data.title}</span>
-                {data.error && (
-                  <Tooltip doc={`Error: ${data.error}`}>
-                    <AlertTriangle />
-                  </Tooltip>
-                )}
-                {data.collapsed && (
-                  <Tooltip doc="Click to expand node">
-                    <Dots />
-                  </Tooltip>
-                )}
+                {data.error && <AlertTriangle />}
+                {data.collapsed && <Dots />}
               </div>
               {summary && <span className="title-summary">{summary}</span>}
             </div>
@@ -205,18 +238,24 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         </Tooltip>
         {!data.collapsed && (
           <>
-            {data.error && <div className="error">{data.error}</div>}
-            <ErrorBoundary
-              resetKeys={[props]}
-              fallback={
-                <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <Skull style={{ fontSize: 20 }} />
-                  Failed to display this node.
-                </p>
-              }
-            >
-              <div className="node-content">{props.children}</div>
-            </ErrorBoundary>
+            {data.error === "Unknown operation." ? (
+              <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
+            ) : (
+              <>
+                {data.error && <div className="error">{data.error}</div>}
+                <ErrorBoundary
+                  resetKeys={[props]}
+                  fallback={
+                    <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <Skull style={{ fontSize: 20 }} />
+                      Failed to display this node.
+                    </p>
+                  }
+                >
+                  <div className="node-content">{props.children}</div>
+                </ErrorBoundary>
+              </>
+            )}
             <NodeResizeControl
               minWidth={100}
               minHeight={50}
@@ -246,14 +285,14 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   );
 }
 
-function Icon({ style, name }: { style: object; name: string }) {
+function Icon({ name }: { name: string }) {
   if (!name) {
     return <div className="title-icon-placeholder" />;
   }
   if (name.startsWith("<svg")) {
-    return <span style={style} className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
+    return <span className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
   }
-  return <InlineSVG style={style} className="title-icon" src={`/api/icons/${name}`} />;
+  return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
@@ -264,4 +303,30 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
       </LynxKiteNodeComponent>
     );
   };
+}
+
+function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {
+  const categoryHierarchy = useCategoryHierarchy();
+  return (
+    categoryHierarchy && (
+      <div className="node-search" style={{ overflowY: "auto" }}>
+        <div style={{ marginBottom: 20 }}>
+          {props.op_id ? (
+            <>
+              "{props.op_id}" is not a known box. You may need to install an extension, or fix an
+              issue with a code file that defined it. Or perhaps the box has a new name. You can
+              choose a replacement from the list below:
+            </>
+          ) : (
+            <>Choose a replacement from the list below:</>
+          )}
+        </div>
+        <NodeSearchInternal
+          onCancel={() => {}}
+          onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
+          categoryHierarchy={categoryHierarchy}
+        />
+      </div>
+    )
+  );
 }

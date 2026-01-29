@@ -76,7 +76,7 @@ def load_esm2_data(*, root_path: str) -> core.Bundle:
     esm2_df = pd.read_parquet(f"{root_path}/esm2-gene-embeddings.parquet")
     gene2esm2 = dict(zip(esm2_df["genes"], esm2_df["embeddings"]))
     b.dfs["gene2esm2"] = pd.DataFrame(
-        {"embedding": list(gene2esm2.values())}, index=gene2esm2.keys()
+        {"embedding": list(gene2esm2.values())}, index=list(gene2esm2.keys())
     )
     return b
 
@@ -112,7 +112,7 @@ def index_genes(b: core.Bundle) -> core.Bundle:
     avail_genes = sorted(all_rna_genes & all_ppi_genes & esm2_genes)
     gene_to_idx = {g: i for i, g in enumerate(avail_genes)}
     b.dfs["gene_to_idx"] = pd.DataFrame(
-        gene_to_idx.values(), index=gene_to_idx.keys(), columns=["idx"]
+        list(gene_to_idx.values()), index=list(gene_to_idx.keys()), columns=["idx"]
     )
     return b
 
