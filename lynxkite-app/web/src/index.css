@@ -527,7 +527,6 @@ svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #002a4c;
 }
 
 .workspace-loading__box {
@@ -535,7 +534,6 @@ svg {
   padding: 24px 32px;
   border-radius: 12px;
   font-size: 18px;
-  color: #0f172a;
 }
 
 .params-expander {
