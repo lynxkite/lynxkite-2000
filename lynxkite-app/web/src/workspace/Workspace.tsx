@@ -280,7 +280,11 @@ function LynxKiteFlow() {
     [crdt],
   );
   if (!crdt?.ws) {
-    return <div>Loading workspace...</div>;
+    return (
+      <div className="workspace-loading">
+        <div className="workspace-loading__box">Loading workspace...</div>
+      </div>
+    );
   }
   const parentDir = path!.split("/").slice(0, -1).join("/");
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
