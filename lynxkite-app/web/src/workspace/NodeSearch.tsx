@@ -32,7 +32,7 @@ function sortHierarchy(level: Category): Category {
 
 export function buildCategoryHierarchy(boxes: Catalog): Category {
   const hierarchy: Category = { name: "<<root>>", ops: [], categories: [] };
-  for (const op of Object.values(boxes)) {
+  for (const op of Object.values(boxes || {})) {
     const categories = op.categories;
     let currentLevel = hierarchy;
     for (const category of categories) {

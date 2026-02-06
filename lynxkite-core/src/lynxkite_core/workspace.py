@@ -269,7 +269,7 @@ class Workspace(BaseConfig):
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
                 title=kwargs["title"],
-                op_id=kwargs["title"],
+                op_id=kwargs.get("op_id", kwargs["title"]),
                 params=kwargs.get("params", {}),
             )
         kwargs.setdefault("type", "basic")
@@ -283,16 +283,20 @@ class Workspace(BaseConfig):
 
     def add_edge(
         self,
-        source: WorkspaceNode,
+        source: WorkspaceNode | str,
         sourceHandle: str,
-        target: WorkspaceNode,
+        target: WorkspaceNode | str,
         targetHandle: str,
     ):
         """For convenience in e.g. tests."""
+        if isinstance(source, WorkspaceNode):
+            source = source.id
+        if isinstance(target, WorkspaceNode):
+            target = target.id
         edge = WorkspaceEdge(
-            id=f"{source.id} {sourceHandle} to {target.id} {targetHandle}",
-            source=source.id,
-            target=target.id,
+            id=f"{source} {sourceHandle} to {target} {targetHandle}",
+            source=source,
+            target=target,
             sourceHandle=sourceHandle,
             targetHandle=targetHandle,
         )
