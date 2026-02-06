@@ -261,8 +261,8 @@ def load_workspace(ws: pycrdt.Map, name: str):
     crdt_update(
         ws,
         ws_pyd.model_dump(),
-        # We treat some fields as black boxes. They are not edited on the frontend.
-        non_collaborative_fields={"display", "input_metadata", "meta"},
+        # We treat some fields as black boxes. They are sent as one item even if just a part changes.
+        non_collaborative_fields={"display", "input_metadata", "meta", "position"},
     )
 
 
