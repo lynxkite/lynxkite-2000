@@ -9,13 +9,16 @@ const NodeWithMolecule = (props: any) => {
   useEffect(() => {
     const config = props.data?.display;
     if (!config || !containerRef.current) return;
+
+    const observed = containerRef.current;
+
     async function run() {
       const $3Dmol = await import("3dmol");
 
       try {
         // Initialize viewer only once
         if (!viewerRef.current) {
-          viewerRef.current = $3Dmol.createViewer(containerRef.current, {
+          viewerRef.current = $3Dmol.createViewer(observed, {
             backgroundColor: "white",
           });
         }
@@ -26,7 +29,7 @@ const NodeWithMolecule = (props: any) => {
         viewer.clear();
 
         // Add new model and style it
-        viewer.addModel(config.data, config.format);
+        viewer.addModel(config.data);
         viewer.setStyle({}, { stick: {} });
         viewer.zoomTo();
         viewer.render();
@@ -35,14 +38,33 @@ const NodeWithMolecule = (props: any) => {
       }
     }
     run();
+
     const resizeObserver = new ResizeObserver(() => {
       viewerRef.current?.resize();
     });
 
-    const observed = containerRef.current;
     resizeObserver.observe(observed);
+
+    // Block ALL wheel events and implement our own zoom
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      if (viewerRef.current) {
+        const viewer = viewerRef.current;
+        const factor = e.deltaY > 0 ? 0.95 : 1.05;
+        viewer.zoom(factor);
+        viewer.render();
+      }
+    };
+
+    // Capture phase with passive false to completely block 3Dmol
+    observed.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+
     return () => {
       resizeObserver.unobserve(observed);
+      observed.removeEventListener("wheel", handleWheel, { capture: true });
       if (viewerRef.current) {
         viewerRef.current.clear();
       }
