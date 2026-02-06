@@ -1,6 +1,7 @@
 import { useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 import Markdown from "react-markdown";
+import remarkSmartypants from "remark-smartypants";
 import type { UpdateOptions } from "./NodeParameter";
 
 export default function NodeWithComment(props: any) {
@@ -52,7 +53,7 @@ export default function NodeWithComment(props: any) {
   const text = props.data.params.text || "_double-click to edit_";
   return (
     <div className="comment-view drag-handle prose" onClick={onClick}>
-      <Markdown>{text}</Markdown>
+      <Markdown remarkPlugins={[remarkSmartypants]}>{text}</Markdown>
     </div>
   );
 }
