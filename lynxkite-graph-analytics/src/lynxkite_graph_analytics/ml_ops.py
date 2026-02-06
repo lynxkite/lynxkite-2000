@@ -187,7 +187,7 @@ def train_test_val_split(
     return bundle
 
 
-@op("View loss", view="visualization")
+@op("View loss", view="visualization", icon="trending-down-3")
 def view_loss(bundle: core.Bundle):
     loss = bundle.dfs["training"].training_loss.tolist()
     v = {
