@@ -52,7 +52,10 @@ export default function NodeWithComment(props: any) {
   }
   const text = props.data.params.text || "_double-click to edit_";
   return (
-    <div className="comment-view drag-handle prose" onClick={onClick}>
+    <div
+      className={`comment-view drag-handle prose ${props.parentId && "in-group"}`}
+      onClick={onClick}
+    >
       <Markdown remarkPlugins={[remarkSmartypants]}>{text}</Markdown>
     </div>
   );

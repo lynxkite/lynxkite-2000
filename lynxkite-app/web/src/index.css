@@ -126,11 +126,12 @@ svg {
     position: relative;
   }
 
-  .node-group.in-group {
-    opacity: 0.5;
+  .node-group-color-picker-icon:hover {
+    opacity: 1;
   }
 
   .node-group-color-picker-icon {
+    opacity: 0.25;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -436,6 +437,10 @@ svg {
       border: 1px solid #ccc;
       overflow-y: hidden;
     }
+  }
+
+  .react-flow__node-comment:has(.in-group) {
+    background-color: transparent;
   }
 
   .env-select {
