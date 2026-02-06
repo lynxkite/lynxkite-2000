@@ -7,7 +7,11 @@ def flip_text(x):
     return x[::-1]
 
 
-@op("LynxKite Graph Analytics", "Gradio example", view="gradio")
+with open("Gradio/gradio.svg") as f:
+    gradio_icon = f.read()
+
+
+@op("LynxKite Graph Analytics", "Gradio example", view="gradio", icon=gradio_icon)
 def gradio_example():
     with gr.Blocks() as demo:
         gr.Markdown("""
@@ -20,7 +24,7 @@ def gradio_example():
     return demo
 
 
-@op("LynxKite Graph Analytics", "Gradio DataFrame", view="gradio")
+@op("LynxKite Graph Analytics", "Gradio DataFrame", view="gradio", icon=gradio_icon)
 def gradio_df(bundle: Bundle):
     with gr.Blocks() as demo:
         for k in bundle.dfs:

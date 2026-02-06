@@ -53,7 +53,6 @@ DEP002 = ["numba", "pyarrow", "nx-cugraph-cu12", "pylibcugraph-cu12"]
 
 [tool.deptry.package_module_name_map]
 grand-cypher = "grandcypher"
-lynxkite-core = "lynxkite"
 umap-learn = "umap"
 cuml-cu12 = "cuml"
 cudf-cu12 = "cudf"

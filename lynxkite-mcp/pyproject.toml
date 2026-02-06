@@ -13,9 +13,6 @@ license = "AGPL-3.0-or-later"
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
-[tool.deptry.package_module_name_map]
-lynxkite-core = "lynxkite"
-
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"

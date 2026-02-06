@@ -2,7 +2,7 @@ import { NodeResizeControl, useReactFlow } from "@xyflow/react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Palette from "~icons/tabler/palette-filled.jsx";
-import { COLORS } from "../../common.ts";
+import { COLORS_MUTED } from "../../common.ts";
 import Tooltip from "../../Tooltip.tsx";
 
 export default function Group(props: any) {
@@ -43,7 +43,7 @@ export default function Group(props: any) {
       style={{
         width: props.width,
         height: props.height,
-        backgroundColor: COLORS[currentColor],
+        backgroundColor: COLORS_MUTED[currentColor],
       }}
     >
       <button
@@ -81,14 +81,14 @@ export default function Group(props: any) {
 }
 
 function ColorPicker(props: { currentColor: string; onPick: (color: string) => void }) {
-  const colors = Object.keys(COLORS).filter((color) => color !== props.currentColor);
+  const colors = Object.keys(COLORS_MUTED).filter((color) => color !== props.currentColor);
 
   return (
     <div className="flex gap-2">
       {colors.map((color) => (
         <button
           key={color}
-          style={{ backgroundColor: COLORS[color] }}
+          style={{ backgroundColor: COLORS_MUTED[color] }}
           className="w-7 h-7 rounded"
           onClick={() => props.onPick(color)}
         />
