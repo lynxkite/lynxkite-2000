@@ -504,6 +504,7 @@ svg {
   }
 
   .table-viewer {
+    th,
     td {
       padding: 5px 10px;
       vertical-align: top;
