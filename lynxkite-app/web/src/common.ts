@@ -38,3 +38,14 @@ export const COLORS: { [key: string]: string } = {
   purple: "oklch(75% 0.2 290)",
   red: "oklch(75% 0.25 30)",
 };
+
+export const COLORS_MUTED: { [key: string]: string } = {
+  gray: "oklch(95% 0 0)",
+  pink: "oklch(90% 0.1 0)",
+  orange: "oklch(90% 0.1 55)",
+  yellow: "oklch(90% 0.1 100)",
+  green: "oklch(90% 0.1 130)",
+  blue: "oklch(90% 0.1 230)",
+  purple: "oklch(90% 0.1 290)",
+  red: "oklch(90% 0.15 30)",
+};
