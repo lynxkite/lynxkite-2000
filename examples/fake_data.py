@@ -1,5 +1,5 @@
 from lynxkite_core.ops import op
-from faker import Faker  # ty: ignore[unresolved-import, unused-ignore-comment]
+from faker import Faker  # ty: ignore
 import pandas as pd
 
 faker = Faker()

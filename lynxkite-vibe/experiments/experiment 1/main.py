@@ -1,6 +1,6 @@
 import pandas as pd
-from datasets import load_dataset
-from rapidfuzz import process, fuzz
+from datasets import load_dataset  # ty: ignore
+from rapidfuzz import process, fuzz  # ty: ignore
 import io
 import matplotlib.pyplot as plt
 import requests
