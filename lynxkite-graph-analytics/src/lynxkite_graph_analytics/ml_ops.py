@@ -12,7 +12,7 @@ import pandas as pd
 import pathlib
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, icon="robot")
 
 
 def load_ws(model_workspace: str):
@@ -24,7 +24,7 @@ def load_ws(model_workspace: str):
     return ws
 
 
-@op("Define model")
+@op("Define model", color="purple")
 def define_model(
     bundle: core.Bundle,
     *,
@@ -231,7 +231,7 @@ class UMAPMetric(enum.StrEnum):
     hamming = "hamming"
 
 
-@op("View vectors", view="visualization")
+@op("View vectors", view="visualization", color="blue")
 def view_vectors(
     bundle: core.Bundle,
     *,
