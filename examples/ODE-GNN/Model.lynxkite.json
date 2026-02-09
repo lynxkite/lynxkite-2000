@@ -163,7 +163,7 @@
         "meta": null,
         "op_id": "Group",
         "params": {
-          "color": "green"
+          "color": "purple"
         },
         "status": "done",
         "title": "Group"
@@ -254,7 +254,7 @@
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 57.0,
+      "height": 68.0,
       "id": "MSE loss 1",
       "parentId": "Group 5",
       "position": {
@@ -459,7 +459,7 @@
       "height": 274.0,
       "id": "Comment 6",
       "position": {
-        "x": 57.18097447139637,
+        "x": 62.18097447139637,
         "y": -867.7619665323152
       },
       "type": "comment",
@@ -537,7 +537,7 @@
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
-      "height": 57.0,
+      "height": 68.0,
       "id": "Concatenate 2",
       "position": {
         "x": 210.60112224325755,
