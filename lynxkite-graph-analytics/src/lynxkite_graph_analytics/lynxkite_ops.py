@@ -317,7 +317,7 @@ def visualize_graph(
 @op("View tables", view="table_view", color="blue", icon="table-filled")
 def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
     _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
-    return bundle.to_dict(limit=limit)
+    return bundle.to_table_view(limit=limit)
 
 
 @op(
@@ -338,4 +338,4 @@ def organize(bundles: list[core.Bundle], *, relations: str = ""):
         bundle.other.update(b.other)
     if relations.strip():
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
-    return ops.Result(output=bundle, display=bundle.to_dict(limit=100))
+    return ops.Result(output=bundle, display=bundle.to_table_view(limit=100))
