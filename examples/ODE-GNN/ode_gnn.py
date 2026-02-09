@@ -1,5 +1,5 @@
 import itertools
-from lynxkite_core.ops import op, cached
+from lynxkite_core.ops import op, op_registration, cached
 from lynxkite_graph_analytics import core
 import torch
 from torch import nn
@@ -12,7 +12,10 @@ import os.path
 import pandas as pd
 
 
-@op("LynxKite Graph Analytics", "PDX", "Load disease-gene data", slow=True)
+pdx_op = op_registration("LynxKite Graph Analytics", "PDX", icon="microscope")
+
+
+@pdx_op("Load disease-gene data", slow=True, color="green")
 def load_disease_gene_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -48,7 +51,7 @@ def load_disease_gene_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Load drug-gene data", slow=True)
+@pdx_op("Load drug-gene data", slow=True, color="green")
 def load_drug_gene_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -59,7 +62,7 @@ def load_drug_gene_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Load RNA data", slow=True)
+@pdx_op("Load RNA data", slow=True, color="green")
 def load_rna_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -68,7 +71,7 @@ def load_rna_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Load ESM2 data", slow=True)
+@pdx_op("Load ESM2 data", slow=True, color="green")
 def load_esm2_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -81,7 +84,7 @@ def load_esm2_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Load PCT data", slow=True)
+@pdx_op("Load PCT data", slow=True, color="green")
 def load_pct_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -97,7 +100,7 @@ def load_pct_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Index genes", slow=True)
+@pdx_op("Index genes", slow=True)
 def index_genes(b: core.Bundle) -> core.Bundle:
     """Enumerates all the genes we have data for, and gives the sequential numbers."""
     root_path = b.other["root_path"]
@@ -117,14 +120,14 @@ def index_genes(b: core.Bundle) -> core.Bundle:
     return b
 
 
-@op("LynxKite Graph Analytics", "View other", view="table_view")
+@op("LynxKite Graph Analytics", "View other", view="table_view", color="blue")
 def view_other(b: core.Bundle):
     b = b.copy()
     b.dfs = {"other": pd.DataFrame(list(b.other.items()), columns=["key", "value"])}
     return b.to_dict()
 
 
-@op("LynxKite Graph Analytics", "PDX", "Split timeseries", slow=True)
+@pdx_op("Split timeseries", slow=True)
 def split_timeseries(b: core.Bundle, *, num_timestamps_in_past: int = 5) -> core.Bundle:
     clin_df = b.dfs["clin_df"]
     times_col = []
@@ -154,7 +157,7 @@ def split_timeseries(b: core.Bundle, *, num_timestamps_in_past: int = 5) -> core
     return b
 
 
-@op("LynxKite Graph Analytics", "PDX", "Filter to samples with RNA data", slow=True)
+@pdx_op("Filter to samples with RNA data", slow=True)
 def filter_to_samples_with_rna_data(b: core.Bundle) -> core.Bundle:
     b = b.copy()
     valid_pdx = set(b.dfs["rna_df"].columns)
@@ -297,7 +300,7 @@ def gene_features_input():
     return from_bundle
 
 
-@op("PyTorch model", "Drug, disease, gene GNN", dir="bottom-to-top")
+@op("PyTorch model", "Drug, disease, gene GNN", icon="microscope", dir="bottom-to-top")
 def ddg_gnn(
     gene_nodes,
     drug_edges,
@@ -370,7 +373,7 @@ class HeteroGraphEncoder(nn.Module):
         return r
 
 
-@op("LynxKite Graph Analytics", "PDX", "Draw timeseries", view="matplotlib")
+@pdx_op("Draw timeseries", view="matplotlib")
 def draw_timeseries(
     b: core.Bundle,
     *,
