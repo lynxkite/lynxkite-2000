@@ -21,7 +21,7 @@ repos:
     - id: ty-check
       name: ty-check
       language: python
-      entry: uv run ty check
+      entry: uv run --no-sync ty check
       types: [python]
       pass_filenames: true
 - repo: https://github.com/fpgmaas/deptry.git
@@ -29,13 +29,13 @@ repos:
   hooks:
     - id: deptry
       name: deptry for lynxkite-app
-      entry: bash -c 'cd lynxkite-app && uv run deptry .'
+      entry: bash -c 'cd lynxkite-app && uv run --no-sync deptry .'
     - id: deptry
       name: deptry for lynxkite-core
-      entry: bash -c 'cd lynxkite-core && uv run deptry .'
+      entry: bash -c 'cd lynxkite-core && uv run --no-sync deptry .'
     - id: deptry
       name: deptry for lynxkite-graph-analytics
-      entry: bash -c 'cd lynxkite-graph-analytics && uv run deptry .'
+      entry: bash -c 'cd lynxkite-graph-analytics && uv run --no-sync deptry .'
     - id: deptry
       name: deptry for lynxkite-pillow-example
-      entry: bash -c 'cd lynxkite-pillow-example && uv run deptry .'
+      entry: bash -c 'cd lynxkite-pillow-example && uv run --no-sync deptry .'
