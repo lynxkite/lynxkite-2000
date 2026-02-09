@@ -23,6 +23,7 @@
   background: #002a4c;
   --border: 1px;
   --radius-field: 0.5rem;
+  --bold: 500;
 }
 
 img,
@@ -151,7 +152,7 @@ svg {
   }
 
   .lynxkite-node .title {
-    font-weight: bold;
+    font-weight: var(--bold);
     padding: 8px;
     background-image: linear-gradient(
       to right,
@@ -407,7 +408,7 @@ svg {
 
   .react-flow__node-table_view {
     .df-head {
-      font-weight: bold;
+      font-weight: var(--bold);
       padding: 8px;
       background: #f0f0f0;
       cursor: pointer;
@@ -427,6 +428,20 @@ svg {
     .comment-view {
       border-radius: 4px;
       padding: 5px 10px;
+
+      h1 {
+        font-weight: var(--bold);
+      }
+
+      .highlight {
+        font-size: 200%;
+        width: 600px;
+
+        h1 {
+          font-weight: 900;
+          margin-bottom: 0;
+        }
+      }
     }
 
     .comment-editor {
@@ -490,7 +505,7 @@ svg {
 
     td.model-mapping-param-label {
       padding-top: 40px;
-      font-weight: bold;
+      font-weight: var(--bold);
       opacity: 0.7;
     }
   }
@@ -504,6 +519,10 @@ svg {
   }
 
   .table-viewer {
+    th {
+      font-weight: var(--bold);
+    }
+
     th,
     td {
       padding: 5px 10px;
@@ -766,7 +785,7 @@ svg {
 .graph-table-header {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+  font-weight: var(--bold);
   text-align: left;
   background-color: #333;
   color: white;
@@ -776,7 +795,7 @@ svg {
 }
 
 .graph-creation-view .df-head {
-  font-weight: bold;
+  font-weight: var(--bold);
   display: flex;
   justify-content: space-between;
   padding: 8px 12px;
@@ -803,7 +822,7 @@ svg {
 
 .graph-relation-attributes label {
   font-size: 12px;
-  font-weight: bold;
+  font-weight: var(--bold);
   display: block;
   margin-bottom: 2px;
   /* Lighter text for labels */
