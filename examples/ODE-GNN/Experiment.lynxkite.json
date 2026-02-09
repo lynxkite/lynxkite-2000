@@ -46490,12 +46490,12 @@
         "meta": null,
         "op_id": "Comment",
         "params": {
-          "text": "# Overview\n\nThis workspace loads our dataset and takes the model definition from the Model workspace. After a few pre-processing steps we map the dataset to inputs of the model and kick off training."
+          "text": ":::highlight\n\n# Overview\n\nThis workspace loads our dataset and takes the model definition from the Model workspace. After a few pre-processing steps we map the dataset to inputs of the model and kick off training.\n\n:::"
         },
         "status": "done",
         "title": "Comment"
       },
-      "height": 194.0,
+      "height": 466.0,
       "id": "Comment 2",
       "position": {
         "x": -2851.3116370813714,
