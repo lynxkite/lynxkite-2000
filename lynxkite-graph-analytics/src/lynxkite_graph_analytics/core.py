@@ -180,20 +180,6 @@ class Bundle:
             other=dict(self.other),
         )
 
-    def to_dict(self, limit: int = 100):
-        """JSON-serializable representation of the bundle, including some data."""
-        return {
-            "dataframes": {
-                name: {
-                    "columns": [str(c) for c in df.columns],
-                    "data": df_for_frontend(df, limit).values.tolist(),
-                }
-                for name, df in self.dfs.items()
-            },
-            "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": {k: str(v) for k, v in self.other.items()},
-        }
-
     def metadata(self):
         """JSON-serializable information about the bundle, metadata only."""
         return {
@@ -209,6 +195,45 @@ class Bundle:
                 k: {"key": k, **getattr(v, "metadata", lambda: {})()} for k, v in self.other.items()
             },
         }
+
+    def to_table_view(self, limit: int = 100):
+        """Converts the bundle to a format suitable for display as tables in the frontend."""
+        return BundleTableView.from_bundle(self, limit=limit)
+
+
+@dataclasses.dataclass
+class SingleTableView:
+    """A JSON-serializable view of a table in the bundle, for use in the frontend.
+
+    Attributes:
+        columns: The columns to display.
+        data: A list of rows, where each row is a list of values.
+    """
+
+    columns: list[str]
+    data: list[list[typing.Any]]
+
+    @staticmethod
+    def from_df(df: pd.DataFrame, limit: int = 100):
+        columns = [str(c) for c in df.columns][:limit]
+        df = df[columns]
+        data = df_for_frontend(df, limit).values.tolist()
+        return SingleTableView(columns=columns, data=data)
+
+
+@dataclasses.dataclass
+class BundleTableView:
+    """A JSON-serializable tabular view of a bundle, for use in the frontend."""
+
+    dataframes: dict[str, SingleTableView]
+    relations: list[RelationDefinition]
+    other: dict[str, typing.Any]
+
+    @staticmethod
+    def from_bundle(bundle: Bundle, limit: int = 100):
+        dataframes = {name: SingleTableView.from_df(df, limit) for name, df in bundle.dfs.items()}
+        other = {k: str(v)[:limit] for k, v in bundle.other.items()}
+        return BundleTableView(dataframes=dataframes, relations=bundle.relations, other=other)
 
 
 def nx_node_attribute_func(name):
@@ -386,6 +411,8 @@ async def _execute_node(
         result = op(*inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
+        if dataclasses.is_dataclass(result.display):
+            result.display = dataclasses.asdict(result.display)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

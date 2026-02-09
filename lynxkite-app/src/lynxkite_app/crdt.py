@@ -291,7 +291,7 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     if name in delayed_executions:
         delayed_executions[name].cancel()
     delay = max(
-        getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0)
+        getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
         for change in changes
     )
     # Check if workspace is paused - if so, skip automatic execution
