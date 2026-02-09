@@ -279,6 +279,7 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         ws_crdt: CRDT object representing the workspace.
     """
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
+    ws_pyd.save(pathlib.Path() / name)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
     ws_simple = ws_pyd.model_copy(deep=True)
@@ -323,8 +324,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     cwd = pathlib.Path()
     path = cwd / name
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
-    # Save user changes before executing, in case the execution fails.
-    ws_pyd.save(path)
     ops.load_user_scripts(name)
     ws_pyd.connect_crdt(ws_crdt)
     ws_pyd.update_metadata()
