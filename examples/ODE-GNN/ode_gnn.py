@@ -1,3 +1,5 @@
+"""Custom operations for the ODE+GNN model."""
+
 import itertools
 from lynxkite_core.ops import op, op_registration, cached
 from lynxkite_graph_analytics import core
@@ -102,7 +104,7 @@ def load_pct_data(*, root_path: str) -> core.Bundle:
 
 @pdx_op("Index genes", slow=True)
 def index_genes(b: core.Bundle) -> core.Bundle:
-    """Enumerates all the genes we have data for, and gives the sequential numbers."""
+    """Enumerates all the genes we have data for, and gives them sequential numbers."""
     root_path = b.other["root_path"]
     all_rna_genes = set(b.dfs["rna_df"].index)
     all_ppi_genes = set(
@@ -129,6 +131,7 @@ def view_other(b: core.Bundle):
 
 @pdx_op("Split timeseries", slow=True)
 def split_timeseries(b: core.Bundle, *, num_timestamps_in_past: int = 5) -> core.Bundle:
+    """Creates "past_volumes", "future_timestamps", and "future_volumes" in the meta table."""
     clin_df = b.dfs["clin_df"]
     times_col = []
     vols_col = []

@@ -16607,10 +16607,11 @@
     },
     {
       "data": {
+        "__execution_delay": null,
         "collapsed": true,
         "display": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 200.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -17085,7 +17086,7 @@
         "title": "Index genes"
       },
       "dragHandle": ".drag-handle",
-      "height": 71.0,
+      "height": 72.0,
       "id": "Index genes 1",
       "position": {
         "x": -3714.30258968075,
@@ -30532,7 +30533,7 @@
         "title": "Organize"
       },
       "dragHandle": ".drag-handle",
-      "height": 71.0,
+      "height": 72.0,
       "id": "Organize 1",
       "position": {
         "x": -3320.0,
@@ -31021,7 +31022,7 @@
         "title": "Filter to samples with RNA data"
       },
       "dragHandle": ".drag-handle",
-      "height": 68.0,
+      "height": 69.0,
       "id": "Filter to samples with RNA data 1",
       "position": {
         "x": -3255.59759714917,
@@ -31032,6 +31033,7 @@
     },
     {
       "data": {
+        "__execution_delay": null,
         "collapsed": null,
         "display": {
           "dataframes": {
@@ -44933,7 +44935,8 @@
         "op_id": "View tables",
         "params": {
           "_tables_open": {
-            "meta": true
+            "meta": true,
+            "rna_df": false
           },
           "limit": 100.0
         },
@@ -46465,16 +46468,16 @@
         "meta": null,
         "op_id": "Comment",
         "params": {
-          "text": "# Importing a complex dataset\n\nWe import 5 different source files and combine them into a single \"bundle\". The rest of the workspace will have access to the whole dataset as a set of tables. The contents of the bundle are displayed in the \"View tables\" box to the right."
+          "text": "# Importing a complex dataset\n\nWe import 5 different source files and combine them into a single \"bundle\". The rest of the workspace will have access to the whole dataset as a set of tables. The contents of the bundle are displayed in the \"View tables\" box to the right.\n\nThe data sources are:\n\n- A tissue-specific protein-protein interaction (PPI) network is loaded from [TissueNexus](https://diseaselinks.com/TissueNexus/).\n\n- A drug-gene interaction (DGI) graph is loaded from [DGIdb 3.0](https://dgidb.org/).\n\n- A disease-gene association graph is loaded from [Dis-GeNET](https://disgenet.com/).\n\n- We used [BioNeMo's ESM-2](https://docs.nvidia.com/bionemo-framework/2.7.1/models/ESM-2/) to generate gene embeddings."
         },
         "status": "done",
         "title": "Comment"
       },
-      "height": 262.0,
+      "height": 622.0,
       "id": "Comment 1",
       "position": {
-        "x": -3367.3264212822514,
-        "y": 589.6799130122507
+        "x": -3386.345704039471,
+        "y": 501.2961872581134
       },
       "type": "comment",
       "width": 400.0
@@ -46490,16 +46493,16 @@
         "meta": null,
         "op_id": "Comment",
         "params": {
-          "text": ":::highlight\n\n# Overview\n\nThis workspace loads our dataset and takes the model definition from the Model workspace. After a few pre-processing steps we map the dataset to inputs of the model and kick off training.\n\n:::"
+          "text": ":::highlight\n\nOur model speeds up the PDX-based drug selection process as its predictions can cut down the observation time.\n\nThis workspace loads our dataset and takes the model definition from the Model workspace. After a few pre-processing steps we map the dataset to inputs of the model and kick off training."
         },
         "status": "done",
         "title": "Comment"
       },
-      "height": 466.0,
+      "height": 650.0,
       "id": "Comment 2",
       "position": {
-        "x": -2851.3116370813714,
-        "y": 1935.1123326130753
+        "x": -2853.4494238672346,
+        "y": 2042.5944713583797
       },
       "type": "comment",
       "width": 400.0
@@ -46525,6 +46528,31 @@
       "position": {
         "x": -1143.1292164513443,
         "y": 785.7731810728274
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": ":::highlight\n# Overview\n\nThis workspace is based on [Integration of Graph Neural Network and Neural-ODEs for Tumor Dynamic Prediction](https://arxiv.org/abs/2310.00926) by Lu et al.\n\nWe train and evaluate a neural network model on a tumor volume prediction task. The model is trained on tumor volume time series data that was measured in mice. The mice had received transplanted patient-derived xenograft (PDX) tumors and were treated with an array of different drugs."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "height": 842.0,
+      "id": "Comment 4",
+      "position": {
+        "x": -3608.2173682141683,
+        "y": 1973.3026335417242
       },
       "type": "comment",
       "width": 400.0
