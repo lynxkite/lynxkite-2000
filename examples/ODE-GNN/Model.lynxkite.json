@@ -143,14 +143,14 @@
         "status": "done",
         "title": "Group"
       },
-      "height": 1156.0,
+      "height": 1049.0,
       "id": "Group 1",
       "position": {
         "x": 504.62545496173914,
         "y": -48.52927736567699
       },
       "type": "node_group",
-      "width": 420.0
+      "width": 673.0
     },
     {
       "data": {
@@ -201,8 +201,8 @@
       "id": "LSTM 1",
       "parentId": "Group 1",
       "position": {
-        "x": 26.276553085873843,
-        "y": 293.63470189604885
+        "x": 40.0,
+        "y": 320.0
       },
       "selected": false,
       "type": "basic",
@@ -254,7 +254,7 @@
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 68.0,
+      "height": 69.0,
       "id": "MSE loss 1",
       "parentId": "Group 5",
       "position": {
@@ -316,8 +316,8 @@
       "height": 299.0,
       "id": "Input: sequential 2",
       "position": {
-        "x": 1248.253547891751,
-        "y": -168.41648271530312
+        "x": 1251.8384360117905,
+        "y": -53.7000628740369
       },
       "type": "basic",
       "width": 230.0
@@ -345,14 +345,14 @@
         "title": "Neural ODE with MLP"
       },
       "dragHandle": ".drag-handle",
-      "height": 612.0,
+      "height": 600.0,
       "id": "Neural ODE with MLP 1",
       "position": {
-        "x": 592.4620140488937,
-        "y": -1016.8211014059549
+        "x": 600.0,
+        "y": -960.0
       },
       "type": "basic",
-      "width": 284.0
+      "width": 280.0
     },
     {
       "data": {
@@ -377,8 +377,8 @@
       "id": "Input: sequential 3",
       "parentId": "Group 1",
       "position": {
-        "x": 25.67871348492065,
-        "y": 781.2490351268727
+        "x": 40.0,
+        "y": 680.0
       },
       "selected": false,
       "type": "basic",
@@ -401,14 +401,14 @@
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 155.0,
+      "height": 160.0,
       "id": "Output 1",
       "position": {
-        "x": 577.8578811319113,
-        "y": -1217.3477063035696
+        "x": 600.0,
+        "y": -1200.0
       },
       "type": "basic",
-      "width": 304.0
+      "width": 280.0
     },
     {
       "data": {
@@ -432,8 +432,8 @@
       "id": "Comment 1",
       "parentId": "Group 1",
       "position": {
-        "x": 10.0,
-        "y": 631.4483599348773
+        "x": 273.0000000000001,
+        "y": 326.7328697315139
       },
       "selected": false,
       "type": "comment",
@@ -516,8 +516,8 @@
       "id": "Linear 1",
       "parentId": "Group 1",
       "position": {
-        "x": 27.772628898929725,
-        "y": 40.074439147430084
+        "x": 40.0,
+        "y": 80.0
       },
       "selected": false,
       "type": "basic",
@@ -537,7 +537,7 @@
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
-      "height": 68.0,
+      "height": 69.0,
       "id": "Concatenate 2",
       "position": {
         "x": 210.60112224325755,
@@ -720,6 +720,31 @@
         "y": 349.3127056919966
       },
       "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": ":::highlight\n# Overview\n\nThis is the architecture of our ODE+GNN tumor volume prediction model. The three main parts of the model are:\n- Take a sample-specific graph that includes one drug node and one disease node, both connected to their associated gene nodes, and gene nodes are connected to each other based on the tissue-specific PPI data. A custom GNN processes this graph into a graph embedding.\n- Take the past tumor volume time series data and process it into an embedding with an LSTM.\n- Take the future timestamps and generate predictions for them with a neural ODE module conditioned on the combined embeddings the the graph and the time series.\n\nThe loss function is computed by comparing the predictions to the ground truth data."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "height": 1530.0,
+      "id": "Comment 3",
+      "position": {
+        "x": -784.3153207697787,
+        "y": -2048.744876238401
+      },
       "type": "comment",
       "width": 400.0
     }
