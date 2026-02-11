@@ -11,6 +11,7 @@ dependencies = [
     "lynxkite-pillow-example",
     "lynxkite-vibe",
     "pandas-stubs>=2.3.3.260113",
+    "pillow>=11.3.0",
 ]
 classifiers = ["Private :: Do Not Upload"]
 
