@@ -22,7 +22,8 @@ dependencies = [
     "torchdiffeq>=0.2.5",
     "tqdm>=4.67.1",
     "umap-learn>=0.5.9.post2",
-    "pykeen>=1.11.1"
+    "pykeen>=1.11.1",
+    "seaborn>=0.13.2",
 ]
 license = "AGPL-3.0-or-later"
 

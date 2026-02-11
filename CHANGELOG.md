@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Added several new boxes for working with graphs. [#144](https://github.com/lynxkite/lynxkite-2000/pull/144)
+
 ## [0.3.0]
 
 This release focused on polishing the user interface.
