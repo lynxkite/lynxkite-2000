@@ -30,6 +30,7 @@ export interface Op {
   outputs: Output[];
   type?: string;
   color?: string;
+  icon?: string | null;
   doc?: unknown[] | null;
   id?: string;
 }

@@ -107,6 +107,33 @@
         "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Group",
+        "params": {
+          "color": "orange"
+        },
+        "status": "done",
+        "title": "Group"
+      },
+      "height": 1266.0,
+      "id": "Group 2",
+      "position": {
+        "x": -1040.7544742401944,
+        "y": 20.00160785582024
+      },
+      "selected": true,
+      "type": "node_group",
+      "width": 1384.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Group",
@@ -116,34 +143,39 @@
         "status": "done",
         "title": "Group"
       },
-      "height": 1072.0,
+      "height": 1049.0,
       "id": "Group 1",
       "position": {
         "x": 504.62545496173914,
         "y": -48.52927736567699
       },
       "type": "node_group",
-      "width": 420.0
+      "width": 673.0
     },
     {
       "data": {
+        "__execution_delay": null,
+        "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Group",
-        "params": {},
+        "params": {
+          "color": "purple"
+        },
         "status": "done",
         "title": "Group"
       },
-      "height": 801.0,
+      "height": 896.0,
       "id": "Group 5",
       "position": {
-        "x": 653.8616229610058,
+        "x": 593.8616229610058,
         "y": -2144.434037892992
       },
       "type": "node_group",
-      "width": 686.0
+      "width": 801.0
     },
     {
       "data": {
@@ -151,6 +183,7 @@
         "collapsed": false,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "LSTM",
@@ -168,8 +201,8 @@
       "id": "LSTM 1",
       "parentId": "Group 1",
       "position": {
-        "x": 26.276553085873843,
-        "y": 293.63470189604885
+        "x": 40.0,
+        "y": 320.0
       },
       "selected": false,
       "type": "basic",
@@ -181,6 +214,7 @@
         "collapsed": false,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: sequential",
@@ -197,8 +231,8 @@
       "id": "Input: sequential 1",
       "parentId": "Group 5",
       "position": {
-        "x": 283.4106994360478,
-        "y": 521.0747592757436
+        "x": 343.4106994360478,
+        "y": 556.0747592757436
       },
       "selected": false,
       "type": "basic",
@@ -210,6 +244,7 @@
         "collapsed": true,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "MSE loss",
@@ -219,12 +254,12 @@
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 200.0,
+      "height": 69.0,
       "id": "MSE loss 1",
       "parentId": "Group 5",
       "position": {
-        "x": 10.0,
-        "y": 369.6042243521049
+        "x": 70.0,
+        "y": 404.6042243521049
       },
       "selected": false,
       "type": "basic",
@@ -236,6 +271,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Optimizer",
@@ -252,8 +288,8 @@
       "id": "Optimizer 1",
       "parentId": "Group 5",
       "position": {
-        "x": 10.380437966635554,
-        "y": 10.0
+        "x": 70.38043796663555,
+        "y": 45.0
       },
       "selected": false,
       "type": "basic",
@@ -265,6 +301,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: sequential",
@@ -279,8 +316,8 @@
       "height": 299.0,
       "id": "Input: sequential 2",
       "position": {
-        "x": 1248.253547891751,
-        "y": -168.41648271530312
+        "x": 1251.8384360117905,
+        "y": -53.7000628740369
       },
       "type": "basic",
       "width": 230.0
@@ -291,6 +328,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Neural ODE with MLP",
@@ -307,14 +345,14 @@
         "title": "Neural ODE with MLP"
       },
       "dragHandle": ".drag-handle",
-      "height": 612.0,
+      "height": 600.0,
       "id": "Neural ODE with MLP 1",
       "position": {
-        "x": 592.4620140488937,
-        "y": -1016.8211014059549
+        "x": 600.0,
+        "y": -960.0
       },
       "type": "basic",
-      "width": 284.0
+      "width": 280.0
     },
     {
       "data": {
@@ -322,6 +360,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: sequential",
@@ -338,8 +377,8 @@
       "id": "Input: sequential 3",
       "parentId": "Group 1",
       "position": {
-        "x": 25.67871348492065,
-        "y": 781.2490351268727
+        "x": 40.0,
+        "y": 680.0
       },
       "selected": false,
       "type": "basic",
@@ -351,6 +390,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Output",
@@ -361,14 +401,14 @@
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 155.0,
+      "height": 160.0,
       "id": "Output 1",
       "position": {
-        "x": 577.8578811319113,
-        "y": -1217.3477063035696
+        "x": 600.0,
+        "y": -1200.0
       },
       "type": "basic",
-      "width": 304.0
+      "width": 280.0
     },
     {
       "data": {
@@ -376,6 +416,7 @@
         "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Comment",
@@ -391,8 +432,8 @@
       "id": "Comment 1",
       "parentId": "Group 1",
       "position": {
-        "x": 10.0,
-        "y": 631.4483599348773
+        "x": 273.0000000000001,
+        "y": 326.7328697315139
       },
       "selected": false,
       "type": "comment",
@@ -404,6 +445,7 @@
         "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Comment",
@@ -417,8 +459,8 @@
       "height": 274.0,
       "id": "Comment 6",
       "position": {
-        "x": -0.7721924881518737,
-        "y": -865.6155529412208
+        "x": 62.18097447139637,
+        "y": -867.7619665323152
       },
       "type": "comment",
       "width": 400.0
@@ -429,6 +471,7 @@
         "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Comment",
@@ -444,8 +487,8 @@
       "id": "Comment 7",
       "parentId": "Group 5",
       "position": {
-        "x": 276.18914557042024,
-        "y": 267.8721350317928
+        "x": 301.18914557042024,
+        "y": 257.8721350317928
       },
       "selected": false,
       "type": "comment",
@@ -457,6 +500,7 @@
         "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Linear",
@@ -472,8 +516,8 @@
       "id": "Linear 1",
       "parentId": "Group 1",
       "position": {
-        "x": 27.772628898929725,
-        "y": 40.074439147430084
+        "x": 40.0,
+        "y": 80.0
       },
       "selected": false,
       "type": "basic",
@@ -484,6 +528,7 @@
         "collapsed": true,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Concatenate",
@@ -492,7 +537,7 @@
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 69.0,
       "id": "Concatenate 2",
       "position": {
         "x": 210.60112224325755,
@@ -504,8 +549,10 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Drug, disease, gene GNN",
@@ -520,20 +567,25 @@
         "title": "Drug, disease, gene GNN"
       },
       "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 490.0,
       "id": "Drug, disease, gene GNN 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -583.5676556501203,
-        "y": -84.21136904212074
+        "x": 441.4224106385949,
+        "y": 50.0
       },
+      "selected": false,
       "type": "basic",
       "width": 893.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: disease-assoc-gene graph",
@@ -544,20 +596,25 @@
         "title": "Input: disease-assoc-gene graph"
       },
       "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: disease-assoc-gene graph 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -119.87986821422116,
-        "y": 911.1301909596511
+        "x": 866.5490252186046,
+        "y": 1015.671286298793
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: drug-targets-gene graph",
@@ -568,20 +625,25 @@
         "title": "Input: drug-targets-gene graph"
       },
       "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: drug-targets-gene graph 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -325.16409632206444,
-        "y": 603.5102221441206
+        "x": 706.5490252186046,
+        "y": 735.671286298793
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: gene features",
@@ -592,20 +654,25 @@
         "title": "Input: gene features"
       },
       "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: gene features 1",
+      "parentId": "Group 2",
       "position": {
-        "x": -534.1741060427338,
-        "y": 868.7309370669959
+        "x": 506.5490252186047,
+        "y": 1015.671286298793
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
         "meta": null,
         "op_id": "Input: gene-interacts-gene graph",
@@ -616,14 +683,70 @@
         "title": "Input: gene-interacts-gene graph"
       },
       "dragHandle": ".drag-handle",
+      "extent": "parent",
       "height": 200.0,
       "id": "Input: gene-interacts-gene graph 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 62.296062215582026,
-        "y": 631.295115268128
+        "x": 1066.5490252186046,
+        "y": 735.671286298793
       },
+      "selected": false,
       "type": "basic",
       "width": 200.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": "# Graph embedding\n\nWe take the tissue-specific PPI graph plus the drug-targets-gene and disease-associated-with-gene edges to construct the graph.\n\nThe GNN state of the gene nodes is initialized with the gene-embeddings vectors. For the drug and disease nodes the initial embedding is learned.\n\nThis custom GNN box hides a lot of complexity, including the way the graph-level embedding is generated from the node-level embeddings."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "extent": "parent",
+      "height": 402.0,
+      "id": "Comment 2",
+      "parentId": "Group 2",
+      "position": {
+        "x": 50.0,
+        "y": 349.3127056919966
+      },
+      "selected": false,
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "meta": null,
+        "op_id": "Comment",
+        "params": {
+          "text": ":::highlight\n# Overview\n\nThis is the architecture of our ODE+GNN tumor volume prediction model. The three main parts of the model are:\n- Take a sample-specific graph that includes one drug node and one disease node, both connected to their associated gene nodes, and gene nodes are connected to each other based on the tissue-specific PPI data. A custom GNN processes this graph into a graph embedding.\n- Take the past tumor volume time series data and process it into an embedding with an LSTM.\n- Take the future timestamps and generate predictions for them with a neural ODE module conditioned on the combined embeddings the the graph and the time series.\n\nThe loss function is computed by comparing the predictions to the ground truth data."
+        },
+        "status": "done",
+        "title": "Comment"
+      },
+      "height": 1530.0,
+      "id": "Comment 3",
+      "position": {
+        "x": -784.3153207697787,
+        "y": -2048.744876238401
+      },
+      "type": "comment",
+      "width": 400.0
     }
   ],
   "paused": false

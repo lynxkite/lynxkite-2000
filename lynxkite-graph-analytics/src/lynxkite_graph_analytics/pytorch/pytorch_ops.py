@@ -133,7 +133,7 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
     return from_bundle
 
 
-reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
+reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray", icon="target")
 
 
 @op("LSTM", weights=True)
@@ -358,7 +358,8 @@ reg(
         ),
         P.basic("lr", 0.0001),
     ],
-    color="green",
+    color="purple",
+    icon="robot",
 )
 
 ops.register_passive_op(

@@ -362,7 +362,7 @@ function LynxKiteFlow() {
     let left = Number.POSITIVE_INFINITY;
     let bottom = Number.NEGATIVE_INFINITY;
     let right = Number.NEGATIVE_INFINITY;
-    const PAD = 10;
+    const PAD = 50;
     for (const node of selectedNodes) {
       if (node.position.y - PAD < top) top = node.position.y - PAD;
       if (node.position.x - PAD < left) left = node.position.x - PAD;
@@ -380,12 +380,14 @@ function LynxKiteFlow() {
     crdt.applyChange((conn) => {
       const wnodes = conn.ws.get("nodes");
       wnodes.unshift([nodeToYMap(groupNode)]);
-      const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
+      const selectedNodesById = new Map(selectedNodes.map((n) => [n.id, n]));
       for (const node of wnodes) {
-        if (selectedNodeIds.has(node.get("id"))) {
+        const feNode = selectedNodesById.get(node.get("id"));
+        if (feNode) {
+          const pos = feNode.position;
           node.set("position", {
-            x: node.get("position").x - left,
-            y: node.get("position").y - top,
+            x: pos.x - left,
+            y: pos.y - top,
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");

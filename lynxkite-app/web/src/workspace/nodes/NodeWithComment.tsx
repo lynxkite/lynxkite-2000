@@ -1,8 +1,23 @@
 import { useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 import Markdown from "react-markdown";
+import remarkDirective from "remark-directive";
 import remarkSmartypants from "remark-smartypants";
+import { visit } from "unist-util-visit";
 import type { UpdateOptions } from "./NodeParameter";
+
+// Write `::: highlight` in the comments to create a highlight block.
+function remarkHighlightDirective() {
+  return (tree: any) => {
+    visit(tree, (node) => {
+      if (node.type === "containerDirective" && node.name === "highlight") {
+        node.data ??= {};
+        node.data.hName = "div";
+        node.data.hProperties = { className: ["highlight"] };
+      }
+    });
+  };
+}
 
 export default function NodeWithComment(props: any) {
   const reactFlow = useReactFlow();
@@ -56,7 +71,9 @@ export default function NodeWithComment(props: any) {
       className={`comment-view drag-handle prose ${props.parentId && "in-group"}`}
       onClick={onClick}
     >
-      <Markdown remarkPlugins={[remarkSmartypants]}>{text}</Markdown>
+      <Markdown remarkPlugins={[remarkSmartypants, remarkDirective, remarkHighlightDirective]}>
+        {text}
+      </Markdown>
     </div>
   );
 }
