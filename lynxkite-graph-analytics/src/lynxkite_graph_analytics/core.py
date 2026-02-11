@@ -3,6 +3,7 @@
 import inspect
 import os
 import pathlib
+import time
 from lynxkite_core import ops, workspace
 from lynxkite_core.executors.one_by_one import mount_gradio
 import dataclasses
@@ -70,6 +71,13 @@ TableColumn = typing.Annotated[
 rendered as a pair of dropdowns for selecting a table in the Bundle and a column inside of
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
+
+DataFrameColumn = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].df.columns[]"}
+]
+"""A type annotation to be used for parameters of an operation. DataFrameColumn is
+rendered as a dropdown in the frontend, listing the columns of the "df" DataFrame.
+The column name is passed to the operation as a string."""
 
 
 @dataclasses.dataclass
@@ -180,20 +188,6 @@ class Bundle:
             other=dict(self.other),
         )
 
-    def to_dict(self, limit: int = 100):
-        """JSON-serializable representation of the bundle, including some data."""
-        return {
-            "dataframes": {
-                name: {
-                    "columns": [str(c) for c in df.columns],
-                    "data": df_for_frontend(df, limit).values.tolist(),
-                }
-                for name, df in self.dfs.items()
-            },
-            "relations": [dataclasses.asdict(relation) for relation in self.relations],
-            "other": {k: str(v) for k, v in self.other.items()},
-        }
-
     def metadata(self):
         """JSON-serializable information about the bundle, metadata only."""
         return {
@@ -209,6 +203,45 @@ class Bundle:
                 k: {"key": k, **getattr(v, "metadata", lambda: {})()} for k, v in self.other.items()
             },
         }
+
+    def to_table_view(self, limit: int = 100):
+        """Converts the bundle to a format suitable for display as tables in the frontend."""
+        return BundleTableView.from_bundle(self, limit=limit)
+
+
+@dataclasses.dataclass
+class SingleTableView:
+    """A JSON-serializable view of a table in the bundle, for use in the frontend.
+
+    Attributes:
+        columns: The columns to display.
+        data: A list of rows, where each row is a list of values.
+    """
+
+    columns: list[str]
+    data: list[list[typing.Any]]
+
+    @staticmethod
+    def from_df(df: pd.DataFrame, limit: int = 100):
+        columns = [str(c) for c in df.columns][:limit]
+        df = df[columns]
+        data = df_for_frontend(df, limit).values.tolist()
+        return SingleTableView(columns=columns, data=data)
+
+
+@dataclasses.dataclass
+class BundleTableView:
+    """A JSON-serializable tabular view of a bundle, for use in the frontend."""
+
+    dataframes: dict[str, SingleTableView]
+    relations: list[RelationDefinition]
+    other: dict[str, typing.Any]
+
+    @staticmethod
+    def from_bundle(bundle: Bundle, limit: int = 100):
+        dataframes = {name: SingleTableView.from_df(df, limit) for name, df in bundle.dfs.items()}
+        other = {k: str(v)[:limit] for k, v in bundle.other.items()}
+        return BundleTableView(dataframes=dataframes, relations=bundle.relations, other=other)
 
 
 def nx_node_attribute_func(name):
@@ -322,6 +355,7 @@ async def _execute_node(
     catalog: ops.Catalog,
     wsres: WorkspaceResult,
 ):
+    t0 = time.time()
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
@@ -386,6 +420,8 @@ async def _execute_node(
         result = op(*inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
+        if dataclasses.is_dataclass(result.display):
+            result.display = dataclasses.asdict(result.display)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
@@ -422,9 +458,16 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     node.publish_result(result)
+    dt = time.time() - t0
+    if dt > 1:
+        print(f"Executed node {node.id} in {dt:.2f} seconds.")
 
 
 def _get_metadata(x) -> dict:
+    if isinstance(x, pd.DataFrame):
+        x = Bundle.from_df(x)
+    if isinstance(x, nx.Graph):
+        x = Bundle.from_nx(x)
     if hasattr(x, "metadata"):
         return x.metadata()
     return {}

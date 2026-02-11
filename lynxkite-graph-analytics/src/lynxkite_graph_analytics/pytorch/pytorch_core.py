@@ -16,6 +16,7 @@ ENV = "PyTorch model"
 def op(name, weights=False, **kwargs):
     if weights:
         kwargs["color"] = "blue"
+    kwargs.setdefault("icon", "stack")
     _op = ops.op(ENV, name, **kwargs)
 
     def decorator(func):
@@ -47,11 +48,13 @@ def reg(name, inputs=[], outputs=None, params=[], **kwargs):
     )
 
 
-def input_op(op_name: str, outputs: list[str] | None = None):
+def input_op(op_name: str, outputs: list[str] | None = None, **kwargs):
     outputs = outputs or ["input"]
+    kwargs.setdefault("color", "green")
+    kwargs.setdefault("icon", "file-filled")
 
     def decorator(func):
-        func = ops.op(ENV, f"Input: {op_name}", outputs=outputs)(func)
+        func = ops.op(ENV, f"Input: {op_name}", outputs=outputs, **kwargs)(func)
         op = func.__op__
         op.params.insert(0, ops.Parameter.basic("_input_name", ""))
         op.func = lambda *, _input_name, **kwargs: func(**kwargs)

@@ -2,7 +2,7 @@
 
 from lynxkite_core import ops
 import numpy as np
-from . import core
+from .. import core
 
 import typing
 import pandas as pd
