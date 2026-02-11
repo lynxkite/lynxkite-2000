@@ -458,7 +458,9 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     node.publish_result(result)
-    print(f"Executed node {node.id} in {time.time() - t0:.2f} seconds.")
+    dt = time.time() - t0
+    if dt > 1:
+        print(f"Executed node {node.id} in {dt:.2f} seconds.")
 
 
 def _get_metadata(x) -> dict:
