@@ -10,9 +10,7 @@ if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
 
 pd.options.mode.copy_on_write = True  # Prepare for Pandas 3.0.
 
-from .core import *  # noqa (easier access for core classes)
-from . import lynxkite_ops  # noqa (imported to trigger registration)
+from . import ops  # noqa (imported to trigger registration)
 from . import networkx_ops  # noqa (imported to trigger registration)
 from . import pytorch  # noqa (imported to trigger registration)
-from . import ml_ops  # noqa (imported to trigger registration)
-from . import pykeen_ops  # noqa (imported to trigger registration)
+from .core import *  # noqa (easier access for core classes)
