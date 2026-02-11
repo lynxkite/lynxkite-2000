@@ -189,7 +189,7 @@ The `view` argument can be one of the following:
 - `molecule`: Return a molecule as a PDB or SDF string, or an `rdkit.Chem.Mol` object.
   It will be displayed using [3Dmol.js](https://3Dmol.org/).
 - `table_view`: Return
-  [`Bundle.to_dict()`](../reference/lynxkite-graph-analytics/core.md#lynxkite_graph_analytics.core.Bundle.to_dict).
+  [`BundleTableView()`](../reference/lynxkite-graph-analytics/core.md#lynxkite_graph_analytics.core.BundleTableView).
 
 ## Adding new environments
 

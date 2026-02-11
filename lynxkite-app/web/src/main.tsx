@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "@fontsource/inter";
 import "@fontsource/inter/500.css";
+import "@fontsource/inter/900.css";
 import "@xyflow/react/dist/style.css";
 import "./index.css";
 import {
