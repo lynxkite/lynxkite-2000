@@ -41,3 +41,13 @@ def organize(bundles: list[core.Bundle], *, relations: str = ""):
     if relations.strip():
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_table_view(limit=100))
+
+
+@op("Derive property", icon="arrow-big-right-lines")
+def derive_property(
+    b: core.Bundle, *, table_name: core.TableName, formula: ops.LongStr
+) -> core.Bundle:
+    b = b.copy()
+    df = b.dfs[table_name]
+    b.dfs[table_name] = df.eval(formula)
+    return b
