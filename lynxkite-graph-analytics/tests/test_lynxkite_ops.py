@@ -4,7 +4,7 @@ import networkx as nx
 
 from lynxkite_core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute, ENV
-from lynxkite_graph_analytics.lynxkite_ops import FileFormat, export_to_file
+from lynxkite_graph_analytics.ops.file_ops import FileFormat, export_to_file
 
 
 async def test_execute_operation_not_in_catalog():
