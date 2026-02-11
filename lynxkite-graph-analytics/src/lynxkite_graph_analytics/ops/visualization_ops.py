@@ -26,6 +26,7 @@ def _map_color(value):
         ]
     else:
         cmap = matplotlib.cm.get_cmap("Paired")
+        value = value.fillna("NaN").astype(str)
         categories = {k: i for i, k in enumerate(value.unique())}
         assert isinstance(cmap, matplotlib.colors.ListedColormap)
         colors = list(
