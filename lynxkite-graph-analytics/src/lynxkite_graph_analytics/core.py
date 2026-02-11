@@ -3,6 +3,7 @@
 import inspect
 import os
 import pathlib
+import time
 from lynxkite_core import ops, workspace
 from lynxkite_core.executors.one_by_one import mount_gradio
 import dataclasses
@@ -70,6 +71,13 @@ TableColumn = typing.Annotated[
 rendered as a pair of dropdowns for selecting a table in the Bundle and a column inside of
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
+
+DataFrameColumn = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].df.columns[]"}
+]
+"""A type annotation to be used for parameters of an operation. DataFrameColumn is
+rendered as a dropdown in the frontend, listing the columns of the "df" DataFrame.
+The column name is passed to the operation as a string."""
 
 
 @dataclasses.dataclass
@@ -347,6 +355,7 @@ async def _execute_node(
     catalog: ops.Catalog,
     wsres: WorkspaceResult,
 ):
+    t0 = time.time()
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
@@ -449,9 +458,14 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     node.publish_result(result)
+    print(f"Executed node {node.id} in {time.time() - t0:.2f} seconds.")
 
 
 def _get_metadata(x) -> dict:
+    if isinstance(x, pd.DataFrame):
+        x = Bundle.from_df(x)
+    if isinstance(x, nx.Graph):
+        x = Bundle.from_nx(x)
     if hasattr(x, "metadata"):
         return x.metadata()
     return {}
