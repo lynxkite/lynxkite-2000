@@ -1884,6 +1884,7 @@ dependencies = [
     { name = "lynxkite-pillow-example" },
     { name = "lynxkite-vibe" },
     { name = "pandas-stubs" },
+    { name = "pillow" },
 ]
 
 [package.dev-dependencies]
@@ -1910,6 +1911,7 @@ requires-dist = [
     { name = "lynxkite-pillow-example", editable = "lynxkite-pillow-example" },
     { name = "lynxkite-vibe", editable = "lynxkite-vibe" },
     { name = "pandas-stubs", specifier = ">=2.3.3.260113" },
+    { name = "pillow", specifier = ">=11.3.0" },
 ]
 
 [package.metadata.requires-dev]
