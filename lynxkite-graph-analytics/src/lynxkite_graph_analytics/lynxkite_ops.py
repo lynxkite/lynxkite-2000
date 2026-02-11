@@ -265,6 +265,15 @@ def visualize_graph(
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
+
+    def format_label(value):
+        if pd.isna(value):
+            return ""
+        elif isinstance(value, float):
+            return f"{value:.2f}"
+        else:
+            return str(value)
+
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
@@ -294,7 +303,7 @@ def visualize_graph(
                         "symbolSize": 50 / len(nodes) ** 0.5,
                         "itemStyle": {"color": n.color} if color_nodes_by else {},
                         "label": {"show": label_by is not None},
-                        "name": str(getattr(n, label_by, "")) if label_by else None,
+                        "name": format_label(getattr(n, label_by, "")) if label_by else None,
                         "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
                     }
                     for n in nodes
