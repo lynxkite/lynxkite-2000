@@ -40,6 +40,7 @@ class WorkspaceNodeData(BaseConfig):
     display: Optional[Any] = None
     input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
+    message: Optional[str] = None
     collapsed: Optional[bool] = None
     expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
@@ -74,10 +75,12 @@ class WorkspaceNode(BaseConfig):
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
+        self.data.message = None
         self.data.status = NodeStatus.active
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["error"] = None
+                self._crdt["data"]["message"] = None
                 self._crdt["data"]["status"] = NodeStatus.active
 
     def publish_result(self, result: ops.Result):
@@ -85,6 +88,7 @@ class WorkspaceNode(BaseConfig):
         self.data.display = result.display
         self.data.input_metadata = result.input_metadata
         self.data.error = result.error
+        self.data.message = result.message
         self.data.status = NodeStatus.done
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
@@ -93,9 +97,17 @@ class WorkspaceNode(BaseConfig):
                     self._crdt["data"]["display"] = self.data.display
                     self._crdt["data"]["input_metadata"] = self.data.input_metadata
                     self._crdt["data"]["error"] = self.data.error
+                    self._crdt["data"]["message"] = self.data.message
                 except Exception as e:
                     self._crdt["data"]["error"] = str(e)
                     raise e
+
+    def publish_message(self, message: str):
+        """Sends a message to the frontend. This can be used for progress updates."""
+        self.data.message = message
+        if self._crdt and "data" in self._crdt:
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["message"] = message
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
