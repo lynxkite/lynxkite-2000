@@ -14,9 +14,13 @@ import subprocess
 import traceback
 import types
 import typing
+import contextvars
+import contextlib
+import io
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
+import tqdm as _tqdm_module
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -26,16 +30,39 @@ Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
 
+execution_log: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "execution_log", default=None
+)
+execution_message_sink: contextvars.ContextVar[typing.Callable[[str], None] | None] = (
+    contextvars.ContextVar("execution_message_sink", default=None)
+)
+execution_tqdm_to_ui = contextvars.ContextVar("execution_tqdm_to_ui", default=False)
+
+
 typeof = type  # We have some arguments called "type".
 
-FunctionWrapper = typing.Callable[[typing.Callable], typing.Callable]
+
+class FunctionWrapper(typing.Protocol):
+    def __call__(
+        self,
+        func: typing.Callable,
+        *,
+        ignore: list[str] | None = None,
+    ) -> typing.Callable: ...
+
+
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionWrapper | None = None
 
 
-def cached(func):
+def cached(func, *, ignore_args: list[str] | None = None):
     if CACHE_WRAPPER is None:
         return func
+    if ignore_args:
+        try:
+            return CACHE_WRAPPER(func, ignore=ignore_args)
+        except TypeError:
+            pass
     return CACHE_WRAPPER(func)
 
 
@@ -150,6 +177,7 @@ class Result:
     display: ReadOnlyJSON | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
+    message: str | None = None
 
 
 def get_optional_type(type):
@@ -184,6 +212,75 @@ def _param_to_type(name, value, type):
     return value
 
 
+def send_message(
+    *args,
+    mode: typing.Literal["append", "replace"] = "append",
+    **kwargs,
+):
+    """Send text to the UI message area in real time using python's print function.
+
+    Args:
+        mode: "append" adds to the current message (default),
+            "replace" overwrites the entire current message.
+    """
+    buf = io.StringIO()
+    kwargs.pop("file", None)
+    print(*args, file=buf, **kwargs)
+    chunk = buf.getvalue()
+    logs = execution_log.get()
+    if logs is not None:
+        if mode == "replace":
+            logs = ""
+        logs += chunk
+        message = logs
+    else:
+        message = chunk
+    execution_log.set(message)
+    sink = execution_message_sink.get()
+    if sink:
+        sink(message)
+
+
+if _tqdm_module is not None:
+    _ORIGINAL_TQDM = _tqdm_module.tqdm
+
+    class LynxKiteTqdm(_ORIGINAL_TQDM):
+        """A tqdm wrapper that also mirrors progress text to the LynxKite UI."""
+
+        def display(self, msg=None, pos=None):
+            super().display(msg=msg, pos=pos)
+            if self.disable:
+                return
+            if not execution_tqdm_to_ui.get():
+                return
+            text = msg if msg is not None else str(self)
+            if text:
+                send_message(text, end="", mode="replace")
+
+    _tqdm_module.tqdm = LynxKiteTqdm  # type: ignore[invalid-assignment]
+
+
+@contextlib.contextmanager
+def bind_message_sink(sink: typing.Callable[[str], None] | None):
+    """Bind a UI message sink for the current op execution context."""
+    token = execution_message_sink.set(sink)
+    try:
+        yield
+    finally:
+        execution_message_sink.reset(token)
+
+
+@contextlib.contextmanager
+def bind_tqdm_to_ui(enabled: bool = True):
+    """Bind whether tqdm progress should be mirrored to UI messages."""
+    previous = execution_tqdm_to_ui.get()
+    execution_tqdm_to_ui.set(enabled)
+    try:
+        yield
+    finally:
+        execution_tqdm_to_ui.set(previous)
+
+
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     categories: list[str]
@@ -196,15 +293,29 @@ class Op(BaseConfig):
     color: str = "orange"  # The color of the operation in the UI.
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
+    pass_op: bool = False
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(
-        default=None
-    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+    id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+
+    @property
+    def tqdm(self):
+        """Context manager that enables forwarding tqdm progress to the UI.
+
+        Example:
+            with self.tqdm:
+                for i in tqdm(range(100)):
+                    ...
+        """
+        return bind_tqdm_to_ui(True)
 
     def __call__(self, *inputs, **params):
         # Convert parameters.
         params = self.convert_params(params)
-        res = self.func(*inputs, **params)
+        if self.pass_op:
+            res = self.func(self, *inputs, **params)
+        else:
+            res = self.func(*inputs, **params)
+
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
             if self.type in [
@@ -218,6 +329,8 @@ class Op(BaseConfig):
                 res = Result(display=res)
             else:
                 res = Result(output=res)
+        if execution_log.get() is not None and res.message is None:
+            res.message = execution_log.get()
         return res
 
     def get_input(self, name: str):
@@ -241,6 +354,13 @@ class Op(BaseConfig):
             if p.name in params:
                 res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
+
+    def print(self, *args, append: bool = True, **kwargs):
+        send_message(
+            *args,
+            mode="append" if append else "replace",
+            **kwargs,
+        )
 
     @pydantic.model_validator(mode="after")
     def compute_id(self):
@@ -306,6 +426,10 @@ def op(
     def decorator(func):
         doc = parse_doc(func)
         sig = inspect.signature(func)
+        pass_op = False
+        parameters = list(sig.parameters.values())
+        if parameters and parameters[0].name == "self":
+            pass_op = True
         _view = view
         if view == "matplotlib":
             _view = "image"
@@ -313,13 +437,13 @@ def op(
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = cached(func)
+                func = cached(func, ignore_args=["self"] if pass_op else None)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
-            if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
+            if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD) and name != "self"
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -342,6 +466,7 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
+            pass_op=pass_op,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})

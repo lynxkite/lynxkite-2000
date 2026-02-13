@@ -1,15 +1,7 @@
 {
-  "editor.formatOnSave": true,
-  "ruff.enable": true,
-  "html.format.enable": true,
-  "css.format.enable": true,
-  "typescript.format.enable": true,
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  }
+  "python.testing.pytestArgs": [
+    "."
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

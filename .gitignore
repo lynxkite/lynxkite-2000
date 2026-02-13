@@ -16,6 +16,7 @@ build
 *.egg-info
 
 examples/.*
+examples/uploads/ode-gnn
 
 # Playwright
 test-results
