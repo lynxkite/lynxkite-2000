@@ -1,0 +1,22 @@
+name: Update no-workspace branch
+
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update-no-workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: no-workspace
+          fetch-depth: 0
+      - name: Merge main into no-workspace
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge origin/main --no-ff --commit -X ours -m "Merge main into no-workspace"
+      - name: Push changes
+        run: git push origin no-workspace
