@@ -1,5 +1,6 @@
 """A LynxKite executor that simply passes the output of one box to the other."""
 
+import asyncio
 import os
 from .. import ops
 from .. import workspace
@@ -25,7 +26,14 @@ async def await_if_needed(obj):
     return obj
 
 
+async def call_op(op, *inputs, **params):
+    if inspect.iscoroutinefunction(op.func):
+        return op(*inputs, **params)
+    return await asyncio.to_thread(op, *inputs, **params)
+
+
 async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
+    loop = asyncio.get_running_loop()
     nodes = {n.id: n for n in ws.nodes}
     dependencies = {n: [] for n in nodes}
     in_edges = {n: {} for n in nodes}
@@ -56,9 +64,15 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
             if missing:
                 node.publish_error(f"Missing input: {', '.join(missing)}")
                 continue
-            result = op(*inputs, **params)
-            result.output = await await_if_needed(result.output)
-            result.display = await await_if_needed(result.display)
+
+            def message_sink(message: str):
+                loop.call_soon_threadsafe(node.publish_message, message)
+
+            with ops.bind_message_sink(message_sink):
+                result = await call_op(op, *inputs, **params)
+                result.output = await await_if_needed(result.output)
+                result.display = await await_if_needed(result.display)
+
             if len(op.outputs) == 1:
                 [output] = op.outputs
                 outputs[node_id, output.name] = result.output

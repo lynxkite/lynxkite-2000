@@ -1,5 +1,6 @@
 """Graph analytics executor and data types."""
 
+import asyncio
 import inspect
 import os
 import pathlib
@@ -339,6 +340,12 @@ async def await_if_needed(obj):
     return obj
 
 
+async def call_op(op, *inputs, **params):
+    if inspect.iscoroutinefunction(op.func):
+        return op(*inputs, **params)
+    return await asyncio.to_thread(op, *inputs, **params)
+
+
 def _to_bundle(x):
     if isinstance(x, nx.Graph):
         x = Bundle.from_nx(x)
@@ -355,6 +362,7 @@ async def _execute_node(
     catalog: ops.Catalog,
     wsres: WorkspaceResult,
 ):
+    loop = asyncio.get_running_loop()
     t0 = time.time()
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
@@ -417,11 +425,16 @@ async def _execute_node(
         return
     # Execute op.
     try:
-        result = op(*inputs, **params)
-        result.output = await await_if_needed(result.output)
-        result.display = await await_if_needed(result.display)
-        if dataclasses.is_dataclass(result.display):
-            result.display = dataclasses.asdict(result.display)
+
+        def message_sink(message: str):
+            loop.call_soon_threadsafe(node.publish_message, message)
+
+        with ops.bind_message_sink(message_sink):
+            result = await call_op(op, *inputs, **params)
+            result.output = await await_if_needed(result.output)
+            result.display = await await_if_needed(result.display)
+            if dataclasses.is_dataclass(result.display):
+                result.display = dataclasses.asdict(result.display)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

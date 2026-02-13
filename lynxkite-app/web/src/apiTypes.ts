@@ -100,6 +100,7 @@ export interface WorkspaceNodeData {
       }[]
     | null;
   error?: string | null;
+  message?: string | null;
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
