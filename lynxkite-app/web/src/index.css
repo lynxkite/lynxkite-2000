@@ -152,6 +152,7 @@ svg {
   }
 
   .lynxkite-node .title {
+    height: 53px;
     font-weight: var(--bold);
     padding: 8px;
     background-image: linear-gradient(
@@ -172,6 +173,7 @@ svg {
       --status-color-2 0.3s,
       --status-color-3 0.3s;
     display: flex;
+    align-items: center;
     flex-direction: row;
     gap: 10px;
 
