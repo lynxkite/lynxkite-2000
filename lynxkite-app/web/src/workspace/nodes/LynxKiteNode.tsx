@@ -22,6 +22,8 @@ interface LynxKiteNodeProps {
   children: any;
   parentId?: string;
   dragging?: boolean;
+  positionAbsoluteX?: number;
+  positionAbsoluteY?: number;
 }
 
 function paramSummary(data: WorkspaceNodeData): string {
@@ -208,7 +210,23 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     boxShadow: `0px 5px 30px 0px ${color.toString()}`,
   };
   const titleTooltip = data.collapsed ? "Click to expand node" : summary;
-
+  const time = Date.now();
+  const dtime =
+    state.creationTime +
+    0.2 * ((props.positionAbsoluteX ?? 0) + 0.3 * (props.positionAbsoluteY ?? 0));
+  setTimeout(
+    () => {
+      containerRef.current?.classList.add("start-entry");
+    },
+    Math.max(0, dtime - time),
+  );
+  setTimeout(
+    () => {
+      containerRef.current?.classList.remove("start-entry");
+      containerRef.current?.classList.add("finish-entry");
+    },
+    Math.max(10, dtime - time + 50),
+  );
   return (
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
