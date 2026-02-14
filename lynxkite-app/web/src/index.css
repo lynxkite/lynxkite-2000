@@ -103,6 +103,19 @@ svg {
       display: flex;
       flex-direction: column;
     }
+
+    visibility: hidden;
+  }
+
+  .node-container.start-entry .lynxkite-node {
+    visibility: visible;
+    transform: translateX(-50%) perspective(500px) rotateY(-90deg);
+  }
+
+  .node-container.finish-entry .lynxkite-node {
+    visibility: visible;
+    transform: none;
+    transition: transform 0.5s ease-in;
   }
 
   .in-group .lynxkite-node {
