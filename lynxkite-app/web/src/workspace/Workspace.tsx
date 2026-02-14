@@ -531,7 +531,7 @@ function LynxKiteFlow() {
               onConnect={onConnect}
               proOptions={{ hideAttribution: true }}
               maxZoom={10}
-              minZoom={0.2}
+              minZoom={0.1}
               zoomOnScroll={true}
               panOnScroll={false}
               panOnDrag={[0]}
