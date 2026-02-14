@@ -578,6 +578,40 @@ svg {
   }
 }
 
+@keyframes sparky-float {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0;
+  }
+
+  26% {
+    opacity: 1;
+  }
+
+  28% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  81% {
+    opacity: 1;
+  }
+
+  83% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 .params-expander {
   font-size: 15px;
   padding: 4px;
@@ -593,6 +627,8 @@ svg {
 }
 
 .directory {
+  padding-top: 50px;
+
   .entry-list {
     width: 100%;
     margin: 10px auto;
@@ -616,12 +652,22 @@ svg {
 
   .logo {
     margin: 0;
-    padding-top: 50px;
     text-align: center;
+    position: relative;
   }
 
   .logo-image {
-    max-width: 50%;
+    width: 50vw;
+  }
+
+  .logo-image-sparky {
+    position: absolute;
+    top: -5.5vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 61vw;
+    mix-blend-mode: lighten;
+    animation: sparky-float 10s ease-in-out infinite;
   }
 
   .tagline {
