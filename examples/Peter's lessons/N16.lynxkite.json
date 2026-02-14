@@ -776,11 +776,11 @@
         "status": "done",
         "title": "Diameter"
       },
-      "height": 71.0,
+      "height": 70.0,
       "id": "Diameter 1",
       "position": {
-        "x": 720.0,
-        "y": 440.0
+        "x": 735.0,
+        "y": 455.0
       },
       "type": "basic",
       "width": 392.0
@@ -828,14 +828,14 @@
         "status": "done",
         "title": "View tables"
       },
-      "height": 160.0,
+      "height": 140.0,
       "id": "View tables 2",
       "position": {
-        "x": 1240.0,
-        "y": 400.0
+        "x": 1225.0,
+        "y": 420.0
       },
       "type": "table_view",
-      "width": 200.0
+      "width": 210.0
     },
     {
       "data": {
@@ -1488,10 +1488,10 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 280.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -1538,8 +1538,8 @@
       "height": 280.0,
       "id": "SQL 1",
       "position": {
-        "x": 1600.0,
-        "y": 1000.0
+        "x": 1610.0,
+        "y": 1015.0
       },
       "type": "basic",
       "width": 280.0
@@ -1590,11 +1590,11 @@
         "status": "done",
         "title": "Degree"
       },
-      "height": 68.0,
+      "height": 70.0,
       "id": "Degree 1",
       "position": {
-        "x": 720.0,
-        "y": 760.0
+        "x": 980.0,
+        "y": 1120.0
       },
       "type": "basic",
       "width": 200.0
@@ -2790,11 +2790,11 @@
         "status": "done",
         "title": "Clustering"
       },
-      "height": 71.0,
+      "height": 70.0,
       "id": "Clustering 1",
       "position": {
-        "x": 1160.0,
-        "y": 2160.0
+        "x": 1190.0,
+        "y": 2135.0
       },
       "type": "basic",
       "width": 218.0
@@ -2853,14 +2853,14 @@
         "status": "done",
         "title": "Binned graph visualization"
       },
-      "height": 640.0,
+      "height": 630.0,
       "id": "Binned graph visualization 2",
       "position": {
-        "x": 1480.0,
-        "y": 1880.0
+        "x": 1505.0,
+        "y": 1855.0
       },
       "type": "image",
-      "width": 520.0
+      "width": 560.0
     },
     {
       "data": {

@@ -542,7 +542,7 @@ function LynxKiteFlow() {
           >
             <Background
               variant={BackgroundVariant.Dots}
-              gap={40}
+              gap={35}
               size={6}
               color="#f0f0f0"
               bgColor="#fafafa"
