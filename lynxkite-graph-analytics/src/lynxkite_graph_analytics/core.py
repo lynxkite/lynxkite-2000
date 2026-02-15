@@ -72,11 +72,11 @@ rendered as a pair of dropdowns for selecting a table in the Bundle and a column
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
 
-DataFrameColumn = typing.Annotated[
-    str, {"format": "dropdown", "metadata_query": "[].dataframes[].df.columns[]"}
+RecordsColumn = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].records.columns[]"}
 ]
-"""A type annotation to be used for parameters of an operation. DataFrameColumn is
-rendered as a dropdown in the frontend, listing the columns of the "df" DataFrame.
+"""A type annotation to be used for parameters of an operation. RecordsColumn is
+rendered as a dropdown in the frontend, listing the columns of the "records" DataFrame.
 The column name is passed to the operation as a string."""
 
 
@@ -153,7 +153,7 @@ class Bundle:
 
     @classmethod
     def from_df(cls, df: pd.DataFrame):
-        return cls(dfs={"df": df})
+        return cls(dfs={"records": df})
 
     def to_nx(self):
         # TODO: Use relations.
