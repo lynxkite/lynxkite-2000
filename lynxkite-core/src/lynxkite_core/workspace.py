@@ -39,6 +39,7 @@ class WorkspaceNodeData(BaseConfig):
     params: dict
     display: Optional[Any] = None
     input_metadata: Optional[list[dict]] = None
+    output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
     collapsed: Optional[bool] = None
     expanded_height: Optional[float] = None  # The frontend uses this.
@@ -84,6 +85,7 @@ class WorkspaceNode(BaseConfig):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
         self.data.input_metadata = result.input_metadata
+        self.data.output_metadata = result.output_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
         if self._crdt and "data" in self._crdt:
@@ -92,6 +94,7 @@ class WorkspaceNode(BaseConfig):
                     self._crdt["data"]["status"] = NodeStatus.done
                     self._crdt["data"]["display"] = self.data.display
                     self._crdt["data"]["input_metadata"] = self.data.input_metadata
+                    self._crdt["data"]["output_metadata"] = self.data.output_metadata
                     self._crdt["data"]["error"] = self.data.error
                 except Exception as e:
                     self._crdt["data"]["error"] = str(e)

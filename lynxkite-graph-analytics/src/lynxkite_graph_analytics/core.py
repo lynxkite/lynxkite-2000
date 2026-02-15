@@ -195,6 +195,7 @@ class Bundle:
                 name: {
                     "key": name,
                     "columns": sorted(str(c) for c in df.columns),
+                    "length": len(df),
                 }
                 for name, df in self.dfs.items()
             },
@@ -427,6 +428,12 @@ async def _execute_node(
             traceback.print_exc()
         result = ops.Result(error=str(e))
     result.input_metadata = [_get_metadata(i) for i in inputs]
+    if len(op.outputs) > 1 and isinstance(result.output, dict):
+        result.output_metadata = [_get_metadata(result.output.get(o.name)) for o in op.outputs]
+    elif len(op.outputs) == 1:
+        result.output_metadata = [_get_metadata(result.output)]
+    else:
+        result.output_metadata = []
     try:
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"

@@ -288,6 +288,31 @@ svg {
     visibility: visible;
   }
 
+  .handle-metadata-label {
+    font-size: 9px;
+    color: #666;
+    white-space: nowrap;
+    position: absolute;
+    top: -10px;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .react-flow__handle-left .handle-metadata-label {
+    right: 18px;
+    text-align: right;
+  }
+
+  .react-flow__handle-right .handle-metadata-label {
+    left: 18px;
+    text-align: left;
+  }
+
+  .react-flow__handle-top .handle-metadata-label,
+  .react-flow__handle-bottom .handle-metadata-label {
+    left: 15px;
+  }
+
   .node-resizer {
     position: absolute;
     bottom: 8px;
