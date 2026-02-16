@@ -295,7 +295,9 @@ class Op(BaseConfig):
     doc: list | None = None
     pass_op: bool = False
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+    id: str = pydantic.Field(
+        default=None
+    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
     @property
     def tqdm(self):

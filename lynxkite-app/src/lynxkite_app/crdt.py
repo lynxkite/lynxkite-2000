@@ -335,7 +335,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     with ws_crdt.doc.transaction():
         for nc in ws_crdt["nodes"]:
             nc["data"]["status"] = "planned"
-            nc["data"]["error"] = None
             nc["data"]["message"] = None
     await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
     ws_pyd.save(path)
