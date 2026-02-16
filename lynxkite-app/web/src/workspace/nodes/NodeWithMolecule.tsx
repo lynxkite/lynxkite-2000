@@ -24,28 +24,163 @@ const NodeWithMolecule = (props: any) => {
         }
 
         const viewer = viewerRef.current;
-
-        // Clear previous models
         viewer.clear();
 
-        // Add new model and style it
-        viewer.addModel(config.data);
-        viewer.setStyle({}, { stick: {} });
+        // Detect format and load data
+        if (config.data) {
+          const dataStr = String(config.data);
+          let format = "pdb"; // default
+
+          // Detect format from content
+          if (dataStr.trim().startsWith("data_")) {
+            format = "cif"; // mmCIF format
+          } else if (dataStr.includes("@<tripos>MOLECULE")) {
+            format = "mol2";
+          } else if (dataStr.includes("V2000") || dataStr.includes("V3000")) {
+            format = "sdf";
+          }
+
+          console.log(`Detected format: ${format}`);
+
+          try {
+            viewer.addModel(config.data, format);
+          } catch (_formatError) {
+            console.log(`Failed to load as ${format}, trying as pdb...`);
+            viewer.addModel(config.data, "pdb");
+          }
+        }
+
+        // Try to load ligand if present
+        if (config.ligand) {
+          const ligandStr = String(config.ligand);
+          let ligandFormat = "sdf"; // default for ligands
+
+          if (ligandStr.trim().startsWith("data_")) {
+            ligandFormat = "cif";
+          } else if (ligandStr.includes("@<tripos>MOLECULE")) {
+            ligandFormat = "mol2";
+          } else if (ligandStr.includes("HEADER")) {
+            ligandFormat = "pdb";
+          }
+
+          try {
+            viewer.addModel(config.ligand, ligandFormat);
+            console.log(`Ligand loaded as ${ligandFormat}`);
+          } catch (e) {
+            console.log("Could not load ligand:", e);
+          }
+        }
+
+        // Apply styling to everything
+        const model = viewer.getModel();
+        if (model?.atoms) {
+          const chainColors: { [key: string]: number } = {
+            A: 0xff00ff,
+            B: 0x00ff00,
+            G: 0xff8c00,
+            R: 0x0000ff,
+            S: 0xff0000,
+          };
+
+          const chains = new Set<string>();
+          model.atoms.forEach((atom: any) => {
+            if (atom.chain) chains.add(atom.chain);
+          });
+
+          console.log("Chains found:", Array.from(chains));
+
+          const chainAtomCounts: { [key: string]: number } = {};
+          model.atoms.forEach((atom: any) => {
+            if (atom.chain) {
+              chainAtomCounts[atom.chain] = (chainAtomCounts[atom.chain] || 0) + 1;
+            }
+          });
+          console.log("Atoms per chain:", chainAtomCounts);
+
+          viewer.addSurface($3Dmol.SurfaceType.VDW, {
+            opacity: 0.4,
+            color: 0xcccccc,
+            wireframe: false,
+          });
+
+          viewer.setStyle(
+            {},
+            {
+              cartoon: {
+                color: "spectrum",
+              },
+            },
+          );
+
+          chains.forEach((chain) => {
+            const color = chainColors[chain] || 0x888888;
+
+            console.log(`Styling chain ${chain} with color ${color.toString(16)}`);
+
+            viewer.setStyle(
+              { chain: chain },
+              {
+                cartoon: {
+                  color: color,
+                  thickness: 0.9,
+                },
+                tube: {
+                  color: color,
+                  radius: 0.3,
+                },
+              },
+            );
+          });
+
+          viewer.setStyle(
+            { hetflag: true },
+            {
+              stick: {
+                radius: 0.25,
+                colorscheme: "default",
+              },
+              sphere: {
+                scale: 0.35,
+                colorscheme: "default",
+              },
+            },
+          );
+
+          const nonStandardResidues = ["LIG", "AVE", "SDF", "MOL"];
+          nonStandardResidues.forEach((res) => {
+            viewer.setStyle(
+              { resn: res },
+              {
+                stick: {
+                  radius: 0.25,
+                  colorscheme: "Jmol",
+                },
+                sphere: {
+                  scale: 0.35,
+                  colorscheme: "Jmol",
+                },
+              },
+            );
+          });
+        }
+
         viewer.zoomTo();
         viewer.render();
       } catch (error) {
         console.error("Error rendering 3D molecule:", error);
       }
     }
+
     run();
 
     const resizeObserver = new ResizeObserver(() => {
-      viewerRef.current?.resize();
+      if (viewerRef.current) {
+        viewerRef.current.resize();
+      }
     });
 
     resizeObserver.observe(observed);
 
-    // Block ALL wheel events and implement our own zoom
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -59,8 +194,10 @@ const NodeWithMolecule = (props: any) => {
       }
     };
 
-    // Capture phase with passive false to completely block 3Dmol
-    observed.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    observed.addEventListener("wheel", handleWheel, {
+      passive: false,
+      capture: true,
+    });
 
     return () => {
       resizeObserver.unobserve(observed);
