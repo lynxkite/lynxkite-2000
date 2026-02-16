@@ -341,7 +341,7 @@ async def await_if_needed(obj):
 
 
 async def call_op(op, *inputs, **params):
-    if inspect.iscoroutinefunction(op.func):
+    if ops.is_async_callable(op.func):
         return op(*inputs, **params)
     return await asyncio.to_thread(op, *inputs, **params)
 
@@ -429,12 +429,13 @@ async def _execute_node(
         def message_sink(message: str):
             loop.call_soon_threadsafe(node.publish_message, message)
 
-        with ops.bind_message_sink(message_sink):
+        with ops.bind_message_sink(message_sink), ops.bind_execution_log():
             result = await call_op(op, *inputs, **params)
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)
             if dataclasses.is_dataclass(result.display):
                 result.display = dataclasses.asdict(result.display)
+            result = result.finalize_message()
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

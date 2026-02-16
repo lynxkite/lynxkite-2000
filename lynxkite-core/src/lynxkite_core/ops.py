@@ -55,15 +55,101 @@ class FunctionWrapper(typing.Protocol):
 CACHE_WRAPPER: FunctionWrapper | None = None
 
 
+def is_async_callable(func: typing.Any) -> bool:
+    if inspect.iscoroutinefunction(func):
+        return True
+    call = getattr(func, "__call__", None)
+    if call and inspect.iscoroutinefunction(call):
+        return True
+    wrapped = getattr(func, "func", None)
+    if wrapped and inspect.iscoroutinefunction(wrapped):
+        return True
+    return False
+
+
+@dataclass
+class CachedCall:
+    result: typing.Any
+    message: str
+
+
 def cached(func, *, ignore_args: list[str] | None = None):
     if CACHE_WRAPPER is None:
         return func
+
+    async_mode = is_async_callable(func)
+
+    if async_mode:
+
+        @functools.wraps(func)
+        async def call_with_message_capture(*args, **kwargs):
+            captured_message = ""
+            original_sink = execution_message_sink.get()
+
+            def sink(message: str):
+                nonlocal captured_message
+                captured_message = message
+                if original_sink:
+                    original_sink(message)
+
+            token = execution_message_sink.set(sink)
+            try:
+                result = await func(*args, **kwargs)
+                return CachedCall(result=result, message=captured_message)
+            finally:
+                execution_message_sink.reset(token)
+
+    else:
+
+        @functools.wraps(func)
+        def call_with_message_capture(*args, **kwargs):
+            captured_message = ""
+            original_sink = execution_message_sink.get()
+
+            def sink(message: str):
+                nonlocal captured_message
+                captured_message = message
+                if original_sink:
+                    original_sink(message)
+
+            token = execution_message_sink.set(sink)
+            try:
+                result = func(*args, **kwargs)
+                return CachedCall(result=result, message=captured_message)
+            finally:
+                execution_message_sink.reset(token)
+
     if ignore_args:
         try:
-            return CACHE_WRAPPER(func, ignore=ignore_args)
+            cached_func = CACHE_WRAPPER(call_with_message_capture, ignore=ignore_args)
         except TypeError:
-            pass
-    return CACHE_WRAPPER(func)
+            cached_func = CACHE_WRAPPER(call_with_message_capture)
+    else:
+        cached_func = CACHE_WRAPPER(call_with_message_capture)
+
+    if async_mode:
+
+        @functools.wraps(func)
+        async def wrapped(*args, **kwargs):
+            cached_result = await cached_func(*args, **kwargs)
+            if isinstance(cached_result, CachedCall):
+                if cached_result.message:
+                    execution_log.set(cached_result.message)
+                return cached_result.result
+            return cached_result
+
+    else:
+
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            cached_result = cached_func(*args, **kwargs)
+            if isinstance(cached_result, CachedCall):
+                if cached_result.message:
+                    execution_log.set(cached_result.message)
+                return cached_result.result
+            return cached_result
+
+    return wrapped
 
 
 def type_to_json(t):
@@ -179,6 +265,13 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     message: str | None = None
 
+    def finalize_message(self) -> Result:
+        if self.message is None:
+            current = execution_log.get()
+            if current:
+                self.message = current
+        return self
+
 
 def get_optional_type(type):
     """For a type like `int | None`, returns `int`. Returns `None` otherwise."""
@@ -216,7 +309,7 @@ def send_message(
     *args,
     mode: typing.Literal["append", "replace"] = "append",
     **kwargs,
-):
+) -> str:
     """Send text to the UI message area in real time using python's print function.
 
     Args:
@@ -240,15 +333,21 @@ def send_message(
     if sink:
         sink(message)
 
+    return message
+
 
 if _tqdm_module is not None:
-    _ORIGINAL_TQDM = _tqdm_module.tqdm
 
-    class LynxKiteTqdm(_ORIGINAL_TQDM):
-        """A tqdm wrapper that also mirrors progress text to the LynxKite UI."""
+    def _hook_tqdm_class(tqdm_cls):
+        if getattr(tqdm_cls, "_lynxkite_tqdm_hook", False):
+            return
+        if not hasattr(tqdm_cls, "display"):
+            return
 
-        def display(self, msg=None, pos=None):
-            super().display(msg=msg, pos=pos)
+        original_display = tqdm_cls.display
+
+        def patched_display(self, msg=None, pos=None):
+            original_display(self, msg=msg, pos=pos)
             if self.disable:
                 return
             if not execution_tqdm_to_ui.get():
@@ -257,7 +356,20 @@ if _tqdm_module is not None:
             if text:
                 send_message(text, end="", mode="replace")
 
-    _tqdm_module.tqdm = LynxKiteTqdm  # type: ignore[invalid-assignment]
+        tqdm_cls.display = patched_display
+        tqdm_cls._lynxkite_tqdm_hook = True
+
+    classes: set[type] = set()
+    for module_name in ("tqdm", "tqdm.std", "tqdm.auto", "tqdm.autonotebook"):
+        try:
+            module = importlib.import_module(module_name)
+        except Exception:
+            continue
+        tqdm_cls = getattr(module, "tqdm", None)
+        if tqdm_cls is not None:
+            classes.add(tqdm_cls)
+    for tqdm_cls in classes:
+        _hook_tqdm_class(tqdm_cls)
 
 
 @contextlib.contextmanager
@@ -279,6 +391,16 @@ def bind_tqdm_to_ui(enabled: bool = True):
         yield
     finally:
         execution_tqdm_to_ui.set(previous)
+
+
+@contextlib.contextmanager
+def bind_execution_log(initial: str | None = None):
+    """Bind a scoped execution log for a single operation execution."""
+    token = execution_log.set(initial)
+    try:
+        yield
+    finally:
+        execution_log.reset(token)
 
 
 class Op(BaseConfig):
@@ -331,8 +453,10 @@ class Op(BaseConfig):
                 res = Result(display=res)
             else:
                 res = Result(output=res)
-        if execution_log.get() is not None and res.message is None:
-            res.message = execution_log.get()
+        if res.message is None:
+            message = execution_log.get()
+            if message:
+                res.message = message
         return res
 
     def get_input(self, name: str):
