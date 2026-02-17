@@ -26,97 +26,50 @@ const NodeWithMolecule = (props: any) => {
         const viewer = viewerRef.current;
         viewer.clear();
 
-        // Detect format and load data
+        // Load main structure (3dmol will auto-detect format)
         if (config.data) {
-          const dataStr = String(config.data);
-          let format = "pdb"; // default
-
-          // Detect format from content
-          if (dataStr.trim().startsWith("data_")) {
-            format = "cif"; // mmCIF format
-          } else if (dataStr.includes("@<tripos>MOLECULE")) {
-            format = "mol2";
-          } else if (dataStr.includes("V2000") || dataStr.includes("V3000")) {
-            format = "sdf";
-          }
-
-          console.log(`Detected format: ${format}`);
-
           try {
-            viewer.addModel(config.data, format);
-          } catch (_formatError) {
-            console.log(`Failed to load as ${format}, trying as pdb...`);
-            viewer.addModel(config.data, "pdb");
+            viewer.addModel(config.data, "");
+          } catch (error) {
+            console.error("Failed to load molecular data:", error);
           }
         }
 
         // Try to load ligand if present
         if (config.ligand) {
-          const ligandStr = String(config.ligand);
-          let ligandFormat = "sdf"; // default for ligands
-
-          if (ligandStr.trim().startsWith("data_")) {
-            ligandFormat = "cif";
-          } else if (ligandStr.includes("@<tripos>MOLECULE")) {
-            ligandFormat = "mol2";
-          } else if (ligandStr.includes("HEADER")) {
-            ligandFormat = "pdb";
-          }
-
           try {
-            viewer.addModel(config.ligand, ligandFormat);
-            console.log(`Ligand loaded as ${ligandFormat}`);
-          } catch (e) {
-            console.log("Could not load ligand:", e);
+            viewer.addModel(config.ligand, "");
+            console.log("Ligand loaded");
+          } catch (error) {
+            console.log("Could not load ligand:", error);
           }
         }
 
-        // Apply styling to everything
+        // Apply styling
         const model = viewer.getModel();
         if (model?.atoms) {
+          // Define colors for each chain
           const chainColors: { [key: string]: number } = {
-            A: 0xff00ff,
-            B: 0x00ff00,
-            G: 0xff8c00,
-            R: 0x0000ff,
-            S: 0xff0000,
+            A: 0xff00ff, // Magenta
+            B: 0x00ff00, // Green
+            G: 0xff8c00, // Orange
+            R: 0x0000ff, // Blue
+            S: 0xff0000, // Red
           };
 
+          // Set default cartoon style
+          viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+
+          // Get unique chains and apply chain-specific colors
           const chains = new Set<string>();
-          model.atoms.forEach((atom: any) => {
-            if (atom.chain) chains.add(atom.chain);
-          });
-
-          console.log("Chains found:", Array.from(chains));
-
-          const chainAtomCounts: { [key: string]: number } = {};
-          model.atoms.forEach((atom: any) => {
+          for (const atom of model.atoms) {
             if (atom.chain) {
-              chainAtomCounts[atom.chain] = (chainAtomCounts[atom.chain] || 0) + 1;
+              chains.add(atom.chain);
             }
-          });
-          console.log("Atoms per chain:", chainAtomCounts);
+          }
 
-          viewer.addSurface($3Dmol.SurfaceType.VDW, {
-            opacity: 0.4,
-            color: 0xcccccc,
-            wireframe: false,
-          });
-
-          viewer.setStyle(
-            {},
-            {
-              cartoon: {
-                color: "spectrum",
-              },
-            },
-          );
-
-          chains.forEach((chain) => {
+          for (const chain of chains) {
             const color = chainColors[chain] || 0x888888;
-
-            console.log(`Styling chain ${chain} with color ${color.toString(16)}`);
-
             viewer.setStyle(
               { chain: chain },
               {
@@ -130,8 +83,9 @@ const NodeWithMolecule = (props: any) => {
                 },
               },
             );
-          });
+          }
 
+          // Style heteroatoms (ligands, ions, etc) as ball-and-stick
           viewer.setStyle(
             { hetflag: true },
             {
@@ -146,8 +100,9 @@ const NodeWithMolecule = (props: any) => {
             },
           );
 
+          // Style non-standard residues as stick-and-sphere
           const nonStandardResidues = ["LIG", "AVE", "SDF", "MOL"];
-          nonStandardResidues.forEach((res) => {
+          for (const res of nonStandardResidues) {
             viewer.setStyle(
               { resn: res },
               {
@@ -161,7 +116,7 @@ const NodeWithMolecule = (props: any) => {
                 },
               },
             );
-          });
+          }
         }
 
         viewer.zoomTo();
@@ -174,13 +129,12 @@ const NodeWithMolecule = (props: any) => {
     run();
 
     const resizeObserver = new ResizeObserver(() => {
-      if (viewerRef.current) {
-        viewerRef.current.resize();
-      }
+      viewerRef.current?.resize();
     });
 
     resizeObserver.observe(observed);
 
+    // Block wheel events and implement custom zoom
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -202,9 +156,7 @@ const NodeWithMolecule = (props: any) => {
     return () => {
       resizeObserver.unobserve(observed);
       observed.removeEventListener("wheel", handleWheel, { capture: true });
-      if (viewerRef.current) {
-        viewerRef.current.clear();
-      }
+      viewerRef.current?.clear();
     };
   }, [props.data?.display]);
 
