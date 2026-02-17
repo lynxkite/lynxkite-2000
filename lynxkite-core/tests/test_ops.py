@@ -123,3 +123,61 @@ def test_detect_plugins_with_plugins():
             "lynxkite_pillow_example",
         ]
     )
+
+
+def test_pass_op_injects_context_and_message():
+    observed_ctx = {}
+
+    @ops.op("test_extra", "ctx", "pass-op", view="basic", outputs=["result"])
+    def double_with_ctx(self, value: int):
+        observed_ctx["ctx"] = self
+        self.print("ctx message", append=False)
+        return value * 2
+
+    op = double_with_ctx.__op__
+    result = op(3)
+
+    assert observed_ctx["ctx"].op is op
+    assert isinstance(result, ops.Result)
+    assert result.output == 6
+    assert result.message.strip() == "ctx message"
+
+
+def test_cache_function_sync_and_async():
+    call_count = {"n": 0}
+
+    def sync_func(x):
+        call_count["n"] += 1
+        return x * 2
+
+    async def async_func(x):
+        call_count["n"] += 1
+        return x * 2
+
+    old_cache_wrapper = ops.CACHE_WRAPPER
+
+    import joblib
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        mem = joblib.Memory(cache_dir, verbose=0)
+        ops.CACHE_WRAPPER = mem.cache
+
+        try:
+            cached_sync = ops.cached(sync_func)
+            cached_async = ops.cached(async_func)
+
+            assert cached_sync(2) == 4
+            assert cached_sync(2) == 4
+            assert call_count["n"] == 1
+
+            import asyncio
+
+            async def test_async_cache():
+                assert await cached_async(3) == 6
+                assert await cached_async(3) == 6
+                assert call_count["n"] == 2
+
+            asyncio.run(test_async_cache())
+        finally:
+            ops.CACHE_WRAPPER = old_cache_wrapper

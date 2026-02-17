@@ -130,7 +130,8 @@ async def _execute(
             def message_sink(message: str):
                 loop.call_soon_threadsafe(node.publish_message, message)
 
-            with ops.bind_message_sink(message_sink), ops.bind_execution_log():
+            op_ctx = ops.OpContext(op=op, message_sink=message_sink)
+            with ops.bind_op_context(op_ctx):
                 for task in ts:
                     try:
                         inputs = []
@@ -171,7 +172,7 @@ async def _execute(
                         result.output = None
                     if result.display:
                         result.display = await _await_if_needed(result.display)
-                    result = result.finalize_message()
+                    result = op_ctx.finalize_result_message(result)
                     for edge in edges[node.id]:
                         t = nodes[edge.target]
                         op = catalog[t.data.op_id]

@@ -30,29 +30,18 @@ Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
 
-execution_log: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "execution_log", default=None
+current_op_context: contextvars.ContextVar["OpContext | None"] = contextvars.ContextVar(
+    "current_op_context", default=None
 )
-execution_message_sink: contextvars.ContextVar[typing.Callable[[str], None] | None] = (
-    contextvars.ContextVar("execution_message_sink", default=None)
-)
-execution_tqdm_to_ui = contextvars.ContextVar("execution_tqdm_to_ui", default=False)
 
 
 typeof = type  # We have some arguments called "type".
 
-
-class FunctionWrapper(typing.Protocol):
-    def __call__(
-        self,
-        func: typing.Callable,
-        *,
-        ignore: list[str] | None = None,
-    ) -> typing.Callable: ...
-
-
+FunctionWrapper = typing.Callable[[typing.Callable], typing.Callable]
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionWrapper | None = None
+# Common name for the context parameter in operations that need access to the OpContext.
+CONTEXT_PARAM_NAME = "self"
 
 
 def is_async_callable(func: typing.Any) -> bool:
@@ -73,83 +62,115 @@ class CachedCall:
     message: str
 
 
-def cached(func, *, ignore_args: list[str] | None = None):
+def cached(func):
     if CACHE_WRAPPER is None:
         return func
 
-    async_mode = is_async_callable(func)
+    if not is_async_callable(func):
+        return CACHE_WRAPPER(func)
 
-    if async_mode:
-
-        @functools.wraps(func)
-        async def call_with_message_capture(*args, **kwargs):
-            captured_message = ""
-            original_sink = execution_message_sink.get()
-
-            def sink(message: str):
-                nonlocal captured_message
-                captured_message = message
-                if original_sink:
-                    original_sink(message)
-
-            token = execution_message_sink.set(sink)
-            try:
-                result = await func(*args, **kwargs)
-                return CachedCall(result=result, message=captured_message)
-            finally:
-                execution_message_sink.reset(token)
-
-    else:
-
-        @functools.wraps(func)
-        def call_with_message_capture(*args, **kwargs):
-            captured_message = ""
-            original_sink = execution_message_sink.get()
-
-            def sink(message: str):
-                nonlocal captured_message
-                captured_message = message
-                if original_sink:
-                    original_sink(message)
-
-            token = execution_message_sink.set(sink)
-            try:
-                result = func(*args, **kwargs)
-                return CachedCall(result=result, message=captured_message)
-            finally:
-                execution_message_sink.reset(token)
-
-    if ignore_args:
+    @functools.wraps(func)
+    async def call_with_message_capture(*args, **kwargs):
+        captured = _new_call_context()
+        token = current_op_context.set(captured)
         try:
-            cached_func = CACHE_WRAPPER(call_with_message_capture, ignore=ignore_args)
-        except TypeError:
-            cached_func = CACHE_WRAPPER(call_with_message_capture)
-    else:
-        cached_func = CACHE_WRAPPER(call_with_message_capture)
+            result = await func(*args, **kwargs)
+            return CachedCall(result=result, message=captured.message or "")
+        finally:
+            current_op_context.reset(token)
 
-    if async_mode:
+    @functools.wraps(func)
+    def call_with_message_capture_sync(*args, **kwargs):
+        return asyncio.run(call_with_message_capture(*args, **kwargs))
 
-        @functools.wraps(func)
-        async def wrapped(*args, **kwargs):
-            cached_result = await cached_func(*args, **kwargs)
-            if isinstance(cached_result, CachedCall):
-                if cached_result.message:
-                    execution_log.set(cached_result.message)
-                return cached_result.result
-            return cached_result
+    cached_func = CACHE_WRAPPER(call_with_message_capture_sync)
 
-    else:
-
-        @functools.wraps(func)
-        def wrapped(*args, **kwargs):
-            cached_result = cached_func(*args, **kwargs)
-            if isinstance(cached_result, CachedCall):
-                if cached_result.message:
-                    execution_log.set(cached_result.message)
-                return cached_result.result
-            return cached_result
+    @functools.wraps(func)
+    async def wrapped(*args, **kwargs):
+        cached_result = await asyncio.to_thread(cached_func, *args, **kwargs)
+        if isinstance(cached_result, CachedCall):
+            _apply_cached_message(cached_result.message)
+            return cached_result.result
+        return cached_result
 
     return wrapped
+
+
+@dataclass
+class OpContext:
+    op: "Op | None" = None
+    message: str | None = None
+    message_sink: typing.Callable[[str], None] | None = None
+    tqdm_to_ui: bool = False
+
+    def __getattr__(self, name: str):
+        if self.op is not None:
+            return getattr(self.op, name)
+        raise AttributeError(name)
+
+    def send_message(
+        self,
+        *args,
+        mode: typing.Literal["append", "replace"] = "append",
+        **kwargs,
+    ) -> str:
+        buf = io.StringIO()
+        kwargs.pop("file", None)
+        print(*args, file=buf, **kwargs)
+        chunk = buf.getvalue()
+        if mode == "replace":
+            self.message = chunk
+        else:
+            self.message = (self.message or "") + chunk
+        if self.message_sink:
+            self.message_sink(self.message)
+        return self.message
+
+    def print(self, *args, append: bool = True, **kwargs):
+        self.send_message(
+            *args,
+            mode="append" if append else "replace",
+            **kwargs,
+        )
+
+    @property
+    def tqdm(self):
+        @contextlib.contextmanager
+        def _bind():
+            previous = self.tqdm_to_ui
+            self.tqdm_to_ui = True
+            try:
+                yield
+            finally:
+                self.tqdm_to_ui = previous
+
+        return _bind()
+
+    def finalize_result_message(self, result: "Result") -> "Result":
+        if result.message is None and self.message:
+            result.message = self.message
+        return result
+
+
+def _new_call_context() -> OpContext:
+    outer = current_op_context.get()
+    return OpContext(
+        op=outer.op if outer else None,
+        message=None,
+        message_sink=outer.message_sink if outer else None,
+        tqdm_to_ui=outer.tqdm_to_ui if outer else False,
+    )
+
+
+def _apply_cached_message(message: str):
+    if not message:
+        return
+    ctx = current_op_context.get()
+    if ctx is None:
+        return
+    ctx.message = message
+    if ctx.message_sink:
+        ctx.message_sink(message)
 
 
 def type_to_json(t):
@@ -265,13 +286,6 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     message: str | None = None
 
-    def finalize_message(self) -> Result:
-        if self.message is None:
-            current = execution_log.get()
-            if current:
-                self.message = current
-        return self
-
 
 def get_optional_type(type):
     """For a type like `int | None`, returns `int`. Returns `None` otherwise."""
@@ -305,37 +319,6 @@ def _param_to_type(name, value, type):
     return value
 
 
-def send_message(
-    *args,
-    mode: typing.Literal["append", "replace"] = "append",
-    **kwargs,
-) -> str:
-    """Send text to the UI message area in real time using python's print function.
-
-    Args:
-        mode: "append" adds to the current message (default),
-            "replace" overwrites the entire current message.
-    """
-    buf = io.StringIO()
-    kwargs.pop("file", None)
-    print(*args, file=buf, **kwargs)
-    chunk = buf.getvalue()
-    logs = execution_log.get()
-    if logs is not None:
-        if mode == "replace":
-            logs = ""
-        logs += chunk
-        message = logs
-    else:
-        message = chunk
-    execution_log.set(message)
-    sink = execution_message_sink.get()
-    if sink:
-        sink(message)
-
-    return message
-
-
 if _tqdm_module is not None:
 
     def _hook_tqdm_class(tqdm_cls):
@@ -350,11 +333,12 @@ if _tqdm_module is not None:
             original_display(self, msg=msg, pos=pos)
             if self.disable:
                 return
-            if not execution_tqdm_to_ui.get():
+            ctx = current_op_context.get()
+            if ctx is None or not ctx.tqdm_to_ui:
                 return
             text = msg if msg is not None else str(self)
             if text:
-                send_message(text, end="", mode="replace")
+                ctx.send_message(text, end="", mode="replace")
 
         tqdm_cls.display = patched_display
         tqdm_cls._lynxkite_tqdm_hook = True
@@ -373,34 +357,12 @@ if _tqdm_module is not None:
 
 
 @contextlib.contextmanager
-def bind_message_sink(sink: typing.Callable[[str], None] | None):
-    """Bind a UI message sink for the current op execution context."""
-    token = execution_message_sink.set(sink)
+def bind_op_context(ctx: OpContext):
+    token = current_op_context.set(ctx)
     try:
         yield
     finally:
-        execution_message_sink.reset(token)
-
-
-@contextlib.contextmanager
-def bind_tqdm_to_ui(enabled: bool = True):
-    """Bind whether tqdm progress should be mirrored to UI messages."""
-    previous = execution_tqdm_to_ui.get()
-    execution_tqdm_to_ui.set(enabled)
-    try:
-        yield
-    finally:
-        execution_tqdm_to_ui.set(previous)
-
-
-@contextlib.contextmanager
-def bind_execution_log(initial: str | None = None):
-    """Bind a scoped execution log for a single operation execution."""
-    token = execution_log.set(initial)
-    try:
-        yield
-    finally:
-        execution_log.reset(token)
+        current_op_context.reset(token)
 
 
 class Op(BaseConfig):
@@ -421,43 +383,25 @@ class Op(BaseConfig):
         default=None
     )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
-    @property
-    def tqdm(self):
-        """Context manager that enables forwarding tqdm progress to the UI.
-
-        Example:
-            with self.tqdm:
-                for i in tqdm(range(100)):
-                    ...
-        """
-        return bind_tqdm_to_ui(True)
-
     def __call__(self, *inputs, **params):
-        # Convert parameters.
-        params = self.convert_params(params)
-        if self.pass_op:
-            res = self.func(self, *inputs, **params)
-        else:
+        ctx = current_op_context.get()
+        if ctx is None:
+            ctx = OpContext(op=self)
+        with bind_op_context(ctx):
+            params = self.convert_params(params)
             res = self.func(*inputs, **params)
-
-        if not isinstance(res, Result):
-            # Automatically wrap the result in a Result object, if it isn't already.
-            if self.type in [
-                "visualization",
-                "table_view",
-                "graph_creation_view",
-                "image",
-                "molecule",
-            ]:
-                # If the operation is a visualization, we use the returned value for display.
-                res = Result(display=res)
-            else:
-                res = Result(output=res)
-        if res.message is None:
-            message = execution_log.get()
-            if message:
-                res.message = message
-        return res
+            if not isinstance(res, Result):
+                if self.type in [
+                    "visualization",
+                    "table_view",
+                    "graph_creation_view",
+                    "image",
+                    "molecule",
+                ]:
+                    res = Result(display=res)
+                else:
+                    res = Result(output=res)
+            return ctx.finalize_result_message(res)
 
     def get_input(self, name: str):
         """Returns the input with the given name."""
@@ -480,13 +424,6 @@ class Op(BaseConfig):
             if p.name in params:
                 res[p.name] = _param_to_type(p.name, params[p.name], p.type)
         return res
-
-    def print(self, *args, append: bool = True, **kwargs):
-        send_message(
-            *args,
-            mode="append" if append else "replace",
-            **kwargs,
-        )
 
     @pydantic.model_validator(mode="after")
     def compute_id(self):
@@ -554,22 +491,31 @@ def op(
         sig = inspect.signature(func)
         pass_op = False
         parameters = list(sig.parameters.values())
-        if parameters and parameters[0].name == "self":
+        if parameters and parameters[0].name == CONTEXT_PARAM_NAME:
             pass_op = True
         _view = view
         if view == "matplotlib":
             _view = "image"
             func = matplotlib_to_image(func)
+        # For functions that have context, wrap so the context arg is injected from the
+        # active context var at call time.
+        if pass_op:
+            inner = func
+
+            def func(*args, **kwargs):
+                return inner(current_op_context.get(), *args, **kwargs)
+
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = cached(func, ignore_args=["self"] if pass_op else None)
+                func = cached(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
-            if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD) and name != "self"
+            if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
+            and (not pass_op or name != CONTEXT_PARAM_NAME)
         ]
         _params = []
         for n, param in sig.parameters.items():
