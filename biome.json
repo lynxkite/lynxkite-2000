@@ -27,7 +27,8 @@
       },
       "style": {
         "noDescendingSpecificity": "off",
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useForOf": "error"
       },
       "a11y": {
         "useKeyWithClickEvents": "off",
