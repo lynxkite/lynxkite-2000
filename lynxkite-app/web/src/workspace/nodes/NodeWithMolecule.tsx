@@ -24,19 +24,108 @@ const NodeWithMolecule = (props: any) => {
         }
 
         const viewer = viewerRef.current;
-
-        // Clear previous models
         viewer.clear();
 
-        // Add new model and style it
-        viewer.addModel(config.data);
-        viewer.setStyle({}, { stick: {} });
+        // Load main structure (3dmol will auto-detect format)
+        if (config.data) {
+          try {
+            viewer.addModel(config.data, "");
+          } catch (error) {
+            console.error("Failed to load molecular data:", error);
+          }
+        }
+
+        // Try to load ligand if present
+        if (config.ligand) {
+          try {
+            viewer.addModel(config.ligand, "");
+            console.log("Ligand loaded");
+          } catch (error) {
+            console.log("Could not load ligand:", error);
+          }
+        }
+
+        // Apply styling
+        const model = viewer.getModel();
+        if (model?.atoms) {
+          // Define colors for each chain
+          const chainColors: { [key: string]: number } = {
+            A: 0xff00ff, // Magenta
+            B: 0x00ff00, // Green
+            G: 0xff8c00, // Orange
+            R: 0x0000ff, // Blue
+            S: 0xff0000, // Red
+          };
+
+          // Set default cartoon style
+          viewer.setStyle({}, { cartoon: { color: "spectrum" } });
+
+          // Get unique chains and apply chain-specific colors
+          const chains = new Set<string>();
+          for (const atom of model.atoms) {
+            if (atom.chain) {
+              chains.add(atom.chain);
+            }
+          }
+
+          for (const chain of chains) {
+            const color = chainColors[chain] || 0x888888;
+            viewer.setStyle(
+              { chain: chain },
+              {
+                cartoon: {
+                  color: color,
+                  thickness: 0.9,
+                },
+                tube: {
+                  color: color,
+                  radius: 0.3,
+                },
+              },
+            );
+          }
+
+          // Style heteroatoms (ligands, ions, etc) as ball-and-stick
+          viewer.setStyle(
+            { hetflag: true },
+            {
+              stick: {
+                radius: 0.25,
+                colorscheme: "default",
+              },
+              sphere: {
+                scale: 0.35,
+                colorscheme: "default",
+              },
+            },
+          );
+
+          // Style non-standard residues as stick-and-sphere
+          const nonStandardResidues = ["LIG", "AVE", "SDF", "MOL"];
+          for (const res of nonStandardResidues) {
+            viewer.setStyle(
+              { resn: res },
+              {
+                stick: {
+                  radius: 0.25,
+                  colorscheme: "Jmol",
+                },
+                sphere: {
+                  scale: 0.35,
+                  colorscheme: "Jmol",
+                },
+              },
+            );
+          }
+        }
+
         viewer.zoomTo();
         viewer.render();
       } catch (error) {
         console.error("Error rendering 3D molecule:", error);
       }
     }
+
     run();
 
     const resizeObserver = new ResizeObserver(() => {
@@ -45,7 +134,7 @@ const NodeWithMolecule = (props: any) => {
 
     resizeObserver.observe(observed);
 
-    // Block ALL wheel events and implement our own zoom
+    // Block wheel events and implement custom zoom
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -59,15 +148,15 @@ const NodeWithMolecule = (props: any) => {
       }
     };
 
-    // Capture phase with passive false to completely block 3Dmol
-    observed.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    observed.addEventListener("wheel", handleWheel, {
+      passive: false,
+      capture: true,
+    });
 
     return () => {
       resizeObserver.unobserve(observed);
       observed.removeEventListener("wheel", handleWheel, { capture: true });
-      if (viewerRef.current) {
-        viewerRef.current.clear();
-      }
+      viewerRef.current?.clear();
     };
   }, [props.data?.display]);
 
