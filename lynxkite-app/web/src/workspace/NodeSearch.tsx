@@ -148,7 +148,11 @@ export default function NodeSearch(props: {
   return (
     <div
       className="node-search node-search-panel"
-      style={{ top: adjustedPos.y, left: adjustedPos.x }}
+      style={{
+        top: adjustedPos.y,
+        left: adjustedPos.x,
+        maxHeight: `calc(100vh - ${adjustedPos.y + 10}px)`,
+      }}
       onMouseDown={(e) => e.preventDefault()}
     >
       <NodeSearchInternal {...props} autoFocus={true} />
