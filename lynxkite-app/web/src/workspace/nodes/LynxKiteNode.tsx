@@ -49,10 +49,11 @@ function formatOutputMetadata(metadata: any): string | undefined {
   const parts: string[] = [];
   const tableNames = Object.keys(metadata.dataframes);
   tableNames.sort();
+  const nbsp = "\u00A0";
   for (const name of tableNames) {
     const df = metadata.dataframes[name];
     if (typeof df.length === "number") {
-      parts.push(`${df.length} ${name}`);
+      parts.push(`${df.length}${nbsp}${name}`);
     }
   }
   return parts.length > 0 ? parts.join(", ") : undefined;
