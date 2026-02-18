@@ -513,7 +513,7 @@ function LynxKiteFlow() {
         ref={reactFlowContainer}
       >
         {crdt?.ws ? (
-          <LynxKiteState.Provider value={{ workspace: crdt.ws, creationTime: Date.now() }}>
+          <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
