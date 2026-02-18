@@ -181,3 +181,47 @@ def test_cache_function_sync_and_async():
             asyncio.run(test_async_cache())
         finally:
             ops.CACHE_WRAPPER = old_cache_wrapper
+
+
+def test_cached_slow_op_with_message():
+    call_count = {"n": 0}
+
+    old_cache_wrapper = ops.CACHE_WRAPPER
+
+    import joblib
+    import tempfile
+    import asyncio
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        mem = joblib.Memory(cache_dir, verbose=0)
+        ops.CACHE_WRAPPER = mem.cache
+
+        try:
+
+            @ops.op("test_cache", "slow_add", view="basic", outputs=["result"], slow=True)
+            def slow_add(self, a: int, b: int):
+                call_count["n"] += 1
+                self.print("computing")
+                return a + b
+
+            op = slow_add.__op__
+
+            async def run():
+                ctx1 = ops.OpContext(op=op)
+                r1 = op(ctx1, 1, 2)
+                r1.output = await r1.output
+                r1 = ctx1.finalize_result_message(r1)
+                assert r1.output == 3
+
+                ctx2 = ops.OpContext(op=op)
+                r2 = op(ctx2, 1, 2)
+                r2.output = await r2.output
+                r2 = ctx2.finalize_result_message(r2)
+                assert r2.output == 3
+
+                assert call_count["n"] == 1
+                assert "computing" in (r2.message or "")
+
+            asyncio.run(run())
+        finally:
+            ops.CACHE_WRAPPER = old_cache_wrapper

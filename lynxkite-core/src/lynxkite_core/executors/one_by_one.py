@@ -30,11 +30,6 @@ def _df_to_list(df):
     return df.to_dict(orient="records")
 
 
-def _has_ctx(op):
-    sig = inspect.signature(op.func)
-    return "_ctx" in sig.parameters
-
-
 def register(env: str, cache: bool = True):
     """Registers the one-by-one executor.
 
@@ -81,12 +76,6 @@ async def _await_if_needed(obj):
     return obj
 
 
-async def _call_op(op, *inputs, **params):
-    if ops.is_async_callable(op.func):
-        return op(*inputs, **params)
-    return await asyncio.to_thread(op, *inputs, **params)
-
-
 async def _execute(
     ws: workspace.Workspace,
     catalog: ops.Catalog,
@@ -122,67 +111,61 @@ async def _execute(
             node = nodes[n]
             op = catalog[node.data.op_id]
             params = {**node.data.params}
-            if _has_ctx(op):
-                params["_ctx"] = contexts[node.id]
             results = []
             node.publish_started()
 
-            def message_sink(message: str):
-                loop.call_soon_threadsafe(node.publish_message, message)
-
-            op_ctx = ops.OpContext(op=op, message_sink=message_sink)
-            with ops.bind_op_context(op_ctx):
-                for task in ts:
-                    try:
-                        inputs = []
-                        missing = []
-                        for i in op.inputs:
-                            if i.position.is_vertical():
-                                if (n, i.name) in batch_inputs:
-                                    inputs.append(batch_inputs[(n, i.name)])
-                                else:
-                                    opt_type = ops.get_optional_type(i.type)
-                                    if opt_type is not None:
-                                        inputs.append(None)
-                                    else:
-                                        missing.append(i.name)
+            op_ctx = ops.OpContext(op=op, node=node, loop=loop)
+            for task in ts:
+                try:
+                    inputs = []
+                    missing = []
+                    for i in op.inputs:
+                        if i.position.is_vertical():
+                            if (n, i.name) in batch_inputs:
+                                inputs.append(batch_inputs[(n, i.name)])
                             else:
-                                inputs.append(task)
-                        if missing:
-                            node.publish_error(f"Missing input: {', '.join(missing)}")
-                            break
-                        result = await _call_op(op, *inputs, **params)
-                        output = await _await_if_needed(result.output)
-                    except Exception as e:
-                        traceback.print_exc()
-                        node.publish_error(e)
-                        break
-                    contexts[node.id].last_result = output
-                    # Returned lists and DataFrames are considered multiple tasks.
-                    if hasattr(output, "to_dict"):
-                        output = _df_to_list(output)
-                    elif not isinstance(output, list):
-                        output = [output]
-                    results.extend(output)
-                else:  # Finished all tasks without errors.
-                    if op.type == "gradio" and ctx and ctx.app:
-                        url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
-                        await mount_gradio(ctx.app, result.output, url)
-                        result.display = {"backend": urllib.parse.quote(url)}
-                        result.output = None
-                    if result.display:
-                        result.display = await _await_if_needed(result.display)
-                    result = op_ctx.finalize_result_message(result)
-                    for edge in edges[node.id]:
-                        t = nodes[edge.target]
-                        op = catalog[t.data.op_id]
-                        if op.get_input(edge.targetHandle).position.is_vertical():
-                            batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(
-                                results
-                            )
+                                opt_type = ops.get_optional_type(i.type)
+                                if opt_type is not None:
+                                    inputs.append(None)
+                                else:
+                                    missing.append(i.name)
                         else:
-                            tasks.setdefault(edge.target, []).extend(results)
-                    node.publish_result(result)
+                            inputs.append(task)
+                    if missing:
+                        node.publish_error(f"Missing input: {', '.join(missing)}")
+                        break
+                    result = op(op_ctx, *inputs, **params)
+                    output = await _await_if_needed(result.output)
+                except Exception as e:
+                    traceback.print_exc()
+                    node.publish_error(e)
+                    break
+                contexts[node.id].last_result = output
+                # Returned lists and DataFrames are considered multiple tasks.
+                if hasattr(output, "to_dict"):
+                    output = _df_to_list(output)
+                elif not isinstance(output, list):
+                    output = [output]
+                results.extend(output)
+            else:  # Finished all tasks without errors.
+                if op.type == "gradio" and ctx and ctx.app:
+                    url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
+                    await mount_gradio(ctx.app, result.output, url)
+                    result.display = {"backend": urllib.parse.quote(url)}
+                    result.output = None
+                if result.display:
+                    result.display = await _await_if_needed(result.display)
+                result = op_ctx.finalize_result_message(result)
+                for edge in edges[node.id]:
+                    t = nodes[edge.target]
+                    op = catalog[t.data.op_id]
+                    if op.get_input(edge.targetHandle).position.is_vertical():
+                        batch_inputs.setdefault((edge.target, edge.targetHandle), []).extend(
+                            results
+                        )
+                    else:
+                        tasks.setdefault(edge.target, []).extend(results)
+                node.publish_result(result)
         tasks = next_stage
     return contexts
 

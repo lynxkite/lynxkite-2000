@@ -57,7 +57,7 @@ def input_op(op_name: str, outputs: list[str] | None = None, **kwargs):
         func = ops.op(ENV, f"Input: {op_name}", outputs=outputs, **kwargs)(func)
         op = func.__op__
         op.params.insert(0, ops.Parameter.basic("_input_name", ""))
-        op.func = lambda *, _input_name, **kwargs: func(**kwargs)
+        op.func = lambda _ctx=None, *_input_name, **kwargs: func(_input_name, **kwargs)
         for v in op.outputs:
             v.position = ops.Position.TOP
         return func
@@ -435,7 +435,7 @@ class ModelBuilder:
         if op.func == ops.no_op:
             module = torch.nn.Identity()
         else:
-            module = op.func(*inputs, **params)
+            module = op.func(None, *inputs, **params)
         return Layer(module, node_id, inputs, outputs)
 
     def build_model(self) -> ModelConfig:
@@ -518,7 +518,7 @@ class ModelBuilder:
                             # Handlers are similar to ops, but they don't have separate
                             # boxes. Instead they appear in the input mapping.
                             params = op.convert_params(node.data.params)
-                            func = op.func(**params)
+                            func = op.func(None, **params)
                             handlers[i] = ops.op(None, name)(func).__op__
                         break
                 else:

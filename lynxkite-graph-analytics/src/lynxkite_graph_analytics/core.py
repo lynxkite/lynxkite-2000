@@ -425,18 +425,13 @@ async def _execute_node(
         return
     # Execute op.
     try:
-
-        def message_sink(message: str):
-            loop.call_soon_threadsafe(node.publish_message, message)
-
-        op_ctx = ops.OpContext(op=op, message_sink=message_sink)
-        with ops.bind_op_context(op_ctx):
-            result = await call_op(op, *inputs, **params)
-            result.output = await await_if_needed(result.output)
-            result.display = await await_if_needed(result.display)
-            if dataclasses.is_dataclass(result.display):
-                result.display = dataclasses.asdict(result.display)
-            result = op_ctx.finalize_result_message(result)
+        op_ctx = ops.OpContext(op=op, node=node, loop=loop)
+        result = await call_op(op, op_ctx, *inputs, **params)
+        result.output = await await_if_needed(result.output)
+        result.display = await await_if_needed(result.display)
+        if dataclasses.is_dataclass(result.display):
+            result.display = dataclasses.asdict(result.display)
+        result = op_ctx.finalize_result_message(result)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

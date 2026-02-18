@@ -14,13 +14,11 @@ import subprocess
 import traceback
 import types
 import typing
-import contextvars
 import contextlib
 import io
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
-import tqdm as _tqdm_module
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -29,10 +27,6 @@ Catalog = dict[str, "Op"]
 Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
-
-current_op_context: contextvars.ContextVar["OpContext | None"] = contextvars.ContextVar(
-    "current_op_context", default=None
-)
 
 
 typeof = type  # We have some arguments called "type".
@@ -57,7 +51,7 @@ def is_async_callable(func: typing.Any) -> bool:
 
 
 @dataclass
-class CachedCall:
+class _CachedCall:
     result: typing.Any
     message: str
 
@@ -65,43 +59,89 @@ class CachedCall:
 def cached(func):
     if CACHE_WRAPPER is None:
         return func
+    if is_async_callable(func):
 
-    if not is_async_callable(func):
-        return CACHE_WRAPPER(func)
+        def _sync(*args, **kwargs):
+            return asyncio.run(func(*args, **kwargs))
+
+        _cached = CACHE_WRAPPER(_sync)
+
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            return await asyncio.to_thread(_cached, *args, **kwargs)
+
+        return wrapper
+    return CACHE_WRAPPER(func)
+
+
+def _cached_with_ctx(func):
+    if CACHE_WRAPPER is None:
+        return func
+
+    def _sync(*args, **kwargs):
+        ctx = OpContext()
+        result = asyncio.run(func(ctx, *args, **kwargs))
+        return _CachedCall(result=result, message=ctx.message or "")
+
+    _cached = CACHE_WRAPPER(_sync)
 
     @functools.wraps(func)
-    async def call_with_message_capture(*args, **kwargs):
-        captured = _new_call_context()
-        token = current_op_context.set(captured)
-        try:
-            result = await func(*args, **kwargs)
-            return CachedCall(result=result, message=captured.message or "")
-        finally:
-            current_op_context.reset(token)
+    async def wrapper(op_ctx: "OpContext", *args, **kwargs):
+        r = await asyncio.to_thread(_cached, *args, **kwargs)
+        if isinstance(r, _CachedCall):
+            if r.message:
+                op_ctx.message = r.message
+                op_ctx._publish_message()
+            return r.result
+        return r
 
-    @functools.wraps(func)
-    def call_with_message_capture_sync(*args, **kwargs):
-        return asyncio.run(call_with_message_capture(*args, **kwargs))
-
-    cached_func = CACHE_WRAPPER(call_with_message_capture_sync)
-
-    @functools.wraps(func)
-    async def wrapped(*args, **kwargs):
-        cached_result = await asyncio.to_thread(cached_func, *args, **kwargs)
-        if isinstance(cached_result, CachedCall):
-            _apply_cached_message(cached_result.message)
-            return cached_result.result
-        return cached_result
-
-    return wrapped
+    return wrapper
 
 
 @dataclass
 class OpContext:
     op: "Op | None" = None
     message: str | None = None
-    message_sink: typing.Callable[[str], None] | None = None
+    node: "workspace.WorkspaceNode | None" = None
+    loop: asyncio.AbstractEventLoop | None = None
     tqdm_to_ui: bool = False
+
+    def __init__(
+        self,
+        op: "Op | None" = None,
+        node: "workspace.WorkspaceNode | None" = None,
+        loop: asyncio.AbstractEventLoop | None = None,
+        tqdm_to_ui: bool = False,
+    ):
+        self.op = op
+        self.node = node
+        self.loop = loop
+        self.tqdm_to_ui = tqdm_to_ui
+
+    def _publish_message(self):
+        if self.node is not None and self.loop is not None:
+            self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
+
+    def __getstate__(self):
+        return {
+            "op_id": self.op.id if self.op else None,
+            "tqdm_to_ui": self.tqdm_to_ui,
+        }
+
+    @staticmethod
+    def _tqdm_classes() -> list[type]:
+        classes: list[type] = []
+        seen: set[type] = set()
+        for module_name in ("tqdm", "tqdm.std", "tqdm.auto", "tqdm.autonotebook"):
+            try:
+                module = importlib.import_module(module_name)
+            except Exception:
+                continue
+            tqdm_cls = getattr(module, "tqdm", None)
+            if tqdm_cls is not None and tqdm_cls not in seen:
+                seen.add(tqdm_cls)
+                classes.append(tqdm_cls)
+        return classes
 
     def __getattr__(self, name: str):
         if self.op is not None:
@@ -122,8 +162,7 @@ class OpContext:
             self.message = chunk
         else:
             self.message = (self.message or "") + chunk
-        if self.message_sink:
-            self.message_sink(self.message)
+        self._publish_message()
         return self.message
 
     def print(self, *args, append: bool = True, **kwargs):
@@ -137,12 +176,29 @@ class OpContext:
     def tqdm(self):
         @contextlib.contextmanager
         def _bind():
-            previous = self.tqdm_to_ui
+            patched: list[tuple[type, typing.Callable]] = []
             self.tqdm_to_ui = True
+            for tqdm_cls in self._tqdm_classes():
+                if not hasattr(tqdm_cls, "display"):
+                    continue
+                original_display = tqdm_cls.display
+
+                def patched_display(tqdm_self, msg=None, pos=None, _orig=original_display):
+                    _orig(tqdm_self, msg=msg, pos=pos)
+                    if getattr(tqdm_self, "disable", False) or not self.tqdm_to_ui:
+                        return
+                    text = msg if msg is not None else str(tqdm_self)
+                    if text:
+                        self.send_message(text, end="", mode="replace")
+
+                tqdm_cls.display = patched_display
+                patched.append((tqdm_cls, original_display))
             try:
                 yield
             finally:
-                self.tqdm_to_ui = previous
+                self.tqdm_to_ui = False
+                for tqdm_cls, original_display in reversed(patched):
+                    tqdm_cls.display = original_display
 
         return _bind()
 
@@ -150,27 +206,6 @@ class OpContext:
         if result.message is None and self.message:
             result.message = self.message
         return result
-
-
-def _new_call_context() -> OpContext:
-    outer = current_op_context.get()
-    return OpContext(
-        op=outer.op if outer else None,
-        message=None,
-        message_sink=outer.message_sink if outer else None,
-        tqdm_to_ui=outer.tqdm_to_ui if outer else False,
-    )
-
-
-def _apply_cached_message(message: str):
-    if not message:
-        return
-    ctx = current_op_context.get()
-    if ctx is None:
-        return
-    ctx.message = message
-    if ctx.message_sink:
-        ctx.message_sink(message)
 
 
 def type_to_json(t):
@@ -319,52 +354,6 @@ def _param_to_type(name, value, type):
     return value
 
 
-if _tqdm_module is not None:
-
-    def _hook_tqdm_class(tqdm_cls):
-        if getattr(tqdm_cls, "_lynxkite_tqdm_hook", False):
-            return
-        if not hasattr(tqdm_cls, "display"):
-            return
-
-        original_display = tqdm_cls.display
-
-        def patched_display(self, msg=None, pos=None):
-            original_display(self, msg=msg, pos=pos)
-            if self.disable:
-                return
-            ctx = current_op_context.get()
-            if ctx is None or not ctx.tqdm_to_ui:
-                return
-            text = msg if msg is not None else str(self)
-            if text:
-                ctx.send_message(text, end="", mode="replace")
-
-        tqdm_cls.display = patched_display
-        tqdm_cls._lynxkite_tqdm_hook = True
-
-    classes: set[type] = set()
-    for module_name in ("tqdm", "tqdm.std", "tqdm.auto", "tqdm.autonotebook"):
-        try:
-            module = importlib.import_module(module_name)
-        except Exception:
-            continue
-        tqdm_cls = getattr(module, "tqdm", None)
-        if tqdm_cls is not None:
-            classes.add(tqdm_cls)
-    for tqdm_cls in classes:
-        _hook_tqdm_class(tqdm_cls)
-
-
-@contextlib.contextmanager
-def bind_op_context(ctx: OpContext):
-    token = current_op_context.set(ctx)
-    try:
-        yield
-    finally:
-        current_op_context.reset(token)
-
-
 class Op(BaseConfig):
     func: typing.Callable = pydantic.Field(exclude=True)
     categories: list[str]
@@ -377,31 +366,33 @@ class Op(BaseConfig):
     color: str = "orange"  # The color of the operation in the UI.
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
-    pass_op: bool = False
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(
-        default=None
-    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+    id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
     def __call__(self, *inputs, **params):
-        ctx = current_op_context.get()
-        if ctx is None:
+        if inputs and isinstance(inputs[0], OpContext):
+            ctx = inputs[0]
+            inputs = inputs[1:]
+        else:
             ctx = OpContext(op=self)
-        with bind_op_context(ctx):
-            params = self.convert_params(params)
-            res = self.func(*inputs, **params)
-            if not isinstance(res, Result):
-                if self.type in [
-                    "visualization",
-                    "table_view",
-                    "graph_creation_view",
-                    "image",
-                    "molecule",
-                ]:
-                    res = Result(display=res)
-                else:
-                    res = Result(output=res)
-            return ctx.finalize_result_message(res)
+        if ctx.op is None:
+            ctx.op = self
+        params = self.convert_params(params)
+        res = self.func(ctx, *inputs, **params)
+        if not isinstance(res, Result):
+            # Automatically wrap the result in a Result object, if it isn't already.
+            if self.type in [
+                "visualization",
+                "table_view",
+                "graph_creation_view",
+                "image",
+                "molecule",
+            ]:
+                # If the operation is a visualization, we use the returned value for display.
+                res = Result(display=res)
+            else:
+                res = Result(output=res)
+        return ctx.finalize_result_message(res)
 
     def get_input(self, name: str):
         """Returns the input with the given name."""
@@ -438,7 +429,7 @@ class Op(BaseConfig):
         """Returns a placeholder operation for the given operation ID."""
         [*categories, name] = op_id.split(" > ")
         return Op(
-            func=lambda *args, **kwargs: Result(),
+            func=lambda _ctx=None, *args, **kwargs: Result(),
             name=name,
             categories=categories,
             params=[],
@@ -489,33 +480,33 @@ def op(
     def decorator(func):
         doc = parse_doc(func)
         sig = inspect.signature(func)
-        pass_op = False
+        takes_ctx = False
         parameters = list(sig.parameters.values())
         if parameters and parameters[0].name == CONTEXT_PARAM_NAME:
-            pass_op = True
+            takes_ctx = True
+        runtime_func = func
         _view = view
         if view == "matplotlib":
             _view = "image"
-            func = matplotlib_to_image(func)
-        # For functions that have context, wrap so the context arg is injected from the
-        # active context var at call time.
-        if pass_op:
-            inner = func
+            runtime_func = matplotlib_to_image(runtime_func)
 
-            def func(*args, **kwargs):
-                return inner(current_op_context.get(), *args, **kwargs)
+        if not takes_ctx:
+            inner = runtime_func
+
+            def runtime_func(__op_ctx, *args, **kwargs):
+                return inner(*args, **kwargs)
 
         if slow:
-            func = make_async(func)
+            runtime_func = make_async(runtime_func)
             if cache is not False:
-                func = cached(func)
+                runtime_func = _cached_with_ctx(runtime_func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
-            and (not pass_op or name != CONTEXT_PARAM_NAME)
+            and (not takes_ctx or name != CONTEXT_PARAM_NAME)
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -528,7 +519,7 @@ def op(
         else:
             _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
         op = Op(
-            func=func,
+            func=runtime_func,
             doc=doc,
             name=name,
             categories=categories,
@@ -538,7 +529,6 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
-            pass_op=pass_op,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
@@ -590,7 +580,7 @@ def output_position(**positions):
     return decorator
 
 
-def no_op(*args, **kwargs):
+def no_op(_ctx=None, *args, **kwargs):
     if args:
         return args[0]
     return None
