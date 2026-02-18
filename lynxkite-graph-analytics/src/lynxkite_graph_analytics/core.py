@@ -340,12 +340,6 @@ async def await_if_needed(obj):
     return obj
 
 
-async def call_op(op, *inputs, **params):
-    if ops.is_async_callable(op.func):
-        return op(*inputs, **params)
-    return await asyncio.to_thread(op, *inputs, **params)
-
-
 def _to_bundle(x):
     if isinstance(x, nx.Graph):
         x = Bundle.from_nx(x)
@@ -426,12 +420,11 @@ async def _execute_node(
     # Execute op.
     try:
         op_ctx = ops.OpContext(op=op, node=node, loop=loop)
-        result = await call_op(op, op_ctx, *inputs, **params)
+        result = op(op_ctx, *inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
             result.display = dataclasses.asdict(result.display)
-        result = op_ctx.finalize_result_message(result)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

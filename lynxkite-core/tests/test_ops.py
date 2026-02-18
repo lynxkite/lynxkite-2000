@@ -2,6 +2,10 @@ import inspect
 from lynxkite_core import ops
 import enum
 
+DummyContext = ops.OpContext(
+    op=None
+)  # For testing the op decorator without needing a full execution context.
+
 
 def test_op_decorator_no_params_no_types_default_positions():
     @ops.op("test", "add", view="basic", outputs=["result"])
@@ -86,7 +90,7 @@ def test_operation_can_return_non_result_instance():
     def subtract(a, b):
         return a - b
 
-    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    result = ops.CATALOGS["test"]["subtract"](DummyContext, 5, 3)
     assert isinstance(result, ops.Result)
     assert result.output == 2
     assert result.display is None
@@ -97,7 +101,7 @@ def test_operation_can_return_result_instance():
     def subtract(a, b):
         return ops.Result(output=a - b, display=None)
 
-    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    result = ops.CATALOGS["test"]["subtract"](DummyContext, 5, 3)
     assert isinstance(result, ops.Result)
     assert result.output == 2
     assert result.display is None
@@ -108,7 +112,7 @@ def test_visualization_operations_display_is_populated_automatically():
     def display_op():
         return {"display_value": 1}
 
-    result = ops.CATALOGS["test"]["display_op"]()
+    result = ops.CATALOGS["test"]["display_op"](DummyContext)
     assert isinstance(result, ops.Result)
     assert result.display == {"display_value": 1}
 
@@ -123,24 +127,6 @@ def test_detect_plugins_with_plugins():
             "lynxkite_pillow_example",
         ]
     )
-
-
-def test_pass_op_injects_context_and_message():
-    observed_ctx = {}
-
-    @ops.op("test_extra", "ctx", "pass-op", view="basic", outputs=["result"])
-    def double_with_ctx(self, value: int):
-        observed_ctx["ctx"] = self
-        self.print("ctx message", append=False)
-        return value * 2
-
-    op = double_with_ctx.__op__
-    result = op(3)
-
-    assert observed_ctx["ctx"].op is op
-    assert isinstance(result, ops.Result)
-    assert result.output == 6
-    assert result.message.strip() == "ctx message"
 
 
 def test_cache_function_sync_and_async():
@@ -179,49 +165,5 @@ def test_cache_function_sync_and_async():
                 assert call_count["n"] == 2
 
             asyncio.run(test_async_cache())
-        finally:
-            ops.CACHE_WRAPPER = old_cache_wrapper
-
-
-def test_cached_slow_op_with_message():
-    call_count = {"n": 0}
-
-    old_cache_wrapper = ops.CACHE_WRAPPER
-
-    import joblib
-    import tempfile
-    import asyncio
-
-    with tempfile.TemporaryDirectory() as cache_dir:
-        mem = joblib.Memory(cache_dir, verbose=0)
-        ops.CACHE_WRAPPER = mem.cache
-
-        try:
-
-            @ops.op("test_cache", "slow_add", view="basic", outputs=["result"], slow=True)
-            def slow_add(self, a: int, b: int):
-                call_count["n"] += 1
-                self.print("computing")
-                return a + b
-
-            op = slow_add.__op__
-
-            async def run():
-                ctx1 = ops.OpContext(op=op)
-                r1 = op(ctx1, 1, 2)
-                r1.output = await r1.output
-                r1 = ctx1.finalize_result_message(r1)
-                assert r1.output == 3
-
-                ctx2 = ops.OpContext(op=op)
-                r2 = op(ctx2, 1, 2)
-                r2.output = await r2.output
-                r2 = ctx2.finalize_result_message(r2)
-                assert r2.output == 3
-
-                assert call_count["n"] == 1
-                assert "computing" in (r2.message or "")
-
-            asyncio.run(run())
         finally:
             ops.CACHE_WRAPPER = old_cache_wrapper

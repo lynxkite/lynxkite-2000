@@ -63,7 +63,6 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
             result = op(op_ctx, *inputs, **params)
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)
-            result = op_ctx.finalize_result_message(result)
 
             if len(op.outputs) == 1:
                 [output] = op.outputs

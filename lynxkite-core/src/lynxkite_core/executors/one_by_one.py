@@ -155,7 +155,6 @@ async def _execute(
                     result.output = None
                 if result.display:
                     result.display = await _await_if_needed(result.display)
-                result = op_ctx.finalize_result_message(result)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.op_id]

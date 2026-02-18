@@ -88,7 +88,6 @@ class WorkspaceNode(BaseConfig):
         self.data.display = result.display
         self.data.input_metadata = result.input_metadata
         self.data.error = result.error
-        self.data.message = result.message
         self.data.status = NodeStatus.done
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
@@ -97,7 +96,6 @@ class WorkspaceNode(BaseConfig):
                     self._crdt["data"]["display"] = self.data.display
                     self._crdt["data"]["input_metadata"] = self.data.input_metadata
                     self._crdt["data"]["error"] = self.data.error
-                    self._crdt["data"]["message"] = self.data.message
                 except Exception as e:
                     self._crdt["data"]["error"] = str(e)
                     raise e
@@ -107,7 +105,11 @@ class WorkspaceNode(BaseConfig):
         self.data.message = message
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
-                self._crdt["data"]["message"] = message
+                try:
+                    self._crdt["data"]["message"] = message
+                except Exception as e:
+                    self._crdt["data"]["error"] = str(e)
+                    raise e
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""

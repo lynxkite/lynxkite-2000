@@ -104,7 +104,7 @@ class InductiveDataset(str, enum.Enum):
         return getattr(inductive, self.value)()
 
 
-@op("Import PyKEEN dataset", color="green", icon="3d-scale")
+@op("Import PyKEEN dataset", color="green", icon="file-filled")
 def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
     """Imports a dataset from the PyKEEN library."""
     ds = dataset.to_dataset()

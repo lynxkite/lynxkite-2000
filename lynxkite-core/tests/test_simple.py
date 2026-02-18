@@ -27,28 +27,6 @@ async def test_optional_inputs():
     assert outputs[b.id, "output"] == 1
 
 
-async def test_message_does_not_propagate_to_later_ops():
-    @ops.op("test_msg", "op1")
-    def op1(self):
-        self.print("message from op1", append=False)
-        return 2
-
-    @ops.op("test_msg", "op2")
-    def op2(a: int):
-        return a * 2
-
-    simple.register("test_msg")
-    ws = workspace.Workspace(env="test_msg", nodes=[], edges=[])
-    a = ws.add_node(op1)
-    b = ws.add_node(op2)
-    ws.add_edge(a, "output", b, "a")
-
-    outputs = await ws.execute()
-    assert outputs[b.id, "output"] == 4
-    assert a.data.message == "message from op1\n"
-    assert b.data.message is None
-
-
 async def test_message_stays_when_cache_hit_on_slow_op():
     call_count = {"n": 0}
     old_cache_wrapper = ops.CACHE_WRAPPER

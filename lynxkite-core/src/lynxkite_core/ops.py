@@ -14,7 +14,6 @@ import subprocess
 import traceback
 import types
 import typing
-import contextlib
 import io
 from dataclasses import dataclass
 import pydantic
@@ -78,16 +77,15 @@ def _cached_with_ctx(func):
     if CACHE_WRAPPER is None:
         return func
 
-    def _sync(*args, **kwargs):
-        ctx = OpContext()
-        result = asyncio.run(func(ctx, *args, **kwargs))
-        return _CachedCall(result=result, message=ctx.message or "")
+    def _sync(op_ctx: "OpContext", *args, **kwargs):
+        result = asyncio.run(func(op_ctx, *args, **kwargs))
+        return _CachedCall(result=result, message=op_ctx.message or "")
 
     _cached = CACHE_WRAPPER(_sync)
 
     @functools.wraps(func)
     async def wrapper(op_ctx: "OpContext", *args, **kwargs):
-        r = await asyncio.to_thread(_cached, *args, **kwargs)
+        r = await asyncio.to_thread(_cached, op_ctx, *args, **kwargs)
         if isinstance(r, _CachedCall):
             if r.message:
                 op_ctx.message = r.message
@@ -104,44 +102,20 @@ class OpContext:
     message: str | None = None
     node: "workspace.WorkspaceNode | None" = None
     loop: asyncio.AbstractEventLoop | None = None
-    tqdm_to_ui: bool = False
 
     def __init__(
         self,
         op: "Op | None" = None,
         node: "workspace.WorkspaceNode | None" = None,
         loop: asyncio.AbstractEventLoop | None = None,
-        tqdm_to_ui: bool = False,
     ):
         self.op = op
         self.node = node
         self.loop = loop
-        self.tqdm_to_ui = tqdm_to_ui
 
     def _publish_message(self):
         if self.node is not None and self.loop is not None:
             self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
-
-    def __getstate__(self):
-        return {
-            "op_id": self.op.id if self.op else None,
-            "tqdm_to_ui": self.tqdm_to_ui,
-        }
-
-    @staticmethod
-    def _tqdm_classes() -> list[type]:
-        classes: list[type] = []
-        seen: set[type] = set()
-        for module_name in ("tqdm", "tqdm.std", "tqdm.auto", "tqdm.autonotebook"):
-            try:
-                module = importlib.import_module(module_name)
-            except Exception:
-                continue
-            tqdm_cls = getattr(module, "tqdm", None)
-            if tqdm_cls is not None and tqdm_cls not in seen:
-                seen.add(tqdm_cls)
-                classes.append(tqdm_cls)
-        return classes
 
     def __getattr__(self, name: str):
         if self.op is not None:
@@ -171,41 +145,6 @@ class OpContext:
             mode="append" if append else "replace",
             **kwargs,
         )
-
-    @property
-    def tqdm(self):
-        @contextlib.contextmanager
-        def _bind():
-            patched: list[tuple[type, typing.Callable]] = []
-            self.tqdm_to_ui = True
-            for tqdm_cls in self._tqdm_classes():
-                if not hasattr(tqdm_cls, "display"):
-                    continue
-                original_display = tqdm_cls.display
-
-                def patched_display(tqdm_self, msg=None, pos=None, _orig=original_display):
-                    _orig(tqdm_self, msg=msg, pos=pos)
-                    if getattr(tqdm_self, "disable", False) or not self.tqdm_to_ui:
-                        return
-                    text = msg if msg is not None else str(tqdm_self)
-                    if text:
-                        self.send_message(text, end="", mode="replace")
-
-                tqdm_cls.display = patched_display
-                patched.append((tqdm_cls, original_display))
-            try:
-                yield
-            finally:
-                self.tqdm_to_ui = False
-                for tqdm_cls, original_display in reversed(patched):
-                    tqdm_cls.display = original_display
-
-        return _bind()
-
-    def finalize_result_message(self, result: "Result") -> "Result":
-        if result.message is None and self.message:
-            result.message = self.message
-        return result
 
 
 def type_to_json(t):
@@ -319,7 +258,6 @@ class Result:
     display: ReadOnlyJSON | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
-    message: str | None = None
 
 
 def get_optional_type(type):
@@ -367,18 +305,18 @@ class Op(BaseConfig):
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+    id: str = pydantic.Field(
+        default=None
+    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
-    def __call__(self, *inputs, **params):
-        if inputs and isinstance(inputs[0], OpContext):
-            ctx = inputs[0]
-            inputs = inputs[1:]
-        else:
-            ctx = OpContext(op=self)
-        if ctx.op is None:
-            ctx.op = self
+    def __call__(self, op_ctx: OpContext, *inputs, **params):
+        assert isinstance(op_ctx, OpContext)
+        # Convert parameters.
         params = self.convert_params(params)
-        res = self.func(ctx, *inputs, **params)
+        if inspect.signature(self.func).parameters.get(CONTEXT_PARAM_NAME, None):
+            res = self.func(op_ctx, *inputs, **params)
+        else:
+            res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
             if self.type in [
@@ -392,7 +330,7 @@ class Op(BaseConfig):
                 res = Result(display=res)
             else:
                 res = Result(output=res)
-        return ctx.finalize_result_message(res)
+        return res
 
     def get_input(self, name: str):
         """Returns the input with the given name."""
@@ -480,33 +418,25 @@ def op(
     def decorator(func):
         doc = parse_doc(func)
         sig = inspect.signature(func)
-        takes_ctx = False
-        parameters = list(sig.parameters.values())
-        if parameters and parameters[0].name == CONTEXT_PARAM_NAME:
-            takes_ctx = True
-        runtime_func = func
         _view = view
         if view == "matplotlib":
             _view = "image"
-            runtime_func = matplotlib_to_image(runtime_func)
-
-        if not takes_ctx:
-            inner = runtime_func
-
-            def runtime_func(__op_ctx, *args, **kwargs):
-                return inner(*args, **kwargs)
+            func = matplotlib_to_image(func)
 
         if slow:
-            runtime_func = make_async(runtime_func)
+            func = make_async(func)
             if cache is not False:
-                runtime_func = _cached_with_ctx(runtime_func)
+                if sig.parameters.get(CONTEXT_PARAM_NAME, None) is None:
+                    func = cached(func)
+                else:
+                    func = _cached_with_ctx(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
-            and (not takes_ctx or name != CONTEXT_PARAM_NAME)
+            and (name != CONTEXT_PARAM_NAME)
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -519,7 +449,7 @@ def op(
         else:
             _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
         op = Op(
-            func=runtime_func,
+            func=func,
             doc=doc,
             name=name,
             categories=categories,
