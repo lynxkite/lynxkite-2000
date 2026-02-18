@@ -353,7 +353,6 @@ svg {
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
-    max-height: stretch;
 
     .matches {
       overflow-y: auto;
