@@ -668,6 +668,7 @@ svg {
     width: 61vw;
     mix-blend-mode: lighten;
     animation: sparky-float 10s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .tagline {
