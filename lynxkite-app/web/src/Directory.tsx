@@ -12,6 +12,7 @@ import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Trash from "~icons/tabler/trash";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import logo from "./assets/logo.png";
+import logoSparky from "./assets/logo-sparky.jpg";
 import { usePath } from "./common.ts";
 
 function EntryCreator(props: {
@@ -155,6 +156,7 @@ export default function Directory() {
         <a href="https://lynxkite.com/">
           <img src={logo} className="logo-image" alt="LynxKite logo" />
         </a>
+        <img src={logoSparky} className="logo-image-sparky" alt="LynxKite logo" />
         <div className="tagline">The Complete Graph Data Science Platform</div>
       </div>
       <div className="entry-list">
