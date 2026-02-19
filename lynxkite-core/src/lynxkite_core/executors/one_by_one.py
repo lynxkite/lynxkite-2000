@@ -30,6 +30,11 @@ def _df_to_list(df):
     return df.to_dict(orient="records")
 
 
+def _has_ctx(op):
+    sig = inspect.signature(op.func)
+    return "_ctx" in sig.parameters
+
+
 def register(env: str, cache: bool = True):
     """Registers the one-by-one executor.
 
@@ -111,6 +116,8 @@ async def _execute(
             node = nodes[n]
             op = catalog[node.data.op_id]
             params = {**node.data.params}
+            if _has_ctx(op):
+                params["_ctx"] = contexts[node.id]
             results = []
             node.publish_started()
 

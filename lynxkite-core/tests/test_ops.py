@@ -156,13 +156,13 @@ def test_cache_function_sync_and_async():
             assert cached_sync(2) == 4
             assert cached_sync(2) == 4
             assert call_count["n"] == 1
-
+            call_count["n"] = 0
             import asyncio
 
             async def test_async_cache():
                 assert await cached_async(3) == 6
                 assert await cached_async(3) == 6
-                assert call_count["n"] == 2
+                assert call_count["n"] == 1
 
             asyncio.run(test_async_cache())
         finally:

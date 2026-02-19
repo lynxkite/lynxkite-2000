@@ -104,8 +104,10 @@ class InductiveDataset(str, enum.Enum):
         return getattr(inductive, self.value)()
 
 
-@op("Import PyKEEN dataset", color="green", icon="file-filled")
-def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
+@op("Import PyKEEN dataset", slow=True, color="green", icon="file-filled")
+def import_pykeen_dataset_path(
+    self, *, dataset: PyKEENDataset = PyKEENDataset.Nations
+) -> core.Bundle:
     """Imports a dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
     bundle = core.Bundle()
@@ -138,6 +140,10 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
             "tail": df_all["tail"].tolist(),
             "relation": df_all["relation"].tolist(),
         }
+    )
+    self.print(
+        f"Dataset contains {len(bundle.dfs['nodes'])} nodes, ",
+        f"{len(bundle.dfs['relations'])} relations and {len(bundle.dfs['edges'])} edges in total.",
     )
     return bundle
 

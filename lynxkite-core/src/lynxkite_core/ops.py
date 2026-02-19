@@ -30,23 +30,20 @@ EXECUTORS = {}
 
 typeof = type  # We have some arguments called "type".
 
-FunctionWrapper = typing.Callable[[typing.Callable], typing.Callable]
+
+class FunctionWrapper(typing.Protocol):
+    def __call__(
+        self,
+        func: typing.Callable,
+        *,
+        ignore: list[str] | None = None,
+    ) -> typing.Callable: ...
+
+
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionWrapper | None = None
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
-
-
-def is_async_callable(func: typing.Any) -> bool:
-    if inspect.iscoroutinefunction(func):
-        return True
-    call = getattr(func, "__call__", None)
-    if call and inspect.iscoroutinefunction(call):
-        return True
-    wrapped = getattr(func, "func", None)
-    if wrapped and inspect.iscoroutinefunction(wrapped):
-        return True
-    return False
 
 
 @dataclass
@@ -58,18 +55,6 @@ class _CachedCall:
 def cached(func):
     if CACHE_WRAPPER is None:
         return func
-    if is_async_callable(func):
-
-        def _sync(*args, **kwargs):
-            return asyncio.run(func(*args, **kwargs))
-
-        _cached = CACHE_WRAPPER(_sync)
-
-        @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
-            return await asyncio.to_thread(_cached, *args, **kwargs)
-
-        return wrapper
     return CACHE_WRAPPER(func)
 
 
@@ -81,7 +66,7 @@ def _cached_with_ctx(func):
         result = asyncio.run(func(op_ctx, *args, **kwargs))
         return _CachedCall(result=result, message=op_ctx.message or "")
 
-    _cached = CACHE_WRAPPER(_sync)
+    _cached = CACHE_WRAPPER(_sync, ignore=["op_ctx"])
 
     @functools.wraps(func)
     async def wrapper(op_ctx: "OpContext", *args, **kwargs):
@@ -102,16 +87,6 @@ class OpContext:
     message: str | None = None
     node: "workspace.WorkspaceNode | None" = None
     loop: asyncio.AbstractEventLoop | None = None
-
-    def __init__(
-        self,
-        op: "Op | None" = None,
-        node: "workspace.WorkspaceNode | None" = None,
-        loop: asyncio.AbstractEventLoop | None = None,
-    ):
-        self.op = op
-        self.node = node
-        self.loop = loop
 
     def _publish_message(self):
         if self.node is not None and self.loop is not None:
@@ -367,7 +342,7 @@ class Op(BaseConfig):
         """Returns a placeholder operation for the given operation ID."""
         [*categories, name] = op_id.split(" > ")
         return Op(
-            func=lambda _ctx=None, *args, **kwargs: Result(),
+            func=lambda *args, **kwargs: Result(),
             name=name,
             categories=categories,
             params=[],
@@ -510,7 +485,7 @@ def output_position(**positions):
     return decorator
 
 
-def no_op(_ctx=None, *args, **kwargs):
+def no_op(*args, **kwargs):
     if args:
         return args[0]
     return None
