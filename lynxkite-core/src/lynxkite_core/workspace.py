@@ -105,11 +105,7 @@ class WorkspaceNode(BaseConfig):
         self.data.message = message
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
-                try:
-                    self._crdt["data"]["message"] = message
-                except Exception as e:
-                    self._crdt["data"]["error"] = str(e)
-                    raise e
+                self._crdt["data"]["message"] = message
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""

@@ -2,7 +2,6 @@
 A LynxKite executor that assumes most operations operate on their input one by one.
 """
 
-import asyncio
 import contextlib
 import urllib.parse
 from .. import ops
@@ -86,7 +85,6 @@ async def _execute(
     catalog: ops.Catalog,
     ctx: workspace.WorkspaceExecutionContext | None = None,
 ):
-    loop = asyncio.get_running_loop()
     nodes = {n.id: n for n in ws.nodes}
     contexts = {n.id: Context(node=n) for n in ws.nodes}
     edges = {n.id: [] for n in ws.nodes}
@@ -121,7 +119,7 @@ async def _execute(
             results = []
             node.publish_started()
 
-            op_ctx = ops.OpContext(op=op, node=node, loop=loop)
+            op_ctx = ops.OpContext(op=op, node=node)
             for task in ts:
                 try:
                     inputs = []

@@ -1753,14 +1753,10 @@ version = "0.3.0"
 source = { editable = "lynxkite-core" }
 dependencies = [
     { name = "pydantic" },
-    { name = "tqdm" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "pydantic", specifier = ">=2.11.7" },
-    { name = "tqdm", specifier = ">=4.67.1" },
-]
+requires-dist = [{ name = "pydantic", specifier = ">=2.11.7" }]
 
 [[package]]
 name = "lynxkite-graph-analytics"

@@ -1,6 +1,5 @@
 """A LynxKite executor that simply passes the output of one box to the other."""
 
-import asyncio
 import os
 from .. import ops
 from .. import workspace
@@ -27,7 +26,6 @@ async def await_if_needed(obj):
 
 
 async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
-    loop = asyncio.get_running_loop()
     nodes = {n.id: n for n in ws.nodes}
     dependencies = {n: [] for n in nodes}
     in_edges = {n: {} for n in nodes}
@@ -59,7 +57,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
                 node.publish_error(f"Missing input: {', '.join(missing)}")
                 continue
 
-            op_ctx = ops.OpContext(op=op, node=node, loop=loop)
+            op_ctx = ops.OpContext(op=op, node=node)
             result = op(op_ctx, *inputs, **params)
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)

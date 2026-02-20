@@ -1,6 +1,5 @@
 """Graph analytics executor and data types."""
 
-import asyncio
 import inspect
 import os
 import pathlib
@@ -356,7 +355,6 @@ async def _execute_node(
     catalog: ops.Catalog,
     wsres: WorkspaceResult,
 ):
-    loop = asyncio.get_running_loop()
     t0 = time.time()
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
@@ -419,7 +417,7 @@ async def _execute_node(
         return
     # Execute op.
     try:
-        op_ctx = ops.OpContext(op=op, node=node, loop=loop)
+        op_ctx = ops.OpContext(op=op, node=node)
         result = op(op_ctx, *inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)

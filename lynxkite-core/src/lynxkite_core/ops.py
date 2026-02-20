@@ -31,17 +31,17 @@ EXECUTORS = {}
 typeof = type  # We have some arguments called "type".
 
 
-class FunctionWrapper(typing.Protocol):
+class FunctionCacheWrapper(typing.Protocol):
     def __call__(
         self,
         func: typing.Callable,
         *,
-        ignore: list[str] | None = None,
+        ignore: list[str] | None = None,  # Parameter names that should be ignored when caching.
     ) -> typing.Callable: ...
 
 
 # Overwrite this to configure a caching mechanism.
-CACHE_WRAPPER: FunctionWrapper | None = None
+CACHE_WRAPPER: FunctionCacheWrapper | None = None
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
 
@@ -59,36 +59,69 @@ def cached(func):
 
 
 def _cached_with_ctx(func):
+    """
+    This function is used with operations that have a context parameter.
+    For caching to work the context parameter needs to be ignored (as it is not serializable),
+    and the returned result needs to be saved along with the message
+    to be published in case the cache hits.
+    """
     if CACHE_WRAPPER is None:
         return func
 
-    def _sync(op_ctx: "OpContext", *args, **kwargs):
+    def _cache_with_message(op_ctx: "OpContext", *args, **kwargs):
         result = asyncio.run(func(op_ctx, *args, **kwargs))
+        # Save the function result and the messages it sent.
         return _CachedCall(result=result, message=op_ctx.message or "")
 
-    _cached = CACHE_WRAPPER(_sync, ignore=["op_ctx"])
+    _cached = CACHE_WRAPPER(_cache_with_message, ignore=["op_ctx"])
 
     @functools.wraps(func)
     async def wrapper(op_ctx: "OpContext", *args, **kwargs):
-        r = await asyncio.to_thread(_cached, op_ctx, *args, **kwargs)
-        if isinstance(r, _CachedCall):
-            if r.message:
-                op_ctx.message = r.message
-                op_ctx._publish_message()
-            return r.result
-        return r
+        # Run the cached function in a separate thread to avoid blocking the event loop.
+        r: _CachedCall = await asyncio.to_thread(_cached, op_ctx, *args, **kwargs)
+        if r.message:
+            # Send the message to the frontend, as the cached functions main body
+            # where the messages are published is not actually executed.
+            op_ctx.set_message(r.message)
+        return r.result
 
     return wrapper
 
 
 @dataclass
 class OpContext:
+    """The context passed to operations when they are executed.
+
+    This context can only be used when the first parameter of the operation function is
+    named "self" (by default). The context is currently useful for sending messages to the frontend.
+
+    Example usage:
+    ```python
+    @op("Example op")
+    def example_op(self, input, *, params):
+        self.print(f"Received input: {input} and params: {params}")
+        result = do_something(input, params)
+        self.print(f"Produced result: {result}")
+        return result
+    ```
+    """
+
     op: "Op | None" = None
     message: str | None = None
     node: "workspace.WorkspaceNode | None" = None
     loop: asyncio.AbstractEventLoop | None = None
 
-    def _publish_message(self):
+    def __init__(self, op: "Op | None" = None, node: "workspace.WorkspaceNode | None" = None):
+        self.op = op
+        self.node = node
+        try:
+            self.loop = asyncio.get_running_loop()
+        except RuntimeError:
+            self.loop = None
+
+    def set_message(self, message: str):
+        """Sets the message, and sends it to the frontend if possible."""
+        self.message = message
         if self.node is not None and self.loop is not None:
             self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
 
@@ -97,29 +130,24 @@ class OpContext:
             return getattr(self.op, name)
         raise AttributeError(name)
 
-    def send_message(
+    def print(
         self,
         *args,
-        mode: typing.Literal["append", "replace"] = "append",
+        append: bool = True,
         **kwargs,
-    ) -> str:
+    ) -> None:
+        """Uses python's print function to send a message to the frontend.
+
+        Args:
+            append: If True, the printed message will be appended to the existing message. If False, it will replace the existing message.
+        """
         buf = io.StringIO()
         kwargs.pop("file", None)
         print(*args, file=buf, **kwargs)
-        chunk = buf.getvalue()
-        if mode == "replace":
-            self.message = chunk
-        else:
-            self.message = (self.message or "") + chunk
-        self._publish_message()
-        return self.message
-
-    def print(self, *args, append: bool = True, **kwargs):
-        self.send_message(
-            *args,
-            mode="append" if append else "replace",
-            **kwargs,
-        )
+        message = buf.getvalue()
+        if append:
+            message = (self.message or "") + message
+        self.set_message(message)
 
 
 def type_to_json(t):
@@ -561,7 +589,7 @@ def passive_op_registration(env: str, *categories: str, **kwargs):
 def make_async(func):
     """Decorator for slow, blocking operations. Turns them into separate threads."""
 
-    if asyncio.iscoroutinefunction(func):
+    if inspect.iscoroutinefunction(func):
         # If the function is already a coroutine, return it as is.
         return func
 
