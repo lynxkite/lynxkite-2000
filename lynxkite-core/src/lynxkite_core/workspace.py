@@ -99,6 +99,8 @@ class WorkspaceNode(BaseConfig):
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
+        if isinstance(error, Exception) and not isinstance(error, AssertionError):
+            error = type(error).__name__ + ": " + str(error)
         result = ops.Result(error=str(error) if error else None)
         self.publish_result(result)
 
