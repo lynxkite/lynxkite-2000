@@ -425,7 +425,9 @@ async def _execute_node(
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
-        result = ops.Result(error=str(e))
+        result = ops.Result(
+            error=type(e).__name__ + ": " + str(e) if not isinstance(e, AssertionError) else str(e)
+        )
     result.input_metadata = [_get_metadata(i) for i in inputs]
     try:
         if node.type == "service":
@@ -456,7 +458,9 @@ async def _execute_node(
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
-        result = ops.Result(error=str(e))
+        result = ops.Result(
+            error=type(e).__name__ + ": " + str(e) if not isinstance(e, AssertionError) else str(e)
+        )
     node.publish_result(result)
     dt = time.time() - t0
     if dt > 1:
