@@ -455,7 +455,9 @@ async def _execute_node(
                 wsres.outputs[node.id, k] = v
         elif len(op.outputs) == 1:
             [k] = op.outputs
-            wsres.outputs[node.id, k.name] = result.output
+            wsres.outputs[node.id, k.name] = (
+                result.output if result.output is not None else inputs[0] if inputs else None
+            )
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

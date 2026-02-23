@@ -64,7 +64,9 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
 
             if len(op.outputs) == 1:
                 [output] = op.outputs
-                outputs[node_id, output.name] = result.output
+                outputs[node_id, output.name] = (
+                    result.output if result.output is not None else inputs[0] if inputs else None
+                )
             elif len(op.outputs) > 1:
                 assert type(result.output) is dict, "An op with multiple outputs must return a dict"
                 for output in op.outputs:
