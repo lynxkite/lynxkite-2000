@@ -16,6 +16,29 @@ import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 
+function endpointSignature(endpoints: any[] | undefined) {
+  return (endpoints || []).map((x) => `${x?.name ?? ""}:${x?.position ?? ""}`).join("|");
+}
+
+function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
+  if (!prevNode) return true;
+  if (prevNode.width !== nextNode.width || prevNode.height !== nextNode.height) return true;
+  if (prevNode.data?.collapsed !== nextNode.data?.collapsed) return true;
+  if (
+    endpointSignature(prevNode.data?.meta?.inputs) !==
+    endpointSignature(nextNode.data?.meta?.inputs)
+  ) {
+    return true;
+  }
+  if (
+    endpointSignature(prevNode.data?.meta?.outputs) !==
+    endpointSignature(nextNode.data?.meta?.outputs)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 // What the rest of the app observes as the workspace state. Only mutate it through the methods!
 type CRDTWorkspace = {
   ws?: WorkspaceType;
@@ -127,9 +150,9 @@ class CRDTConnection {
   onBackendChange = (_update: any, origin: any, _doc: any, _tr: any) => {
     if (origin === this.wsProvider) {
       if (!this.ws) return;
-      this.updateState();
-      for (const node of this.state.feNodes || []) {
-        this.updateNodeInternals(node.id);
+      const changedNodeIds = this.updateState();
+      for (const nodeId of changedNodeIds) {
+        this.updateNodeInternals(nodeId);
       }
     }
   };
@@ -250,18 +273,23 @@ class CRDTConnection {
       this.observers.delete(onStorageChange);
     };
   };
-  updateState = () => {
+  updateState = (): string[] => {
     const ws = this.ws.toJSON() as WorkspaceType;
-    if (!ws.nodes) return;
-    if (!ws.edges) return;
+    if (!ws.nodes) return [];
+    if (!ws.edges) return [];
     // Maintain ReactFlow properties on the nodes even as they pass through CRDT.
     const oldNodes = Object.fromEntries(this.state?.feNodes.map((n) => [n.id, n]) || []);
     const newNodes = [];
+    const changedNodeIds = [];
     for (const n of ws.nodes) {
       if (n.type !== "node_group") {
         n.dragHandle = ".drag-handle";
       }
-      newNodes.push({ ...oldNodes[n.id], ...n });
+      const mergedNode = { ...oldNodes[n.id], ...n };
+      newNodes.push(mergedNode);
+      if (needsNodeInternalsUpdate(oldNodes[n.id], mergedNode)) {
+        changedNodeIds.push(n.id);
+      }
     }
     this.state = {
       ...this.state,
@@ -270,6 +298,7 @@ class CRDTConnection {
       feEdges: ws.edges as Edge[],
     };
     this.notifyObservers();
+    return changedNodeIds;
   };
   updateFEState = () => {
     this.state = {

@@ -238,6 +238,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         </Tooltip>
         {!data.collapsed && (
           <>
+            {data.message && data.message.length > 0 && (
+              <div className="node-message" title="Execution status">
+                {data.message}
+              </div>
+            )}
             {data.error === "Unknown operation." ? (
               <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
             ) : (

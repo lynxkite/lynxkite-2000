@@ -2,6 +2,10 @@ import inspect
 from lynxkite_core import ops
 import enum
 
+DummyContext = ops.OpContext(
+    op=None
+)  # For testing the op decorator without needing a full execution context.
+
 
 def test_op_decorator_no_params_no_types_default_positions():
     @ops.op("test", "add", view="basic", outputs=["result"])
@@ -86,7 +90,7 @@ def test_operation_can_return_non_result_instance():
     def subtract(a, b):
         return a - b
 
-    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    result = ops.CATALOGS["test"]["subtract"](DummyContext, 5, 3)
     assert isinstance(result, ops.Result)
     assert result.output == 2
     assert result.display is None
@@ -97,7 +101,7 @@ def test_operation_can_return_result_instance():
     def subtract(a, b):
         return ops.Result(output=a - b, display=None)
 
-    result = ops.CATALOGS["test"]["subtract"](5, 3)
+    result = ops.CATALOGS["test"]["subtract"](DummyContext, 5, 3)
     assert isinstance(result, ops.Result)
     assert result.output == 2
     assert result.display is None
@@ -108,7 +112,7 @@ def test_visualization_operations_display_is_populated_automatically():
     def display_op():
         return {"display_value": 1}
 
-    result = ops.CATALOGS["test"]["display_op"]()
+    result = ops.CATALOGS["test"]["display_op"](DummyContext)
     assert isinstance(result, ops.Result)
     assert result.display == {"display_value": 1}
 
@@ -123,3 +127,43 @@ def test_detect_plugins_with_plugins():
             "lynxkite_pillow_example",
         ]
     )
+
+
+def test_cache_function_sync_and_async():
+    call_count = {"n": 0}
+
+    def sync_func(x):
+        call_count["n"] += 1
+        return x * 2
+
+    async def async_func(x):
+        call_count["n"] += 1
+        return x * 2
+
+    old_cache_wrapper = ops.CACHE_WRAPPER
+
+    import joblib
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        mem = joblib.Memory(cache_dir, verbose=0)
+        ops.CACHE_WRAPPER = mem.cache
+
+        try:
+            cached_sync = ops.cached(sync_func)
+            cached_async = ops.cached(async_func)
+
+            assert cached_sync(2) == 4
+            assert cached_sync(2) == 4
+            assert call_count["n"] == 1
+            call_count["n"] = 0
+            import asyncio
+
+            async def test_async_cache():
+                assert await cached_async(3) == 6
+                assert await cached_async(3) == 6
+                assert call_count["n"] == 1
+
+            asyncio.run(test_async_cache())
+        finally:
+            ops.CACHE_WRAPPER = old_cache_wrapper
