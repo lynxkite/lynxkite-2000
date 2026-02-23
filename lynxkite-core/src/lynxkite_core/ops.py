@@ -450,7 +450,19 @@ def op(
         if outputs is not None:
             _outputs = [Output(name=name, type=None, position=opos) for name in outputs]
         else:
-            _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
+            _outputs = (
+                [Output(name="output", type=None, position=opos)]
+                if view
+                in [
+                    "basic",
+                    "visualization",
+                    "table_view",
+                    "graph_creation_view",
+                    "image",
+                    "molecule",
+                ]
+                else []
+            )
         op = Op(
             func=func,
             doc=doc,
