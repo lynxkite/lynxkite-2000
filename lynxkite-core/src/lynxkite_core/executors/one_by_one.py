@@ -118,6 +118,8 @@ async def _execute(
                 params["_ctx"] = contexts[node.id]
             results = []
             node.publish_started()
+
+            op_ctx = ops.OpContext(op=op, node=node)
             for task in ts:
                 try:
                     inputs = []
@@ -137,7 +139,7 @@ async def _execute(
                     if missing:
                         node.publish_error(f"Missing input: {', '.join(missing)}")
                         break
-                    result = op(*inputs, **params)
+                    result = op(op_ctx, *inputs, **params)
                     output = await _await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()

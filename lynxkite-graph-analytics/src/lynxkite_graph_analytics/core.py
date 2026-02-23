@@ -417,7 +417,8 @@ async def _execute_node(
         return
     # Execute op.
     try:
-        result = op(*inputs, **params)
+        op_ctx = ops.OpContext(op=op, node=node)
+        result = op(op_ctx, *inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):

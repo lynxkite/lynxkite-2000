@@ -78,6 +78,20 @@ svg {
     font-size: 12px;
   }
 
+  .node-message {
+    margin: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--bs-info-border-subtle, #b6d4fe);
+    background: var(--bs-info-bg-subtle, #e7f1ff);
+    color: var(--bs-info-text-emphasis, #084298);
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 120px;
+    overflow: auto;
+  }
+
   .node-container {
     padding: 8px;
     position: relative;

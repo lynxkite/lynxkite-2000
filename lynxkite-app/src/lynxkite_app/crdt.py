@@ -166,6 +166,7 @@ def clean_input(ws_pyd):
         node.data.display = None
         node.data.input_metadata = None
         node.data.error = None
+        node.data.message = None
         node.data.collapsed = False
         node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
@@ -334,6 +335,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     with ws_crdt.doc.transaction():
         for nc in ws_crdt["nodes"]:
             nc["data"]["status"] = "planned"
+            nc["data"]["message"] = None
     await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
     ws_pyd.save(path)
     print(f"Finished running {name} in {ws_pyd.env}.")
