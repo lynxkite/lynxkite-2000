@@ -4,6 +4,7 @@ from lynxkite_core import ops
 
 from .. import core
 import json
+import pandas as pd
 
 
 op = ops.op_registration(core.ENV)
@@ -50,4 +51,18 @@ def derive_property(
     b = b.copy()
     df = b.dfs[table_name]
     b.dfs[table_name] = df.eval(formula)
+    return b
+
+
+@op("Enter table data", icon="filter-filled")
+def enter_table_data(
+    *,
+    table_name: str,
+    column_name: str,
+    data: str,
+    separator: str,
+):
+    b = core.Bundle()
+    rows = [row.strip() for row in data.split(separator) if row.strip()]
+    b.dfs[table_name] = pd.DataFrame({column_name: rows})
     return b
