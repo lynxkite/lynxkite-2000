@@ -714,7 +714,7 @@ def _get_griffe_function(func):
 
 
 def detect_plugins():
-    """Imports all installed LynxKite plugins."""
+    """Activates all installed LynxKite plugins. (Modules whose names start with 'lynxkite_'.)"""
     plugins = {}
     for _, name, _ in pkgutil.iter_modules():
         if (
@@ -724,6 +724,8 @@ def detect_plugins():
             and name != "lynxkite_mcp"
         ):
             plugins[name] = importlib.import_module(name)
+            if hasattr(plugins[name], "register_ops"):
+                plugins[name].register_ops()
     if not plugins:
         print("No LynxKite plugins found. Be sure to install some!")
     return plugins
