@@ -4,6 +4,7 @@ from lynxkite_core import ops
 
 from .. import core
 import json
+import io
 import pandas as pd
 
 
@@ -54,15 +55,13 @@ def derive_property(
     return b
 
 
-@op("Enter table data", icon="filter-filled")
+@op("Enter table data", icon="table-filled")
 def enter_table_data(
     *,
     table_name: str,
-    column_name: str,
-    data: str,
-    separator: str,
+    data: ops.LongStr,
 ):
+    """Enter table data as CSV. The first row should contain column names."""
     b = core.Bundle()
-    rows = [row.strip() for row in data.split(separator) if row.strip()]
-    b.dfs[table_name] = pd.DataFrame({column_name: rows})
+    b.dfs[table_name] = pd.read_csv(io.StringIO(data))
     return b
