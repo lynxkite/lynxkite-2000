@@ -16,6 +16,8 @@ in specific workspaces.
 
 You can also create and distribute plugins as Python packages. In this case the
 module name must start with `lynxkite_` for it to be automatically imported on startup.
+If the module includes a `register_ops()` function, it will be called during startup.
+This allows for more control over the registration process.
 
 ### Plugin dependencies
 
