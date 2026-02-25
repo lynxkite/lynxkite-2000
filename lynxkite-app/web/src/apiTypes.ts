@@ -72,6 +72,9 @@ export interface Output {
  */
 export interface Workspace {
   env?: string;
+  execution_options?: {
+    [k: string]: unknown;
+  };
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;

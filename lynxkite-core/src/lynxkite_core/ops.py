@@ -109,11 +109,18 @@ class OpContext:
     op: "Op | None" = None
     message: str | None = None
     node: "workspace.WorkspaceNode | None" = None
+    ws: "workspace.Workspace | None" = None
     loop: asyncio.AbstractEventLoop | None = None
 
-    def __init__(self, op: "Op | None" = None, node: "workspace.WorkspaceNode | None" = None):
+    def __init__(
+        self,
+        op: "Op | None" = None,
+        node: "workspace.WorkspaceNode | None" = None,
+        ws: "workspace.Workspace | None" = None,
+    ):
         self.op = op
         self.node = node
+        self.ws = ws
         try:
             self.loop = asyncio.get_running_loop()
         except RuntimeError:
