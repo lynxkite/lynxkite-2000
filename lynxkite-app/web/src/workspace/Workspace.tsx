@@ -27,6 +27,7 @@ import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
+import ExecutionOptions from "./ExecutionOptions.tsx";
 import EnvironmentSelector from "./EnvironmentSelector";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
@@ -430,11 +431,18 @@ function LynxKiteFlow() {
         <div className="ws-name">{shortPath}</div>
         <title>{shortPath}</title>
         {crdt?.ws && (
+          <>
+          <ExecutionOptions
+            env={crdt.ws.env || ""}
+            value={crdt.ws.execution_options}
+            onChange={crdt.setExecutionOptions}
+          />
           <EnvironmentSelector
             options={Object.keys(catalog.data || {})}
             value={crdt.ws.env || ""}
             onChange={crdt.setEnv}
           />
+          </>
         )}
         <div className="tools text-secondary">
           {crdt?.ws && (
