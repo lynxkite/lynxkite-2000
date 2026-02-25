@@ -4,6 +4,8 @@ from lynxkite_core import ops
 
 from .. import core
 import json
+import io
+import pandas as pd
 
 
 op = ops.op_registration(core.ENV)
@@ -50,4 +52,16 @@ def derive_property(
     b = b.copy()
     df = b.dfs[table_name]
     b.dfs[table_name] = df.eval(formula)
+    return b
+
+
+@op("Enter table data", icon="table-filled")
+def enter_table_data(
+    *,
+    table_name: str,
+    data: ops.LongStr,
+):
+    """Enter table data as CSV. The first row should contain column names."""
+    b = core.Bundle()
+    b.dfs[table_name] = pd.read_csv(io.StringIO(data))
     return b
