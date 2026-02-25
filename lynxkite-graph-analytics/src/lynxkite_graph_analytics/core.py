@@ -417,7 +417,7 @@ async def _execute_node(
         return
     # Execute op.
     try:
-        op_ctx = ops.OpContext(op=op, node=node, workspace=ws)
+        op_ctx = ops.OpContext(op=op, node=node, ws=ws)
         result = op(op_ctx, *inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
