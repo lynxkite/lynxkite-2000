@@ -1,7 +1,6 @@
-import { memo } from "react";
-import Tooltip from "../Tooltip";
+import React, { memo } from "react";
 import Settings from "~icons/tabler/settings-filled.jsx";
-import React from "react";
+import Tooltip from "../Tooltip";
 
 const SettingsIcon = memo(Settings);
 
@@ -30,18 +29,20 @@ function LynxKiteGraphAnalyticsExecutionOptions(props: {
 }) {
   return (
     <Tooltip doc="Maximum number of GPUs used by the workspace.">
-    <label className="top-bar-gpus">
-<input
-dir="rtl"
-  type="number"
-  className="input"
-  required
-  min="1"
-  value={props.value?.gpus ?? 1}
-  onChange={(evt) => props.onChange({ ...props.value, gpus: parseInt(evt.currentTarget.value) })}
-/>
-    GPUs
-    </label>
+      <label className="top-bar-gpus">
+        <input
+          dir="rtl"
+          type="number"
+          className="input"
+          required
+          min="1"
+          value={props.value?.gpus ?? 1}
+          onChange={(evt) =>
+            props.onChange({ ...props.value, gpus: parseInt(evt.currentTarget.value, 10) })
+          }
+        />
+        GPUs
+      </label>
     </Tooltip>
   );
 }
