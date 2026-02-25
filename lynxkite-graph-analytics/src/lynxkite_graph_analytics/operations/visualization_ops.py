@@ -151,6 +151,23 @@ def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
     plt.ylabel(column_y)
 
 
+@op("Bar chart", icon="chart-bar", color="blue", view="matplotlib")
+def bar_chart(
+    b: core.Bundle,
+    *,
+    x: core.TableColumn,
+    y: core.TableColumn,
+):
+    table_x, column_x = x
+    table_y, column_y = y
+    dx = b.dfs[table_x][column_x]
+    dy = b.dfs[table_y][column_y]
+    plt.figure(figsize=(6, 6))
+    sns.barplot(x=dx, y=dy)
+    plt.xlabel(column_x)
+    plt.ylabel(column_y)
+
+
 @op("Binned graph visualization", view="matplotlib", color="blue", icon="table")
 def binned_graph_visualization(
     b: core.Bundle,
