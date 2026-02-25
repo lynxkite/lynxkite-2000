@@ -57,7 +57,7 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
                 node.publish_error(f"Missing input: {', '.join(missing)}")
                 continue
 
-            op_ctx = ops.OpContext(op=op, node=node)
+            op_ctx = ops.OpContext(op=op, node=node, workspace=ws)
             result = op(op_ctx, *inputs, **params)
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)
