@@ -147,6 +147,7 @@ class Workspace(BaseConfig):
     """
 
     env: str = ""
+    execution_options: dict = dataclasses.field(default_factory=dict)
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None

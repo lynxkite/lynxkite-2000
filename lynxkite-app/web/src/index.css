@@ -42,6 +42,7 @@ svg {
     justify-content: space-between;
     align-items: center;
     background: #002a4c;
+    color: oklch(75% 0.13 230);
     gap: 10px;
 
     .ws-name {
@@ -69,6 +70,23 @@ svg {
       .btn:disabled {
         opacity: 0.3;
       }
+    }
+
+    .input {
+      background: white;
+      color: black;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .top-bar-gpus .input {
+      width: 60px;
+      height: 2em;
+      text-align: right;
     }
   }
 

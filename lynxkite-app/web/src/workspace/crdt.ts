@@ -46,6 +46,7 @@ type CRDTWorkspace = {
   feEdges: Edge[];
   setPausedState: (paused: boolean) => void;
   setEnv: (env: string) => void;
+  setExecutionOptions: (options: Record<string, any>) => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
   addEdge: (edge: Edge) => void;
@@ -112,6 +113,10 @@ class CRDTConnection {
       },
       setEnv: (env: string) => {
         that.ws.set("env", env);
+        that.updateState();
+      },
+      setExecutionOptions: (options: Record<string, any>) => {
+        that.ws.set("execution_options", options);
         that.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {

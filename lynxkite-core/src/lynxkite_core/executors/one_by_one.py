@@ -119,7 +119,7 @@ async def _execute(
             results = []
             node.publish_started()
 
-            op_ctx = ops.OpContext(op=op, node=node)
+            op_ctx = ops.OpContext(op=op, node=node, ws=ws)
             for task in ts:
                 try:
                     inputs = []
