@@ -49,6 +49,8 @@ type CRDTWorkspace = {
   setExecutionOptions: (options: Record<string, any>) => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
+  removeNodes: (node: Node[]) => void;
+  removeEdges: (edge: Edge[]) => void;
   addEdge: (edge: Edge) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
@@ -127,7 +129,7 @@ class CRDTConnection {
         });
         that.updateState();
       },
-      addEdge(edge) {
+      addEdge(edge: Edge) {
         const yedge = new Y.Map<any>();
         for (const [key, value] of Object.entries(edge)) {
           yedge.set(key, value);
@@ -135,6 +137,38 @@ class CRDTConnection {
         that.doc.transact(() => {
           const wedges = that.ws.get("edges") as Y.Array<any>;
           wedges.push([yedge]);
+        });
+        that.updateState();
+      },
+      removeNodes(nodesToRemove: Node[]) {
+        if (!nodesToRemove.length) return;
+        const nodeIds = new Set(nodesToRemove.map((node) => node.id));
+        that.doc.transact(() => {
+          const wnodes = that.ws.get("nodes") as Y.Array<any>;
+          const nodeIndices = wnodes
+            .map((node: Y.Map<any>, idx: number) => ({ id: node.get("id") as string, idx }))
+            .filter(({ id }: { id: string }) => nodeIds.has(id))
+            .map(({ idx }: { idx: number }) => idx)
+            .sort((a: number, b: number) => b - a);
+          for (const nodeIndex of nodeIndices) {
+            wnodes.delete(nodeIndex);
+          }
+        });
+        that.updateState();
+      },
+      removeEdges(edgesToRemove: Edge[]) {
+        if (!edgesToRemove.length) return;
+        const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
+        that.doc.transact(() => {
+          const wedges = that.ws.get("edges") as Y.Array<any>;
+          const edgeIndices = wedges
+            .map((edge: Y.Map<any>, idx: number) => ({ id: edge.get("id") as string, idx }))
+            .filter(({ id }: { id: string }) => edgeIds.has(id))
+            .map(({ idx }: { idx: number }) => idx)
+            .sort((a: number, b: number) => b - a);
+          for (const edgeIndex of edgeIndices) {
+            wedges.delete(edgeIndex);
+          }
         });
         that.updateState();
       },
