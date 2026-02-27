@@ -1,0 +1,3662 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../core/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/lynxkite-icon-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Operations - LynxKite 2000:MM</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="lynxkite" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lynxkite_graph_analytics.operations.basic_ops" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="LynxKite 2000:MM" class="md-header__button md-logo" aria-label="LynxKite 2000:MM" data-md-component="logo">
+      
+  <img src="../../../assets/lynxkite-icon-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LynxKite 2000:MM
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Operations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lynxkite/lynxkite-2000" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lynxkite/lynxkite-2000
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+  About LynxKite
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../guides/quickstart/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../lynxkite-core/ops/" class="md-tabs__link">
+          
+  
+  
+  API reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="LynxKite 2000:MM" class="md-nav__button md-logo" aria-label="LynxKite 2000:MM" data-md-component="logo">
+      
+  <img src="../../../assets/lynxkite-icon-white.png" alt="logo">
+
+    </a>
+    LynxKite 2000:MM
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lynxkite/lynxkite-2000" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lynxkite/lynxkite-2000
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About LynxKite
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About LynxKite
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/analytics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph analytics &amp; data science
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LynxKite Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    LynxKite Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lynxkite-core/ops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lynxkite-core/workspace/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_3" id="__nav_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executors
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Executors
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lynxkite-core/executors/simple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simple
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lynxkite-core/executors/one_by_one/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    One by one
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LynxKite Graph Analytics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    LynxKite Graph Analytics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;basic_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.enter_table_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;enter_table_data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.join_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;join_tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.organize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;organize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;file_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.export_to_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;export_to_file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_csv
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_graphml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_graphml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_parquet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_parquet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.graph_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;graph_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.graph_ops.sample_graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sample_graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;ml_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.define_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;define_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.model_inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;model_inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_test_split
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_val_split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_test_val_split
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;pykeen_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PyKEENModelName
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelWrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PyKEENModelWrapper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.def_pykeen_with_attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;def_pykeen_with_attributes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;define_pykeen_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;evaluate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.factory_to_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;factory_to_df
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.full_predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;full_predict
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.get_inductive_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_inductive_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_inductive_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_inductive_dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_pykeen_dataset_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_pykeen_dataset_path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.inductively_split_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;inductively_split_dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.prepare_triples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;prepare_triples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.req_inverse_triples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;req_inverse_triples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.target_predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;target_predict
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;query_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops.cypher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;cypher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops.sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sql
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.visualization_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;visualization_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;binned_graph_visualization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.networkx_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;networkx_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;basic_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.enter_table_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;enter_table_data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.join_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;join_tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.basic_ops.organize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;organize
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;file_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.export_to_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;export_to_file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_csv
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_graphml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_graphml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.file_ops.import_parquet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_parquet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.graph_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;graph_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.graph_ops.sample_graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sample_graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;ml_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.define_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;define_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.model_inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;model_inference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_test_split
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_val_split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;train_test_val_split
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;pykeen_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PyKEENModelName
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelWrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;PyKEENModelWrapper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.def_pykeen_with_attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;def_pykeen_with_attributes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;define_pykeen_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;evaluate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.factory_to_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;factory_to_df
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.full_predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;full_predict
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.get_inductive_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;get_inductive_model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_inductive_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_inductive_dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_pykeen_dataset_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;import_pykeen_dataset_path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.inductively_split_dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;inductively_split_dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.prepare_triples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;prepare_triples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.req_inverse_triples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;req_inverse_triples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.pykeen_ops.target_predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;target_predict
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;query_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops.cypher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;cypher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.query_ops.sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sql
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.visualization_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;visualization_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;binned_graph_visualization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lynxkite_graph_analytics.networkx_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;networkx_ops
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+      
+        
+  
+  
+    
+    
+      
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../lynxkite-core/ops/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    API reference
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../core/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    LynxKite Graph Analytics
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Operations</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.basic_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Basic operations for this environment.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.basic_ops.enter_table_data" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">enter_table_data</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.basic_ops.enter_table_data" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">enter_table_data</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            LongStr
+
+
+  
+      module-attribute
+   (lynxkite_core.ops.LongStr)" href="../../lynxkite-core/ops/#lynxkite_core.ops.LongStr">LongStr</a></span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Enter table data as CSV. The first row should contain column names.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.basic_ops.join_tables" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">join_tables</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.basic_ops.join_tables" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">join_tables</span><span class="p">(</span><span class="n">bundle_a</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="n">bundle_b</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">table_a</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">table_b</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">join_type</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.basic_ops.JoinType">JoinType</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.basic_ops.JoinType.inner">inner</span></span><span class="p">,</span> <span class="n">on_column</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">left_on</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffixes</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;_a,_b&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Join/merge dataframes from two bundles.</p>
+<p>Parameters:
+- table_a: Table name from bundle A
+- table_b: Table name from bundle B
+- join_type: Type of join - "inner", "outer", "left", "right", "cross"
+- on_column: Column name to join on (same name in both tables)
+- left_on: Column name in left table (when column names differ)
+- right_on: Column name in right table (when column names differ)
+- suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.basic_ops.organize" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">organize</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.basic_ops.organize" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">organize</span><span class="p">(</span><span class="n">bundles</span><span class="p">:</span> <span class="n"><span title="list">list</span></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">relations</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Merge multiple inputs and construct graphs from the tables.</p>
+<p>To create a graph, import tables for edges and nodes, and combine them in this operation.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.file_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Operations for reading and writing files.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.file_ops.export_to_file" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">export_to_file</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.file_ops.export_to_file" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">export_to_file</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n"><span title="lynxkite_core.ops.PathStr">PathStr</span></span><span class="p">,</span> <span class="n">file_format</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat">FileFormat</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat.csv">csv</span></span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Exports a DataFrame to a file.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bundle</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The bundle containing the DataFrame to export.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>table_name</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The name of the DataFrame in the bundle to export.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>filename</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The name of the file to export to.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_core.ops.PathStr">PathStr</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_format</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The format of the file to export to. Defaults to CSV.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat">FileFormat</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat.csv">csv</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.file_ops.import_csv" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_csv</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.file_ops.import_csv" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_csv</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n"><span title="lynxkite_core.ops.PathStr">PathStr</span></span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&lt;from file&gt;&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;&lt;auto&gt;&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Imports a CSV file.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.file_ops.import_file" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_file</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.file_ops.import_file" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_file</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n"><span title="lynxkite_core.ops.PathStr">PathStr</span></span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">file_format</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat">FileFormat</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat.csv">csv</span></span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Read the contents of the a file into a <code>Bundle</code>.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_path</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Path to the file to import.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_core.ops.PathStr">PathStr</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>table_name</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Name to use for identifying the table in the bundle.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_format</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Format of the file. Has to be one of the values in the <code>FileFormat</code> enum.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat">FileFormat</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.file_ops.FileFormat.csv">csv</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>Bundle</code>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>Bundle with a single table with the contents of the file.</p>
+              </div>
+                <p>
+                  <span class="doc-returns-annotation">
+                    <b>TYPE:</b>
+                      <code><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></code>
+                  </span>
+                </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.file_ops.import_graphml" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_graphml</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.file_ops.import_graphml" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_graphml</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n"><span title="lynxkite_core.ops.PathStr">PathStr</span></span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Imports a GraphML file.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.file_ops.import_parquet" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_parquet</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.file_ops.import_parquet" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_parquet</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n"><span title="lynxkite_core.ops.PathStr">PathStr</span></span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Imports a Parquet file.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.graph_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Operations for graphs.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.graph_ops.sample_graph" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">sample_graph</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.graph_ops.sample_graph" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">sample_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n"><span title="networkx.Graph">Graph</span></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Takes a (preferably connected) subgraph.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.ml_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Operations for machine learning.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.ml_ops.define_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">define_model</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.ml_ops.define_model" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">define_model</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_workspace</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Trains the selected model on the selected dataset. Most training parameters are set in the model definition.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.ml_ops.model_inference" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">model_inference</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.ml_ops.model_inference" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">model_inference</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.pytorch.pytorch_core.PyTorchModelName">PyTorchModelName</span></span> <span class="o">=</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">input_mapping</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.ml_ops.ModelInferenceInputMapping">ModelInferenceInputMapping</span></span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output_mapping</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.ml_ops.ModelOutputMapping">ModelOutputMapping</span></span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Executes a trained model.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.ml_ops.train_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">train_model</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.ml_ops.train_model" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">train_model</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.pytorch.pytorch_core.PyTorchModelName">PyTorchModelName</span></span> <span class="o">=</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">input_mapping</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.ml_ops.ModelTrainingInputMapping">ModelTrainingInputMapping</span></span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epochs</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Trains the selected model on the selected dataset.
+Training parameters specific to the model are set in the model definition,
+while parameters specific to the hardware environment and dataset are set here.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.ml_ops.train_test_split" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">train_test_split</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_split" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">train_test_split</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">test_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Splits a dataframe in the bundle into separate "_train" and "_test" dataframes.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.ml_ops.train_test_val_split" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">train_test_val_split</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.ml_ops.train_test_val_split" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">train_test_val_split</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">test_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">val_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Splits a dataframe in the bundle into separate "_train", "_test" and "_val" dataframes.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.pykeen_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>PyKEEN graph embedding operations.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">PyKEENModelName</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">PyKEENModelName</span> <span class="o">=</span> <span class="n"><span title="typing.Annotated">Annotated</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;dropdown&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata_query&#39;</span><span class="p">:</span> <span class="s2">&quot;[].other.*[] | [?type == &#39;pykeen-model&#39;].key&quot;</span><span class="p">}]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>A type annotation to be used for parameters of an operation. PyKEENModelName is
+rendered as a dropdown in the frontend, listing the PyKEEN models in the Bundle.
+The model name is passed to the operation as a string.</p>
+
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelWrapper" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">PyKEENModelWrapper</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelWrapper" class="headerlink" title="Permanent link">¤</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Wrapper to add metadata method to PyKEEN models for dropdown queries, and to enable caching of model</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.def_pykeen_with_attributes" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">def_pykeen_with_attributes</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.def_pykeen_with_attributes" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">def_pykeen_with_attributes</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interaction_name</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D">PyKEENModel1D</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D.TransE">TransE</span></span><span class="p">,</span> <span class="n">combination_name</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENCombinations">PyKEENCombinations</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENCombinations.ConcatProjection">ConcatProjection</span></span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">,</span> <span class="n">loss_function</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">random_seed</span><span class="p">:</span> <span class="n"><span title="int">int</span></span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Defines a PyKEEN model capable of using numeric literals as node attributes.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">define_pykeen_model</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">define_pykeen_model</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelMoreD">PyKEENModelMoreD</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelMoreD.MuRE">MuRE</span></span><span class="p">,</span> <span class="n">edge_data_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span> <span class="o">=</span> <span class="s1">&#39;edges&#39;</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">loss_function</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENSupportedLosses">PyKEENSupportedLosses</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENSupportedLosses.NSSALoss">NSSALoss</span></span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;PyKEENmodel&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Defines a PyKEEN model based on the selected model type.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.evaluate" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">evaluate</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.evaluate" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">evaluate</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            PyKEENModelName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName)" href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName">PyKEENModelName</a></span> <span class="o">=</span> <span class="s1">&#39;PyKEENmodel&#39;</span><span class="p">,</span> <span class="n">evaluator_type</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.EvaluatorTypes">EvaluatorTypes</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.EvaluatorTypes.RankBasedEvaluator">RankBasedEvaluator</span></span><span class="p">,</span> <span class="n">eval_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span> <span class="o">=</span> <span class="s1">&#39;edges_test&#39;</span><span class="p">,</span> <span class="n">additional_true_triples_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span> <span class="o">=</span> <span class="s1">&#39;edges_train&#39;</span><span class="p">,</span> <span class="n">metrics_str</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">32</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates the given model on the test set using the specified evaluator type.
+Args:
+    evaluator_type: The type of evaluator to use. Note: When using classification based methods, evaluation may be extremely slow.
+    metrics_str: Comma separated list, "ALL" if all metrics are needed.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.factory_to_df" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">factory_to_df</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.factory_to_df" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">factory_to_df</span><span class="p">(</span><span class="n">factory</span><span class="p">:</span> <span class="n"><span title="pykeen.triples.CoreTriplesFactory">CoreTriplesFactory</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="pandas.DataFrame">DataFrame</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a TriplesFactory to a DataFrame with labeled columns.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.full_predict" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">full_predict</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.full_predict" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">full_predict</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            PyKEENModelName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName)" href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName">PyKEENModelName</a></span> <span class="o">=</span> <span class="s1">&#39;PyKEENmodel&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inductive_setting</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Warning: This prediction can be a very expensive operation!</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>k</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Pass "" to keep all scores</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="int">int</span> | None</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.get_inductive_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">get_inductive_model</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.get_inductive_model" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">get_inductive_model</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">triples_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">inference_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">interaction</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D">PyKEENModel1D</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D.DistMult">DistMult</span></span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">loss_function</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">num_tokens</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">aggregation</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyTorchAggregationFunctions">PyTorchAggregationFunctions</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyTorchAggregationFunctions.MLP">MLP</span></span><span class="p">,</span> <span class="n">use_GNN</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;InductiveModel&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Defines an InductiveNodePiece model (with an optional GNN message passing layer) for inductive link prediction tasks.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>triples_table</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The transductive edges of the graph.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inference_table</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The inductive edges of the graph.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>interaction</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Type of interaction the model will use for link prediction scoring.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D">PyKEENModel1D</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D.DistMult">DistMult</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>num_tokens</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Number of hash tokens for each node representation, usually 66th percentiles of the number of unique incident relations per node.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="int">int</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>2</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>aggregation</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Aggregation of multiple token representations to a single entity representation. Pick a top-level torch function, or use 'mlp' for a two-layer built-in mlp aggregator.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyTorchAggregationFunctions">PyTorchAggregationFunctions</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyTorchAggregationFunctions.MLP">MLP</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.import_inductive_dataset" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_inductive_dataset</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_inductive_dataset" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_inductive_dataset</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.InductiveDataset">InductiveDataset</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.InductiveDataset.ILPC2022Small">ILPC2022Small</span></span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Imports an inductive dataset from the PyKEEN library.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.import_pykeen_dataset_path" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">import_pykeen_dataset_path</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.import_pykeen_dataset_path" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">import_pykeen_dataset_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENDataset">PyKEENDataset</span></span> <span class="o">=</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENDataset.Nations">Nations</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Imports a dataset from the PyKEEN library.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.inductively_split_dataset" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">inductively_split_dataset</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.inductively_split_dataset" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">inductively_split_dataset</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dataset_table</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            TableName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.TableName)" href="../core/#lynxkite_graph_analytics.core.TableName">TableName</a></span><span class="p">,</span> <span class="n">entity_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">training_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">testing_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">validation_ratio</span><span class="p">:</span> <span class="n"><span title="float">float</span></span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n"><span title="int">int</span></span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Splits incoming data into 4 subsets. Transductive training on which training should be run, inductive inference on which during training inference is done.
+Inference testing and validation sets that can be used to evaluate model performance.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>entity_ratio</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>How many percent of the entities in the dataset should be in the transductive training graph. If <code>0</code> semi-inductive split is applied, else fully-inductive split is applied</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="float">float</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>0.5</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>training_ratio</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>When semi-inductive this is <em>entity</em> ratio, when fully-inductive this is the inference training split</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="float">float</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>0.8</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>testing_ratio</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>When semi-inductive this is <em>entity</em> ratio, when fully-inductive this is the inference testing split</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="float">float</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>0.1</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>validation_ratio</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>When semi-inductive this is <em>entity</em> ratio, when fully-inductive this is the inference validation split</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="float">float</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>0.1</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.prepare_triples" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">prepare_triples</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.prepare_triples" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">prepare_triples</span><span class="p">(</span><span class="n">triples_df</span><span class="p">:</span> <span class="n"><span title="pandas.DataFrame">DataFrame</span></span><span class="p">,</span> <span class="n">entity_to_id</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.Mapping">Mapping</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="int">int</span></span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">relation_to_id</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="typing.Mapping">Mapping</span></span><span class="p">[</span><span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n"><span title="int">int</span></span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inv_triples</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">numeric_literals</span><span class="p">:</span> <span class="n"><span title="typing.Optional">Optional</span></span><span class="p">[</span><span class="n"><span title="pandas.DataFrame">DataFrame</span></span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="pykeen.triples.TriplesFactory">TriplesFactory</span></span> <span class="o">|</span> <span class="n"><span title="pykeen.triples.TriplesNumericLiteralsFactory">TriplesNumericLiteralsFactory</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Prepare triples for PyKEEN from a DataFrame.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.req_inverse_triples" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">req_inverse_triples</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.req_inverse_triples" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">req_inverse_triples</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n"><span title="pykeen.models.Model">Model</span></span> <span class="o">|</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModel1D">PyKEENModel1D</span></span> <span class="o">|</span> <span class="n"><span title="lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelMoreD">PyKEENModelMoreD</span></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="bool">bool</span></span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Check if the model requires inverse triples.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.pykeen_ops.target_predict" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">target_predict</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.pykeen_ops.target_predict" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">target_predict</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            PyKEENModelName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName)" href="#lynxkite_graph_analytics.operations.pykeen_ops.PyKEENModelName">PyKEENModelName</a></span> <span class="o">=</span> <span class="s1">&#39;PyKEENmodel&#39;</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">relation</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">tail</span><span class="p">:</span> <span class="n"><span title="str">str</span></span><span class="p">,</span> <span class="n">inductive_setting</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Leave the target prediction field empty</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.query_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>SQL and Cypher.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.query_ops.cypher" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">cypher</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.query_ops.cypher" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">cypher</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            LongStr
+
+
+  
+      module-attribute
+   (lynxkite_core.ops.LongStr)" href="../../lynxkite-core/ops/#lynxkite_core.ops.LongStr">LongStr</a></span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;result&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.query_ops.sql" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">sql</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.query_ops.sql" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">sql</span><span class="p">(</span><span class="n">bundle</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            LongStr
+
+
+  
+      module-attribute
+   (lynxkite_core.ops.LongStr)" href="../../lynxkite-core/ops/#lynxkite_core.ops.LongStr">LongStr</a></span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="n"><span title="str">str</span></span> <span class="o">=</span> <span class="s1">&#39;result&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.operations.visualization_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Visualizations.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">binned_graph_visualization</span>
+
+
+<a href="#lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization" class="headerlink" title="Permanent link">¤</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">binned_graph_visualization</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            Bundle
+
+
+  
+      dataclass
+   (lynxkite_graph_analytics.core.Bundle)" href="../core/#lynxkite_graph_analytics.core.Bundle">Bundle</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            NodePropertyName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.NodePropertyName)" href="../core/#lynxkite_graph_analytics.core.NodePropertyName">NodePropertyName</a></span><span class="p">,</span> <span class="n">y_property</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="            NodePropertyName
+
+
+  
+      module-attribute
+   (lynxkite_graph_analytics.core.NodePropertyName)" href="../core/#lynxkite_graph_analytics.core.NodePropertyName">NodePropertyName</a></span><span class="p">,</span> <span class="n">x_bins</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">y_bins</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">show_loops</span><span class="p">:</span> <span class="n"><span title="bool">bool</span></span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Nodes binned together by x and y are aggregated into one node.
+Edges between bins are aggregated into one edge.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="lynxkite_graph_analytics.networkx_ops"></a>
+    <div class="doc doc-contents first">
+
+        <p>Automatically wraps all NetworkX functions as LynxKite operations.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../core/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Core
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.path", "navigation.instant", "navigation.instant.prefetch", "navigation.footer", "content.code.annotate", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
