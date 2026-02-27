@@ -18,6 +18,7 @@ import io
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
+from .terminal_emulator import StdoutBinder
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -155,6 +156,10 @@ class OpContext:
         if append:
             message = (self.message or "") + message
         self.set_message(message)
+
+    @property
+    def stdout(self):
+        return StdoutBinder(self)
 
 
 def type_to_json(t):
