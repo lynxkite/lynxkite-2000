@@ -262,12 +262,14 @@ class Result:
     The `display` attribute is used to send data to display on the UI. The value has to be
     JSON-serializable.
     `input_metadata` is a list of JSON objects describing each input.
+    `output_metadata` is a list of JSON objects describing each output.
     """
 
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
+    output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
 
 def get_optional_type(type):

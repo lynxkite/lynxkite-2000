@@ -102,6 +102,11 @@ export interface WorkspaceNodeData {
         [k: string]: unknown;
       }[]
     | null;
+  output_metadata?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
   error?: string | null;
   message?: string | null;
   collapsed?: boolean | null;

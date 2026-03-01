@@ -44,7 +44,28 @@ function docToString(doc: any): string {
   );
 }
 
-function getHandles(ws: Workspace, id: string, inputs: any[], outputs: any[]) {
+function formatOutputMetadata(metadata: any): string | undefined {
+  if (!metadata?.dataframes) return undefined;
+  const parts: string[] = [];
+  const tableNames = Object.keys(metadata.dataframes);
+  tableNames.sort();
+  const nbsp = "\u00A0";
+  for (const name of tableNames) {
+    const df = metadata.dataframes[name];
+    if (typeof df.length === "number") {
+      parts.push(`${df.length}${nbsp}${name}`);
+    }
+  }
+  return parts.length > 0 ? parts.join(", ") : undefined;
+}
+
+function getHandles(
+  ws: Workspace,
+  id: string,
+  inputs: any[],
+  outputs: any[],
+  outputMetadata?: any[],
+) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
     name: string;
@@ -52,12 +73,15 @@ function getHandles(ws: Workspace, id: string, inputs: any[], outputs: any[]) {
     offsetPercentage: number;
     showLabel: boolean;
     type: "source" | "target";
+    metadataLabel?: string;
   }[] = [];
   for (const e of inputs) {
     handles.push({ ...e, type: "target" });
   }
-  for (const e of outputs) {
-    handles.push({ ...e, type: "source" });
+  for (let i = 0; i < outputs.length; i++) {
+    const e = outputs[i];
+    const metadataLabel = formatOutputMetadata(outputMetadata?.[i]);
+    handles.push({ ...e, type: "source", metadataLabel });
   }
   const counts = { top: 0, bottom: 0, left: 0, right: 0 };
   for (const e of handles) {
@@ -151,6 +175,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     props.id,
     data.meta?.inputs || [],
     data.meta?.outputs || [],
+    data.output_metadata,
   );
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
@@ -282,6 +307,9 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
           >
             {handle.showLabel && (
               <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>
+            )}
+            {handle.metadataLabel && (
+              <span className="handle-metadata-label">{handle.metadataLabel}</span>
             )}
           </Handle>
         ))}

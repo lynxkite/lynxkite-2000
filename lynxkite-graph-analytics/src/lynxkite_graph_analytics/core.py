@@ -72,11 +72,11 @@ rendered as a pair of dropdowns for selecting a table in the Bundle and a column
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
 
-DataFrameColumn = typing.Annotated[
-    str, {"format": "dropdown", "metadata_query": "[].dataframes[].df.columns[]"}
+RecordsColumn = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].records.columns[]"}
 ]
-"""A type annotation to be used for parameters of an operation. DataFrameColumn is
-rendered as a dropdown in the frontend, listing the columns of the "df" DataFrame.
+"""A type annotation to be used for parameters of an operation. RecordsColumn is
+rendered as a dropdown in the frontend, listing the columns of the "records" DataFrame.
 The column name is passed to the operation as a string."""
 
 
@@ -153,7 +153,7 @@ class Bundle:
 
     @classmethod
     def from_df(cls, df: pd.DataFrame):
-        return cls(dfs={"df": df})
+        return cls(dfs={"records": df})
 
     def to_nx(self):
         # TODO: Use relations.
@@ -195,6 +195,7 @@ class Bundle:
                 name: {
                     "key": name,
                     "columns": sorted(str(c) for c in df.columns),
+                    "length": len(df),
                 }
                 for name, df in self.dfs.items()
             },
@@ -430,6 +431,12 @@ async def _execute_node(
             error=type(e).__name__ + ": " + str(e) if not isinstance(e, AssertionError) else str(e)
         )
     result.input_metadata = [_get_metadata(i) for i in inputs]
+    if len(op.outputs) > 1 and isinstance(result.output, dict):
+        result.output_metadata = [_get_metadata(result.output.get(o.name)) for o in op.outputs]
+    elif len(op.outputs) == 1:
+        result.output_metadata = [_get_metadata(result.output)]
+    else:
+        result.output_metadata = []
     try:
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"
