@@ -18,7 +18,6 @@ import io
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
-from .terminal_emulator import StdoutBinder
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -43,6 +42,17 @@ class FunctionCacheWrapper(typing.Protocol):
 
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionCacheWrapper | None = None
+
+
+class FunctionTerminalEmulator(typing.Protocol):
+    def __call__(
+        self, op_ctx: "OpContext", columns: int = 80, lines: int = 10, history: int = 100
+    ) -> typing.ContextManager: ...
+
+
+# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
+TERMINAL_EMULATOR: FunctionTerminalEmulator | None = None
+
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
 
@@ -150,9 +160,28 @@ class OpContext:
             message = (self.message or "") + message
         self.set_message(message)
 
-    @property
-    def stdout(self):
-        return StdoutBinder(self)
+    def stdout(self, columns: int = 80, lines: int = 10, history: int = 100):
+        """A context manager that captures stdout/stderr and sends it to the frontend.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            with self.stdout(columns=60, lines=5):
+                print("Starting calculation...")
+                for i in tqdm.tqdm(range(4), "Calculating..."):
+                    # some calculation here
+                print("Done")
+        ```
+
+        Args:
+            columns: The width of the terminal in characters.
+            lines: The number of lines to emulate in the terminal.
+            history: The number of lines to keep in the history (for scrolling).
+        """
+        assert TERMINAL_EMULATOR is not None, (
+            "No terminal emulator configured. Please set TERMINAL_EMULATOR to use this feature."
+        )
+        return TERMINAL_EMULATOR(self, columns=columns, lines=lines, history=history)
 
 
 def type_to_json(t):
