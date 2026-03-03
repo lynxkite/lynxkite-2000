@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import enum
 import functools
 import json
@@ -46,12 +47,32 @@ CACHE_WRAPPER: FunctionCacheWrapper | None = None
 
 class FunctionTerminalEmulator(typing.Protocol):
     def __call__(
-        self, op_ctx: "OpContext", columns: int = 80, lines: int = 10, history: int = 100
+        self,
+        op_ctx: "OpContext",
+        columns: int = 80,
+        lines: int = 10,
+        history: int = 100,
+        passthrough: bool = True,
     ) -> typing.ContextManager: ...
 
 
 # Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
-TERMINAL_EMULATOR: FunctionTerminalEmulator | None = None
+@contextlib.contextmanager
+def dummy_terminal_emulator(
+    op_ctx: "OpContext",
+    columns: int = 80,
+    lines: int = 10,
+    history: int = 100,
+    passthrough: bool = True,
+) -> typing.Iterator[None]:
+    """
+    Default terminal emulator that does nothing. Set TERMINAL_EMULATOR to a function that
+    returns a context manager to enable this feature.
+    """
+    yield
+
+
+TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
@@ -160,7 +181,9 @@ class OpContext:
             message = (self.message or "") + message
         self.set_message(message)
 
-    def stdout(self, columns: int = 80, lines: int = 10, history: int = 100):
+    def stdout(
+        self, columns: int = 80, lines: int = 10, history: int = 25, passthrough: bool = True
+    ) -> typing.ContextManager:
         """A context manager that captures stdout/stderr and sends it to the frontend.
         Example usage:
         ```python
@@ -177,11 +200,11 @@ class OpContext:
             columns: The width of the terminal in characters.
             lines: The number of lines to emulate in the terminal.
             history: The number of lines to keep in the history (for scrolling).
+            passthrough: If True, the captured output will also be printed to the original stdout/stderr.
         """
-        assert TERMINAL_EMULATOR is not None, (
-            "No terminal emulator configured. Please set TERMINAL_EMULATOR to use this feature."
+        return TERMINAL_EMULATOR(
+            self, columns=columns, lines=lines, history=history, passthrough=passthrough
         )
-        return TERMINAL_EMULATOR(self, columns=columns, lines=lines, history=history)
 
 
 def type_to_json(t):

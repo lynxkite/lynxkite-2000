@@ -45,11 +45,13 @@ class _UiTerminal:
         columns: int,
         lines: int,
         history: int,
+        passthrough: bool = True,
         *,
         owner_tid: int = 0,
     ):
         self.ctx = ctx
         self._owner_tid = owner_tid
+        self._passthrough = passthrough
         self._screen = pyte.HistoryScreen(columns, lines, history=history, ratio=1.0)
         self._screen.set_mode(LNM)
         self._stream = pyte.Stream(self._screen)
@@ -85,52 +87,43 @@ class _Proxy(io.TextIOWrapper):
 
     def __init__(self, original: TextIO | None):
         self._original = original
+        if original and isinstance(original, io.TextIOWrapper):
+            super().__init__(
+                original.buffer,
+                encoding=original.encoding,
+                errors=original.errors,
+                newline=None,
+                line_buffering=original.line_buffering,
+                write_through=original.write_through,
+            )
+        else:
+            super().__init__(io.BytesIO(), encoding="utf-8")
+
+    def __getattr__(self, name):
+        return getattr(self._original, name)
 
     def write(self, s: str) -> int:
+        msg_len = len(s)
         if not s:
             return 0
         t = _terminals.get(threading.get_ident())
         if t is not None:
             t.feed(s)
-        if self._original is not None:
+        if self._original is not None and ((t is not None and t._passthrough) or t is None):
             self._original.write(s)
-        return len(s)
+        return msg_len
 
     def flush(self) -> None:
         if self._original is not None:
             self._original.flush()
 
-    def writable(self) -> bool:
-        return True
-
     def isatty(self) -> bool:
+        if (t := _terminals.get(threading.get_ident())) is not None and not t._passthrough:
+            return True
         try:
             return self._original is not None and self._original.isatty()
         except Exception:
             return False
-
-    @property
-    def encoding(self):
-        return (
-            getattr(self._original, "encoding", "utf-8") if self._original is not None else "utf-8"
-        )
-
-    @property
-    def errors(self):
-        return (
-            getattr(self._original, "errors", "replace")
-            if self._original is not None
-            else "replace"
-        )
-
-    @property
-    def buffer(self):
-        return getattr(self._original, "buffer", None) if self._original is not None else None
-
-    def fileno(self) -> int:
-        if self._original is not None:
-            return self._original.fileno()
-        raise OSError("No file descriptor")
 
 
 def _active_size() -> tuple[int, int] | None:
@@ -166,7 +159,8 @@ def _fcntl_ioctl(fd, request, arg=0, mutate_flag=True):
 
 
 def enable_thread_proxies() -> None:
-    """Install stdout/stderr proxies and terminal-size shims. ONLY CALL ONCE."""
+    """Install stdout/stderr proxies and terminal-size shims."""
+    assert not isinstance(sys.stdout, _Proxy), "Proxies are already enabled"
     sys.stdout = _Proxy(_orig_stdout)
     sys.stderr = _Proxy(_orig_stderr)
     sys.__stdout__ = _Proxy(_orig___stdout__)
@@ -183,10 +177,11 @@ def capture_output(
     columns: int = DEFAULT_COLUMNS,
     lines: int = DEFAULT_LINES,
     history: int = DEFAULT_HISTORY,
+    passthrough: bool = True,
 ):
     """Route stdout/stderr on the current thread to a pyte terminal for *op_ctx*."""
     tid = threading.get_ident()
-    terminal = _UiTerminal(op_ctx, columns, lines, history, owner_tid=tid)
+    terminal = _UiTerminal(op_ctx, columns, lines, history, owner_tid=tid, passthrough=passthrough)
     _sizes[tid] = (columns, lines)
     _terminals[tid] = terminal
     try:
