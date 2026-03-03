@@ -24,7 +24,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { usePath } from "../common.ts";
+import { uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -295,15 +295,12 @@ function LynxKiteFlow() {
     e.stopPropagation();
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
     if (!catalog.data || !crdt?.ws?.env) {
       return;
     }
     try {
-      await axios.post("/api/upload", formData, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((100 * progressEvent.loaded) / progressEvent.total!);
+      await uploadFile(file, {
+        onProgress: (percentCompleted) => {
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
