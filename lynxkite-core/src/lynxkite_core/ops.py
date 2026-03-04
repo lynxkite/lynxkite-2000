@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import enum
 import functools
 import json
@@ -42,6 +43,46 @@ class FunctionCacheWrapper(typing.Protocol):
 
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionCacheWrapper | None = None
+
+
+def dummy_tqdm(iterable=None, *args, **kwargs):
+    if iterable:
+        yield from iterable
+
+
+# Temporary TQDM import, to avoid importing tqdm in the core module. Set this to tqdm.tqdm when tqdm is available.
+TQDM_TQDM: typing.Callable[..., typing.Any] = dummy_tqdm
+
+
+class FunctionTerminalEmulator(typing.Protocol):
+    def __call__(
+        self,
+        op_ctx: "OpContext",
+        columns: int = 80,
+        lines: int = 10,
+        history: int = 100,
+        passthrough: bool = True,
+    ) -> typing.ContextManager: ...
+
+
+# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
+@contextlib.contextmanager
+def dummy_terminal_emulator(
+    op_ctx: "OpContext",
+    columns: int = 80,
+    lines: int = 10,
+    history: int = 100,
+    passthrough: bool = True,
+) -> typing.Iterator[None]:
+    """
+    Default terminal emulator that does nothing. Set TERMINAL_EMULATOR to a function that
+    returns a context manager to enable this feature.
+    """
+    yield
+
+
+TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
+
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
 
@@ -155,6 +196,46 @@ class OpContext:
         if append:
             message = (self.message or "") + message
         self.set_message(message)
+
+    def stdout(
+        self, columns: int = 80, lines: int = 10, history: int = 25, passthrough: bool = True
+    ) -> typing.ContextManager:
+        """A context manager that captures stdout/stderr and sends it to the frontend.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            with self.stdout(columns=60, lines=5):
+                print("Starting calculation...")
+                for i in tqdm.tqdm(range(4), "Calculating..."):
+                    # some calculation here
+                print("Done")
+        ```
+
+        Args:
+            columns: The width of the terminal in characters.
+            lines: The number of lines to emulate in the terminal.
+            history: The number of lines to keep in the history (for scrolling).
+            passthrough: If True, the captured output will also be printed to the original stdout/stderr.
+        """
+        return TERMINAL_EMULATOR(
+            self, columns=columns, lines=lines, history=history, passthrough=passthrough
+        )
+
+    def tqdm(self, *args, **kwargs):
+        """A wrapper around tqdm.tqdm that sends tqdm progress bars to the frontend.
+        Currently everything that is printed inside the tqdm context manager will be captured
+        and sent to the TERMINAL_EMULATOR. In the future we will give more support to this.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            for i in self.tqdm(range(100), "Processing..."):
+                # some processing here
+        ```
+        """
+        with self.stdout():
+            yield from TQDM_TQDM(*args, **kwargs)
 
 
 def type_to_json(t):
