@@ -45,6 +45,15 @@ class FunctionCacheWrapper(typing.Protocol):
 CACHE_WRAPPER: FunctionCacheWrapper | None = None
 
 
+def dummy_tqdm(iterable=None, *args, **kwargs):
+    if iterable:
+        yield from iterable
+
+
+# Temporary TQDM import, to avoid importing tqdm in the core module. Set this to tqdm.tqdm when tqdm is available.
+TQDM_TQDM: typing.Callable[..., typing.Any] = dummy_tqdm
+
+
 class FunctionTerminalEmulator(typing.Protocol):
     def __call__(
         self,
@@ -205,6 +214,21 @@ class OpContext:
         return TERMINAL_EMULATOR(
             self, columns=columns, lines=lines, history=history, passthrough=passthrough
         )
+
+    def tqdm(self, *args, **kwargs):
+        """A wrapper around tqdm.tqdm that sends tqdm progress bars to the frontend.
+        Currently everything that is printed inside the tqdm context manager will be captured
+        and sent to the TERMINAL_EMULATOR. In the future we will give more support to this.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            for i in self.tqdm(range(100), "Processing..."):
+                # some processing here
+        ```
+        """
+        with self.stdout():
+            yield from TQDM_TQDM(*args, **kwargs)
 
 
 def type_to_json(t):
