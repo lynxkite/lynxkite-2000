@@ -8,13 +8,19 @@ import pathlib
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
+import tqdm
 from lynxkite_core import ops
 from lynxkite_core import workspace
 from . import crdt
 from . import icons
+from .terminal_emulator import capture_output, enable_thread_proxies
 
 mem = joblib.Memory(".joblib-cache")
 ops.CACHE_WRAPPER = mem.cache
+
+enable_thread_proxies()
+ops.TERMINAL_EMULATOR = capture_output
+ops.TQDM_TQDM = tqdm.tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
