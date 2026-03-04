@@ -106,8 +106,8 @@ svg {
     font-size: 12px;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
-    max-height: 120px;
-    overflow: auto;
+    max-height: none;
+    overflow: visible;
   }
 
   .node-container {
