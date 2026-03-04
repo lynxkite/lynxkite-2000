@@ -15,6 +15,8 @@ dependencies = [
     "sse-starlette>=2.2.1",
     "uvicorn>=0.35.0",
     "watchdog>=6.0.0",
+    "pyte>=0.8.2",
+    "tqdm>=4.67.1",
 ]
 license = "AGPL-3.0-or-later"
 
