@@ -53,3 +53,8 @@ test("message caches correctly", async () => {
     "Dataset contains 14 nodes, 55 relations and 1992 edges in total.",
   );
 });
+
+test("terminal emulated message works as expected", async () => {
+  // TODO: No box currently uses this, make sure to fix later.
+  test.skip();
+});
