@@ -69,9 +69,10 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        col = batch[column_name]
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -123,15 +124,16 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
             table_name: One column of this table will be used as input.
             column_name: The name of the column to use as input.
         """
-        df = b.dfs[table_name][column_name]
+        df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
-        t = torch.tensor(batch.to_list(), dtype=type.to_dtype())
+        col = batch[column_name]
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
 
 
-reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray")
+reg("Output", inputs=["x"], outputs=["x"], params=[P.basic("name")], color="gray", icon="target")
 
 
 @op("LSTM", weights=True)
@@ -356,7 +358,8 @@ reg(
         ),
         P.basic("lr", 0.0001),
     ],
-    color="green",
+    color="purple",
+    icon="robot",
 )
 
 ops.register_passive_op(

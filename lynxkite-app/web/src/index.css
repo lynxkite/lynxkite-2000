@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* biome-ignore-start lint/suspicious/noUnknownAtRules: plugin */
 /* biome-ignore-start lint/correctness/noUnknownProperty: themes */
@@ -22,6 +23,7 @@
   background: #002a4c;
   --border: 1px;
   --radius-field: 0.5rem;
+  --bold: 500;
 }
 
 img,
@@ -131,6 +133,8 @@ svg {
     justify-content: space-between;
     align-items: center;
     background: #002a4c;
+    color: oklch(75% 0.13 230);
+    gap: 10px;
 
     .ws-name {
       font-size: 1.5em;
@@ -158,12 +162,43 @@ svg {
         opacity: 0.3;
       }
     }
+
+    .input {
+      background: white;
+      color: black;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .top-bar-gpus .input {
+      width: 60px;
+      height: 2em;
+      text-align: right;
+    }
   }
 
   .error {
     background: #ffdddd;
     padding: 8px;
     font-size: 12px;
+  }
+
+  .node-message {
+    margin: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--bs-info-border-subtle, #b6d4fe);
+    background: var(--bs-info-bg-subtle, #e7f1ff);
+    color: var(--bs-info-text-emphasis, #084298);
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: none;
+    overflow: visible;
   }
 
   .node-container {
@@ -216,11 +251,12 @@ svg {
     position: relative;
   }
 
-  .node-group.in-group {
-    opacity: 0.5;
+  .node-group-color-picker-icon:hover {
+    opacity: 1;
   }
 
   .node-group-color-picker-icon {
+    opacity: 0.25;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -240,7 +276,8 @@ svg {
   }
 
   .lynxkite-node .title {
-    font-weight: bold;
+    height: 53px;
+    font-weight: var(--bold);
     padding: 8px;
     background-image: linear-gradient(
       to right,
@@ -260,6 +297,7 @@ svg {
       --status-color-2 0.3s,
       --status-color-3 0.3s;
     display: flex;
+    align-items: center;
     flex-direction: row;
     gap: 10px;
 
@@ -441,7 +479,6 @@ svg {
     border-radius: 4px;
     border: 1px solid #888;
     background-color: white;
-    max-height: stretch;
 
     .matches {
       overflow-y: auto;
@@ -496,7 +533,7 @@ svg {
 
   .react-flow__node-table_view {
     .df-head {
-      font-weight: bold;
+      font-weight: var(--bold);
       padding: 8px;
       background: #f0f0f0;
       cursor: pointer;
@@ -511,10 +548,25 @@ svg {
     width: auto !important;
     height: auto !important;
     max-width: 400px;
+    background-color: #fafafa;
 
     .comment-view {
       border-radius: 4px;
       padding: 5px 10px;
+
+      h1 {
+        font-weight: var(--bold);
+      }
+
+      .highlight {
+        font-size: 200%;
+        width: 600px;
+
+        h1 {
+          font-weight: 900;
+          margin-bottom: 0;
+        }
+      }
     }
 
     .comment-editor {
@@ -525,6 +577,10 @@ svg {
       border: 1px solid #ccc;
       overflow-y: hidden;
     }
+  }
+
+  .react-flow__node-comment:has(.in-group) {
+    background-color: transparent;
   }
 
   .env-select {
@@ -574,7 +630,7 @@ svg {
 
     td.model-mapping-param-label {
       padding-top: 40px;
-      font-weight: bold;
+      font-weight: var(--bold);
       opacity: 0.7;
     }
   }
@@ -588,6 +644,11 @@ svg {
   }
 
   .table-viewer {
+    th {
+      font-weight: var(--bold);
+    }
+
+    th,
     td {
       padding: 5px 10px;
       vertical-align: top;
@@ -611,20 +672,66 @@ svg {
   }
 }
 
-.workspace-loading {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+.reactflow-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
+  width: 100vw;
+  background: #fafafa;
 }
 
-.workspace-loading__box {
-  background: white;
+.workspace-loading {
   padding: 24px 32px;
   border-radius: 12px;
   font-size: 18px;
+  background: oklch(75% 0.2 55);
+  box-shadow: 0px 5px 30px 0px oklch(20% 0.5 55 / 50%);
+  animation: skew-loading 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes skew-loading {
+  from {
+    transform: skewX(-5deg);
+  }
+
+  to {
+    transform: skewX(-10deg) translateX(5px);
+  }
+}
+
+@keyframes sparky-float {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0;
+  }
+
+  26% {
+    opacity: 1;
+  }
+
+  28% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  81% {
+    opacity: 1;
+  }
+
+  83% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .params-expander {
@@ -642,6 +749,8 @@ svg {
 }
 
 .directory {
+  padding-top: 50px;
+
   .entry-list {
     width: 100%;
     margin: 10px auto;
@@ -665,12 +774,23 @@ svg {
 
   .logo {
     margin: 0;
-    padding-top: 50px;
     text-align: center;
+    position: relative;
   }
 
   .logo-image {
-    max-width: 50%;
+    width: 50vw;
+  }
+
+  .logo-image-sparky {
+    position: absolute;
+    top: -5.5vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 61vw;
+    mix-blend-mode: lighten;
+    animation: sparky-float 10s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .tagline {
@@ -849,7 +969,7 @@ svg {
 .graph-table-header {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+  font-weight: var(--bold);
   text-align: left;
   background-color: #333;
   color: white;
@@ -859,7 +979,7 @@ svg {
 }
 
 .graph-creation-view .df-head {
-  font-weight: bold;
+  font-weight: var(--bold);
   display: flex;
   justify-content: space-between;
   padding: 8px 12px;
@@ -886,7 +1006,7 @@ svg {
 
 .graph-relation-attributes label {
   font-size: 12px;
-  font-weight: bold;
+  font-weight: var(--bold);
   display: block;
   margin-bottom: 2px;
   /* Lighter text for labels */

@@ -83,6 +83,7 @@ def test_update_metadata():
     assert ws.nodes[0].data.meta.color == "orange"
     assert ws.nodes[0].data.meta.icon is None
     assert ws.nodes[0].data.error is None
+    assert ws.nodes[1].data.meta
     assert ws.nodes[1].data.meta.name == "Unknown Operation"
     assert ws.nodes[1].data.meta.color == "red"
     assert ws.nodes[1].data.meta.icon == "x"

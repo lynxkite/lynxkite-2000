@@ -1,7 +1,8 @@
 """PyKEEN graph embedding operations."""
 
 from lynxkite_core import ops
-from . import core
+import numpy as np
+from .. import core
 
 import typing
 import pandas as pd
@@ -26,6 +27,8 @@ from pykeen.training import SLCWATrainingLoop, LCWATrainingLoop
 
 op = ops.op_registration(core.ENV, "Graph embedding and link prediction")
 
+# Used for initializing TriplesFactory when only mappings are needed.
+DUMMY_TRIPLET = np.array([[0, 0, 0]])
 
 PyKEENModelName = typing.Annotated[
     str,
@@ -101,8 +104,10 @@ class InductiveDataset(str, enum.Enum):
         return getattr(inductive, self.value)()
 
 
-@op("Import PyKEEN dataset", color="green", icon="3d-scale")
-def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations) -> core.Bundle:
+@op("Import PyKEEN dataset", slow=True, color="green", icon="file-filled")
+def import_pykeen_dataset_path(
+    self, *, dataset: PyKEENDataset = PyKEENDataset.Nations
+) -> core.Bundle:
     """Imports a dataset from the PyKEEN library."""
     ds = dataset.to_dataset()
     bundle = core.Bundle()
@@ -135,6 +140,10 @@ def import_pykeen_dataset_path(*, dataset: PyKEENDataset = PyKEENDataset.Nations
             "tail": df_all["tail"].tolist(),
             "relation": df_all["relation"].tolist(),
         }
+    )
+    self.print(
+        f"Dataset contains {len(bundle.dfs['nodes'])} nodes, ",
+        f"{len(bundle.dfs['relations'])} relations and {len(bundle.dfs['edges'])} edges in total.",
     )
     return bundle
 
@@ -216,7 +225,7 @@ def inductively_split_dataset(
     return bundle
 
 
-class PyKEENModelMixin(str):
+class PyKEENModelEnum(enum.StrEnum):
     def to_class(
         self, triples_factory: TriplesFactory, loss_func: str, embedding_dim: int, seed: int = 42
     ) -> models.Model:
@@ -231,7 +240,7 @@ class PyKEENModelMixin(str):
         return model
 
 
-class PyKEENModel1D(PyKEENModelMixin, enum.Enum):
+class PyKEENModel1D(PyKEENModelEnum):
     CompGCN = "CompGCN"
     ComplEx = "ComplEx"
     ConvKB = "ConvKB"
@@ -254,7 +263,7 @@ class PyKEENModel1D(PyKEENModelMixin, enum.Enum):
     TuckER = "TuckER"
 
 
-class PyKEENModelMoreD(PyKEENModelMixin, enum.Enum):
+class PyKEENModelMoreD(PyKEENModelEnum):
     locals().update({m.name: m.value for m in PyKEENModel1D})
     AutoSF = "AutoSF"
     BoxE = "BoxE"
@@ -371,7 +380,7 @@ class PyKEENModelWrapper:
         self.combination_kwargs = combination_kwargs
         self.literals_data = literals_data
         self.inductive_inference = inductive_inference
-        self.inductive_kwargs = inductive_kwargs
+        self.inductive_kwargs = inductive_kwargs or {}
         self.trained = trained
 
     def metadata(self) -> dict:
@@ -397,7 +406,7 @@ class PyKEENModelWrapper:
         del state["model"]
         if self.trained:
             buffer = io.BytesIO()
-            self.model.save_state(buffer)
+            self.model.save_state(buffer)  # ty: ignore[invalid-argument-type]
             state["model_state"] = buffer.getvalue()
 
         return state
@@ -442,6 +451,9 @@ class PyKEENModelWrapper:
                 **kwargs,
             )
         else:
+            assert self.literals_data is not None
+            assert self.interaction is not None
+            assert self.combination is not None
             combination_cls = self.combination.to_class(
                 embedding_dim=self.embedding_dim,
                 literal_shape=self.literals_data.shape[1],
@@ -468,7 +480,7 @@ class PyKEENModelWrapper:
 
         if self.trained and model_state is not None:
             buffer = io.BytesIO(model_state)
-            self.model.load_state(buffer)
+            self.model.load_state(buffer)  # ty: ignore[invalid-argument-type]
             if torch.cuda.is_available():
                 self.model = self.model.to(torch.device("cuda"))
 
@@ -670,7 +682,7 @@ def def_pykeen_with_attributes(
         relation_representations_kwargs=dict(
             shape=embedding_dim,
         ),
-        interaction=interaction,
+        interaction=interaction,  # ty: ignore[invalid-argument-type]
         combination=combination_cls,
         loss=loss_function,
         random_seed=random_seed,
@@ -1061,7 +1073,7 @@ def triple_predict(
         )
         .process(
             factory=TriplesFactory(
-                [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
+                DUMMY_TRIPLET,
                 entity_to_id=entity_to_id,
                 relation_to_id=relation_to_id,
             )
@@ -1100,7 +1112,7 @@ def target_predict(
         relation=relation if relation != "" else None,
         tail=tail if tail != "" else None,
         triples_factory=TriplesFactory(
-            [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
+            DUMMY_TRIPLET,
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
         ),
@@ -1138,7 +1150,7 @@ def full_predict(
     )
     pack = pred.process(
         factory=TriplesFactory(
-            [[0, 0, 0]],  # Dummy triple to create a factory, as it is only used for mapping
+            DUMMY_TRIPLET,
             entity_to_id=entity_to_id,
             relation_to_id=relation_to_id,
         ),

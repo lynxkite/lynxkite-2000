@@ -32,7 +32,7 @@ function sortHierarchy(level: Category): Category {
 
 export function buildCategoryHierarchy(boxes: Catalog): Category {
   const hierarchy: Category = { name: "<<root>>", ops: [], categories: [] };
-  for (const op of Object.values(boxes)) {
+  for (const op of Object.values(boxes || {})) {
     const categories = op.categories;
     let currentLevel = hierarchy;
     for (const category of categories) {
@@ -148,7 +148,11 @@ export default function NodeSearch(props: {
   return (
     <div
       className="node-search node-search-panel"
-      style={{ top: adjustedPos.y, left: adjustedPos.x }}
+      style={{
+        top: adjustedPos.y,
+        left: adjustedPos.x,
+        maxHeight: `calc(100vh - ${adjustedPos.y + 10}px)`,
+      }}
       onMouseDown={(e) => e.preventDefault()}
     >
       <NodeSearchInternal {...props} autoFocus={true} />
