@@ -16,6 +16,8 @@ in specific workspaces.
 
 You can also create and distribute plugins as Python packages. In this case the
 module name must start with `lynxkite_` for it to be automatically imported on startup.
+If the module includes a `register_ops()` function, it will be called during startup.
+This allows for more control over the registration process.
 
 ### Plugin dependencies
 
@@ -189,7 +191,7 @@ The `view` argument can be one of the following:
 - `molecule`: Return a molecule as a PDB or SDF string, or an `rdkit.Chem.Mol` object.
   It will be displayed using [3Dmol.js](https://3Dmol.org/).
 - `table_view`: Return
-  [`Bundle.to_dict()`](../reference/lynxkite-graph-analytics/core.md#lynxkite_graph_analytics.core.Bundle.to_dict).
+  [`BundleTableView()`](../reference/lynxkite-graph-analytics/core.md#lynxkite_graph_analytics.core.BundleTableView).
 
 ## Adding new environments
 

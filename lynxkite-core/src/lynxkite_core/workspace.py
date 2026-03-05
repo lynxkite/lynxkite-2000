@@ -40,6 +40,7 @@ class WorkspaceNodeData(BaseConfig):
     display: Optional[Any] = None
     input_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
+    message: Optional[str] = None
     collapsed: Optional[bool] = None
     expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
@@ -74,10 +75,12 @@ class WorkspaceNode(BaseConfig):
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
+        self.data.message = None
         self.data.status = NodeStatus.active
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["error"] = None
+                self._crdt["data"]["message"] = None
                 self._crdt["data"]["status"] = NodeStatus.active
 
     def publish_result(self, result: ops.Result):
@@ -97,8 +100,17 @@ class WorkspaceNode(BaseConfig):
                     self._crdt["data"]["error"] = str(e)
                     raise e
 
+    def publish_message(self, message: str):
+        """Sends a message to the frontend. This can be used for progress updates."""
+        self.data.message = message
+        if self._crdt and "data" in self._crdt:
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["message"] = message
+
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
+        if isinstance(error, Exception) and not isinstance(error, AssertionError):
+            error = type(error).__name__ + ": " + str(error)
         result = ops.Result(error=str(error) if error else None)
         self.publish_result(result)
 
@@ -135,6 +147,7 @@ class Workspace(BaseConfig):
     """
 
     env: str = ""
+    execution_options: dict = dataclasses.field(default_factory=dict)
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
@@ -167,7 +180,7 @@ class Workspace(BaseConfig):
     async def execute(self, ctx: WorkspaceExecutionContext | None = None):
         return await ops.EXECUTORS[self.env](self, ctx)
 
-    def model_dump_json(self) -> str:
+    def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
         # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
         j = self.model_dump()
@@ -179,7 +192,7 @@ class Workspace(BaseConfig):
     def save(self, path: str | pathlib.Path):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
-        j = self.model_dump_json()
+        j = self.model_dump_json_sorted()
         dirname, basename = os.path.split(path)
         if dirname:
             os.makedirs(dirname, exist_ok=True)
@@ -269,7 +282,7 @@ class Workspace(BaseConfig):
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
                 title=kwargs["title"],
-                op_id=kwargs["title"],
+                op_id=kwargs.get("op_id", kwargs["title"]),
                 params=kwargs.get("params", {}),
             )
         kwargs.setdefault("type", "basic")
@@ -277,22 +290,26 @@ class Workspace(BaseConfig):
         kwargs.setdefault("position", Position(x=0, y=0))
         kwargs.setdefault("width", 100)
         kwargs.setdefault("height", 100)
-        node = WorkspaceNode(**kwargs)  # ty: ignore[missing-argument]
+        node = WorkspaceNode(**kwargs)
         self.nodes.append(node)
         return node
 
     def add_edge(
         self,
-        source: WorkspaceNode,
+        source: WorkspaceNode | str,
         sourceHandle: str,
-        target: WorkspaceNode,
+        target: WorkspaceNode | str,
         targetHandle: str,
     ):
         """For convenience in e.g. tests."""
+        if isinstance(source, WorkspaceNode):
+            source = source.id
+        if isinstance(target, WorkspaceNode):
+            target = target.id
         edge = WorkspaceEdge(
-            id=f"{source.id} {sourceHandle} to {target.id} {targetHandle}",
-            source=source.id,
-            target=target.id,
+            id=f"{source} {sourceHandle} to {target} {targetHandle}",
+            source=source,
+            target=target,
             sourceHandle=sourceHandle,
             targetHandle=targetHandle,
         )

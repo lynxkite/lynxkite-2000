@@ -18,7 +18,7 @@ It targets CUDA instead of Apache Spark. It is much more extensible.
 ## Installation
 
 ```bash
-pip install lynxkite lynxkite-graph-analytics
+pip install lynxkite
 ```
 
 ## Getting started

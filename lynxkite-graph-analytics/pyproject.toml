@@ -1,6 +1,6 @@
 [project]
 name = "lynxkite-graph-analytics"
-version = "0.2.0"
+version = "0.3.0"
 description = "The graph analytics executor and boxes for LynxKite"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -22,9 +22,10 @@ dependencies = [
     "torchdiffeq>=0.2.5",
     "tqdm>=4.67.1",
     "umap-learn>=0.5.9.post2",
-    "pykeen>=1.11.1"
+    "pykeen>=1.11.1",
+    "seaborn>=0.13.2",
 ]
-classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+license = "AGPL-3.0-or-later"
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
@@ -54,7 +55,6 @@ DEP002 = ["numba", "pyarrow", "nx-cugraph-cu12", "pylibcugraph-cu12"]
 
 [tool.deptry.package_module_name_map]
 grand-cypher = "grandcypher"
-lynxkite-core = "lynxkite"
 umap-learn = "umap"
 cuml-cu12 = "cuml"
 cudf-cu12 = "cudf"

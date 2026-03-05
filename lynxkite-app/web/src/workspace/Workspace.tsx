@@ -28,6 +28,7 @@ import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
+import ExecutionOptions from "./ExecutionOptions.tsx";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
@@ -279,6 +280,7 @@ function LynxKiteFlow() {
     },
     [crdt],
   );
+<<<<<<< boti-file
   if (!crdt?.ws) {
     return (
       <div className="workspace-loading">
@@ -287,6 +289,9 @@ function LynxKiteFlow() {
     );
   }
   const parentDir = parentPath(path!);
+=======
+  const parentDir = path!.split("/").slice(0, -1).join("/");
+>>>>>>> main
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
@@ -359,7 +364,7 @@ function LynxKiteFlow() {
     let left = Number.POSITIVE_INFINITY;
     let bottom = Number.NEGATIVE_INFINITY;
     let right = Number.NEGATIVE_INFINITY;
-    const PAD = 10;
+    const PAD = 50;
     for (const node of selectedNodes) {
       if (node.position.y - PAD < top) top = node.position.y - PAD;
       if (node.position.x - PAD < left) left = node.position.x - PAD;
@@ -377,12 +382,14 @@ function LynxKiteFlow() {
     crdt.applyChange((conn) => {
       const wnodes = conn.ws.get("nodes");
       wnodes.unshift([nodeToYMap(groupNode)]);
-      const selectedNodeIds = new Set(selectedNodes.map((n) => n.id));
+      const selectedNodesById = new Map(selectedNodes.map((n) => [n.id, n]));
       for (const node of wnodes) {
-        if (selectedNodeIds.has(node.get("id"))) {
+        const feNode = selectedNodesById.get(node.get("id"));
+        if (feNode) {
+          const pos = feNode.position;
           node.set("position", {
-            x: node.get("position").x - left,
-            y: node.get("position").y - top,
+            x: pos.x - left,
+            y: pos.y - top,
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");
@@ -431,56 +438,76 @@ function LynxKiteFlow() {
         </Link>
         <div className="ws-name">{shortPath}</div>
         <title>{shortPath}</title>
-        <EnvironmentSelector
-          options={Object.keys(catalog.data || {})}
-          value={crdt.ws.env || ""}
-          onChange={crdt.setEnv}
-        />
+        {crdt?.ws && (
+          <>
+            <ExecutionOptions
+              env={crdt.ws.env || ""}
+              value={crdt.ws.execution_options}
+              onChange={crdt.setExecutionOptions}
+            />
+            <EnvironmentSelector
+              options={Object.keys(catalog.data || {})}
+              value={crdt.ws.env || ""}
+              onChange={crdt.setEnv}
+            />
+          </>
+        )}
         <div className="tools text-secondary">
-          <Tooltip doc="Group selected nodes">
-            <button
-              className="btn btn-link"
-              disabled={selected.length < 2}
-              onClick={groupSelection}
-            >
-              <GroupIcon />
-            </button>
-          </Tooltip>
-          <Tooltip doc="Ungroup selected nodes">
-            <button
-              className="btn btn-link"
-              disabled={!isAnyGroupSelected}
-              onClick={ungroupSelection}
-            >
-              <UngroupIcon />
-            </button>
-          </Tooltip>
-          <Tooltip doc="Delete selected nodes and edges">
-            <button
-              className="btn btn-link"
-              disabled={selected.length === 0}
-              onClick={deleteSelection}
-            >
-              <DeleteIcon />
-            </button>
-          </Tooltip>
-          <Tooltip doc="Change selected box to a different box">
-            <button className="btn btn-link" disabled={selected.length !== 1} onClick={changeBox}>
-              <ChangeTypeIcon />
-            </button>
-          </Tooltip>
-          <Tooltip
-            doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
-          >
-            <button className="btn btn-link" onClick={() => crdt.setPausedState(!crdt.ws?.paused)}>
-              {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
-            </button>
-          </Tooltip>
-          <Tooltip doc="Re-run the workspace">
-            <button className="btn btn-link" onClick={executeWorkspace}>
-              <RestartIcon />
-            </button>
-          </Tooltip>
+          {crdt?.ws && (
+            <>
+              <Tooltip doc="Group selected nodes">
+                <button
+                  className="btn btn-link"
+                  disabled={selected.length < 2}
+                  onClick={groupSelection}
+                >
+                  <GroupIcon />
+                </button>
+              </Tooltip>
+              <Tooltip doc="Ungroup selected nodes">
+                <button
+                  className="btn btn-link"
+                  disabled={!isAnyGroupSelected}
+                  onClick={ungroupSelection}
+                >
+                  <UngroupIcon />
+                </button>
+              </Tooltip>
+              <Tooltip doc="Delete selected nodes and edges">
+                <button
+                  className="btn btn-link"
+                  disabled={selected.length === 0}
+                  onClick={deleteSelection}
+                >
+                  <DeleteIcon />
+                </button>
+              </Tooltip>
+              <Tooltip doc="Change selected box to a different box">
+                <button
+                  className="btn btn-link"
+                  disabled={selected.length !== 1}
+                  onClick={changeBox}
+                >
+                  <ChangeTypeIcon />
+                </button>
+              </Tooltip>
+              <Tooltip
+                doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
+              >
+                <button
+                  className="btn btn-link"
+                  onClick={() => crdt.setPausedState(!crdt.ws?.paused)}
+                >
+                  {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
+                </button>
+              </Tooltip>
+              <Tooltip doc="Re-run the workspace">
+                <button className="btn btn-link" onClick={executeWorkspace}>
+                  <RestartIcon />
+                </button>
+              </Tooltip>
+            </>
+          )}
           <Tooltip doc="Close workspace">
             <Link
               className="btn btn-link"
@@ -496,63 +523,67 @@ function LynxKiteFlow() {
         </div>
       </div>
       <div
-        style={{ height: "100%", width: "100vw" }}
+        className="reactflow-container"
         onDragOver={onDragOver}
         onDrop={onDrop}
         ref={reactFlowContainer}
       >
-        <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            fitView
-            onNodesChange={(changes) => {
-              if (isShiftPressed) {
-                changes = snapChangesToGrid(changes, isShiftPressed, crdt?.ws?.nodes || []);
-              }
-              crdt?.onFENodesChange?.(changes);
-            }}
-            onEdgesChange={crdt?.onFEEdgesChange}
-            onPaneClick={toggleNodeSearch}
-            onConnect={onConnect}
-            proOptions={{ hideAttribution: true }}
-            maxZoom={10}
-            minZoom={0.2}
-            zoomOnScroll={true}
-            panOnScroll={false}
-            panOnDrag={[0]}
-            selectionOnDrag={false}
-            preventScrolling={true}
-            defaultEdgeOptions={{
-              markerEnd: {
-                type: MarkerType.ArrowClosed,
-                color: "#888",
-                width: 15,
-                height: 15,
-              },
-            }}
-            fitViewOptions={{ maxZoom: 1 }}
-          >
-            <Background
-              variant={BackgroundVariant.Dots}
-              gap={40}
-              size={6}
-              color="#f0f0f0"
-              bgColor="#fafafa"
-              offset={3}
-            />
-            {nodeSearchSettings && categoryHierarchy && (
-              <NodeSearch
-                pos={nodeSearchSettings.pos}
-                categoryHierarchy={categoryHierarchy}
-                onCancel={closeNodeSearch}
-                onClick={addNodeFromSearch}
+        {crdt?.ws ? (
+          <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              fitView
+              onNodesChange={(changes) => {
+                if (isShiftPressed) {
+                  changes = snapChangesToGrid(changes, isShiftPressed, crdt?.ws?.nodes || []);
+                }
+                crdt?.onFENodesChange?.(changes);
+              }}
+              onEdgesChange={crdt?.onFEEdgesChange}
+              onPaneClick={toggleNodeSearch}
+              onConnect={onConnect}
+              proOptions={{ hideAttribution: true }}
+              maxZoom={10}
+              minZoom={0.1}
+              zoomOnScroll={true}
+              panOnScroll={false}
+              panOnDrag={[0]}
+              selectionOnDrag={false}
+              preventScrolling={true}
+              defaultEdgeOptions={{
+                markerEnd: {
+                  type: MarkerType.ArrowClosed,
+                  color: "#888",
+                  width: 15,
+                  height: 15,
+                },
+              }}
+              fitViewOptions={{ maxZoom: 1 }}
+            >
+              <Background
+                variant={BackgroundVariant.Dots}
+                gap={35}
+                size={6}
+                color="#f0f0f0"
+                bgColor="#fafafa"
+                offset={3}
               />
-            )}
-          </ReactFlow>
-        </LynxKiteState.Provider>
+              {nodeSearchSettings && categoryHierarchy && (
+                <NodeSearch
+                  pos={nodeSearchSettings.pos}
+                  categoryHierarchy={categoryHierarchy}
+                  onCancel={closeNodeSearch}
+                  onClick={addNodeFromSearch}
+                />
+              )}
+            </ReactFlow>
+          </LynxKiteState.Provider>
+        ) : (
+          <div className="workspace-loading">Loading workspace...</div>
+        )}
         {message && (
           <div className="workspace-message">
             <span className="close" onClick={() => setMessage(null)}>

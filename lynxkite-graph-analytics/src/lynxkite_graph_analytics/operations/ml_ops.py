@@ -3,16 +3,16 @@
 import enum
 import functools
 import numpy as np
-from . import core
+from .. import core
 from lynxkite_core import workspace
-from .pytorch import pytorch_core
+from ..pytorch import pytorch_core
 from lynxkite_core import ops
 from tqdm import tqdm
 import pandas as pd
 import pathlib
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, icon="robot")
 
 
 def load_ws(model_workspace: str):
@@ -24,7 +24,7 @@ def load_ws(model_workspace: str):
     return ws
 
 
-@op("Define model")
+@op("Define model", color="purple")
 def define_model(
     bundle: core.Bundle,
     *,
@@ -187,7 +187,7 @@ def train_test_val_split(
     return bundle
 
 
-@op("View loss", view="visualization")
+@op("View loss", view="visualization", icon="trending-down-3")
 def view_loss(bundle: core.Bundle):
     loss = bundle.dfs["training"].training_loss.tolist()
     v = {
@@ -231,7 +231,7 @@ class UMAPMetric(enum.StrEnum):
     hamming = "hamming"
 
 
-@op("View vectors", view="visualization")
+@op("View vectors", view="visualization", color="blue")
 def view_vectors(
     bundle: core.Bundle,
     *,

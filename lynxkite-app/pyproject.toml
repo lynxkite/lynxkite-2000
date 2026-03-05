@@ -1,6 +1,6 @@
 [project]
 name = "lynxkite-app"
-version = "0.2.1"
+version = "0.3.0"
 description = "The LynxKite application, with web server and UI"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,8 +14,11 @@ dependencies = [
     "pydantic>=2.11.7",
     "sse-starlette>=2.2.1",
     "uvicorn>=0.35.0",
+    "watchdog>=6.0.0",
+    "pyte>=0.8.2",
+    "tqdm>=4.67.1",
 ]
-classifiers = ["License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"]
+license = "AGPL-3.0-or-later"
 
 [project.urls]
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
@@ -52,7 +55,6 @@ build_py = "build_frontend.build_py"
 lynxkite = "lynxkite_app.__main__:main"
 
 [tool.deptry.package_module_name_map]
-lynxkite-core = "lynxkite"
 sse-starlette = "starlette"
 
 [tool.deptry.per_rule_ignores]

@@ -1,0 +1,19 @@
+[project]
+name = "lynxkite"
+version = "0.3.0"
+description = "A convenient collection of the main LynxKite packages"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lynxkite-app",
+    "lynxkite-graph-analytics",
+]
+license = "AGPL-3.0-or-later"
+
+[project.urls]
+Homepage = "https://github.com/lynxkite/lynxkite-2000/"
+
+[project.optional-dependencies]
+gpu = [
+    "lynxkite-graph-analytics[gpu]",
+]

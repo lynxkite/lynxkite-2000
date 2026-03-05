@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import enum
 import functools
 import json
@@ -14,9 +15,10 @@ import subprocess
 import traceback
 import types
 import typing
+import io
 from dataclasses import dataclass
-
 import pydantic
+from .matplotlib_to_image import matplotlib_to_image
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -26,15 +28,214 @@ Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
 
+
 typeof = type  # We have some arguments called "type".
 
-CACHE_WRAPPER = None  # Overwrite this to configure a caching mechanism.
+
+class FunctionCacheWrapper(typing.Protocol):
+    def __call__(
+        self,
+        func: typing.Callable,
+        *,
+        ignore: list[str] | None = None,  # Parameter names that should be ignored when caching.
+    ) -> typing.Callable: ...
+
+
+# Overwrite this to configure a caching mechanism.
+CACHE_WRAPPER: FunctionCacheWrapper | None = None
+
+
+def dummy_tqdm(iterable=None, *args, **kwargs):
+    if iterable:
+        yield from iterable
+
+
+# Temporary TQDM import, to avoid importing tqdm in the core module. Set this to tqdm.tqdm when tqdm is available.
+TQDM_TQDM: typing.Callable[..., typing.Any] = dummy_tqdm
+
+
+class FunctionTerminalEmulator(typing.Protocol):
+    def __call__(
+        self,
+        op_ctx: "OpContext",
+        columns: int = 80,
+        lines: int = 10,
+        history: int = 100,
+        passthrough: bool = True,
+    ) -> typing.ContextManager: ...
+
+
+# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
+@contextlib.contextmanager
+def dummy_terminal_emulator(
+    op_ctx: "OpContext",
+    columns: int = 80,
+    lines: int = 10,
+    history: int = 100,
+    passthrough: bool = True,
+) -> typing.Iterator[None]:
+    """
+    Default terminal emulator that does nothing. Set TERMINAL_EMULATOR to a function that
+    returns a context manager to enable this feature.
+    """
+    yield
+
+
+TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
+
+# Common name for the context parameter in operations that need access to the OpContext.
+CONTEXT_PARAM_NAME = "self"
+
+
+@dataclass
+class _CachedCall:
+    result: typing.Any
+    message: str
 
 
 def cached(func):
     if CACHE_WRAPPER is None:
         return func
     return CACHE_WRAPPER(func)
+
+
+def _cached_with_ctx(func):
+    """
+    This function is used with operations that have a context parameter.
+    For caching to work the context parameter needs to be ignored (as it is not serializable),
+    and the returned result needs to be saved along with the message
+    to be published in case the cache hits.
+    """
+    if CACHE_WRAPPER is None:
+        return func
+
+    def _cache_with_message(op_ctx: "OpContext", *args, **kwargs):
+        result = asyncio.run(func(op_ctx, *args, **kwargs))
+        # Save the function result and the messages it sent.
+        return _CachedCall(result=result, message=op_ctx.message or "")
+
+    _cached = CACHE_WRAPPER(_cache_with_message, ignore=["op_ctx"])
+
+    @functools.wraps(func)
+    async def wrapper(op_ctx: "OpContext", *args, **kwargs):
+        # Run the cached function in a separate thread to avoid blocking the event loop.
+        r: _CachedCall = await asyncio.to_thread(_cached, op_ctx, *args, **kwargs)
+        if r.message:
+            # Send the message to the frontend, as the cached functions main body
+            # where the messages are published is not actually executed.
+            op_ctx.set_message(r.message)
+        return r.result
+
+    return wrapper
+
+
+@dataclass
+class OpContext:
+    """The context passed to operations when they are executed.
+
+    This context can only be used when the first parameter of the operation function is
+    named "self" (by default). The context is currently useful for sending messages to the frontend.
+
+    Example usage:
+    ```python
+    @op("Example op")
+    def example_op(self, input, *, params):
+        self.print(f"Received input: {input} and params: {params}")
+        result = do_something(input, params)
+        self.print(f"Produced result: {result}")
+        return result
+    ```
+    """
+
+    op: "Op | None" = None
+    message: str | None = None
+    node: "workspace.WorkspaceNode | None" = None
+    ws: "workspace.Workspace | None" = None
+    loop: asyncio.AbstractEventLoop | None = None
+
+    def __init__(
+        self,
+        op: "Op | None" = None,
+        node: "workspace.WorkspaceNode | None" = None,
+        ws: "workspace.Workspace | None" = None,
+    ):
+        self.op = op
+        self.node = node
+        self.ws = ws
+        try:
+            self.loop = asyncio.get_running_loop()
+        except RuntimeError:
+            self.loop = None
+
+    def set_message(self, message: str):
+        """Sets the message, and sends it to the frontend if possible."""
+        self.message = message
+        if self.node is not None and self.loop is not None:
+            self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
+
+    def __getattr__(self, name: str):
+        if self.op is not None:
+            return getattr(self.op, name)
+        raise AttributeError(name)
+
+    def print(
+        self,
+        *args,
+        append: bool = True,
+        **kwargs,
+    ) -> None:
+        """Uses python's print function to send a message to the frontend.
+
+        Args:
+            append: If True, the printed message will be appended to the existing message. If False, it will replace the existing message.
+        """
+        buf = io.StringIO()
+        kwargs.pop("file", None)
+        print(*args, file=buf, **kwargs)
+        message = buf.getvalue()
+        if append:
+            message = (self.message or "") + message
+        self.set_message(message)
+
+    def stdout(
+        self, columns: int = 80, lines: int = 10, history: int = 25, passthrough: bool = True
+    ) -> typing.ContextManager:
+        """A context manager that captures stdout/stderr and sends it to the frontend.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            with self.stdout(columns=60, lines=5):
+                print("Starting calculation...")
+                for i in tqdm.tqdm(range(4), "Calculating..."):
+                    # some calculation here
+                print("Done")
+        ```
+
+        Args:
+            columns: The width of the terminal in characters.
+            lines: The number of lines to emulate in the terminal.
+            history: The number of lines to keep in the history (for scrolling).
+            passthrough: If True, the captured output will also be printed to the original stdout/stderr.
+        """
+        return TERMINAL_EMULATOR(
+            self, columns=columns, lines=lines, history=history, passthrough=passthrough
+        )
+
+    def tqdm(self, *args, **kwargs):
+        """A wrapper around tqdm.tqdm that sends tqdm progress bars to the frontend.
+        Currently everything that is printed inside the tqdm context manager will be captured
+        and sent to the TERMINAL_EMULATOR. In the future we will give more support to this.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            for i in self.tqdm(range(100), "Processing..."):
+                # some processing here
+        ```
+        """
+        with self.stdout():
+            yield from TQDM_TQDM(*args, **kwargs)
 
 
 def type_to_json(t):
@@ -195,12 +396,18 @@ class Op(BaseConfig):
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(default=None)
+    id: str = pydantic.Field(
+        default=None
+    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
-    def __call__(self, *inputs, **params):
+    def __call__(self, op_ctx: OpContext, *inputs, **params):
+        assert isinstance(op_ctx, OpContext)
         # Convert parameters.
         params = self.convert_params(params)
-        res = self.func(*inputs, **params)
+        if inspect.signature(self.func).parameters.get(CONTEXT_PARAM_NAME, None):
+            res = self.func(op_ctx, *inputs, **params)
+        else:
+            res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
             if self.type in [
@@ -306,16 +513,21 @@ def op(
         if view == "matplotlib":
             _view = "image"
             func = matplotlib_to_image(func)
+
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = cached(func)
+                if sig.parameters.get(CONTEXT_PARAM_NAME, None) is None:
+                    func = cached(func)
+                else:
+                    func = _cached_with_ctx(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
+            and (name != CONTEXT_PARAM_NAME)
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -326,7 +538,19 @@ def op(
         if outputs is not None:
             _outputs = [Output(name=name, type=None, position=opos) for name in outputs]
         else:
-            _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
+            _outputs = (
+                [Output(name="output", type=None, position=opos)]
+                if view
+                in [
+                    "basic",
+                    "visualization",
+                    "table_view",
+                    "graph_creation_view",
+                    "image",
+                    "molecule",
+                ]
+                else []
+            )
         op = Op(
             func=func,
             doc=doc,
@@ -346,30 +570,6 @@ def op(
         return func
 
     return decorator
-
-
-def matplotlib_to_image(func):
-    """Decorator for converting a matplotlib figure to an image."""
-    import base64
-    import io
-
-    import matplotlib.pyplot as plt
-    import matplotlib
-
-    # Make sure we use the non-interactive backend.
-    matplotlib.use("agg")
-
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        func(*args, **kwargs)
-        buf = io.BytesIO()
-        plt.savefig(buf, format="png", dpi=300)
-        plt.close()
-        buf.seek(0)
-        image_base64 = base64.b64encode(buf.read()).decode("utf-8")
-        return f"data:image/png;base64,{image_base64}"
-
-    return wrapper
 
 
 def input_position(**positions):
@@ -489,7 +689,7 @@ def passive_op_registration(env: str, *categories: str, **kwargs):
 def make_async(func):
     """Decorator for slow, blocking operations. Turns them into separate threads."""
 
-    if asyncio.iscoroutinefunction(func):
+    if inspect.iscoroutinefunction(func):
         # If the function is already a coroutine, return it as is.
         return func
 
@@ -514,7 +714,8 @@ def load_catalogs(snapshot_name: str):
 
 
 # Generally the same as the data directory, but it can be overridden.
-user_script_root = pathlib.Path()
+# Set it to None to disable user script loading.
+user_script_root: pathlib.Path | None = pathlib.Path()
 
 
 def load_user_scripts(workspace: str):
@@ -601,7 +802,7 @@ def _get_griffe_function(func):
 
 
 def detect_plugins():
-    """Imports all installed LynxKite plugins."""
+    """Activates all installed LynxKite plugins. (Modules whose names start with 'lynxkite_'.)"""
     plugins = {}
     for _, name, _ in pkgutil.iter_modules():
         if (
@@ -611,6 +812,8 @@ def detect_plugins():
             and name != "lynxkite_mcp"
         ):
             plugins[name] = importlib.import_module(name)
+            if hasattr(plugins[name], "register_ops"):
+                plugins[name].register_ops()
     if not plugins:
         print("No LynxKite plugins found. Be sure to install some!")
     return plugins

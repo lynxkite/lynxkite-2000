@@ -118,6 +118,8 @@ async def _execute(
                 params["_ctx"] = contexts[node.id]
             results = []
             node.publish_started()
+
+            op_ctx = ops.OpContext(op=op, node=node, ws=ws)
             for task in ts:
                 try:
                     inputs = []
@@ -137,7 +139,7 @@ async def _execute(
                     if missing:
                         node.publish_error(f"Missing input: {', '.join(missing)}")
                         break
-                    result = op(*inputs, **params)
+                    result = op(op_ctx, *inputs, **params)
                     output = await _await_if_needed(result.output)
                 except Exception as e:
                     traceback.print_exc()
@@ -182,7 +184,7 @@ class _ProxyApp:
         yield
 
     def mount(self, path, gradio_app):
-        import starlette.routing  # ty: ignore[unresolved-import]
+        import starlette.routing  # ty: ignore[unresolved-import, unused-ignore-comment]
 
         router = self._app.router
         route = starlette.routing.Mount(path, gradio_app)
@@ -197,7 +199,7 @@ class _ProxyApp:
 
 async def mount_gradio(app, gradio_app, path: str):
     """Mounts a Gradio app onto a Starlette/FastAPI app at the given path."""
-    import gradio as gr  # ty: ignore[unresolved-import]
+    import gradio as gr  # ty: ignore[unresolved-import, unused-ignore-comment]
 
     app = _ProxyApp(app)
     gr.mount_gradio_app(app, gradio_app, path=path)
