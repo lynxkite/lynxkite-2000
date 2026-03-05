@@ -168,6 +168,16 @@ def bar_chart(
     plt.ylabel(column_y)
 
 
+@op("Histogram", icon="chart-histogram", color="blue", view="matplotlib")
+def histogram(b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
+    table, col = column
+    data = b.dfs[table][col]
+    plt.figure(figsize=(6, 6))
+    sns.histplot(data, bins=bins)
+    plt.xlabel(col)
+    plt.ylabel("Count")
+
+
 @op("Binned graph visualization", view="matplotlib", color="blue", icon="table")
 def binned_graph_visualization(
     b: core.Bundle,
