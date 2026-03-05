@@ -24,7 +24,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { uploadFile, usePath } from "../common.ts";
+import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -286,7 +286,7 @@ function LynxKiteFlow() {
       </div>
     );
   }
-  const parentDir = path!.split("/").slice(0, -1).join("/");
+  const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
