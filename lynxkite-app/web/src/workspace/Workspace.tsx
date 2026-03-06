@@ -71,7 +71,9 @@ function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
-  const [gridSnapEnabled, setGridSnapEnabled] = useState(false);
+  const [gridSnapEnabled, setGridSnapEnabled] = useState(
+    () => localStorage.getItem("gridSnapEnabled") === "true",
+  );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
   const shortPath = path!
@@ -104,6 +106,10 @@ function LynxKiteFlow() {
       document.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("gridSnapEnabled", String(gridSnapEnabled));
+  }, [gridSnapEnabled]);
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
@@ -542,9 +548,11 @@ function LynxKiteFlow() {
               edgeTypes={edgeTypes}
               fitView
               onNodesChange={(changes) => {
-                if (isShiftPressed || gridSnapEnabled) {
-                  changes = snapChangesToGrid(changes, true, crdt?.ws?.nodes || []);
-                }
+                changes = snapChangesToGrid(
+                  changes,
+                  isShiftPressed || gridSnapEnabled,
+                  crdt?.ws?.nodes || [],
+                );
                 crdt?.onFENodesChange?.(changes);
               }}
               onEdgesChange={crdt?.onFEEdgesChange}
