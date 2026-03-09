@@ -4,7 +4,9 @@ import {
   Background,
   BackgroundVariant,
   type Connection,
+  type Edge,
   MarkerType,
+  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -348,15 +350,43 @@ function LynxKiteFlow() {
   }
   function deleteSelection() {
     const selectedNodeIds = new Set(nodes.filter((n) => n.selected).map((n) => n.id));
-    const edgesToRemove = edges.filter(
-      (edge) => edge.selected || selectedNodeIds.has(edge.source) || selectedNodeIds.has(edge.target),
+    const edgesToRemoveIds = new Set(
+      edges
+        .filter(
+          (edge) =>
+            edge.selected || selectedNodeIds.has(edge.source) || selectedNodeIds.has(edge.target),
+        )
+        .map((e) => e.id),
     );
-    const nodesToRemove = nodes.filter((node) => selectedNodeIds.has(node.id));
-    if (nodesToRemove.length === 0 && edgesToRemove.length === 0) {
+    if (selectedNodeIds.size === 0 && edgesToRemoveIds.size === 0) {
       return;
     }
-    crdt?.removeEdges(edgesToRemove);
-    crdt?.removeNodes(nodesToRemove);
+    crdt?.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes") as Y.Array<any>;
+      const nodeIndices: number[] = [];
+      let nodeIdx = 0;
+      for (const node of wnodes) {
+        if (selectedNodeIds.has((node as Y.Map<any>).get("id") as string)) {
+          nodeIndices.push(nodeIdx);
+        }
+        nodeIdx += 1;
+      }
+      for (const idx of nodeIndices.sort((a, b) => b - a)) {
+        wnodes.delete(idx);
+      }
+      const wedges = conn.ws.get("edges") as Y.Array<any>;
+      const edgeIndices: number[] = [];
+      let edgeIdx = 0;
+      for (const edge of wedges) {
+        if (edgesToRemoveIds.has((edge as Y.Map<any>).get("id") as string)) {
+          edgeIndices.push(edgeIdx);
+        }
+        edgeIdx += 1;
+      }
+      for (const idx of edgeIndices.sort((a, b) => b - a)) {
+        wedges.delete(idx);
+      }
+    });
   }
   function changeBox() {
     const [selectedNode] = nodes.filter((n) => n.selected);
@@ -442,13 +472,11 @@ function LynxKiteFlow() {
     });
   }
   function copySelection() {
-    const selectedNodes = nodes
-      .filter((n) => n.selected)
-      .map(({ selected, dragging, resizing, ...node }) => node);
+    const selectedNodes = nodes.filter((n) => n.selected);
     const selectedNodeIds = new Set(selectedNodes.map((node) => node.id));
-    const selectedEdges = edges
-      .filter((edge) => selectedNodeIds.has(edge.source) && selectedNodeIds.has(edge.target))
-      .map(({ selected, ...edge }) => edge);
+    const selectedEdges = edges.filter(
+      (edge) => selectedNodeIds.has(edge.source) && selectedNodeIds.has(edge.target),
+    );
     const data = {
       nodes: selectedNodes,
       edges: selectedEdges,
@@ -458,7 +486,7 @@ function LynxKiteFlow() {
   function writeClipboard(text: string) {
     localClipboard.current = text;
     if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).catch(() => { });
+      navigator.clipboard.writeText(text).catch(() => {});
     }
   }
   async function readClipboard() {
@@ -486,8 +514,8 @@ function LynxKiteFlow() {
         setMessage("Clipboard does not contain valid node data.");
         return;
       }
-      const copiedNodes: any[] = Array.isArray(data.nodes) ? data.nodes : [];
-      const copiedEdges: any[] = Array.isArray(data.edges) ? data.edges : [];
+      const copiedNodes: Node[] = data.nodes;
+      const copiedEdges: Edge[] = data.edges;
       if (copiedNodes.length === 0) {
         setMessage("Clipboard does not contain any nodes.");
         return;
@@ -496,10 +524,7 @@ function LynxKiteFlow() {
         ? reactFlow.screenToFlowPosition(cursorScreenPos.current)
         : undefined;
       const bounds = copiedNodes.reduce(
-        (
-          acc: { minX: number; minY: number; maxX: number; maxY: number },
-          node: any,
-        ) => {
+        (acc: { minX: number; minY: number; maxX: number; maxY: number }, node: any) => {
           const position = node.position ?? { x: 0, y: 0 };
           return {
             minX: Math.min(acc.minX, position.x),
@@ -536,31 +561,26 @@ function LynxKiteFlow() {
       };
       const idMap = new Map<string, string>();
       for (const node of copiedNodes) {
-        if (typeof node?.id !== "string") continue;
-        const newId = findFreeIdInBatch(node.data?.title || "Node");
+        const newId = findFreeIdInBatch((node.data?.title as string) || "Node");
         idMap.set(node.id, newId);
       }
-      const pastedNodes = copiedNodes
-        .filter((node: any) => typeof node?.id === "string")
-        .map((node: any) => {
-          const position = node.position ?? { x: 0, y: 0 };
-          const parentId =
-            typeof node.parentId === "string" ? (idMap.get(node.parentId) ?? undefined) : undefined;
-          const isTopLevel = !parentId;
-          return {
-            ...node,
-            id: idMap.get(node.id)!,
-            parentId,
-            extent: parentId ? "parent" : undefined,
-            selected: false,
-            position: {
-              x: isTopLevel ? position.x + offset.x : position.x,
-              y: isTopLevel ? position.y + offset.y : position.y,
-            },
-          };
-        });
+      const pastedNodes = copiedNodes.map((node) => {
+        const position = node.position ?? { x: 0, y: 0 };
+        const parentId = idMap.get(node.parentId as string);
+        const isTopLevel = !parentId;
+        return {
+          ...node,
+          id: idMap.get(node.id)!,
+          parentId,
+          selected: false,
+          position: {
+            x: isTopLevel ? position.x + offset.x : position.x,
+            y: isTopLevel ? position.y + offset.y : position.y,
+          },
+        };
+      });
       let skippedEdges = 0;
-      const pastedEdges: any[] = [];
+      const pastedEdges: Edge[] = [];
       for (const edge of copiedEdges) {
         const source = idMap.get(edge.source);
         const target = idMap.get(edge.target);
@@ -601,7 +621,9 @@ function LynxKiteFlow() {
         }
       });
       if (skippedEdges > 0) {
-        setMessage(`Pasted nodes, skipped ${skippedEdges} dangling edge(s).`);
+        setMessage(
+          `Pasted nodes, skipped ${skippedEdges} dangling edge${skippedEdges > 1 ? "s" : ""}.`,
+        );
       }
     } catch (error) {
       setMessage("Failed to paste nodes from clipboard.");
