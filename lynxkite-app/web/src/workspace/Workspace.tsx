@@ -16,7 +16,8 @@ import axios from "axios";
 import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
-import * as Y from "yjs";
+import { type Array as YArray } from "yjs";
+import { Map as YMap } from "yjs";
 import Backspace from "~icons/tabler/backspace.jsx";
 import LibraryMinus from "~icons/tabler/library-minus.jsx";
 import LibraryPlus from "~icons/tabler/library-plus.jsx";
@@ -362,11 +363,11 @@ function LynxKiteFlow() {
       return;
     }
     crdt?.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes") as Y.Array<any>;
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
       const nodeIndices: number[] = [];
       let nodeIdx = 0;
       for (const node of wnodes) {
-        if (selectedNodeIds.has((node as Y.Map<any>).get("id") as string)) {
+        if (selectedNodeIds.has((node as YMap<any>).get("id") as string)) {
           nodeIndices.push(nodeIdx);
         }
         nodeIdx += 1;
@@ -374,11 +375,11 @@ function LynxKiteFlow() {
       for (const idx of nodeIndices.sort((a, b) => b - a)) {
         wnodes.delete(idx);
       }
-      const wedges = conn.ws.get("edges") as Y.Array<any>;
+      const wedges = conn.ws.get("edges") as YArray<any>;
       const edgeIndices: number[] = [];
       let edgeIdx = 0;
       for (const edge of wedges) {
-        if (edgesToRemoveIds.has((edge as Y.Map<any>).get("id") as string)) {
+        if (edgesToRemoveIds.has((edge as YMap<any>).get("id") as string)) {
           edgeIndices.push(edgeIdx);
         }
         edgeIdx += 1;
@@ -423,7 +424,7 @@ function LynxKiteFlow() {
     groupNode.width = right - left;
     groupNode.height = bottom - top;
     crdt.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes");
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
       wnodes.unshift([nodeToYMap(groupNode)]);
       const selectedNodesById = new Map(selectedNodes.map((n) => [n.id, n]));
       for (const node of wnodes) {
@@ -448,7 +449,7 @@ function LynxKiteFlow() {
         .map((n) => [n.id, n]),
     );
     crdt.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes");
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
       for (const node of wnodes) {
         const g = groups[node.get("parentId") as string];
         if (!g) continue;
@@ -613,7 +614,7 @@ function LynxKiteFlow() {
           wnodes.push([nodeToYMap(node)]);
         }
         for (const edge of pastedEdges) {
-          const edgeMap = new Y.Map<any>();
+          const edgeMap = new YMap<any>();
           for (const [key, value] of Object.entries(edge)) {
             edgeMap.set(key, value);
           }

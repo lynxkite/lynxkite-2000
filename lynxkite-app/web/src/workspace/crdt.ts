@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
+import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 
 function endpointSignature(endpoints: any[] | undefined) {
   return (endpoints || []).map((x) => `${x?.name ?? ""}:${x?.position ?? ""}`).join("|");
@@ -49,7 +49,7 @@ type CRDTWorkspace = {
   setExecutionOptions: (options: Record<string, any>) => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
-  addEdge: (edge: Edge) => void;
+  addEdge: (edge: Partial<WorkspaceEdge>) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
 };
@@ -127,7 +127,7 @@ class CRDTConnection {
         });
         that.updateState();
       },
-      addEdge(edge: Edge) {
+      addEdge: (edge: Partial<WorkspaceEdge>) => {
         const yedge = new Y.Map<any>();
         for (const [key, value] of Object.entries(edge)) {
           yedge.set(key, value);
