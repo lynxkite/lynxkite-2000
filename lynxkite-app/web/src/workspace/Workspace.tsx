@@ -16,9 +16,10 @@ import axios from "axios";
 import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
-import { type Array as YArray } from "yjs";
-import { Map as YMap } from "yjs";
+import { type Array as YArray, Map as YMap } from "yjs";
+import Arrow from "~icons/tabler/arrow-wave-right-up.jsx";
 import Backspace from "~icons/tabler/backspace.jsx";
+import GridDots from "~icons/tabler/grid-dots.jsx";
 import LibraryMinus from "~icons/tabler/library-minus.jsx";
 import LibraryPlus from "~icons/tabler/library-plus.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
@@ -28,7 +29,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { usePath } from "../common.ts";
+import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -51,6 +52,8 @@ import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
 // Memoizing them fixes it.
 const DeleteIcon = memo(Backspace);
+const GridIcon = memo(GridDots);
+const GridOffIcon = memo(Arrow);
 const GroupIcon = memo(LibraryPlus);
 const UngroupIcon = memo(LibraryMinus);
 const RestartIcon = memo(RotateClockwise);
@@ -73,6 +76,9 @@ function LynxKiteFlow() {
   const localClipboard = useRef<string>("");
   const cursorScreenPos = useRef<XYPosition | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [gridSnapEnabled, setGridSnapEnabled] = useState(
+    () => localStorage.getItem("gridSnapEnabled") === "true",
+  );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
   const shortPath = path!
@@ -105,6 +111,10 @@ function LynxKiteFlow() {
       document.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("gridSnapEnabled", String(gridSnapEnabled));
+  }, [gridSnapEnabled]);
 
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
@@ -294,7 +304,7 @@ function LynxKiteFlow() {
     },
     [crdt],
   );
-  const parentDir = path!.split("/").slice(0, -1).join("/");
+  const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
@@ -306,15 +316,12 @@ function LynxKiteFlow() {
     e.stopPropagation();
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
     if (!catalog.data || !crdt?.ws?.env) {
       return;
     }
     try {
-      await axios.post("/api/upload", formData, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((100 * progressEvent.loaded) / progressEvent.total!);
+      await uploadFile(file, {
+        onProgress: (percentCompleted) => {
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
@@ -698,6 +705,14 @@ function LynxKiteFlow() {
                   <ChangeTypeIcon />
                 </button>
               </Tooltip>
+              <Tooltip doc={gridSnapEnabled ? "Disable grid snapping" : "Enable grid snapping"}>
+                <button
+                  className="btn btn-link"
+                  onClick={() => setGridSnapEnabled(!gridSnapEnabled)}
+                >
+                  {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
+                </button>
+              </Tooltip>
               <Tooltip
                 doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
               >
@@ -745,9 +760,11 @@ function LynxKiteFlow() {
               edgeTypes={edgeTypes}
               fitView
               onNodesChange={(changes) => {
-                if (isShiftPressed) {
-                  changes = snapChangesToGrid(changes, isShiftPressed, crdt?.ws?.nodes || []);
-                }
+                changes = snapChangesToGrid(
+                  changes,
+                  isShiftPressed || gridSnapEnabled,
+                  crdt?.ws?.nodes || [],
+                );
                 crdt?.onFENodesChange?.(changes);
               }}
               onEdgesChange={crdt?.onFEEdgesChange}

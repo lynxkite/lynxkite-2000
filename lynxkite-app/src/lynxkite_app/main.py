@@ -15,7 +15,7 @@ from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 
-mem = joblib.Memory(".joblib-cache")
+mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
 enable_thread_proxies()
