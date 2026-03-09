@@ -42,7 +42,7 @@ def sample_graph(graph: nx.Graph, *, nodes: int = 100):
 
 @op("Graph from edge list", color="green", icon="topology-star-3")
 def graph_from_edge_list(
-    df: pd.DataFrame, *, source: core.DataFrameColumn, target: core.DataFrameColumn
+    df: pd.DataFrame, *, source: core.RecordsColumn, target: core.RecordsColumn
 ) -> core.Bundle:
     b = core.Bundle()
     b.dfs["nodes"] = pd.DataFrame({"id": pd.concat([df[source], df[target]]).unique()})

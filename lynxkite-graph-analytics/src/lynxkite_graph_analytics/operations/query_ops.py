@@ -13,7 +13,7 @@ op = ops.op_registration(core.ENV)
 
 
 @op("SQL", icon="database")
-def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
+def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "results"):
     """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
     if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
@@ -29,7 +29,7 @@ def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
 
 
 @op("Cypher", icon="topology-star-3")
-def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "result"):
+def cypher(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "results"):
     """Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame."""
     bundle = bundle.copy()
     graph = bundle.to_nx()

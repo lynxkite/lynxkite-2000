@@ -126,78 +126,58 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Splits a dataframe in the bundle into separate \"_train\" and \"_test\" dataframes."
-            }
-          ],
-          "icon": "robot",
-          "id": "Train/test split",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Train/test split",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "table_name",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].dataframes[].keys(@)[]"
-              }
-            },
-            {
-              "default": 0.1,
-              "name": "test_ratio",
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            {
-              "default": 1234,
-              "name": "seed",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "seed": "12345",
-          "table_name": "df",
+          "table_name": "records",
           "test_ratio": "0.3"
         },
         "status": "done",
@@ -256,40 +236,24 @@
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
-        "meta": {
-          "categories": [],
-          "color": "green",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Imports a Parquet file."
-            }
-          ],
-          "icon": "file-filled",
-          "id": "Import Parquet",
-          "inputs": [],
-          "name": "Import Parquet",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "filename",
-              "type": {
-                "format": "path"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Import Parquet",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "filename": "uploads/plus-one-dataset.parquet"
         },
@@ -392,83 +356,234 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "purple",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Trains the selected model on the selected dataset. Most training parameters are set in the model definition."
-            }
-          ],
-          "icon": "robot",
-          "id": "Define model",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Define model",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "model_workspace",
-              "type": {
-                "type": "<class 'str'>"
+        "meta": null,
+        "op_id": "Define model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
               }
             },
-            {
-              "default": "model",
-              "name": "save_as",
-              "type": {
-                "type": "<class 'str'>"
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "pytorch-model"
               }
-            }
-          ],
-          "type": "basic"
-        },
-        "op_id": "Define model",
+            },
+            "relations": []
+          }
+        ],
         "params": {
           "model_workspace": "Model definition",
           "save_as": "model"
@@ -602,34 +717,38 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
-                "key": "training"
+                "key": "training",
+                "length": 10.0
               }
             },
             "other": {
@@ -797,75 +916,216 @@
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Executes a trained model."
-            }
-          ],
-          "icon": "robot",
-          "id": "Model inference",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Model inference",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "model",
-              "name": "model_name",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key"
-              }
-            },
-            {
-              "default": null,
-              "name": "input_mapping",
-              "type": {
-                "type": "lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping | None"
-              }
-            },
-            {
-              "default": null,
-              "name": "output_mapping",
-              "type": {
-                "type": "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None"
-              }
-            },
-            {
-              "default": 1,
-              "name": "batch_size",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Model inference",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "prediction",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
         "params": {
           "batch_size": "8",
-          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"df_test\",\"column_name\":\"x\"}}}",
+          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"records_test\",\"column_name\":\"x\"}}}",
           "model_name": "model",
-          "output_mapping": "{\"map\":{\"Output_1_x\":{\"column\":\"pred\",\"table_name\":\"df_test\"}}}"
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"table_name\":\"records_test\",\"column\":\"prediction\"}}}"
         },
         "status": "done",
         "title": "Model inference"
@@ -1478,16 +1738,16 @@
           "series": [
             {
               "data": [
-                0.7310920783451625,
-                0.6641438961029053,
-                0.6400456496647426,
-                0.6347808020455497,
-                0.5920047964368548,
-                0.2393323404448373,
-                0.21167769261768887,
-                0.2110180412020002,
-                0.21042096614837646,
-                0.20985143525259836
+                0.7207903180803571,
+                0.6417550768171038,
+                0.6347021375383649,
+                0.6343160561152867,
+                0.6340425968170166,
+                0.6337757042476109,
+                0.6334536620548793,
+                0.38809724875858853,
+                0.2206951141357422,
+                0.21978810174124583
               ],
               "type": "line"
             }
@@ -1507,34 +1767,38 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
-                "key": "training"
+                "key": "training",
+                "length": 10.0
               }
             },
             "other": {
@@ -1702,27 +1966,9 @@
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "icon": "trending-down-3",
-          "id": "View loss",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View loss",
-          "outputs": [],
-          "params": [],
-          "type": "visualization"
-        },
+        "meta": null,
         "op_id": "View loss",
+        "output_metadata": [],
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -1743,7 +1989,7 @@
         "collapsed": null,
         "display": {
           "dataframes": {
-            "df": {
+            "records": {
               "columns": [
                 "x",
                 "y"
@@ -2151,197 +2397,197 @@
                 ]
               ]
             },
-            "df_test": {
+            "records_test": {
               "columns": [
                 "index",
                 "x",
                 "y",
-                "pred"
+                "prediction"
               ],
               "data": [
                 [
-                  69,
+                  69.0,
                   "[0.67447788 0.6125319  0.98007888 0.65968603]",
                   "[1.67447782 1.6125319  1.98007894 1.65968609]",
-                  "[2.711742639541626, 2.813856601715088, -0.005055025685578585, 2.9252007007598877]"
+                  "[2.9053843021392822, -0.008879895322024822, 2.8342161178588867, 2.7595808506011963]"
                 ],
                 [
-                  33,
+                  33.0,
                   "[0.27845025 0.32472342 0.82203609 0.77107543]",
                   "[1.27845025 1.32472348 1.82203603 1.77107549]",
-                  "[2.532386302947998, 2.386859893798828, -0.004659953992813826, 2.593432903289795]"
+                  "[2.6086788177490234, -0.008022448047995567, 2.5812599658966064, 2.7121777534484863]"
                 ],
                 [
-                  86,
+                  86.0,
                   "[0.80893755 0.92237449 0.88346356 0.93164903]",
                   "[1.80893755 1.92237449 1.88346362 1.93164897]",
-                  "[2.798232078552246, 3.1714181900024414, -0.005076110363006592, 3.2170636653900146]"
+                  "[3.1909244060516357, -0.009850693866610527, 3.124683380126953, 2.9702630043029785]"
                 ],
                 [
-                  60,
+                  60.0,
                   "[0.67418337 0.79634351 0.23229051 0.71345252]",
                   "[1.67418337 1.79634356 1.23229051 1.71345258]",
-                  "[2.5998213291168213, 2.6623053550720215, -0.0042512561194598675, 2.6523149013519287]"
+                  "[2.656163454055786, -0.008094131015241146, 2.602579116821289, 2.6464905738830566]"
                 ],
                 [
-                  20,
+                  20.0,
                   "[0.62569475 0.9881897  0.83639616 0.9828859 ]",
                   "[1.62569475 1.9881897  1.83639622 1.98288584]",
-                  "[2.75447678565979, 3.0934956073760986, -0.004937381483614445, 3.144426107406616]"
+                  "[3.1660573482513428, -0.009839130565524101, 3.122519016265869, 3.032853841781616]"
                 ],
                 [
-                  49,
+                  49.0,
                   "[0.08107251 0.2602725  0.18861133 0.44833237]",
                   "[1.08107257 1.2602725  1.18861127 1.44833231]",
-                  "[2.3595290184020996, 1.8693907260894775, -0.003666713135316968, 1.8999525308609009]"
+                  "[2.0416226387023926, -0.006165449973195791, 2.0290379524230957, 2.3736119270324707]"
                 ],
                 [
-                  63,
+                  63.0,
                   "[0.94559073 0.65736622 0.25761551 0.48553199]",
                   "[1.94559073 1.65736628 1.25761557 1.48553205]",
-                  "[2.6313159465789795, 2.6557300090789795, -0.0044247242622077465, 2.645357608795166]"
+                  "[2.5755929946899414, -0.007696418557316065, 2.4815495014190674, 2.44921612739563]"
                 ],
                 [
-                  42,
+                  42.0,
                   "[0.75292218 0.81470108 0.49657214 0.56217098]",
                   "[1.75292218 1.81470108 1.49657214 1.56217098]",
-                  "[2.6604509353637695, 2.7570314407348633, -0.0046102991327643394, 2.7214784622192383]"
+                  "[2.746666431427002, -0.008339958265423775, 2.6740379333496094, 2.6421725749969482]"
                 ],
                 [
-                  88,
+                  88.0,
                   "[0.72470158 0.4940322  0.41027349 0.89364016]",
                   "[1.72470164 1.49403214 1.41027355 1.89364016]",
-                  "[2.623358964920044, 2.709158182144165, -0.004408675245940685, 2.7272210121154785]"
+                  "[2.69726824760437, -0.00821837130934, 2.639437675476074, 2.662482261657715]"
                 ],
                 [
-                  35,
+                  35.0,
                   "[0.98033333 0.97656083 0.38939917 0.81491041]",
                   "[1.98033333 1.97656083 1.38939917 1.81491041]",
-                  "[2.7320122718811035, 3.052316904067993, -0.004688269924372435, 3.0509681701660156]"
+                  "[2.973766565322876, -0.009075426496565342, 2.89375638961792, 2.770226001739502]"
                 ],
                 [
-                  28,
+                  28.0,
                   "[0.79423058 0.07138705 0.061777   0.18766576]",
                   "[1.79423058 1.07138705 1.061777   1.1876657 ]",
-                  "[2.461714267730713, 2.052241086959839, -0.003934950102120638, 2.0293939113616943]"
+                  "[1.989545226097107, -0.005719893611967564, 1.8919246196746826, 2.037929058074951]"
                 ],
                 [
-                  4,
+                  4.0,
                   "[0.76807946 0.98855817 0.08259124 0.01730657]",
                   "[1.76807952 1.98855817 1.0825913  1.01730657]",
-                  "[2.505988597869873, 2.4247825145721436, -0.004505231976509094, 2.235508680343628]"
+                  "[2.367236614227295, -0.007013621740043163, 2.2775182723999023, 2.318634510040283]"
                 ],
                 [
-                  78,
+                  78.0,
                   "[0.12024075 0.21342516 0.56858408 0.58644271]",
                   "[1.12024069 1.21342516 1.56858408 1.58644271]",
-                  "[2.424586534500122, 2.053166627883911, -0.004204620607197285, 2.2098143100738525]"
+                  "[2.2857160568237305, -0.006971190217882395, 2.2684905529022217, 2.5264816284179688]"
                 ],
                 [
-                  13,
+                  13.0,
                   "[0.48959708 0.48549271 0.32688856 0.356677  ]",
                   "[1.48959708 1.48549271 1.32688856 1.35667706]",
-                  "[2.517224073410034, 2.2579967975616455, -0.004093729890882969, 2.239408493041992]"
+                  "[2.3110239505767822, -0.006927961483597755, 2.2537384033203125, 2.399275064468384]"
                 ],
                 [
-                  51,
+                  51.0,
                   "[0.93488538 0.73882395 0.37345302 0.0274905 ]",
                   "[1.93488538 1.73882389 1.37345302 1.0274905 ]",
-                  "[2.5982675552368164, 2.5228726863861084, -0.004726386163383722, 2.397587776184082]"
+                  "[2.444617986679077, -0.007195496931672096, 2.329949378967285, 2.2863869667053223]"
                 ],
                 [
-                  9,
+                  9.0,
                   "[0.32225502 0.16999388 0.05823922 0.9628762 ]",
                   "[1.32225502 1.16999388 1.05823922 1.9628762 ]",
-                  "[2.4043874740600586, 2.177053689956665, -0.0037518052849918604, 2.241272211074829]"
+                  "[2.264176368713379, -0.006906804163008928, 2.2515060901641846, 2.5259876251220703]"
                 ],
                 [
-                  40,
+                  40.0,
                   "[0.44330525 0.09997386 0.89025736 0.90507984]",
                   "[1.44330525 1.09997392 1.89025736 1.90507984]",
-                  "[2.550492525100708, 2.4563262462615967, -0.004863251931965351, 2.7258243560791016]"
+                  "[2.6493637561798096, -0.00811036303639412, 2.6069231033325195, 2.688778877258301]"
                 ],
                 [
-                  65,
+                  65.0,
                   "[0.39147133 0.29854035 0.84663737 0.58175623]",
                   "[1.39147139 1.29854035 1.84663737 1.58175623]",
-                  "[2.5555286407470703, 2.369748592376709, -0.00470654247328639, 2.54085111618042]"
+                  "[2.551494836807251, -0.007765293586999178, 2.5031330585479736, 2.59918212890625]"
                 ],
                 [
-                  25,
+                  25.0,
                   "[0.68062544 0.98093534 0.14778823 0.53244978]",
                   "[1.68062544 1.98093534 1.14778829 1.53244972]",
-                  "[2.5714125633239746, 2.637815237045288, -0.004333547782152891, 2.5628631114959717]"
+                  "[2.6202356815338135, -0.007958877831697464, 2.5618040561676025, 2.603088855743408]"
                 ],
                 [
-                  75,
+                  75.0,
                   "[0.76933283 0.86241865 0.44114518 0.65644735]",
                   "[1.76933289 1.86241865 1.44114518 1.65644741]",
-                  "[2.6676411628723145, 2.812490940093994, -0.004566503223031759, 2.7904038429260254]"
+                  "[2.795064926147461, -0.008514821529388428, 2.7267041206359863, 2.6898930072784424]"
                 ],
                 [
-                  92,
+                  92.0,
                   "[0.78397602 0.74223626 0.26603186 0.41664881]",
                   "[1.78397608 1.74223626 1.26603186 1.41664886]",
-                  "[2.5944271087646484, 2.5706045627593994, -0.00438417075201869, 2.529953718185425]"
+                  "[2.5355570316314697, -0.007608635351061821, 2.4558749198913574, 2.472006320953369]"
                 ],
                 [
-                  45,
+                  45.0,
                   "[0.73217702 0.65233225 0.44077861 0.33837909]",
                   "[1.73217702 1.65233231 1.44077861 1.33837914]",
-                  "[2.6050779819488525, 2.5302836894989014, -0.004492600914090872, 2.483436346054077]"
+                  "[2.5209848880767822, -0.0075535462237894535, 2.438767433166504, 2.454395294189453]"
                 ],
                 [
-                  47,
+                  47.0,
                   "[0.60110539 0.3618983  0.32342511 0.98672163]",
                   "[1.60110545 1.3618983  1.32342505 1.98672163]",
-                  "[2.5557849407196045, 2.567232847213745, -0.004250547848641872, 2.623619794845581]"
+                  "[2.593687057495117, -0.00792175717651844, 2.5521862506866455, 2.6497554779052734]"
                 ],
                 [
-                  87,
+                  87.0,
                   "[0.12858278 0.09930819 0.83222693 0.72485673]",
                   "[1.12858272 1.09930825 1.83222699 1.72485673]",
-                  "[2.4511892795562744, 2.142042398452759, -0.0045761046931147575, 2.413045883178711]"
+                  "[2.4289519786834717, -0.0074508218094706535, 2.4111785888671875, 2.624645948410034]"
                 ],
                 [
-                  8,
+                  8.0,
                   "[4.27091718e-01 4.89909172e-01 6.92297399e-01 2.57611275e-04]",
                   "[1.42709172 1.48990917 1.69229746 1.00025761]",
-                  "[2.530118942260742, 2.206339120864868, -0.004564946051687002, 2.1015539169311523]"
+                  "[2.2971928119659424, -0.006835946813225746, 2.2239327430725098, 2.334791421890259]"
                 ],
                 [
-                  50,
+                  50.0,
                   "[0.59812403 0.78395379 0.0291847  0.81814629]",
                   "[1.59812403 1.78395379 1.0291847  1.81814623]",
-                  "[2.5430612564086914, 2.5795652866363525, -0.00400192104279995, 2.567582845687866]"
+                  "[2.5766985416412354, -0.007875482551753521, 2.5388245582580566, 2.6468005180358887]"
                 ],
                 [
-                  46,
+                  46.0,
                   "[0.34084332 0.73018837 0.54168713 0.91440833]",
                   "[1.34084332 1.73018837 1.54168713 1.91440833]",
-                  "[2.584462881088257, 2.631861686706543, -0.004379015415906906, 2.694080114364624]"
+                  "[2.7649810314178467, -0.008578121662139893, 2.7483625411987305, 2.8535890579223633]"
                 ],
                 [
-                  76,
+                  76.0,
                   "[0.59492421 0.90274489 0.38069052 0.46101224]",
                   "[1.59492421 1.90274489 1.38069057 1.46101224]",
-                  "[2.5881385803222656, 2.6113951206207275, -0.0044873724691569805, 2.5244593620300293]"
+                  "[2.6324081420898438, -0.008003359660506248, 2.574403762817383, 2.614457607269287]"
                 ],
                 [
-                  39,
+                  39.0,
                   "[0.00497234 0.39319336 0.57054168 0.75150961]",
                   "[1.00497234 1.39319336 1.57054162 1.75150967]",
-                  "[2.4321441650390625, 2.1514954566955566, -0.004188199061900377, 2.3146204948425293]"
+                  "[2.4202921390533447, -0.007491287309676409, 2.424929141998291, 2.6948513984680176]"
                 ],
                 [
-                  2,
+                  2.0,
                   "[0.11560339 0.57495481 0.76535827 0.0391947 ]",
                   "[1.11560345 1.57495475 1.76535821 1.0391947 ]",
-                  "[2.4652562141418457, 2.0912303924560547, -0.004560468252748251, 2.006465435028076]"
+                  "[2.293056011199951, -0.006929292343556881, 2.2532501220703125, 2.449990749359131]"
                 ]
               ]
             },
-            "df_train": {
+            "records_train": {
               "columns": [
                 "index",
                 "x",
@@ -2349,352 +2595,352 @@
               ],
               "data": [
                 [
-                  30,
+                  30.0,
                   "[0.94516498 0.08422136 0.5608117  0.07652664]",
                   "[1.94516492 1.08422136 1.56081176 1.07652664]"
                 ],
                 [
-                  31,
+                  31.0,
                   "[0.26661873 0.45946234 0.13510543 0.81294441]",
                   "[1.26661873 1.4594624  1.13510537 1.81294441]"
                 ],
                 [
-                  32,
+                  32.0,
                   "[0.30754459 0.77694583 0.09278506 0.38326019]",
                   "[1.30754459 1.77694583 1.09278512 1.38326025]"
                 ],
                 [
-                  33,
+                  33.0,
                   "[0.27845025 0.32472342 0.82203609 0.77107543]",
                   "[1.27845025 1.32472348 1.82203603 1.77107549]"
                 ],
                 [
-                  34,
+                  34.0,
                   "[0.4827103  0.10563457 0.98858833 0.82286644]",
                   "[1.48271036 1.10563457 1.98858833 1.82286644]"
                 ],
                 [
-                  35,
+                  35.0,
                   "[0.98033333 0.97656083 0.38939917 0.81491041]",
                   "[1.98033333 1.97656083 1.38939917 1.81491041]"
                 ],
                 [
-                  36,
+                  36.0,
                   "[0.74064726 0.4155122  0.09800029 0.49930882]",
                   "[1.74064732 1.4155122  1.09800029 1.49930882]"
                 ],
                 [
-                  37,
+                  37.0,
                   "[0.78956431 0.87284744 0.06880784 0.03455889]",
                   "[1.78956437 1.87284744 1.06880784 1.03455889]"
                 ],
                 [
-                  38,
+                  38.0,
                   "[0.94221359 0.57740951 0.98649532 0.40934443]",
                   "[1.94221354 1.57740951 1.98649526 1.40934443]"
                 ],
                 [
-                  39,
+                  39.0,
                   "[0.00497234 0.39319336 0.57054168 0.75150961]",
                   "[1.00497234 1.39319336 1.57054162 1.75150967]"
                 ],
                 [
-                  40,
+                  40.0,
                   "[0.44330525 0.09997386 0.89025736 0.90507984]",
                   "[1.44330525 1.09997392 1.89025736 1.90507984]"
                 ],
                 [
-                  41,
+                  41.0,
                   "[0.72290605 0.96945059 0.68354797 0.15270454]",
                   "[1.72290611 1.96945059 1.68354797 1.15270448]"
                 ],
                 [
-                  42,
+                  42.0,
                   "[0.75292218 0.81470108 0.49657214 0.56217098]",
                   "[1.75292218 1.81470108 1.49657214 1.56217098]"
                 ],
                 [
-                  43,
+                  43.0,
                   "[0.33480108 0.59181517 0.76198453 0.98062384]",
                   "[1.33480108 1.59181523 1.76198459 1.98062384]"
                 ],
                 [
-                  44,
+                  44.0,
                   "[0.52784437 0.54268694 0.12358981 0.72116476]",
                   "[1.52784443 1.54268694 1.12358975 1.7211647 ]"
                 ],
                 [
-                  45,
+                  45.0,
                   "[0.73217702 0.65233225 0.44077861 0.33837909]",
                   "[1.73217702 1.65233231 1.44077861 1.33837914]"
                 ],
                 [
-                  46,
+                  46.0,
                   "[0.34084332 0.73018837 0.54168713 0.91440833]",
                   "[1.34084332 1.73018837 1.54168713 1.91440833]"
                 ],
                 [
-                  47,
+                  47.0,
                   "[0.60110539 0.3618983  0.32342511 0.98672163]",
                   "[1.60110545 1.3618983  1.32342505 1.98672163]"
                 ],
                 [
-                  48,
+                  48.0,
                   "[0.77427191 0.21829212 0.12769502 0.74303615]",
                   "[1.77427197 1.21829212 1.12769508 1.74303615]"
                 ],
                 [
-                  49,
+                  49.0,
                   "[0.08107251 0.2602725  0.18861133 0.44833237]",
                   "[1.08107257 1.2602725  1.18861127 1.44833231]"
                 ],
                 [
-                  50,
+                  50.0,
                   "[0.59812403 0.78395379 0.0291847  0.81814629]",
                   "[1.59812403 1.78395379 1.0291847  1.81814623]"
                 ],
                 [
-                  51,
+                  51.0,
                   "[0.93488538 0.73882395 0.37345302 0.0274905 ]",
                   "[1.93488538 1.73882389 1.37345302 1.0274905 ]"
                 ],
                 [
-                  52,
+                  52.0,
                   "[0.30631393 0.48311198 0.87847513 0.67559886]",
                   "[1.30631399 1.48311198 1.87847519 1.67559886]"
                 ],
                 [
-                  53,
+                  53.0,
                   "[0.18720162 0.74115586 0.98626411 0.30355608]",
                   "[1.18720162 1.74115586 1.98626411 1.30355608]"
                 ],
                 [
-                  54,
+                  54.0,
                   "[0.85566247 0.83362883 0.48424995 0.25265992]",
                   "[1.85566247 1.83362889 1.48424995 1.25265992]"
                 ],
                 [
-                  55,
+                  55.0,
                   "[0.95928186 0.84273899 0.71514636 0.38619852]",
                   "[1.95928192 1.84273899 1.7151463  1.38619852]"
                 ],
                 [
-                  56,
+                  56.0,
                   "[0.32565445 0.90939188 0.07488042 0.13730896]",
                   "[1.32565451 1.90939188 1.07488036 1.13730896]"
                 ],
                 [
-                  57,
+                  57.0,
                   "[0.9829582  0.59269661 0.40120947 0.95487177]",
                   "[1.9829582  1.59269667 1.40120947 1.95487177]"
                 ],
                 [
-                  58,
+                  58.0,
                   "[0.79905868 0.89367443 0.75429088 0.3190186 ]",
                   "[1.79905868 1.89367437 1.75429082 1.3190186 ]"
                 ],
                 [
-                  59,
+                  59.0,
                   "[0.54914117 0.03810108 0.87531954 0.73044223]",
                   "[1.54914117 1.03810108 1.87531948 1.73044229]"
                 ],
                 [
-                  60,
+                  60.0,
                   "[0.67418337 0.79634351 0.23229051 0.71345252]",
                   "[1.67418337 1.79634356 1.23229051 1.71345258]"
                 ],
                 [
-                  61,
+                  61.0,
                   "[0.87285906 0.48354989 0.39394957 0.59456545]",
                   "[1.872859   1.48354983 1.39394951 1.59456539]"
                 ],
                 [
-                  62,
+                  62.0,
                   "[0.81788456 0.58174163 0.29376316 0.7971254 ]",
                   "[1.81788456 1.58174157 1.29376316 1.79712534]"
                 ],
                 [
-                  63,
+                  63.0,
                   "[0.94559073 0.65736622 0.25761551 0.48553199]",
                   "[1.94559073 1.65736628 1.25761557 1.48553205]"
                 ],
                 [
-                  64,
+                  64.0,
                   "[0.60075855 0.12234765 0.00614399 0.30560958]",
                   "[1.60075855 1.12234759 1.00614405 1.30560958]"
                 ],
                 [
-                  65,
+                  65.0,
                   "[0.39147133 0.29854035 0.84663737 0.58175623]",
                   "[1.39147139 1.29854035 1.84663737 1.58175623]"
                 ],
                 [
-                  66,
+                  66.0,
                   "[0.02162331 0.81861657 0.92468154 0.07808572]",
                   "[1.02162337 1.81861663 1.92468154 1.07808566]"
                 ],
                 [
-                  67,
+                  67.0,
                   "[0.02235305 0.52774918 0.7331115  0.84358269]",
                   "[1.02235305 1.52774918 1.7331115  1.84358263]"
                 ],
                 [
-                  68,
+                  68.0,
                   "[0.6080932  0.56563014 0.32107437 0.72599429]",
                   "[1.60809326 1.5656302  1.32107437 1.72599435]"
                 ],
                 [
-                  69,
+                  69.0,
                   "[0.67447788 0.6125319  0.98007888 0.65968603]",
                   "[1.67447782 1.6125319  1.98007894 1.65968609]"
                 ],
                 [
-                  70,
+                  70.0,
                   "[0.47963417 0.81818312 0.48720706 0.49339259]",
                   "[1.47963417 1.81818318 1.48720706 1.49339259]"
                 ],
                 [
-                  71,
+                  71.0,
                   "[0.9630242  0.76359051 0.24853623 0.76881069]",
                   "[1.96302414 1.76359057 1.24853623 1.76881075]"
                 ],
                 [
-                  72,
+                  72.0,
                   "[0.60609657 0.96257663 0.19292736 0.95702219]",
                   "[1.60609651 1.96257663 1.19292736 1.95702219]"
                 ],
                 [
-                  73,
+                  73.0,
                   "[0.80654246 0.08253473 0.74478531 0.71257162]",
                   "[1.8065424  1.08253479 1.74478531 1.71257162]"
                 ],
                 [
-                  74,
+                  74.0,
                   "[0.70167565 0.26930219 0.5660674  0.61194974]",
                   "[1.70167565 1.26930213 1.56606746 1.61194968]"
                 ],
                 [
-                  75,
+                  75.0,
                   "[0.76933283 0.86241865 0.44114518 0.65644735]",
                   "[1.76933289 1.86241865 1.44114518 1.65644741]"
                 ],
                 [
-                  76,
+                  76.0,
                   "[0.59492421 0.90274489 0.38069052 0.46101224]",
                   "[1.59492421 1.90274489 1.38069057 1.46101224]"
                 ],
                 [
-                  77,
+                  77.0,
                   "[0.15064228 0.03198934 0.25754827 0.51484001]",
                   "[1.15064228 1.03198934 1.25754833 1.51484001]"
                 ],
                 [
-                  78,
+                  78.0,
                   "[0.12024075 0.21342516 0.56858408 0.58644271]",
                   "[1.12024069 1.21342516 1.56858408 1.58644271]"
                 ],
                 [
-                  79,
+                  79.0,
                   "[0.91730917 0.22574073 0.09591609 0.33056474]",
                   "[1.91730917 1.22574067 1.09591603 1.33056474]"
                 ],
                 [
-                  80,
+                  80.0,
                   "[0.49691743 0.61873293 0.90698647 0.94486356]",
                   "[1.49691749 1.61873293 1.90698647 1.94486356]"
                 ],
                 [
-                  81,
+                  81.0,
                   "[0.6032477  0.83361369 0.18538666 0.19108021]",
                   "[1.60324764 1.83361363 1.18538666 1.19108021]"
                 ],
                 [
-                  82,
+                  82.0,
                   "[0.63235509 0.70352674 0.96188956 0.46240485]",
                   "[1.63235509 1.70352674 1.96188951 1.46240485]"
                 ],
                 [
-                  83,
+                  83.0,
                   "[0.37959969 0.42820001 0.10690689 0.96353984]",
                   "[1.37959969 1.42820001 1.10690689 1.96353984]"
                 ],
                 [
-                  84,
+                  84.0,
                   "[0.49607176 0.1922397  0.46640229 0.78321403]",
                   "[1.49607182 1.19223976 1.46640229 1.78321409]"
                 ],
                 [
-                  85,
+                  85.0,
                   "[0.40234613 0.54987347 0.49542785 0.54153186]",
                   "[1.40234613 1.54987347 1.49542785 1.5415318 ]"
                 ],
                 [
-                  86,
+                  86.0,
                   "[0.80893755 0.92237449 0.88346356 0.93164903]",
                   "[1.80893755 1.92237449 1.88346362 1.93164897]"
                 ],
                 [
-                  87,
+                  87.0,
                   "[0.12858278 0.09930819 0.83222693 0.72485673]",
                   "[1.12858272 1.09930825 1.83222699 1.72485673]"
                 ],
                 [
-                  88,
+                  88.0,
                   "[0.72470158 0.4940322  0.41027349 0.89364016]",
                   "[1.72470164 1.49403214 1.41027355 1.89364016]"
                 ],
                 [
-                  89,
+                  89.0,
                   "[0.47856545 0.46267092 0.6376707  0.84747767]",
                   "[1.47856545 1.46267092 1.63767076 1.84747767]"
                 ],
                 [
-                  90,
+                  90.0,
                   "[0.49584109 0.80599248 0.07096875 0.75872749]",
                   "[1.49584103 1.80599248 1.07096875 1.75872755]"
                 ],
                 [
-                  91,
+                  91.0,
                   "[0.43500566 0.66041756 0.80293626 0.96224713]",
                   "[1.43500566 1.66041756 1.80293632 1.96224713]"
                 ],
                 [
-                  92,
+                  92.0,
                   "[0.78397602 0.74223626 0.26603186 0.41664881]",
                   "[1.78397608 1.74223626 1.26603186 1.41664886]"
                 ],
                 [
-                  93,
+                  93.0,
                   "[0.28942841 0.05601001 0.33039129 0.27781558]",
                   "[1.28942847 1.05601001 1.33039129 1.27781558]"
                 ],
                 [
-                  94,
+                  94.0,
                   "[0.68094063 0.45189077 0.22661722 0.37354094]",
                   "[1.68094063 1.45189071 1.22661722 1.37354088]"
                 ],
                 [
-                  95,
+                  95.0,
                   "[0.43681622 0.74680805 0.83598751 0.12414402]",
                   "[1.43681622 1.74680805 1.83598757 1.12414408]"
                 ],
                 [
-                  96,
+                  96.0,
                   "[0.47870928 0.17129105 0.27300501 0.20634609]",
                   "[1.47870922 1.17129111 1.27300501 1.20634604]"
                 ],
                 [
-                  97,
+                  97.0,
                   "[0.72795159 0.79317838 0.27832931 0.96576637]",
                   "[1.72795153 1.79317832 1.27832937 1.96576643]"
                 ],
                 [
-                  98,
+                  98.0,
                   "[0.87608397 0.93200487 0.80169648 0.37758952]",
                   "[1.87608397 1.93200493 1.80169654 1.37758946]"
                 ],
                 [
-                  99,
+                  99.0,
                   "[0.68891573 0.25576538 0.96339929 0.503833  ]",
                   "[1.68891573 1.25576544 1.96339929 1.50383306]"
                 ]
@@ -2706,40 +2952,40 @@
               ],
               "data": [
                 [
-                  0.7310920783451625
+                  0.7207903180803571
                 ],
                 [
-                  0.6641438961029053
+                  0.6417550768171038
                 ],
                 [
-                  0.6400456496647426
+                  0.6347021375383649
                 ],
                 [
-                  0.6347808020455497
+                  0.6343160561152867
                 ],
                 [
-                  0.5920047964368548
+                  0.6340425968170166
                 ],
                 [
-                  0.2393323404448373
+                  0.6337757042476109
                 ],
                 [
-                  0.21167769261768887
+                  0.6334536620548793
                 ],
                 [
-                  0.2110180412020002
+                  0.38809724875858853
                 ],
                 [
-                  0.21042096614837646
+                  0.2206951141357422
                 ],
                 [
-                  0.20985143525259836
+                  0.21978810174124583
                 ]
               ]
             }
           },
           "other": {
-            "model": "{'model_inputs': ['Input__tensor_2_input'], 'model_outputs': ['Output_1_x'], 'loss_inputs': ['Input__tensor_1_input', 'Output_1_x'], 'input_output_names': {'Input__tensor_2_input': 'X', 'Output_1_x': 'Output', 'Input__tensor_1_input': 'Y'}, 'input_handlers': {'Input__tensor_2_input': {'categories': [], 'name': 'X', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'icon': None, 'doc': [{'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'X'}, 'Input__tensor_1_input': {'categories': [], 'name': 'Y', 'params': [{'name': 'table_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}}, {'name': 'column_name', 'default': '', 'type': {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}}], 'inputs': [{'name': 'b', 'type': {'type': \"<class 'lynxkite_graph_analytics.core.Bundle'>\"}, 'position': <Position.LEFT: 'left'>}, {'name': 'ctx', 'type': {'type': \"<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>\"}, 'position': <Position.LEFT: 'left'>}], 'outputs': [{'name': 'output', 'type': {'type': 'None'}, 'position': <Position.RIGHT: 'right'>}], 'type': 'basic', 'color': 'orange', 'icon': None, 'doc': [{'kind': 'parameters', 'value': [{'name': 'table_name', 'annotation': 'Annotated', 'description': 'One column of this table will be used as input.'}, {'name': 'column_name', 'annotation': 'Annotated', 'description': 'The name of the column to use as input.'}]}], 'id': 'Y'}}, 'source_workspace_json': '{\\n  \"edges\": [\\n    {\\n      \"id\": \"MSE loss 2 Optimizer 2\",\\n      \"source\": \"MSE loss 2\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Optimizer 2\",\\n      \"targetHandle\": \"loss\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Repeat 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Repeat 1\",\\n      \"targetHandle\": \"input\"\\n    },\\n    {\\n      \"id\": \"Linear 1 Activation 1\",\\n      \"source\": \"Linear 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Activation 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Repeat 1 Linear 1\",\\n      \"source\": \"Repeat 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Constant vector 1 Add 1\",\\n      \"source\": \"Constant vector 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"b\"\\n    },\\n    {\\n      \"id\": \"Add 1 MSE loss 2\",\\n      \"source\": \"Add 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"y\"\\n    },\\n    {\\n      \"id\": \"Activation 1 Output 1\",\\n      \"source\": \"Activation 1\",\\n      \"sourceHandle\": \"output\",\\n      \"target\": \"Output 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Output 1 MSE loss 2\",\\n      \"source\": \"Output 1\",\\n      \"sourceHandle\": \"x\",\\n      \"target\": \"MSE loss 2\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 2 input Linear 1 x\",\\n      \"source\": \"Input: tensor 2\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Linear 1\",\\n      \"targetHandle\": \"x\"\\n    },\\n    {\\n      \"id\": \"Input: tensor 1 input Add 1 a\",\\n      \"source\": \"Input: tensor 1\",\\n      \"sourceHandle\": \"input\",\\n      \"target\": \"Add 1\",\\n      \"targetHandle\": \"a\"\\n    }\\n  ],\\n  \"env\": \"PyTorch model\",\\n  \"nodes\": [\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"green\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Optimizer\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"loss\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Optimizer\",\\n          \"outputs\": [],\\n          \"params\": [\\n            {\\n              \"default\": \"AdamW\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"AdamW\",\\n                  \"Adafactor\",\\n                  \"Adagrad\",\\n                  \"SGD\",\\n                  \"Lion\",\\n                  \"Paged AdamW\",\\n                  \"Galore AdamW\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": 0.0001,\\n              \"name\": \"lr\",\\n              \"type\": {\\n                \"type\": \"<class \\'float\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Optimizer\",\\n        \"params\": {\\n          \"lr\": \"0.1\",\\n          \"type\": \"SGD\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Optimizer\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 250.0,\\n      \"id\": \"Optimizer 2\",\\n      \"position\": {\\n        \"x\": 359.75221367487865,\\n        \"y\": -1150.2183224762075\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 232.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Activation\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Activation\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"ReLU\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"ELU\",\\n                  \"GELU\",\\n                  \"Leaky ReLU\",\\n                  \"Mish\",\\n                  \"PReLU\",\\n                  \"ReLU\",\\n                  \"Sigmoid\",\\n                  \"SiLU\",\\n                  \"Softplus\",\\n                  \"Tanh\"\\n                ]\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Activation\",\\n        \"params\": {\\n          \"type\": \"Leaky ReLU\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Activation\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Activation 1\",\\n      \"position\": {\\n        \"x\": 99.77615018185415,\\n        \"y\": -249.43925929074078\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"MSE loss\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"y\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"MSE loss\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"MSE loss\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"MSE loss\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"MSE loss 2\",\\n      \"position\": {\\n        \"x\": 375.21624462193034,\\n        \"y\": -721.0552036572305\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Repeat\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Repeat\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1,\\n              \"name\": \"times\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": false,\\n              \"name\": \"same_weights\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Repeat\",\\n        \"params\": {\\n          \"same_weights\": false,\\n          \"times\": \"2\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Repeat\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Repeat 1\",\\n      \"position\": {\\n        \"x\": -210.0,\\n        \"y\": -135.0\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"blue\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Linear\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Linear\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 1024,\\n              \"name\": \"output_dim\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Linear\",\\n        \"params\": {\\n          \"output_dim\": \"4\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Linear\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 189.0,\\n      \"id\": \"Linear 1\",\\n      \"position\": {\\n        \"x\": 98.54861342271252,\\n        \"y\": 14.121603973834155\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 199.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Constant vector\",\\n          \"inputs\": [],\\n          \"name\": \"Constant vector\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": 0,\\n              \"name\": \"value\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": 1,\\n              \"name\": \"size\",\\n              \"type\": {\\n                \"type\": \"<class \\'int\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Constant vector\",\\n        \"params\": {\\n          \"size\": \"1\",\\n          \"value\": \"1\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Constant vector\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 258.0,\\n      \"id\": \"Constant vector 1\",\\n      \"position\": {\\n        \"x\": 846.2767459753351,\\n        \"y\": -226.90556526533476\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 238.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Add\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"a\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            },\\n            {\\n              \"name\": \"b\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"<class \\'inspect._empty\\'>\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Add\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"output\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Add\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Add\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 200.0,\\n      \"id\": \"Add 1\",\\n      \"position\": {\\n        \"x\": 631.934390777073,\\n        \"y\": -395.6855954439944\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": null,\\n        \"collapsed\": true,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"gray\",\\n          \"doc\": null,\\n          \"icon\": null,\\n          \"id\": \"Output\",\\n          \"inputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"bottom\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"name\": \"Output\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"x\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"tensor\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": null,\\n              \"name\": \"name\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Output\",\\n        \"params\": {},\\n        \"status\": \"done\",\\n        \"title\": \"Output\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 234.0,\\n      \"id\": \"Output 1\",\\n      \"position\": {\\n        \"x\": 108.18701117589333,\\n        \"y\": -542.5685180416564\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 200.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"icon\": null,\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"Y\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 311.0,\\n      \"id\": \"Input: tensor 1\",\\n      \"position\": {\\n        \"x\": 520.44444095888,\\n        \"y\": -230.68805322434085\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 210.0\\n    },\\n    {\\n      \"data\": {\\n        \"__execution_delay\": 0.0,\\n        \"collapsed\": null,\\n        \"display\": null,\\n        \"error\": null,\\n        \"expanded_height\": null,\\n        \"input_metadata\": null,\\n        \"meta\": {\\n          \"categories\": [],\\n          \"color\": \"orange\",\\n          \"doc\": [\\n            {\\n              \"kind\": \"text\",\\n              \"value\": \"An input tensor.\"\\n            },\\n            {\\n              \"kind\": \"parameters\",\\n              \"value\": [\\n                {\\n                  \"annotation\": \"TorchTypes\",\\n                  \"description\": \"The data type of the tensor.\",\\n                  \"name\": \"type\"\\n                },\\n                {\\n                  \"annotation\": \"bool\",\\n                  \"description\": \"Whether this has a different value for each sample, or is constant across the dataset.\",\\n                  \"name\": \"per_sample\"\\n                }\\n              ]\\n            }\\n          ],\\n          \"icon\": null,\\n          \"id\": \"Input: tensor\",\\n          \"inputs\": [],\\n          \"name\": \"Input: tensor\",\\n          \"outputs\": [\\n            {\\n              \"name\": \"input\",\\n              \"position\": \"top\",\\n              \"type\": {\\n                \"type\": \"None\"\\n              }\\n            }\\n          ],\\n          \"params\": [\\n            {\\n              \"default\": \"\",\\n              \"name\": \"_input_name\",\\n              \"type\": {\\n                \"type\": \"<class \\'str\\'>\"\\n              }\\n            },\\n            {\\n              \"default\": \"float\",\\n              \"name\": \"type\",\\n              \"type\": {\\n                \"enum\": [\\n                  \"float\",\\n                  \"double\",\\n                  \"int\",\\n                  \"long\",\\n                  \"bool\"\\n                ]\\n              }\\n            },\\n            {\\n              \"default\": true,\\n              \"name\": \"per_sample\",\\n              \"type\": {\\n                \"type\": \"<class \\'bool\\'>\"\\n              }\\n            }\\n          ],\\n          \"type\": \"basic\"\\n        },\\n        \"op_id\": \"Input: tensor\",\\n        \"params\": {\\n          \"_input_name\": \"X\",\\n          \"per_sample\": true,\\n          \"type\": \"float\"\\n        },\\n        \"status\": \"done\",\\n        \"title\": \"Input: tensor\"\\n      },\\n      \"dragHandle\": \".drag-handle\",\\n      \"height\": 326.0,\\n      \"id\": \"Input: tensor 2\",\\n      \"position\": {\\n        \"x\": 88.09649326018129,\\n        \"y\": 321.87371407838634\\n      },\\n      \"type\": \"basic\",\\n      \"width\": 221.0\\n    }\\n  ],\\n  \"paused\": false\\n}\\n', 'source_workspace': 'Model definition', 'trained': True, 'model_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02ccollections\\nOrderedDict\\nq\\x00)Rq\\x01(X\\x0f\\x00\\x00\\x00module_1.weightq\\x02ctorch._utils\\n_rebuild_tensor_v2\\nq\\x03((X\\x07\\x00\\x00\\x00storageq\\x04ctorch\\nFloatStorage\\nq\\x05X\\x01\\x00\\x00\\x000q\\x06X\\x03\\x00\\x00\\x00cpuq\\x07K\\x10tq\\x08QK\\x00K\\x04K\\x04\\x86q\\tK\\x04K\\x01\\x86q\\n\\x89h\\x00)Rq\\x0btq\\x0cRq\\rX\\r\\x00\\x00\\x00module_1.biasq\\x0eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x001q\\x0fh\\x07K\\x04tq\\x10QK\\x00K\\x04\\x85q\\x11K\\x01\\x85q\\x12\\x89h\\x00)Rq\\x13tq\\x14Rq\\x15X\\x0f\\x00\\x00\\x00module_4.weightq\\x16h\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x002q\\x17h\\x07K\\x10tq\\x18QK\\x00K\\x04K\\x04\\x86q\\x19K\\x04K\\x01\\x86q\\x1a\\x89h\\x00)Rq\\x1btq\\x1cRq\\x1dX\\r\\x00\\x00\\x00module_4.biasq\\x1eh\\x03((h\\x04h\\x05X\\x01\\x00\\x00\\x003q\\x1fh\\x07K\\x04tq QK\\x00K\\x04\\x85q!K\\x01\\x85q\"\\x89h\\x00)Rq#tq$Rq%u}q&X\\t\\x00\\x00\\x00_metadataq\\'h\\x00)Rq((X\\x00\\x00\\x00\\x00q)}q*X\\x07\\x00\\x00\\x00versionq+K\\x01sX\\x08\\x00\\x00\\x00module_0q,}q-h+K\\x01sX\\x08\\x00\\x00\\x00module_1q.}q/h+K\\x01sX\\x08\\x00\\x00\\x00module_2q0}q1h+K\\x01sX\\x08\\x00\\x00\\x00module_3q2}q3h+K\\x01sX\\x08\\x00\\x00\\x00module_4q4}q5h+K\\x01sX\\x08\\x00\\x00\\x00module_5q6}q7h+K\\x01sX\\x08\\x00\\x00\\x00module_6q8}q9h+K\\x01sX\\x08\\x00\\x00\\x00module_7q:}q;h+K\\x01sX\\x08\\x00\\x00\\x00module_8q<}q=h+K\\x01susb.PK\\x07\\x08<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\'\\x00archive/.format_versionFB#\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00>\\x00archive/data/0FB:\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZk\\xbd\\xa0\\xbe\\xec(\\xda\\xbe\\xc9d\\xfb>\\x1e8\\x95>\\x9b/\\x0c?s\\xd8\\xf4>\\x0c2\\x8e>\\xc2n\\x17?>\\x8c\\xc2\\xbdJ\\x98\\xed>\\x90\\x80\\xbf= \\x9f\\xcc\\xbe\\x1c\\xa3f>\\xaeq\\xd7\\xbc+N\\xf2>y\\x08l\\xbePK\\x07\\x08\\xe9\\x14E\\xfe@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/1FB\\x00\\x00Sn\\xc3<K\\xa9o?KY\\x9f\\xbdV\\xbb\\x19?PK\\x07\\x08\\xc2\\x1b|W\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x004\\x00archive/data/2FB0\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ&E \\xbe|\\xfc\\x85>\\xdb_!\\xbej\\x82\\xab>\\xee$T\\xbe|\\x89~?\\x1f\"\\xfe=\\xed\\xec\\x98>\\xa3\\xa6\\x86\\xbdr+\\x91\\xbd\\x1a\\xcd\\xcb\\xbd\\x91`#\\xbe\\xfc}\\x9c>\\xa81\\x82?y\\xd8\\xdb\\xbeq<\\x9d>PK\\x07\\x08\\x02\\tY\\xb8@\\x00\\x00\\x00@\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0e\\x00\\x04\\x00archive/data/3FB\\x00\\x00\\x1f\\xed\\xe6?\\x96O\\x99>\\xc34\\'\\xbe\\xc6\\x94p>PK\\x07\\x08\\xb13\\x82\\xe4\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x003\\x00archive/versionFB/\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ1077862729799854162511955867447867773878PK\\x07\\x08\\x8b\\t(\\xf5(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00<]\\xf8\\xc4\\x94\\x02\\x00\\x00\\x94\\x02\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xe4\\x02\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00Q\\x03\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x03\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xe9\\x14E\\xfe@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00V\\x04\\x00\\x00archive/data/0PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xc2\\x1b|W\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x05\\x00\\x00archive/data/1PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\tY\\xb8@\\x00\\x00\\x00@\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x05\\x00\\x00archive/data/2PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb13\\x82\\xe4\\x10\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x06\\x00\\x00archive/data/3PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00`\\x06\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x8b\\t(\\xf5(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xd2\\x06\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\n\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x83\\x02\\x00\\x00\\x00\\x00\\x00\\x00x\\x07\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00\\xfb\\t\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\n\\x00\\n\\x00\\x83\\x02\\x00\\x00x\\x07\\x00\\x00\\x00\\x00', 'optimizer_state_dict': b'PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00\\x12\\x00archive/data.pklFB\\x0e\\x00ZZZZZZZZZZZZZZ\\x80\\x02}q\\x00(X\\x05\\x00\\x00\\x00stateq\\x01}q\\x02X\\x0c\\x00\\x00\\x00param_groupsq\\x03]q\\x04}q\\x05(X\\x02\\x00\\x00\\x00lrq\\x06G?\\xb9\\x99\\x99\\x99\\x99\\x99\\x9aX\\x08\\x00\\x00\\x00momentumq\\x07K\\x00X\\t\\x00\\x00\\x00dampeningq\\x08K\\x00X\\x0c\\x00\\x00\\x00weight_decayq\\tK\\x00X\\x08\\x00\\x00\\x00nesterovq\\n\\x89X\\x08\\x00\\x00\\x00maximizeq\\x0b\\x89X\\x07\\x00\\x00\\x00foreachq\\x0cNX\\x0e\\x00\\x00\\x00differentiableq\\r\\x89X\\x05\\x00\\x00\\x00fusedq\\x0eNX\\x06\\x00\\x00\\x00paramsq\\x0f]q\\x10(K\\x00K\\x01K\\x02K\\x03euau.PK\\x07\\x089\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x17\\x00\\x12\\x00archive/.format_versionFB\\x0e\\x00ZZZZZZZZZZZZZZ1PK\\x07\\x08\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1a\\x007\\x00archive/.storage_alignmentFB3\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ64PK\\x07\\x08?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x11\\x00?\\x00archive/byteorderFB;\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZlittlePK\\x07\\x08\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\x00=\\x00archive/versionFB9\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ3\\nPK\\x07\\x08\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00PK\\x03\\x04\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x002\\x00archive/.data/serialization_idFB.\\x00ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ0290846867776292310400064744647197776100PK\\x07\\x08\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00PK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x009\\xa2\\xb2C\\xe9\\x00\\x00\\x00\\xe9\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00archive/data.pklPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xb7\\xef\\xdc\\x83\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x17\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x009\\x01\\x00\\x00archive/.format_versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00?wq\\xe9\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x91\\x01\\x00\\x00archive/.storage_alignmentPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x85=\\xe3\\x19\\x06\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x02\\x00\\x00archive/byteorderPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\xd1\\x9egU\\x02\\x00\\x00\\x00\\x02\\x00\\x00\\x00\\x0f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x96\\x02\\x00\\x00archive/versionPK\\x01\\x02\\x00\\x00\\x00\\x00\\x08\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x9f\\xe5\\xfe\\xb9(\\x00\\x00\\x00(\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x12\\x03\\x00\\x00archive/.data/serialization_idPK\\x06\\x06,\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x1e\\x03-\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x93\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00\\x00\\x00PK\\x06\\x07\\x00\\x00\\x00\\x00K\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00PK\\x05\\x06\\x00\\x00\\x00\\x00\\x06\\x00\\x06\\x00\\x93\\x01\\x00\\x00\\xb8\\x03\\x00\\x00\\x00\\x00'}"
+            "model": "{'model_inputs': ['Input__tensor_2_input'], 'model_outputs': ['Output_1_x'], 'loss_inputs': ['Input_"
           },
           "relations": []
         },
@@ -2748,35 +2994,39 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
-                  "pred",
+                  "prediction",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
-                "key": "training"
+                "key": "training",
+                "length": 10.0
               }
             },
             "other": {
@@ -2944,38 +3194,13 @@
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "table_view"
-        },
+        "meta": null,
         "op_id": "View tables",
+        "output_metadata": [],
         "params": {
           "_tables_open": {
-            "df_test": true
+            "df_test": true,
+            "records_test": true
           },
           "limit": 100.0
         },
@@ -3001,184 +3226,184 @@
             {
               "data": [
                 [
-                  -3.4341647624969482,
-                  0.11829651147127151,
-                  "",
-                  -0.29626092314720154
+                  7.596129417419434,
+                  17.506711959838867,
+                  69.0,
+                  24.83249855041504
                 ],
                 [
-                  -1.0648720264434814,
-                  1.599151849746704,
-                  "",
-                  1.7206969261169434
+                  7.151517391204834,
+                  13.488121032714844,
+                  33.0,
+                  20.816425323486328
                 ],
                 [
-                  -3.126289129257202,
-                  -0.4455118775367737,
-                  "",
-                  -1.3954181671142578
+                  8.554192543029785,
+                  17.01947784423828,
+                  86.0,
+                  24.578113555908203
                 ],
                 [
-                  -2.9945125579833984,
-                  1.2658588886260986,
-                  "",
-                  0.9123285412788391
+                  8.646087646484375,
+                  14.17445182800293,
+                  60.0,
+                  21.271080017089844
                 ],
                 [
-                  -3.3650600910186768,
-                  -0.6631665229797363,
-                  "",
-                  -0.9227070808410645
+                  9.04861831665039,
+                  16.2000732421875,
+                  20.0,
+                  25.55498695373535
                 ],
                 [
-                  0.8600469827651978,
-                  5.244359016418457,
-                  "",
-                  7.420111656188965
+                  11.054146766662598,
+                  -3.625175952911377,
+                  49.0,
+                  45.81797409057617
                 ],
                 [
-                  -2.636962413787842,
-                  0.9981436729431152,
-                  "",
-                  0.4934684932231903
+                  7.197117328643799,
+                  10.142095565795898,
+                  63.0,
+                  16.970678329467773
                 ],
                 [
-                  -3.23966646194458,
-                  0.6530562043190002,
-                  "",
-                  0.02773110941052437
+                  7.781785488128662,
+                  15.383362770080566,
+                  42.0,
+                  22.401409149169922
                 ],
                 [
-                  -2.735501527786255,
-                  0.42597657442092896,
-                  "",
-                  0.3174653947353363
+                  6.691104412078857,
+                  15.226656913757324,
+                  88.0,
+                  22.20046615600586
                 ],
                 [
-                  -3.578667640686035,
-                  -0.3357595205307007,
-                  "",
-                  -1.246253490447998
+                  9.001845359802246,
+                  17.92798614501953,
+                  35.0,
+                  23.769001007080078
                 ],
                 [
-                  0.5530689358711243,
-                  4.882038116455078,
-                  "",
-                  6.940996170043945
+                  10.229849815368652,
+                  -4.261031150817871,
+                  28.0,
+                  45.51583480834961
                 ],
                 [
-                  -0.585597813129425,
-                  4.032657623291016,
-                  "",
-                  5.184436798095703
+                  9.427888870239258,
+                  -1.2453346252441406,
+                  4.0,
+                  46.812530517578125
                 ],
                 [
-                  0.852319598197937,
-                  4.490273952484131,
-                  "",
-                  6.746245861053467
+                  8.89618968963623,
+                  -2.3973329067230225,
+                  78.0,
+                  49.45521545410156
                 ],
                 [
-                  -0.054076217114925385,
-                  4.354330062866211,
-                  "",
-                  7.11428689956665
+                  10.177326202392578,
+                  -2.191037654876709,
+                  13.0,
+                  47.553768157958984
                 ],
                 [
-                  -1.4825716018676758,
-                  2.5955193042755127,
-                  "",
-                  3.3880767822265625
+                  10.526836395263672,
+                  -0.9488964676856995,
+                  51.0,
+                  48.625213623046875
                 ],
                 [
-                  0.4129694998264313,
-                  4.468492031097412,
-                  "",
-                  6.4923415184021
+                  11.434002876281738,
+                  -2.230193853378296,
+                  9.0,
+                  48.99064254760742
                 ],
                 [
-                  -1.2583163976669312,
-                  0.9320668578147888,
-                  "",
-                  1.3212517499923706
+                  7.479648113250732,
+                  14.389131546020508,
+                  40.0,
+                  21.86917495727539
                 ],
                 [
-                  -0.9390444755554199,
-                  2.047671318054199,
-                  "",
-                  2.6787428855895996
+                  6.21810245513916,
+                  11.917057037353516,
+                  65.0,
+                  18.029708862304688
                 ],
                 [
-                  -2.3185436725616455,
-                  1.539138913154602,
-                  "",
-                  2.2176342010498047
+                  6.498281478881836,
+                  13.17851734161377,
+                  25.0,
+                  18.92962646484375
                 ],
                 [
-                  -3.0388588905334473,
-                  0.23436899483203888,
-                  "",
-                  -0.5572162866592407
+                  7.639200210571289,
+                  16.316267013549805,
+                  75.0,
+                  22.929841995239258
                 ],
                 [
-                  -1.8773857355117798,
-                  1.850703239440918,
-                  "",
-                  3.167314052581787
+                  5.299496173858643,
+                  10.184688568115234,
+                  92.0,
+                  16.28873634338379
                 ],
                 [
-                  -1.6693837642669678,
-                  2.1914427280426025,
-                  "",
-                  3.621424436569214
+                  6.176966190338135,
+                  9.345131874084473,
+                  45.0,
+                  15.421353340148926
                 ],
                 [
-                  -1.9010006189346313,
-                  1.2348798513412476,
-                  "",
-                  1.4231806993484497
+                  7.238839626312256,
+                  12.192450523376465,
+                  47.0,
+                  19.695018768310547
                 ],
                 [
-                  0.15687046945095062,
-                  3.852489948272705,
-                  "",
-                  6.047091484069824
+                  6.4513773918151855,
+                  10.826045989990234,
+                  87.0,
+                  27.841793060302734
                 ],
                 [
-                  -0.04594212770462036,
-                  4.886589050292969,
-                  "",
-                  7.967507839202881
+                  9.491519927978516,
+                  -3.2427406311035156,
+                  8.0,
+                  47.08939743041992
                 ],
                 [
-                  -1.6519675254821777,
-                  1.4951683282852173,
-                  "",
-                  2.1195144653320312
+                  5.561436653137207,
+                  13.011509895324707,
+                  50.0,
+                  19.27897071838379
                 ],
                 [
-                  -2.136540651321411,
-                  0.6655599474906921,
-                  "",
-                  0.7476540207862854
+                  6.731112957000732,
+                  16.888957977294922,
+                  46.0,
+                  23.43166732788086
                 ],
                 [
-                  -2.283994674682617,
-                  2.1182048320770264,
-                  "",
-                  2.6646347045898438
+                  8.409638404846191,
+                  12.829453468322754,
+                  76.0,
+                  20.304506301879883
                 ],
                 [
-                  0.49423542618751526,
-                  4.1759467124938965,
-                  "",
-                  6.4096808433532715
+                  5.362393379211426,
+                  11.683624267578125,
+                  39.0,
+                  26.740814208984375
                 ],
                 [
-                  0.3957764208316803,
-                  5.213062763214111,
-                  "",
-                  7.6710286140441895
+                  10.687776565551758,
+                  -2.9160547256469727,
+                  2.0,
+                  47.98804473876953
                 ]
               ],
               "symbolSize": 25.65378780242026,
@@ -3186,14 +3411,15 @@
             }
           ],
           "title": {
-            "text": "UMAP projection of pred"
+            "text": "UMAP projection of prediction"
           },
           "tooltip": {
-            "show": false
+            "formatter": "GET_THIRD_VALUE",
+            "trigger": "item"
           },
           "visualMap": {
             "calculable": true,
-            "dimension": 3,
+            "dimension": 3.0,
             "inRange": {
               "color": [
                 "#440154",
@@ -3208,9 +3434,9 @@
                 "#FDE725"
               ]
             },
-            "max": 7.967507839202881,
-            "min": -1.3954181671142578,
-            "right": 10,
+            "max": 49.45521545410156,
+            "min": 15.421353340148926,
+            "right": 10.0,
             "top": "center"
           },
           "xAxis": [
@@ -3229,35 +3455,39 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
-                  "pred",
+                  "prediction",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
-                "key": "training"
+                "key": "training",
+                "length": 10.0
               }
             },
             "other": {
@@ -3425,93 +3655,15 @@
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "robot",
-          "id": "View vectors",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View vectors",
-          "outputs": [],
-          "params": [
-            {
-              "default": "nodes",
-              "name": "table_name",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].dataframes[].keys(@)[]"
-              }
-            },
-            {
-              "default": "",
-              "name": "vector_column",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].dataframes[].<table_name>.columns[]"
-              }
-            },
-            {
-              "default": "",
-              "name": "label_column",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].dataframes[].<table_name>.columns[]"
-              }
-            },
-            {
-              "default": 15,
-              "name": "n_neighbors",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": 0.1,
-              "name": "min_dist",
-              "type": {
-                "type": "<class 'float'>"
-              }
-            },
-            {
-              "default": "euclidean",
-              "name": "metric",
-              "type": {
-                "enum": [
-                  "l1",
-                  "cityblock",
-                  "taxicab",
-                  "manhattan",
-                  "euclidean",
-                  "l2",
-                  "sqeuclidean",
-                  "canberra",
-                  "minkowski",
-                  "chebyshev",
-                  "linf",
-                  "cosine",
-                  "correlation",
-                  "hellinger",
-                  "hamming"
-                ]
-              }
-            }
-          ],
-          "type": "visualization"
-        },
+        "meta": null,
         "op_id": "View vectors",
+        "output_metadata": [],
         "params": {
-          "label_column": "",
-          "table_name": "df_test",
-          "vector_column": "pred"
+          "label_column": "index",
+          "min_dist": "1",
+          "n_neighbors": "10",
+          "table_name": "records_test",
+          "vector_column": "prediction"
         },
         "status": "done",
         "title": "View vectors"
@@ -3536,28 +3688,31 @@
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "x",
                   "y"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 100.0
               },
-              "df_test": {
+              "records_test": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_test"
+                "key": "records_test",
+                "length": 30.0
               },
-              "df_train": {
+              "records_train": {
                 "columns": [
                   "index",
                   "x",
                   "y"
                 ],
-                "key": "df_train"
+                "key": "records_train",
+                "length": 70.0
               }
             },
             "other": {
@@ -3725,74 +3880,214 @@
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Trains the selected model on the selected dataset.\nTraining parameters specific to the model are set in the model definition,\nwhile parameters specific to the hardware environment and dataset are set here."
-            }
-          ],
-          "icon": "robot",
-          "id": "Train model",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Train model",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "model",
-              "name": "model_name",
-              "type": {
-                "format": "dropdown",
-                "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key"
-              }
-            },
-            {
-              "default": null,
-              "name": "input_mapping",
-              "type": {
-                "type": "lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping | None"
-              }
-            },
-            {
-              "default": 1,
-              "name": "epochs",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": 1,
-              "name": "batch_size",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Train model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Annotated",
+                              "description": "One column of this table will be used as input.",
+                              "name": "table_name"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "The name of the column to use as input.",
+                              "name": "column_name"
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
         "params": {
           "batch_size": "8",
           "epochs": "10",
-          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"df_train\",\"column_name\":\"x\"},\"Input__tensor_1_input\":{\"table_name\":\"df_train\",\"column_name\":\"y\"}}}",
+          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"records_train\",\"column_name\":\"x\"},\"Input__tensor_1_input\":{\"table_name\":\"records_train\",\"column_name\":\"y\"}}}",
           "model_name": "model"
         },
         "status": "done",
