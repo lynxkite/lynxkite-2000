@@ -77,11 +77,14 @@ class WorkspaceNode(BaseConfig):
         self.data.error = None
         self.data.message = None
         self.data.status = NodeStatus.active
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                self._crdt["data"]["error"] = None
-                self._crdt["data"]["message"] = None
-                self._crdt["data"]["status"] = NodeStatus.active
+        if self._crdt and "data" in getattr(self._crdt, "keys", lambda: [])():
+            try:
+                with self._crdt.doc.transaction():
+                    self._crdt["data"]["error"] = None
+                    self._crdt["data"]["message"] = None
+                    self._crdt["data"]["status"] = NodeStatus.active
+            except Exception:
+                pass  # Node might have been deleted
 
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
@@ -89,23 +92,25 @@ class WorkspaceNode(BaseConfig):
         self.data.input_metadata = result.input_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                try:
+        if self._crdt and "data" in getattr(self._crdt, "keys", lambda: [])():
+            try:
+                with self._crdt.doc.transaction():
                     self._crdt["data"]["status"] = NodeStatus.done
                     self._crdt["data"]["display"] = self.data.display
                     self._crdt["data"]["input_metadata"] = self.data.input_metadata
                     self._crdt["data"]["error"] = self.data.error
-                except Exception as e:
-                    self._crdt["data"]["error"] = str(e)
-                    raise e
+            except Exception:
+                pass  # Node might have been deleted
 
     def publish_message(self, message: str):
         """Sends a message to the frontend. This can be used for progress updates."""
         self.data.message = message
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                self._crdt["data"]["message"] = message
+        if self._crdt and "data" in getattr(self._crdt, "keys", lambda: [])():
+            try:
+                with self._crdt.doc.transaction():
+                    self._crdt["data"]["message"] = message
+            except Exception:
+                pass  # Node might have been deleted
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
@@ -266,10 +271,19 @@ class Workspace(BaseConfig):
 
         self._crdt = ws_crdt
         with ws_crdt.doc.transaction():
-            for nc, np in zip(ws_crdt["nodes"], self.nodes):
-                if "data" not in nc:
-                    nc["data"] = pycrdt.Map()
-                np._crdt = nc
+            node_crdt_by_id = {
+                node_crdt["id"]: node_crdt
+                for node_crdt in ws_crdt.get("nodes", [])
+                if "id" in node_crdt
+            }
+            for node_python in self.nodes:
+                node_crdt = node_crdt_by_id.get(node_python.id)
+                if node_crdt is not None:
+                    if "data" not in node_crdt:
+                        node_crdt["data"] = pycrdt.Map()
+                    node_python._crdt = node_crdt
+                else:
+                    node_python._crdt = None
 
     def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""
