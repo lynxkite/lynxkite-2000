@@ -103,48 +103,47 @@ class CRDTConnection {
       this.doc,
     );
     this.doc.on("update", this.onBackendChange);
-    const that = this;
     this.state = {
       feNodes: [],
       feEdges: [],
       setPausedState: (paused: boolean) => {
-        that.ws.set("paused", paused);
-        that.updateState();
+        this.ws.set("paused", paused);
+        this.updateState();
       },
       setEnv: (env: string) => {
-        that.ws.set("env", env);
-        that.updateState();
+        this.ws.set("env", env);
+        this.updateState();
       },
       setExecutionOptions: (options: Record<string, any>) => {
-        that.ws.set("execution_options", options);
-        that.updateState();
+        this.ws.set("execution_options", options);
+        this.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
         const ynode = nodeToYMap(node);
-        that.doc.transact(() => {
-          const wnodes = that.ws.get("nodes") as Y.Array<any>;
+        this.doc.transact(() => {
+          const wnodes = this.ws.get("nodes") as Y.Array<any>;
           wnodes.push([ynode]);
         });
-        that.updateState();
+        this.updateState();
       },
       addEdge: (edge: Partial<WorkspaceEdge>) => {
         const yedge = new Y.Map<any>();
         for (const [key, value] of Object.entries(edge)) {
           yedge.set(key, value);
         }
-        that.doc.transact(() => {
-          const wedges = that.ws.get("edges") as Y.Array<any>;
+        this.doc.transact(() => {
+          const wedges = this.ws.get("edges") as Y.Array<any>;
           wedges.push([yedge]);
         });
-        that.updateState();
+        this.updateState();
       },
-      onFENodesChange: that.onFENodesChange,
-      onFEEdgesChange: that.onFEEdgesChange,
+      onFENodesChange: this.onFENodesChange,
+      onFEEdgesChange: this.onFEEdgesChange,
       applyChange: (fn: (conn: CRDTConnection) => void) => {
-        that.doc.transact(() => {
-          fn(that);
+        this.doc.transact(() => {
+          fn(this);
         });
-        that.updateState();
+        this.updateState();
       },
     };
   }
