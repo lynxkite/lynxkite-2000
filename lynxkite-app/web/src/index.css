@@ -21,8 +21,11 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-primary: oklch(75% 0.13 230);
+  --color-secondary: oklch(75% 0.2 55);
   --border: 1px;
   --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
   --bold: 500;
 }
 
@@ -280,13 +283,11 @@ svg {
     height: 53px;
     font-weight: var(--bold);
     padding: 8px;
-    background-image: linear-gradient(
-      to right,
-      var(--status-color-1),
-      var(--status-color-2) 40%,
-      var(--status-color-2) 60%,
-      var(--status-color-3)
-    );
+    background-image: linear-gradient(to right,
+        var(--status-color-1),
+        var(--status-color-2) 40%,
+        var(--status-color-2) 60%,
+        var(--status-color-3));
     background-blend-mode: luminosity;
     background-size: 180% 180%;
     background-color: oklch(97% 0 0);
@@ -754,7 +755,8 @@ svg {
   transform: rotate(-90deg);
 }
 
-.directory {
+.directory,
+.progress-page {
   padding-top: 50px;
 
   .entry-list {
@@ -1135,4 +1137,42 @@ svg {
 select,
 textarea {
   border: var(--border) solid #0000;
+}
+
+.progress-page {
+  .entry-list {
+    padding: 10px 20px;
+  }
+
+  .progress-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 5px;
+    }
+  }
+
+  .workspace-progress {
+    text-align: right;
+  }
+
+  .workspace-eta {
+    white-space: nowrap;
+  }
+
+  .workspace-resources {
+    text-align: right;
+  }
+
+  .workspace-actions {
+    text-align: right;
+
+    button {
+      background: transparent;
+      border: none;
+      color: oklch(75% 0.13 230);
+    }
+  }
 }
