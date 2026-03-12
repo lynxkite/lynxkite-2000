@@ -23,6 +23,7 @@
   background: #002a4c;
   --color-primary: oklch(75% 0.13 230);
   --color-secondary: oklch(75% 0.2 55);
+  --color-base-content: black;
   --border: 1px;
   --radius-field: 0.5rem;
   --radius-box: 0.5rem;
@@ -1124,10 +1125,16 @@ textarea {
 
 .progress-page {
   .entry-list {
-    padding: 10px 20px;
+    padding: 20px;
+    padding-top: 0;
+  }
+
+  .tabs {
+    justify-content: center;
   }
 
   .progress-table {
+    margin-top: 20px;
     width: 100%;
     border-collapse: collapse;
 
@@ -1145,11 +1152,21 @@ textarea {
     white-space: nowrap;
   }
 
+  .nim-replica-count,
   .workspace-resources {
     text-align: right;
   }
 
-  .workspace-actions {
+  .nim-status {
+    text-align: center;
+  }
+
+  .nim-publisher {
+    font-size: 0.8em;
+    color: #0008;
+  }
+
+  .table-actions {
     text-align: right;
 
     button {
