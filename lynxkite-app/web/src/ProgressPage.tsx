@@ -8,7 +8,18 @@ import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+const echarts = await import("echarts");
+
+// Generate fake per-day GPU-hours for a user over the last 30 days.
+function generateDailyUsage(avgHours: number): number[] {
+  const days = [];
+  for (let i = 0; i < 30; i++) {
+    days.push(Math.max(0, Math.round(avgHours + (Math.sin(i * 1.3) + Math.cos(i * 0.7)) * avgHours * 0.4)));
+  }
+  return days;
+}
 
 function timeLeft(workspace: any) {
   if (!workspace.resources.gpus) {
@@ -126,7 +137,17 @@ export default function ProgressPage() {
       // { publisher: "NVIDIA", name: "MolMIM", status: "running", replicasHealthy: 3, replicasRequested: 3 },
       // { publisher: "Meta", name: "esmfold", status: "running", replicasHealthy: 3, replicasRequested: 3 },
       // { publisher: "MIT", name: "diffdock", status: "running", replicasHealthy: 3, replicasRequested: 3 },
-    ]
+    ],
+    users: [
+      { name: "Botond Banhidi", group: "Engineering", gpuQuota: 500, dailyUsage: generateDailyUsage(15) },
+      { name: "Daniel Darabos", group: "Engineering", gpuQuota: 800, dailyUsage: generateDailyUsage(22) },
+      { name: "Derek Smith", group: "Drug Discovery", gpuQuota: 2000, dailyUsage: generateDailyUsage(55) },
+      { name: "Dora Gera", group: "Drug Discovery", gpuQuota: 1500, dailyUsage: generateDailyUsage(40) },
+      { name: "Gergo Szabo", group: "Engineering", gpuQuota: 1500, dailyUsage: generateDailyUsage(35) },
+      { name: "Gyorgy Lajtai", group: "CEO", gpuQuota: 2500, dailyUsage: generateDailyUsage(70) },
+      { name: "Livia Babos", group: "Micro RNA", gpuQuota: 800, dailyUsage: generateDailyUsage(15) },
+      { name: "Rajat Kumar Pal", group: "Molecular Simulation", gpuQuota: 3000, dailyUsage: generateDailyUsage(80) },
+    ],
   });
   for (const nim of data.nims) {
     if (nim.usedByWorkspaces.length) continue;
@@ -185,6 +206,7 @@ export default function ProgressPage() {
 
         {currentTab === "workspaces" && <Workspaces workspaces={data.workspaces} setResources={setResources} />}
         {currentTab === "nims" && <NIMs nims={data.nims} scaleNIM={scaleNIM} />}
+        {currentTab === "users" && <UsersAndGroups users={data.users} />}
       </div>
     </div>
   );
@@ -243,7 +265,6 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
   </table>;
 }
 
-
 function NIMs(props: { nims: any[], scaleNIM: (nim: any, replicas: number) => void }) {
   const [showUsers, setShowUsers] = useState({} as Record<string, boolean>);
   if ((props.nims?.length ?? 0) === 0) {
@@ -276,6 +297,69 @@ function NIMs(props: { nims: any[], scaleNIM: (nim: any, replicas: number) => vo
           </td>
         </tr>
       ))}
+    </tbody>
+  </table>;
+}
+
+function UserUsageChart(props: { dailyUsage: number[], gpuQuota: number }) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const chartInstance = useRef<echarts.ECharts>(null);
+  useEffect(() => {
+    if (!chartRef.current) return;
+    chartInstance.current = echarts.init(chartRef.current, null, { renderer: "canvas" });
+    const today = new Date();
+    const labels = props.dailyUsage.map((_, i) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 29 + i);
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    });
+    const dailyQuota = Math.round(props.gpuQuota / 30);
+    chartInstance.current.setOption({
+      tooltip: { trigger: "axis" },
+      xAxis: { type: "category", data: labels, axisLabel: { rotate: 45 } },
+      yAxis: { type: "value", name: "GPU-hours" },
+      series: [
+        { name: "Usage", type: "bar", data: props.dailyUsage, itemStyle: { color: "oklch(75% 0.2 230)" } },
+        { name: "Daily quota", type: "line", data: Array(30).fill(dailyQuota), lineStyle: { type: "dashed", color: "oklch(75% 0.2 55)" }, symbol: "none" },
+      ],
+    });
+    return () => { chartInstance.current?.dispose(); };
+  }, [props.dailyUsage, props.gpuQuota]);
+  return <div ref={chartRef} style={{ width: "100%", height: 220 }} />;
+}
+
+function UsersAndGroups(props: { users: any[] }) {
+  const [expandedUser, setExpandedUser] = useState<string | null>(null);
+  if ((props.users?.length ?? 0) === 0) {
+    return <div>No users.</div>;
+  }
+  return <table className="progress-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Group</th>
+        <th>Quota used (h)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {props.users.map((user) => {
+        const totalUse = user.dailyUsage.reduce((a: number, b: number) => a + b, 0);
+        const expanded = expandedUser === user.name;
+        return <React.Fragment key={user.name}>
+          <tr className={expanded ? "active" : ""} style={{ cursor: "pointer" }} onClick={() => setExpandedUser(expanded ? null : user.name)}>
+            <td>{user.name}</td>
+            <td>{user.group}</td>
+            <td>
+              <progress className={`progress ${totalUse > user.gpuQuota ? "progress-error" : "progress-primary"} w-50`}
+                value={totalUse} max={user.gpuQuota} />
+              {' '}{totalUse.toLocaleString()}/{user.gpuQuota.toLocaleString()}
+            </td>
+          </tr>
+          {expanded && <tr><td colSpan={3}>
+            <UserUsageChart dailyUsage={user.dailyUsage} gpuQuota={user.gpuQuota} />
+          </td></tr>}
+        </React.Fragment>;
+      })}
     </tbody>
   </table>;
 }
