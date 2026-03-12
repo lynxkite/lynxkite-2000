@@ -1,4 +1,4 @@
-// An system-wide progress page, that gives an overview of which workspaces are running, what resources they use, etc.
+// A system-wide progress page, that gives an overview of workspaces running, resources used, etc.
 import { Link } from "react-router";
 import Back from "~icons/tabler/arrow-left";
 import ScaleUp from "~icons/tabler/arrow-up";
@@ -85,7 +85,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 122.5,
         boxes_done: 1,
         total_boxes: 20,
-        current_box_progress: { name: "Fine-tuning", input_size: 123123, done: 76434 },
+        current_box_progress: { name: "Fine-tuning", input_size: 4536, done: 123 },
         overall_progress: 0.05,
         resources: { gpus: 4 },
       },
@@ -96,7 +96,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 60 * 1.77,
         boxes_done: 40,
         total_boxes: 50,
-        current_box_progress: { name: "ADMET model", input_size: 123123, done: 76434 },
+        current_box_progress: { name: "ADMET model", input_size: 342432, done: 276567 },
         overall_progress: 0.82,
         resources: { gpus: 6 },
       },
@@ -107,7 +107,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 60 * 12.1,
         boxes_done: 120,
         total_boxes: 200,
-        current_box_progress: { name: "Run FEP+", input_size: 123123, done: 76434 },
+        current_box_progress: { name: "Run FEP+", input_size: 1323, done: 225 },
         overall_progress: 0.6,
         resources: { gpus: 16 },
       },
@@ -144,7 +144,7 @@ export default function ProgressPage() {
       { name: "Derek Smith", group: "Drug Discovery", gpuQuota: 2000, dailyUsage: generateDailyUsage(55) },
       { name: "Dora Gera", group: "Drug Discovery", gpuQuota: 1500, dailyUsage: generateDailyUsage(40) },
       { name: "Gergo Szabo", group: "Engineering", gpuQuota: 1500, dailyUsage: generateDailyUsage(35) },
-      { name: "Gyorgy Lajtai", group: "CEO", gpuQuota: 2500, dailyUsage: generateDailyUsage(70) },
+      { name: "Gyorgy Lajtai", group: "Engineering", gpuQuota: 2500, dailyUsage: generateDailyUsage(70) },
       { name: "Livia Babos", group: "Micro RNA", gpuQuota: 800, dailyUsage: generateDailyUsage(15) },
       { name: "Rajat Kumar Pal", group: "Molecular Simulation", gpuQuota: 3000, dailyUsage: generateDailyUsage(80) },
     ],
@@ -214,6 +214,11 @@ export default function ProgressPage() {
 
 function Workspaces(props: { workspaces: any[], setResources: (ws: any, resources: any) => void }) {
   const [showProgressDetails, setShowProgressDetails] = useState({} as Record<string, boolean>);
+  const [currentBoxDemoCounter, setCurrentBoxDemoCounter] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => Math.random() < 0.5 && setCurrentBoxDemoCounter((c) => c + 1), 100);
+    return () => clearInterval(interval);
+  }, []);
   if ((props.workspaces?.length ?? 0) === 0) {
     return <div>No workspaces in progress.</div>;
   }
@@ -236,10 +241,10 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
             {showProgressDetails[ws.name]
               ? <div className="progress-details">
                 <span>{ws.current_box_progress.name} {ws.current_box_progress.input_size &&
-                  (`(${ws.current_box_progress.done}/${ws.current_box_progress.input_size})`)}</span>
+                  (`(${ws.current_box_progress.done + currentBoxDemoCounter}/${ws.current_box_progress.input_size})`)}</span>
                 {ws.current_box_progress.input_size && <>
                   <progress className={`progress progress-secondary w-50`}
-                    value={ws.current_box_progress.done} max={ws.current_box_progress.input_size} />
+                    value={ws.current_box_progress.done + currentBoxDemoCounter} max={ws.current_box_progress.input_size} />
                 </>}
               </div>
               :
