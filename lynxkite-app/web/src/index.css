@@ -284,11 +284,13 @@ svg {
     height: 53px;
     font-weight: var(--bold);
     padding: 8px;
-    background-image: linear-gradient(to right,
+    background-image: linear-gradient(
+      to right,
         var(--status-color-1),
         var(--status-color-2) 40%,
         var(--status-color-2) 60%,
-        var(--status-color-3));
+        var(--status-color-3)
+      );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
     background-color: oklch(97% 0 0);
@@ -1160,6 +1162,7 @@ textarea {
   .nim-users {
     font-size: 10px;
     letter-spacing: 1px;
+
     .nim-user {
       margin-left: 10px;
     }
