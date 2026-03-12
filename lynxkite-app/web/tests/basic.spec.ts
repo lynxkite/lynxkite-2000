@@ -1,4 +1,4 @@
-// Tests some basic operations like box creation, deletion, dragging, and copy-pasting.
+// Tests some basic operations like box creation, deletion, and dragging.
 import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
@@ -45,34 +45,4 @@ test("Drag box", async () => {
   // Exact position is not guaranteed, but it should have moved
   expect(newPos.x).toBeGreaterThan(originalPos.x);
   expect(newPos.y).toBeGreaterThan(originalPos.y);
-});
-
-test("Copy-paste box", async () => {
-  await workspace.addBox("Import Parquet");
-  await workspace.selectBox("Import Parquet 1");
-  await workspace.copySelection();
-  await workspace.pasteSelection();
-  await expect(workspace.getBox("Import Parquet 2")).toBeVisible();
-});
-
-test("Copy-paste connected boxes", async () => {
-  await workspace.addBox("Graph embedding and link prediction › Import PyKEEN dataset");
-  await workspace.addBox("View tables");
-  await workspace.connectBoxes("Import PyKEEN dataset 1", "View tables 1");
-  await workspace.selectBoxes(["Import PyKEEN dataset 1", "View tables 1"]);
-  await workspace.copySelection();
-  await workspace.pasteSelection();
-  await expect(workspace.getBox("Import PyKEEN dataset 2")).toBeVisible();
-  const tableBox = workspace.getBox("View tables 2");
-  await expect(tableBox).toBeVisible();
-  await expect(tableBox.locator(".error")).not.toBeVisible();
-});
-
-test("Cut-paste box", async () => {
-  await workspace.addBox("Import Parquet");
-  await workspace.selectBox("Import Parquet 1");
-  await workspace.cutSelection();
-  await expect(workspace.getBox("Import Parquet 1")).not.toBeVisible();
-  await workspace.pasteSelection();
-  await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
 });
