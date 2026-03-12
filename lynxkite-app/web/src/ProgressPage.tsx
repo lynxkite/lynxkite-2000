@@ -8,7 +8,7 @@ import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function timeLeft(workspace: any) {
   if (!workspace.resources.gpus) {
@@ -29,6 +29,12 @@ function timeLeft(workspace: any) {
 }
 
 export default function ProgressPage() {
+  // Update every second so we see the time left count down.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setTick((t) => t + 1), 1000);
+    return () => clearInterval(interval);
+  }, []);
   const [currentTab, setCurrentTab] = useState("workspaces");
   const tabs = [
     { id: "workspaces", label: "Running workspaces" },
@@ -207,7 +213,7 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
             {ws.resources.gpus ? (
               <button className="btn btn-sm" title="Pause" onClick={() => props.setResources(ws, {})}><Pause /></button>
             ) : (
-              <button className="btn btn-sm" title="Resume" onClick={() => props.setResources(ws, { gpus: 1 })}><Play /></button>
+              <button className="btn btn-sm" title="Resume" onClick={() => props.setResources(ws, ws.prevResources ?? {})}><Play /></button>
             )}
             <button className="btn btn-sm" title="Stop"><Stop /></button>
           </td>
