@@ -52,7 +52,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 34.3,
         boxes_done: 18,
         total_boxes: 24,
-        current_box_progress: 0.45,
+        current_box_progress: { name: "Query Boltz-2", input_size: 123123, done: 76434 },
         overall_progress: 0.75,
         resources: { gpus: 8 },
       },
@@ -63,7 +63,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 21.1,
         boxes_done: 3,
         total_boxes: 12,
-        current_box_progress: 0.6,
+        current_box_progress: { name: "Prepare data (local)" },
         overall_progress: 0.28,
         resources: { gpus: 2 },
       },
@@ -74,7 +74,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 122.5,
         boxes_done: 1,
         total_boxes: 20,
-        current_box_progress: 0.05,
+        current_box_progress: { name: "Fine-tuning", input_size: 123123, done: 76434 },
         overall_progress: 0.05,
         resources: { gpus: 4 },
       },
@@ -85,7 +85,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 60 * 1.77,
         boxes_done: 40,
         total_boxes: 50,
-        current_box_progress: 0.9,
+        current_box_progress: { name: "ADMET model", input_size: 123123, done: 76434 },
         overall_progress: 0.82,
         resources: { gpus: 6 },
       },
@@ -96,7 +96,7 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 60 * 12.1,
         boxes_done: 120,
         total_boxes: 200,
-        current_box_progress: 0.4,
+        current_box_progress: { name: "Run FEP+", input_size: 123123, done: 76434 },
         overall_progress: 0.6,
         resources: { gpus: 16 },
       },
@@ -107,19 +107,19 @@ export default function ProgressPage() {
         eta: Date.now() + 1000 * 60 * 45.8,
         boxes_done: 2,
         total_boxes: 8,
-        current_box_progress: 0.25,
+        current_box_progress: { name: "Create visualization (local)" },
         overall_progress: 0.2,
         resources: { gpus: 1 },
       },
     ],
     nims: [
-      { publisher: "MIT", name: "Boltz-2", status: "running", replicasHealthy: 3, replicasRequested: 3 },
-      { publisher: "Colabfold", name: "msa-search", status: "running", replicasHealthy: 10, replicasRequested: 10 },
-      { publisher: "Openfold", name: "openfold2", status: "running", replicasHealthy: 1, replicasRequested: 1 },
-      { publisher: "Arc", name: "evo2-40b", status: "running", replicasHealthy: 0, replicasRequested: 3 },
-      { publisher: "NVIDIA", name: "genmol", status: "running", replicasHealthy: 10, replicasRequested: 1 },
-      { publisher: "DeepMind", name: "alphafold2-multimer", status: "running", replicasHealthy: 3, replicasRequested: 3 },
-      { publisher: "Meta", name: "esm2-650m", status: "running", replicasHealthy: 12, replicasRequested: 12 },
+      { publisher: "MIT", name: "Boltz-2", status: "running", replicasHealthy: 3, replicasRequested: 3, usedByWorkspaces: [] as any[] },
+      { publisher: "Colabfold", name: "msa-search", status: "running", replicasHealthy: 10, replicasRequested: 10, usedByWorkspaces: [] as any[] },
+      { publisher: "Openfold", name: "openfold2", status: "running", replicasHealthy: 1, replicasRequested: 1, usedByWorkspaces: [] as any[] },
+      { publisher: "Arc", name: "evo2-40b", status: "running", replicasHealthy: 0, replicasRequested: 3, usedByWorkspaces: [] as any[] },
+      { publisher: "NVIDIA", name: "genmol", status: "running", replicasHealthy: 10, replicasRequested: 1, usedByWorkspaces: [] as any[] },
+      { publisher: "DeepMind", name: "alphafold2-multimer", status: "running", replicasHealthy: 3, replicasRequested: 3, usedByWorkspaces: [] as any[] },
+      { publisher: "Meta", name: "esm2-650m", status: "running", replicasHealthy: 12, replicasRequested: 12, usedByWorkspaces: [] as any[] },
       // { publisher: "DeepMind", name: "alphafold2", status: "running", replicasHealthy: 3, replicasRequested: 3 },
       // { publisher: "IPD", name: "ProteinMPNN", status: "running", replicasHealthy: 3, replicasRequested: 3 },
       // { publisher: "IPD", name: "rfdiffusion", status: "running", replicasHealthy: 3, replicasRequested: 3 },
@@ -128,6 +128,14 @@ export default function ProgressPage() {
       // { publisher: "MIT", name: "diffdock", status: "running", replicasHealthy: 3, replicasRequested: 3 },
     ]
   });
+  for (const nim of data.nims) {
+    if (nim.usedByWorkspaces.length) continue;
+    for (const ws of data.workspaces) {
+      if (ws.resources.gpus > 0 && Math.random() < 0.2) {
+        nim.usedByWorkspaces.push(ws);
+      }
+    }
+  }
 
   function scaleNIM(nim: any, newReplicaCount: number) {
     // For now, just update the mock data. In a real implementation, this would make an API call.
@@ -183,6 +191,7 @@ export default function ProgressPage() {
 }
 
 function Workspaces(props: { workspaces: any[], setResources: (ws: any, resources: any) => void }) {
+  const [showProgressDetails, setShowProgressDetails] = useState({} as Record<string, boolean>);
   if ((props.workspaces?.length ?? 0) === 0) {
     return <div>No workspaces in progress.</div>;
   }
@@ -201,9 +210,20 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
         <tr key={ws.name}>
           <td className="workspace-name">{ws.name}</td>
           <td className="workspace-user">{ws.user}</td>
-          <td className="workspace-progress">
-            <progress className={`progress progress-${ws.resources.gpus ? "primary" : "secondary"} w-50`}
-            value={ws.overall_progress * 100} max="100"></progress>
+          <td className="workspace-progress" onClick={() => setShowProgressDetails(prev => ({ ...prev, [ws.name]: !prev[ws.name] }))}>
+            {showProgressDetails[ws.name]
+              ? <div className="progress-details">
+                <span>{ws.current_box_progress.name} {ws.current_box_progress.input_size &&
+                  (`(${ws.current_box_progress.done}/${ws.current_box_progress.input_size})`)}</span>
+                {ws.current_box_progress.input_size && <>
+                  <progress className={`progress progress-secondary w-50`}
+                    value={ws.current_box_progress.done} max={ws.current_box_progress.input_size} />
+                </>}
+              </div>
+              :
+              <progress className={`progress progress-${ws.resources.gpus ? "primary" : "neutral"} w-50`}
+                value={ws.overall_progress * 100} max="100" />
+            }
           </td>
           <td className="workspace-eta">
             {timeLeft(ws)}
@@ -225,6 +245,7 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
 
 
 function NIMs(props: { nims: any[], scaleNIM: (nim: any, replicas: number) => void }) {
+  const [showUsers, setShowUsers] = useState({} as Record<string, boolean>);
   if ((props.nims?.length ?? 0) === 0) {
     return <div>No NIMs deployed.</div>;
   }
@@ -240,7 +261,12 @@ function NIMs(props: { nims: any[], scaleNIM: (nim: any, replicas: number) => vo
     <tbody>
       {props.nims.map((nim) => (
         <tr key={nim.name}>
-          <td className="nim-name">{nim.name} <span className="nim-publisher">from {nim.publisher}</span></td>
+          <td className="nim-name" onClick={() => setShowUsers(prev => ({ ...prev, [nim.name]: !prev[nim.name] }))}>
+            {nim.name} <span className="nim-publisher">from {nim.publisher}</span>
+            {showUsers[nim.name] && <div className="nim-users">Used by workspaces:
+              {nim.usedByWorkspaces.map((ws: any) => <div className="nim-user" key={ws.name}>{ws.name}</div>)}
+            </div>}
+          </td>
           <td className="nim-replica-count">{nim.replicasHealthy}{nim.replicasHealthy !== nim.replicasRequested && ` / ${nim.replicasRequested}`}</td>
           <td className="nim-status"> {nim.replicasHealthy !== nim.replicasRequested ? 'resizing' : nim.status} </td>
           <td className="table-actions">
