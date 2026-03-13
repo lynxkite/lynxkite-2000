@@ -21,8 +21,13 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-primary: oklch(75% 0.13 230);
+  --color-secondary: oklch(75% 0.2 55);
+  --color-neutral: oklch(75% 0 0);
+  --color-base-content: black;
   --border: 1px;
   --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
   --bold: 500;
 }
 
@@ -281,11 +286,11 @@ svg {
     padding: 8px;
     background-image: linear-gradient(
       to right,
-      var(--status-color-1),
-      var(--status-color-2) 40%,
-      var(--status-color-2) 60%,
-      var(--status-color-3)
-    );
+        var(--status-color-1),
+        var(--status-color-2) 40%,
+        var(--status-color-2) 60%,
+        var(--status-color-3)
+      );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
     background-color: oklch(97% 0 0);
@@ -753,7 +758,8 @@ svg {
   transform: rotate(-90deg);
 }
 
-.directory {
+.directory,
+.progress-page {
   padding-top: 50px;
 
   .entry-list {
@@ -1118,4 +1124,76 @@ svg {
 select,
 textarea {
   border: var(--border) solid #0000;
+}
+
+.progress-page {
+  .entry-list {
+    padding: 20px;
+    padding-top: 0;
+  }
+
+  .tabs {
+    justify-content: center;
+  }
+
+  .progress-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 5px;
+    }
+  }
+
+  .workspace-progress {
+    text-align: right;
+  }
+
+  .progress-details {
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+
+  .nim-users {
+    font-size: 10px;
+    letter-spacing: 1px;
+
+    .nim-user {
+      margin-left: 10px;
+    }
+  }
+
+  .workspace-eta {
+    white-space: nowrap;
+    width: 8em;
+  }
+
+  .nim-replica-count,
+  .workspace-resources {
+    text-align: right;
+  }
+
+  .nim-status {
+    text-align: center;
+  }
+
+  .nim-publisher {
+    font-size: 0.8em;
+    color: #0008;
+  }
+
+  .table-actions {
+    text-align: right;
+
+    button {
+      background: transparent;
+      border: none;
+      color: oklch(75% 0.13 230);
+    }
+  }
 }
