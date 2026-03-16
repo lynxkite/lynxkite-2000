@@ -107,6 +107,9 @@ export interface WorkspaceNodeData {
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
+  telemetry?: {
+    [k: string]: unknown;
+  } | null;
   meta?: Op | null;
   [k: string]: unknown;
 }
