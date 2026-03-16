@@ -44,6 +44,7 @@ class WorkspaceNodeData(BaseConfig):
     collapsed: Optional[bool] = None
     expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
+    telemetry: Optional[dict[str, Any]] = None
     meta: Optional["ops.Op"] = None
 
     @pydantic.model_validator(mode="before")
@@ -106,6 +107,13 @@ class WorkspaceNode(BaseConfig):
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["message"] = message
+
+    def publish_telemetry(self, telemetry: dict[str, Any]):
+        """Sends telemetry data to the frontend."""
+        self.data.telemetry = telemetry
+        if self._crdt and "data" in self._crdt:
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["telemetry"] = telemetry
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""

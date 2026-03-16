@@ -39,9 +39,6 @@ def dummy_terminal_emulator(
     yield
 
 
-TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
-
-
 class FunctionTqdm(typing.Protocol):
     def __call__(
         self,
@@ -49,28 +46,16 @@ class FunctionTqdm(typing.Protocol):
         iterable=None,
         *args,
         **kwargs,
-    ) -> typing.Iterator[typing.Any]: ...
+    ) -> typing.Any: ...
 
-
-def dummy_tqdm_func(
-    op_ctx: "OpContext",
-    iterable=None,
-    *args,
-    **kwargs,
-) -> typing.Iterator[typing.Any]:
-    """
-    Default tqdm function that just returns the original iterable. Set TQDM_FUNCTION to a
-    function that wraps tqdm to enable this feature.
-    """
-    if iterable is not None:
-        yield from iterable
-    return
-
-
-TQDM_FUNCTION: FunctionTqdm = dummy_tqdm_func
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
+PROGRESS_REPORTER: FunctionTqdm | None = None
+TQDM_CAPTURER: typing.Optional[typing.Callable[["OpContext"], typing.Callable[..., typing.Any]]] = (
+    None
+)
+TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
 
 
 @dataclass
@@ -93,6 +78,7 @@ class OpContext:
 
     op: "Op | None" = None
     message: str | None = None
+    telemetry: dict[str, typing.Any] = dict()
     node: "workspace.WorkspaceNode | None" = None
     ws: "workspace.Workspace | None" = None
     loop: asyncio.AbstractEventLoop | None = None
@@ -116,6 +102,12 @@ class OpContext:
         self.message = message
         if self.node is not None and self.loop is not None:
             self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
+
+    def update_telemetry(self, telemetry: dict[str, typing.Any]):
+        """Updates the telemetry data for the current node."""
+        self.telemetry.update(telemetry)
+        if self.node is not None and self.loop is not None:
+            self.loop.call_soon_threadsafe(self.node.publish_telemetry, telemetry)
 
     def __getattr__(self, name: str):
         if self.op is not None:
@@ -167,13 +159,70 @@ class OpContext:
         )
 
     def tqdm(self, iterable=None, *args, **kwargs):
-        """A wrapper around tqdm.tqdm that sends tqdm progress bars to the frontend.
+        """A wrapper around tqdm.tqdm that sends a tqdm progress bar to the frontend.
         Example usage:
         ```python
         @op("Example op")
         def example_op(self):
             for i in self.tqdm(range(100), "Processing..."):
                 # some processing here
+
+            with self.tqdm(total=100) as pbar:
+                pbar.update(10)
         ```
         """
-        yield from TQDM_FUNCTION(self, iterable, *args, **kwargs)
+        if PROGRESS_REPORTER is not None:
+            return PROGRESS_REPORTER(self, iterable, *args, **kwargs)
+
+        try:
+            import tqdm
+
+            return tqdm.tqdm(iterable, *args, **kwargs)
+        except ImportError:
+
+            class DummyTqdm:
+                def __init__(self, iterable=None, *args, **kwargs):
+                    self.iterable = iterable
+
+                def __iter__(self):
+                    if self.iterable is not None:
+                        yield from self.iterable
+
+                def update(self, n=1):
+                    pass
+
+                def set_postfix(self, *args, **kwargs):
+                    pass
+
+                def set_description(self, *args, **kwargs):
+                    pass
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, exc_type, exc_val, exc_tb):
+                    pass
+
+                def close(self):
+                    pass
+
+            return DummyTqdm(iterable, *args, **kwargs)
+
+    def tqdm_ctx(self):
+        """A wrapper that sends every tqdm progress bar to the frontend inside the captured context.
+        Example usage:
+        ```python
+        @op("Example op")
+        def example_op(self):
+            with self.tqdm_ctx():
+                # any calls to tqdm.tqdm inside this block will be captured and sent to the frontend
+        ```
+        """
+        if TQDM_CAPTURER is not None:
+            return TQDM_CAPTURER(self)
+
+        @contextlib.contextmanager
+        def dummy_ctx():
+            yield
+
+        return dummy_ctx()
