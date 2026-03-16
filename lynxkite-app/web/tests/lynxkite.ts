@@ -82,6 +82,14 @@ export class Workspace {
     await box.locator(".react-flow__resize-control.handle").click();
     await expect(box).toHaveClass(/selected/);
   }
+  async selectBoxes(boxIds: string[]) {
+    for (const boxId of boxIds) {
+      await this.getBox(boxId)
+        .locator(".react-flow__resize-control.handle")
+        .click({ modifiers: ["Control"] });
+      await expect(this.getBox(boxId)).toHaveClass(/selected/);
+    }
+  }
 
   async deleteBoxes(boxIds: string[]) {
     for (const boxId of boxIds) {
@@ -132,6 +140,15 @@ export class Workspace {
       });
     }
     await this.page.mouse.up();
+  }
+  async copySelection() {
+    await this.page.keyboard.press("Control+c");
+  }
+  async pasteSelection() {
+    await this.page.keyboard.press("Control+v");
+  }
+  async cutSelection() {
+    await this.page.keyboard.press("Control+x");
   }
 
   async tryToConnectBoxes(sourceId: string, targetId: string) {

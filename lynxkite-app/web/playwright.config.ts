@@ -15,6 +15,7 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:8000",
     trace: "on",
     testIdAttribute: "data-nodeid", // Useful for easily selecting nodes using getByTestId
+    permissions: ["clipboard-read", "clipboard-write"], // Needed for testing copy-paste functionality
   },
   projects: [
     {
