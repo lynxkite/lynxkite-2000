@@ -169,16 +169,23 @@ function LynxKiteFlow() {
       } else if (event.key === "r") {
         event.preventDefault();
         executeWorkspace();
-      } else if (isPrimaryModifierPressed && !(nodeSearchSettings || isTypingInFormElement())) {
-        if (event.key.toLowerCase() === "c") {
-          copySelection(nodes, edges, crdt?.ws ?? {});
-        } else if (event.key.toLowerCase() === "v") {
-          pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
-        } else if (event.key.toLowerCase() === "x") {
-          cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
-        } else if (event.key.toLowerCase() === "a") {
-          event.preventDefault();
-          selectAll();
+      } else if (isPrimaryModifierPressed) {
+        if (event.key === "z") {
+          crdt?.undo();
+        } else if (event.key === "y") {
+          crdt?.redo();
+        } else if (!(nodeSearchSettings || isTypingInFormElement())) {
+          const key = event.key.toLowerCase();
+          if (key === "c") {
+            copySelection(nodes, edges, crdt?.ws ?? {});
+          } else if (key === "v") {
+            pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
+          } else if (key === "x") {
+            cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
+          } else if (key === "a") {
+            event.preventDefault();
+            selectAll();
+          }
         }
       }
     };
