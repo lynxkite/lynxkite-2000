@@ -893,6 +893,22 @@ svg {
   }
 }
 
+.progress-indeterminate .indeterminate-bar {
+  --status-color-1: #0000;
+  --status-color-2: #fff4;
+  --status-color-3: #888f;
+  background-image: linear-gradient(
+    to right,
+    var(--status-color-1),
+    var(--status-color-2) 40%,
+    var(--status-color-2) 60%,
+    var(--status-color-3)
+  );
+  background-blend-mode: luminosity;
+  background-size: 180% 180%;
+  animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
+}
+
 @property --status-color-1 {
   syntax: "<color>";
   initial-value: red;

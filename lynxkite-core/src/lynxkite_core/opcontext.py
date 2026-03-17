@@ -5,7 +5,7 @@ import typing
 import contextlib
 import asyncio
 import io
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 if typing.TYPE_CHECKING:
     from .ops import Op
@@ -78,7 +78,7 @@ class OpContext:
 
     op: "Op | None" = None
     message: str | None = None
-    telemetry: dict[str, typing.Any] = dict()
+    telemetry: dict[str, typing.Any] = field(default_factory=dict)
     node: "workspace.WorkspaceNode | None" = None
     ws: "workspace.Workspace | None" = None
     loop: asyncio.AbstractEventLoop | None = None
@@ -92,6 +92,7 @@ class OpContext:
         self.op = op
         self.node = node
         self.ws = ws
+        self.telemetry = {}
         try:
             self.loop = asyncio.get_running_loop()
         except RuntimeError:
