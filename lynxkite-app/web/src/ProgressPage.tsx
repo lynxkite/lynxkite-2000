@@ -6,6 +6,8 @@ import ScaleDown from "~icons/tabler/arrow-down";
 import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
+import Edit from "~icons/tabler/edit";
+import UserFilled from "~icons/tabler/user-filled";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
 import React, { useEffect, useRef, useState } from "react";
@@ -139,14 +141,14 @@ export default function ProgressPage() {
       // { publisher: "MIT", name: "diffdock", status: "running", replicasHealthy: 3, replicasRequested: 3 },
     ],
     users: [
-      { name: "Botond Banhidi", group: "Engineering", gpuQuota: 500, dailyUsage: generateDailyUsage(15) },
-      { name: "Daniel Darabos", group: "Engineering", gpuQuota: 800, dailyUsage: generateDailyUsage(22) },
-      { name: "Derek Smith", group: "Drug Discovery", gpuQuota: 2000, dailyUsage: generateDailyUsage(55) },
-      { name: "Dora Gera", group: "Drug Discovery", gpuQuota: 1500, dailyUsage: generateDailyUsage(40) },
-      { name: "Gergo Szabo", group: "Engineering", gpuQuota: 1500, dailyUsage: generateDailyUsage(35) },
-      { name: "Gyorgy Lajtai", group: "Engineering", gpuQuota: 2500, dailyUsage: generateDailyUsage(70) },
-      { name: "Livia Babos", group: "Micro RNA", gpuQuota: 800, dailyUsage: generateDailyUsage(15) },
-      { name: "Rajat Kumar Pal", group: "Molecular Simulation", gpuQuota: 3000, dailyUsage: generateDailyUsage(80) },
+      { name: "Botond Banhidi", group: "Engineering", gpuQuota: 500, dailyUsage: generateDailyUsage(15), email: "botond.banhidi@lynxkite.com" },
+      { name: "Daniel Darabos", group: "Engineering", gpuQuota: 800, dailyUsage: generateDailyUsage(22), email: "daniel.darabos@lynxkite.com" },
+      { name: "Derek Smith", group: "Drug Discovery", gpuQuota: 2000, dailyUsage: generateDailyUsage(55), email: "derek.smith@lynxkite.com" },
+      { name: "Dora Gera", group: "Drug Discovery", gpuQuota: 1500, dailyUsage: generateDailyUsage(40), email: "dora.gera@lynxkite.com" },
+      { name: "Gergo Szabo", group: "Engineering", gpuQuota: 1500, dailyUsage: generateDailyUsage(35), email: "gergo.szabo@lynxkite.com" },
+      { name: "Gyorgy Lajtai", group: "Engineering", gpuQuota: 2500, dailyUsage: generateDailyUsage(70), email: "gyorgy.lajtai@lynxkite.com" },
+      { name: "Livia Babos", group: "Micro RNA", gpuQuota: 800, dailyUsage: generateDailyUsage(15), email: "livia.babos@lynxkite.com" },
+      { name: "Rajat Kumar Pal", group: "Molecular Simulation", gpuQuota: 3000, dailyUsage: generateDailyUsage(80), email: "rajat.kumar.pal@lynxkite.com" },
     ],
   });
   for (const nim of data.nims) {
@@ -333,12 +335,69 @@ function UserUsageChart(props: { dailyUsage: number[], gpuQuota: number }) {
   return <div ref={chartRef} style={{ width: "100%", height: 220 }} />;
 }
 
+const ALL_GROUPS = ["Engineering", "Drug Discovery", "Micro RNA", "Molecular Simulation", "Management", "Data Science"];
+
+function UserEditDialog(props: { user: any, onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [name, setName] = useState(props.user.name);
+  const [email, setEmail] = useState(props.user.email ?? "");
+  const [groups, setGroups] = useState<string[]>(
+    Array.isArray(props.user.group) ? props.user.group : [props.user.group],
+  );
+  useEffect(() => {
+    dialogRef.current?.showModal();
+  }, []);
+  const availableGroups = ALL_GROUPS.filter(g => !groups.includes(g));
+  return <dialog ref={dialogRef} className="modal" onClose={props.onClose}>
+    <div className="modal-box">
+      <h3 className="font-bold text-lg">Edit User</h3>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <div style={{ fontSize: 64, color: "oklch(60% 0.15 230)" }}><UserFilled /></div>
+        <a href="#" className="text-sm"><Edit /> Change profile picture</a>
+      </div>
+      <label className="label">Name</label>
+      <input className="input input-bordered w-full" value={name} onChange={e => setName(e.target.value)} />
+      <label className="label">Email</label>
+      <input className="input input-bordered w-full" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+      <div style={{ marginTop: 16 }}>
+        <button className="btn btn-warning btn-sm" onClick={() => alert("Password reset link sent.")}>Reset password</button>
+      </div>
+      <label className="label">Groups</label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        {groups.map(g => (
+          <span key={g} className="badge badge-primary gap-1">
+            {g}
+            <button className="btn btn-ghost btn-xs px-0" onClick={() => setGroups(groups.filter(x => x !== g))}>✕</button>
+          </span>
+        ))}
+        {availableGroups.length > 0 && (
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-xs btn-circle btn-outline">+</div>
+            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-sm">
+              {availableGroups.map(g => (
+                <li key={g}><a onClick={() => setGroups([...groups, g])}>{g}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="modal-action">
+        <form method="dialog">
+          <button className="btn">Close</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" className="modal-backdrop"><button>close</button></form>
+  </dialog>;
+}
+
 function UsersAndGroups(props: { users: any[] }) {
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<any | null>(null);
   if ((props.users?.length ?? 0) === 0) {
     return <div>No users.</div>;
   }
-  return <table className="progress-table">
+  return <><table className="progress-table">
     <thead>
       <tr>
         <th>User</th>
@@ -361,10 +420,15 @@ function UsersAndGroups(props: { users: any[] }) {
             </td>
           </tr>
           {expanded && <tr><td colSpan={3}>
-            <UserUsageChart dailyUsage={user.dailyUsage} gpuQuota={user.gpuQuota} />
+            <div style={{ display: "flex", alignItems: "start" }}>
+              <UserUsageChart dailyUsage={user.dailyUsage} gpuQuota={user.gpuQuota} />
+              <button className="btn btn-lg btn-ghost" title="Edit user" onClick={(e) => { e.stopPropagation(); setEditingUser(user); }}><Edit /></button>
+            </div>
           </td></tr>}
         </React.Fragment>;
       })}
     </tbody>
-  </table>;
+  </table>
+  {editingUser && <UserEditDialog user={editingUser} onClose={() => setEditingUser(null)} />}
+  </>;
 }

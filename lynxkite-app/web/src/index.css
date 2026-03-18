@@ -25,15 +25,21 @@
   --color-secondary: oklch(75% 0.2 55);
   --color-neutral: oklch(75% 0 0);
   --color-base-content: black;
+  --color-base-100: white;
   --border: 1px;
   --radius-field: 0.5rem;
   --radius-box: 0.5rem;
+  --radius-selector: 0.5rem;
   --bold: 500;
 }
 
 img,
 svg {
   display: inline-block;
+}
+
+.modal-box {
+  background: white;
 }
 
 .path-input-container {
@@ -1195,5 +1201,8 @@ textarea {
       border: none;
       color: oklch(75% 0.13 230);
     }
+  }
+  .label {
+    margin-top:10px;
   }
 }
