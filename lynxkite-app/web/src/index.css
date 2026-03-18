@@ -27,6 +27,7 @@
   --color-base-content: black;
   --color-base-100: white;
   --border: 1px;
+  --input-color: oklch(75% 0.13 230);
   --radius-field: 0.5rem;
   --radius-box: 0.5rem;
   --radius-selector: 0.5rem;
@@ -40,6 +41,7 @@ svg {
 
 .modal-box {
   background: white;
+  max-width: calc(max(32rem, 70vw));
 }
 
 .path-input-container {
@@ -1142,11 +1144,6 @@ svg {
   p:not(:last-child) {
     margin-bottom: 10px;
   }
-}
-
-select,
-textarea {
-  border: var(--border) solid #0000;
 }
 
 .progress-page {

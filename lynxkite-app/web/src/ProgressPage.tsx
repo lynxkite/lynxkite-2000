@@ -336,6 +336,92 @@ function UserUsageChart(props: { dailyUsage: number[], gpuQuota: number }) {
 }
 
 const ALL_GROUPS = ["Engineering", "Drug Discovery", "Micro RNA", "Molecular Simulation", "Management", "Data Science"];
+const ALL_GPU_TYPES = ["H100", "H200", "GB200", "A100", "L40S", "B200"];
+
+function PolicyEditDialog(props: { policyName: string, onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [limitMode, setLimitMode] = useState<"monthly" | "weekly" | "daily">("monthly");
+  const [limitHours, setLimitHours] = useState(1000);
+  const [gpuTypes, setGpuTypes] = useState<string[]>(["H100", "H200", "GB200"]);
+  const [offHoursEnabled, setOffHoursEnabled] = useState(false);
+  const [offHoursFrom, setOffHoursFrom] = useState("17:00");
+  const [offHoursTo, setOffHoursTo] = useState("06:00");
+  const [priority, setPriority] = useState("medium");
+  const [preemptible, setPreemptible] = useState(false);
+  const [quantum, setQuantum] = useState(false);
+  useEffect(() => {
+    dialogRef.current?.showModal();
+  }, []);
+  const availableGpuTypes = ALL_GPU_TYPES.filter(t => !gpuTypes.includes(t));
+  return <dialog ref={dialogRef} className="modal" style={{ zIndex: 1100 }} onClose={(e) => { e.stopPropagation(); props.onClose(); }}>
+    <div className="modal-box">
+      <h3 className="font-bold text-lg">{props.policyName}</h3>
+      <label className="label">GPU hour limit</label>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <input className="input input-bordered w-32" type="number" value={limitHours} onChange={e => setLimitHours(Number(e.target.value))} />
+        <span>hours per</span>
+        <select className="select select-bordered" value={limitMode} onChange={e => setLimitMode(e.target.value as "monthly" | "weekly" | "daily")}>
+          <option value="daily">day</option>
+          <option value="weekly">week</option>
+          <option value="monthly">month</option>
+        </select>
+      </div>
+      <label className="label">Priority</label>
+      <select className="select select-bordered w-full" value={priority} onChange={e => setPriority(e.target.value)}>
+        <option value="lowest">Lowest</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="highest">Highest</option>
+      </select>
+      <label className="label">Allowed GPU types</label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        {gpuTypes.map(t => (
+          <span key={t} className="badge badge-primary gap-1">
+            {t}
+            <button className="btn btn-ghost btn-xs px-0" onClick={() => setGpuTypes(gpuTypes.filter(x => x !== t))}>✕</button>
+          </span>
+        ))}
+        {availableGpuTypes.length > 0 && (
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-xs btn-circle btn-outline">+</div>
+            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-sm">
+              {availableGpuTypes.map(t => (
+                <li key={t}><a onClick={() => setGpuTypes([...gpuTypes, t])}>{t}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+        <label className="label cursor-pointer gap-2">
+          <input type="checkbox" className="checkbox checkbox-sm" checked={preemptible} onChange={e => setPreemptible(e.target.checked)} />
+          Allow pre-emptible instances
+        </label>
+        <label className="label cursor-pointer gap-2">
+          <input type="checkbox" className="checkbox checkbox-sm" checked={quantum} onChange={e => setQuantum(e.target.checked)} />
+          Allow quantum computing instances
+        </label>
+      </div>
+      <label className="label">Off hours</label>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <label className="label cursor-pointer gap-2">
+          <input type="checkbox" className="checkbox checkbox-sm" checked={offHoursEnabled} onChange={e => setOffHoursEnabled(e.target.checked)} />
+          Automatically shut down jobs from
+        </label>
+        <input type="time" className="input input-bordered input-sm w-28" value={offHoursFrom} disabled={!offHoursEnabled} onChange={e => setOffHoursFrom(e.target.value)} />
+        <span>to</span>
+        <input type="time" className="input input-bordered input-sm w-28" value={offHoursTo} disabled={!offHoursEnabled} onChange={e => setOffHoursTo(e.target.value)} />
+      </div>
+      <div className="modal-action">
+        <form method="dialog">
+          <button className="btn">Close</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" className="modal-backdrop"><button>close</button></form>
+  </dialog>;
+}
 
 function UserEditDialog(props: { user: any, onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -344,6 +430,7 @@ function UserEditDialog(props: { user: any, onClose: () => void }) {
   const [groups, setGroups] = useState<string[]>(
     Array.isArray(props.user.group) ? props.user.group : [props.user.group],
   );
+  const [editingPolicy, setEditingPolicy] = useState<string | null>(null);
   useEffect(() => {
     dialogRef.current?.showModal();
   }, []);
@@ -381,6 +468,12 @@ function UserEditDialog(props: { user: any, onClose: () => void }) {
           </div>
         )}
       </div>
+      <label className="label">Applied policies</label>
+      <ul className="list-disc list-inside">
+        <li>{name} user policy <button className="btn btn-ghost btn-xs" onClick={() => setEditingPolicy(`${name} user policy`)}><Edit /></button></li>
+        {groups.map(g => <li key={g}>{g} group policy <button className="btn btn-ghost btn-xs" onClick={() => setEditingPolicy(`${g} group policy`)}><Edit /></button></li>)}
+      </ul>
+      {editingPolicy && <PolicyEditDialog policyName={editingPolicy} onClose={() => setEditingPolicy(null)} />}
       <div className="modal-action">
         <form method="dialog">
           <button className="btn">Close</button>
