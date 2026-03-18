@@ -14,6 +14,7 @@ import axios from "axios";
 import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
+import type { Array as YArray, Map as YMap } from "yjs";
 import Arrow from "~icons/tabler/arrow-wave-right-up.jsx";
 import Backspace from "~icons/tabler/backspace.jsx";
 import GridDots from "~icons/tabler/grid-dots.jsx";
@@ -28,6 +29,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
@@ -70,6 +72,7 @@ export default function Workspace(props: any) {
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
+  const cursorScreenPos = useRef<XYPosition | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
@@ -155,6 +158,7 @@ function LynxKiteFlow() {
   // Global keyboard shortcuts.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
       if (event.key === "/" && categoryHierarchy) {
@@ -165,12 +169,22 @@ function LynxKiteFlow() {
       } else if (event.key === "r") {
         event.preventDefault();
         executeWorkspace();
+      } else if (isPrimaryModifierPressed && !(nodeSearchSettings || isTypingInFormElement())) {
+        if (event.key.toLowerCase() === "c") {
+          copySelection(nodes, edges, crdt?.ws ?? {});
+        } else if (event.key.toLowerCase() === "v") {
+          pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
+        } else if (event.key.toLowerCase() === "x") {
+          cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
+        } else if (event.key.toLowerCase() === "a") {
+          event.preventDefault();
+          selectAll();
+        }
       }
     };
-    // TODO: Switch to keydown once https://github.com/xyflow/xyflow/pull/5055 is merged.
-    document.addEventListener("keyup", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keyup", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [categoryHierarchy, nodeSearchSettings]);
 
@@ -296,6 +310,9 @@ function LynxKiteFlow() {
     e.stopPropagation();
     e.preventDefault();
   }
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    cursorScreenPos.current = { x: e.clientX, y: e.clientY };
+  }
   async function onDrop(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
@@ -340,10 +357,53 @@ function LynxKiteFlow() {
       setMessage("Workspace execution failed.");
     }
   }
+  const selectAll = useCallback(() => {
+    if (crdt?.onFENodesChange) {
+      crdt.onFENodesChange(nodes.map((n) => ({ id: n.id, type: "select", selected: true })));
+    }
+    if (crdt?.onFEEdgesChange) {
+      crdt.onFEEdgesChange(edges.map((e) => ({ id: e.id, type: "select", selected: true })));
+    }
+  }, [crdt, nodes, edges]);
   function deleteSelection() {
-    const selectedNodes = nodes.filter((n) => n.selected);
-    const selectedEdges = edges.filter((e) => e.selected);
-    reactFlow.deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+    const selectedNodeIds = new Set(nodes.filter((n) => n.selected).map((n) => n.id));
+    const edgesToRemoveIds = new Set(
+      edges
+        .filter(
+          (edge) =>
+            edge.selected || selectedNodeIds.has(edge.source) || selectedNodeIds.has(edge.target),
+        )
+        .map((e) => e.id),
+    );
+    if (selectedNodeIds.size === 0 && edgesToRemoveIds.size === 0) {
+      return;
+    }
+    crdt?.applyChange((conn) => {
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
+      const nodeIndices: number[] = [];
+      let nodeIdx = 0;
+      for (const node of wnodes) {
+        if (selectedNodeIds.has((node as YMap<any>).get("id") as string)) {
+          nodeIndices.push(nodeIdx);
+        }
+        nodeIdx += 1;
+      }
+      for (const idx of nodeIndices.sort((a, b) => b - a)) {
+        wnodes.delete(idx);
+      }
+      const wedges = conn.ws.get("edges") as YArray<any>;
+      const edgeIndices: number[] = [];
+      let edgeIdx = 0;
+      for (const edge of wedges) {
+        if (edgesToRemoveIds.has((edge as YMap<any>).get("id") as string)) {
+          edgeIndices.push(edgeIdx);
+        }
+        edgeIdx += 1;
+      }
+      for (const idx of edgeIndices.sort((a, b) => b - a)) {
+        wedges.delete(idx);
+      }
+    });
   }
   function changeBox() {
     const [selectedNode] = nodes.filter((n) => n.selected);
@@ -380,7 +440,7 @@ function LynxKiteFlow() {
     groupNode.width = right - left;
     groupNode.height = bottom - top;
     crdt.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes");
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
       wnodes.unshift([nodeToYMap(groupNode)]);
       const selectedNodesById = new Map(selectedNodes.map((n) => [n.id, n]));
       for (const node of wnodes) {
@@ -405,7 +465,7 @@ function LynxKiteFlow() {
         .map((n) => [n.id, n]),
     );
     crdt.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes");
+      const wnodes = conn.ws.get("nodes") as YArray<any>;
       for (const node of wnodes) {
         const g = groups[node.get("parentId") as string];
         if (!g) continue;
@@ -533,6 +593,7 @@ function LynxKiteFlow() {
       <div
         className="reactflow-container"
         onDragOver={onDragOver}
+        onMouseMove={onMouseMove}
         onDrop={onDrop}
         ref={reactFlowContainer}
       >
