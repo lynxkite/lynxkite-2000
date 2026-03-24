@@ -290,6 +290,24 @@ class CRDTConnection {
         n.dragHandle = ".drag-handle";
       }
       const mergedNode = { ...oldNodes[n.id], ...n };
+
+      // Clean up parent-child properties that may be stale from the old ReactFlow node.
+      if (!("parentId" in n)) {
+        delete mergedNode.parentId;
+      }
+      if (!("extent" in n)) {
+        delete mergedNode.extent;
+      }
+
+      if (
+        n.width != null &&
+        n.height != null &&
+        (oldNodes[n.id]?.measured?.width !== n.width ||
+          oldNodes[n.id]?.measured?.height !== n.height)
+      ) {
+        mergedNode.measured = { width: n.width, height: n.height };
+      }
+
       newNodes.push(mergedNode);
       if (needsNodeInternalsUpdate(oldNodes[n.id], mergedNode)) {
         changedNodeIds.push(n.id);
