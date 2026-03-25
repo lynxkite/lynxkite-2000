@@ -29,7 +29,7 @@ function timeLeft(workspace: any) {
   }
   const now = Date.now();
   const eta = workspace.eta;
-  const diff = eta - now;
+  const diff = (eta - now) / workspace.resources.gpus;
 
   if (diff <= 0) {
     return "Done";
@@ -62,7 +62,7 @@ export default function ProgressPage() {
         name: "Drug discovery pipeline",
         user: "Derek Smith",
         start_time: Date.now() - 1000 * 60 * 60 * 2,
-        eta: Date.now() + 1000 * 60 * 34.3,
+        eta: Date.now() + 1000 * 60 * 134.3,
         boxes_done: 18,
         total_boxes: 24,
         current_box_progress: { name: "Query Boltz-2", input_size: 123123, done: 76434 },
@@ -84,7 +84,7 @@ export default function ProgressPage() {
         name: "Training docking model",
         user: "Dora Gera",
         start_time: Date.now() - 1000 * 60 * 10,
-        eta: Date.now() + 1000 * 60 * 122.5,
+        eta: Date.now() + 1000 * 60 * 1227.5,
         boxes_done: 1,
         total_boxes: 20,
         current_box_progress: { name: "Fine-tuning", input_size: 4536, done: 123 },
@@ -95,7 +95,7 @@ export default function ProgressPage() {
         name: "Side effects and toxicity screening",
         user: "Rajat Kumar Pal",
         start_time: Date.now() - 1000 * 60 * 60 * 6,
-        eta: Date.now() + 1000 * 60 * 60 * 1.77,
+        eta: Date.now() + 1000 * 60 * 60 * 8.77,
         boxes_done: 40,
         total_boxes: 50,
         current_box_progress: { name: "ADMET model", input_size: 342432, done: 276567 },
@@ -106,7 +106,7 @@ export default function ProgressPage() {
         name: "Molecular dynamics simulation",
         user: "Rajat Kumar Pal",
         start_time: Date.now() - 1000 * 60 * 60 * 24,
-        eta: Date.now() + 1000 * 60 * 60 * 12.1,
+        eta: Date.now() + 1000 * 60 * 60 * 120.1,
         boxes_done: 120,
         total_boxes: 200,
         current_box_progress: { name: "Run FEP+", input_size: 1323, done: 225 },
@@ -243,10 +243,10 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
             {showProgressDetails[ws.name]
               ? <div className="progress-details">
                 <span>{ws.current_box_progress.name} {ws.current_box_progress.input_size &&
-                  (`(${ws.current_box_progress.done + currentBoxDemoCounter}/${ws.current_box_progress.input_size})`)}</span>
+                  (`(${ws.current_box_progress.done + currentBoxDemoCounter * (ws.resources.gpus ?? 0)}/${ws.current_box_progress.input_size})`)}</span>
                 {ws.current_box_progress.input_size && <>
-                  <progress className={`progress progress-secondary w-50`}
-                    value={ws.current_box_progress.done + currentBoxDemoCounter} max={ws.current_box_progress.input_size} />
+                  <progress className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
+                    value={ws.current_box_progress.done + currentBoxDemoCounter * (ws.resources.gpus ?? 0)} max={ws.current_box_progress.input_size} />
                 </>}
               </div>
               :
@@ -259,6 +259,8 @@ function Workspaces(props: { workspaces: any[], setResources: (ws: any, resource
           </td>
           <td className="workspace-resources">{ws.resources.gpus}</td>
           <td className="table-actions">
+            <button className="btn btn-sm" title="Scale up" onClick={() => props.setResources(ws, { gpus: (ws.resources.gpus || 1) + 1 })}><ScaleUp /></button>
+            <button className="btn btn-sm" title="Scale down" onClick={() => props.setResources(ws, { gpus: Math.max(1, (ws.resources.gpus || 1) - 1) })}><ScaleDown /></button>
             {ws.resources.gpus ? (
               <button className="btn btn-sm" title="Pause" onClick={() => props.setResources(ws, {})}><Pause /></button>
             ) : (
