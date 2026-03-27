@@ -12,6 +12,7 @@ import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
 import { LynxKiteState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
+import { NodeProgress } from "./ProgressBar.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -239,6 +240,13 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         {!data.collapsed && (
           <>
             <div className="node-content">
+              {data.telemetry && (
+                <NodeProgress
+                  telemetry={data.telemetry}
+                  color={titleStyle.backgroundColor}
+                  status={data.status}
+                />
+              )}
               {data.message && data.message.length > 0 && (
                 <div className="node-message" title="Execution status">
                   {data.message}
