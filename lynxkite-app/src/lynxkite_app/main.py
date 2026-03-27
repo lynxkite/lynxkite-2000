@@ -8,19 +8,21 @@ import pathlib
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
-import tqdm
 from lynxkite_core import ops
+from lynxkite_core import opcontext
 from lynxkite_core import workspace
 from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
+from .tqdm_emulator import capture_tqdm, ProgressReporter
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
 enable_thread_proxies()
-ops.TERMINAL_EMULATOR = capture_output
-ops.TQDM_TQDM = tqdm.tqdm
+opcontext.TERMINAL_EMULATOR = capture_output
+opcontext.PROGRESS_REPORTER = ProgressReporter
+opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 

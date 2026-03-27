@@ -14,7 +14,7 @@ Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["matplotlib", "PIL", "griffe", "pycrdt", "gradio", "starlette"]
-DEP003 = ["matplotlib", "PIL", "griffe", "pycrdt", "gradio", "starlette"]
+DEP003 = ["matplotlib", "PIL", "griffe", "pycrdt", "gradio", "starlette", "tqdm"]
 
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]
