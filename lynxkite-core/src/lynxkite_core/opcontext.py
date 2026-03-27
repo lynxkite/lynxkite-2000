@@ -23,7 +23,6 @@ class FunctionTerminalEmulator(typing.Protocol):
     ) -> typing.ContextManager: ...
 
 
-# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
 @contextlib.contextmanager
 def dummy_terminal_emulator(
     op_ctx: "OpContext",
@@ -39,23 +38,59 @@ def dummy_terminal_emulator(
     yield
 
 
-class FunctionTqdm(typing.Protocol):
-    def __call__(
-        self,
-        op_ctx: "OpContext",
-        iterable=None,
-        *args,
-        **kwargs,
-    ) -> typing.Any: ...
+ProgressReporterFactory: typing.TypeAlias = typing.Callable[..., typing.Any]
+"""A callable `(op_ctx, iterable=None, *args, **kwargs) -> progress bar`.
+Can be a class (like `ProgressReporter`) or a function.
+See `lynxkite_app.tqdm_emulator.ProgressReporter` for an example."""
+
+
+class DummyTqdm:
+    def __init__(self, _op_ctx: "OpContext", iterable=None, *args, **kwargs):
+        self.iterable = iterable
+
+    def __iter__(self):
+        if self.iterable is not None:
+            yield from self.iterable
+
+    def update(self, n=1):
+        pass
+
+    def set_postfix(self, *args, **kwargs):
+        pass
+
+    def set_description(self, *args, **kwargs):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def close(self):
+        pass
 
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
-PROGRESS_REPORTER: FunctionTqdm | None = None
+PROGRESS_REPORTER: ProgressReporterFactory = DummyTqdm
 TQDM_CAPTURER: typing.Optional[typing.Callable[["OpContext"], typing.Callable[..., typing.Any]]] = (
     None
 )
+# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
 TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
+
+try:
+    import tqdm
+
+    def op_ctx_tqdm(_op_ctx: "OpContext", iterable=None, *args, **kwargs):
+        return tqdm.tqdm(iterable, *args, **kwargs)
+
+    # If tqdm is available, use it as the default progress reporter. Otherwise, developers can set
+    # PROGRESS_REPORTER to a custom implementation.
+    PROGRESS_REPORTER = op_ctx_tqdm
+except ImportError:
+    pass
 
 
 @dataclass
@@ -172,42 +207,7 @@ class OpContext:
                 pbar.update(10)
         ```
         """
-        if PROGRESS_REPORTER is not None:
-            return PROGRESS_REPORTER(self, iterable, *args, **kwargs)
-
-        try:
-            import tqdm
-
-            return tqdm.tqdm(iterable, *args, **kwargs)
-        except ImportError:
-
-            class DummyTqdm:
-                def __init__(self, iterable=None, *args, **kwargs):
-                    self.iterable = iterable
-
-                def __iter__(self):
-                    if self.iterable is not None:
-                        yield from self.iterable
-
-                def update(self, n=1):
-                    pass
-
-                def set_postfix(self, *args, **kwargs):
-                    pass
-
-                def set_description(self, *args, **kwargs):
-                    pass
-
-                def __enter__(self):
-                    return self
-
-                def __exit__(self, exc_type, exc_val, exc_tb):
-                    pass
-
-                def close(self):
-                    pass
-
-            return DummyTqdm(iterable, *args, **kwargs)
+        return PROGRESS_REPORTER(self, iterable, *args, **kwargs)
 
     def tqdm_ctx(self):
         """A wrapper that sends every tqdm progress bar to the frontend inside the captured context.

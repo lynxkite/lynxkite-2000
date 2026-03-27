@@ -137,16 +137,3 @@ class ProgressReporter:
 
     def __getattr__(self, name):
         return getattr(self.pbar, name)
-
-
-def progress_reporter(op_ctx: "OpContext", iterable=None, *args, **kwargs):
-    """
-    Creates a wrapper for a single tqdm progress bar.
-
-    Usage:
-    ```
-    for i in self.tqdm(iterable): ...
-    with self.tqdm() as pbar: ...
-    ```
-    """
-    return ProgressReporter(op_ctx, iterable, *args, **kwargs)

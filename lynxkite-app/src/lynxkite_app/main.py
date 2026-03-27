@@ -14,14 +14,14 @@ from lynxkite_core import workspace
 from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
-from .tqdm_emulator import capture_tqdm, progress_reporter
+from .tqdm_emulator import capture_tqdm, ProgressReporter
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
 enable_thread_proxies()
 opcontext.TERMINAL_EMULATOR = capture_output
-opcontext.PROGRESS_REPORTER = progress_reporter
+opcontext.PROGRESS_REPORTER = ProgressReporter
 opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
