@@ -11,6 +11,7 @@ from torch_geometric.nn import GATConv
 import os.path
 import pandas as pd
 from tqdm import tqdm
+import click
 
 if __name__ == "__main__":
     import joblib
@@ -493,25 +494,36 @@ def explain_prediction(drug: str, disease: str, prob: float, gene_list: list[str
     return response.choices[0].message.content
 
 
-EPOCHS = 0
+EPOCHS = 3
 LABEL_MAP = {"good": 1.0, "bad": 0.0}
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-async def main():
-    b = await load()
-    meta = b.dfs["meta"].head(100)
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+@click.option("--epochs", default=EPOCHS, help="Number of training epochs.")
+@click.option("--samples", default=100, help="Number of samples to train on.")
+@click.option("--output", default="gat_model.pt", help="Path to save the model.")
+def train(epochs, samples, output):
+    """Train the GAT model and save it."""
+    import asyncio
+
+    b = asyncio.run(load())
+    meta = b.dfs["meta"].head(samples)
     print(meta.head())
     print(f"Using device: {DEVICE}")
 
-    # Determine input feature dimension from first sample
     in_channels = gene_features_input(b, 0).shape[1]
     model = GATModel(in_channels=in_channels).to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     loss_fn = torch.nn.BCEWithLogitsLoss()
     scaler = torch.amp.GradScaler("cuda")
 
-    for epoch in range(EPOCHS):
+    for epoch in range(epochs):
         model.train()
         epoch_loss = 0.0
         correct = 0
@@ -540,12 +552,33 @@ async def main():
 
         avg_loss = epoch_loss / max(total, 1)
         accuracy = correct / max(total, 1)
-        print(f"Epoch {epoch + 1}/{EPOCHS} - Loss: {avg_loss:.4f} - Accuracy: {accuracy:.4f}")
+        print(f"Epoch {epoch + 1}/{epochs} - Loss: {avg_loss:.4f} - Accuracy: {accuracy:.4f}")
 
-    save_model(model)
+    save_model(model, output)
+
+
+@cli.command()
+@click.argument("drug")
+@click.argument("disease")
+@click.option("--model-path", default="gat_model.pt", help="Path to the saved model.")
+@click.option("--top-n", default=3, help="Number of top genes to include in the explanation.")
+def explain(drug, disease, model_path, top_n):
+    """Load the model, run inference with attribution, and print an AI explanation."""
+    import asyncio
+
+    b = asyncio.run(load())
+    model = load_model(model_path)
+    prob, attr_df = predict_with_attribution(model, b, drug, disease)
+    genes = top_genes(attr_df, n=top_n)
+
+    effective = "effective" if prob >= 0.5 else "not effective"
+    print(f"Prediction:\n{drug} is {effective} against {disease} (p={prob:.3f})")
+    print(f"Top {top_n} genes: {', '.join(genes)}")
+
+    explanation = explain_prediction(drug, disease, prob, genes)
+    print("\nExplanation:")
+    print(explanation)
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(main())
+    cli()
