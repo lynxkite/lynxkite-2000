@@ -1,3 +1,13 @@
+"""
+An experimental UI for vibe coding with LynxKite.
+Start it up even if another coding agent is used, so that the changes will be automatically
+synced to the workspace.
+
+Run in the repo root with:
+
+python -m lynxkite_vibe.main
+"""
+
 import gradio as gr
 import openai
 import os
