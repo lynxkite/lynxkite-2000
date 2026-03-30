@@ -468,7 +468,32 @@ def predict_with_attribution(model, b: core.Bundle, drug: str, disease: str):
     return prob, df
 
 
-EPOCHS = 3
+def top_genes(attribution_df: pd.DataFrame, n: int = 10) -> list[str]:
+    """Return the names of the top N most important genes from an attribution DataFrame."""
+    genes = attribution_df[~attribution_df["node"].str.contains(":")]
+    return genes.head(n)["node"].tolist()
+
+
+def explain_prediction(drug: str, disease: str, prob: float, gene_list: list[str]) -> str:
+    """Ask an OpenAI model to explain why the GNN made its prediction based on top genes."""
+    import openai
+
+    effective = "effective" if prob >= 0.5 else "not effective"
+    genes_str = ", ".join(gene_list)
+    prompt = (
+        f"A neural network predicts that {drug} is {effective} against {disease} "
+        f"due to genes {genes_str}. "
+        f"What is the likely underlying biological explanation?"
+    )
+    client = openai.OpenAI()
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.choices[0].message.content
+
+
+EPOCHS = 0
 LABEL_MAP = {"good": 1.0, "bad": 0.0}
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
