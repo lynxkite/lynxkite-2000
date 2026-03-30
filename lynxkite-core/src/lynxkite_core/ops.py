@@ -198,7 +198,11 @@ class OpContext:
         self.set_message(message)
 
     def stdout(
-        self, columns: int = 80, lines: int = 10, history: int = 25, passthrough: bool = True
+        self,
+        columns: int = 80,
+        lines: int = 10,
+        history: int = 25,
+        passthrough: bool = True,
     ) -> typing.ContextManager:
         """A context manager that captures stdout/stderr and sends it to the frontend.
         Example usage:

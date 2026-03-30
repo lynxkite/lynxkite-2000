@@ -208,6 +208,12 @@ class Bundle:
         """Converts the bundle to a format suitable for display as tables in the frontend."""
         return BundleTableView.from_bundle(self, limit=limit)
 
+    def merge(self, other: "Bundle"):
+        """Merges another bundle into this one. Modifies this bundle in-place."""
+        self.dfs.update(other.dfs)
+        self.relations.extend(other.relations)
+        self.other.update(other.other)
+
 
 @dataclasses.dataclass
 class SingleTableView:
