@@ -4,7 +4,9 @@ import {
   Background,
   BackgroundVariant,
   type Connection,
+  type Edge,
   MarkerType,
+  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -58,6 +60,43 @@ const PlayIcon = memo(Play);
 const PauseIcon = memo(Pause);
 const CloseIcon = memo(Close);
 const ChangeTypeIcon = memo(Transfer);
+const MIN_AUTO_CONNECT_DISTANCE = 220;
+
+function allowsMultipleConnections(inputType: unknown): boolean {
+  const LIST_TYPE_RE = /(^|[^a-z])list\b|typing\.list\[|list\[/i;
+  if (!inputType) return false;
+  if (typeof inputType === "string") {
+    return LIST_TYPE_RE.test(inputType);
+  }
+  if (typeof inputType !== "object") {
+    return false;
+  }
+  const t = inputType as Record<string, unknown>;
+  if (typeof t.type === "string") {
+    const lower = t.type.toLowerCase();
+    if (lower === "array") return true;
+    if (LIST_TYPE_RE.test(t.type)) return true;
+  }
+  if (typeof t.origin === "string" && t.origin.toLowerCase() === "list") return true;
+  if ("items" in t) return true;
+  for (const key of ["anyOf", "oneOf", "allOf"] as const) {
+    const variants = t[key];
+    if (!Array.isArray(variants)) continue;
+    if (variants.some((v) => allowsMultipleConnections(v))) {
+      return true;
+    }
+  }
+  // Last-resort heuristic for serialized typing metadata variants.
+  try {
+    const serialized = JSON.stringify(t).toLowerCase();
+    if (serialized.includes('"type":"array"')) return true;
+    if (serialized.includes('"origin":"list"')) return true;
+    if (LIST_TYPE_RE.test(serialized)) return true;
+  } catch {
+    // Ignore non-serializable metadata shapes.
+  }
+  return false;
+}
 
 export default function Workspace(props: any) {
   return (
@@ -76,6 +115,7 @@ function LynxKiteFlow() {
   );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
+  const [previewEdge, setPreviewEdge] = useState<Edge | null>(null);
   const shortPath = path!
     .split("/")
     .pop()!
@@ -83,6 +123,10 @@ function LynxKiteFlow() {
   const crdt = useCRDTWorkspace(path);
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
+  const renderedEdges = useMemo(
+    () => (previewEdge ? [...edges.filter((e) => e.id !== previewEdge.id), previewEdge] : edges),
+    [edges, previewEdge],
+  );
 
   // Track Shift key state
   useEffect(() => {
@@ -290,6 +334,227 @@ function LynxKiteFlow() {
       crdt?.addEdge(edge);
     },
     [crdt],
+  );
+
+  function getAbsPos(node: Node) {
+    const internal = reactFlow.getInternalNode(node.id);
+    return internal?.internals.positionAbsolute ?? node.position;
+  }
+
+  function getNodeHandles(node: Node) {
+    const nodeMetaInputs = (node.data as any)?.meta?.inputs ?? [];
+    const nodeData = (node.data as any) ?? {};
+    const opId = nodeData.op_id;
+    const opMeta = nodeData.meta ?? {};
+    const env = crdt?.ws?.env;
+    const envCatalog = (env && catalog.data?.[env]) || {};
+    const catalogKeyCandidates = [opId, opMeta.id, opMeta.name, nodeData.title].filter(
+      (k): k is string => typeof k === "string" && k.length > 0,
+    );
+    const matchedCatalogOp = catalogKeyCandidates
+      .map((k) => (envCatalog as any)[k])
+      .find((entry) => entry && Array.isArray(entry.inputs));
+    const catalogInputs = matchedCatalogOp?.inputs || [];
+    const catalogInputsByName = new Map((catalogInputs as any[]).map((h: any) => [h.name, h]));
+    const inputs = nodeMetaInputs.map((h: any) => {
+      const catalogInput = catalogInputsByName.get(h.name);
+      const resolvedType = h.type ?? catalogInput?.type;
+      return {
+        ...h,
+        type: "target",
+        acceptsMultipleConnections: allowsMultipleConnections(resolvedType),
+      };
+    });
+    const outputs = ((node.data as any)?.meta?.outputs ?? []).map((h: any) => ({
+      ...h,
+      type: "source",
+    }));
+    const handles = [...inputs, ...outputs] as Array<{
+      position: "top" | "bottom" | "left" | "right";
+      name: string;
+      type: "source" | "target";
+      index?: number;
+      offsetPercentage?: number;
+      acceptsMultipleConnections?: boolean;
+    }>;
+    const counts = { top: 0, bottom: 0, left: 0, right: 0 };
+    for (const h of handles) {
+      h.index = counts[h.position];
+      counts[h.position] += 1;
+    }
+    for (const h of handles) {
+      h.offsetPercentage = (100 * (h.index! + 1)) / (counts[h.position] + 1);
+    }
+    // Keep unknown/renamed handles available for auto-connect if they already exist on edges.
+    for (const e of edges) {
+      if (
+        e.target === node.id &&
+        !handles.find((h) => h.type === "target" && h.name === e.targetHandle)
+      ) {
+        handles.push({
+          position: "left",
+          name: e.targetHandle!,
+          type: "target",
+          offsetPercentage: 50,
+          acceptsMultipleConnections: false,
+        });
+      }
+      if (
+        e.source === node.id &&
+        !handles.find((h) => h.type === "source" && h.name === e.sourceHandle)
+      ) {
+        handles.push({
+          position: "right",
+          name: e.sourceHandle!,
+          type: "source",
+          offsetPercentage: 50,
+        });
+      }
+    }
+    return handles;
+  }
+
+  function getHandlePosition(node: Node, handle: { position: string; offsetPercentage?: number }) {
+    const p = getAbsPos(node);
+    const width = node.width ?? 200;
+    const height = node.height ?? 200;
+    const offset = (handle.offsetPercentage ?? 50) / 100;
+    if (handle.position === "left") return { x: p.x, y: p.y + height * offset };
+    if (handle.position === "right") return { x: p.x + width, y: p.y + height * offset };
+    if (handle.position === "top") return { x: p.x + width * offset, y: p.y };
+    return { x: p.x + width * offset, y: p.y + height };
+  }
+
+  function findClosestHandlePair(sourceNode: Node, targetNode: Node) {
+    const sourceHandles = getNodeHandles(sourceNode).filter((h) => h.type === "source");
+    const targetHandles = getNodeHandles(targetNode).filter((h) => h.type === "target");
+    if (!sourceHandles.length || !targetHandles.length) {
+      return null;
+    }
+    let bestPair: { sourceHandle: string; targetHandle: string; distance: number } | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    for (const sh of sourceHandles) {
+      const sp = getHandlePosition(sourceNode, sh);
+      for (const th of targetHandles) {
+        const isOccupied = edges.some(
+          (e) => e.target === targetNode.id && e.targetHandle === th.name,
+        );
+        if (isOccupied && !th.acceptsMultipleConnections) {
+          continue;
+        }
+        const tp = getHandlePosition(targetNode, th);
+        const distance = Math.hypot(sp.x - tp.x, sp.y - tp.y);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestPair = { sourceHandle: sh.name, targetHandle: th.name, distance };
+        }
+      }
+    }
+    return bestPair;
+  }
+
+  function edgeExists(
+    source: string,
+    sourceHandle: string,
+    target: string,
+    targetHandle: string,
+    edgeList: Edge[] = edges,
+  ) {
+    return edgeList.some(
+      (e) =>
+        e.source === source &&
+        e.sourceHandle === sourceHandle &&
+        e.target === target &&
+        e.targetHandle === targetHandle,
+    );
+  }
+
+  const getClosestEdge = useCallback(
+    (draggedNode: Node) => {
+      const draggedPos = getAbsPos(draggedNode);
+      if (!draggedPos || draggedNode.type === "node_group") {
+        return null;
+      }
+
+      let bestEdge: Edge | null = null;
+      let bestDistance = Number.POSITIVE_INFINITY;
+      for (const n of reactFlow.getNodes()) {
+        if (n.id === draggedNode.id || n.type === "node_group") {
+          continue;
+        }
+        const pos = getAbsPos(n);
+        const closeNodeIsSource = pos.x < draggedPos.x;
+        const sourceNode = closeNodeIsSource ? n : draggedNode;
+        const targetNode = closeNodeIsSource ? draggedNode : n;
+        const bestPair = findClosestHandlePair(sourceNode, targetNode);
+        if (!bestPair) continue;
+        if (bestPair.distance >= MIN_AUTO_CONNECT_DISTANCE || bestPair.distance >= bestDistance) {
+          continue;
+        }
+        bestDistance = bestPair.distance;
+        bestEdge = {
+          id: `${sourceNode.id} ${bestPair.sourceHandle} ${targetNode.id} ${bestPair.targetHandle}`,
+          source: sourceNode.id,
+          sourceHandle: bestPair.sourceHandle,
+          target: targetNode.id,
+          targetHandle: bestPair.targetHandle,
+        };
+      }
+
+      return bestEdge;
+    },
+    [reactFlow, edges],
+  );
+
+  const onNodeDrag = useCallback(
+    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
+      const closeEdge = getClosestEdge(draggedNode);
+      if (
+        !closeEdge ||
+        edgeExists(
+          closeEdge.source,
+          closeEdge.sourceHandle!,
+          closeEdge.target,
+          closeEdge.targetHandle!,
+        )
+      ) {
+        setPreviewEdge(null);
+        return;
+      }
+      setPreviewEdge({
+        ...closeEdge,
+        id: `preview:${closeEdge.id}`,
+        className: "temp-preview-edge",
+        style: {
+          strokeDasharray: "8 6",
+          strokeLinecap: "round",
+        },
+        selectable: false,
+        deletable: false,
+        focusable: false,
+      });
+    },
+    [getClosestEdge, edges],
+  );
+
+  const onNodeDragStop = useCallback(
+    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
+      const closeEdge = getClosestEdge(draggedNode);
+      setPreviewEdge(null);
+      if (!closeEdge) return;
+      if (
+        edgeExists(
+          closeEdge.source,
+          closeEdge.sourceHandle!,
+          closeEdge.target,
+          closeEdge.targetHandle!,
+        )
+      ) {
+        return;
+      }
+      crdt?.addEdge(closeEdge);
+    },
+    [getClosestEdge, crdt, edges],
   );
   const parentDir = path!.split("/").slice(0, -1).join("/");
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -543,7 +808,7 @@ function LynxKiteFlow() {
           <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
             <ReactFlow
               nodes={nodes}
-              edges={edges}
+              edges={renderedEdges}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
               fitView
@@ -558,6 +823,8 @@ function LynxKiteFlow() {
               onEdgesChange={crdt?.onFEEdgesChange}
               onPaneClick={toggleNodeSearch}
               onConnect={onConnect}
+              onNodeDrag={onNodeDrag}
+              onNodeDragStop={onNodeDragStop}
               proOptions={{ hideAttribution: true }}
               maxZoom={10}
               minZoom={0.1}

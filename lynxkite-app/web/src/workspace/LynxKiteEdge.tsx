@@ -24,6 +24,7 @@ export default function LynxKiteEdge(props: any) {
       style={{
         strokeWidth: 2,
         stroke: "#888",
+        ...props.style,
       }}
     />
   );
