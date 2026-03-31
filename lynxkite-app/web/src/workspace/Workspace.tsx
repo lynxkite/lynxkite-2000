@@ -527,6 +527,7 @@ function LynxKiteFlow() {
                   className="btn btn-link"
                   disabled={selected.length < 2}
                   onClick={groupSelection}
+                  name="groupBtn"
                 >
                   <GroupIcon />
                 </button>
@@ -536,6 +537,7 @@ function LynxKiteFlow() {
                   className="btn btn-link"
                   disabled={!isAnyGroupSelected}
                   onClick={ungroupSelection}
+                  name="ungroupBtn"
                 >
                   <UngroupIcon />
                 </button>

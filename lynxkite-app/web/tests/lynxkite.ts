@@ -42,6 +42,14 @@ export class Workspace {
     await this.page.locator('select[name="workspace-env"]').selectOption(env);
   }
 
+  async groupSelection() {
+    await this.page.locator('button[name="groupBtn"]').click();
+  }
+
+  async ungroupSelection() {
+    await this.page.locator('button[name="ungroupBtn"]').click();
+  }
+
   async expectCurrentWorkspaceIs(name) {
     await expect(this.page.locator(".ws-name")).toHaveText(name);
   }
