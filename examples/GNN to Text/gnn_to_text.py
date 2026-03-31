@@ -1,5 +1,6 @@
 """Custom operations for the "GNN to Text" example."""
 
+import enum
 import itertools
 from lynxkite_core import ops
 from lynxkite_graph_analytics import core
@@ -21,10 +22,9 @@ if __name__ == "__main__":
     ops.CACHE_WRAPPER = mem.cache
 
 
-pdx_op = ops.op_registration("LynxKite Graph Analytics", "PDX", icon="microscope")
+op = ops.op_registration("LynxKite Graph Analytics", "Attribution", icon="microscope")
 
 
-@pdx_op("Load disease-gene data", slow=True, color="green")
 def load_disease_gene_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -60,7 +60,6 @@ def load_disease_gene_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@pdx_op("Load drug-gene data", slow=True, color="green")
 def load_drug_gene_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -71,7 +70,6 @@ def load_drug_gene_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@pdx_op("Load RNA data", slow=True, color="green")
 def load_rna_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -80,7 +78,6 @@ def load_rna_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@pdx_op("Load ESM2 data", slow=True, color="green")
 def load_esm2_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -93,7 +90,6 @@ def load_esm2_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@pdx_op("Load PCT data", slow=True, color="green")
 def load_pct_data(*, root_path: str) -> core.Bundle:
     b = core.Bundle()
     b.other["root_path"] = root_path
@@ -109,7 +105,6 @@ def load_pct_data(*, root_path: str) -> core.Bundle:
     return b
 
 
-@pdx_op("Index genes", slow=True)
 def index_genes(b: core.Bundle) -> core.Bundle:
     """Enumerates all the genes we have data for, and gives them sequential numbers."""
     root_path = b.other["root_path"]
@@ -129,14 +124,6 @@ def index_genes(b: core.Bundle) -> core.Bundle:
     return b
 
 
-@ops.op("LynxKite Graph Analytics", "View other", view="table_view", color="blue")
-def view_other(b: core.Bundle):
-    b = b.copy()
-    b.dfs = {"other": pd.DataFrame(list(b.other.items()), columns=["key", "value"])}
-    return b.to_dict()
-
-
-@pdx_op("Classify mRECIST", slow=True)
 def classify_mrecist(b: core.Bundle) -> core.Bundle:
     num_timestamps_in_past = 10
     clin_df = b.dfs["clin_df"]
@@ -176,7 +163,6 @@ def classify_mrecist(b: core.Bundle) -> core.Bundle:
     return b
 
 
-@pdx_op("Filter to samples with RNA data", slow=True)
 def filter_to_samples_with_rna_data(b: core.Bundle) -> core.Bundle:
     b = b.copy()
     valid_pdx = set(b.dfs["rna_df"].columns)
@@ -290,21 +276,21 @@ def gene_features_input(
 
 
 @ops.cached
-async def load():
-    root_path = "uploads/ode-gnn"
-    b = await load_disease_gene_data(root_path=root_path)
-    b.merge(await load_drug_gene_data(root_path=root_path))
-    b.merge(await load_rna_data(root_path=root_path))
-    b.merge(await load_esm2_data(root_path=root_path))
-    pct = await load_pct_data(root_path=root_path)
-    pct = await classify_mrecist(pct)
+def load(root_path):
+    b = load_disease_gene_data(root_path=root_path)
+    b.merge(load_drug_gene_data(root_path=root_path))
+    b.merge(load_rna_data(root_path=root_path))
+    b.merge(load_esm2_data(root_path=root_path))
+    pct = load_pct_data(root_path=root_path)
+    pct = classify_mrecist(pct)
     b.merge(pct)
-    b = await index_genes(b)
-    b = await filter_to_samples_with_rna_data(b)
-    b = await classify_mrecist(b)
+    b = index_genes(b)
+    b = filter_to_samples_with_rna_data(b)
+    b = classify_mrecist(b)
     return b
 
 
+@ops.cached
 def precompute_tissue_graphs(b: core.Bundle):
     """Precompute PPI edges, disease gene indices, and ESM2 features for each tumor type."""
     gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
@@ -607,6 +593,264 @@ def top_genes(attribution_df: pd.DataFrame, n: int = 10) -> list[str]:
     return genes.head(n)["node"].tolist()
 
 
+@op("Load GAT model", icon="file-filled", color="green")
+async def load_model_op(*, model_path, root_path) -> core.Bundle:
+    """Load the model from a checkpoint."""
+    b = load(root_path)
+    b.other["model"], b.other["drug_to_id"], b.other["disease_to_id"] = load_model(model_path)
+    b.other["model"] = model_path
+    return b
+
+
+class TumorTypes(enum.StrEnum):
+    BRCA = "BRCA"
+    CM = "CM"
+    CRC = "CRC"
+    GC = "GC"
+    NSCLC = "NSCLC"
+    PDAC = "PDAC"
+
+
+class Drugs(enum.StrEnum):
+    _5FU = "5FU"
+    BGJ398 = "BGJ398"
+    BKM120 = "BKM120"
+    BKM120_LDE225 = "BKM120 + LDE225"
+    BKM120_LJC049 = "BKM120 + LJC049"
+    BKM120_binimetinib = "BKM120 + binimetinib"
+    BKM120_encorafenib = "BKM120 + encorafenib"
+    BYL719 = "BYL719"
+    BYL719_HSP990 = "BYL719 + HSP990"
+    BYL719_LEE011 = "BYL719 + LEE011"
+    BYL719_LGH447 = "BYL719 + LGH447"
+    BYL719_LJM716 = "BYL719 + LJM716"
+    BYL719_binimetinib = "BYL719 + binimetinib"
+    BYL719_cetuximab = "BYL719 + cetuximab"
+    BYL719_cetuximab_encorafenib = "BYL719 + cetuximab + encorafenib"
+    BYL719_encorafenib = "BYL719 + encorafenib"
+    CGM097 = "CGM097"
+    CKX620 = "CKX620"
+    CLR457 = "CLR457"
+    HDM201 = "HDM201"
+    HSP990 = "HSP990"
+    INC280 = "INC280"
+    INC280_trastuzumab = "INC280 + trastuzumab"
+    INC424 = "INC424"
+    INC424_binimetinib = "INC424 + binimetinib"
+    LCL161_paclitaxel = "LCL161 + paclitaxel"
+    LDE225 = "LDE225"
+    LDK378 = "LDK378"
+    LEE011 = "LEE011"
+    LEE011_binimetinib = "LEE011 + binimetinib"
+    LEE011_encorafenib = "LEE011 + encorafenib"
+    LEE011_everolimus = "LEE011 + everolimus"
+    LFA102 = "LFA102"
+    LFW527_binimetinib = "LFW527 + binimetinib"
+    LFW527_everolimus = "LFW527 + everolimus"
+    LGH447 = "LGH447"
+    LGW813 = "LGW813"
+    LJC049 = "LJC049"
+    LJM716 = "LJM716"
+    LJM716_trastuzumab = "LJM716 + trastuzumab"
+    LKA136 = "LKA136"
+    LLM871 = "LLM871"
+    TAS266 = "TAS266"
+    WNT974 = "WNT974"
+    abraxane = "abraxane"
+    binimetinib = "binimetinib"
+    binimetinib_3_5mpk = "binimetinib-3.5mpk"
+    cetuximab = "cetuximab"
+    cetuximab_encorafenib = "cetuximab + encorafenib"
+    dacarbazine = "dacarbazine"
+    encorafenib = "encorafenib"
+    encorafenib_binimetinib = "encorafenib + binimetinib"
+    erlotinib = "erlotinib"
+    everolimus = "everolimus"
+    figitumumab = "figitumumab"
+    figitumumab_binimetinib = "figitumumab + binimetinib"
+    gemcitabine_50mpk = "gemcitabine-50mpk"
+    paclitaxel = "paclitaxel"
+    tamoxifen = "tamoxifen"
+    trametinib = "trametinib"
+    trastuzumab = "trastuzumab"
+    untreated = "untreated"
+
+
+@op("Predict with attribution", icon="sparkles", color="orange")
+async def predict_with_attribution_op(
+    b: core.Bundle, *, drug: Drugs, disease: TumorTypes
+) -> core.Bundle:
+    """Load the model, run inference with attribution, and print an AI explanation."""
+    esm2_mat, tissue_cache, _, _ = precompute_tissue_graphs(b)
+    model, drug_to_id, disease_to_id = (
+        b.other["model"],
+        b.other["drug_to_id"],
+        b.other["disease_to_id"],
+    )
+    model = load_model(model)[0]
+    prob, attr_df = predict_with_attribution(
+        model, b, drug, disease, esm2_mat, tissue_cache, drug_to_id, disease_to_id
+    )
+    b = b.copy()
+    b.dfs["attribution"] = attr_df
+    b.other["prediction"] = {"prob": prob, "drug": drug, "disease": disease}
+    return b
+
+
+@op("Attribution to text", icon="message-circle-filled", color="blue", outputs=[])
+def attribution_to_text(self, b: core.Bundle, *, top_n=3):
+    """Load the model, run inference with attribution, and print an AI explanation."""
+    genes = top_genes(b.dfs["attribution"], n=top_n)
+    prediction = b.other["prediction"]
+    prob = prediction["prob"]
+    drug = str(prediction["drug"])
+    disease = str(prediction["disease"])
+
+    effective = "effective" if prob >= 0.5 else "not effective"
+    self.print(f"Prediction:\n{drug} is {effective} against {disease} (p={prob:.3f})")
+    self.print(f"Top {top_n} genes: {', '.join(genes)}")
+
+    explanation = explain_prediction(drug, disease, prob, genes)
+    self.print("\nExplanation:")
+    self.print(explanation)
+
+
+@op("Visualize attribution", view="visualization", icon="eye", color="blue")
+def visualize_attribution(
+    b: core.Bundle,
+    *,
+    top_n: int = 10,
+    neighbors_per_node: int = 10,
+) -> dict:
+    """Create an ECharts configuration for visualizing attribution on a subgraph.
+
+    Args:
+        b: Bundle containing gene_to_idx and PPI data.
+        top_n: Number of top attention nodes to include.
+        neighbors_per_node: Number of top neighbors to include for each top node.
+
+    Returns:
+        ECharts configuration dict for graph visualization.
+    """
+    import matplotlib.cm
+    import networkx as nx
+
+    # Get top nodes by attention
+    attribution_df = b.dfs["attribution"]
+    top_nodes = attribution_df.head(top_n)["node"].tolist()
+    attention_scores = dict(zip(attribution_df["node"], attribution_df["attention_score"]))
+
+    # Load PPI edges for this tissue
+    root_path = b.other["root_path"]
+    disease = str(b.other["prediction"]["disease"])
+    ppi_df = load_ppi_for_tissue(root_path, disease)
+    gene_to_idx = set(b.dfs["gene_to_idx"].index)
+
+    # Build adjacency from PPI
+    adjacency = {}
+    for _, row in ppi_df.iterrows():
+        g1, g2 = row["gene1"], row["gene2"]
+        if g1 in gene_to_idx and g2 in gene_to_idx:
+            adjacency.setdefault(g1, []).append(g2)
+            adjacency.setdefault(g2, []).append(g1)
+
+    # Collect subgraph nodes: top nodes + their top neighbors
+    subgraph_nodes = set(top_nodes)
+    for node in top_nodes:
+        if node in adjacency:
+            # Sort neighbors by attention score, take top ones
+            neighbors = adjacency[node]
+            neighbors_sorted = sorted(
+                neighbors, key=lambda n: attention_scores.get(n, 0), reverse=True
+            )
+            subgraph_nodes.update(neighbors_sorted[:neighbors_per_node])
+
+    # Build edges for subgraph
+    edges = []
+    seen_edges = set()
+    for node in subgraph_nodes:
+        if node in adjacency:
+            for neighbor in adjacency[node]:
+                if neighbor in subgraph_nodes:
+                    edge_key = tuple(sorted([node, neighbor]))
+                    if edge_key not in seen_edges:
+                        seen_edges.add(edge_key)
+                        edges.append((node, neighbor))
+
+    # Create NetworkX graph for layout
+    G = nx.Graph()
+    G.add_nodes_from(subgraph_nodes)
+    G.add_edges_from(edges)
+    pos = nx.spring_layout(G, iterations=50, seed=42)
+
+    # Color mapping based on attention scores
+    scores = [attention_scores.get(n, 0) for n in subgraph_nodes]
+    min_score, max_score = min(scores), max(scores)
+    score_range = max_score - min_score if max_score > min_score else 1
+
+    cmap = matplotlib.cm.get_cmap("viridis")
+
+    def score_to_color(score):
+        normalized = (score - min_score) / score_range
+        r, g, b, _ = cmap(normalized)
+        return "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+
+    # Build ECharts config
+    node_list = list(subgraph_nodes)
+
+    data = []
+    for node in node_list:
+        score = attention_scores.get(node, 0)
+        x, y = pos[node]
+        is_top_node = node in top_nodes
+        data.append(
+            {
+                "id": node,
+                "name": node,
+                "x": float(x * 100),
+                "y": float(y * 100),
+                "symbolSize": 20 if is_top_node else 10,
+                "itemStyle": {"color": score_to_color(score)},
+                "label": {"show": is_top_node},
+                "value": f"{score:.4f}",
+            }
+        )
+
+    links = [{"source": e[0], "target": e[1]} for e in edges]
+
+    return {
+        "animationDuration": 500,
+        "animationEasingUpdate": "quinticInOut",
+        "tooltip": {"show": True, "formatter": "{b}: {c}"},
+        "visualMap": {
+            "min": min_score,
+            "max": max_score,
+            "text": ["High", "Low"],
+            "realtime": False,
+            "calculable": True,
+            "inRange": {"color": ["#440154", "#21918c", "#fde725"]},  # viridis-like
+        },
+        "series": [
+            {
+                "type": "graph",
+                "layout": "none",
+                "roam": True,
+                "lineStyle": {
+                    "color": "#cccccc",
+                    "curveness": 0.1,
+                },
+                "emphasis": {
+                    "focus": "adjacency",
+                    "lineStyle": {"width": 3},
+                },
+                "label": {"position": "top", "formatter": "{b}"},
+                "data": data,
+                "links": links,
+            },
+        ],
+    }
+
+
 def explain_prediction(drug: str, disease: str, prob: float, gene_list: list[str]) -> str:
     """Ask an OpenAI model to explain why the GNN made its prediction based on top genes."""
     import openai
@@ -645,9 +889,7 @@ def cli():
 )
 def train(epochs, samples, output, continue_training):
     """Train the GAT model and save it."""
-    import asyncio
-
-    b = asyncio.run(load())
+    b = load(root_path="uploads/ode-gnn")
     meta = b.dfs["meta"].head(samples)
     print(meta.head())
     print(f"Using device: {DEVICE}")
@@ -737,9 +979,7 @@ def train(epochs, samples, output, continue_training):
 @click.option("--top-n", default=3, help="Number of top genes to include in the explanation.")
 def explain(drug, disease, model_path, top_n):
     """Load the model, run inference with attribution, and print an AI explanation."""
-    import asyncio
-
-    b = asyncio.run(load())
+    b = load(root_path="uploads/ode-gnn")
     esm2_mat, tissue_cache, _, _ = precompute_tissue_graphs(b)
     model, drug_to_id, disease_to_id = load_model(model_path)
     prob, attr_df = predict_with_attribution(
