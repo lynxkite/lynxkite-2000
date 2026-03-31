@@ -1,0 +1,3103 @@
+{
+  "edges": [
+    {
+      "id": "Load GAT model 1 output Predict with attribution 1 b",
+      "source": "Load GAT model 1",
+      "sourceHandle": "output",
+      "target": "Predict with attribution 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Predict with attribution 1 output Visualize attribution 1 b",
+      "source": "Predict with attribution 1",
+      "sourceHandle": "output",
+      "target": "Visualize attribution 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Predict with attribution 1 output Attribution to text 1 b",
+      "source": "Predict with attribution 1",
+      "sourceHandle": "output",
+      "target": "Attribution to text 1",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Load GAT model",
+        "params": {
+          "model_path": "gat_model.pt",
+          "root_path": "uploads/ode-gnn"
+        },
+        "status": "done",
+        "title": "Load GAT model"
+      },
+      "height": 245.0,
+      "id": "Load GAT model 1",
+      "position": {
+        "x": 105.0,
+        "y": 70.0
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df"
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease"
+              },
+              "drug_gene": {
+                "columns": [
+                  "drug_name",
+                  "gene_name"
+                ],
+                "key": "drug_gene"
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2"
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx"
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta"
+              },
+              "rna_df": {
+                "columns": [
+                  "X-1004",
+                  "X-1008",
+                  "X-1027",
+                  "X-1095",
+                  "X-1119",
+                  "X-1156",
+                  "X-1167",
+                  "X-1169",
+                  "X-1172",
+                  "X-1173",
+                  "X-1199",
+                  "X-1210",
+                  "X-1234",
+                  "X-1256",
+                  "X-1270",
+                  "X-1289",
+                  "X-1290",
+                  "X-1298",
+                  "X-1303",
+                  "X-1317",
+                  "X-1318",
+                  "X-1323",
+                  "X-1329",
+                  "X-1337",
+                  "X-1349",
+                  "X-1362",
+                  "X-1367",
+                  "X-1371",
+                  "X-1381",
+                  "X-1383",
+                  "X-1407",
+                  "X-1441",
+                  "X-1442",
+                  "X-1443",
+                  "X-1451",
+                  "X-1468",
+                  "X-1473",
+                  "X-1479",
+                  "X-1480",
+                  "X-1481",
+                  "X-1493",
+                  "X-1499",
+                  "X-1500",
+                  "X-1536",
+                  "X-1538",
+                  "X-1543",
+                  "X-1569",
+                  "X-1586",
+                  "X-1600",
+                  "X-1631",
+                  "X-1633",
+                  "X-1655",
+                  "X-1658",
+                  "X-1678",
+                  "X-1683",
+                  "X-1725",
+                  "X-1726",
+                  "X-1755",
+                  "X-1784",
+                  "X-1786",
+                  "X-1787",
+                  "X-1795",
+                  "X-1823",
+                  "X-1828",
+                  "X-1832",
+                  "X-1834",
+                  "X-1835",
+                  "X-1855",
+                  "X-1865",
+                  "X-1867",
+                  "X-1906",
+                  "X-1916",
+                  "X-1921",
+                  "X-1934",
+                  "X-1948",
+                  "X-1959",
+                  "X-1963",
+                  "X-1970",
+                  "X-1979",
+                  "X-1980",
+                  "X-1993",
+                  "X-2017",
+                  "X-2026",
+                  "X-2030",
+                  "X-2042",
+                  "X-2043",
+                  "X-2046",
+                  "X-2081",
+                  "X-2082",
+                  "X-2088",
+                  "X-2094",
+                  "X-2096",
+                  "X-2116",
+                  "X-2127",
+                  "X-2129",
+                  "X-2145",
+                  "X-2148",
+                  "X-2163",
+                  "X-2182",
+                  "X-2195",
+                  "X-2198",
+                  "X-2207",
+                  "X-2208",
+                  "X-2219",
+                  "X-2220",
+                  "X-2239",
+                  "X-2263",
+                  "X-2283",
+                  "X-2306",
+                  "X-2336",
+                  "X-2339",
+                  "X-2344",
+                  "X-2347",
+                  "X-2353",
+                  "X-2374",
+                  "X-2376",
+                  "X-2403",
+                  "X-2406",
+                  "X-2428",
+                  "X-2454",
+                  "X-2458",
+                  "X-2470",
+                  "X-2471",
+                  "X-2483",
+                  "X-2484",
+                  "X-2487",
+                  "X-2511",
+                  "X-2514",
+                  "X-2524",
+                  "X-2526",
+                  "X-2538",
+                  "X-2564",
+                  "X-2569",
+                  "X-2573",
+                  "X-2592",
+                  "X-2597",
+                  "X-2602",
+                  "X-2607",
+                  "X-2613",
+                  "X-2628",
+                  "X-2633",
+                  "X-2640",
+                  "X-2655",
+                  "X-2659",
+                  "X-2681",
+                  "X-2684",
+                  "X-2697",
+                  "X-2700",
+                  "X-2709",
+                  "X-2715",
+                  "X-2723",
+                  "X-2725",
+                  "X-2729",
+                  "X-2742",
+                  "X-2753",
+                  "X-2757",
+                  "X-2761",
+                  "X-2762",
+                  "X-2780",
+                  "X-2781",
+                  "X-2793",
+                  "X-2805",
+                  "X-2822",
+                  "X-2838",
+                  "X-2846",
+                  "X-2861",
+                  "X-2863",
+                  "X-2880",
+                  "X-2914",
+                  "X-2921",
+                  "X-2930",
+                  "X-2967",
+                  "X-2983",
+                  "X-2990",
+                  "X-2991",
+                  "X-2997",
+                  "X-3001",
+                  "X-3009",
+                  "X-3019",
+                  "X-3020",
+                  "X-3028",
+                  "X-3029",
+                  "X-3038",
+                  "X-3041",
+                  "X-3042",
+                  "X-3050",
+                  "X-3052",
+                  "X-3056",
+                  "X-3077",
+                  "X-3078",
+                  "X-3083",
+                  "X-3093",
+                  "X-3102",
+                  "X-3114",
+                  "X-3127",
+                  "X-3135",
+                  "X-3147",
+                  "X-3158",
+                  "X-3189",
+                  "X-3196",
+                  "X-3200",
+                  "X-3201",
+                  "X-3202",
+                  "X-3205",
+                  "X-3211",
+                  "X-3224",
+                  "X-3237",
+                  "X-3239",
+                  "X-3267",
+                  "X-3268",
+                  "X-3274",
+                  "X-3286",
+                  "X-3298",
+                  "X-3400",
+                  "X-3408",
+                  "X-3419",
+                  "X-3425",
+                  "X-3447",
+                  "X-3450",
+                  "X-3453",
+                  "X-3468",
+                  "X-3483",
+                  "X-3486",
+                  "X-3503",
+                  "X-3558",
+                  "X-3559",
+                  "X-3570",
+                  "X-3575",
+                  "X-3588",
+                  "X-3604",
+                  "X-3615",
+                  "X-3629",
+                  "X-3662",
+                  "X-3671",
+                  "X-3676",
+                  "X-3682",
+                  "X-3684",
+                  "X-3694",
+                  "X-3697",
+                  "X-3711",
+                  "X-3717",
+                  "X-3729",
+                  "X-3735",
+                  "X-3736",
+                  "X-3739",
+                  "X-3746",
+                  "X-3749",
+                  "X-3765",
+                  "X-3766",
+                  "X-3769",
+                  "X-3773",
+                  "X-3782",
+                  "X-3783",
+                  "X-3787",
+                  "X-3792",
+                  "X-3800",
+                  "X-3801",
+                  "X-3811",
+                  "X-3816",
+                  "X-3829",
+                  "X-3843",
+                  "X-3846",
+                  "X-3851",
+                  "X-3861",
+                  "X-3867",
+                  "X-3870",
+                  "X-3873",
+                  "X-3880",
+                  "X-3888",
+                  "X-3898",
+                  "X-3901",
+                  "X-3904",
+                  "X-3926",
+                  "X-3939",
+                  "X-3947",
+                  "X-3949",
+                  "X-3966",
+                  "X-3982",
+                  "X-3990",
+                  "X-4015",
+                  "X-4018",
+                  "X-4026",
+                  "X-4073",
+                  "X-4087",
+                  "X-4132",
+                  "X-4138",
+                  "X-4145",
+                  "X-4157",
+                  "X-4163",
+                  "X-4173",
+                  "X-4213",
+                  "X-4215",
+                  "X-4226",
+                  "X-4244",
+                  "X-4261",
+                  "X-4279",
+                  "X-4304",
+                  "X-4316",
+                  "X-4339",
+                  "X-4347",
+                  "X-4361",
+                  "X-4367",
+                  "X-4377",
+                  "X-4378",
+                  "X-4379",
+                  "X-4412",
+                  "X-4426",
+                  "X-4454",
+                  "X-4455",
+                  "X-4476",
+                  "X-4484",
+                  "X-4530",
+                  "X-4536",
+                  "X-4537",
+                  "X-4538",
+                  "X-4567",
+                  "X-4579",
+                  "X-4597",
+                  "X-4624",
+                  "X-4644",
+                  "X-4649",
+                  "X-4653",
+                  "X-4664",
+                  "X-4668",
+                  "X-4676",
+                  "X-4797",
+                  "X-4799",
+                  "X-4818",
+                  "X-4819",
+                  "X-4824",
+                  "X-4826",
+                  "X-4829",
+                  "X-4832",
+                  "X-4833",
+                  "X-4849",
+                  "X-4852",
+                  "X-4863",
+                  "X-4869",
+                  "X-4882",
+                  "X-4886",
+                  "X-4888",
+                  "X-4905",
+                  "X-4927",
+                  "X-4948",
+                  "X-4949",
+                  "X-4979",
+                  "X-5018",
+                  "X-5041",
+                  "X-5077",
+                  "X-5094",
+                  "X-5189",
+                  "X-5205",
+                  "X-5238",
+                  "X-5249",
+                  "X-5254",
+                  "X-5261",
+                  "X-5273",
+                  "X-5307",
+                  "X-5316",
+                  "X-5355",
+                  "X-5374",
+                  "X-5388",
+                  "X-5405",
+                  "X-5415",
+                  "X-5421",
+                  "X-5438",
+                  "X-5441",
+                  "X-5446",
+                  "X-5462",
+                  "X-5490",
+                  "X-5493",
+                  "X-5494",
+                  "X-5495",
+                  "X-5502",
+                  "X-5508",
+                  "X-5541",
+                  "X-5563",
+                  "X-5566",
+                  "X-5578",
+                  "X-5584",
+                  "X-5593",
+                  "X-5594",
+                  "X-5595",
+                  "X-5627",
+                  "X-5643",
+                  "X-5645",
+                  "X-5693",
+                  "X-5694",
+                  "X-5696",
+                  "X-5713",
+                  "X-5717",
+                  "X-5727",
+                  "X-5739",
+                  "X-5808",
+                  "X-5959",
+                  "X-5974",
+                  "X-5975",
+                  "X-6030",
+                  "X-6047"
+                ],
+                "key": "rna_df"
+              }
+            },
+            "other": {
+              "disease_to_id": {
+                "key": "disease_to_id"
+              },
+              "drug_to_id": {
+                "key": "drug_to_id"
+              },
+              "model": {
+                "key": "model"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Predict with attribution",
+        "params": {
+          "disease": "PDAC",
+          "drug": "BYL719 + LEE011"
+        },
+        "status": "done",
+        "title": "Predict with attribution"
+      },
+      "height": 245.0,
+      "id": "Predict with attribution 1",
+      "position": {
+        "x": 525.0,
+        "y": 70.0
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": {
+          "animationDuration": 500.0,
+          "animationEasingUpdate": "quinticInOut",
+          "series": [
+            {
+              "data": [
+                {
+                  "id": "PAK6",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PAK6",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -19.42382626450975,
+                  "y": 48.47212158740607
+                },
+                {
+                  "id": "IKBKG",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "IKBKG",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 0.3021725576229701,
+                  "y": 21.078447285269206
+                },
+                {
+                  "id": "CTNNBIP1",
+                  "itemStyle": {
+                    "color": "#287b8e"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CTNNBIP1",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": 23.879445881520912,
+                  "y": -18.786026350958153
+                },
+                {
+                  "id": "WNT5B",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "WNT5B",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -40.80058274584641,
+                  "y": -1.6602104674625986
+                },
+                {
+                  "id": "CASP3",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CASP3",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -10.188791006749959,
+                  "y": 11.822674390306865
+                },
+                {
+                  "id": "XRCC2",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "XRCC2",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 38.414021355723186,
+                  "y": 22.61863075941045
+                },
+                {
+                  "id": "ATP6V1B1",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ATP6V1B1",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 57.07039232134191,
+                  "y": 1.3081711287735565
+                },
+                {
+                  "id": "SMO",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SMO",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -32.866348896187134,
+                  "y": -28.876555583747056
+                },
+                {
+                  "id": "CHD2",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CHD2",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 54.550548701217814,
+                  "y": 21.088743790429866
+                },
+                {
+                  "id": "ATP8B1",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ATP8B1",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -3.5075869068308125,
+                  "y": -100.0
+                },
+                {
+                  "id": "SELP",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SELP",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 61.63340241291208,
+                  "y": -32.838611073702964
+                },
+                {
+                  "id": "GNAI3",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GNAI3",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -52.9449301467592,
+                  "y": -4.052889824073507
+                },
+                {
+                  "id": "IL7",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "IL7",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 26.629950910864448,
+                  "y": 43.28069622584979
+                },
+                {
+                  "id": "EPHA1",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "EPHA1",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -69.15957998735114,
+                  "y": 14.29122637970244
+                },
+                {
+                  "id": "NRTN",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "NRTN",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 21.426971876846405,
+                  "y": -72.26164554719745
+                },
+                {
+                  "id": "TXN2",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TXN2",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 8.99339278412953,
+                  "y": -27.9722418977822
+                },
+                {
+                  "id": "CDCA8",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CDCA8",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -47.26302381279268,
+                  "y": -60.141398827231676
+                },
+                {
+                  "id": "EP300",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "EP300",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 8.525046953484674,
+                  "y": 3.8533224260029435
+                },
+                {
+                  "id": "LAMA2",
+                  "itemStyle": {
+                    "color": "#287b8e"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "LAMA2",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -40.64067955981509,
+                  "y": -12.69085326433022
+                },
+                {
+                  "id": "SMAP1",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SMAP1",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 79.00813493429104,
+                  "y": 7.109325676320026
+                },
+                {
+                  "id": "MB",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MB",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -10.267256927830365,
+                  "y": -30.480478177620256
+                },
+                {
+                  "id": "PPARG",
+                  "itemStyle": {
+                    "color": "#20908c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PPARG",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -26.797476134955446,
+                  "y": 8.128454663968185
+                },
+                {
+                  "id": "SCARB2",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SCARB2",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 8.350390034417561,
+                  "y": 95.15332096136808
+                },
+                {
+                  "id": "VLDLR",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "VLDLR",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -38.0054637894368,
+                  "y": 28.022049827517737
+                },
+                {
+                  "id": "AKT2",
+                  "itemStyle": {
+                    "color": "#fde724"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "AKT2",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -14.824434481647419,
+                  "y": 33.73069510233134
+                },
+                {
+                  "id": "NPR2",
+                  "itemStyle": {
+                    "color": "#20908c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "NPR2",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -2.073646304452374,
+                  "y": -20.801692619079045
+                },
+                {
+                  "id": "RELA",
+                  "itemStyle": {
+                    "color": "#35b778"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "RELA",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -25.96769855224908,
+                  "y": 24.426814055796253
+                },
+                {
+                  "id": "AKT1",
+                  "itemStyle": {
+                    "color": "#20908c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "AKT1",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": -5.296448927371995,
+                  "y": 4.780165351810345
+                },
+                {
+                  "id": "MAPKAPK5",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MAPKAPK5",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -54.57632064930378,
+                  "y": 23.18859203370709
+                },
+                {
+                  "id": "NR4A2",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "NR4A2",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 32.32579136578825,
+                  "y": 7.444893193996152
+                },
+                {
+                  "id": "CDKN2A",
+                  "itemStyle": {
+                    "color": "#287b8e"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CDKN2A",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": 19.20417859372585,
+                  "y": 27.89594485445154
+                },
+                {
+                  "id": "CORO1A",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CORO1A",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": 7.182464349283451,
+                  "y": 40.87345514606569
+                },
+                {
+                  "id": "MAPK9",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MAPK9",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -8.911060785673385,
+                  "y": -4.41712644873975
+                },
+                {
+                  "id": "GPX1",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GPX1",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -21.412551972442557,
+                  "y": -4.238119271373616
+                },
+                {
+                  "id": "MLLT3",
+                  "itemStyle": {
+                    "color": "#3a528b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MLLT3",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 46.19757670726592,
+                  "y": -54.70481169278493
+                },
+                {
+                  "id": "PAXIP1",
+                  "itemStyle": {
+                    "color": "#20908c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PAXIP1",
+                  "symbolSize": 20.0,
+                  "value": "2.0000",
+                  "x": 24.524037670564823,
+                  "y": -30.881582282872248
+                },
+                {
+                  "id": "PPP3CA",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PPP3CA",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": -15.869586417849533,
+                  "y": 18.58650466080172
+                },
+                {
+                  "id": "CD74",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CD74",
+                  "symbolSize": 10.0,
+                  "value": "2.0000",
+                  "x": 22.579374859054546,
+                  "y": -2.3500061723308625
+                }
+              ],
+              "emphasis": {
+                "focus": "adjacency",
+                "lineStyle": {
+                  "width": 3.0
+                }
+              },
+              "label": {
+                "formatter": "{b}",
+                "position": "top"
+              },
+              "layout": "none",
+              "lineStyle": {
+                "color": "#cccccc",
+                "curveness": 0.1
+              },
+              "links": [
+                {
+                  "source": "PAK6",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "RELA"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "EP300"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "CASP3"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "SCARB2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "MB"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "SELP"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "EP300"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "SCARB2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "RELA"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "CASP3"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "IL7"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "EP300"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "NRTN"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "MB"
+                },
+                {
+                  "source": "CTNNBIP1",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "MB"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "SMO"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "EP300"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "CASP3"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "EP300"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "MB"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "CD74"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "RELA"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CASP3",
+                  "target": "SMO"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "XRCC2",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "EP300"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "SMO",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "SMO",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "SMO",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "SMO",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "SMO",
+                  "target": "ATP8B1"
+                },
+                {
+                  "source": "SMO",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "SMO",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "SMO",
+                  "target": "EP300"
+                },
+                {
+                  "source": "SMO",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "SMO",
+                  "target": "RELA"
+                },
+                {
+                  "source": "SMO",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "CD74"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "ATP8B1",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "ATP8B1",
+                  "target": "NRTN"
+                },
+                {
+                  "source": "SELP",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "SELP",
+                  "target": "SMAP1"
+                },
+                {
+                  "source": "SELP",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "SELP",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "SELP",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "CDCA8"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "RELA"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "EP300"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "IL7",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "IL7",
+                  "target": "EP300"
+                },
+                {
+                  "source": "IL7",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "IL7",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "IL7",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "IL7",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "NRTN",
+                  "target": "CD74"
+                },
+                {
+                  "source": "NRTN",
+                  "target": "MB"
+                },
+                {
+                  "source": "NRTN",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "NRTN",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "EP300"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "MB"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "EP300",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "EP300",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "EP300",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "EP300",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "EP300",
+                  "target": "SMAP1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "EP300",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "EP300",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "RELA"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MB"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "EP300",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "EP300",
+                  "target": "CD74"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "EP300",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "CD74"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "RELA"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "SMAP1",
+                  "target": "CD74"
+                },
+                {
+                  "source": "SMAP1",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "SMAP1",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "MB",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "MB",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "MB",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "MB",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "MB",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "MB",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "MB",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "RELA"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "SCARB2",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "VLDLR",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "VLDLR",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "CD74"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "RELA"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "NPR2",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "RELA",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "RELA",
+                  "target": "CD74"
+                },
+                {
+                  "source": "RELA",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "RELA",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "RELA",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "RELA",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "RELA",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "RELA",
+                  "target": "NR4A2"
+                },
+                {
+                  "source": "RELA",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "CD74"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "MAPKAPK5",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "MAPKAPK5",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "NR4A2",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "CORO1A"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "MAPK9"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "CD74"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CD74"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "MLLT3",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "CD74"
+                }
+              ],
+              "roam": true,
+              "type": "graph"
+            }
+          ],
+          "tooltip": {
+            "formatter": "{b}: {c}",
+            "show": true
+          },
+          "visualMap": {
+            "calculable": true,
+            "inRange": {
+              "color": [
+                "#440154",
+                "#21918c",
+                "#fde725"
+              ]
+            },
+            "max": 2.000004291534424,
+            "min": 2.0000014305114746,
+            "realtime": false,
+            "text": [
+              "High",
+              "Low"
+            ]
+          }
+        },
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "attribution": {
+                "columns": [
+                  "attention_score",
+                  "node"
+                ],
+                "key": "attribution"
+              },
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df"
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease"
+              },
+              "drug_gene": {
+                "columns": [
+                  "drug_name",
+                  "gene_name"
+                ],
+                "key": "drug_gene"
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2"
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx"
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta"
+              },
+              "rna_df": {
+                "columns": [
+                  "X-1004",
+                  "X-1008",
+                  "X-1027",
+                  "X-1095",
+                  "X-1119",
+                  "X-1156",
+                  "X-1167",
+                  "X-1169",
+                  "X-1172",
+                  "X-1173",
+                  "X-1199",
+                  "X-1210",
+                  "X-1234",
+                  "X-1256",
+                  "X-1270",
+                  "X-1289",
+                  "X-1290",
+                  "X-1298",
+                  "X-1303",
+                  "X-1317",
+                  "X-1318",
+                  "X-1323",
+                  "X-1329",
+                  "X-1337",
+                  "X-1349",
+                  "X-1362",
+                  "X-1367",
+                  "X-1371",
+                  "X-1381",
+                  "X-1383",
+                  "X-1407",
+                  "X-1441",
+                  "X-1442",
+                  "X-1443",
+                  "X-1451",
+                  "X-1468",
+                  "X-1473",
+                  "X-1479",
+                  "X-1480",
+                  "X-1481",
+                  "X-1493",
+                  "X-1499",
+                  "X-1500",
+                  "X-1536",
+                  "X-1538",
+                  "X-1543",
+                  "X-1569",
+                  "X-1586",
+                  "X-1600",
+                  "X-1631",
+                  "X-1633",
+                  "X-1655",
+                  "X-1658",
+                  "X-1678",
+                  "X-1683",
+                  "X-1725",
+                  "X-1726",
+                  "X-1755",
+                  "X-1784",
+                  "X-1786",
+                  "X-1787",
+                  "X-1795",
+                  "X-1823",
+                  "X-1828",
+                  "X-1832",
+                  "X-1834",
+                  "X-1835",
+                  "X-1855",
+                  "X-1865",
+                  "X-1867",
+                  "X-1906",
+                  "X-1916",
+                  "X-1921",
+                  "X-1934",
+                  "X-1948",
+                  "X-1959",
+                  "X-1963",
+                  "X-1970",
+                  "X-1979",
+                  "X-1980",
+                  "X-1993",
+                  "X-2017",
+                  "X-2026",
+                  "X-2030",
+                  "X-2042",
+                  "X-2043",
+                  "X-2046",
+                  "X-2081",
+                  "X-2082",
+                  "X-2088",
+                  "X-2094",
+                  "X-2096",
+                  "X-2116",
+                  "X-2127",
+                  "X-2129",
+                  "X-2145",
+                  "X-2148",
+                  "X-2163",
+                  "X-2182",
+                  "X-2195",
+                  "X-2198",
+                  "X-2207",
+                  "X-2208",
+                  "X-2219",
+                  "X-2220",
+                  "X-2239",
+                  "X-2263",
+                  "X-2283",
+                  "X-2306",
+                  "X-2336",
+                  "X-2339",
+                  "X-2344",
+                  "X-2347",
+                  "X-2353",
+                  "X-2374",
+                  "X-2376",
+                  "X-2403",
+                  "X-2406",
+                  "X-2428",
+                  "X-2454",
+                  "X-2458",
+                  "X-2470",
+                  "X-2471",
+                  "X-2483",
+                  "X-2484",
+                  "X-2487",
+                  "X-2511",
+                  "X-2514",
+                  "X-2524",
+                  "X-2526",
+                  "X-2538",
+                  "X-2564",
+                  "X-2569",
+                  "X-2573",
+                  "X-2592",
+                  "X-2597",
+                  "X-2602",
+                  "X-2607",
+                  "X-2613",
+                  "X-2628",
+                  "X-2633",
+                  "X-2640",
+                  "X-2655",
+                  "X-2659",
+                  "X-2681",
+                  "X-2684",
+                  "X-2697",
+                  "X-2700",
+                  "X-2709",
+                  "X-2715",
+                  "X-2723",
+                  "X-2725",
+                  "X-2729",
+                  "X-2742",
+                  "X-2753",
+                  "X-2757",
+                  "X-2761",
+                  "X-2762",
+                  "X-2780",
+                  "X-2781",
+                  "X-2793",
+                  "X-2805",
+                  "X-2822",
+                  "X-2838",
+                  "X-2846",
+                  "X-2861",
+                  "X-2863",
+                  "X-2880",
+                  "X-2914",
+                  "X-2921",
+                  "X-2930",
+                  "X-2967",
+                  "X-2983",
+                  "X-2990",
+                  "X-2991",
+                  "X-2997",
+                  "X-3001",
+                  "X-3009",
+                  "X-3019",
+                  "X-3020",
+                  "X-3028",
+                  "X-3029",
+                  "X-3038",
+                  "X-3041",
+                  "X-3042",
+                  "X-3050",
+                  "X-3052",
+                  "X-3056",
+                  "X-3077",
+                  "X-3078",
+                  "X-3083",
+                  "X-3093",
+                  "X-3102",
+                  "X-3114",
+                  "X-3127",
+                  "X-3135",
+                  "X-3147",
+                  "X-3158",
+                  "X-3189",
+                  "X-3196",
+                  "X-3200",
+                  "X-3201",
+                  "X-3202",
+                  "X-3205",
+                  "X-3211",
+                  "X-3224",
+                  "X-3237",
+                  "X-3239",
+                  "X-3267",
+                  "X-3268",
+                  "X-3274",
+                  "X-3286",
+                  "X-3298",
+                  "X-3400",
+                  "X-3408",
+                  "X-3419",
+                  "X-3425",
+                  "X-3447",
+                  "X-3450",
+                  "X-3453",
+                  "X-3468",
+                  "X-3483",
+                  "X-3486",
+                  "X-3503",
+                  "X-3558",
+                  "X-3559",
+                  "X-3570",
+                  "X-3575",
+                  "X-3588",
+                  "X-3604",
+                  "X-3615",
+                  "X-3629",
+                  "X-3662",
+                  "X-3671",
+                  "X-3676",
+                  "X-3682",
+                  "X-3684",
+                  "X-3694",
+                  "X-3697",
+                  "X-3711",
+                  "X-3717",
+                  "X-3729",
+                  "X-3735",
+                  "X-3736",
+                  "X-3739",
+                  "X-3746",
+                  "X-3749",
+                  "X-3765",
+                  "X-3766",
+                  "X-3769",
+                  "X-3773",
+                  "X-3782",
+                  "X-3783",
+                  "X-3787",
+                  "X-3792",
+                  "X-3800",
+                  "X-3801",
+                  "X-3811",
+                  "X-3816",
+                  "X-3829",
+                  "X-3843",
+                  "X-3846",
+                  "X-3851",
+                  "X-3861",
+                  "X-3867",
+                  "X-3870",
+                  "X-3873",
+                  "X-3880",
+                  "X-3888",
+                  "X-3898",
+                  "X-3901",
+                  "X-3904",
+                  "X-3926",
+                  "X-3939",
+                  "X-3947",
+                  "X-3949",
+                  "X-3966",
+                  "X-3982",
+                  "X-3990",
+                  "X-4015",
+                  "X-4018",
+                  "X-4026",
+                  "X-4073",
+                  "X-4087",
+                  "X-4132",
+                  "X-4138",
+                  "X-4145",
+                  "X-4157",
+                  "X-4163",
+                  "X-4173",
+                  "X-4213",
+                  "X-4215",
+                  "X-4226",
+                  "X-4244",
+                  "X-4261",
+                  "X-4279",
+                  "X-4304",
+                  "X-4316",
+                  "X-4339",
+                  "X-4347",
+                  "X-4361",
+                  "X-4367",
+                  "X-4377",
+                  "X-4378",
+                  "X-4379",
+                  "X-4412",
+                  "X-4426",
+                  "X-4454",
+                  "X-4455",
+                  "X-4476",
+                  "X-4484",
+                  "X-4530",
+                  "X-4536",
+                  "X-4537",
+                  "X-4538",
+                  "X-4567",
+                  "X-4579",
+                  "X-4597",
+                  "X-4624",
+                  "X-4644",
+                  "X-4649",
+                  "X-4653",
+                  "X-4664",
+                  "X-4668",
+                  "X-4676",
+                  "X-4797",
+                  "X-4799",
+                  "X-4818",
+                  "X-4819",
+                  "X-4824",
+                  "X-4826",
+                  "X-4829",
+                  "X-4832",
+                  "X-4833",
+                  "X-4849",
+                  "X-4852",
+                  "X-4863",
+                  "X-4869",
+                  "X-4882",
+                  "X-4886",
+                  "X-4888",
+                  "X-4905",
+                  "X-4927",
+                  "X-4948",
+                  "X-4949",
+                  "X-4979",
+                  "X-5018",
+                  "X-5041",
+                  "X-5077",
+                  "X-5094",
+                  "X-5189",
+                  "X-5205",
+                  "X-5238",
+                  "X-5249",
+                  "X-5254",
+                  "X-5261",
+                  "X-5273",
+                  "X-5307",
+                  "X-5316",
+                  "X-5355",
+                  "X-5374",
+                  "X-5388",
+                  "X-5405",
+                  "X-5415",
+                  "X-5421",
+                  "X-5438",
+                  "X-5441",
+                  "X-5446",
+                  "X-5462",
+                  "X-5490",
+                  "X-5493",
+                  "X-5494",
+                  "X-5495",
+                  "X-5502",
+                  "X-5508",
+                  "X-5541",
+                  "X-5563",
+                  "X-5566",
+                  "X-5578",
+                  "X-5584",
+                  "X-5593",
+                  "X-5594",
+                  "X-5595",
+                  "X-5627",
+                  "X-5643",
+                  "X-5645",
+                  "X-5693",
+                  "X-5694",
+                  "X-5696",
+                  "X-5713",
+                  "X-5717",
+                  "X-5727",
+                  "X-5739",
+                  "X-5808",
+                  "X-5959",
+                  "X-5974",
+                  "X-5975",
+                  "X-6030",
+                  "X-6047"
+                ],
+                "key": "rna_df"
+              }
+            },
+            "other": {
+              "disease_to_id": {
+                "key": "disease_to_id"
+              },
+              "drug_to_id": {
+                "key": "drug_to_id"
+              },
+              "model": {
+                "key": "model"
+              },
+              "prediction": {
+                "key": "prediction"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Visualize attribution",
+        "params": {
+          "neighbors_per_node": 10.0,
+          "top_n": 10.0
+        },
+        "status": "done",
+        "title": "Visualize attribution"
+      },
+      "height": 735.0,
+      "id": "Visualize attribution 1",
+      "position": {
+        "x": 105.0,
+        "y": 350.0
+      },
+      "type": "visualization",
+      "width": 735.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "explanation": {
+              "columns": [
+                "text"
+              ],
+              "data": [
+                [
+                  "## Prediction\n\n**BYL719 + LEE011 is effective against pancreatic ductal adenocarcinoma** (p=0.985)\n\nTop 3 genes: AKT2, RELA, NPR2\n\n## Explanation\n\nBYL719 and LEE011 are targeted therapies that inhibit specific molecular pathways involved in cancer cell growth and survival. BYL719, also known as alpelisib, is a PI3K inhibitor, while LEE011, known as ribociclib, is a CDK4/6 inhibitor. The neural network's prediction that this combination is effective against pancreatic ductal adenocarcinoma likely hinges on the roles of AKT2, RELA, and NPR2 in the cancer's biology.\n\n1. **AKT2**: This gene encodes a protein kinase involved in the PI3K/AKT signaling pathway, which promotes cell proliferation and survival. Hyperactivity of this pathway is commonly found in various cancers, including pancreatic ductal adenocarcinoma. BYL719\u2019s inhibitory action on PI3K can suppress this pathway, thereby reducing cancer cell proliferation and survival.\n\n2. **RELA**: This gene encodes a subunit of the NF-kB transcription factor, which is involved in inflammatory responses, immune regulation, and cell survival pathways. Dysregulation of NF-kB signaling has been implicated in cancer progression and resistance to apoptosis. Targeting this pathway could help in reducing the survival signals and potentially improving the effectiveness of the treatment.\n\n3. **NPR2**: Although not as directly linked to cancer pathways as the other two genes, NPR2 is part of the natriuretic peptide signaling pathway, which can influence cellular proliferation and growth under certain conditions. Its role suggests possible cross-talk with pathways targeted by BYL719 and LEE011, either enhancing the effect of the blockade or modulating other growth processes in cancer cells.\n\nThe combination of BYL719 and LEE011 targets both the PI3K/AKT pathway and the cell cycle regulation (via CDK4/6 inhibition), potentially offering a comprehensive approach to disrupt multiple cancer-promoting pathways simultaneously. This multi-targeted approach could be particularly effective in treating pancreatic ductal adenocarcinoma, given its aggressive nature and the typically complex molecular signaling involved in its development and progression."
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "attribution": {
+                "columns": [
+                  "attention_score",
+                  "node"
+                ],
+                "key": "attribution"
+              },
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df"
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease"
+              },
+              "drug_gene": {
+                "columns": [
+                  "drug_name",
+                  "gene_name"
+                ],
+                "key": "drug_gene"
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2"
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx"
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta"
+              },
+              "rna_df": {
+                "columns": [
+                  "X-1004",
+                  "X-1008",
+                  "X-1027",
+                  "X-1095",
+                  "X-1119",
+                  "X-1156",
+                  "X-1167",
+                  "X-1169",
+                  "X-1172",
+                  "X-1173",
+                  "X-1199",
+                  "X-1210",
+                  "X-1234",
+                  "X-1256",
+                  "X-1270",
+                  "X-1289",
+                  "X-1290",
+                  "X-1298",
+                  "X-1303",
+                  "X-1317",
+                  "X-1318",
+                  "X-1323",
+                  "X-1329",
+                  "X-1337",
+                  "X-1349",
+                  "X-1362",
+                  "X-1367",
+                  "X-1371",
+                  "X-1381",
+                  "X-1383",
+                  "X-1407",
+                  "X-1441",
+                  "X-1442",
+                  "X-1443",
+                  "X-1451",
+                  "X-1468",
+                  "X-1473",
+                  "X-1479",
+                  "X-1480",
+                  "X-1481",
+                  "X-1493",
+                  "X-1499",
+                  "X-1500",
+                  "X-1536",
+                  "X-1538",
+                  "X-1543",
+                  "X-1569",
+                  "X-1586",
+                  "X-1600",
+                  "X-1631",
+                  "X-1633",
+                  "X-1655",
+                  "X-1658",
+                  "X-1678",
+                  "X-1683",
+                  "X-1725",
+                  "X-1726",
+                  "X-1755",
+                  "X-1784",
+                  "X-1786",
+                  "X-1787",
+                  "X-1795",
+                  "X-1823",
+                  "X-1828",
+                  "X-1832",
+                  "X-1834",
+                  "X-1835",
+                  "X-1855",
+                  "X-1865",
+                  "X-1867",
+                  "X-1906",
+                  "X-1916",
+                  "X-1921",
+                  "X-1934",
+                  "X-1948",
+                  "X-1959",
+                  "X-1963",
+                  "X-1970",
+                  "X-1979",
+                  "X-1980",
+                  "X-1993",
+                  "X-2017",
+                  "X-2026",
+                  "X-2030",
+                  "X-2042",
+                  "X-2043",
+                  "X-2046",
+                  "X-2081",
+                  "X-2082",
+                  "X-2088",
+                  "X-2094",
+                  "X-2096",
+                  "X-2116",
+                  "X-2127",
+                  "X-2129",
+                  "X-2145",
+                  "X-2148",
+                  "X-2163",
+                  "X-2182",
+                  "X-2195",
+                  "X-2198",
+                  "X-2207",
+                  "X-2208",
+                  "X-2219",
+                  "X-2220",
+                  "X-2239",
+                  "X-2263",
+                  "X-2283",
+                  "X-2306",
+                  "X-2336",
+                  "X-2339",
+                  "X-2344",
+                  "X-2347",
+                  "X-2353",
+                  "X-2374",
+                  "X-2376",
+                  "X-2403",
+                  "X-2406",
+                  "X-2428",
+                  "X-2454",
+                  "X-2458",
+                  "X-2470",
+                  "X-2471",
+                  "X-2483",
+                  "X-2484",
+                  "X-2487",
+                  "X-2511",
+                  "X-2514",
+                  "X-2524",
+                  "X-2526",
+                  "X-2538",
+                  "X-2564",
+                  "X-2569",
+                  "X-2573",
+                  "X-2592",
+                  "X-2597",
+                  "X-2602",
+                  "X-2607",
+                  "X-2613",
+                  "X-2628",
+                  "X-2633",
+                  "X-2640",
+                  "X-2655",
+                  "X-2659",
+                  "X-2681",
+                  "X-2684",
+                  "X-2697",
+                  "X-2700",
+                  "X-2709",
+                  "X-2715",
+                  "X-2723",
+                  "X-2725",
+                  "X-2729",
+                  "X-2742",
+                  "X-2753",
+                  "X-2757",
+                  "X-2761",
+                  "X-2762",
+                  "X-2780",
+                  "X-2781",
+                  "X-2793",
+                  "X-2805",
+                  "X-2822",
+                  "X-2838",
+                  "X-2846",
+                  "X-2861",
+                  "X-2863",
+                  "X-2880",
+                  "X-2914",
+                  "X-2921",
+                  "X-2930",
+                  "X-2967",
+                  "X-2983",
+                  "X-2990",
+                  "X-2991",
+                  "X-2997",
+                  "X-3001",
+                  "X-3009",
+                  "X-3019",
+                  "X-3020",
+                  "X-3028",
+                  "X-3029",
+                  "X-3038",
+                  "X-3041",
+                  "X-3042",
+                  "X-3050",
+                  "X-3052",
+                  "X-3056",
+                  "X-3077",
+                  "X-3078",
+                  "X-3083",
+                  "X-3093",
+                  "X-3102",
+                  "X-3114",
+                  "X-3127",
+                  "X-3135",
+                  "X-3147",
+                  "X-3158",
+                  "X-3189",
+                  "X-3196",
+                  "X-3200",
+                  "X-3201",
+                  "X-3202",
+                  "X-3205",
+                  "X-3211",
+                  "X-3224",
+                  "X-3237",
+                  "X-3239",
+                  "X-3267",
+                  "X-3268",
+                  "X-3274",
+                  "X-3286",
+                  "X-3298",
+                  "X-3400",
+                  "X-3408",
+                  "X-3419",
+                  "X-3425",
+                  "X-3447",
+                  "X-3450",
+                  "X-3453",
+                  "X-3468",
+                  "X-3483",
+                  "X-3486",
+                  "X-3503",
+                  "X-3558",
+                  "X-3559",
+                  "X-3570",
+                  "X-3575",
+                  "X-3588",
+                  "X-3604",
+                  "X-3615",
+                  "X-3629",
+                  "X-3662",
+                  "X-3671",
+                  "X-3676",
+                  "X-3682",
+                  "X-3684",
+                  "X-3694",
+                  "X-3697",
+                  "X-3711",
+                  "X-3717",
+                  "X-3729",
+                  "X-3735",
+                  "X-3736",
+                  "X-3739",
+                  "X-3746",
+                  "X-3749",
+                  "X-3765",
+                  "X-3766",
+                  "X-3769",
+                  "X-3773",
+                  "X-3782",
+                  "X-3783",
+                  "X-3787",
+                  "X-3792",
+                  "X-3800",
+                  "X-3801",
+                  "X-3811",
+                  "X-3816",
+                  "X-3829",
+                  "X-3843",
+                  "X-3846",
+                  "X-3851",
+                  "X-3861",
+                  "X-3867",
+                  "X-3870",
+                  "X-3873",
+                  "X-3880",
+                  "X-3888",
+                  "X-3898",
+                  "X-3901",
+                  "X-3904",
+                  "X-3926",
+                  "X-3939",
+                  "X-3947",
+                  "X-3949",
+                  "X-3966",
+                  "X-3982",
+                  "X-3990",
+                  "X-4015",
+                  "X-4018",
+                  "X-4026",
+                  "X-4073",
+                  "X-4087",
+                  "X-4132",
+                  "X-4138",
+                  "X-4145",
+                  "X-4157",
+                  "X-4163",
+                  "X-4173",
+                  "X-4213",
+                  "X-4215",
+                  "X-4226",
+                  "X-4244",
+                  "X-4261",
+                  "X-4279",
+                  "X-4304",
+                  "X-4316",
+                  "X-4339",
+                  "X-4347",
+                  "X-4361",
+                  "X-4367",
+                  "X-4377",
+                  "X-4378",
+                  "X-4379",
+                  "X-4412",
+                  "X-4426",
+                  "X-4454",
+                  "X-4455",
+                  "X-4476",
+                  "X-4484",
+                  "X-4530",
+                  "X-4536",
+                  "X-4537",
+                  "X-4538",
+                  "X-4567",
+                  "X-4579",
+                  "X-4597",
+                  "X-4624",
+                  "X-4644",
+                  "X-4649",
+                  "X-4653",
+                  "X-4664",
+                  "X-4668",
+                  "X-4676",
+                  "X-4797",
+                  "X-4799",
+                  "X-4818",
+                  "X-4819",
+                  "X-4824",
+                  "X-4826",
+                  "X-4829",
+                  "X-4832",
+                  "X-4833",
+                  "X-4849",
+                  "X-4852",
+                  "X-4863",
+                  "X-4869",
+                  "X-4882",
+                  "X-4886",
+                  "X-4888",
+                  "X-4905",
+                  "X-4927",
+                  "X-4948",
+                  "X-4949",
+                  "X-4979",
+                  "X-5018",
+                  "X-5041",
+                  "X-5077",
+                  "X-5094",
+                  "X-5189",
+                  "X-5205",
+                  "X-5238",
+                  "X-5249",
+                  "X-5254",
+                  "X-5261",
+                  "X-5273",
+                  "X-5307",
+                  "X-5316",
+                  "X-5355",
+                  "X-5374",
+                  "X-5388",
+                  "X-5405",
+                  "X-5415",
+                  "X-5421",
+                  "X-5438",
+                  "X-5441",
+                  "X-5446",
+                  "X-5462",
+                  "X-5490",
+                  "X-5493",
+                  "X-5494",
+                  "X-5495",
+                  "X-5502",
+                  "X-5508",
+                  "X-5541",
+                  "X-5563",
+                  "X-5566",
+                  "X-5578",
+                  "X-5584",
+                  "X-5593",
+                  "X-5594",
+                  "X-5595",
+                  "X-5627",
+                  "X-5643",
+                  "X-5645",
+                  "X-5693",
+                  "X-5694",
+                  "X-5696",
+                  "X-5713",
+                  "X-5717",
+                  "X-5727",
+                  "X-5739",
+                  "X-5808",
+                  "X-5959",
+                  "X-5974",
+                  "X-5975",
+                  "X-6030",
+                  "X-6047"
+                ],
+                "key": "rna_df"
+              }
+            },
+            "other": {
+              "disease_to_id": {
+                "key": "disease_to_id"
+              },
+              "drug_to_id": {
+                "key": "drug_to_id"
+              },
+              "model": {
+                "key": "model"
+              },
+              "prediction": {
+                "key": "prediction"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Attribution to text",
+        "params": {
+          "top_n": 3.0
+        },
+        "status": "done",
+        "title": "Attribution to text"
+      },
+      "height": 1295.0,
+      "id": "Attribution to text 1",
+      "position": {
+        "x": 945.0,
+        "y": 70.0
+      },
+      "type": "table_view",
+      "width": 735.0
+    }
+  ],
+  "paused": true
+}
