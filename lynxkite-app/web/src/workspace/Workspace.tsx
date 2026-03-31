@@ -418,7 +418,6 @@ function LynxKiteFlow() {
       width: 0,
       height: 0,
       data: { title: "Group", params: {} },
-      selected: true,
     };
     let top = Number.POSITIVE_INFINITY;
     let left = Number.POSITIVE_INFINITY;
@@ -453,10 +452,13 @@ function LynxKiteFlow() {
           });
           node.set("parentId", groupNode.id);
           node.set("extent", "parent");
-          node.set("selected", false);
         }
       }
     });
+    crdt.onFENodesChange?.([
+      ...selectedNodes.map((n) => ({ id: n.id, type: "select" as const, selected: false })),
+      { id: groupNode.id, type: "select" as const, selected: true },
+    ]);
   }
   function ungroupSelection() {
     const groups = Object.fromEntries(
@@ -464,8 +466,9 @@ function LynxKiteFlow() {
         .filter((n) => n.selected && n.type === "node_group" && !n.parentId)
         .map((n) => [n.id, n]),
     );
+    const childNodeIds = nodes.filter((n) => n.parentId && n.parentId in groups).map((n) => n.id);
     crdt.applyChange((conn) => {
-      const wnodes = conn.ws.get("nodes") as YArray<any>;
+      const wnodes = conn.ws.get("nodes") as YArray<YMap<any>>;
       for (const node of wnodes) {
         const g = groups[node.get("parentId") as string];
         if (!g) continue;
@@ -474,9 +477,8 @@ function LynxKiteFlow() {
           x: pos.x + g.position.x,
           y: pos.y + g.position.y,
         });
-        node.set("parentId", undefined);
-        node.set("extent", undefined);
-        node.set("selected", true);
+        node.delete("parentId");
+        node.delete("extent");
       }
       const groupIndices: number[] = wnodes
         .map((n: any, idx: number) => ({ id: n.get("id"), idx }))
@@ -487,6 +489,9 @@ function LynxKiteFlow() {
         wnodes.delete(groupIdx, 1);
       }
     });
+    crdt.onFENodesChange?.(
+      childNodeIds.map((id) => ({ id, type: "select" as const, selected: true })),
+    );
   }
   const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
