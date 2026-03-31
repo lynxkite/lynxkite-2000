@@ -9,6 +9,7 @@ import torch_geometric.utils as pyg_utils
 from torch_geometric.data import Data
 from torch_geometric.nn import GATConv
 import os.path
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import click
@@ -305,17 +306,20 @@ async def load():
 
 
 def precompute_tissue_graphs(b: core.Bundle):
-    """Precompute PPI edges, disease edges, and ESM2 features for each tumor type."""
+    """Precompute PPI edges, disease gene indices, and ESM2 features for each tumor type."""
     gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
     avail_genes = b.dfs["gene_to_idx"].index
-    num_genes = len(avail_genes)
     gene2esm2 = b.dfs["gene2esm2"]["embedding"]
     esm2_mat = torch.stack([torch.tensor(gene2esm2[g], dtype=torch.float32) for g in avail_genes])
     root_path = b.other["root_path"]
     tumor_types = b.dfs["meta"]["Tumor Type"].unique()
+    # Build drug and disease vocabularies
+    drugs = sorted(b.dfs["meta"]["Treatment"].unique())
+    drug_to_id = {d: i for i, d in enumerate(drugs)}
+    disease_to_id = {t: i for i, t in enumerate(sorted(tumor_types))}
     cache = {}
     for tumor in tumor_types:
-        # PPI edges
+        # PPI edges (gene-gene only, no drug/disease nodes)
         ppi_df = load_ppi_for_tissue(root_path, tumor)
         rows, cols = [], []
         for u, v in zip(ppi_df.gene1, ppi_df.gene2):
@@ -325,37 +329,28 @@ def precompute_tissue_graphs(b: core.Bundle):
         ppi_edges = torch.tensor([rows, cols], dtype=torch.long)
         ppi_edges = pyg_utils.to_undirected(ppi_edges)
         ppi_edges, _ = pyg_utils.add_self_loops(ppi_edges)
-        # Disease edges
+        # Disease-associated gene indices
         df_dis = b.dfs["disease"]
         dis = df_dis[df_dis["disease"] == tumor].symbol
-        dis_rows = [gene_to_idx[g] for g in dis if g in gene_to_idx]
-        disease_edges = (
-            torch.tensor([[num_genes + 1] * len(dis_rows), dis_rows], dtype=torch.long)
-            if dis_rows
-            else torch.empty((2, 0), dtype=torch.long)
-        )
-        if disease_edges.shape[1] > 0:
-            disease_edges = pyg_utils.to_undirected(disease_edges)
-        cache[tumor] = {"ppi_edges": ppi_edges, "disease_edges": disease_edges}
-    return esm2_mat, cache
+        dis_idx = [gene_to_idx[g] for g in dis if g in gene_to_idx]
+        cache[tumor] = {
+            "ppi_edges": ppi_edges,
+            "disease_gene_idx": torch.tensor(dis_idx, dtype=torch.long)
+            if dis_idx
+            else torch.empty(0, dtype=torch.long),
+        }
+    return esm2_mat, cache, drug_to_id, disease_to_id
 
 
-def _get_drug_edges(b: core.Bundle, drug: str, num_genes: int):
+def _get_drug_gene_idx(b: core.Bundle, drug: str):
     gene_to_idx = b.dfs["gene_to_idx"]["idx"].to_dict()
     df = b.dfs["drug_gene"]
     dg = df[df["drug_name"] == drug].gene_name
-    dg_rows = [gene_to_idx[g] for g in dg if g in gene_to_idx]
-    drug_edges = (
-        torch.tensor([[num_genes] * len(dg_rows), dg_rows], dtype=torch.long)
-        if dg_rows
-        else torch.empty((2, 0), dtype=torch.long)
-    )
-    if drug_edges.shape[1] > 0:
-        drug_edges = pyg_utils.to_undirected(drug_edges)
-    return drug_edges
+    idx = [gene_to_idx[g] for g in dg if g in gene_to_idx]
+    return torch.tensor(idx, dtype=torch.long) if idx else torch.empty(0, dtype=torch.long)
 
 
-def make_graph(b: core.Bundle, batch_index: int, esm2_mat, tissue_cache):
+def make_graph(b: core.Bundle, batch_index: int, esm2_mat, tissue_cache, drug_to_id, disease_to_id):
     """Construct a PyG Data graph for the sample at batch_index in meta."""
     row = b.dfs["meta"].iloc[batch_index]
     tumor = row["Tumor Type"]
@@ -363,117 +358,228 @@ def make_graph(b: core.Bundle, batch_index: int, esm2_mat, tissue_cache):
     pdx_id = row["Model"]
     avail_genes = b.dfs["gene_to_idx"].index
     rna_df = b.dfs["rna_df"]
-    num_genes = len(avail_genes)
 
     # Node features: cached ESM2 + per-sample RNA expression
     expr = rna_df[pdx_id].reindex(avail_genes).fillna(0).values
     expr_t = torch.tensor(expr, dtype=torch.float32).view(-1, 1)
     x = torch.cat([esm2_mat, expr_t], dim=1)
-    feat_dim = x.shape[1]
-    x = torch.cat([x, torch.zeros(2, feat_dim)], dim=0)
 
-    # Edges: cached tissue parts + per-sample drug edges
+    # PPI-only edges
     tc = tissue_cache[tumor]
-    drug_edges = _get_drug_edges(b, drug, num_genes)
-    edge_index = torch.cat([tc["ppi_edges"], drug_edges, tc["disease_edges"]], dim=1)
-    return Data(x=x, edge_index=edge_index)
+    drug_gene_idx = _get_drug_gene_idx(b, drug)
+    return Data(
+        x=x,
+        edge_index=tc["ppi_edges"],
+        drug_gene_idx=drug_gene_idx,
+        disease_gene_idx=tc["disease_gene_idx"],
+        drug_id=torch.tensor([drug_to_id[drug]], dtype=torch.long),
+        disease_id=torch.tensor([disease_to_id[tumor]], dtype=torch.long),
+    )
 
 
 def make_graph_from_strings(
-    b: core.Bundle, drug: str, disease: str, esm2_mat=None, tissue_cache=None
+    b: core.Bundle,
+    drug: str,
+    disease: str,
+    esm2_mat=None,
+    tissue_cache=None,
+    drug_to_id=None,
+    disease_to_id=None,
 ):
     """Build a PyG graph for a (drug, disease) pair without needing a meta row."""
     avail_genes = b.dfs["gene_to_idx"].index
     num_genes = len(avail_genes)
 
     if esm2_mat is None or tissue_cache is None:
-        esm2_mat, tissue_cache = precompute_tissue_graphs(b)
+        esm2_mat, tissue_cache, drug_to_id, disease_to_id = precompute_tissue_graphs(b)
 
     x = torch.cat([esm2_mat, torch.zeros(num_genes, 1)], dim=1)
-    feat_dim = x.shape[1]
-    x = torch.cat([x, torch.zeros(2, feat_dim)], dim=0)
 
     tc = tissue_cache[disease]
-    drug_edges = _get_drug_edges(b, drug, num_genes)
-    edge_index = torch.cat([tc["ppi_edges"], drug_edges, tc["disease_edges"]], dim=1)
-    return Data(x=x, edge_index=edge_index)
+    drug_gene_idx = _get_drug_gene_idx(b, drug)
+    return Data(
+        x=x,
+        edge_index=tc["ppi_edges"],
+        drug_gene_idx=drug_gene_idx,
+        disease_gene_idx=tc["disease_gene_idx"],
+        drug_id=torch.tensor([drug_to_id.get(drug, 0)], dtype=torch.long),
+        disease_id=torch.tensor([disease_to_id.get(disease, 0)], dtype=torch.long),
+    )
 
 
 class GATModel(torch.nn.Module):
-    def __init__(self, in_channels, hidden_channels=32, heads=2):
+    def __init__(
+        self,
+        in_channels,
+        num_drugs,
+        num_diseases,
+        embed_dim=16,
+        hidden_channels=32,
+        heads=2,
+        dropout=0.2,
+    ):
         super().__init__()
-        self.gat1 = GATConv(in_channels, hidden_channels, heads=heads)
-        self.gat2 = GATConv(hidden_channels * heads, hidden_channels, heads=1)
-        # Classify from the drug + disease node embeddings
-        self.classifier = torch.nn.Linear(hidden_channels * 2, 1)
+        self.norm = torch.nn.BatchNorm1d(in_channels)
+        self.drug_embedding = torch.nn.Embedding(num_drugs, embed_dim)
+        self.disease_embedding = torch.nn.Embedding(num_diseases, embed_dim)
+        self.gat1 = GATConv(in_channels, hidden_channels, heads=heads, dropout=dropout)
+        self.gat2 = GATConv(hidden_channels * heads, hidden_channels, heads=1, dropout=dropout)
+        self.dropout = torch.nn.Dropout(dropout)
+        # Classify from pooled gene embeddings + categorical drug/disease embeddings
+        self.classifier = torch.nn.Sequential(
+            torch.nn.Linear(hidden_channels * 2 + embed_dim * 2, hidden_channels),
+            torch.nn.ELU(),
+            torch.nn.Dropout(dropout),
+            torch.nn.Linear(hidden_channels, 1),
+        )
 
-    def forward(self, x, edge_index, return_attention=False):
+    def forward(
+        self,
+        x,
+        edge_index,
+        drug_gene_idx,
+        disease_gene_idx,
+        drug_id,
+        disease_id,
+        return_attention=False,
+    ):
+        x = self.norm(x)
+        # Phase 1: GAT on PPI graph to get contextualized gene embeddings
         if return_attention:
             x, attn1 = self.gat1(x, edge_index, return_attention_weights=True)
         else:
             x = self.gat1(x, edge_index)
             attn1 = None
         x = F.elu(x)
+        x = self.dropout(x)
         if return_attention:
             x, attn2 = self.gat2(x, edge_index, return_attention_weights=True)
         else:
             x = self.gat2(x, edge_index)
             attn2 = None
         x = F.elu(x)
-        # Pool from drug node (-2) and disease node (-1)
-        pooled = torch.cat([x[-2], x[-1]], dim=0)
+        # Phase 2: Pool drug-target and disease-associated gene embeddings
+        if drug_gene_idx.numel() > 0:
+            drug_repr = x[drug_gene_idx].mean(dim=0)
+        else:
+            drug_repr = torch.zeros(x.shape[1], device=x.device)
+        if disease_gene_idx.numel() > 0:
+            disease_repr = x[disease_gene_idx].mean(dim=0)
+        else:
+            disease_repr = torch.zeros(x.shape[1], device=x.device)
+        # Categorical embeddings
+        drug_emb = self.drug_embedding(drug_id).squeeze(0)
+        disease_emb = self.disease_embedding(disease_id).squeeze(0)
+        pooled = torch.cat([drug_repr, disease_repr, drug_emb, disease_emb], dim=0)
         logit = self.classifier(pooled).squeeze()
         if return_attention:
             return logit, attn1, attn2
         return logit
 
 
-def save_model(model, path="gat_model.pt"):
+def save_model(
+    model,
+    path="gat_model.pt",
+    drug_to_id=None,
+    disease_to_id=None,
+    optimizer=None,
+    scaler=None,
+    epoch=None,
+):
     """Save the trained GAT model to disk."""
-    torch.save({"state_dict": model.state_dict(), "in_channels": model.gat1.in_channels}, path)
+    ckpt = {
+        "state_dict": model.state_dict(),
+        "in_channels": model.norm.num_features,
+        "num_drugs": model.drug_embedding.num_embeddings,
+        "num_diseases": model.disease_embedding.num_embeddings,
+        "drug_to_id": drug_to_id,
+        "disease_to_id": disease_to_id,
+    }
+    if optimizer is not None:
+        ckpt["optimizer_state_dict"] = optimizer.state_dict()
+    if scaler is not None:
+        ckpt["scaler_state_dict"] = scaler.state_dict()
+    if epoch is not None:
+        ckpt["epoch"] = epoch
+    torch.save(ckpt, path)
     print(f"Model saved to {path}")
 
 
 def load_model(path="gat_model.pt", device=None):
     """Load a saved GAT model from disk."""
     device = device or DEVICE
-    ckpt = torch.load(path, map_location=device, weights_only=True)
-    model = GATModel(in_channels=ckpt["in_channels"]).to(device)
+    ckpt = torch.load(path, map_location=device, weights_only=False)
+    model = GATModel(
+        in_channels=ckpt["in_channels"],
+        num_drugs=ckpt["num_drugs"],
+        num_diseases=ckpt["num_diseases"],
+    ).to(device)
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
-    return model
+    return model, ckpt["drug_to_id"], ckpt["disease_to_id"]
 
 
 def predict(
-    model, b: core.Bundle, drug: str, disease: str, esm2_mat=None, tissue_cache=None
+    model,
+    b: core.Bundle,
+    drug: str,
+    disease: str,
+    esm2_mat=None,
+    tissue_cache=None,
+    drug_to_id=None,
+    disease_to_id=None,
 ) -> float:
     """Return the predicted probability that the drug is effective for the disease."""
     model.eval()
-    graph = make_graph_from_strings(b, drug, disease, esm2_mat, tissue_cache)
+    graph = make_graph_from_strings(
+        b, drug, disease, esm2_mat, tissue_cache, drug_to_id, disease_to_id
+    )
     with torch.no_grad(), torch.amp.autocast("cuda"):
-        logit = model(graph.x.to(DEVICE), graph.edge_index.to(DEVICE))
+        logit = model(
+            graph.x.to(DEVICE),
+            graph.edge_index.to(DEVICE),
+            graph.drug_gene_idx.to(DEVICE),
+            graph.disease_gene_idx.to(DEVICE),
+            graph.drug_id.to(DEVICE),
+            graph.disease_id.to(DEVICE),
+        )
     return torch.sigmoid(logit).item()
 
 
 def predict_with_attribution(
-    model, b: core.Bundle, drug: str, disease: str, esm2_mat=None, tissue_cache=None
+    model,
+    b: core.Bundle,
+    drug: str,
+    disease: str,
+    esm2_mat=None,
+    tissue_cache=None,
+    drug_to_id=None,
+    disease_to_id=None,
 ):
     """Return probability and per-node attention scores.
 
     Returns:
         prob: Predicted probability that the drug is effective.
-        node_scores: DataFrame with gene names (+ drug/disease nodes) and their
+        node_scores: DataFrame with gene names and their
                      aggregated attention scores across both GAT layers.
     """
     model.eval()
-    graph = make_graph_from_strings(b, drug, disease, esm2_mat, tissue_cache)
+    graph = make_graph_from_strings(
+        b, drug, disease, esm2_mat, tissue_cache, drug_to_id, disease_to_id
+    )
     avail_genes = list(b.dfs["gene_to_idx"].index)
-    node_names = avail_genes + [f"drug:{drug}", f"disease:{disease}"]
+    node_names = avail_genes
     num_nodes = len(node_names)
 
     with torch.no_grad(), torch.amp.autocast("cuda"):
         logit, (ei1, aw1), (ei2, aw2) = model(
-            graph.x.to(DEVICE), graph.edge_index.to(DEVICE), return_attention=True
+            graph.x.to(DEVICE),
+            graph.edge_index.to(DEVICE),
+            graph.drug_gene_idx.to(DEVICE),
+            graph.disease_gene_idx.to(DEVICE),
+            graph.drug_id.to(DEVICE),
+            graph.disease_id.to(DEVICE),
+            return_attention=True,
         )
     prob = torch.sigmoid(logit).item()
 
@@ -534,7 +640,10 @@ def cli():
 @click.option("--epochs", default=EPOCHS, help="Number of training epochs.")
 @click.option("--samples", default=100, help="Number of samples to train on.")
 @click.option("--output", default="gat_model.pt", help="Path to save the model.")
-def train(epochs, samples, output):
+@click.option(
+    "--continue", "continue_training", is_flag=True, help="Continue training from checkpoint."
+)
+def train(epochs, samples, output, continue_training):
     """Train the GAT model and save it."""
     import asyncio
 
@@ -543,32 +652,67 @@ def train(epochs, samples, output):
     print(meta.head())
     print(f"Using device: {DEVICE}")
 
-    esm2_mat, tissue_cache = precompute_tissue_graphs(b)
+    esm2_mat, tissue_cache, drug_to_id, disease_to_id = precompute_tissue_graphs(b)
     in_channels = esm2_mat.shape[1] + 1  # ESM2 + RNA expression
-    model = GATModel(in_channels=in_channels).to(DEVICE)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
-    loss_fn = torch.nn.BCEWithLogitsLoss()
-    scaler = torch.amp.GradScaler("cuda")
 
-    for epoch in range(epochs):
+    start_epoch = 0
+    if continue_training and os.path.exists(output):
+        print(f"Loading checkpoint from {output}...")
+        ckpt = torch.load(output, map_location=DEVICE, weights_only=False)
+        model = GATModel(
+            in_channels=ckpt["in_channels"],
+            num_drugs=ckpt["num_drugs"],
+            num_diseases=ckpt["num_diseases"],
+        ).to(DEVICE)
+        model.load_state_dict(ckpt["state_dict"])
+        drug_to_id = ckpt["drug_to_id"]
+        disease_to_id = ckpt["disease_to_id"]
+        optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+        if "optimizer_state_dict" in ckpt:
+            optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+        scaler = torch.amp.GradScaler("cuda")
+        if "scaler_state_dict" in ckpt:
+            scaler.load_state_dict(ckpt["scaler_state_dict"])
+        if "epoch" in ckpt:
+            start_epoch = ckpt["epoch"] + 1
+        print(f"Resuming from epoch {start_epoch + 1}")
+    else:
+        model = GATModel(
+            in_channels=in_channels, num_drugs=len(drug_to_id), num_diseases=len(disease_to_id)
+        ).to(DEVICE)
+        optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+        scaler = torch.amp.GradScaler("cuda")
+
+    loss_fn = torch.nn.BCEWithLogitsLoss()
+
+    for epoch in range(start_epoch, start_epoch + epochs):
         model.train()
         epoch_loss = 0.0
         correct = 0
         total = 0
-        for i, rec in enumerate(
-            tqdm(meta.itertuples(), total=len(meta), desc=f"Epoch {epoch + 1}")
-        ):
-            label_str = rec._asdict()["mrecist_class"]
+        indices = np.random.permutation(len(meta))
+        for i in tqdm(indices, desc=f"Epoch {epoch + 1}"):
+            row = meta.iloc[i]
+            label_str = row["mrecist_class"]
             if label_str not in LABEL_MAP:
                 continue
             label = torch.tensor(LABEL_MAP[label_str], device=DEVICE)
-            graph = make_graph(b, i, esm2_mat, tissue_cache)
+            graph = make_graph(b, i, esm2_mat, tissue_cache, drug_to_id, disease_to_id)
             with torch.amp.autocast("cuda"):
-                out = model(graph.x.to(DEVICE), graph.edge_index.to(DEVICE))
+                out = model(
+                    graph.x.to(DEVICE),
+                    graph.edge_index.to(DEVICE),
+                    graph.drug_gene_idx.to(DEVICE),
+                    graph.disease_gene_idx.to(DEVICE),
+                    graph.drug_id.to(DEVICE),
+                    graph.disease_id.to(DEVICE),
+                )
                 loss = loss_fn(out, label)
 
             optimizer.zero_grad()
             scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             scaler.step(optimizer)
             scaler.update()
 
@@ -579,9 +723,11 @@ def train(epochs, samples, output):
 
         avg_loss = epoch_loss / max(total, 1)
         accuracy = correct / max(total, 1)
-        print(f"Epoch {epoch + 1}/{epochs} - Loss: {avg_loss:.4f} - Accuracy: {accuracy:.4f}")
+        print(
+            f"Epoch {epoch + 1}/{start_epoch + epochs} - Loss: {avg_loss:.4f} - Accuracy: {accuracy:.4f}"
+        )
 
-    save_model(model, output)
+    save_model(model, output, drug_to_id, disease_to_id, optimizer, scaler, epoch)
 
 
 @cli.command()
@@ -594,9 +740,11 @@ def explain(drug, disease, model_path, top_n):
     import asyncio
 
     b = asyncio.run(load())
-    esm2_mat, tissue_cache = precompute_tissue_graphs(b)
-    model = load_model(model_path)
-    prob, attr_df = predict_with_attribution(model, b, drug, disease, esm2_mat, tissue_cache)
+    esm2_mat, tissue_cache, _, _ = precompute_tissue_graphs(b)
+    model, drug_to_id, disease_to_id = load_model(model_path)
+    prob, attr_df = predict_with_attribution(
+        model, b, drug, disease, esm2_mat, tissue_cache, drug_to_id, disease_to_id
+    )
     genes = top_genes(attr_df, n=top_n)
 
     effective = "effective" if prob >= 0.5 else "not effective"
