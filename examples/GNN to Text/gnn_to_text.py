@@ -680,7 +680,7 @@ class Drugs(enum.StrEnum):
 async def predict_with_attribution_op(
     b: core.Bundle, *, drug: Drugs, disease: TumorTypes
 ) -> core.Bundle:
-    """Load the model, run inference with attribution, and print an AI explanation."""
+    """Run inference with attribution, and save the results."""
     esm2_mat, tissue_cache, _, _ = precompute_tissue_graphs(b)
     model, drug_to_id, disease_to_id = (
         b.other["model"],
@@ -697,22 +697,38 @@ async def predict_with_attribution_op(
     return b
 
 
-@op("Attribution to text", icon="message-circle-filled", color="blue", outputs=[])
-def attribution_to_text(self, b: core.Bundle, *, top_n=3):
-    """Load the model, run inference with attribution, and print an AI explanation."""
+DISEASE_NAMES = {
+    "BRCA": "breast cancer",
+    "CM": "cutaneous melanoma",
+    "CRC": "colorectal cancer",
+    "GC": "gastric cancer",
+    "NSCLC": "non-small cell lung cancer",
+    "PDAC": "pancreatic ductal adenocarcinoma",
+}
+
+
+@op("Attribution to text", icon="message-circle-filled", color="blue", view="table_view")
+def attribution_to_text(b: core.Bundle, *, top_n=3):
+    """Generate an explanation based on the attribution data."""
     genes = top_genes(b.dfs["attribution"], n=top_n)
     prediction = b.other["prediction"]
     prob = prediction["prob"]
     drug = str(prediction["drug"])
     disease = str(prediction["disease"])
+    disease = DISEASE_NAMES.get(disease, disease)  # Map to nicer name if available
 
     effective = "effective" if prob >= 0.5 else "not effective"
-    self.print(f"Prediction:\n{drug} is {effective} against {disease} (p={prob:.3f})")
-    self.print(f"Top {top_n} genes: {', '.join(genes)}")
+    lines = []
+    lines.append("## Prediction")
+    lines.append(f"**{drug} is {effective} against {disease}** (p={prob:.3f})")
+    lines.append(f"Top {top_n} genes: {', '.join(genes)}")
 
     explanation = explain_prediction(drug, disease, prob, genes)
-    self.print("\nExplanation:")
-    self.print(explanation)
+    lines.append("## Explanation")
+    lines.append(explanation)
+    return core.Bundle(
+        dfs={"explanation": pd.DataFrame({"text": ["\n\n".join(lines)]})}
+    ).to_table_view()
 
 
 @op("Visualize attribution", view="visualization", icon="eye", color="blue")
@@ -722,7 +738,7 @@ def visualize_attribution(
     top_n: int = 10,
     neighbors_per_node: int = 10,
 ) -> dict:
-    """Create an ECharts configuration for visualizing attribution on a subgraph.
+    """Visualize the attribution on the top N genes and their neighbors in the PPI network.
 
     Args:
         b: Bundle containing gene_to_idx and PPI data.
@@ -746,10 +762,9 @@ def visualize_attribution(
     ppi_df = load_ppi_for_tissue(root_path, disease)
     gene_to_idx = set(b.dfs["gene_to_idx"].index)
 
-    # Build adjacency from PPI
+    # Build adjacency from PPI - iterate over columns directly (much faster than iterrows)
     adjacency = {}
-    for _, row in ppi_df.iterrows():
-        g1, g2 = row["gene1"], row["gene2"]
+    for g1, g2 in zip(ppi_df["gene1"], ppi_df["gene2"]):
         if g1 in gene_to_idx and g2 in gene_to_idx:
             adjacency.setdefault(g1, []).append(g2)
             adjacency.setdefault(g2, []).append(g1)
@@ -851,10 +866,9 @@ def visualize_attribution(
     }
 
 
+@ops.cached
 def explain_prediction(drug: str, disease: str, prob: float, gene_list: list[str]) -> str:
     """Ask an OpenAI model to explain why the GNN made its prediction based on top genes."""
-    import openai
-
     effective = "effective" if prob >= 0.5 else "not effective"
     genes_str = ", ".join(gene_list)
     prompt = (
@@ -862,10 +876,23 @@ def explain_prediction(drug: str, disease: str, prob: float, gene_list: list[str
         f"due to genes {genes_str}. "
         f"What is the likely underlying biological explanation?"
     )
+    return ask_ai(prompt)
+
+
+@ops.cached
+def ask_ai(prompt: str) -> str:
+    import openai
+
     client = openai.OpenAI()
     response = client.chat.completions.create(
         model="gpt-4o",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {
+                "role": "system",
+                "content": "Your task is to generate explanations. The user is unable to respond. Do not suggest follow-up questions or ask for clarification. Just provide a concise explanation based on the prompt.",
+            },
+            {"role": "user", "content": prompt},
+        ],
     )
     return response.choices[0].message.content
 
