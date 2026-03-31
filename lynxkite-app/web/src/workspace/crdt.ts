@@ -292,10 +292,10 @@ class CRDTConnection {
       const mergedNode = { ...oldNodes[n.id], ...n };
 
       // Clean up parent-child properties that may be stale from the old ReactFlow node.
-      if (!("parentId" in n)) {
+      if (n.parentId === undefined) {
         delete mergedNode.parentId;
       }
-      if (!("extent" in n)) {
+      if (n.extent === undefined) {
         delete mergedNode.extent;
       }
 
