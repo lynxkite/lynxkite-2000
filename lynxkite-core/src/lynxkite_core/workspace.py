@@ -70,21 +70,18 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
-    _crdt: Optional["pycrdt.Map"] = None
+    _ws_crdt: Optional["pycrdt.Map"] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
         """Look up this node's CRDT Map fresh from the live workspace CRDT. We always walk the live
         array to avoid holding a proxy to freed Rust memory after a node deletion.
         """
-        ws_crdt = self._crdt
+        ws_crdt: Optional["pycrdt.Map"] = self._ws_crdt
         if ws_crdt is None:
             return None
-        try:
-            for nc in ws_crdt.get("nodes", []):
-                if "id" in nc and nc["id"] == self.id:
-                    return nc
-        except Exception:
-            pass
+        for nc in ws_crdt.get("nodes", []):
+            if "id" in nc and nc["id"] == self.id:
+                return nc
         return None
 
     def publish_started(self):
@@ -297,9 +294,7 @@ class Workspace(BaseConfig):
                 if node_crdt is not None:
                     if "data" not in node_crdt:
                         node_crdt["data"] = pycrdt.Map()
-                # Store the workspace-level CRDT, not the node-level proxy.
-                # _find_crdt_node() will look up the node fresh each time.
-                node_python._crdt = ws_crdt
+                node_python._ws_crdt = ws_crdt
 
     def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""
