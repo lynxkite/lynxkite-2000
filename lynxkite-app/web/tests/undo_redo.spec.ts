@@ -29,6 +29,7 @@ test("undo/redo add_node transaction", async () => {
 test("undo/redo add_edge transaction", async () => {
   await workspace.addBox("Graph embedding and link prediction › Import PyKEEN dataset");
   await workspace.addBox("View tables");
+  await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.connectBoxes("Import PyKEEN dataset 1", "View tables 1");
   const tableBox = workspace.getBox("View tables 1");
   await expect(tableBox.locator(".error")).not.toBeVisible();
@@ -41,18 +42,19 @@ test("undo/redo add_edge transaction", async () => {
 test("undo/redo box dragging", async () => {
   await workspace.addBox("Import Parquet");
   const originalPos = await workspace.getBox("Import Parquet 1").boundingBox();
+  await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.moveBox("Import Parquet 1", { offsetX: 100, offsetY: 100 });
   const newPos = await workspace.getBox("Import Parquet 1").boundingBox();
-  expect(newPos?.x).toBeGreaterThan(originalPos?.x || 0);
-  expect(newPos?.y).toBeGreaterThan(originalPos?.y || 0);
+  expect(newPos?.x).toBeGreaterThan(originalPos?.x);
+  expect(newPos?.y).toBeGreaterThan(originalPos?.y);
   await workspace.page.keyboard.press("Control+z");
   const undonePos = await workspace.getBox("Import Parquet 1").boundingBox();
-  expect(undonePos?.x).toBeCloseTo(originalPos?.x || 0, 1);
-  expect(undonePos?.y).toBeCloseTo(originalPos?.y || 0, 1);
+  expect(undonePos?.x).toBeCloseTo(originalPos?.x, 1);
+  expect(undonePos?.y).toBeCloseTo(originalPos?.y, 1);
   await workspace.page.keyboard.press("Control+y");
   const redonePos = await workspace.getBox("Import Parquet 1").boundingBox();
-  expect(redonePos?.x).toBeGreaterThan(originalPos?.x || 0);
-  expect(redonePos?.y).toBeGreaterThan(originalPos?.y || 0);
+  expect(redonePos?.x).toBeGreaterThan(originalPos?.x);
+  expect(redonePos?.y).toBeGreaterThan(originalPos?.y);
 });
 
 test("undo/redo grouping boxes", async () => {
@@ -66,6 +68,7 @@ test("undo/redo grouping boxes", async () => {
   await workspace.addBox("View tables");
   await workspace.connectBoxes("Import Parquet 1", "View tables 1");
   await workspace.selectBoxes(["Import Parquet 1", "View tables 1"]);
+  await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.groupSelection();
   await workspace.page.keyboard.press("Control+z");
   await expect(workspace.getBox("Group 1")).not.toBeVisible();
@@ -83,6 +86,7 @@ test("undo/redo grouping boxes", async () => {
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
+  await new Promise((resolve) => setTimeout(resolve, 600));
   await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.page.keyboard.press("Control+z");
   await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("");
