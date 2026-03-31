@@ -338,15 +338,25 @@ class GATModel(torch.nn.Module):
         super().__init__()
         self.gat1 = GATConv(in_channels, hidden_channels, heads=heads)
         self.gat2 = GATConv(hidden_channels * heads, hidden_channels, heads=1)
-        self.classifier = torch.nn.Linear(hidden_channels, 1)
+        # Classify from the drug + disease node embeddings
+        self.classifier = torch.nn.Linear(hidden_channels * 2, 1)
 
     def forward(self, x, edge_index, return_attention=False):
-        x, attn1 = self.gat1(x, edge_index, return_attention_weights=True)
+        if return_attention:
+            x, attn1 = self.gat1(x, edge_index, return_attention_weights=True)
+        else:
+            x = self.gat1(x, edge_index)
+            attn1 = None
         x = F.elu(x)
-        x, attn2 = self.gat2(x, edge_index, return_attention_weights=True)
+        if return_attention:
+            x, attn2 = self.gat2(x, edge_index, return_attention_weights=True)
+        else:
+            x = self.gat2(x, edge_index)
+            attn2 = None
         x = F.elu(x)
-        x = x.mean(dim=0)  # Global mean pooling
-        logit = self.classifier(x).squeeze()
+        # Pool from drug node (-2) and disease node (-1)
+        pooled = torch.cat([x[-2], x[-1]], dim=0)
+        logit = self.classifier(pooled).squeeze()
         if return_attention:
             return logit, attn1, attn2
         return logit
@@ -441,7 +451,6 @@ def predict_with_attribution(model, b: core.Bundle, drug: str, disease: str):
     model.eval()
     graph = make_graph_from_strings(b, drug, disease)
     avail_genes = list(b.dfs["gene_to_idx"].index)
-    num_genes = len(avail_genes)
     node_names = avail_genes + [f"drug:{drug}", f"disease:{disease}"]
     num_nodes = len(node_names)
 
@@ -519,7 +528,7 @@ def train(epochs, samples, output):
 
     in_channels = gene_features_input(b, 0).shape[1]
     model = GATModel(in_channels=in_channels).to(DEVICE)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
     loss_fn = torch.nn.BCEWithLogitsLoss()
     scaler = torch.amp.GradScaler("cuda")
 
