@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import enum
 import functools
 import json
@@ -15,10 +14,10 @@ import subprocess
 import traceback
 import types
 import typing
-import io
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
+from .opcontext import OpContext, CONTEXT_PARAM_NAME
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -43,48 +42,6 @@ class FunctionCacheWrapper(typing.Protocol):
 
 # Overwrite this to configure a caching mechanism.
 CACHE_WRAPPER: FunctionCacheWrapper | None = None
-
-
-def dummy_tqdm(iterable=None, *args, **kwargs):
-    if iterable:
-        yield from iterable
-
-
-# Temporary TQDM import, to avoid importing tqdm in the core module. Set this to tqdm.tqdm when tqdm is available.
-TQDM_TQDM: typing.Callable[..., typing.Any] = dummy_tqdm
-
-
-class FunctionTerminalEmulator(typing.Protocol):
-    def __call__(
-        self,
-        op_ctx: "OpContext",
-        columns: int = 80,
-        lines: int = 10,
-        history: int = 100,
-        passthrough: bool = True,
-    ) -> typing.ContextManager: ...
-
-
-# Overwrite this to configure a terminal emulator for streaming stdout/stderr to the frontend.
-@contextlib.contextmanager
-def dummy_terminal_emulator(
-    op_ctx: "OpContext",
-    columns: int = 80,
-    lines: int = 10,
-    history: int = 100,
-    passthrough: bool = True,
-) -> typing.Iterator[None]:
-    """
-    Default terminal emulator that does nothing. Set TERMINAL_EMULATOR to a function that
-    returns a context manager to enable this feature.
-    """
-    yield
-
-
-TERMINAL_EMULATOR: FunctionTerminalEmulator = dummy_terminal_emulator
-
-# Common name for the context parameter in operations that need access to the OpContext.
-CONTEXT_PARAM_NAME = "self"
 
 
 @dataclass
@@ -127,115 +84,6 @@ def _cached_with_ctx(func):
         return r.result
 
     return wrapper
-
-
-@dataclass
-class OpContext:
-    """The context passed to operations when they are executed.
-
-    This context can only be used when the first parameter of the operation function is
-    named "self" (by default). The context is currently useful for sending messages to the frontend.
-
-    Example usage:
-    ```python
-    @op("Example op")
-    def example_op(self, input, *, params):
-        self.print(f"Received input: {input} and params: {params}")
-        result = do_something(input, params)
-        self.print(f"Produced result: {result}")
-        return result
-    ```
-    """
-
-    op: "Op | None" = None
-    message: str | None = None
-    node: "workspace.WorkspaceNode | None" = None
-    ws: "workspace.Workspace | None" = None
-    loop: asyncio.AbstractEventLoop | None = None
-
-    def __init__(
-        self,
-        op: "Op | None" = None,
-        node: "workspace.WorkspaceNode | None" = None,
-        ws: "workspace.Workspace | None" = None,
-    ):
-        self.op = op
-        self.node = node
-        self.ws = ws
-        try:
-            self.loop = asyncio.get_running_loop()
-        except RuntimeError:
-            self.loop = None
-
-    def set_message(self, message: str):
-        """Sets the message, and sends it to the frontend if possible."""
-        self.message = message
-        if self.node is not None and self.loop is not None:
-            self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
-
-    def __getattr__(self, name: str):
-        if self.op is not None:
-            return getattr(self.op, name)
-        raise AttributeError(name)
-
-    def print(
-        self,
-        *args,
-        append: bool = True,
-        **kwargs,
-    ) -> None:
-        """Uses python's print function to send a message to the frontend.
-
-        Args:
-            append: If True, the printed message will be appended to the existing message. If False, it will replace the existing message.
-        """
-        buf = io.StringIO()
-        kwargs.pop("file", None)
-        print(*args, file=buf, **kwargs)
-        message = buf.getvalue()
-        if append:
-            message = (self.message or "") + message
-        self.set_message(message)
-
-    def stdout(
-        self, columns: int = 80, lines: int = 10, history: int = 25, passthrough: bool = True
-    ) -> typing.ContextManager:
-        """A context manager that captures stdout/stderr and sends it to the frontend.
-        Example usage:
-        ```python
-        @op("Example op")
-        def example_op(self):
-            with self.stdout(columns=60, lines=5):
-                print("Starting calculation...")
-                for i in tqdm.tqdm(range(4), "Calculating..."):
-                    # some calculation here
-                print("Done")
-        ```
-
-        Args:
-            columns: The width of the terminal in characters.
-            lines: The number of lines to emulate in the terminal.
-            history: The number of lines to keep in the history (for scrolling).
-            passthrough: If True, the captured output will also be printed to the original stdout/stderr.
-        """
-        return TERMINAL_EMULATOR(
-            self, columns=columns, lines=lines, history=history, passthrough=passthrough
-        )
-
-    def tqdm(self, *args, **kwargs):
-        """A wrapper around tqdm.tqdm that sends tqdm progress bars to the frontend.
-        Currently everything that is printed inside the tqdm context manager will be captured
-        and sent to the TERMINAL_EMULATOR. In the future we will give more support to this.
-        Example usage:
-        ```python
-        @op("Example op")
-        def example_op(self):
-            for i in self.tqdm(range(100), "Processing..."):
-                # some processing here
-        ```
-        """
-        with self.stdout():
-            yield from TQDM_TQDM(*args, **kwargs)
 
 
 def type_to_json(t):
