@@ -50,6 +50,23 @@ export class Workspace {
     await this.page.locator('button[name="ungroupBtn"]').click();
   }
 
+  async getNodeParentId(nodeId: string): Promise<string | undefined> {
+    return this.page.evaluate((id) => {
+      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+      if (!el) return undefined;
+      const key = Object.keys(el).find((k) => k.startsWith("__reactFiber$"));
+      if (!key) return undefined;
+      let fiber = (el as any)[key];
+      while (fiber) {
+        if (fiber.memoizedProps?.id === id && "parentId" in fiber.memoizedProps) {
+          return fiber.memoizedProps.parentId || undefined;
+        }
+        fiber = fiber.child;
+      }
+      return undefined;
+    }, nodeId);
+  }
+
   async expectCurrentWorkspaceIs(name) {
     await expect(this.page.locator(".ws-name")).toHaveText(name);
   }
