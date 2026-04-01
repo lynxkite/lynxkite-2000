@@ -143,6 +143,25 @@ async def execute_workspace(name: str):
     await crdt.execute(name, room.ws, ws_pyd)
 
 
+@app.post("/api/progress/pause")
+async def pause_workspace(req: dict):
+    """Toggle the paused state of a workspace."""
+    room = await crdt.get_room(req["name"])
+    with room.ws.doc.transaction():
+        room.ws["paused"] = req.get("paused", True)
+
+
+@app.post("/api/progress/stop")
+async def stop_workspace(req: dict):
+    """Pause a workspace and reset all node statuses to planned."""
+    room = await crdt.get_room(req["name"])
+    with room.ws.doc.transaction():
+        room.ws["paused"] = True
+        for node in room.ws["nodes"]:
+            node["data"]["status"] = "planned"
+            node["data"]["message"] = None
+
+
 @app.get("/api/progress/workspaces")
 def progress_workspaces() -> typing.List[dict]:
     """Return the status of all workspaces for the progress page."""
