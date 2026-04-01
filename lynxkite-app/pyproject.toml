@@ -59,4 +59,5 @@ sse-starlette = "starlette"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pycrdt-websocket", "griffe"]
+DEP003 = ["kubernetes"]
 DEP004 = ["setuptools"]

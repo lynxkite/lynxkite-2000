@@ -15,6 +15,7 @@ from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
+import typing
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -140,6 +141,108 @@ async def execute_workspace(name: str):
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
+
+
+@app.get("/api/progress/workspaces")
+def progress_workspaces() -> typing.List[dict]:
+    """Return the status of all workspaces for the progress page."""
+    res: list[dict] = []
+    server = getattr(crdt, "ws_websocket_server", None)
+    if not server:
+        return res
+    for name, room in getattr(server, "rooms", {}).items():
+        try:
+            ws = workspace.Workspace.model_validate(room.ws.to_py())
+            nodes = ws.nodes or []
+            total = len(nodes)
+            done = sum(1 for n in nodes if n.data.status == "done")
+            active_node = None
+            eta_seconds = None
+            for n in nodes:
+                if n.data.status != "active":
+                    continue
+                telemetry = n.data.telemetry or {}
+                tqdm_n = telemetry.get("n")
+                tqdm_total = telemetry.get("total")
+                tqdm_rate = telemetry.get("rate")
+                active_node = {
+                    "id": n.id,
+                    "title": n.data.title,
+                    "tqdm": {"n": tqdm_n, "total": tqdm_total, "rate": tqdm_rate}
+                    if tqdm_total
+                    else None,
+                }
+                if tqdm_total and tqdm_rate and tqdm_rate > 0 and tqdm_n is not None:
+                    eta_seconds = (tqdm_total - tqdm_n) / tqdm_rate
+                break
+            res.append(
+                {
+                    "name": name,
+                    "status": "active"
+                    if active_node
+                    else ("done" if done == total and total > 0 else "idle"),
+                    "boxes_done": done,
+                    "boxes_total": total,
+                    "active_node": active_node,
+                    "eta_seconds": eta_seconds,
+                    "gpus": (ws.execution_options or {}).get("gpus", 0),
+                    "paused": bool(ws.paused),
+                }
+            )
+        except Exception:
+            pass
+    return res
+
+
+@app.get("/api/progress/nims")
+def progress_nims() -> typing.List[dict]:
+    """Return the status of NIMs (Kubernetes deployments) for the progress page."""
+    try:
+        from kubernetes import client, config
+        from lynxkite_core import workspace as wsmod
+        from . import crdt
+
+        try:
+            config.load_kube_config()
+        except Exception:
+            config.load_incluster_config()
+
+        active_workspaces = []
+        server = getattr(crdt, "ws_websocket_server", None)
+        if server:
+            for name, room in getattr(server, "rooms", {}).items():
+                try:
+                    ws = wsmod.Workspace.model_validate(room.ws.to_py())
+                    active_workspaces.append((name, ws))
+                except Exception:
+                    pass
+
+        nims = []
+        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
+            labels = dict(d.metadata.labels) if d.metadata.labels else {}
+            used_by = [w for w in [labels.get("workspace")] if w]
+            for ws_name, ws in active_workspaces:
+                for node in getattr(ws, "nodes", []):
+                    node_name = getattr(node.data, "op_id", None) or getattr(
+                        node.data, "title", None
+                    )
+                    if node_name and node_name == d.metadata.name and ws_name not in used_by:
+                        used_by.append(ws_name)
+                        break
+            nims.append(
+                {
+                    "publisher": d.metadata.namespace or "",
+                    "name": d.metadata.name,
+                    "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
+                    "replicasHealthy": d.status.available_replicas or 0,
+                    "replicasRequested": d.spec.replicas or 0,
+                    "usedByWorkspaces": used_by,
+                }
+            )
+        return nims
+    except Exception as e:
+        print("Error in /api/progress/nims:", e)
+        return []
 
 
 class SPAStaticFiles(StaticFiles):
