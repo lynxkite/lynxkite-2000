@@ -565,452 +565,18 @@
             {
               "data": [
                 {
-                  "id": "PAK6",
-                  "itemStyle": {
-                    "color": "#481e70"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "PAK6",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -19.42382626450975,
-                  "y": 48.47212158740607
-                },
-                {
-                  "id": "IKBKG",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "IKBKG",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 0.3021725576229701,
-                  "y": 21.078447285269206
-                },
-                {
-                  "id": "CTNNBIP1",
-                  "itemStyle": {
-                    "color": "#287b8e"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "CTNNBIP1",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": 23.879445881520912,
-                  "y": -18.786026350958153
-                },
-                {
-                  "id": "WNT5B",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "WNT5B",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -40.80058274584641,
-                  "y": -1.6602104674625986
-                },
-                {
-                  "id": "CASP3",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "CASP3",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -10.188791006749959,
-                  "y": 11.822674390306865
-                },
-                {
-                  "id": "XRCC2",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "XRCC2",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 38.414021355723186,
-                  "y": 22.61863075941045
-                },
-                {
-                  "id": "ATP6V1B1",
-                  "itemStyle": {
-                    "color": "#30678d"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "ATP6V1B1",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 57.07039232134191,
-                  "y": 1.3081711287735565
-                },
-                {
-                  "id": "SMO",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "SMO",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -32.866348896187134,
-                  "y": -28.876555583747056
-                },
-                {
-                  "id": "CHD2",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "CHD2",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 54.550548701217814,
-                  "y": 21.088743790429866
-                },
-                {
-                  "id": "ATP8B1",
-                  "itemStyle": {
-                    "color": "#481e70"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "ATP8B1",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -3.5075869068308125,
-                  "y": -100.0
-                },
-                {
-                  "id": "SELP",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "SELP",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 61.63340241291208,
-                  "y": -32.838611073702964
-                },
-                {
-                  "id": "GNAI3",
-                  "itemStyle": {
-                    "color": "#30678d"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "GNAI3",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -52.9449301467592,
-                  "y": -4.052889824073507
-                },
-                {
-                  "id": "IL7",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "IL7",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 26.629950910864448,
-                  "y": 43.28069622584979
-                },
-                {
-                  "id": "EPHA1",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "EPHA1",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -69.15957998735114,
-                  "y": 14.29122637970244
-                },
-                {
-                  "id": "NRTN",
-                  "itemStyle": {
-                    "color": "#481e70"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "NRTN",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 21.426971876846405,
-                  "y": -72.26164554719745
-                },
-                {
-                  "id": "TXN2",
-                  "itemStyle": {
-                    "color": "#481e70"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "TXN2",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 8.99339278412953,
-                  "y": -27.9722418977822
-                },
-                {
-                  "id": "CDCA8",
-                  "itemStyle": {
-                    "color": "#481e70"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "CDCA8",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -47.26302381279268,
-                  "y": -60.141398827231676
-                },
-                {
-                  "id": "EP300",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "EP300",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 8.525046953484674,
-                  "y": 3.8533224260029435
-                },
-                {
-                  "id": "LAMA2",
-                  "itemStyle": {
-                    "color": "#287b8e"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "LAMA2",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -40.64067955981509,
-                  "y": -12.69085326433022
-                },
-                {
-                  "id": "SMAP1",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "SMAP1",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 79.00813493429104,
-                  "y": 7.109325676320026
-                },
-                {
-                  "id": "MB",
-                  "itemStyle": {
-                    "color": "#440154"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "MB",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -10.267256927830365,
-                  "y": -30.480478177620256
-                },
-                {
-                  "id": "PPARG",
-                  "itemStyle": {
-                    "color": "#20908c"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "PPARG",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -26.797476134955446,
-                  "y": 8.128454663968185
-                },
-                {
-                  "id": "SCARB2",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "SCARB2",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 8.350390034417561,
-                  "y": 95.15332096136808
-                },
-                {
-                  "id": "VLDLR",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "VLDLR",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -38.0054637894368,
-                  "y": 28.022049827517737
-                },
-                {
-                  "id": "AKT2",
-                  "itemStyle": {
-                    "color": "#fde724"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "AKT2",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -14.824434481647419,
-                  "y": 33.73069510233134
-                },
-                {
-                  "id": "NPR2",
-                  "itemStyle": {
-                    "color": "#20908c"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "NPR2",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -2.073646304452374,
-                  "y": -20.801692619079045
-                },
-                {
-                  "id": "RELA",
-                  "itemStyle": {
-                    "color": "#35b778"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "RELA",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -25.96769855224908,
-                  "y": 24.426814055796253
-                },
-                {
-                  "id": "AKT1",
-                  "itemStyle": {
-                    "color": "#20908c"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "AKT1",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": -5.296448927371995,
-                  "y": 4.780165351810345
-                },
-                {
-                  "id": "MAPKAPK5",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "MAPKAPK5",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -54.57632064930378,
-                  "y": 23.18859203370709
-                },
-                {
-                  "id": "NR4A2",
-                  "itemStyle": {
-                    "color": "#443982"
-                  },
-                  "label": {
-                    "show": false
-                  },
-                  "name": "NR4A2",
-                  "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 32.32579136578825,
-                  "y": 7.444893193996152
-                },
-                {
-                  "id": "CDKN2A",
-                  "itemStyle": {
-                    "color": "#287b8e"
-                  },
-                  "label": {
-                    "show": true
-                  },
-                  "name": "CDKN2A",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": 19.20417859372585,
-                  "y": 27.89594485445154
-                },
-                {
                   "id": "CORO1A",
                   "itemStyle": {
                     "color": "#30678d"
                   },
                   "label": {
-                    "show": true
+                    "show": false
                   },
                   "name": "CORO1A",
-                  "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": 7.182464349283451,
-                  "y": 40.87345514606569
+                  "symbolSize": 10.0,
+                  "value": "5.7851",
+                  "x": 15.339408348852649,
+                  "y": 42.594930460470316
                 },
                 {
                   "id": "MAPK9",
@@ -1022,51 +588,65 @@
                   },
                   "name": "MAPK9",
                   "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -8.911060785673385,
-                  "y": -4.41712644873975
+                  "value": "4.6281",
+                  "x": -2.3284944765437063,
+                  "y": -24.39078207442503
                 },
                 {
-                  "id": "GPX1",
+                  "id": "CDCA8",
                   "itemStyle": {
-                    "color": "#30678d"
+                    "color": "#443982"
                   },
                   "label": {
                     "show": false
                   },
-                  "name": "GPX1",
+                  "name": "CDCA8",
                   "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -21.412551972442557,
-                  "y": -4.238119271373616
+                  "value": "4.6281",
+                  "x": -2.3666286321983634,
+                  "y": -100.0
                 },
                 {
-                  "id": "MLLT3",
+                  "id": "PTPN6",
                   "itemStyle": {
                     "color": "#3a528b"
                   },
                   "label": {
                     "show": false
                   },
-                  "name": "MLLT3",
+                  "name": "PTPN6",
                   "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 46.19757670726592,
-                  "y": -54.70481169278493
+                  "value": "5.2066",
+                  "x": 49.43878949695648,
+                  "y": 1.3941741290072585
                 },
                 {
-                  "id": "PAXIP1",
+                  "id": "CDKN2A",
                   "itemStyle": {
-                    "color": "#20908c"
+                    "color": "#208f8c"
                   },
                   "label": {
                     "show": true
                   },
-                  "name": "PAXIP1",
+                  "name": "CDKN2A",
                   "symbolSize": 20.0,
-                  "value": "2.0000",
-                  "x": 24.524037670564823,
-                  "y": -30.881582282872248
+                  "value": "6.9421",
+                  "x": -21.932951813239303,
+                  "y": 36.3166084115767
+                },
+                {
+                  "id": "SCARB2",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SCARB2",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": -21.952458317891114,
+                  "y": 99.79460610128234
                 },
                 {
                   "id": "PPP3CA",
@@ -1078,9 +658,79 @@
                   },
                   "name": "PPP3CA",
                   "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": -15.869586417849533,
-                  "y": 18.58650466080172
+                  "value": "3.4710",
+                  "x": 9.030626749414566,
+                  "y": -23.646955978693
+                },
+                {
+                  "id": "IKBKG",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "IKBKG",
+                  "symbolSize": 10.0,
+                  "value": "3.4710",
+                  "x": -7.07080547981673,
+                  "y": 3.539369926727371
+                },
+                {
+                  "id": "IL7",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "IL7",
+                  "symbolSize": 10.0,
+                  "value": "4.0496",
+                  "x": 41.86199050861333,
+                  "y": 43.19475918896892
+                },
+                {
+                  "id": "NPR2",
+                  "itemStyle": {
+                    "color": "#208f8c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "NPR2",
+                  "symbolSize": 20.0,
+                  "value": "6.9421",
+                  "x": -29.74263453919236,
+                  "y": 18.789909223403008
+                },
+                {
+                  "id": "CYP26A1",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CYP26A1",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": -36.12975454304518,
+                  "y": -69.07229293906731
+                },
+                {
+                  "id": "GATAD2A",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GATAD2A",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": 32.61011724436891,
+                  "y": 76.86292123345969
                 },
                 {
                   "id": "CD74",
@@ -1092,9 +742,373 @@
                   },
                   "name": "CD74",
                   "symbolSize": 10.0,
-                  "value": "2.0000",
-                  "x": 22.579374859054546,
-                  "y": -2.3500061723308625
+                  "value": "3.4710",
+                  "x": 32.2511016997341,
+                  "y": 12.281399460748046
+                },
+                {
+                  "id": "GNAI3",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GNAI3",
+                  "symbolSize": 10.0,
+                  "value": "5.7851",
+                  "x": 21.8571943689177,
+                  "y": -56.05002794632343
+                },
+                {
+                  "id": "EP300",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "EP300",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": 2.9584526707031116,
+                  "y": 13.241168396280777
+                },
+                {
+                  "id": "PPARG",
+                  "itemStyle": {
+                    "color": "#287b8e"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PPARG",
+                  "symbolSize": 20.0,
+                  "value": "6.3636",
+                  "x": 43.36276904641913,
+                  "y": 20.270526123898293
+                },
+                {
+                  "id": "PAXIP1",
+                  "itemStyle": {
+                    "color": "#208f8c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PAXIP1",
+                  "symbolSize": 20.0,
+                  "value": "6.9421",
+                  "x": -41.35588417147921,
+                  "y": -23.224711862217827
+                },
+                {
+                  "id": "AKT1",
+                  "itemStyle": {
+                    "color": "#208f8c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "AKT1",
+                  "symbolSize": 20.0,
+                  "value": "6.9421",
+                  "x": 21.972536042963164,
+                  "y": -5.686702284384597
+                },
+                {
+                  "id": "CHD2",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CHD2",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": -63.59456929884805,
+                  "y": -22.138042787333482
+                },
+                {
+                  "id": "EPHA1",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "EPHA1",
+                  "symbolSize": 10.0,
+                  "value": "3.4710",
+                  "x": 54.586092158432656,
+                  "y": -12.667485695362474
+                },
+                {
+                  "id": "AKT2",
+                  "itemStyle": {
+                    "color": "#fde724"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "AKT2",
+                  "symbolSize": 20.0,
+                  "value": "10.4131",
+                  "x": 15.744225106440995,
+                  "y": 4.581985634181478
+                },
+                {
+                  "id": "SMO",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SMO",
+                  "symbolSize": 10.0,
+                  "value": "3.4710",
+                  "x": -10.311207992633555,
+                  "y": -38.240954649308286
+                },
+                {
+                  "id": "MAPKAPK5",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MAPKAPK5",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": 4.4342625361473935,
+                  "y": -66.68358346140103
+                },
+                {
+                  "id": "SELP",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SELP",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": -47.53378240353962,
+                  "y": 61.774459957607775
+                },
+                {
+                  "id": "MLLT3",
+                  "itemStyle": {
+                    "color": "#3a528b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MLLT3",
+                  "symbolSize": 10.0,
+                  "value": "5.2066",
+                  "x": -74.53591254420087,
+                  "y": -7.117736931293014
+                },
+                {
+                  "id": "VLDLR",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "VLDLR",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": 74.69236026205573,
+                  "y": 14.503814614209704
+                },
+                {
+                  "id": "LAMA2",
+                  "itemStyle": {
+                    "color": "#287b8e"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "LAMA2",
+                  "symbolSize": 20.0,
+                  "value": "6.3636",
+                  "x": 49.885337409217186,
+                  "y": -38.78402017681538
+                },
+                {
+                  "id": "GPX1",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "GPX1",
+                  "symbolSize": 20.0,
+                  "value": "5.7851",
+                  "x": 25.177233550604917,
+                  "y": 17.252642989778302
+                },
+                {
+                  "id": "MB",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MB",
+                  "symbolSize": 10.0,
+                  "value": "3.4710",
+                  "x": 32.62195771674869,
+                  "y": -24.958330200365722
+                },
+                {
+                  "id": "RELA",
+                  "itemStyle": {
+                    "color": "#35b778"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "RELA",
+                  "symbolSize": 20.0,
+                  "value": "8.0991",
+                  "x": 19.589208226564775,
+                  "y": -21.002810833391727
+                },
+                {
+                  "id": "WNT5B",
+                  "itemStyle": {
+                    "color": "#3a528b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "WNT5B",
+                  "symbolSize": 10.0,
+                  "value": "5.2066",
+                  "x": 39.262989435772845,
+                  "y": -36.6018206953567
+                },
+                {
+                  "id": "PAK6",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PAK6",
+                  "symbolSize": 10.0,
+                  "value": "4.0496",
+                  "x": 8.600101151738432,
+                  "y": 33.26841192067238
+                },
+                {
+                  "id": "TXN2",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TXN2",
+                  "symbolSize": 10.0,
+                  "value": "4.0496",
+                  "x": -6.443959048591083,
+                  "y": 33.01325690723766
+                },
+                {
+                  "id": "ATP6V1B1",
+                  "itemStyle": {
+                    "color": "#30678d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ATP6V1B1",
+                  "symbolSize": 10.0,
+                  "value": "5.7851",
+                  "x": -62.16727151312319,
+                  "y": 30.80338569353937
+                },
+                {
+                  "id": "ATP8B1",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ATP8B1",
+                  "symbolSize": 10.0,
+                  "value": "4.0496",
+                  "x": -69.8863994661346,
+                  "y": -83.18849430269194
+                },
+                {
+                  "id": "MAPK3",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MAPK3",
+                  "symbolSize": 10.0,
+                  "value": "4.0496",
+                  "x": -7.274429272797812,
+                  "y": -14.616114044114523
+                },
+                {
+                  "id": "XRCC2",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "XRCC2",
+                  "symbolSize": 10.0,
+                  "value": "3.4710",
+                  "x": -63.39360258907054,
+                  "y": 13.74729856077057
+                },
+                {
+                  "id": "SMAP1",
+                  "itemStyle": {
+                    "color": "#443982"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SMAP1",
+                  "symbolSize": 10.0,
+                  "value": "4.6281",
+                  "x": -0.1896519592436928,
+                  "y": 95.33374967534702
+                },
+                {
+                  "id": "CTNNBIP1",
+                  "itemStyle": {
+                    "color": "#208f8c"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CTNNBIP1",
+                  "symbolSize": 20.0,
+                  "value": "6.9421",
+                  "x": -27.066355669077502,
+                  "y": -4.488511746620358
                 }
               ],
               "emphasis": {
@@ -1114,48 +1128,356 @@
               },
               "links": [
                 {
-                  "source": "PAK6",
-                  "target": "IKBKG"
+                  "source": "CORO1A",
+                  "target": "IL7"
                 },
                 {
-                  "source": "PAK6",
+                  "source": "CORO1A",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CORO1A",
                   "target": "RELA"
                 },
                 {
-                  "source": "PAK6",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "PAK6",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "PAK6",
+                  "source": "CORO1A",
                   "target": "PPP3CA"
                 },
                 {
-                  "source": "PAK6",
-                  "target": "AKT2"
+                  "source": "CORO1A",
+                  "target": "MAPK9"
                 },
                 {
-                  "source": "PAK6",
-                  "target": "NPR2"
+                  "source": "CORO1A",
+                  "target": "AKT1"
                 },
                 {
-                  "source": "PAK6",
+                  "source": "CORO1A",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "CORO1A",
                   "target": "EP300"
                 },
                 {
-                  "source": "PAK6",
-                  "target": "CASP3"
+                  "source": "CORO1A",
+                  "target": "GPX1"
                 },
                 {
-                  "source": "PAK6",
+                  "source": "CORO1A",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "CORO1A",
+                  "target": "CD74"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CD74"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "SMO"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "RELA"
+                },
+                {
+                  "source": "MAPK9",
                   "target": "LAMA2"
                 },
                 {
-                  "source": "PAK6",
+                  "source": "MAPK9",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "PTPN6"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CDCA8"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CYP26A1"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "MB"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "EP300"
+                },
+                {
+                  "source": "MAPK9",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "CDCA8",
+                  "target": "CYP26A1"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "SMO"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "IL7"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "PPP3CA"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "EP300"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "PTPN6",
+                  "target": "RELA"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "EP300"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "RELA"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "SMAP1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "SMO"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "CDKN2A",
                   "target": "SCARB2"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "SCARB2",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "SCARB2",
+                  "target": "GATAD2A"
+                },
+                {
+                  "source": "SCARB2",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "CD74"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "PAXIP1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "NPR2"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "IKBKG"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "GNAI3"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "EP300"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "CYP26A1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "PPP3CA",
+                  "target": "RELA"
                 },
                 {
                   "source": "IKBKG",
@@ -1164,6 +1486,14 @@
                 {
                   "source": "IKBKG",
                   "target": "GPX1"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "IKBKG",
+                  "target": "PAK6"
                 },
                 {
                   "source": "IKBKG",
@@ -1180,10 +1510,6 @@
                 {
                   "source": "IKBKG",
                   "target": "AKT2"
-                },
-                {
-                  "source": "IKBKG",
-                  "target": "PPP3CA"
                 },
                 {
                   "source": "IKBKG",
@@ -1195,14 +1521,6 @@
                 },
                 {
                   "source": "IKBKG",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "IKBKG",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "IKBKG",
                   "target": "MAPKAPK5"
                 },
                 {
@@ -1215,23 +1533,11 @@
                 },
                 {
                   "source": "IKBKG",
-                  "target": "SCARB2"
-                },
-                {
-                  "source": "IKBKG",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "IKBKG",
                   "target": "CHD2"
                 },
                 {
                   "source": "IKBKG",
                   "target": "RELA"
-                },
-                {
-                  "source": "IKBKG",
-                  "target": "CASP3"
                 },
                 {
                   "source": "IKBKG",
@@ -1242,232 +1548,412 @@
                   "target": "XRCC2"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "WNT5B"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "TXN2"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "IL7"
-                },
-                {
-                  "source": "CTNNBIP1",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "CTNNBIP1",
+                  "source": "IL7",
                   "target": "EP300"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "NRTN"
+                  "source": "IL7",
+                  "target": "CTNNBIP1"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "NPR2"
+                  "source": "IL7",
+                  "target": "AKT1"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "MLLT3"
+                  "source": "IL7",
+                  "target": "VLDLR"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "MB"
+                  "source": "IL7",
+                  "target": "AKT2"
                 },
                 {
-                  "source": "CTNNBIP1",
-                  "target": "ATP6V1B1"
+                  "source": "IL7",
+                  "target": "PAXIP1"
                 },
                 {
-                  "source": "WNT5B",
+                  "source": "NPR2",
+                  "target": "EP300"
+                },
+                {
+                  "source": "NPR2",
+                  "target": "SMO"
+                },
+                {
+                  "source": "NPR2",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "NPR2",
                   "target": "EPHA1"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "AKT2"
+                  "source": "NPR2",
+                  "target": "SELP"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "MB"
-                },
-                {
-                  "source": "WNT5B",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "WNT5B",
-                  "target": "SMO"
-                },
-                {
-                  "source": "WNT5B",
-                  "target": "EP300"
-                },
-                {
-                  "source": "WNT5B",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "WNT5B",
+                  "source": "NPR2",
                   "target": "PPARG"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "VLDLR"
+                  "source": "NPR2",
+                  "target": "PAK6"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "MAPK9"
+                  "source": "NPR2",
+                  "target": "CTNNBIP1"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "AKT1"
+                  "source": "NPR2",
+                  "target": "MAPK3"
                 },
                 {
-                  "source": "WNT5B",
-                  "target": "CASP3"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "XRCC2"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "LAMA2"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "EP300"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "MB"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "CD74"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "CASP3",
+                  "source": "CYP26A1",
                   "target": "RELA"
                 },
                 {
-                  "source": "CASP3",
-                  "target": "PPARG"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "CHD2"
-                },
-                {
-                  "source": "CASP3",
-                  "target": "GNAI3"
-                },
-                {
-                  "source": "CASP3",
+                  "source": "CYP26A1",
                   "target": "MAPKAPK5"
                 },
                 {
-                  "source": "CASP3",
-                  "target": "CDKN2A"
+                  "source": "CYP26A1",
+                  "target": "ATP8B1"
                 },
                 {
-                  "source": "CASP3",
+                  "source": "CYP26A1",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "CYP26A1",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "CYP26A1",
                   "target": "SMO"
                 },
                 {
-                  "source": "XRCC2",
-                  "target": "CHD2"
+                  "source": "GATAD2A",
+                  "target": "SELP"
                 },
                 {
-                  "source": "XRCC2",
+                  "source": "GATAD2A",
                   "target": "AKT2"
                 },
                 {
-                  "source": "XRCC2",
-                  "target": "NPR2"
+                  "source": "GATAD2A",
+                  "target": "EPHA1"
                 },
                 {
-                  "source": "XRCC2",
-                  "target": "PAXIP1"
+                  "source": "GATAD2A",
+                  "target": "PPARG"
                 },
                 {
-                  "source": "XRCC2",
-                  "target": "TXN2"
+                  "source": "GATAD2A",
+                  "target": "GPX1"
                 },
                 {
-                  "source": "XRCC2",
-                  "target": "CDKN2A"
+                  "source": "CD74",
+                  "target": "LAMA2"
                 },
                 {
-                  "source": "ATP6V1B1",
+                  "source": "CD74",
+                  "target": "RELA"
+                },
+                {
+                  "source": "CD74",
+                  "target": "SMAP1"
+                },
+                {
+                  "source": "CD74",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "CD74",
                   "target": "EP300"
                 },
                 {
-                  "source": "ATP6V1B1",
-                  "target": "MAPK9"
+                  "source": "CD74",
+                  "target": "AKT1"
                 },
                 {
-                  "source": "ATP6V1B1",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "ATP6V1B1",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "ATP6V1B1",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "ATP6V1B1",
+                  "source": "CD74",
                   "target": "CHD2"
+                },
+                {
+                  "source": "CD74",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "SMO"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "RELA"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "EP300"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "EPHA1"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "GNAI3",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "EP300",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "EP300",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "EP300",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "EP300",
+                  "target": "SMO"
+                },
+                {
+                  "source": "EP300",
+                  "target": "SMAP1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "RELA"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MB"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "EP300",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "EP300",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "EP300",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "EP300",
+                  "target": "PPARG"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "AKT1"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "RELA"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "MB"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "PPARG",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "ATP8B1"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "MB"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "CHD2"
+                },
+                {
+                  "source": "PAXIP1",
+                  "target": "SELP"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MLLT3"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "AKT2"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MB"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "RELA"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "AKT1",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "CHD2",
+                  "target": "ATP6V1B1"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "VLDLR"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "EPHA1",
+                  "target": "SMO"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "LAMA2"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "MAPKAPK5"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "AKT2",
+                  "target": "RELA"
                 },
                 {
                   "source": "SMO",
@@ -1479,11 +1965,7 @@
                 },
                 {
                   "source": "SMO",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "SMO",
-                  "target": "GNAI3"
+                  "target": "WNT5B"
                 },
                 {
                   "source": "SMO",
@@ -1491,47 +1973,19 @@
                 },
                 {
                   "source": "SMO",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "SMO",
                   "target": "TXN2"
-                },
-                {
-                  "source": "SMO",
-                  "target": "EP300"
-                },
-                {
-                  "source": "SMO",
-                  "target": "CDKN2A"
                 },
                 {
                   "source": "SMO",
                   "target": "RELA"
                 },
                 {
-                  "source": "SMO",
-                  "target": "EPHA1"
+                  "source": "MAPKAPK5",
+                  "target": "RELA"
                 },
                 {
-                  "source": "CHD2",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "CHD2",
-                  "target": "CD74"
-                },
-                {
-                  "source": "CHD2",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "ATP8B1",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "ATP8B1",
-                  "target": "NRTN"
+                  "source": "MAPKAPK5",
+                  "target": "MAPK3"
                 },
                 {
                   "source": "SELP",
@@ -1543,499 +1997,119 @@
                 },
                 {
                   "source": "SELP",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "SELP",
                   "target": "TXN2"
-                },
-                {
-                  "source": "SELP",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "CDCA8"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "LAMA2"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "RELA"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "EP300"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "EPHA1"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "GNAI3",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "IL7",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "IL7",
-                  "target": "EP300"
-                },
-                {
-                  "source": "IL7",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "IL7",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "IL7",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "IL7",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "EPHA1",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "EPHA1",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "EPHA1",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "NRTN",
-                  "target": "CD74"
-                },
-                {
-                  "source": "NRTN",
-                  "target": "MB"
-                },
-                {
-                  "source": "NRTN",
-                  "target": "MLLT3"
-                },
-                {
-                  "source": "NRTN",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "EP300"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "MB"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "PPARG"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "TXN2",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "CDCA8",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "CDCA8",
-                  "target": "LAMA2"
-                },
-                {
-                  "source": "CDCA8",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "EP300",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "EP300",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "EP300",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "EP300",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "EP300",
-                  "target": "SMAP1"
-                },
-                {
-                  "source": "EP300",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "EP300",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "EP300",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "EP300",
-                  "target": "RELA"
-                },
-                {
-                  "source": "EP300",
-                  "target": "MB"
-                },
-                {
-                  "source": "EP300",
-                  "target": "MLLT3"
-                },
-                {
-                  "source": "EP300",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "EP300",
-                  "target": "CD74"
-                },
-                {
-                  "source": "EP300",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "EP300",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "EP300",
-                  "target": "PPARG"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "CD74"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "RELA"
-                },
-                {
-                  "source": "LAMA2",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "SMAP1",
-                  "target": "CD74"
-                },
-                {
-                  "source": "SMAP1",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "SMAP1",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "MB",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "MB",
-                  "target": "PAXIP1"
-                },
-                {
-                  "source": "MB",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "MB",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "MB",
-                  "target": "PPARG"
-                },
-                {
-                  "source": "MB",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "MB",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "VLDLR"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "NPR2"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "RELA"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "AKT2"
-                },
-                {
-                  "source": "PPARG",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "SCARB2",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "VLDLR",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "VLDLR",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "MAPKAPK5"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "CD74"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "RELA"
-                },
-                {
-                  "source": "AKT2",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "NPR2",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "RELA",
-                  "target": "MAPKAPK5"
-                },
-                {
-                  "source": "RELA",
-                  "target": "CD74"
-                },
-                {
-                  "source": "RELA",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "RELA",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "RELA",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "RELA",
-                  "target": "AKT1"
-                },
-                {
-                  "source": "RELA",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "RELA",
-                  "target": "NR4A2"
-                },
-                {
-                  "source": "RELA",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "MLLT3"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "MAPKAPK5"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "CDKN2A"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "CD74"
-                },
-                {
-                  "source": "AKT1",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "MAPKAPK5",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "MAPKAPK5",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "NR4A2",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "CDKN2A",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "CDKN2A",
-                  "target": "CORO1A"
-                },
-                {
-                  "source": "CDKN2A",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "CORO1A",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "CORO1A",
-                  "target": "MAPK9"
-                },
-                {
-                  "source": "CORO1A",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "CORO1A",
-                  "target": "CD74"
-                },
-                {
-                  "source": "MAPK9",
-                  "target": "CD74"
-                },
-                {
-                  "source": "MAPK9",
-                  "target": "PPP3CA"
-                },
-                {
-                  "source": "MAPK9",
-                  "target": "GPX1"
-                },
-                {
-                  "source": "GPX1",
-                  "target": "PPP3CA"
                 },
                 {
                   "source": "MLLT3",
-                  "target": "PAXIP1"
+                  "target": "CTNNBIP1"
                 },
                 {
-                  "source": "PAXIP1",
-                  "target": "PPP3CA"
+                  "source": "VLDLR",
+                  "target": "TXN2"
                 },
                 {
-                  "source": "PPP3CA",
-                  "target": "CD74"
+                  "source": "VLDLR",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "VLDLR",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "VLDLR",
+                  "target": "MB"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "GPX1"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "RELA"
+                },
+                {
+                  "source": "LAMA2",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "MB"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "RELA"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "GPX1",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "MB",
+                  "target": "WNT5B"
+                },
+                {
+                  "source": "MB",
+                  "target": "TXN2"
+                },
+                {
+                  "source": "MB",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "RELA",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "RELA",
+                  "target": "PAK6"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "WNT5B",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "PAK6",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "TXN2",
+                  "target": "XRCC2"
+                },
+                {
+                  "source": "ATP6V1B1",
+                  "target": "CTNNBIP1"
+                },
+                {
+                  "source": "ATP8B1",
+                  "target": "MAPK3"
+                },
+                {
+                  "source": "MAPK3",
+                  "target": "XRCC2"
                 }
               ],
               "roam": true,
@@ -2055,8 +2129,8 @@
                 "#fde725"
               ]
             },
-            "max": 2.000004291534424,
-            "min": 2.0000014305114746,
+            "max": 10.413128852844238,
+            "min": 3.4710428714752197,
             "realtime": false,
             "text": [
               "High",
@@ -2583,7 +2657,7 @@
               ],
               "data": [
                 [
-                  "## Prediction\n\n**BYL719 + LEE011 is effective against pancreatic ductal adenocarcinoma** (p=0.985)\n\nTop 3 genes: AKT2, RELA, NPR2\n\n## Explanation\n\nBYL719 and LEE011 are targeted therapies that inhibit specific molecular pathways involved in cancer cell growth and survival. BYL719, also known as alpelisib, is a PI3K inhibitor, while LEE011, known as ribociclib, is a CDK4/6 inhibitor. The neural network's prediction that this combination is effective against pancreatic ductal adenocarcinoma likely hinges on the roles of AKT2, RELA, and NPR2 in the cancer's biology.\n\n1. **AKT2**: This gene encodes a protein kinase involved in the PI3K/AKT signaling pathway, which promotes cell proliferation and survival. Hyperactivity of this pathway is commonly found in various cancers, including pancreatic ductal adenocarcinoma. BYL719\u2019s inhibitory action on PI3K can suppress this pathway, thereby reducing cancer cell proliferation and survival.\n\n2. **RELA**: This gene encodes a subunit of the NF-kB transcription factor, which is involved in inflammatory responses, immune regulation, and cell survival pathways. Dysregulation of NF-kB signaling has been implicated in cancer progression and resistance to apoptosis. Targeting this pathway could help in reducing the survival signals and potentially improving the effectiveness of the treatment.\n\n3. **NPR2**: Although not as directly linked to cancer pathways as the other two genes, NPR2 is part of the natriuretic peptide signaling pathway, which can influence cellular proliferation and growth under certain conditions. Its role suggests possible cross-talk with pathways targeted by BYL719 and LEE011, either enhancing the effect of the blockade or modulating other growth processes in cancer cells.\n\nThe combination of BYL719 and LEE011 targets both the PI3K/AKT pathway and the cell cycle regulation (via CDK4/6 inhibition), potentially offering a comprehensive approach to disrupt multiple cancer-promoting pathways simultaneously. This multi-targeted approach could be particularly effective in treating pancreatic ductal adenocarcinoma, given its aggressive nature and the typically complex molecular signaling involved in its development and progression."
+                  "## Prediction\n\n**BYL719 + LEE011 is effective against pancreatic ductal adenocarcinoma** (probability of effectiveness: 98.5%)\n\nTop 3 genes: **AKT2** (attention: 10.41), **RELA** (attention: 8.10), **NPR2** (attention: 6.94)\n\n## Explanation\n\nBYL719 and LEE011 are targeted therapies that inhibit specific molecular pathways involved in cancer cell growth and survival. BYL719, also known as alpelisib, is a PI3K inhibitor, while LEE011, known as ribociclib, is a CDK4/6 inhibitor. The neural network's prediction that this combination is effective against pancreatic ductal adenocarcinoma likely hinges on the roles of AKT2, RELA, and NPR2 in the cancer's biology.\n\n1. **AKT2**: This gene encodes a protein kinase involved in the PI3K/AKT signaling pathway, which promotes cell proliferation and survival. Hyperactivity of this pathway is commonly found in various cancers, including pancreatic ductal adenocarcinoma. BYL719\u2019s inhibitory action on PI3K can suppress this pathway, thereby reducing cancer cell proliferation and survival.\n\n2. **RELA**: This gene encodes a subunit of the NF-kB transcription factor, which is involved in inflammatory responses, immune regulation, and cell survival pathways. Dysregulation of NF-kB signaling has been implicated in cancer progression and resistance to apoptosis. Targeting this pathway could help in reducing the survival signals and potentially improving the effectiveness of the treatment.\n\n3. **NPR2**: Although not as directly linked to cancer pathways as the other two genes, NPR2 is part of the natriuretic peptide signaling pathway, which can influence cellular proliferation and growth under certain conditions. Its role suggests possible cross-talk with pathways targeted by BYL719 and LEE011, either enhancing the effect of the blockade or modulating other growth processes in cancer cells.\n\nThe combination of BYL719 and LEE011 targets both the PI3K/AKT pathway and the cell cycle regulation (via CDK4/6 inhibition), potentially offering a comprehensive approach to disrupt multiple cancer-promoting pathways simultaneously. This multi-targeted approach could be particularly effective in treating pancreatic ductal adenocarcinoma, given its aggressive nature and the typically complex molecular signaling involved in its development and progression."
                 ]
               ]
             }

@@ -581,16 +581,18 @@ def predict_with_attribution(
     scores1 = aggregate_attention(ei1, aw1)
     scores2 = aggregate_attention(ei2, aw2)
     combined = scores1 + scores2
+    # Normalize scores to zero mean, unit variance for better interpretability
+    combined = (combined - combined.mean()) / (combined.std() + 1e-8)
 
     df = pd.DataFrame({"node": node_names, "attention_score": combined.numpy()})
     df = df.sort_values("attention_score", ascending=False).reset_index(drop=True)
     return prob, df
 
 
-def top_genes(attribution_df: pd.DataFrame, n: int = 10) -> list[str]:
+def top_genes(attribution_df: pd.DataFrame, n: int = 10) -> tuple[list[str], list[float]]:
     """Return the names of the top N most important genes from an attribution DataFrame."""
     genes = attribution_df[~attribution_df["node"].str.contains(":")]
-    return genes.head(n)["node"].tolist()
+    return genes.head(n)["node"].tolist(), genes.head(n)["attention_score"].tolist()
 
 
 @op("Load GAT model", icon="file-filled", color="green")
@@ -710,7 +712,7 @@ DISEASE_NAMES = {
 @op("Attribution to text", icon="message-circle-filled", color="blue", view="table_view")
 def attribution_to_text(b: core.Bundle, *, top_n=3):
     """Generate an explanation based on the attribution data."""
-    genes = top_genes(b.dfs["attribution"], n=top_n)
+    genes, scores = top_genes(b.dfs["attribution"], n=top_n)
     prediction = b.other["prediction"]
     prob = prediction["prob"]
     drug = str(prediction["drug"])
@@ -720,8 +722,11 @@ def attribution_to_text(b: core.Bundle, *, top_n=3):
     effective = "effective" if prob >= 0.5 else "not effective"
     lines = []
     lines.append("## Prediction")
-    lines.append(f"**{drug} is {effective} against {disease}** (p={prob:.3f})")
-    lines.append(f"Top {top_n} genes: {', '.join(genes)}")
+    lines.append(
+        f"**{drug} is {effective} against {disease}** (probability of effectiveness: {prob:.1%})"
+    )
+    genes_str = [f"**{gene}** (attention: {score:.2f})" for (gene, score) in zip(genes, scores)]
+    lines.append(f"Top {top_n} genes: {', '.join(genes_str)}")
 
     explanation = explain_prediction(drug, disease, prob, genes)
     lines.append("## Explanation")
@@ -1012,7 +1017,7 @@ def explain(drug, disease, model_path, top_n):
     prob, attr_df = predict_with_attribution(
         model, b, drug, disease, esm2_mat, tissue_cache, drug_to_id, disease_to_id
     )
-    genes = top_genes(attr_df, n=top_n)
+    genes, scores = top_genes(attr_df, n=top_n)
 
     effective = "effective" if prob >= 0.5 else "not effective"
     print(f"Prediction:\n{drug} is {effective} against {disease} (p={prob:.3f})")
