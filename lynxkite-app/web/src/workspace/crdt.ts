@@ -52,6 +52,8 @@ type CRDTWorkspace = {
   addEdge: (edge: Partial<WorkspaceEdge>) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
+  undo: () => void;
+  redo: () => void;
 };
 
 export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
@@ -78,6 +80,7 @@ export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
 class CRDTConnection {
   doc: Y.Doc;
   ws: Y.Map<any>;
+  undoManager: Y.UndoManager;
   wsProvider: WebsocketProvider;
   reactFlow: ReturnType<typeof useReactFlow>;
   updateNodeInternals: (id: string) => void;
@@ -91,6 +94,7 @@ class CRDTConnection {
     this.reactFlow = reactFlow;
     this.updateNodeInternals = updateNodeInternals;
     this.doc = new Y.Doc();
+    this.undoManager = new Y.UndoManager(this.doc, { captureTimeout: 600 });
     this.ws = this.doc.getMap("workspace");
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const encodedPath = path!
@@ -143,6 +147,14 @@ class CRDTConnection {
         this.doc.transact(() => {
           fn(this);
         });
+        this.updateState();
+      },
+      undo: () => {
+        this.undoManager.undo();
+        this.updateState();
+      },
+      redo: () => {
+        this.undoManager.redo();
         this.updateState();
       },
     };
