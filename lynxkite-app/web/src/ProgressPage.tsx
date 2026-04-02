@@ -271,7 +271,7 @@ function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
                 </div>
               </td>
               <td className="workspace-eta">
-                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total} boxes`}
+                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
                 {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
               </td>
               <td className="workspace-resources">{ws.gpus || "—"}</td>

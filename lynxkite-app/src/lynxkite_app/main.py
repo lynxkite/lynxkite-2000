@@ -16,6 +16,7 @@ from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 import typing
+import re
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -162,6 +163,30 @@ async def stop_workspace(req: dict):
             node["data"]["message"] = None
 
 
+def _load_k8s_config():
+    """Load Kubernetes configuration (in-cluster or from kubeconfig)."""
+    from kubernetes import config
+
+    try:
+        config.load_kube_config()
+    except Exception:
+        config.load_incluster_config()
+
+
+def _get_active_workspaces() -> typing.List[typing.Tuple[str, workspace.Workspace]]:
+    """Return list of (name, workspace) tuples for all active workspaces."""
+    active_workspaces = []
+    server = getattr(crdt, "ws_websocket_server", None)
+    if server:
+        for name, room in getattr(server, "rooms", {}).items():
+            try:
+                ws = workspace.Workspace.model_validate(room.ws.to_py())
+                active_workspaces.append((name, ws))
+            except Exception as e:
+                print(f"Error loading workspace {name}: {e}")
+    return active_workspaces
+
+
 @app.get("/api/progress/workspaces")
 def progress_workspaces() -> typing.List[dict]:
     """Return the status of all workspaces for the progress page."""
@@ -169,8 +194,25 @@ def progress_workspaces() -> typing.List[dict]:
     server = getattr(crdt, "ws_websocket_server", None)
     if not server:
         return res
+    # Get gpu count from live K8s deployments as fallback for workspaces
+    # that don't have execution_options.gpus explicitly set.
+    k8s_workspace_gpus: dict[str, int] = {}
+    try:
+        from kubernetes import client as _k8s_client
+
+        _load_k8s_config()
+        for d in _k8s_client.AppsV1Api().list_deployment_for_all_namespaces().items:
+            labels = dict(d.metadata.labels) if d.metadata.labels else {}
+            ws_label = labels.get("workspace")
+            if ws_label:
+                k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
+                    d.spec.replicas or 0
+                )
+    except Exception as e:
+        print(f"Error fetching K8s deployments for GPU info: {e}")
     for name, room in getattr(server, "rooms", {}).items():
         try:
+            name = re.sub(r"[^a-zA-Z0-9]", "-", name.removesuffix(".lynxkite.json"))
             ws = workspace.Workspace.model_validate(room.ws.to_py())
             nodes = ws.nodes or []
             total = len(nodes)
@@ -204,12 +246,13 @@ def progress_workspaces() -> typing.List[dict]:
                     "boxes_total": total,
                     "active_node": active_node,
                     "eta_seconds": eta_seconds,
-                    "gpus": (ws.execution_options or {}).get("gpus", 0),
+                    "gpus": (ws.execution_options or {}).get("gpus")
+                    or k8s_workspace_gpus.get(name, 0),
                     "paused": bool(ws.paused),
                 }
             )
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Error processing workspace {name}: {e}")
     return res
 
 
@@ -217,24 +260,10 @@ def progress_workspaces() -> typing.List[dict]:
 def progress_nims() -> typing.List[dict]:
     """Return the status of NIMs (Kubernetes deployments) for the progress page."""
     try:
-        from kubernetes import client, config
-        from lynxkite_core import workspace as wsmod
-        from . import crdt
+        from kubernetes import client
 
-        try:
-            config.load_kube_config()
-        except Exception:
-            config.load_incluster_config()
-
-        active_workspaces = []
-        server = getattr(crdt, "ws_websocket_server", None)
-        if server:
-            for name, room in getattr(server, "rooms", {}).items():
-                try:
-                    ws = wsmod.Workspace.model_validate(room.ws.to_py())
-                    active_workspaces.append((name, ws))
-                except Exception:
-                    pass
+        _load_k8s_config()
+        active_workspaces = _get_active_workspaces()
 
         nims = []
         for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
