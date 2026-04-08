@@ -1,7 +1,9 @@
 // A system-wide progress page, that gives an overview of workspaces running, resources used, etc.
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
 import Back from "~icons/tabler/arrow-left";
 import ScaleUp from "~icons/tabler/arrow-up";
@@ -116,50 +118,93 @@ export default function ProgressPage() {
       },
     ],
   });
-  // Periodically fetch real data from the backend and merge with mock shape.
-  const fetchProgress = useCallback(async () => {
-    try {
-      const [wres, nres] = await Promise.all([
-        fetch("/api/progress/workspaces").then((r) => (r.ok ? r.json() : [])),
-        fetch("/api/progress/nims").then((r) => (r.ok ? r.json() : [])),
-      ]);
+  // Connect to the progress CRDT room and observe live updates.
+  const ydocRef = useRef<Y.Doc | null>(null);
 
-      const workspaces = (Array.isArray(wres) ? wres : []).map((ws: any) => ({
-        name: ws.name,
-        user: "Test User",
-        status: ws.status,
-        boxes_done: ws.boxes_done,
-        boxes_total: ws.boxes_total,
-        active_node: ws.active_node ?? null,
-        eta_seconds: ws.eta_seconds ?? null,
-        gpus: ws.gpus ?? 0,
-        paused: ws.paused ?? false,
-      }));
-
-      // Map backend nims to UI shape
-      const nims = (Array.isArray(nres) ? nres : []).map((n: any) => ({
-        publisher: n.publisher || "",
-        name: n.name,
-        status: n.status,
-        replicasHealthy: n.replicasHealthy,
-        replicasRequested: n.replicasRequested,
-        usedByWorkspaces: (n.usedByWorkspaces || []) as string[],
-      }));
-
-      setData((prev) => ({
-        ...prev,
-        workspaces: workspaces.length ? workspaces : prev.workspaces,
-        nims: nims.length ? nims : prev.nims,
-      }));
-    } catch (e) {
-      console.warn("progress fetch failed", e);
-    }
-  }, [setData]);
+  function sendWorkspaceCommand(command: {
+    type: "pause" | "stop";
+    room_name: string;
+    paused?: boolean;
+  }) {
+    const doc = ydocRef.current;
+    if (!doc) return;
+    const commands = doc.getMap("commands");
+    const commandId = `${Date.now()}-${Math.random()}`;
+    doc.transact(() => {
+      commands.set(commandId, JSON.stringify(command));
+    });
+  }
   useEffect(() => {
-    fetchProgress();
-    const t = setInterval(fetchProgress, 5000);
-    return () => clearInterval(t);
-  }, [fetchProgress]);
+    const doc = new Y.Doc();
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const provider = new WebsocketProvider(
+      `${proto}//${location.host}/ws/progress/crdt`,
+      "progress",
+      doc,
+    );
+    ydocRef.current = doc;
+
+    const wsMap = doc.getMap("workspaces");
+    const nimsText = doc.getText("nims");
+
+    function parseWorkspace(value: unknown) {
+      if (typeof value === "string") {
+        return JSON.parse(value);
+      }
+      return value as any;
+    }
+
+    function syncWorkspaces() {
+      const workspaces: any[] = [];
+      for (const value of (wsMap as Y.Map<unknown>).values()) {
+        try {
+          const ws = parseWorkspace(value);
+          if (ws && typeof ws === "object") {
+            workspaces.push({ ...ws, user: "Test User" });
+          }
+        } catch (e) {
+          console.warn("failed to parse workspace entry from CRDT", e);
+        }
+      }
+      setData((prev) => ({ ...prev, workspaces }));
+    }
+
+    function syncNims() {
+      const raw = nimsText.toString();
+      if (!raw) {
+        return;
+      }
+      try {
+        const nims = JSON.parse(raw);
+        if (Array.isArray(nims)) {
+          setData((prev) => ({ ...prev, nims }));
+        }
+      } catch {
+        // ignore malformed JSON during partial updates
+      }
+    }
+
+    wsMap.observe(syncWorkspaces);
+    nimsText.observe(syncNims);
+    // Sync once the provider has connected and received initial state.
+    provider.on("sync", () => {
+      syncWorkspaces();
+      syncNims();
+    });
+    provider.on("status", (event: any) => {
+      if (event?.status === "connected") {
+        syncWorkspaces();
+        syncNims();
+      }
+    });
+
+    return () => {
+      wsMap.unobserve(syncWorkspaces);
+      nimsText.unobserve(syncNims);
+      provider.destroy();
+      doc.destroy();
+    };
+  }, []);
   function scaleNIM(nim: any, newReplicaCount: number) {
     // For now, just update the mock data. In a real implementation, this would make an API call.
     setData((prevData) => {
@@ -202,7 +247,13 @@ export default function ProgressPage() {
         </div>
 
         {currentTab === "workspaces" && (
-          <Workspaces workspaces={data.workspaces} onRefresh={fetchProgress} />
+          <Workspaces
+            workspaces={data.workspaces}
+            onPause={(roomName, paused) =>
+              sendWorkspaceCommand({ type: "pause", room_name: roomName, paused })
+            }
+            onStop={(roomName) => sendWorkspaceCommand({ type: "stop", room_name: roomName })}
+          />
         )}
         {currentTab === "nims" && <NIMs nims={data.nims} scaleNIM={scaleNIM} />}
         {currentTab === "users" && <UsersAndGroups users={data.users} />}
@@ -211,23 +262,11 @@ export default function ProgressPage() {
   );
 }
 
-function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
-  async function setPaused(name: string, paused: boolean) {
-    await fetch("/api/progress/pause", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, paused }),
-    });
-    props.onRefresh();
-  }
-  async function stopWorkspace(name: string) {
-    await fetch("/api/progress/stop", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    props.onRefresh();
-  }
+function Workspaces(props: {
+  workspaces: any[];
+  onPause: (roomName: string, paused: boolean) => void;
+  onStop: (roomName: string) => void;
+}) {
   if ((props.workspaces?.length ?? 0) === 0) {
     return <div>No workspaces in progress.</div>;
   }
@@ -244,6 +283,7 @@ function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
       </thead>
       <tbody>
         {props.workspaces.map((ws) => {
+          const roomName = ws.room_name || ws.name;
           const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
           const tqdm = ws.active_node?.tqdm;
           // Combined progress: box fraction covers full bar, tqdm refines the current box's slice
@@ -280,7 +320,7 @@ function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
                   <button
                     className="btn btn-sm"
                     title="Resume"
-                    onClick={() => setPaused(ws.name, false)}
+                    onClick={() => props.onPause(roomName, false)}
                   >
                     <Play />
                   </button>
@@ -288,7 +328,7 @@ function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
                   <button
                     className="btn btn-sm"
                     title="Pause"
-                    onClick={() => setPaused(ws.name, true)}
+                    onClick={() => props.onPause(roomName, true)}
                   >
                     <Pause />
                   </button>
@@ -296,7 +336,7 @@ function Workspaces(props: { workspaces: any[]; onRefresh: () => void }) {
                 <button
                   className="btn btn-sm"
                   title="Stop (reset all boxes)"
-                  onClick={() => stopWorkspace(ws.name)}
+                  onClick={() => props.onStop(roomName)}
                 >
                   <Stop />
                 </button>

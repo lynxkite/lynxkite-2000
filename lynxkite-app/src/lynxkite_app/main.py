@@ -1,5 +1,7 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import asyncio
+import contextlib
 import shutil
 import pydantic
 import fastapi
@@ -16,7 +18,6 @@ from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 import typing
-import re
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -28,7 +29,79 @@ opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
-app = fastapi.FastAPI(lifespan=crdt.lifespan)
+
+def _compute_nims() -> list[dict]:
+    """Build a list of NIM status dicts from live Kubernetes deployments."""
+    from kubernetes import client
+
+    _load_k8s_config()
+    active_workspaces = _get_active_workspaces()
+    nims = []
+    for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
+        labels = dict(d.metadata.labels) if d.metadata.labels else {}
+        used_by = [w for w in [labels.get("workspace")] if w]
+        for ws_name, ws in active_workspaces:
+            for node in getattr(ws, "nodes", []):
+                node_name = getattr(node.data, "op_id", None) or getattr(node.data, "title", None)
+                if node_name and node_name == d.metadata.name and ws_name not in used_by:
+                    used_by.append(ws_name)
+                    break
+        nims.append(
+            {
+                "publisher": d.metadata.namespace or "",
+                "name": d.metadata.name,
+                "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
+                "replicasHealthy": d.status.available_replicas or 0,
+                "replicasRequested": d.spec.replicas or 0,
+                "usedByWorkspaces": used_by,
+            }
+        )
+    return nims
+
+
+async def _progress_refresh_loop():
+    """Background task: refresh K8s GPU counts and NIM data into the progress CRDT doc."""
+    while True:
+        # K8s GPU fallback for workspace entries.
+        k8s_workspace_gpus: dict[str, int] = {}
+        try:
+            from kubernetes import client as _k8s_client
+
+            _load_k8s_config()
+            for d in _k8s_client.AppsV1Api().list_deployment_for_all_namespaces().items:
+                labels = dict(d.metadata.labels) if d.metadata.labels else {}
+                ws_label = labels.get("workspace")
+                if ws_label:
+                    k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
+                        d.spec.replicas or 0
+                    )
+        except Exception as e:
+            print(f"K8s GPU info refresh error: {e}")
+        crdt.update_progress_workspaces(k8s_workspace_gpus)
+        # NIMs.
+        try:
+            nims = _compute_nims()
+            crdt.update_progress_nims(nims)
+        except Exception as e:
+            print(f"NIM refresh error: {e}")
+        await asyncio.sleep(15)
+
+
+@contextlib.asynccontextmanager
+async def _lifespan(app):
+    async with crdt.lifespan(app):
+        task = asyncio.create_task(_progress_refresh_loop())
+        try:
+            yield
+        finally:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+
+
+app = fastapi.FastAPI(lifespan=_lifespan)
 app.include_router(crdt.router)
 app.include_router(icons.router)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
@@ -144,25 +217,6 @@ async def execute_workspace(name: str):
     await crdt.execute(name, room.ws, ws_pyd)
 
 
-@app.post("/api/progress/pause")
-async def pause_workspace(req: dict):
-    """Toggle the paused state of a workspace."""
-    room = await crdt.get_room(req["name"])
-    with room.ws.doc.transaction():
-        room.ws["paused"] = req.get("paused", True)
-
-
-@app.post("/api/progress/stop")
-async def stop_workspace(req: dict):
-    """Pause a workspace and reset all node statuses to planned."""
-    room = await crdt.get_room(req["name"])
-    with room.ws.doc.transaction():
-        room.ws["paused"] = True
-        for node in room.ws["nodes"]:
-            node["data"]["status"] = "planned"
-            node["data"]["message"] = None
-
-
 def _load_k8s_config():
     """Load Kubernetes configuration (in-cluster or from kubeconfig)."""
     from kubernetes import config
@@ -185,112 +239,6 @@ def _get_active_workspaces() -> typing.List[typing.Tuple[str, workspace.Workspac
             except Exception as e:
                 print(f"Error loading workspace {name}: {e}")
     return active_workspaces
-
-
-@app.get("/api/progress/workspaces")
-def progress_workspaces() -> typing.List[dict]:
-    """Return the status of all workspaces for the progress page."""
-    res: list[dict] = []
-    server = getattr(crdt, "ws_websocket_server", None)
-    if not server:
-        return res
-    # Get gpu count from live K8s deployments as fallback for workspaces
-    # that don't have execution_options.gpus explicitly set.
-    k8s_workspace_gpus: dict[str, int] = {}
-    try:
-        from kubernetes import client as _k8s_client
-
-        _load_k8s_config()
-        for d in _k8s_client.AppsV1Api().list_deployment_for_all_namespaces().items:
-            labels = dict(d.metadata.labels) if d.metadata.labels else {}
-            ws_label = labels.get("workspace")
-            if ws_label:
-                k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
-                    d.spec.replicas or 0
-                )
-    except Exception as e:
-        print(f"Error fetching K8s deployments for GPU info: {e}")
-    for name, room in getattr(server, "rooms", {}).items():
-        try:
-            name = re.sub(r"[^a-zA-Z0-9]", "-", name.removesuffix(".lynxkite.json"))
-            ws = workspace.Workspace.model_validate(room.ws.to_py())
-            nodes = ws.nodes or []
-            total = len(nodes)
-            done = sum(1 for n in nodes if n.data.status == "done")
-            active_node = None
-            eta_seconds = None
-            for n in nodes:
-                if n.data.status != "active":
-                    continue
-                telemetry = n.data.telemetry or {}
-                tqdm_n = telemetry.get("n")
-                tqdm_total = telemetry.get("total")
-                tqdm_rate = telemetry.get("rate")
-                active_node = {
-                    "id": n.id,
-                    "title": n.data.title,
-                    "tqdm": {"n": tqdm_n, "total": tqdm_total, "rate": tqdm_rate}
-                    if tqdm_total
-                    else None,
-                }
-                if tqdm_total and tqdm_rate and tqdm_rate > 0 and tqdm_n is not None:
-                    eta_seconds = (tqdm_total - tqdm_n) / tqdm_rate
-                break
-            res.append(
-                {
-                    "name": name,
-                    "status": "active"
-                    if active_node
-                    else ("done" if done == total and total > 0 else "idle"),
-                    "boxes_done": done,
-                    "boxes_total": total,
-                    "active_node": active_node,
-                    "eta_seconds": eta_seconds,
-                    "gpus": (ws.execution_options or {}).get("gpus")
-                    or k8s_workspace_gpus.get(name, 0),
-                    "paused": bool(ws.paused),
-                }
-            )
-        except Exception as e:
-            print(f"Error processing workspace {name}: {e}")
-    return res
-
-
-@app.get("/api/progress/nims")
-def progress_nims() -> typing.List[dict]:
-    """Return the status of NIMs (Kubernetes deployments) for the progress page."""
-    try:
-        from kubernetes import client
-
-        _load_k8s_config()
-        active_workspaces = _get_active_workspaces()
-
-        nims = []
-        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
-            labels = dict(d.metadata.labels) if d.metadata.labels else {}
-            used_by = [w for w in [labels.get("workspace")] if w]
-            for ws_name, ws in active_workspaces:
-                for node in getattr(ws, "nodes", []):
-                    node_name = getattr(node.data, "op_id", None) or getattr(
-                        node.data, "title", None
-                    )
-                    if node_name and node_name == d.metadata.name and ws_name not in used_by:
-                        used_by.append(ws_name)
-                        break
-            nims.append(
-                {
-                    "publisher": d.metadata.namespace or "",
-                    "name": d.metadata.name,
-                    "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
-                    "replicasHealthy": d.status.available_replicas or 0,
-                    "replicasRequested": d.spec.replicas or 0,
-                    "usedByWorkspaces": used_by,
-                }
-            )
-        return nims
-    except Exception as e:
-        print("Error in /api/progress/nims:", e)
-        return []
 
 
 class SPAStaticFiles(StaticFiles):

@@ -3,7 +3,9 @@
 import asyncio
 import contextlib
 import enum
+import json
 import pathlib
+import re
 from typing import Any
 import fastapi
 import os.path
@@ -157,9 +159,6 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         return room
 
 
-last_ws_input = None
-
-
 def clean_input(ws_pyd):
     """Delete everything that we want to ignore for the purposes of change detection."""
     for node in ws_pyd.nodes:
@@ -281,6 +280,8 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     """
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
     ws_pyd.save(pathlib.Path() / name)
+    # Push the latest workspace state to the progress CRDT doc immediately.
+    update_progress_workspaces()
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
     ws_simple = ws_pyd.model_copy(deep=True)
@@ -352,6 +353,211 @@ async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
 ws_websocket_server: WorkspaceWebsocketServer
 code_websocket_server: CodeWebsocketServer
 
+# Tracks currently open workspace websocket connections by room name.
+_active_workspace_ws_connections: dict[str, int] = {}
+
+# Progress CRDT — singleton ephemeral room for the progress page.
+_progress_ydoc: pycrdt.Doc | None = None
+
+
+class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
+    """WebSocket server for the singleton progress CRDT room."""
+
+    async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
+        global _progress_ydoc
+        ydoc = pycrdt.Doc()
+        ydoc["workspaces"] = pycrdt.Map()
+        ydoc["nims"] = pycrdt.Text()
+        ydoc["commands"] = pycrdt.Map()
+        _progress_ydoc = ydoc
+
+        commands: pycrdt.Map = ydoc["commands"]
+
+        def on_command(changes):
+            for change in changes:
+                for key, key_change in getattr(change, "keys", {}).items():
+                    if "newValue" not in key_change:
+                        continue
+                    payload = key_change["newValue"]
+                    task = asyncio.create_task(
+                        _apply_progress_command(key, payload, commands, ydoc)
+                    )
+                    task.add_done_callback(lambda t: t.result())
+
+        commands.observe(on_command)
+        return pycrdt.websocket.YRoom(ydoc=ydoc, exception_handler=ws_exception_handler)
+
+    async def get_room(self, name: str) -> pycrdt.websocket.YRoom:
+        """Get or initialize a progress room with the expected schema."""
+        if name not in self.rooms:
+            self.rooms[name] = await self.init_room(name)
+        room = self.rooms[name]
+        await self.start_room(room)
+        return room
+
+
+async def _apply_progress_command(command_id: str, payload, commands: pycrdt.Map, ydoc: pycrdt.Doc):
+    """Apply a command written by progress page clients, then acknowledge it by deleting it."""
+    try:
+        command = json.loads(payload) if isinstance(payload, str) else payload
+        if not isinstance(command, dict):
+            return
+        room_name = command.get("room_name")
+        if not room_name or not isinstance(room_name, str):
+            return
+        room = await get_room(room_name)
+        command_type = command.get("type")
+        if command_type == "pause":
+            with room.ws.doc.transaction():
+                room.ws["paused"] = bool(command.get("paused", True))
+        elif command_type == "stop":
+            with room.ws.doc.transaction():
+                room.ws["paused"] = True
+                for node in room.ws["nodes"]:
+                    node["data"]["status"] = "planned"
+                    node["data"]["message"] = None
+        else:
+            return
+    except Exception as e:
+        print(f"Error applying progress command {command_id}: {e}")
+    finally:
+        if command_id in commands:
+            with ydoc.transaction():
+                if command_id in commands:
+                    del commands[command_id]
+
+
+progress_websocket_server: ProgressWebsocketServer
+
+
+def _workspace_display_name(room_name: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9]", "-", pathlib.Path(room_name).name.removesuffix(".lynxkite.json"))
+
+
+def _extract_active_node(nodes: list) -> tuple[dict[str, Any] | None, float | None]:
+    for node in nodes:
+        if node.data.status != "active":
+            continue
+        telemetry = node.data.telemetry or {}
+        tqdm_n = telemetry.get("n")
+        tqdm_total = telemetry.get("total")
+        tqdm_rate = telemetry.get("rate")
+        active_node = {
+            "id": node.id,
+            "title": node.data.title,
+            "tqdm": {"n": tqdm_n, "total": tqdm_total, "rate": tqdm_rate} if tqdm_total else None,
+        }
+        eta_seconds = None
+        if tqdm_total and tqdm_rate and tqdm_rate > 0 and tqdm_n is not None:
+            eta_seconds = (tqdm_total - tqdm_n) / tqdm_rate
+        return active_node, eta_seconds
+    return None, None
+
+
+def _workspace_status(*, total: int, done: int, active: int, paused: bool) -> str:
+    if total == 0:
+        return "idle"
+    if done == total:
+        return "done"
+    if paused:
+        return "paused"
+    if active > 0:
+        return "active"
+    return "running"
+
+
+def _build_workspace_entry(room_name: str, room, k8s_workspace_gpus: dict[str, int]) -> str:
+    display_name = _workspace_display_name(room_name)
+    ws = workspace.Workspace.model_validate(room.ws.to_py())
+    nodes = ws.nodes or []
+    total = len(nodes)
+    done = sum(1 for n in nodes if n.data.status == "done")
+    active = sum(1 for n in nodes if n.data.status == "active")
+    paused = bool(ws.paused)
+    active_node, eta_seconds = _extract_active_node(nodes)
+    status = _workspace_status(total=total, done=done, active=active, paused=paused)
+
+    return json.dumps(
+        {
+            "name": display_name,
+            "room_name": room_name,
+            "status": status,
+            "boxes_done": done,
+            "boxes_total": total,
+            "active_node": active_node,
+            "eta_seconds": eta_seconds,
+            "gpus": (ws.execution_options or {}).get("gpus")
+            or k8s_workspace_gpus.get(display_name, 0),
+            "paused": paused,
+        }
+    )
+
+
+def _connected_workspace_rooms(server) -> list[tuple[str, Any]]:
+    rooms: list[tuple[str, Any]] = []
+    for room_name, count in _active_workspace_ws_connections.items():
+        if count <= 0:
+            continue
+        room = server.rooms.get(room_name)
+        if room is None:
+            continue
+        rooms.append((room_name, room))
+    rooms.sort(key=lambda item: item[0])
+    return rooms
+
+
+def _update_workspace_ws_connection(room_name: str, delta: int) -> None:
+    current = _active_workspace_ws_connections.get(room_name, 0)
+    next_count = current + delta
+    if next_count <= 0:
+        _active_workspace_ws_connections.pop(room_name, None)
+    else:
+        _active_workspace_ws_connections[room_name] = next_count
+
+
+def update_progress_workspaces(k8s_workspace_gpus: dict | None = None):
+    """Recompute workspace status entries and push them into the progress CRDT doc.
+
+    Called directly from workspace_changed (no K8s fallback) and periodically
+    from the background refresh loop (with K8s GPU data).
+    """
+    if _progress_ydoc is None:
+        return
+    server = globals().get("ws_websocket_server")
+    if server is None:
+        return
+    if k8s_workspace_gpus is None:
+        k8s_workspace_gpus = {}
+    ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
+    connected_rooms = _connected_workspace_rooms(server)
+    entries_by_room: dict[str, str] = {}
+    for room_name, room in connected_rooms:
+        try:
+            entries_by_room[room_name] = _build_workspace_entry(room_name, room, k8s_workspace_gpus)
+        except Exception as e:
+            print(f"Error updating progress for workspace {room_name}: {e}")
+
+    # Sync the map in one transaction to avoid transient partial snapshots.
+    with _progress_ydoc.transaction():
+        for room_name, entry in entries_by_room.items():
+            ws_map[room_name] = entry
+        for name in list(ws_map.keys()):
+            if name not in entries_by_room:
+                del ws_map[name]
+
+
+def update_progress_nims(nims_data: list):
+    """Update the NIMs entry in the progress CRDT doc with fresh Kubernetes data."""
+    if _progress_ydoc is None:
+        return
+    nims_text: pycrdt.Text = _progress_ydoc["nims"]
+    new_content = json.dumps(nims_data)
+    with _progress_ydoc.transaction():
+        length = len(nims_text)
+        if length > 0:
+            del nims_text[0:length]
+        nims_text += new_content
+
 
 def get_room(name):
     return ws_websocket_server.get_room(name)
@@ -361,17 +567,31 @@ def get_room(name):
 async def lifespan(app):
     global ws_websocket_server
     global code_websocket_server
+    global progress_websocket_server
     ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
+    progress_websocket_server = ProgressWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:
         async with code_websocket_server:
-            yield
+            async with progress_websocket_server:
+                # Pre-initialise the singleton room so clients get an immediate snapshot.
+                await progress_websocket_server.get_room("progress")
+                update_progress_workspaces()
+                update_progress_nims([])
+                yield
     print("closing websocket server")
 
 
 def delete_room(name: str):
     if name in ws_websocket_server.rooms:
         del ws_websocket_server.rooms[name]
+    _active_workspace_ws_connections.pop(name, None)
+    # Remove the workspace entry from the progress doc.
+    if _progress_ydoc is not None:
+        ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
+        if name in ws_map:
+            with _progress_ydoc.transaction():
+                del ws_map[name]
 
 
 def sanitize_path(path):
@@ -387,11 +607,26 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
     server = pycrdt.websocket.ASGIServer(ws_websocket_server)
-    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    _update_workspace_ws_connection(room_name, +1)
+    update_progress_workspaces()
+    try:
+        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    finally:
+        _update_workspace_ws_connection(room_name, -1)
+        update_progress_workspaces()
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
     server = pycrdt.websocket.ASGIServer(code_websocket_server)
+    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+
+
+@router.websocket("/ws/progress/crdt/{room_name:path}")
+async def progress_room_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
+    room_name = sanitize_path(room_name)
+    # Ensure the room (and _progress_ydoc) exists before handing over to ASGIServer.
+    await progress_websocket_server.get_room(room_name)
+    server = pycrdt.websocket.ASGIServer(progress_websocket_server)
     await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
