@@ -1,11 +1,28 @@
 {
   "image": "mcr.microsoft.com/devcontainers/typescript-node:22-bookworm",
-  "postStartCommand": "./.devcontainer/postStartCommand.sh",
+  "postCreateCommand": {
+    "backend dependencies": "uv venv && uv sync",
+    "frontend dependencies": "cd lynxkite-app/web && npm install"
+  },
+  "features": {
+    "ghcr.io/devcontainers-extra/features/apt-get-packages:1": {},
+    "ghcr.io/va-h/devcontainers-features/uv:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "wesbos.theme-cobalt2",
+        "ms-toolsai.jupyter",
+        "ms-python.python",
+        "biomejs.biome",
+        "charliermarsh.ruff"
+      ]
+    }
+  },
   "forwardPorts": [5173, 8000],
   "portsAttributes": {
     "5173": {
       "label": "Frontend",
-      "visibility": "public",
       "onAutoForward": "openBrowser"
     },
     "8000": {
