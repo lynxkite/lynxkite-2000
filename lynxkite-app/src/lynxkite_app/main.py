@@ -2,6 +2,7 @@
 
 import asyncio
 import contextlib
+import importlib
 import shutil
 import pydantic
 import fastapi
@@ -29,43 +30,80 @@ opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
+_k8s_unavailable_logged = False
+
+
+def _log_k8s_unavailable_once() -> None:
+    global _k8s_unavailable_logged
+    if _k8s_unavailable_logged:
+        return
+    print("Kubernetes package is not installed; NIM/K8s progress features are disabled.")
+    _k8s_unavailable_logged = True
+
+
+def _k8s_client_module():
+    try:
+        return importlib.import_module("kubernetes.client")
+    except ModuleNotFoundError:
+        _log_k8s_unavailable_once()
+        return None
+
+
+def _k8s_config_module():
+    try:
+        return importlib.import_module("kubernetes.config")
+    except ModuleNotFoundError:
+        _log_k8s_unavailable_once()
+        return None
+
 
 def _compute_nims() -> list[dict]:
     """Build a list of NIM status dicts from live Kubernetes deployments."""
-    from kubernetes import client
+    client = _k8s_client_module()
+    if client is None:
+        return []
 
-    _load_k8s_config()
-    active_workspaces = _get_active_workspaces()
-    nims = []
-    for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
-        labels = dict(d.metadata.labels) if d.metadata.labels else {}
-        used_by = [w for w in [labels.get("workspace")] if w]
-        for ws_name, ws in active_workspaces:
-            for node in getattr(ws, "nodes", []):
-                node_name = getattr(node.data, "op_id", None) or getattr(node.data, "title", None)
-                if node_name and node_name == d.metadata.name and ws_name not in used_by:
-                    used_by.append(ws_name)
-                    break
-        nims.append(
-            {
-                "publisher": d.metadata.namespace or "",
-                "name": d.metadata.name,
-                "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
-                "replicasHealthy": d.status.available_replicas or 0,
-                "replicasRequested": d.spec.replicas or 0,
-                "usedByWorkspaces": used_by,
-            }
-        )
-    return nims
+    try:
+        if not _load_k8s_config():
+            return []
+        active_workspaces = _get_active_workspaces()
+        nims = []
+        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
+            labels = dict(d.metadata.labels) if d.metadata.labels else {}
+            used_by = [w for w in [labels.get("workspace")] if w]
+            for ws_name, ws in active_workspaces:
+                for node in getattr(ws, "nodes", []):
+                    node_name = getattr(node.data, "op_id", None) or getattr(
+                        node.data, "title", None
+                    )
+                    if node_name and node_name == d.metadata.name and ws_name not in used_by:
+                        used_by.append(ws_name)
+                        break
+            nims.append(
+                {
+                    "publisher": d.metadata.namespace or "",
+                    "name": d.metadata.name,
+                    "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
+                    "replicasHealthy": d.status.available_replicas or 0,
+                    "replicasRequested": d.spec.replicas or 0,
+                    "usedByWorkspaces": used_by,
+                }
+            )
+        return nims
+    except Exception as e:
+        print(f"NIM refresh error: {e}")
+        return []
 
 
 def _get_k8s_workspace_gpus() -> dict[str, int]:
     """Get workspace GPU counts from Kubernetes deployment labels."""
-    from kubernetes import client
-
     k8s_workspace_gpus: dict[str, int] = {}
+    client = _k8s_client_module()
+    if client is None:
+        return k8s_workspace_gpus
     try:
-        _load_k8s_config()
+        if not _load_k8s_config():
+            return k8s_workspace_gpus
         for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
             labels = dict(d.metadata.labels) if d.metadata.labels else {}
             ws_label = labels.get("workspace")
@@ -82,11 +120,7 @@ async def _progress_refresh_loop():
     """Background task: refresh K8s GPU counts and NIM data into the progress CRDT doc."""
     while True:
         crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
-        try:
-            nims = _compute_nims()
-            crdt.update_progress_nims(nims)
-        except Exception as e:
-            print(f"NIM refresh error: {e}")
+        crdt.update_progress_nims(_compute_nims())
         await asyncio.sleep(15)
 
 
@@ -167,7 +201,12 @@ async def stop_workspace(req: dict):
 @app.post("/api/scale_nim")
 async def scale_nim(req: dict):
     """Scale a NIM deployment to the specified replica count."""
-    from kubernetes import client
+    client = _k8s_client_module()
+    if client is None:
+        raise fastapi.HTTPException(
+            status_code=503,
+            detail="Kubernetes integration is unavailable: python package 'kubernetes' is not installed.",
+        )
 
     name = req.get("name")
     namespace = req.get("namespace") or req.get("publisher")
@@ -183,7 +222,11 @@ async def scale_nim(req: dict):
             status_code=400, detail="Replicas must be a non-negative integer"
         )
 
-    _load_k8s_config()
+    if not _load_k8s_config():
+        raise fastapi.HTTPException(
+            status_code=503,
+            detail="Kubernetes integration is unavailable: configuration could not be loaded.",
+        )
     apps = client.AppsV1Api()
     apps.patch_namespaced_deployment_scale(
         name=name,
@@ -288,12 +331,18 @@ async def execute_workspace(name: str):
 
 def _load_k8s_config():
     """Load Kubernetes configuration (in-cluster or from kubeconfig)."""
-    from kubernetes import config
+    config = _k8s_config_module()
+    if config is None:
+        return False
 
     try:
         config.load_kube_config()
     except Exception:
-        config.load_incluster_config()
+        try:
+            config.load_incluster_config()
+        except Exception:
+            return False
+    return True
 
 
 def _get_active_workspaces() -> typing.List[typing.Tuple[str, workspace.Workspace]]:
