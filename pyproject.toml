@@ -26,9 +26,9 @@ torch = { index = "pytorch" }
 
 [[tool.uv.index]]
 name = "pytorch"
-# Switch to this to disable CUDA dependencies.
-# url = "https://download.pytorch.org/whl/cpu"
-url = "https://pypi.org/simple"
+# Switch to this to enable CUDA dependencies.
+# url = "https://pypi.org/simple"
+url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
 [tool.uv.workspace]
