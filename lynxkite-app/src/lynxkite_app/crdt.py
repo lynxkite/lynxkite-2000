@@ -368,23 +368,7 @@ class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
         ydoc = pycrdt.Doc()
         ydoc["workspaces"] = pycrdt.Map()
         ydoc["nims"] = pycrdt.Text()
-        ydoc["commands"] = pycrdt.Map()
         _progress_ydoc = ydoc
-
-        commands: pycrdt.Map = ydoc["commands"]
-
-        def on_command(changes):
-            for change in changes:
-                for key, key_change in getattr(change, "keys", {}).items():
-                    if "newValue" not in key_change:
-                        continue
-                    payload = key_change["newValue"]
-                    task = asyncio.create_task(
-                        _apply_progress_command(key, payload, commands, ydoc)
-                    )
-                    task.add_done_callback(lambda t: t.result())
-
-        commands.observe(on_command)
         return pycrdt.websocket.YRoom(ydoc=ydoc, exception_handler=ws_exception_handler)
 
     async def get_room(self, name: str) -> pycrdt.websocket.YRoom:
@@ -394,37 +378,6 @@ class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
         room = self.rooms[name]
         await self.start_room(room)
         return room
-
-
-async def _apply_progress_command(command_id: str, payload, commands: pycrdt.Map, ydoc: pycrdt.Doc):
-    """Apply a command written by progress page clients, then acknowledge it by deleting it."""
-    try:
-        command = json.loads(payload) if isinstance(payload, str) else payload
-        if not isinstance(command, dict):
-            return
-        room_name = command.get("room_name")
-        if not room_name or not isinstance(room_name, str):
-            return
-        room = await get_room(room_name)
-        command_type = command.get("type")
-        if command_type == "pause":
-            with room.ws.doc.transaction():
-                room.ws["paused"] = bool(command.get("paused", True))
-        elif command_type == "stop":
-            with room.ws.doc.transaction():
-                room.ws["paused"] = True
-                for node in room.ws["nodes"]:
-                    node["data"]["status"] = "planned"
-                    node["data"]["message"] = None
-        else:
-            return
-    except Exception as e:
-        print(f"Error applying progress command {command_id}: {e}")
-    finally:
-        if command_id in commands:
-            with ydoc.transaction():
-                if command_id in commands:
-                    del commands[command_id]
 
 
 progress_websocket_server: ProgressWebsocketServer

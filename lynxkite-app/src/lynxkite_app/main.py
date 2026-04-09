@@ -59,26 +59,29 @@ def _compute_nims() -> list[dict]:
     return nims
 
 
+def _get_k8s_workspace_gpus() -> dict[str, int]:
+    """Get workspace GPU counts from Kubernetes deployment labels."""
+    from kubernetes import client
+
+    k8s_workspace_gpus: dict[str, int] = {}
+    try:
+        _load_k8s_config()
+        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
+            labels = dict(d.metadata.labels) if d.metadata.labels else {}
+            ws_label = labels.get("workspace")
+            if ws_label:
+                k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
+                    d.spec.replicas or 0
+                )
+    except Exception as e:
+        print(f"K8s GPU info refresh error: {e}")
+    return k8s_workspace_gpus
+
+
 async def _progress_refresh_loop():
     """Background task: refresh K8s GPU counts and NIM data into the progress CRDT doc."""
     while True:
-        # K8s GPU fallback for workspace entries.
-        k8s_workspace_gpus: dict[str, int] = {}
-        try:
-            from kubernetes import client as _k8s_client
-
-            _load_k8s_config()
-            for d in _k8s_client.AppsV1Api().list_deployment_for_all_namespaces().items:
-                labels = dict(d.metadata.labels) if d.metadata.labels else {}
-                ws_label = labels.get("workspace")
-                if ws_label:
-                    k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
-                        d.spec.replicas or 0
-                    )
-        except Exception as e:
-            print(f"K8s GPU info refresh error: {e}")
-        crdt.update_progress_workspaces(k8s_workspace_gpus)
-        # NIMs.
+        crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
         try:
             nims = _compute_nims()
             crdt.update_progress_nims(nims)
@@ -131,6 +134,72 @@ async def delete_workspace(req: dict):
     json_path.unlink()
     crdt_path.unlink()
     crdt.delete_room(req["path"])
+
+
+@app.post("/api/pause_workspace")
+async def pause_workspace(req: dict):
+    """Pause or resume a workspace."""
+    room_name = req.get("room_name")
+    if not isinstance(room_name, str) or not room_name:
+        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid room_name")
+    room = await crdt.get_room(room_name)
+    paused = req.get("paused", True)
+    with room.ws.doc.transaction():
+        room.ws["paused"] = paused
+    return {"status": "ok", "room_name": room_name, "paused": paused}
+
+
+@app.post("/api/stop_workspace")
+async def stop_workspace(req: dict):
+    """Stop and reset all nodes in a workspace."""
+    room_name = req.get("room_name")
+    if not isinstance(room_name, str) or not room_name:
+        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid room_name")
+    room = await crdt.get_room(room_name)
+    with room.ws.doc.transaction():
+        room.ws["paused"] = True
+        for node in room.ws["nodes"]:
+            node["data"]["status"] = "planned"
+            node["data"]["message"] = None
+    return {"status": "ok", "room_name": room_name}
+
+
+@app.post("/api/scale_nim")
+async def scale_nim(req: dict):
+    """Scale a NIM deployment to the specified replica count."""
+    from kubernetes import client
+
+    name = req.get("name")
+    namespace = req.get("namespace") or req.get("publisher")
+    replicas = req.get("replicas")
+
+    print(f"Scaling NIM {namespace}/{name} to {replicas} replicas")
+    if not isinstance(name, str) or not name:
+        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid name")
+    if not isinstance(namespace, str) or not namespace:
+        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid namespace")
+    if not isinstance(replicas, int) or replicas < 0:
+        raise fastapi.HTTPException(
+            status_code=400, detail="Replicas must be a non-negative integer"
+        )
+
+    _load_k8s_config()
+    apps = client.AppsV1Api()
+    apps.patch_namespaced_deployment_scale(
+        name=name,
+        namespace=namespace,
+        body={"spec": {"replicas": replicas}},
+    )
+
+    # Push a fresh snapshot right away so the UI updates without waiting for poll loop
+    crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
+    try:
+        nims = _compute_nims()
+        crdt.update_progress_nims(nims)
+    except Exception as e:
+        print(f"Error computing/updating NIMs after scaling {namespace}/{name}: {e}")
+
+    return {"status": "ok", "name": name, "namespace": namespace, "replicas": replicas}
 
 
 class DirectoryEntry(pydantic.BaseModel):

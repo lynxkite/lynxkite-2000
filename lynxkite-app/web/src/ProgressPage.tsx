@@ -118,21 +118,46 @@ export default function ProgressPage() {
       },
     ],
   });
-  // Connect to the progress CRDT room and observe live updates.
-  const ydocRef = useRef<Y.Doc | null>(null);
 
-  function sendWorkspaceCommand(command: {
-    type: "pause" | "stop";
-    room_name: string;
-    paused?: boolean;
-  }) {
-    const doc = ydocRef.current;
-    if (!doc) return;
-    const commands = doc.getMap("commands");
-    const commandId = `${Date.now()}-${Math.random()}`;
-    doc.transact(() => {
-      commands.set(commandId, JSON.stringify(command));
-    });
+  async function pauseWorkspace(roomName: string, paused: boolean) {
+    try {
+      await fetch("/api/pause_workspace", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ room_name: roomName, paused }),
+      });
+    } catch (e) {
+      console.error("Failed to pause workspace", e);
+    }
+  }
+
+  async function stopWorkspace(roomName: string) {
+    try {
+      await fetch("/api/stop_workspace", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ room_name: roomName }),
+      });
+    } catch (e) {
+      console.error("Failed to stop workspace", e);
+    }
+  }
+
+  async function scaleNIM(nim: any, newReplicaCount: number) {
+    const targetReplicas = Math.max(0, newReplicaCount);
+    try {
+      await fetch("/api/scale_nim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: nim.name,
+          namespace: nim.publisher,
+          replicas: targetReplicas,
+        }),
+      });
+    } catch (e) {
+      console.error("Failed to scale NIM", e);
+    }
   }
   useEffect(() => {
     const doc = new Y.Doc();
@@ -142,7 +167,6 @@ export default function ProgressPage() {
       "progress",
       doc,
     );
-    ydocRef.current = doc;
 
     const wsMap = doc.getMap("workspaces");
     const nimsText = doc.getText("nims");
@@ -205,18 +229,6 @@ export default function ProgressPage() {
       doc.destroy();
     };
   }, []);
-  function scaleNIM(nim: any, newReplicaCount: number) {
-    // For now, just update the mock data. In a real implementation, this would make an API call.
-    setData((prevData) => {
-      const newNims = prevData.nims.map((n) => {
-        if (n.name === nim.name) {
-          return { ...n, replicasRequested: newReplicaCount };
-        }
-        return n;
-      });
-      return { ...prevData, nims: newNims };
-    });
-  }
 
   return (
     <div className="progress-page">
@@ -249,10 +261,8 @@ export default function ProgressPage() {
         {currentTab === "workspaces" && (
           <Workspaces
             workspaces={data.workspaces}
-            onPause={(roomName, paused) =>
-              sendWorkspaceCommand({ type: "pause", room_name: roomName, paused })
-            }
-            onStop={(roomName) => sendWorkspaceCommand({ type: "stop", room_name: roomName })}
+            onPause={(roomName, paused) => pauseWorkspace(roomName, paused)}
+            onStop={(roomName) => stopWorkspace(roomName)}
           />
         )}
         {currentTab === "nims" && <NIMs nims={data.nims} scaleNIM={scaleNIM} />}
