@@ -16,8 +16,8 @@ import {
 } from "react-router";
 import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
-import Workspace from "./workspace/Workspace.tsx";
 import ProgressPage from "./ProgressPage.tsx";
+import Workspace from "./workspace/Workspace.tsx";
 
 function WorkspaceError() {
   const error = useRouteError();

@@ -295,11 +295,11 @@ svg {
     padding: 8px;
     background-image: linear-gradient(
       to right,
-        var(--status-color-1),
-        var(--status-color-2) 40%,
-        var(--status-color-2) 60%,
-        var(--status-color-3)
-      );
+      var(--status-color-1),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
+      var(--status-color-3)
+    );
     background-blend-mode: luminosity;
     background-size: 180% 180%;
     background-color: oklch(97% 0 0);
@@ -1217,6 +1217,6 @@ svg {
     }
   }
   .label {
-    margin-top:10px;
+    margin-top: 10px;
   }
 }
