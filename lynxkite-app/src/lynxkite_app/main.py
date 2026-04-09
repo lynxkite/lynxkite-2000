@@ -66,9 +66,12 @@ def _compute_nims() -> list[dict]:
     try:
         if not _load_k8s_config():
             return []
+        system_namespaces = {"kube-system", "kube-public", "kube-node-lease"}
         active_workspaces = _get_active_workspaces()
         nims = []
         for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
+            if (d.metadata.namespace or "") in system_namespaces:
+                continue
             labels = dict(d.metadata.labels) if d.metadata.labels else {}
             used_by = [w for w in [labels.get("workspace")] if w]
             for ws_name, ws in active_workspaces:
