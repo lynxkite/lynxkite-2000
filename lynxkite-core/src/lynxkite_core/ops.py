@@ -17,6 +17,7 @@ import typing
 from dataclasses import dataclass
 import pydantic
 from .matplotlib_to_image import matplotlib_to_image
+from .opcontext import OpContext, CONTEXT_PARAM_NAME
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -26,17 +27,63 @@ Catalogs = dict[str, Catalog]
 CATALOGS: Catalogs = {}
 EXECUTORS = {}
 
+
 typeof = type  # We have some arguments called "type".
 
-FunctionWrapper = typing.Callable[[typing.Callable], typing.Callable]
+
+class FunctionCacheWrapper(typing.Protocol):
+    def __call__(
+        self,
+        func: typing.Callable,
+        *,
+        ignore: list[str] | None = None,  # Parameter names that should be ignored when caching.
+    ) -> typing.Callable: ...
+
+
 # Overwrite this to configure a caching mechanism.
-CACHE_WRAPPER: FunctionWrapper | None = None
+CACHE_WRAPPER: FunctionCacheWrapper | None = None
+
+
+@dataclass
+class _CachedCall:
+    result: typing.Any
+    message: str
 
 
 def cached(func):
     if CACHE_WRAPPER is None:
         return func
     return CACHE_WRAPPER(func)
+
+
+def _cached_with_ctx(func):
+    """
+    This function is used with operations that have a context parameter.
+    For caching to work the context parameter needs to be ignored (as it is not serializable),
+    and the returned result needs to be saved along with the message
+    to be published in case the cache hits.
+    """
+    if CACHE_WRAPPER is None:
+        return func
+
+    def _cache_with_message(op_ctx: "OpContext", *args, **kwargs):
+        result = asyncio.run(func(op_ctx, *args, **kwargs))
+        # Save the function result and the messages it sent.
+        return _CachedCall(result=result, message=op_ctx.message or "")
+
+    _cached = CACHE_WRAPPER(_cache_with_message, ignore=["op_ctx"])
+
+    @functools.wraps(func)
+    async def wrapper(op_ctx: "OpContext", *args, **kwargs):
+        # Run the cached function in a separate thread to avoid blocking the event loop.
+        r: _CachedCall = await asyncio.to_thread(_cached, op_ctx, *args, **kwargs)
+        if r.message:
+            # Send the message to the frontend, as the cached functions main body
+            # where the messages are published is not actually executed.
+            op_ctx.set_message(r.message)
+        return r.result
+
+    return wrapper
 
 
 def type_to_json(t):
@@ -203,10 +250,14 @@ class Op(BaseConfig):
         default=None
     )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
 
-    def __call__(self, *inputs, **params):
+    def __call__(self, op_ctx: OpContext, *inputs, **params):
+        assert isinstance(op_ctx, OpContext)
         # Convert parameters.
         params = self.convert_params(params)
-        res = self.func(*inputs, **params)
+        if inspect.signature(self.func).parameters.get(CONTEXT_PARAM_NAME, None):
+            res = self.func(op_ctx, *inputs, **params)
+        else:
+            res = self.func(*inputs, **params)
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
             if self.type in [
@@ -312,16 +363,21 @@ def op(
         if view == "matplotlib":
             _view = "image"
             func = matplotlib_to_image(func)
+
         if slow:
             func = make_async(func)
             if cache is not False:
-                func = cached(func)
+                if sig.parameters.get(CONTEXT_PARAM_NAME, None) is None:
+                    func = cached(func)
+                else:
+                    func = _cached_with_ctx(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
+            and (name != CONTEXT_PARAM_NAME)
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -332,7 +388,19 @@ def op(
         if outputs is not None:
             _outputs = [Output(name=name, type=None, position=opos) for name in outputs]
         else:
-            _outputs = [Output(name="output", type=None, position=opos)] if view == "basic" else []
+            _outputs = (
+                [Output(name="output", type=None, position=opos)]
+                if view
+                in [
+                    "basic",
+                    "visualization",
+                    "table_view",
+                    "graph_creation_view",
+                    "image",
+                    "molecule",
+                ]
+                else []
+            )
         op = Op(
             func=func,
             doc=doc,
@@ -471,7 +539,7 @@ def passive_op_registration(env: str, *categories: str, **kwargs):
 def make_async(func):
     """Decorator for slow, blocking operations. Turns them into separate threads."""
 
-    if asyncio.iscoroutinefunction(func):
+    if inspect.iscoroutinefunction(func):
         # If the function is already a coroutine, return it as is.
         return func
 
@@ -584,7 +652,7 @@ def _get_griffe_function(func):
 
 
 def detect_plugins():
-    """Imports all installed LynxKite plugins."""
+    """Activates all installed LynxKite plugins. (Modules whose names start with 'lynxkite_'.)"""
     plugins = {}
     for _, name, _ in pkgutil.iter_modules():
         if (
@@ -594,6 +662,8 @@ def detect_plugins():
             and name != "lynxkite_mcp"
         ):
             plugins[name] = importlib.import_module(name)
+            if hasattr(plugins[name], "register_ops"):
+                plugins[name].register_ops()
     if not plugins:
         print("No LynxKite plugins found. Be sure to install some!")
     return plugins

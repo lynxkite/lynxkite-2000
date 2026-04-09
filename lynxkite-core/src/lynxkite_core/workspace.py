@@ -41,9 +41,11 @@ class WorkspaceNodeData(BaseConfig):
     input_metadata: Optional[list[dict]] = None
     output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
+    message: Optional[str] = None
     collapsed: Optional[bool] = None
     expanded_height: Optional[float] = None  # The frontend uses this.
     status: NodeStatus = NodeStatus.done
+    telemetry: Optional[dict[str, Any]] = None
     meta: Optional["ops.Op"] = None
 
     @pydantic.model_validator(mode="before")
@@ -75,10 +77,12 @@ class WorkspaceNode(BaseConfig):
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
+        self.data.message = None
         self.data.status = NodeStatus.active
         if self._crdt and "data" in self._crdt:
             with self._crdt.doc.transaction():
                 self._crdt["data"]["error"] = None
+                self._crdt["data"]["message"] = None
                 self._crdt["data"]["status"] = NodeStatus.active
 
     def publish_result(self, result: ops.Result):
@@ -100,8 +104,24 @@ class WorkspaceNode(BaseConfig):
                     self._crdt["data"]["error"] = str(e)
                     raise e
 
+    def publish_message(self, message: str):
+        """Sends a message to the frontend. This can be used for progress updates."""
+        self.data.message = message
+        if self._crdt and "data" in self._crdt:
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["message"] = message
+
+    def publish_telemetry(self, telemetry: dict[str, Any]):
+        """Sends telemetry data to the frontend."""
+        self.data.telemetry = telemetry
+        if self._crdt and "data" in self._crdt:
+            with self._crdt.doc.transaction():
+                self._crdt["data"]["telemetry"] = telemetry
+
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
+        if isinstance(error, Exception) and not isinstance(error, AssertionError):
+            error = type(error).__name__ + ": " + str(error)
         result = ops.Result(error=str(error) if error else None)
         self.publish_result(result)
 
@@ -138,6 +158,7 @@ class Workspace(BaseConfig):
     """
 
     env: str = ""
+    execution_options: dict = dataclasses.field(default_factory=dict)
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None

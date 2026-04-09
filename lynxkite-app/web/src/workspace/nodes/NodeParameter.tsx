@@ -3,6 +3,7 @@ import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
 import ParameterInput from "./ParameterInput";
+import PathStrInput from "./parameters/PathStrInput";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
@@ -148,6 +149,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
     </label>
+  ) : meta?.type?.format === "path" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <PathStrInput value={value ?? ""} onChange={onChange} />
+    </label>
   ) : (
     <label className="param">
       <ParamName name={name} doc={doc} />
@@ -162,10 +168,7 @@ function getDropDownValues(
   substitutions?: Record<string, string>,
 ): string[] {
   const metadata = data.input_metadata;
-  if (!metadata || !query) {
-    return [];
-  }
-  // Substitute parameters in the query.
+  if (!metadata || !query) return [];
   const ss = { ...data.params, ...substitutions };
   for (const k in ss) {
     query = query.replace(`<${k}>`, ss[k]);

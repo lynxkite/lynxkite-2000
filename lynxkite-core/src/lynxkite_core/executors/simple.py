@@ -56,12 +56,17 @@ async def execute(ws: workspace.Workspace, catalog: ops.Catalog):
             if missing:
                 node.publish_error(f"Missing input: {', '.join(missing)}")
                 continue
-            result = op(*inputs, **params)
+
+            op_ctx = ops.OpContext(op=op, node=node, ws=ws)
+            result = op(op_ctx, *inputs, **params)
             result.output = await await_if_needed(result.output)
             result.display = await await_if_needed(result.display)
+
             if len(op.outputs) == 1:
                 [output] = op.outputs
-                outputs[node_id, output.name] = result.output
+                outputs[node_id, output.name] = (
+                    result.output if result.output is not None else inputs[0] if inputs else None
+                )
             elif len(op.outputs) > 1:
                 assert type(result.output) is dict, "An op with multiple outputs must return a dict"
                 for output in op.outputs:

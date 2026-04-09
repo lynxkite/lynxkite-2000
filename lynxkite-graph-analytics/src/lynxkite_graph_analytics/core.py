@@ -418,7 +418,8 @@ async def _execute_node(
         return
     # Execute op.
     try:
-        result = op(*inputs, **params)
+        op_ctx = ops.OpContext(op=op, node=node, ws=ws)
+        result = op(op_ctx, *inputs, **params)
         result.output = await await_if_needed(result.output)
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
@@ -426,7 +427,9 @@ async def _execute_node(
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
-        result = ops.Result(error=str(e))
+        result = ops.Result(
+            error=type(e).__name__ + ": " + str(e) if not isinstance(e, AssertionError) else str(e)
+        )
     result.input_metadata = [_get_metadata(i) for i in inputs]
     if len(op.outputs) > 1 and isinstance(result.output, dict):
         result.output_metadata = [_get_metadata(result.output.get(o.name)) for o in op.outputs]
@@ -459,11 +462,15 @@ async def _execute_node(
                 wsres.outputs[node.id, k] = v
         elif len(op.outputs) == 1:
             [k] = op.outputs
-            wsres.outputs[node.id, k.name] = result.output
+            wsres.outputs[node.id, k.name] = (
+                result.output if result.output is not None else inputs[0] if inputs else None
+            )
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
-        result = ops.Result(error=str(e))
+        result = ops.Result(
+            error=type(e).__name__ + ": " + str(e) if not isinstance(e, AssertionError) else str(e)
+        )
     node.publish_result(result)
     dt = time.time() - t0
     if dt > 1:

@@ -12,6 +12,7 @@ import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
 import { LynxKiteState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
+import { NodeProgress } from "./ProgressBar.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -263,24 +264,41 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         </Tooltip>
         {!data.collapsed && (
           <>
-            {data.error === "Unknown operation." ? (
-              <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
-            ) : (
-              <>
-                {data.error && <div className="error">{data.error}</div>}
-                <ErrorBoundary
-                  resetKeys={[props]}
-                  fallback={
-                    <p className="error" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <Skull style={{ fontSize: 20 }} />
-                      Failed to display this node.
-                    </p>
-                  }
-                >
-                  <div className="node-content">{props.children}</div>
-                </ErrorBoundary>
-              </>
-            )}
+            <div className="node-content">
+              {data.telemetry && (
+                <NodeProgress
+                  telemetry={data.telemetry}
+                  color={titleStyle.backgroundColor}
+                  status={data.status}
+                />
+              )}
+              {data.message && data.message.length > 0 && (
+                <div className="node-message" title="Execution status">
+                  {data.message}
+                </div>
+              )}
+              {data.error === "Unknown operation." ? (
+                <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
+              ) : (
+                <>
+                  {data.error && <div className="error">{data.error}</div>}
+                  <ErrorBoundary
+                    resetKeys={[props]}
+                    fallback={
+                      <p
+                        className="error"
+                        style={{ display: "flex", alignItems: "center", gap: 8 }}
+                      >
+                        <Skull style={{ fontSize: 20 }} />
+                        Failed to display this node.
+                      </p>
+                    }
+                  >
+                    {props.children}
+                  </ErrorBoundary>
+                </>
+              )}
+            </div>
             <NodeResizeControl
               minWidth={100}
               minHeight={50}

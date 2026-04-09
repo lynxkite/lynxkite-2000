@@ -72,6 +72,9 @@ export interface Output {
  */
 export interface Workspace {
   env?: string;
+  execution_options?: {
+    [k: string]: unknown;
+  };
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;
@@ -105,9 +108,13 @@ export interface WorkspaceNodeData {
       }[]
     | null;
   error?: string | null;
+  message?: string | null;
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
+  telemetry?: {
+    [k: string]: unknown;
+  } | null;
   meta?: Op | null;
   [k: string]: unknown;
 }

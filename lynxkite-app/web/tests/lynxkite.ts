@@ -42,6 +42,31 @@ export class Workspace {
     await this.page.locator('select[name="workspace-env"]').selectOption(env);
   }
 
+  async groupSelection() {
+    await this.page.locator('button[name="groupBtn"]').click();
+  }
+
+  async ungroupSelection() {
+    await this.page.locator('button[name="ungroupBtn"]').click();
+  }
+
+  async getNodeParentId(nodeId: string): Promise<string | undefined> {
+    return this.page.evaluate((id) => {
+      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+      if (!el) return undefined;
+      const key = Object.keys(el).find((k) => k.startsWith("__reactFiber$"));
+      if (!key) return undefined;
+      let fiber = (el as any)[key];
+      while (fiber) {
+        if (fiber.memoizedProps?.id === id && "parentId" in fiber.memoizedProps) {
+          return fiber.memoizedProps.parentId || undefined;
+        }
+        fiber = fiber.child;
+      }
+      return undefined;
+    }, nodeId);
+  }
+
   async expectCurrentWorkspaceIs(name) {
     await expect(this.page.locator(".ws-name")).toHaveText(name);
   }
@@ -81,6 +106,14 @@ export class Workspace {
     // Click on the resizer, so we don't click on any parameters by accident.
     await box.locator(".react-flow__resize-control.handle").click();
     await expect(box).toHaveClass(/selected/);
+  }
+  async selectBoxes(boxIds: string[]) {
+    for (const boxId of boxIds) {
+      await this.getBox(boxId)
+        .locator(".react-flow__resize-control.handle")
+        .click({ modifiers: ["Control"] });
+      await expect(this.getBox(boxId)).toHaveClass(/selected/);
+    }
   }
 
   async deleteBoxes(boxIds: string[]) {
@@ -132,6 +165,15 @@ export class Workspace {
       });
     }
     await this.page.mouse.up();
+  }
+  async copySelection() {
+    await this.page.keyboard.press("Control+c");
+  }
+  async pasteSelection() {
+    await this.page.keyboard.press("Control+v");
+  }
+  async cutSelection() {
+    await this.page.keyboard.press("Control+x");
   }
 
   async tryToConnectBoxes(sourceId: string, targetId: string) {
