@@ -1,0 +1,15 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22-bookworm",
+  "postStartCommand": "./.devcontainer/postStartCommand.sh",
+  "forwardPorts": [5173, 8000],
+  "portsAttributes": {
+    "5173": {
+      "label": "Frontend",
+      "visibility": "public",
+      "onAutoForward": "openBrowser"
+    },
+    "8000": {
+      "label": "Backend"
+    }
+  }
+}
