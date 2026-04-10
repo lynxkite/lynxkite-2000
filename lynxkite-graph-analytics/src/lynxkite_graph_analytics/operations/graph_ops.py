@@ -69,14 +69,11 @@ class DegreeType(enum.StrEnum):
 
 
 @op("NetworkX", "Degree", icon="topology-star-3")
-def degree(g: nx.Graph, *, degree_type: DegreeType = DegreeType.degree) -> nx.Graph:
+def degree(g: nx.Graph) -> nx.Graph:
     g = g.copy()
-    if degree_type == DegreeType.in_degree:
-        nx.set_node_attributes(g, name="in_degree", values=dict(g.in_degree()))
-    elif degree_type == DegreeType.out_degree:
-        nx.set_node_attributes(g, name="out_degree", values=dict(g.out_degree()))
-    else:
-        nx.set_node_attributes(g, name="degree", values=dict(g.degree()))
+    nx.set_node_attributes(g, name="in_degree", values=dict(g.in_degree()))
+    nx.set_node_attributes(g, name="out_degree", values=dict(g.out_degree()))
+    nx.set_node_attributes(g, name="degree", values=dict(g.degree()))
     return g
 
 
