@@ -4,6 +4,7 @@ import asyncio
 import contextlib
 import enum
 import pathlib
+import posixpath
 from typing import Any
 import fastapi
 import os.path
@@ -373,7 +374,7 @@ def delete_room(name: str):
 
 
 def sanitize_path(path):
-    return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
+    return posixpath.relpath(posixpath.normpath(posixpath.join("/", path.replace("\\", "/"))), "/")
 
 
 app: fastapi.FastAPI | None = None
