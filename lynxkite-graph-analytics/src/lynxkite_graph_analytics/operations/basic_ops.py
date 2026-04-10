@@ -38,9 +38,7 @@ def organize(bundles: list[core.Bundle], *, relations: str = ""):
     """
     bundle = core.Bundle()
     for b in bundles:
-        bundle.dfs.update(b.dfs)
-        bundle.relations.extend(b.relations)
-        bundle.other.update(b.other)
+        bundle.merge(b)
     if relations.strip():
         bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
     return ops.Result(output=bundle, display=bundle.to_table_view(limit=100))
