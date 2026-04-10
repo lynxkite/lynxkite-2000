@@ -29,6 +29,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import Assistant from "./Assistant.tsx";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -604,79 +605,82 @@ function LynxKiteFlow() {
           </Tooltip>
         </div>
       </div>
-      <div
-        className="reactflow-container"
-        onDragOver={onDragOver}
-        onMouseMove={onMouseMove}
-        onDrop={onDrop}
-        ref={reactFlowContainer}
-      >
-        {crdt?.ws ? (
-          <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              edgeTypes={edgeTypes}
-              fitView
-              onNodesChange={(changes) => {
-                changes = snapChangesToGrid(
-                  changes,
-                  isShiftPressed || gridSnapEnabled,
-                  crdt?.ws?.nodes || [],
-                );
-                crdt?.onFENodesChange?.(changes);
-              }}
-              onEdgesChange={crdt?.onFEEdgesChange}
-              onPaneClick={toggleNodeSearch}
-              onConnect={onConnect}
-              proOptions={{ hideAttribution: true }}
-              maxZoom={10}
-              minZoom={0.1}
-              zoomOnScroll={true}
-              panOnScroll={false}
-              panOnDrag={[0]}
-              selectionOnDrag={false}
-              preventScrolling={true}
-              defaultEdgeOptions={{
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  color: "#888",
-                  width: 15,
-                  height: 15,
-                },
-              }}
-              fitViewOptions={{ maxZoom: 1 }}
-            >
-              <Background
-                variant={BackgroundVariant.Dots}
-                gap={35}
-                size={6}
-                color="#f0f0f0"
-                bgColor="#fafafa"
-                offset={3}
-              />
-              {nodeSearchSettings && categoryHierarchy && (
-                <NodeSearch
-                  pos={nodeSearchSettings.pos}
-                  categoryHierarchy={categoryHierarchy}
-                  onCancel={closeNodeSearch}
-                  onClick={addNodeFromSearch}
+      <div className="workspace-body">
+        <div
+          className="reactflow-container"
+          onDragOver={onDragOver}
+          onMouseMove={onMouseMove}
+          onDrop={onDrop}
+          ref={reactFlowContainer}
+        >
+          {crdt?.ws ? (
+            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
+                fitView
+                onNodesChange={(changes) => {
+                  changes = snapChangesToGrid(
+                    changes,
+                    isShiftPressed || gridSnapEnabled,
+                    crdt?.ws?.nodes || [],
+                  );
+                  crdt?.onFENodesChange?.(changes);
+                }}
+                onEdgesChange={crdt?.onFEEdgesChange}
+                onPaneClick={toggleNodeSearch}
+                onConnect={onConnect}
+                proOptions={{ hideAttribution: true }}
+                maxZoom={10}
+                minZoom={0.1}
+                zoomOnScroll={true}
+                panOnScroll={false}
+                panOnDrag={[0]}
+                selectionOnDrag={false}
+                preventScrolling={true}
+                defaultEdgeOptions={{
+                  markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    color: "#888",
+                    width: 15,
+                    height: 15,
+                  },
+                }}
+                fitViewOptions={{ maxZoom: 1 }}
+              >
+                <Background
+                  variant={BackgroundVariant.Dots}
+                  gap={35}
+                  size={6}
+                  color="#f0f0f0"
+                  bgColor="#fafafa"
+                  offset={3}
                 />
-              )}
-            </ReactFlow>
-          </LynxKiteState.Provider>
-        ) : (
-          <div className="workspace-loading">Loading workspace...</div>
-        )}
-        {message && (
-          <div className="workspace-message">
-            <span className="close" onClick={() => setMessage(null)}>
-              <Close />
-            </span>
-            {message}
-          </div>
-        )}
+                {nodeSearchSettings && categoryHierarchy && (
+                  <NodeSearch
+                    pos={nodeSearchSettings.pos}
+                    categoryHierarchy={categoryHierarchy}
+                    onCancel={closeNodeSearch}
+                    onClick={addNodeFromSearch}
+                  />
+                )}
+              </ReactFlow>
+            </LynxKiteState.Provider>
+          ) : (
+            <div className="workspace-loading">Loading workspace...</div>
+          )}
+          {message && (
+            <div className="workspace-message">
+              <span className="close" onClick={() => setMessage(null)}>
+                <Close />
+              </span>
+              {message}
+            </div>
+          )}
+        </div>
+        <Assistant />
       </div>
     </div>
   );
