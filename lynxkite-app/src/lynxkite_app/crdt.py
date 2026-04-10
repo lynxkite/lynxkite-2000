@@ -288,10 +288,10 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     if ws_simple == last_known_versions.get(name):
         return
     last_known_versions[name] = ws_simple
-    # Frontend changes that result from typing are delayed to avoid
-    # rerunning the workspace for every keystroke.
     if name in delayed_executions:
         delayed_executions[name].cancel()
+    # Frontend changes that result from typing are delayed to avoid
+    # rerunning the workspace for every keystroke.
     delay = max(
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
         for change in changes
@@ -299,11 +299,16 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     # Check if workspace is paused - if so, skip automatic execution
     if getattr(ws_pyd, "paused", False):
         return
-    if delay:
-        task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
-        delayed_executions[name] = task
-    else:
-        await execute(name, ws_crdt, ws_pyd)
+
+    task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
+    delayed_executions[name] = task
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+    finally:
+        if delayed_executions.get(name) is task:
+            del delayed_executions[name]
 
 
 async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *, delay: int = 0):
@@ -317,10 +322,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
         delay: Wait time before executing the workspace. The default is 0.
     """
     if delay:
-        try:
-            await asyncio.sleep(delay)
-        except asyncio.CancelledError:
-            return
+        await asyncio.sleep(delay)
     print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
