@@ -5,6 +5,7 @@ version = "0.3.0"
 requires-python = ">=3.12"
 dependencies = [
     "lynxkite-app",
+    "lynxkite-assistant",
     "lynxkite-core",
     "lynxkite-graph-analytics",
     "lynxkite-mcp",
@@ -17,6 +18,7 @@ classifiers = ["Private :: Do Not Upload"]
 
 [tool.uv.sources]
 lynxkite-app = { workspace = true }
+lynxkite-assistant = { workspace = true }
 lynxkite-core = { workspace = true }
 lynxkite-graph-analytics = { workspace = true }
 lynxkite-mcp = { workspace = true }
@@ -34,6 +36,7 @@ explicit = true
 [tool.uv.workspace]
 members = [
     "lynxkite-app",
+    "lynxkite-assistant",
     "lynxkite-core",
     "lynxkite-graph-analytics",
     "lynxkite-mcp",
