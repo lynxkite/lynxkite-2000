@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useSWR from "swr";
@@ -10,30 +10,23 @@ type AssistantConfig = {
   assistant_available: boolean;
 };
 
-export default function Assistant() {
+export default function Assistant(props: { workspace: string }) {
   const { data: config } = useSWR<AssistantConfig>("/api/config", pathFetcher);
   const [input, setInput] = useState("");
-
   const { messages, sendMessage, status, error, stop } = useChat({
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
+      body: { workspace: props.workspace },
     }),
   });
   const isGenerating = status === "submitted" || status === "streaming";
-
   const disabled = config?.assistant_available !== true;
-  const statusText = useMemo(() => {
-    if (config == null) return "Checking assistant availability...";
-    if (disabled) return "Assistant is currently unavailable.";
-    return "Assistant is ready.";
-  }, [config, disabled]);
-
   return (
     <aside className="assistant-panel prose">
       <div className="assistant-messages">
         {messages.length === 0 && !isGenerating && (
           <div className="assistant-empty">
-            Ask about this workspace, operations, or next steps.
+            Ask to make changes to the workspace, create custom boxes, or for general help.
           </div>
         )}
 
@@ -57,7 +50,7 @@ export default function Assistant() {
         {isGenerating && (
           <div className="chat chat-start">
             <div className="chat-bubble">
-              <span className="loading loading-dots loading-sm" /> ...
+              <span className="loading loading-dots loading-sm" />
             </div>
           </div>
         )}
@@ -84,9 +77,11 @@ export default function Assistant() {
           disabled={disabled || status !== "ready"}
         />
         <div className="assistant-actions">
-          <button className="btn btn-sm" type="button" onClick={stop} disabled={!isGenerating}>
-            Stop
-          </button>
+          {isGenerating && (
+            <button className="btn btn-sm" type="button" onClick={stop}>
+              Stop
+            </button>
+          )}
           <button
             className="btn btn-primary btn-sm"
             type="submit"

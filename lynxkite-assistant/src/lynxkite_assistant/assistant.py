@@ -5,7 +5,8 @@ import fastapi
 import pydantic
 from typing import cast
 from fastapi.responses import StreamingResponse
-from deepagents import create_deep_agent
+import deepagents
+from .workspace_backend import WorkspaceBackend
 
 router = fastapi.APIRouter()
 
@@ -17,6 +18,7 @@ class AssistantMessage(pydantic.BaseModel):
 
 
 class AssistantCompletionRequest(pydantic.BaseModel):
+    workspace: str
     messages: list[AssistantMessage]
 
 
@@ -38,8 +40,6 @@ def _extract_text_content(message: AssistantMessage) -> str:
 def _extract_token_text(token_content: object) -> str:
     if token_content is None:
         return ""
-    if isinstance(token_content, str):
-        return token_content
     if isinstance(token_content, list):
         chunks: list[str] = []
         for item in token_content:
@@ -54,14 +54,11 @@ def _extract_token_text(token_content: object) -> str:
     return ""
 
 
-def _build_agent():
-    model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
-    return create_deep_agent(model=model)
-
-
 @router.post("/api/assistant/stream")
 async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
-    agent = _build_agent()
+    model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
+    backend = WorkspaceBackend(req.workspace)
+    agent = deepagents.create_deep_agent(model=model, backend=backend)
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
         content = _extract_text_content(msg).strip()
@@ -78,7 +75,6 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
         ):
             if chunk["type"] != "messages":
                 continue
-
             token, _metadata = chunk["data"]
             delta = _extract_token_text(token.content)
             if delta:

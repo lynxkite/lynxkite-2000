@@ -680,7 +680,7 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        <Assistant />
+        <Assistant workspace={path} />
       </div>
     </div>
   );
