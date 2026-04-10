@@ -2,7 +2,7 @@
 
 from lynxkite_core import ops
 
-from .. import core
+from .. import core, bundle
 import enum
 import io
 import json
@@ -31,17 +31,20 @@ def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100
     outputs=["output"],
     icon="settings-filled",
 )
-def organize(bundles: list[core.Bundle], *, relations: str = ""):
+def organize(
+    bundles: list[core.Bundle],
+    *,
+    relations: str = "",
+    merge_mode: bundle.BundleMergeMode = bundle.BundleMergeMode.must_be_unique,
+):
     """Merge multiple inputs and construct graphs from the tables.
 
     To create a graph, import tables for edges and nodes, and combine them in this operation.
     """
-    bundle = core.Bundle()
-    for b in bundles:
-        bundle.merge(b)
+    b = bundle.merge_bundles(bundles, merge_mode=merge_mode)
     if relations.strip():
-        bundle.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
-    return ops.Result(output=bundle, display=bundle.to_table_view(limit=100))
+        b.relations = [core.RelationDefinition(**r) for r in json.loads(relations).values()]
+    return ops.Result(output=b, display=b.to_table_view(limit=100))
 
 
 @op("Derive property", icon="arrow-big-right-lines")
