@@ -15,6 +15,7 @@ from lynxkite_core import workspace, ops
 from watchdog import events, observers
 
 router = fastapi.APIRouter()
+main_loop = None
 
 
 def ws_exception_handler(exception, log):
@@ -68,7 +69,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            task = asyncio.create_task(workspace_changed(name, changes, ws))
+            task = loop.create_task(workspace_changed(name, changes, ws))
             # We have no way to await workspace_changed(). The best we can do is to
             # dereference its result after it's done, so exceptions are logged normally.
             task.add_done_callback(lambda t: t.result())
@@ -259,6 +260,16 @@ def load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     ws_pyd = workspace.Workspace.load(name)
+    update_workspace(ws, ws_pyd)
+
+
+def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
+    """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
+
+    Args:
+        ws: CRDT object to udpate with the workspace contents.
+        ws_pyd: Workspace object to update the CRDT with.
+    """
     crdt_update(
         ws,
         ws_pyd.model_dump(),
@@ -351,14 +362,20 @@ ws_websocket_server: WorkspaceWebsocketServer
 code_websocket_server: CodeWebsocketServer
 
 
-def get_room(name):
-    return ws_websocket_server.get_room(name)
+async def get_room(name):
+    return await ws_websocket_server.get_room(name)
+
+
+def get_room_if_exists(name):
+    return ws_websocket_server.rooms.get(name)
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
+    global main_loop
     global ws_websocket_server
     global code_websocket_server
+    main_loop = asyncio.get_running_loop()
     ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:

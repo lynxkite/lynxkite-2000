@@ -7,6 +7,14 @@ import graphlib
 from lynxkite_core import workspace
 
 
+def _get_func_name(func: ast.expr, error_msg: str) -> str:
+    if isinstance(func, ast.Name):
+        return func.id
+    elif isinstance(func, ast.Attribute):
+        return _get_func_name(func.value, error_msg) + "." + func.attr
+    raise AssertionError(error_msg)
+
+
 def python_to_workspace(code: str) -> workspace.Workspace:
     tree = ast.parse(code)
     ws = workspace.Workspace()
@@ -23,9 +31,12 @@ def python_to_workspace(code: str) -> workspace.Workspace:
             save_as = s.targets[0].id
         assert isinstance(s, ast.Assign | ast.Expr), error_msg
         s = s.value
+        if isinstance(s, ast.Constant) and isinstance(s.value, str):
+            # Ignore docstrings.
+            continue
         assert isinstance(s, ast.Call), error_msg
-        assert isinstance(s.func, ast.Name), error_msg
-        box_id = f"{s.func.id} on line {s.lineno}"
+        func_name = _get_func_name(s.func, error_msg)
+        box_id = f"{func_name} on line {s.lineno}"
         assert len(s.args) == 0, error_msg
         kwargs = {}
         for kw in s.keywords:
@@ -52,7 +63,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         box_y[box_id] = y
         ws.add_node(
             id=box_id,
-            title=s.func.id,
+            title=func_name,
             op_id=box_id,
             params=params,
             width=400,
@@ -90,13 +101,16 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
 
     for node_id in sorted_node_ids:
         node = node_by_id[node_id]
-        kwargs = dict(getattr(node.data, "params", {}))
-        for edge in sorted(incoming_edges[node_id], key=lambda e: e.targetHandle):
-            if edge.source in variable_names:
-                kwargs[edge.targetHandle] = saved_values[edge.source]
-
-        kwarg_parts = [f"{name}={repr(value)}" for name, value in kwargs.items()]
-        call = f"{node.data.title}({', '.join(kwarg_parts)})"
+        inputs = [
+            f"{edge.targetHandle}={saved_values[edge.source]}" for edge in incoming_edges[node_id]
+        ]
+        params = [f"{name}={repr(value)}" for name, value in node.data.params.items()]
+        meta = node.data.meta
+        if meta and meta.python_function_name:
+            function_name = meta.python_function_name
+        else:
+            function_name = node.data.title.lower().replace(" ", "_")
+        call = f"{function_name}({', '.join(inputs + params)})"
         if outgoing_count[node_id] > 0:
             variable_name = f"v{next_var_index}"
             next_var_index += 1
