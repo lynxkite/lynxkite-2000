@@ -1,100 +1,53 @@
 """A Deep Agents backend that represents a workspace as a file."""
 
-from deepagents.backends.protocol import (
-    BackendProtocol,
-    EditResult,
-    FileData,
-    FileInfo,
-    GrepResult,
-    LsResult,
-    ReadResult,
-    WriteResult,
-)
-from deepagents.backends.utils import (
-    grep_matches_from_files,
-)
+import pathlib
+from typing import Any
+from deepagents.backends.state import StateBackend
+from lynxkite_core import workspace
+
+WORKSPACE_TEMPLATE = '''
+"""The Python representation of the workspace."""
+def main():
+'''.strip()
+
+BOXES_TEMPLATE = '''
+"""Custom box definitions for the workspace."""
+from lynxkite_core import ops
+ENV = "Pillow"
+op = ops.op_decorator(ENV)
+
+@op("Flip horizontally")
+def flip_horizontally(image):
+    return image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+'''.strip()
 
 
-class WorkspaceBackend(BackendProtocol):
+class WorkspaceBackend(StateBackend):
     def __init__(self, workspace: str) -> None:
+        super().__init__()
         self._workspace = workspace
 
-    def ls(self, path: str) -> LsResult:
-        if path != "/":
-            return LsResult(entries=[])
-        entries: list[FileInfo] = [
-            FileInfo(
-                path="/workspace.py",
-                is_dir=False,
-            ),
-            FileInfo(
-                path="/boxes.py",
-                is_dir=False,
-            ),
-        ]
-        return LsResult(entries=entries)
+    def _read_files(self) -> dict[str, Any]:
+        return {
+            "/workspace.py": {"content": get_workspace_file_content(self._workspace)},
+            "/boxes.py": {"content": get_boxes_file_content(self._workspace)},
+        }
 
-    def read(
-        self,
-        file_path: str,
-        offset: int = 0,
-        limit: int = 2000,
-    ) -> ReadResult:
-        match file_path:
-            case "/workspace.py":
-                return ReadResult(
-                    file_data=FileData(
-                        encoding="utf-8", content="# Python representation of the workspace.\n"
-                    )
-                )
-            case "/boxes.py":
-                return ReadResult(
-                    file_data=FileData(
-                        encoding="utf-8", content="# Custom box definitions for the workspace.\n"
-                    )
-                )
-            case _:
-                return ReadResult(error=f"File '{file_path}' not found")
+    def _send_files_update(self, update: dict[str, Any]) -> None:
+        print("update", update)
 
-    def write(
-        self,
-        file_path: str,
-        content: str,
-    ) -> WriteResult:
-        match file_path:
-            case "/workspace.py":
-                return WriteResult(path=file_path)
-            case "/boxes.py":
-                return WriteResult(path=file_path)
-            case _:
-                return WriteResult(error=f"File '{file_path}' not found")
 
-    def edit(
-        self,
-        file_path: str,
-        old_string: str,
-        new_string: str,
-        replace_all: bool = False,  # noqa: FBT001, FBT002
-    ) -> EditResult:
-        match file_path:
-            case "/workspace.py":
-                return EditResult(path=file_path, occurrences=0)
-            case "/boxes.py":
-                return EditResult(path=file_path, occurrences=0)
-            case _:
-                return EditResult(error=f"File '{file_path}' not found")
+def get_workspace_file_content(ws_path: str) -> str:
+    ws = workspace.Workspace.load(ws_path)
+    code = [WORKSPACE_TEMPLATE]
+    for node in ws.nodes:
+        code.append(f"\n    # node: {node.id} ({node.type})\n")
+    return "\n".join(code)
 
-    def grep(
-        self,
-        pattern: str,
-        path: str | None = None,
-        glob: str | None = None,
-    ) -> GrepResult:
-        """Search state files for a literal text pattern."""
-        return grep_matches_from_files({}, pattern, path if path is not None else "/", glob)
 
-    # def glob(self, pattern: str, path: str = "/") -> GlobResult: ...
-
-    # def upload_files(self, files: list[tuple[str, bytes]]) -> list[FileUploadResponse]: ...
-
-    # def download_files(self, paths: list[str]) -> list[FileDownloadResponse]: ...
+def get_boxes_file_content(ws_path: str) -> str:
+    p = pathlib.Path(__file__).parent / "boxes.py"
+    if not p.exists():
+        return BOXES_TEMPLATE
+    with open(p) as f:
+        return f.read()
