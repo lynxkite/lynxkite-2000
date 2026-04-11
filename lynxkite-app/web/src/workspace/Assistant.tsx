@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useSWR from "swr";
@@ -14,6 +14,8 @@ export default function Assistant(props: { workspace: string }) {
   const { data: config } = useSWR<AssistantConfig>("/api/config", pathFetcher);
   const [input, setInput] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const shouldAutoScrollRef = useRef(true);
   const { messages, sendMessage, status, error, stop } = useChat({
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
@@ -22,9 +24,25 @@ export default function Assistant(props: { workspace: string }) {
   });
   const isGenerating = status === "submitted" || status === "streaming";
   const disabled = config?.assistant_available !== true;
+
+  useEffect(() => {
+    const container = messagesRef.current;
+    if (!container || !shouldAutoScrollRef.current) return;
+    container.scrollTop = container.scrollHeight;
+  }, [messages, isGenerating]);
+
   return (
     <aside className="assistant-panel prose">
-      <div className="assistant-messages">
+      <div
+        ref={messagesRef}
+        className="assistant-messages"
+        onScroll={(event) => {
+          const container = event.currentTarget;
+          const distanceFromBottom =
+            container.scrollHeight - container.scrollTop - container.clientHeight;
+          shouldAutoScrollRef.current = distanceFromBottom <= 16;
+        }}
+      >
         {messages.length === 0 && !isGenerating && (
           <div className="assistant-empty">
             Ask to make changes to the workspace, create custom boxes, or for general help.
@@ -69,6 +87,7 @@ export default function Assistant(props: { workspace: string }) {
           setInput("");
           if (editorRef.current) {
             editorRef.current.textContent = "";
+            editorRef.current.focus();
           }
         }}
       >
@@ -77,13 +96,14 @@ export default function Assistant(props: { workspace: string }) {
           className="assistant-editor"
           aria-disabled={disabled || status !== "ready"}
           data-placeholder={disabled ? "Assistant unavailable" : "Ask the assistant..."}
-          contentEditable={!disabled && status === "ready"}
+          contentEditable
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault();
               event.currentTarget.closest("form")?.requestSubmit();
+              editorRef.current?.focus();
             }
           }}
         />
