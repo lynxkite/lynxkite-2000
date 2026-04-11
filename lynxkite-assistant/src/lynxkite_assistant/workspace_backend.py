@@ -4,13 +4,9 @@ import pathlib
 from typing import Any
 from deepagents.backends.state import StateBackend
 from lynxkite_core import workspace
+from . import python_workspace_conversion
 
-WORKSPACE_TEMPLATE = '''
-"""The Python representation of the workspace."""
-def main():
-'''.strip()
-
-BOXES_TEMPLATE = '''
+BOXES_PLACEHOLDER = '''
 """Custom box definitions for the workspace."""
 from lynxkite_core import ops
 ENV = "Pillow"
@@ -29,25 +25,40 @@ class WorkspaceBackend(StateBackend):
 
     def _read_files(self) -> dict[str, Any]:
         return {
-            "/workspace.py": {"content": get_workspace_file_content(self._workspace)},
-            "/boxes.py": {"content": get_boxes_file_content(self._workspace)},
+            "/workspace.py": {
+                "content": get_workspace_file_content(self._workspace),
+                "modified_at": "",
+            },
+            "/boxes.py": {"content": get_boxes_file_content(self._workspace), "modified_at": ""},
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
-        print("update", update)
+        for k, v in update.items():
+            if k == "/workspace.py":
+                set_workspace_file_content(self._workspace, v["content"])
+            if k == "/boxes.py":
+                set_boxes_file_content(v["content"])
 
 
 def get_workspace_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
-    code = [WORKSPACE_TEMPLATE]
-    for node in ws.nodes:
-        code.append(f"\n    # node: {node.id} ({node.type})\n")
-    return "\n".join(code)
+    return python_workspace_conversion.workspace_to_python(ws)
+
+
+def set_workspace_file_content(ws_path: str, content: str) -> None:
+    ws = python_workspace_conversion.python_to_workspace(content)
+    ws.save(ws_path)
 
 
 def get_boxes_file_content(ws_path: str) -> str:
     p = pathlib.Path(__file__).parent / "boxes.py"
     if not p.exists():
-        return BOXES_TEMPLATE
+        return BOXES_PLACEHOLDER
     with open(p) as f:
         return f.read()
+
+
+def set_boxes_file_content(content: str) -> None:
+    p = pathlib.Path(__file__).parent / "boxes.py"
+    with open(p, "w") as f:
+        f.write(content)

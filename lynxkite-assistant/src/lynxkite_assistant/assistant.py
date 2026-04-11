@@ -10,6 +10,15 @@ from .workspace_backend import WorkspaceBackend
 
 router = fastapi.APIRouter()
 
+SYSTEM_PROMPT = """
+You are an assistant for the LynxKite no-code AI workflow builder.
+The user sees the workflow in a visual representation, while you have access to it as a file in `workspace.py`.
+Edit this file to implement the user's requests. `workspace.py` must only contain function calls.
+Keyword arguments must be constants or previous results. Positional arguments are not allowed.
+New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
+The new box can be used in `workspace.py` by calling the function from `boxes.py`. No extra imports are needed.
+"""
+
 
 class AssistantMessage(pydantic.BaseModel):
     role: str
@@ -58,7 +67,7 @@ def _extract_token_text(token_content: object) -> str:
 async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
     backend = WorkspaceBackend(req.workspace)
-    agent = deepagents.create_deep_agent(model=model, backend=backend)
+    agent = deepagents.create_deep_agent(model=model, backend=backend, system_prompt=SYSTEM_PROMPT)
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
         content = _extract_text_content(msg).strip()
