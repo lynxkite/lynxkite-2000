@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useSWR from "swr";
@@ -13,6 +13,7 @@ type AssistantConfig = {
 export default function Assistant(props: { workspace: string }) {
   const { data: config } = useSWR<AssistantConfig>("/api/config", pathFetcher);
   const [input, setInput] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
   const { messages, sendMessage, status, error, stop } = useChat({
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
@@ -66,15 +67,25 @@ export default function Assistant(props: { workspace: string }) {
           if (disabled || !prompt || status !== "ready") return;
           sendMessage({ text: prompt });
           setInput("");
+          if (editorRef.current) {
+            editorRef.current.textContent = "";
+          }
         }}
       >
-        <textarea
-          className="textarea textarea-bordered"
-          rows={3}
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder={disabled ? "Assistant unavailable" : "Ask the assistant..."}
-          disabled={disabled || status !== "ready"}
+        <div
+          ref={editorRef}
+          className="assistant-editor"
+          aria-disabled={disabled || status !== "ready"}
+          data-placeholder={disabled ? "Assistant unavailable" : "Ask the assistant..."}
+          contentEditable={!disabled && status === "ready"}
+          suppressContentEditableWarning
+          onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              event.currentTarget.closest("form")?.requestSubmit();
+            }
+          }}
         />
         <div className="assistant-actions">
           {isGenerating && (
