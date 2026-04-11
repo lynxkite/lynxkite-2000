@@ -742,10 +742,19 @@ svg {
   flex-direction: column;
   gap: 8px;
 
-  textarea {
-    resize: vertical;
+  .assistant-editor {
     min-height: 72px;
     max-height: 220px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+
+  .assistant-editor:empty::before {
+    content: attr(data-placeholder);
+    color: color-mix(in oklab, currentColor 50%, transparent);
+    pointer-events: none;
   }
 }
 
