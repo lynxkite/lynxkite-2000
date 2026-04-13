@@ -169,6 +169,7 @@ def clean_input(ws_pyd):
         node.data.collapsed = False
         node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
+        node.data.telemetry = None
         for p in list(node.data.params):
             if p.startswith("_"):
                 del node.data.params[p]
@@ -279,7 +280,6 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         ws_crdt: CRDT object representing the workspace.
     """
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
-    ws_pyd.save(pathlib.Path() / name)
     # Push the latest workspace state to the progress CRDT doc immediately.
     update_progress_workspaces()
     # Do not trigger execution for superficial changes.
@@ -316,7 +316,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     """Execute the workspace and update the CRDT object with the results.
 
     Args:
-        room: The room associated with the workspace.
         name: Name of the workspace.
         ws_crdt: CRDT object representing the workspace.
         ws_pyd: Workspace object to execute.
@@ -447,25 +446,21 @@ def _build_workspace_entry(room_name: str, room, k8s_workspace_gpus: dict[str, i
 
 
 def _connected_workspace_rooms(server) -> list[tuple[str, Any]]:
-    rooms: list[tuple[str, Any]] = []
-    for room_name, count in _active_workspace_ws_connections.items():
-        if count <= 0:
-            continue
-        room = server.rooms.get(room_name)
-        if room is None:
-            continue
-        rooms.append((room_name, room))
+    rooms = [
+        (room_name, room)
+        for room_name in _active_workspace_ws_connections
+        if (room := server.rooms.get(room_name)) is not None
+    ]
     rooms.sort(key=lambda item: item[0])
     return rooms
 
 
 def _update_workspace_ws_connection(room_name: str, delta: int) -> None:
-    current = _active_workspace_ws_connections.get(room_name, 0)
-    next_count = current + delta
-    if next_count <= 0:
+    count = _active_workspace_ws_connections.get(room_name, 0) + delta
+    if count <= 0:
         _active_workspace_ws_connections.pop(room_name, None)
     else:
-        _active_workspace_ws_connections[room_name] = next_count
+        _active_workspace_ws_connections[room_name] = count
 
 
 def update_progress_workspaces(k8s_workspace_gpus: dict | None = None):
@@ -474,15 +469,12 @@ def update_progress_workspaces(k8s_workspace_gpus: dict | None = None):
     Called directly from workspace_changed (no K8s fallback) and periodically
     from the background refresh loop (with K8s GPU data).
     """
-    if _progress_ydoc is None:
-        return
-    server = globals().get("ws_websocket_server")
-    if server is None:
+    if _progress_ydoc is None or not hasattr(ws_websocket_server, "rooms"):
         return
     if k8s_workspace_gpus is None:
         k8s_workspace_gpus = {}
     ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
-    connected_rooms = _connected_workspace_rooms(server)
+    connected_rooms = _connected_workspace_rooms(ws_websocket_server)
     entries_by_room: dict[str, str] = {}
     for room_name, room in connected_rooms:
         try:
@@ -505,10 +497,11 @@ def update_progress_nims(nims_data: list):
         return
     nims_text: pycrdt.Text = _progress_ydoc["nims"]
     new_content = json.dumps(nims_data)
+    if str(nims_text) == new_content:
+        return
     with _progress_ydoc.transaction():
-        length = len(nims_text)
-        if length > 0:
-            del nims_text[0:length]
+        if len(nims_text) > 0:
+            del nims_text[0 : len(nims_text)]
         nims_text += new_content
 
 
