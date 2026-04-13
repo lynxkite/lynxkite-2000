@@ -47,18 +47,18 @@ export default function ProgressPage() {
   const [currentTab, setCurrentTab] = useState("workspaces");
   const tabs = [
     { id: "workspaces", label: "Running workspaces" },
-    { id: "nims", label: "Running NIMs" },
+    { id: "gpu-services", label: "Running GPU services" },
     { id: "users", label: "Users & groups" },
   ];
 
   // Mock data for now.
   const [data, setData] = useState<{
     workspaces: any[];
-    nims: any[];
+    gpuServices: any[];
     users: any[];
   }>({
     workspaces: [],
-    nims: [],
+    gpuServices: [],
     users: [
       {
         name: "Botond Banhidi",
@@ -143,20 +143,20 @@ export default function ProgressPage() {
     }
   }
 
-  async function scaleNIM(nim: any, newReplicaCount: number) {
+  async function scaleGpuService(gpuService: any, newReplicaCount: number) {
     const targetReplicas = Math.max(0, newReplicaCount);
     try {
-      await fetch("/api/scale_nim", {
+      await fetch("/api/scale_gpu_service", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: nim.name,
-          namespace: nim.publisher,
+          name: gpuService.name,
+          namespace: gpuService.publisher,
           replicas: targetReplicas,
         }),
       });
     } catch (e) {
-      console.error("Failed to scale NIM", e);
+      console.error("Failed to scale GPU service", e);
     }
   }
   useEffect(() => {
@@ -169,7 +169,7 @@ export default function ProgressPage() {
     );
 
     const wsMap = doc.getMap("workspaces");
-    const nimsText = doc.getText("nims");
+    const gpuServicesText = doc.getText("gpu_services");
 
     function parseWorkspace(value: unknown) {
       if (typeof value === "string") {
@@ -193,15 +193,15 @@ export default function ProgressPage() {
       setData((prev) => ({ ...prev, workspaces }));
     }
 
-    function syncNims() {
-      const raw = nimsText.toString();
+    function syncGpuServices() {
+      const raw = gpuServicesText.toString();
       if (!raw) {
         return;
       }
       try {
-        const nims = JSON.parse(raw);
-        if (Array.isArray(nims)) {
-          setData((prev) => ({ ...prev, nims }));
+        const gpuServices = JSON.parse(raw);
+        if (Array.isArray(gpuServices)) {
+          setData((prev) => ({ ...prev, gpuServices }));
         }
       } catch {
         // ignore malformed JSON during partial updates
@@ -209,22 +209,22 @@ export default function ProgressPage() {
     }
 
     wsMap.observe(syncWorkspaces);
-    nimsText.observe(syncNims);
+    gpuServicesText.observe(syncGpuServices);
     // Sync once the provider has connected and received initial state.
     provider.on("sync", () => {
       syncWorkspaces();
-      syncNims();
+      syncGpuServices();
     });
     provider.on("status", (event: any) => {
       if (event?.status === "connected") {
         syncWorkspaces();
-        syncNims();
+        syncGpuServices();
       }
     });
 
     return () => {
       wsMap.unobserve(syncWorkspaces);
-      nimsText.unobserve(syncNims);
+      gpuServicesText.unobserve(syncGpuServices);
       provider.destroy();
       doc.destroy();
     };
@@ -265,7 +265,9 @@ export default function ProgressPage() {
             onStop={(roomName) => stopWorkspace(roomName)}
           />
         )}
-        {currentTab === "nims" && <NIMs nims={data.nims} scaleNIM={scaleNIM} />}
+        {currentTab === "gpu-services" && (
+          <GpuServices gpuServices={data.gpuServices} scaleGpuService={scaleGpuService} />
+        )}
         {currentTab === "users" && <UsersAndGroups users={data.users} />}
       </div>
     </div>
@@ -359,63 +361,75 @@ function Workspaces(props: {
   );
 }
 
-function NIMs(props: { nims: any[]; scaleNIM: (nim: any, replicas: number) => void }) {
+function GpuServices(props: {
+  gpuServices: any[];
+  scaleGpuService: (gpuService: any, replicas: number) => void;
+}) {
   const [showUsers, setShowUsers] = useState({} as Record<string, boolean>);
-  if ((props.nims?.length ?? 0) === 0) {
-    return <div>No NIMs deployed.</div>;
+  if ((props.gpuServices?.length ?? 0) === 0) {
+    return <div>No GPU services deployed.</div>;
   }
   return (
     <table className="progress-table">
       <thead>
         <tr>
-          <th>NIM</th>
+          <th>GPU service</th>
           <th>Replicas</th>
           <th>Status</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        {props.nims.map((nim) => (
-          <tr key={nim.name}>
+        {props.gpuServices.map((gpuService) => (
+          <tr key={gpuService.name}>
             <td
-              className="nim-name"
-              onClick={() => setShowUsers((prev) => ({ ...prev, [nim.name]: !prev[nim.name] }))}
+              className="gpu-service-name"
+              onClick={() =>
+                setShowUsers((prev) => ({ ...prev, [gpuService.name]: !prev[gpuService.name] }))
+              }
             >
-              {nim.name} <span className="nim-publisher">from {nim.publisher}</span>
-              {showUsers[nim.name] && (
-                <div className="nim-users">
+              {gpuService.name}{" "}
+              <span className="gpu-service-publisher">from {gpuService.publisher}</span>
+              {showUsers[gpuService.name] && (
+                <div className="gpu-service-users">
                   Used by workspaces:
-                  {nim.usedByWorkspaces.map((ws: string) => (
-                    <div className="nim-user" key={ws}>
+                  {gpuService.usedByWorkspaces.map((ws: string) => (
+                    <div className="gpu-service-user" key={ws}>
                       {ws}
                     </div>
                   ))}
                 </div>
               )}
             </td>
-            <td className="nim-replica-count" title="Running / set">
-              {nim.replicasHealthy} / {nim.replicasRequested}
+            <td className="gpu-service-replica-count" title="Running / set">
+              {gpuService.replicasHealthy} / {gpuService.replicasRequested}
             </td>
-            <td className="nim-status">
+            <td className="gpu-service-status">
               {" "}
-              {nim.replicasHealthy !== nim.replicasRequested ? "resizing" : nim.status}{" "}
+              {gpuService.replicasHealthy !== gpuService.replicasRequested
+                ? "resizing"
+                : gpuService.status}{" "}
             </td>
             <td className="table-actions">
               <button
                 className="btn btn-sm"
                 title="Scale up"
-                onClick={() => props.scaleNIM(nim, nim.replicasRequested + 1)}
+                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested + 1)}
               >
                 <ScaleUp />
               </button>
               <button
                 className="btn btn-sm"
                 title="Scale down"
-                onClick={() => props.scaleNIM(nim, nim.replicasRequested - 1)}
+                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested - 1)}
               >
                 <ScaleDown />
               </button>
-              <button className="btn btn-sm" title="Stop" onClick={() => props.scaleNIM(nim, 0)}>
+              <button
+                className="btn btn-sm"
+                title="Stop"
+                onClick={() => props.scaleGpuService(gpuService, 0)}
+              >
                 <Stop />
               </button>
             </td>

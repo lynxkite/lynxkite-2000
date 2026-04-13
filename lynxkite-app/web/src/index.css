@@ -1179,11 +1179,11 @@ svg {
     align-items: end;
   }
 
-  .nim-users {
+  .gpu-service-users {
     font-size: 10px;
     letter-spacing: 1px;
 
-    .nim-user {
+    .gpu-service-user {
       margin-left: 10px;
     }
   }
@@ -1193,16 +1193,16 @@ svg {
     width: 8em;
   }
 
-  .nim-replica-count,
+  .gpu-service-replica-count,
   .workspace-resources {
     text-align: right;
   }
 
-  .nim-status {
+  .gpu-service-status {
     text-align: center;
   }
 
-  .nim-publisher {
+  .gpu-service-publisher {
     font-size: 0.8em;
     color: #0008;
   }
@@ -1216,6 +1216,7 @@ svg {
       color: oklch(75% 0.13 230);
     }
   }
+
   .label {
     margin-top: 10px;
   }

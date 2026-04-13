@@ -37,7 +37,7 @@ def _log_k8s_unavailable_once() -> None:
     global _k8s_unavailable_logged
     if _k8s_unavailable_logged:
         return
-    print("Kubernetes package is not installed; NIM/K8s progress features are disabled.")
+    print("Kubernetes package is not installed; GPU service/K8s progress features are disabled.")
     _k8s_unavailable_logged = True
 
 
@@ -57,8 +57,8 @@ def _k8s_config_module():
         return None
 
 
-def _compute_nims() -> list[dict]:
-    """Build a list of NIM status dicts from live Kubernetes deployments."""
+def _compute_gpu_services() -> list[dict]:
+    """Build a list of GPU service status dicts from live Kubernetes deployments."""
     client = _k8s_client_module()
     if client is None:
         return []
@@ -68,7 +68,7 @@ def _compute_nims() -> list[dict]:
             return []
         system_namespaces = {"kube-system", "kube-public", "kube-node-lease"}
         active_workspaces = _get_active_workspaces()
-        nims = []
+        gpu_services = []
         for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
             if (d.metadata.namespace or "") in system_namespaces:
                 continue
@@ -82,7 +82,7 @@ def _compute_nims() -> list[dict]:
                     if node_name and node_name == d.metadata.name and ws_name not in used_by:
                         used_by.append(ws_name)
                         break
-            nims.append(
+            gpu_services.append(
                 {
                     "publisher": d.metadata.namespace or "",
                     "name": d.metadata.name,
@@ -92,9 +92,9 @@ def _compute_nims() -> list[dict]:
                     "usedByWorkspaces": used_by,
                 }
             )
-        return nims
+        return gpu_services
     except Exception as e:
-        print(f"NIM refresh error: {e}")
+        print(f"GPU service refresh error: {e}")
         return []
 
 
@@ -120,10 +120,10 @@ def _get_k8s_workspace_gpus() -> dict[str, int]:
 
 
 async def _progress_refresh_loop():
-    """Background task: refresh K8s GPU counts and NIM data into the progress CRDT doc."""
+    """Background task: refresh K8s GPU counts and GPU service data into the progress CRDT doc."""
     while True:
         crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
-        crdt.update_progress_nims(_compute_nims())
+        crdt.update_progress_gpu_services(_compute_gpu_services())
         await asyncio.sleep(15)
 
 
@@ -201,9 +201,9 @@ async def stop_workspace(req: dict):
     return {"status": "ok", "room_name": room_name}
 
 
-@app.post("/api/scale_nim")
-async def scale_nim(req: dict):
-    """Scale a NIM deployment to the specified replica count."""
+@app.post("/api/scale_gpu_service")
+async def scale_gpu_service(req: dict):
+    """Scale a GPU service deployment to the specified replica count."""
     client = _k8s_client_module()
     if client is None:
         raise fastapi.HTTPException(
@@ -215,7 +215,7 @@ async def scale_nim(req: dict):
     namespace = req.get("namespace") or req.get("publisher")
     replicas = req.get("replicas")
 
-    print(f"Scaling NIM {namespace}/{name} to {replicas} replicas")
+    print(f"Scaling GPU service {namespace}/{name} to {replicas} replicas")
     if not isinstance(name, str) or not name:
         raise fastapi.HTTPException(status_code=400, detail="Missing or invalid name")
     if not isinstance(namespace, str) or not namespace:
@@ -240,10 +240,10 @@ async def scale_nim(req: dict):
     # Push a fresh snapshot right away so the UI updates without waiting for poll loop
     crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
     try:
-        nims = _compute_nims()
-        crdt.update_progress_nims(nims)
+        gpu_services = _compute_gpu_services()
+        crdt.update_progress_gpu_services(gpu_services)
     except Exception as e:
-        print(f"Error computing/updating NIMs after scaling {namespace}/{name}: {e}")
+        print(f"Error computing/updating GPU services after scaling {namespace}/{name}: {e}")
 
     return {"status": "ok", "name": name, "namespace": namespace, "replicas": replicas}
 

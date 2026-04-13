@@ -366,7 +366,7 @@ class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
         global _progress_ydoc
         ydoc = pycrdt.Doc()
         ydoc["workspaces"] = pycrdt.Map()
-        ydoc["nims"] = pycrdt.Text()
+        ydoc["gpu_services"] = pycrdt.Text()
         _progress_ydoc = ydoc
         return pycrdt.websocket.YRoom(ydoc=ydoc, exception_handler=ws_exception_handler)
 
@@ -491,18 +491,18 @@ def update_progress_workspaces(k8s_workspace_gpus: dict | None = None):
                 del ws_map[name]
 
 
-def update_progress_nims(nims_data: list):
-    """Update the NIMs entry in the progress CRDT doc with fresh Kubernetes data."""
+def update_progress_gpu_services(gpu_services_data: list):
+    """Update the GPU services entry in the progress CRDT doc with fresh Kubernetes data."""
     if _progress_ydoc is None:
         return
-    nims_text: pycrdt.Text = _progress_ydoc["nims"]
-    new_content = json.dumps(nims_data)
-    if str(nims_text) == new_content:
+    gpu_services_text: pycrdt.Text = _progress_ydoc["gpu_services"]
+    new_content = json.dumps(gpu_services_data)
+    if str(gpu_services_text) == new_content:
         return
     with _progress_ydoc.transaction():
-        if len(nims_text) > 0:
-            del nims_text[0 : len(nims_text)]
-        nims_text += new_content
+        if len(gpu_services_text) > 0:
+            del gpu_services_text[0 : len(gpu_services_text)]
+        gpu_services_text += new_content
 
 
 def get_room(name):
@@ -523,7 +523,7 @@ async def lifespan(app):
                 # Pre-initialise the singleton room so clients get an immediate snapshot.
                 await progress_websocket_server.get_room("progress")
                 update_progress_workspaces()
-                update_progress_nims([])
+                update_progress_gpu_services([])
                 yield
     print("closing websocket server")
 
