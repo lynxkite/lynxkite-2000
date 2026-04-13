@@ -4,7 +4,7 @@ Convert a series of Python function calls into a workspace, or the other way.
 
 import ast
 import graphlib
-from lynxkite_core import workspace
+from lynxkite_core import ops, workspace
 
 
 def _get_func_name(func: ast.expr, error_msg: str) -> str:
@@ -15,7 +15,17 @@ def _get_func_name(func: ast.expr, error_msg: str) -> str:
     raise AssertionError(error_msg)
 
 
+def _get_catalog():
+    catalog = {}
+    for cat in ops.CATALOGS.values():
+        for op in cat.values():
+            if op.python_function_name:
+                catalog[op.python_function_name] = op
+    return catalog
+
+
 def python_to_workspace(code: str) -> workspace.Workspace:
+    catalog = _get_catalog()
     tree = ast.parse(code)
     ws = workspace.Workspace()
     saved_values = {}
@@ -36,6 +46,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
             continue
         assert isinstance(s, ast.Call), error_msg
         func_name = _get_func_name(s.func, error_msg)
+        op_id = func_name
         box_id = f"{func_name} on line {s.lineno}"
         assert len(s.args) == 0, error_msg
         kwargs = {}
@@ -61,10 +72,14 @@ def python_to_workspace(code: str) -> workspace.Workspace:
             y += 1
         box_x[box_id] = x
         box_y[box_id] = y
+        op = catalog.get(func_name)
+        if op:
+            func_name = op.name
+            op_id = op.id
         ws.add_node(
             id=box_id,
             title=func_name,
-            op_id=box_id,
+            op_id=op_id,
             params=params,
             width=400,
             height=400,
