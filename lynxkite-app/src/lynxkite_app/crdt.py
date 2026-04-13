@@ -2,9 +2,7 @@
 
 import asyncio
 import contextlib
-import enum
 import pathlib
-from typing import Any
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -13,6 +11,7 @@ import uvicorn.protocols.utils
 import builtins
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
+from .crdt_update import crdt_update
 
 router = fastapi.APIRouter()
 main_loop = None
@@ -184,122 +183,6 @@ def clean_input(ws_pyd):
         if node.model_extra:
             for key in list(node.model_extra.keys()):
                 delattr(node, key)
-
-
-def crdt_update(
-    crdt_obj: pycrdt.Map[Any] | pycrdt.Array[Any],
-    python_obj: dict | list,
-    non_collaborative_fields: set[str] = set(),
-):
-    """Update a CRDT object to match a Python object.
-
-    The types between the CRDT object and the Python object must match. If the Python object
-    is a dict, the CRDT object must be a Map. If the Python object is a list, the CRDT object
-    must be an Array.
-
-    Args:
-        crdt_obj: The CRDT object, that will be updated to match the Python object.
-        python_obj: The Python object to update with.
-        non_collaborative_fields: List of fields to treat as a black box. Black boxes are
-        updated as a whole, instead of having a fine-grained data structure to edit
-        collaboratively. Useful for complex fields that contain auto-generated data or
-        metadata.
-        The default is an empty set.
-
-    Raises:
-        ValueError: If the Python object provided is not a dict or list.
-    """
-    if isinstance(python_obj, dict):
-        assert isinstance(crdt_obj, pycrdt.Map), f"expected CRDT Map, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        # Delete keys that are gone.
-        for key in list(crdt_obj.keys()):
-            if key not in python_obj:
-                del crdt_obj[key]
-        for key, value in python_obj.items():
-            if key in non_collaborative_fields:
-                crdt_obj[key] = value
-            elif isinstance(value, dict):
-                if isinstance(crdt_obj.get(key), pycrdt.Map):
-                    crdt_update(crdt_obj[key], value, non_collaborative_fields)
-                elif key not in crdt_obj:
-                    crdt_obj[key] = pycrdt.Map()
-                    crdt_update(crdt_obj[key], value, non_collaborative_fields)
-                else:
-                    crdt_obj[key] = value
-            elif isinstance(value, list):
-                if isinstance(crdt_obj.get(key), pycrdt.Array):
-                    crdt_update(crdt_obj[key], value, non_collaborative_fields)
-                elif key not in crdt_obj:
-                    crdt_obj[key] = pycrdt.Array()
-                    crdt_update(crdt_obj[key], value, non_collaborative_fields)
-                else:
-                    crdt_obj[key] = value
-            elif isinstance(value, enum.Enum):
-                crdt_obj[key] = str(value.value)
-            else:
-                crdt_obj[key] = value
-    elif isinstance(python_obj, list):
-        assert isinstance(crdt_obj, pycrdt.Array), f"expected CRDT Array, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        if python_obj and isinstance(python_obj[0], dict) and "id" in python_obj[0]:
-            # ID-based matching: use the 'id' field to track additions/deletions.
-            new_ids = {v["id"] for v in python_obj if isinstance(v, dict) and "id" in v}
-            # Delete items no longer present (in reverse order to preserve indices).
-            for i in range(len(crdt_obj) - 1, -1, -1):
-                item = crdt_obj[i]
-                item_id = item.get("id") if isinstance(item, pycrdt.Map) else None
-                if item_id not in new_ids:
-                    del crdt_obj[i]
-            # Build lookup of remaining items by id.
-            current_by_id = {}
-            for item in crdt_obj:
-                if isinstance(item, pycrdt.Map):
-                    item_id = item.get("id")
-                    if item_id is not None:
-                        current_by_id[item_id] = item
-            # Update existing items or append new ones.
-            for value in python_obj:
-                value_id = value.get("id")
-                if value_id in current_by_id:
-                    crdt_update(current_by_id[value_id], value, non_collaborative_fields)
-                else:
-                    new_map = pycrdt.Map()
-                    crdt_obj.append(new_map)  # ty: ignore[invalid-argument-type]
-                    crdt_update(new_map, value, non_collaborative_fields)
-        else:
-            # Index-based matching.
-            for i, value in enumerate(python_obj):
-                if isinstance(value, dict):
-                    if i < len(crdt_obj) and isinstance(crdt_obj[i], pycrdt.Map):
-                        crdt_update(crdt_obj[i], value, non_collaborative_fields)
-                    elif i >= len(crdt_obj):
-                        crdt_obj.append(pycrdt.Map())  # ty: ignore[invalid-argument-type]
-                        crdt_update(crdt_obj[i], value, non_collaborative_fields)
-                    else:
-                        crdt_obj[i] = value  # ty: ignore[invalid-assignment]
-                elif isinstance(value, list):
-                    if i < len(crdt_obj) and isinstance(crdt_obj[i], pycrdt.Array):
-                        crdt_update(crdt_obj[i], value, non_collaborative_fields)
-                    elif i >= len(crdt_obj):
-                        crdt_obj.append(pycrdt.Array())  # ty: ignore[invalid-argument-type]
-                        crdt_update(crdt_obj[i], value, non_collaborative_fields)
-                    else:
-                        crdt_obj[i] = value  # ty: ignore[invalid-assignment]
-                else:
-                    if isinstance(value, enum.Enum):
-                        value = str(value.value)
-                    if i >= len(crdt_obj):
-                        crdt_obj.append(value)  # ty: ignore[invalid-argument-type]
-                    else:
-                        crdt_obj[i] = value  # ty: ignore[invalid-assignment]
-            # Delete items that are no longer present.
-            while len(crdt_obj) > len(python_obj):
-                del crdt_obj[len(python_obj)]
-    else:
-        raise ValueError("Invalid type:", python_obj)
 
 
 def load_workspace(ws: pycrdt.Map, name: str):
