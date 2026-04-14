@@ -4,6 +4,7 @@ import asyncio
 import contextlib
 import enum
 import json
+import os
 import pathlib
 import re
 from typing import Any
@@ -56,13 +57,16 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
             if not os.path.exists(name):
-                workspace.Workspace().save(name)
+                _save_workspace(name, workspace.Workspace())
             else:
                 load_workspace(ws, name)
         ws_simple = workspace.Workspace.model_validate(ws.to_py())
-        clean_input(ws_simple)
-        # Set the last known version to the current state, so we don't trigger a change event.
-        last_known_versions[name] = ws_simple
+        ws_exec = ws_simple.model_copy(deep=True)
+        clean_execution_input(ws_exec)
+        last_execution_versions[name] = ws_exec
+        ws_clean = ws_simple.model_copy(deep=True)
+        clean_persisted_input(ws_clean)
+        last_saved_file_contents[name] = ws_clean.model_dump_json_sorted()
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
@@ -123,7 +127,14 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
 
     def on_modified(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
-            print(f"Detected changes in {event.src_path}. Updating workspace...")
+            try:
+                current_content = pathlib.Path(event.src_path).read_text(encoding="utf-8")
+            except FileNotFoundError:
+                return
+            if current_content == last_saved_file_contents.get(self.file_path):
+                return
+            last_saved_file_contents[self.file_path] = current_content
+            print(f"Detected external changes in {event.src_path}. Updating workspace...")
             self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
 
 
@@ -159,17 +170,27 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         return room
 
 
-def clean_input(ws_pyd):
-    """Delete everything that we want to ignore for the purposes of change detection."""
+def clean_persisted_input(ws_pyd):
+    """Delete runtime-only fields before persisting or comparing persisted state."""
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.input_metadata = None
         node.data.error = None
         node.data.message = None
-        node.data.collapsed = False
-        node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
         node.data.telemetry = None
+        node.__execution_delay = 0
+        if node.model_extra:
+            for key in list(node.model_extra.keys()):
+                delattr(node, key)
+
+
+def clean_execution_input(ws_pyd):
+    """Delete everything that should not trigger workspace execution."""
+    clean_persisted_input(ws_pyd)
+    for node in ws_pyd.nodes:
+        node.data.collapsed = False
+        node.data.expanded_height = 0
         for p in list(node.data.params):
             if p.startswith("_"):
                 del node.data.params[p]
@@ -179,10 +200,23 @@ def clean_input(ws_pyd):
         node.position.y = 0
         node.width = 0
         node.height = 0
-        node.__execution_delay = 0
-        if node.model_extra:
-            for key in list(node.model_extra.keys()):
-                delattr(node, key)
+
+
+def _save_workspace(name: str, ws_pyd: workspace.Workspace) -> None:
+    """Save the workspace, skipping execution-only state. Stamps last_saved_file_contents
+    so the file watcher won't reload a file we just wrote ourselves."""
+    cwd = pathlib.Path()
+    path = cwd / name
+    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
+    # Use model_dump/validate round-trip instead of deep copy to avoid pickling
+    # private CRDT state that gets attached after connect_crdt() is called.
+    ws_clean = workspace.Workspace.model_validate(ws_pyd.model_dump())
+    clean_persisted_input(ws_clean)
+    content = ws_clean.model_dump_json_sorted()
+    if content == last_saved_file_contents.get(name):
+        return
+    last_saved_file_contents[name] = content
+    ws_clean.save(path)
 
 
 def crdt_update(
@@ -259,6 +293,9 @@ def load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     ws_pyd = workspace.Workspace.load(name)
+    ws_clean = ws_pyd.model_copy(deep=True)
+    clean_persisted_input(ws_clean)
+    last_saved_file_contents[name] = ws_clean.model_dump_json_sorted()
     crdt_update(
         ws,
         ws_pyd.model_dump(),
@@ -267,8 +304,9 @@ def load_workspace(ws: pycrdt.Map, name: str):
     )
 
 
-last_known_versions = {}
-delayed_executions = {}
+last_execution_versions: dict[str, workspace.Workspace] = {}
+last_saved_file_contents: dict[str, str] = {}
+delayed_executions: dict[str, asyncio.Task] = {}
 
 
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
@@ -282,13 +320,17 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
     # Push the latest workspace state to the progress CRDT doc immediately.
     update_progress_workspaces()
-    # Do not trigger execution for superficial changes.
-    # This is a quick solution until we build proper caching.
+    # Persist every change except pure execution-state noise (status, telemetry, display).
+    # The watcher ignores files we wrote ourselves via last_saved_file_contents.
+    _save_workspace(name, ws_pyd)
+    # Do not trigger execution for superficial changes (layout, comments, etc.).
     ws_simple = ws_pyd.model_copy(deep=True)
-    clean_input(ws_simple)
-    if ws_simple == last_known_versions.get(name):
+    clean_execution_input(ws_simple)
+    if ws_simple == last_execution_versions.get(name):
         return
-    last_known_versions[name] = ws_simple
+    last_execution_versions[name] = ws_simple
+    # Frontend changes that result from typing are delayed to avoid
+    # rerunning the workspace for every keystroke.
     if name in delayed_executions:
         delayed_executions[name].cancel()
     # Frontend changes that result from typing are delayed to avoid
@@ -324,9 +366,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     if delay:
         await asyncio.sleep(delay)
     print(f"Running {name} in {ws_pyd.env}...")
-    cwd = pathlib.Path()
-    path = cwd / name
-    assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     ops.load_user_scripts(name)
     ws_pyd.connect_crdt(ws_crdt)
     ws_pyd.update_metadata()
@@ -339,7 +378,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
             nc["data"]["status"] = "planned"
             nc["data"]["message"] = None
     await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    ws_pyd.save(path)
+    _save_workspace(name, ws_pyd)
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 
@@ -532,6 +571,11 @@ def delete_room(name: str):
     if name in ws_websocket_server.rooms:
         del ws_websocket_server.rooms[name]
     _active_workspace_ws_connections.pop(name, None)
+    if name in delayed_executions:
+        delayed_executions[name].cancel()
+        del delayed_executions[name]
+    last_execution_versions.pop(name, None)
+    last_saved_file_contents.pop(name, None)
     # Remove the workspace entry from the progress doc.
     if _progress_ydoc is not None:
         ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
