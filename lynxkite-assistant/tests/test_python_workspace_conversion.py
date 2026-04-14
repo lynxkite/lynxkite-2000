@@ -79,4 +79,4 @@ def test_workspace_to_python_orders_dependencies_and_handles():
 
     assert lines[2] == "v1 = alpha()"
     assert lines[3] == "v2 = beta()"
-    assert lines[4] == "merge(const=5, a='v2', z='v1')"
+    assert lines[4] == "merge(a=v2, z=v1, const=5)"

@@ -116,18 +116,19 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
 
     for node_id in sorted_node_ids:
         node = node_by_id[node_id]
-        inputs = [
+        inputs = sorted(
             f"{edge.targetHandle}={saved_values[edge.source]}" for edge in incoming_edges[node_id]
-        ]
-        params = [f"{name}={repr(value)}" for name, value in node.data.params.items()]
+        )
+        params = sorted(f"{name}={repr(value)}" for name, value in node.data.params.items())
         meta = node.data.meta
+        short_id = node.data.title.lower().replace(" ", "_")
         if meta and meta.python_function_name:
             function_name = meta.python_function_name
         else:
-            function_name = node.data.title.lower().replace(" ", "_")
+            function_name = short_id
         call = f"{function_name}({', '.join(inputs + params)})"
         if outgoing_count[node_id] > 0:
-            variable_name = f"v{next_var_index}"
+            variable_name = f"res_{short_id}_{next_var_index}"
             next_var_index += 1
             variable_names[node_id] = variable_name
             saved_values[node_id] = variable_name
