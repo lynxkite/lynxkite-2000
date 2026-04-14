@@ -13,14 +13,25 @@ except ImportError:
     crdt = None  # type: ignore
 
 BOXES_PLACEHOLDER = '''
-"""Custom box definitions for the workspace."""
+"""Custom box definitions for the workspace.
+
+To add a custom box, define a function here and decorate it with @op.
+The positional arguments of the function become its inputs, and the keyword-only arguments become its parameters.
+E.g.:
+
+    @op("Blur")
+    def blur(image: Image.Image, *, radius = 5):
+        return image.filter(ImageFilter.GaussianBlur(radius))
+
+    @op("Read CSV")
+    def read_csv(*, path: str):
+        return pd.read_csv(path)
+
+"""
 from lynxkite_core import ops
-ENV = "Pillow"
 op = ops.op_registration(ENV)
 
-@op("Flip horizontally")
-def flip_horizontally(image):
-    return image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+# Add new box definitions here.
 '''.strip()
 
 
@@ -208,9 +219,10 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
 
 
 def get_boxes_file_content(ws_path: str) -> str:
+    ws = workspace.Workspace.load(ws_path)
     p = pathlib.Path(ws_path).parent / "boxes.py"
     if not p.exists():
-        return BOXES_PLACEHOLDER
+        return BOXES_PLACEHOLDER.replace("ENV", f'"{ws.env}"')
     with open(p) as f:
         return f.read()
 

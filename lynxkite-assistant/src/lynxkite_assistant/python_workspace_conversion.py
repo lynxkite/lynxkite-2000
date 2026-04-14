@@ -94,7 +94,8 @@ def python_to_workspace(code: str) -> workspace.Workspace:
 def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
-        "# Imports are handled automatically.",
+        "import boxes  # For boxes defined in boxes.py.",
+        "# Other imports are handled automatically.",
     ]
     node_by_id = {node.id: node for node in ws.nodes}
     incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {node.id: [] for node in ws.nodes}
@@ -121,7 +122,7 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         )
         params = sorted(f"{name}={repr(value)}" for name, value in node.data.params.items())
         meta = node.data.meta
-        short_id = node.data.title.lower().replace(" ", "_")
+        short_id = "".join(c if c.isalnum() else "_" for c in node.data.title.lower())
         if meta and meta.python_function_name:
             function_name = meta.python_function_name
         else:

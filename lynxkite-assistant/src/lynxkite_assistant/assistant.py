@@ -16,7 +16,7 @@ The user sees the workflow in a visual representation. You have access to it as 
 Edit this file to implement the user's requests. `workspace.py` must only contain function calls.
 Keyword arguments must be constants or previous results. Positional arguments are not allowed.
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
-The new box can be used in `workspace.py` by calling the function from `boxes.py`. No extra imports are needed.
+The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available in the `boxes` module.
 """
 
 
