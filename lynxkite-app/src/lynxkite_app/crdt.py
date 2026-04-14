@@ -171,14 +171,9 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
 
 
 def clean_persisted_input(ws_pyd):
-    """Delete runtime-only fields before persisting or comparing persisted state."""
+    """Delete only truly transient fields before persisting. Keep execution results (display/error/message/status/telemetry)."""
     for node in ws_pyd.nodes:
-        node.data.display = None
         node.data.input_metadata = None
-        node.data.error = None
-        node.data.message = None
-        node.data.status = workspace.NodeStatus.done
-        node.data.telemetry = None
         node.__execution_delay = 0
         if node.model_extra:
             for key in list(node.model_extra.keys()):
@@ -189,6 +184,11 @@ def clean_execution_input(ws_pyd):
     """Delete everything that should not trigger workspace execution."""
     clean_persisted_input(ws_pyd)
     for node in ws_pyd.nodes:
+        node.data.display = None
+        node.data.error = None
+        node.data.message = None
+        node.data.status = workspace.NodeStatus.done
+        node.data.telemetry = None
         node.data.collapsed = False
         node.data.expanded_height = 0
         for p in list(node.data.params):
