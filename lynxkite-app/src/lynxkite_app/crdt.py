@@ -203,12 +203,13 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
         ws: CRDT object to udpate with the workspace contents.
         ws_pyd: Workspace object to update the CRDT with.
     """
-    crdt_update(
-        ws,
-        ws_pyd.model_dump(),
-        # We treat some fields as black boxes. They are not edited on the frontend.
-        non_collaborative_fields={"display", "input_metadata", "meta"},
-    )
+    with ws.doc.transaction():
+        crdt_update(
+            ws,
+            ws_pyd.model_dump(),
+            # We treat some fields as black boxes. They are not edited on the frontend.
+            non_collaborative_fields={"display", "input_metadata", "meta"},
+        )
 
 
 last_known_versions = {}

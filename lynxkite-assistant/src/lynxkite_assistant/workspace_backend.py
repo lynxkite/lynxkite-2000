@@ -3,7 +3,7 @@
 import pathlib
 from pprint import pprint
 from typing import Any
-from deepagents.backends.state import StateBackend
+from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
 from . import python_workspace_conversion
 
@@ -24,7 +24,7 @@ def flip_horizontally(image):
 '''.strip()
 
 
-class WorkspaceBackend(StateBackend):
+class WorkspaceBackend(state.StateBackend):
     def __init__(self, workspace: str) -> None:
         super().__init__()
         self._workspace = workspace
@@ -45,6 +45,22 @@ class WorkspaceBackend(StateBackend):
             set_boxes_file_content(self._workspace, update["/boxes.py"]["content"])
         if "/workspace.py" in update:
             set_workspace_file_content(self._workspace, update["/workspace.py"]["content"])
+
+    def edit(
+        self,
+        file_path: str,
+        old_string: str,
+        new_string: str,
+        replace_all: bool = False,  # noqa: FBT001, FBT002
+    ) -> protocol.EditResult:
+        # We convert workspace.py to a Workspace on edit. This can fail in many ways. Tell the agent.
+        try:
+            return super().edit(file_path, old_string, new_string, replace_all)
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            return protocol.EditResult(error=str(e))
 
 
 def get_workspace_file_content(ws_path: str) -> str:
