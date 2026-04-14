@@ -35,6 +35,9 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         src = ast.get_source_segment(code, s)
         error_msg = f"Unexpected statement on line {s.lineno}:\n\n  {src}\n\nThe file must only contain function calls. Keyword arguments must be constants or previous results. Positional arguments are not allowed."
         save_as = None
+        if isinstance(s, ast.Import) and len(s.names) == 1 and s.names[0].name == "boxes":
+            # Ignore "import boxes".
+            continue
         if isinstance(s, ast.Assign):
             assert len(s.targets) == 1, error_msg
             assert isinstance(s.targets[0], ast.Name), error_msg
@@ -95,7 +98,7 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
         "import boxes  # For boxes defined in boxes.py.",
-        "# Other imports are handled automatically.",
+        "# Other imports are handled automatically. Do not add imports.",
     ]
     node_by_id = {node.id: node for node in ws.nodes}
     incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {node.id: [] for node in ws.nodes}

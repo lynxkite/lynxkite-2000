@@ -37,6 +37,7 @@ def test_python_to_workspace_builds_chain_with_constants_and_references():
 def test_python_to_workspace_stacks_parallel_inputs_on_different_rows():
     code = "\n".join(
         [
+            "import boxes",
             "left_result = left()",
             "right_result = right()",
             "combine(x=left_result, y=right_result)",
@@ -46,9 +47,9 @@ def test_python_to_workspace_stacks_parallel_inputs_on_different_rows():
     ws = python_to_workspace(code)
     positions = {node.id: node.position for node in ws.nodes}
 
-    assert positions["left on line 1"] == workspace.Position(x=0, y=0)
-    assert positions["right on line 2"] == workspace.Position(x=0, y=450)
-    assert positions["combine on line 3"] == workspace.Position(x=500, y=0)
+    assert positions["left on line 2"] == workspace.Position(x=0, y=0)
+    assert positions["right on line 3"] == workspace.Position(x=0, y=450)
+    assert positions["combine on line 4"] == workspace.Position(x=500, y=0)
 
 
 def test_python_to_workspace_rejects_positional_arguments():
@@ -63,7 +64,7 @@ def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
 
     code = workspace_to_python(ws)
 
-    assert code.splitlines()[2] == "source(k=1)"
+    assert code.splitlines()[3] == "source(k=1)"
 
 
 def test_workspace_to_python_orders_dependencies_and_handles():
@@ -77,6 +78,6 @@ def test_workspace_to_python_orders_dependencies_and_handles():
     code = workspace_to_python(ws)
     lines = code.splitlines()
 
-    assert lines[2] == "v1 = alpha()"
-    assert lines[3] == "v2 = beta()"
-    assert lines[4] == "merge(a=v2, z=v1, const=5)"
+    assert lines[3] == "res_alpha_1 = alpha()"
+    assert lines[4] == "res_beta_2 = beta()"
+    assert lines[5] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"
