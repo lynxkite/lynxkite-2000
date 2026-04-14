@@ -22,6 +22,7 @@ import LibraryMinus from "~icons/tabler/library-minus.jsx";
 import LibraryPlus from "~icons/tabler/library-plus.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
 import Play from "~icons/tabler/player-play.jsx";
+import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
@@ -48,6 +49,10 @@ import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 
+type GlobalConfig = {
+  assistant_available: boolean;
+};
+
 // The workspace gets re-rendered on every frame when a node is moved.
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
 // Memoizing them fixes it.
@@ -57,6 +62,7 @@ const GridOffIcon = memo(Arrow);
 const GroupIcon = memo(LibraryPlus);
 const UngroupIcon = memo(LibraryMinus);
 const RestartIcon = memo(RotateClockwise);
+const RobotIcon = memo(Robot);
 const PlayIcon = memo(Play);
 const PauseIcon = memo(Pause);
 const CloseIcon = memo(Close);
@@ -75,6 +81,7 @@ function LynxKiteFlow() {
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const cursorScreenPos = useRef<XYPosition | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
   );
@@ -122,6 +129,7 @@ function LynxKiteFlow() {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
   const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
+  const config = useSWR<GlobalConfig>("/api/config", fetcher);
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
@@ -574,6 +582,16 @@ function LynxKiteFlow() {
                   {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
                 </button>
               </Tooltip>
+              {config.data?.assistant_available && (
+                <Tooltip doc={"Toggle assistant"}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                  >
+                    <RobotIcon />
+                  </button>
+                </Tooltip>
+              )}
               <Tooltip
                 doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
               >
@@ -680,7 +698,7 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        <Assistant workspace={path} />
+        {isAssistantOpen && <Assistant workspace={path} />}
       </div>
     </div>
   );
