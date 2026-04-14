@@ -3,16 +3,9 @@ import { TextStreamChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import useSWR from "swr";
 import RobotIcon from "~icons/tabler/robot.jsx";
-import { pathFetcher } from "../common.ts";
-
-type AssistantConfig = {
-  assistant_available: boolean;
-};
 
 export default function Assistant(props: { workspace: string }) {
-  const { data: config } = useSWR<AssistantConfig>("/api/config", pathFetcher);
   const [input, setInput] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -24,7 +17,6 @@ export default function Assistant(props: { workspace: string }) {
     }),
   });
   const isGenerating = status === "submitted" || status === "streaming";
-  const disabled = config?.assistant_available !== true;
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -83,7 +75,7 @@ export default function Assistant(props: { workspace: string }) {
         onSubmit={async (event) => {
           event.preventDefault();
           const prompt = input.trim();
-          if (disabled || !prompt || status !== "ready") return;
+          if (!prompt || status !== "ready") return;
           sendMessage({ text: prompt });
           setInput("");
           if (editorRef.current) {
@@ -95,12 +87,8 @@ export default function Assistant(props: { workspace: string }) {
         <div
           ref={editorRef}
           className="assistant-editor"
-          aria-disabled={disabled || status !== "ready"}
-          data-placeholder={
-            disabled
-              ? "Assistant unavailable"
-              : "Ask to make changes to the workspace, create custom boxes, or for general help."
-          }
+          aria-disabled={status !== "ready"}
+          data-placeholder="Ask to make changes to the workspace, create custom boxes, or for general help."
           contentEditable
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
@@ -118,11 +106,7 @@ export default function Assistant(props: { workspace: string }) {
               Stop
             </button>
           )}
-          <button
-            className="btn btn-primary btn-sm"
-            type="submit"
-            disabled={disabled || status !== "ready"}
-          >
+          <button className="btn btn-primary btn-sm" type="submit" disabled={status !== "ready"}>
             Send
           </button>
         </div>
