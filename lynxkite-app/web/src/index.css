@@ -726,8 +726,9 @@ svg {
 }
 
 .assistant-empty {
-  color: #5c6670;
-  padding: 10px;
+  text-align: center;
+  color: oklch(90% 0 0);
+  font-size: 100px;
 }
 
 .assistant-error {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import useSWR from "swr";
+import RobotIcon from "~icons/tabler/robot.jsx";
 import { pathFetcher } from "../common.ts";
 
 type AssistantConfig = {
@@ -45,7 +46,7 @@ export default function Assistant(props: { workspace: string }) {
       >
         {messages.length === 0 && !isGenerating && (
           <div className="assistant-empty">
-            Ask to make changes to the workspace, create custom boxes, or for general help.
+            <RobotIcon />
           </div>
         )}
 
@@ -95,7 +96,11 @@ export default function Assistant(props: { workspace: string }) {
           ref={editorRef}
           className="assistant-editor"
           aria-disabled={disabled || status !== "ready"}
-          data-placeholder={disabled ? "Assistant unavailable" : "Ask the assistant..."}
+          data-placeholder={
+            disabled
+              ? "Assistant unavailable"
+              : "Ask to make changes to the workspace, create custom boxes, or for general help."
+          }
           contentEditable
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
