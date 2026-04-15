@@ -1,3 +1,4 @@
+// The LynxKite workspace chat assistant panel.
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
