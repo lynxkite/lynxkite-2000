@@ -20,6 +20,8 @@ export class Workspace {
   // Starts with a brand new workspace.
   static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
+    await splash.getEntry("testing sandbox").click();
+    await expect(splash.currentFolder()).toHaveText("testing sandbox");
     return await splash.createWorkspace(workspaceName);
   }
 
@@ -267,6 +269,7 @@ export class Splash {
     await nameBox.press("Enter");
     const ws = new Workspace(this.page, name);
     await ws.setEnv("LynxKite Graph Analytics");
+    await expect(ws.getBoxes()).toHaveCount(0);
     return ws;
   }
 
@@ -287,11 +290,20 @@ export class Splash {
     await this.page.reload();
   }
 
+  async deleteEntryIfExists(entryName: string) {
+    const entry = this.getEntry(entryName);
+    const count = await entry.count();
+    if (count > 0) {
+      await this.deleteEntry(entryName);
+    }
+  }
+
   currentFolder() {
     return this.page.locator(".current-folder");
   }
 
   async goHome() {
     await this.page.getByRole("link", { name: "home" }).click();
+    await this.getEntry("testing sandbox").click();
   }
 }

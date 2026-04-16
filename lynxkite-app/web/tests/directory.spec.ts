@@ -28,7 +28,7 @@ test.describe("Directory operations", () => {
   test("Create & delete folder", async () => {
     const folderName = `TestFolder-${Date.now()}`;
     await splash.createFolder(folderName);
-    await expect(splash.currentFolder()).toHaveText(folderName);
+    await expect(splash.currentFolder()).toHaveText(`testing sandbox/${folderName}`);
     await splash.goHome();
     await splash.deleteEntry(folderName);
     await expect(splash.getEntry(folderName)).not.toBeVisible();
