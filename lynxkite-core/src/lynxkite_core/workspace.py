@@ -72,18 +72,31 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
-    _crdt: Optional["pycrdt.Map"] = None
+    _ws_crdt: Optional["pycrdt.Map"] = None
+
+    def _find_crdt_node(self) -> "pycrdt.Map | None":
+        """Look up this node's CRDT Map fresh from the live workspace CRDT. We always walk the live
+        array to avoid holding a proxy to freed Rust memory after a node deletion.
+        """
+        ws_crdt: Optional["pycrdt.Map"] = self._ws_crdt
+        if ws_crdt is None:
+            return None
+        for nc in ws_crdt.get("nodes", []):
+            if "id" in nc and nc["id"] == self.id:
+                return nc
+        return None
 
     def publish_started(self):
         """Notifies the frontend that work has started on this node."""
         self.data.error = None
         self.data.message = None
         self.data.status = NodeStatus.active
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                self._crdt["data"]["error"] = None
-                self._crdt["data"]["message"] = None
-                self._crdt["data"]["status"] = NodeStatus.active
+        nc = self._find_crdt_node()
+        if nc is not None and "data" in nc:
+            with nc.doc.transaction():
+                nc["data"]["error"] = None
+                nc["data"]["message"] = None
+                nc["data"]["status"] = NodeStatus.active
 
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
@@ -92,31 +105,36 @@ class WorkspaceNode(BaseConfig):
         self.data.output_metadata = result.output_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
+        nc = self._find_crdt_node()
+        if nc is not None and "data" in nc:
+            with nc.doc.transaction():
                 try:
-                    self._crdt["data"]["status"] = NodeStatus.done
-                    self._crdt["data"]["display"] = self.data.display
-                    self._crdt["data"]["input_metadata"] = self.data.input_metadata
-                    self._crdt["data"]["output_metadata"] = self.data.output_metadata
-                    self._crdt["data"]["error"] = self.data.error
+                    nc["data"]["status"] = NodeStatus.done
+                    nc["data"]["display"] = self.data.display
+                    nc["data"]["input_metadata"] = self.data.input_metadata
+                    nc["data"]["output_metadata"] = self.data.output_metadata
+                    nc["data"]["error"] = self.data.error
                 except Exception as e:
-                    self._crdt["data"]["error"] = str(e)
+                    # This can fail when display contains unserializable data.
+                    # In that case, we still want to publish the error.
+                    nc["data"]["error"] = str(e)
                     raise e
 
     def publish_message(self, message: str):
         """Sends a message to the frontend. This can be used for progress updates."""
         self.data.message = message
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                self._crdt["data"]["message"] = message
+        nc = self._find_crdt_node()
+        if nc is not None and "data" in nc:
+            with nc.doc.transaction():
+                nc["data"]["message"] = message
 
     def publish_telemetry(self, telemetry: dict[str, Any]):
         """Sends telemetry data to the frontend."""
         self.data.telemetry = telemetry
-        if self._crdt and "data" in self._crdt:
-            with self._crdt.doc.transaction():
-                self._crdt["data"]["telemetry"] = telemetry
+        nc = self._find_crdt_node()
+        if nc is not None and "data" in nc:
+            with nc.doc.transaction():
+                nc["data"]["telemetry"] = telemetry
 
     def publish_error(self, error: Exception | str | None):
         """Can be called with None to clear the error state."""
@@ -249,38 +267,46 @@ class Workspace(BaseConfig):
         for node in self.nodes:
             data = node.data
             op = catalog.get(data.op_id)
+            nc = node._find_crdt_node()
             if op:
                 if getattr(data, "meta", None) != op:
                     data.meta = op
                     # If the node is connected to a CRDT, update that too.
-                    if node._crdt:
-                        node._crdt["data"]["meta"] = op.model_dump()
+                    if nc:
+                        nc["data"]["meta"] = op.model_dump()
                 if node.type != op.type:
                     node.type = op.type
-                    if node._crdt:
-                        node._crdt["type"] = op.type
+                    if nc:
+                        nc["type"] = op.type
                 if data.error == "Unknown operation.":
                     data.error = None
-                    if node._crdt:
-                        node._crdt["data"]["error"] = None
+                    if nc:
+                        nc["data"]["error"] = None
             else:
                 data.error = "Unknown operation."
                 data.meta = ops.Op.placeholder_from_id(data.op_id)
-                if node._crdt:
+                if nc:
                     import pycrdt
 
-                    node._crdt["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
-                    node._crdt["data"]["error"] = "Unknown operation."
+                    nc["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
+                    nc["data"]["error"] = "Unknown operation."
 
     def connect_crdt(self, ws_crdt: "pycrdt.Map"):
         import pycrdt
 
         self._crdt = ws_crdt
         with ws_crdt.doc.transaction():
-            for nc, np in zip(ws_crdt["nodes"], self.nodes):
-                if "data" not in nc:
-                    nc["data"] = pycrdt.Map()
-                np._crdt = nc
+            node_crdt_by_id = {
+                node_crdt["id"]: node_crdt
+                for node_crdt in ws_crdt.get("nodes", [])
+                if "id" in node_crdt
+            }
+            for node_python in self.nodes:
+                node_crdt = node_crdt_by_id.get(node_python.id)
+                if node_crdt is not None:
+                    if "data" not in node_crdt:
+                        node_crdt["data"] = pycrdt.Map()
+                node_python._ws_crdt = ws_crdt
 
     def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""
