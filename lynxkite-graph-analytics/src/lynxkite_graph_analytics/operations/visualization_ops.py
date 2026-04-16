@@ -47,9 +47,34 @@ def visualize_graph(
     color_edges_by: core.EdgePropertyName | None = None,
 ):
     nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
-    if color_nodes_by:
-        nodes["color"] = _map_color(nodes[color_nodes_by])
-    for cols in ["x y", "long lat"]:
+    edges_df = graph.dfs["edges"]
+
+    sources = set(edges_df["source"])
+    targets = set(edges_df["target"])
+
+    def get_role(node_id):
+        is_source = node_id in sources
+        is_target = node_id in targets
+        if is_source and is_target:
+            return "both"
+        elif is_source:
+            return "source"
+        elif is_target:
+            return "target"
+        else:
+            return "isolated"
+
+    nodes["role"] = [get_role(nid) for nid in nodes.index]
+
+    color_map = {
+        "source": "#5eabe2",   # blue
+        "target": "#c25a5a",   # red
+        "both": "#6abf6a",     # green
+        "isolated": "#aaaaaa", # gray
+    }
+
+    nodes["color"] = nodes["role"].map(color_map)
+    for cols in []:
         x, y = cols.split()
         if (
             x in nodes.columns
@@ -59,7 +84,7 @@ def visualize_graph(
         ):
             cx, cy = nodes[x].mean(), nodes[y].mean()
             dx, dy = nodes[x].std(), nodes[y].std()
-            # Scale up to avoid float precision issues and because eCharts omits short edges.
+            # Scale up to avoid float precision issues.
             scale_x = 100 / max(dx, dy)
             scale_y = scale_x
             if y == "lat":
@@ -68,11 +93,17 @@ def visualize_graph(
                 node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
                 for node_id, row in nodes.iterrows()
             }
-            curveness = 0  # Street maps are better with straight streets.
+            curveness = 0
             break
     else:
-        pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
-        curveness = 0.3
+        pos = nx.spring_layout(
+            graph.to_nx(),
+            k=1.2,
+            iterations=500,
+            seed=42,
+        )
+
+        curveness = 0.15
     nodes = nodes.to_records()
     deduped_edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
     edges = core.df_for_frontend(deduped_edges, 10_000)
@@ -95,8 +126,7 @@ def visualize_graph(
         "series": [
             {
                 "type": "graph",
-                # Mouse zoom/panning is disabled for now. It interacts badly with ReactFlow.
-                # "roam": True,
+
                 "lineStyle": {
                     "color": "gray",
                     "curveness": curveness,
@@ -107,18 +137,35 @@ def visualize_graph(
                         "width": 10,
                     },
                 },
-                "label": {"position": "top", "formatter": "{b}"},
+                "label": {},
                 "data": [
                     {
                         "id": str(n.id),
                         "x": float(pos[n.id][0]),
                         "y": float(pos[n.id][1]),
-                        # Adjust node size to cover the same area no matter how many nodes there are.
-                        "symbolSize": 50 / len(nodes) ** 0.5,
-                        "itemStyle": {"color": n.color} if color_nodes_by else {},
-                        "label": {"show": label_by is not None},
-                        "name": format_label(getattr(n, label_by, "")) if label_by else None,
-                        "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
+                        # Adjust node size
+                        "symbolSize": 22 if n.role == "target" else 6,
+                        "symbol": {
+                            "source": "circle",
+                            "target": "circle",
+                            "both": "diamond",
+                            "isolated": "square",
+                        }.get(n.role, "circle"),
+                        "itemStyle": {
+                            "color": n.color,
+                            "borderColor": "#666666",
+                            "borderWidth": 1,
+                            "opacity": 0.9,
+                        },
+                        "label": {
+                        "show": n.role == "target",
+                        "position": "inside",
+                        "fontSize": 8,
+                        "color": "#000000",
+                    },
+
+                        "name": str(n.id),
+                        "value": str(n.role),
                     }
                     for n in nodes
                 ],
