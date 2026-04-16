@@ -300,7 +300,7 @@ async def get_room(name):
     return await ws_websocket_server.get_room(name)
 
 
-def get_room_if_exists(name):
+def get_room_or_none(name):
     return ws_websocket_server.rooms.get(name)
 
 

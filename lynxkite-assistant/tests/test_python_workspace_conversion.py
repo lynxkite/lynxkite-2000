@@ -57,6 +57,16 @@ def test_python_to_workspace_rejects_positional_arguments():
         python_to_workspace("op(1)")
 
 
+def test_python_to_workspace_rejects_kwargs_expansion():
+    with pytest.raises(AssertionError, match=r"\*\*kwargs expansion is not supported"):
+        python_to_workspace("op(**params)")
+
+
+def test_python_to_workspace_rejects_unknown_variable_references():
+    with pytest.raises(AssertionError, match="Unknown variable reference: missing"):
+        python_to_workspace("sink(inp=missing)")
+
+
 def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
     ws = workspace.Workspace()
     ws.add_node(id="node-a", title="source", params={"k": 1})

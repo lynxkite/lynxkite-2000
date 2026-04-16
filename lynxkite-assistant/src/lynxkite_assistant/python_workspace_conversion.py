@@ -42,7 +42,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
             assert len(s.targets) == 1, error_msg
             assert isinstance(s.targets[0], ast.Name), error_msg
             save_as = s.targets[0].id
-        assert isinstance(s, ast.Assign | ast.Expr), error_msg
+        assert isinstance(s, (ast.Assign, ast.Expr)), error_msg
         s = s.value
         if isinstance(s, ast.Constant) and isinstance(s.value, str):
             # Ignore docstrings.
@@ -54,16 +54,19 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         assert len(s.args) == 0, error_msg
         kwargs = {}
         for kw in s.keywords:
-            if kw.arg:
-                kwargs[kw.arg] = kw.value
+            assert kw.arg is not None, f"{error_msg}\n\n**kwargs expansion is not supported."
+            kwargs[kw.arg] = kw.value
         params = {}
         x = 0
         lowest_input = None
         for arg_name, arg_value in kwargs.items():
-            assert isinstance(arg_value, ast.Constant | ast.Name), error_msg
+            assert isinstance(arg_value, (ast.Constant, ast.Name)), error_msg
             if isinstance(arg_value, ast.Constant):
                 params[arg_name] = arg_value.value
             elif isinstance(arg_value, ast.Name):
+                assert arg_value.id in saved_values, (
+                    f"{error_msg}\n\nUnknown variable reference: {arg_value.id}"
+                )
                 src = saved_values[arg_value.id]
                 x = max(x, box_x[src] + 1)
                 if lowest_input is None or box_y[src] < lowest_input:
@@ -115,7 +118,6 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
     sorter = graphlib.TopologicalSorter(dependencies)
     sorted_node_ids = list(sorter.static_order())
     saved_values: dict[str, str] = {}
-    variable_names: dict[str, str] = {}
     next_var_index = 1
 
     for node_id in sorted_node_ids:
@@ -134,7 +136,6 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         if outgoing_count[node_id] > 0:
             variable_name = f"res_{short_id}_{next_var_index}"
             next_var_index += 1
-            variable_names[node_id] = variable_name
             saved_values[node_id] = variable_name
             code.append(f"{variable_name} = {call}")
         else:
