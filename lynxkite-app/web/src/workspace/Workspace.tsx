@@ -122,14 +122,17 @@ function LynxKiteFlow() {
     localStorage.setItem("gridSnapEnabled", String(gridSnapEnabled));
   }, [gridSnapEnabled]);
 
-  const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
+  const fetcher: Fetcher = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
   const encodedPathForAPI = path!
     .split("/")
     .map((segment) => encodeURIComponent(segment))
     .join("/");
-  const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
-  const config = useSWR<GlobalConfig>("/api/config", fetcher);
+  const catalog = useSWR<Catalogs>(
+    `/api/catalog?workspace=${encodedPathForAPI}`,
+    fetcher as Fetcher<Catalogs>,
+  );
+  const config = useSWR<GlobalConfig>("/api/config", fetcher as Fetcher<GlobalConfig>);
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
