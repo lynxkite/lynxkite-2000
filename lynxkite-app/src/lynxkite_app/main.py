@@ -1,7 +1,5 @@
 """The FastAPI server for serving the LynxKite application."""
 
-import asyncio
-import contextlib
 import importlib
 import shutil
 import pydantic
@@ -18,7 +16,14 @@ from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
-import typing
+
+assistant_router: fastapi.APIRouter | None = None
+try:
+    lynxkite_assistant = importlib.import_module("lynxkite_assistant")
+except ModuleNotFoundError:
+    lynxkite_assistant = None
+if lynxkite_assistant is not None:
+    assistant_router = lynxkite_assistant.router
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -30,120 +35,11 @@ opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
-_k8s_unavailable_logged = False
-
-
-def _log_k8s_unavailable_once() -> None:
-    global _k8s_unavailable_logged
-    if _k8s_unavailable_logged:
-        return
-    print("Kubernetes package is not installed; GPU service/K8s progress features are disabled.")
-    _k8s_unavailable_logged = True
-
-
-def _k8s_client_module():
-    try:
-        return importlib.import_module("kubernetes.client")
-    except ModuleNotFoundError:
-        _log_k8s_unavailable_once()
-        return None
-
-
-def _k8s_config_module():
-    try:
-        return importlib.import_module("kubernetes.config")
-    except ModuleNotFoundError:
-        _log_k8s_unavailable_once()
-        return None
-
-
-def _compute_gpu_services() -> list[dict]:
-    """Build a list of GPU service status dicts from live Kubernetes deployments."""
-    client = _k8s_client_module()
-    if client is None:
-        return []
-
-    try:
-        if not _load_k8s_config():
-            return []
-        system_namespaces = {"kube-system", "kube-public", "kube-node-lease"}
-        active_workspaces = _get_active_workspaces()
-        gpu_services = []
-        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
-            if (d.metadata.namespace or "") in system_namespaces:
-                continue
-            labels = dict(d.metadata.labels) if d.metadata.labels else {}
-            used_by = [w for w in [labels.get("workspace")] if w]
-            for ws_name, ws in active_workspaces:
-                for node in getattr(ws, "nodes", []):
-                    node_name = getattr(node.data, "op_id", None) or getattr(
-                        node.data, "title", None
-                    )
-                    if node_name and node_name == d.metadata.name and ws_name not in used_by:
-                        used_by.append(ws_name)
-                        break
-            gpu_services.append(
-                {
-                    "publisher": d.metadata.namespace or "",
-                    "name": d.metadata.name,
-                    "status": "running" if (d.status.available_replicas or 0) > 0 else "stopped",
-                    "replicasHealthy": d.status.available_replicas or 0,
-                    "replicasRequested": d.spec.replicas or 0,
-                    "usedByWorkspaces": used_by,
-                }
-            )
-        return gpu_services
-    except Exception as e:
-        print(f"GPU service refresh error: {e}")
-        return []
-
-
-def _get_k8s_workspace_gpus() -> dict[str, int]:
-    """Get workspace GPU counts from Kubernetes deployment labels."""
-    k8s_workspace_gpus: dict[str, int] = {}
-    client = _k8s_client_module()
-    if client is None:
-        return k8s_workspace_gpus
-    try:
-        if not _load_k8s_config():
-            return k8s_workspace_gpus
-        for d in client.AppsV1Api().list_deployment_for_all_namespaces().items:
-            labels = dict(d.metadata.labels) if d.metadata.labels else {}
-            ws_label = labels.get("workspace")
-            if ws_label:
-                k8s_workspace_gpus[ws_label] = k8s_workspace_gpus.get(ws_label, 0) + (
-                    d.spec.replicas or 0
-                )
-    except Exception as e:
-        print(f"K8s GPU info refresh error: {e}")
-    return k8s_workspace_gpus
-
-
-async def _progress_refresh_loop():
-    """Background task: refresh K8s GPU counts and GPU service data into the progress CRDT doc."""
-    while True:
-        crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
-        crdt.update_progress_gpu_services(_compute_gpu_services())
-        await asyncio.sleep(15)
-
-
-@contextlib.asynccontextmanager
-async def _lifespan(app):
-    async with crdt.lifespan(app):
-        task = asyncio.create_task(_progress_refresh_loop())
-        try:
-            yield
-        finally:
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                pass
-
-
-app = fastapi.FastAPI(lifespan=_lifespan)
+app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 app.include_router(icons.router)
+if assistant_router is not None:
+    app.include_router(assistant_router)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -160,6 +56,11 @@ def get_catalog(workspace: str):
     return {env: _get_ops(env) for env in ops.CATALOGS}
 
 
+@app.get("/api/config")
+def get_config() -> dict[str, bool]:
+    return {"assistant_available": assistant_router is not None}
+
+
 data_path = pathlib.Path()
 
 
@@ -171,81 +72,6 @@ async def delete_workspace(req: dict):
     json_path.unlink()
     crdt_path.unlink()
     crdt.delete_room(req["path"])
-
-
-@app.post("/api/pause_workspace")
-async def pause_workspace(req: dict):
-    """Pause or resume a workspace."""
-    room_name = req.get("room_name")
-    if not isinstance(room_name, str) or not room_name:
-        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid room_name")
-    room = await crdt.get_room(room_name)
-    paused = req.get("paused", True)
-    with room.ws.doc.transaction():
-        room.ws["paused"] = paused
-    return {"status": "ok", "room_name": room_name, "paused": paused}
-
-
-@app.post("/api/stop_workspace")
-async def stop_workspace(req: dict):
-    """Stop and reset all nodes in a workspace."""
-    room_name = req.get("room_name")
-    if not isinstance(room_name, str) or not room_name:
-        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid room_name")
-    room = await crdt.get_room(room_name)
-    with room.ws.doc.transaction():
-        room.ws["paused"] = True
-        for node in room.ws["nodes"]:
-            node["data"]["status"] = "planned"
-            node["data"]["message"] = None
-    return {"status": "ok", "room_name": room_name}
-
-
-@app.post("/api/scale_gpu_service")
-async def scale_gpu_service(req: dict):
-    """Scale a GPU service deployment to the specified replica count."""
-    client = _k8s_client_module()
-    if client is None:
-        raise fastapi.HTTPException(
-            status_code=503,
-            detail="Kubernetes integration is unavailable: python package 'kubernetes' is not installed.",
-        )
-
-    name = req.get("name")
-    namespace = req.get("namespace") or req.get("publisher")
-    replicas = req.get("replicas")
-
-    print(f"Scaling GPU service {namespace}/{name} to {replicas} replicas")
-    if not isinstance(name, str) or not name:
-        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid name")
-    if not isinstance(namespace, str) or not namespace:
-        raise fastapi.HTTPException(status_code=400, detail="Missing or invalid namespace")
-    if not isinstance(replicas, int) or replicas < 0:
-        raise fastapi.HTTPException(
-            status_code=400, detail="Replicas must be a non-negative integer"
-        )
-
-    if not _load_k8s_config():
-        raise fastapi.HTTPException(
-            status_code=503,
-            detail="Kubernetes integration is unavailable: configuration could not be loaded.",
-        )
-    apps = client.AppsV1Api()
-    apps.patch_namespaced_deployment_scale(
-        name=name,
-        namespace=namespace,
-        body={"spec": {"replicas": replicas}},
-    )
-
-    # Push a fresh snapshot right away so the UI updates without waiting for poll loop
-    crdt.update_progress_workspaces(_get_k8s_workspace_gpus())
-    try:
-        gpu_services = _compute_gpu_services()
-        crdt.update_progress_gpu_services(gpu_services)
-    except Exception as e:
-        print(f"Error computing/updating GPU services after scaling {namespace}/{name}: {e}")
-
-    return {"status": "ok", "name": name, "namespace": namespace, "replicas": replicas}
 
 
 class DirectoryEntry(pydantic.BaseModel):
@@ -269,7 +95,7 @@ def list_dir(path: str):
     return sorted(
         [
             DirectoryEntry(
-                name=str(p.relative_to(data_path)),
+                name=p.relative_to(data_path).as_posix(),
                 type=_get_path_type(p),
             )
             for p in dir_path.iterdir()
@@ -330,36 +156,6 @@ async def execute_workspace(name: str):
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
-
-
-def _load_k8s_config():
-    """Load Kubernetes configuration (in-cluster or from kubeconfig)."""
-    config = _k8s_config_module()
-    if config is None:
-        return False
-
-    try:
-        config.load_kube_config()
-    except Exception:
-        try:
-            config.load_incluster_config()
-        except Exception:
-            return False
-    return True
-
-
-def _get_active_workspaces() -> typing.List[typing.Tuple[str, workspace.Workspace]]:
-    """Return list of (name, workspace) tuples for all active workspaces."""
-    active_workspaces = []
-    server = getattr(crdt, "ws_websocket_server", None)
-    if server:
-        for name, room in getattr(server, "rooms", {}).items():
-            try:
-                ws = workspace.Workspace.model_validate(room.ws.to_py())
-                active_workspaces.append((name, ws))
-            except Exception as e:
-                print(f"Error loading workspace {name}: {e}")
-    return active_workspaces
 
 
 class SPAStaticFiles(StaticFiles):

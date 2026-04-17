@@ -85,6 +85,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function Directory() {
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
+  const config = useSWR<{ enterpriseEnabled?: boolean }>("/api/config", fetcher);
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
@@ -177,6 +178,11 @@ export default function Directory() {
                 icon={<LayoutGridAdd />}
                 label="New workspace"
               />
+              {config.data?.enterpriseEnabled && (
+                <Link to="/progress">
+                  <LayoutGrid /> Enterprise progress
+                </Link>
+              )}
               <EntryCreator
                 onCreate={(name) => {
                   newCodeFile(path || "", name);

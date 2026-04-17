@@ -56,6 +56,7 @@ lynxkite = "lynxkite_app.__main__:main"
 
 [tool.deptry.package_module_name_map]
 sse-starlette = "starlette"
+"pydantic-to-typescript" = "pydantic_to_typescript"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pycrdt-websocket", "griffe"]
