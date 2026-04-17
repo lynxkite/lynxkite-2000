@@ -152,7 +152,6 @@ export default function Directory() {
 
   async function submitRename(newName: string) {
     if (!renameTarget) return;
-
     const oldParts = renameTarget.name.split("/");
     oldParts.pop();
     const parentPath = oldParts.join("/");
@@ -162,18 +161,15 @@ export default function Directory() {
       setRenameTarget(null);
       return;
     }
-
     const res = await fetch("/api/rename", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ old_path: renameTarget.name, new_path: newPath }),
     });
-
     if (!res.ok) {
       alert("Failed to rename item.");
       return;
     }
-
     setRenameTarget(null);
     list.mutate();
   }
@@ -281,7 +277,7 @@ export default function Directory() {
       <Modal
         ref={renameModalRef}
         title="Rename item"
-        description={renameTarget ? `Current: ${shortName(renameTarget)}` : ""}
+        description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
         inputLabel="New name"
         submitLabel="Rename"
         onSubmit={submitRename}

@@ -1204,6 +1204,11 @@ textarea {
     border-color: oklch(90% 0 0);
   }
 
+  .description {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
   .title {
     font-weight: 700;
     margin-bottom: 10px;
