@@ -2,6 +2,7 @@ import { type ReactElement, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
+import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
 import Folder from "~icons/tabler/folder";
@@ -9,7 +10,6 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
-import Trash from "~icons/tabler/trash";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
@@ -222,15 +222,38 @@ export default function Directory() {
                       )}
                       <span className="entry-name">{shortName(item)}</span>
                     </Link>
-                    <button
-                      className="delete-button"
-                      type="button"
-                      onClick={() => {
-                        deleteItem(item);
-                      }}
-                    >
-                      <Trash />
-                    </button>
+                    <div className="dropdown dropdown-left dropdown-end">
+                      <button
+                        tabIndex={0}
+                        type="button"
+                        aria-label={`Open actions for ${shortName(item)}`}
+                      >
+                        <DotsVertical />
+                      </button>
+                      <ul tabIndex={0} className="dropdown-content menu">
+                        <li>
+                          <button
+                            className="delete-button"
+                            type="button"
+                            onClick={() => {
+                              deleteItem(item);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              renameItem(item);
+                            }}
+                          >
+                            Rename
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 ),
             )}

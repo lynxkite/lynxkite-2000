@@ -872,6 +872,7 @@ svg {
 
   .entry-list .entry {
     display: flex;
+    align-items: center;
     border-bottom: 1px solid whitesmoke;
     color: #004165;
     cursor: pointer;
@@ -894,6 +895,13 @@ svg {
     &.empty {
       justify-content: center;
       color: #0008;
+    }
+
+    .dropdown-content.menu {
+      background: white;
+      color: #000;
+      box-shadow: 0px 5px 20px 0px #002a4c80;
+      border-radius: 20px 20px 0 20px;
     }
   }
 
