@@ -2,7 +2,7 @@
 
 from lynxkite_core import ops
 
-from .. import core
+from .. import core, bundle
 import matplotlib.cm
 import matplotlib.colors
 import networkx as nx
@@ -46,7 +46,7 @@ def visualize_graph(
     label_by: core.NodePropertyName | None = None,
     color_edges_by: core.EdgePropertyName | None = None,
 ):
-    nodes = core.df_for_frontend(graph.dfs["nodes"], 10_000)
+    nodes = bundle.df_for_frontend(graph.dfs["nodes"], 10_000)
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
     for cols in ["x y", "long lat"]:
@@ -75,7 +75,7 @@ def visualize_graph(
         curveness = 0.3
     nodes = nodes.to_records()
     deduped_edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
-    edges = core.df_for_frontend(deduped_edges, 10_000)
+    edges = bundle.df_for_frontend(deduped_edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()

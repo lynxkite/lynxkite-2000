@@ -17,13 +17,12 @@ from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 
-assistant_router: fastapi.APIRouter | None = None
 try:
-    lynxkite_assistant = importlib.import_module("lynxkite_assistant")
-except ModuleNotFoundError:
-    lynxkite_assistant = None
-if lynxkite_assistant is not None:
-    assistant_router = lynxkite_assistant.router
+    import lynxkite_assistant
+
+    assistant_router: fastapi.APIRouter | None = lynxkite_assistant.router
+except ImportError:
+    assistant_router = None
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
