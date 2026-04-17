@@ -22,6 +22,7 @@ import LibraryMinus from "~icons/tabler/library-minus.jsx";
 import LibraryPlus from "~icons/tabler/library-plus.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
 import Play from "~icons/tabler/player-play.jsx";
+import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
@@ -29,6 +30,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import Assistant from "./Assistant.tsx";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -47,6 +49,10 @@ import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 
+type GlobalConfig = {
+  assistant_available: boolean;
+};
+
 // The workspace gets re-rendered on every frame when a node is moved.
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
 // Memoizing them fixes it.
@@ -56,6 +62,7 @@ const GridOffIcon = memo(Arrow);
 const GroupIcon = memo(LibraryPlus);
 const UngroupIcon = memo(LibraryMinus);
 const RestartIcon = memo(RotateClockwise);
+const RobotIcon = memo(Robot);
 const PlayIcon = memo(Play);
 const PauseIcon = memo(Pause);
 const CloseIcon = memo(Close);
@@ -74,6 +81,7 @@ function LynxKiteFlow() {
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const cursorScreenPos = useRef<XYPosition | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
   );
@@ -114,13 +122,17 @@ function LynxKiteFlow() {
     localStorage.setItem("gridSnapEnabled", String(gridSnapEnabled));
   }, [gridSnapEnabled]);
 
-  const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
+  const fetcher: Fetcher = (resource: string, init?: RequestInit) =>
     fetch(resource, init).then((res) => res.json());
   const encodedPathForAPI = path!
     .split("/")
     .map((segment) => encodeURIComponent(segment))
     .join("/");
-  const catalog = useSWR(`/api/catalog?workspace=${encodedPathForAPI}`, fetcher);
+  const catalog = useSWR<Catalogs>(
+    `/api/catalog?workspace=${encodedPathForAPI}`,
+    fetcher as Fetcher<Catalogs>,
+  );
+  const config = useSWR<GlobalConfig>("/api/config", fetcher as Fetcher<GlobalConfig>);
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
@@ -573,6 +585,16 @@ function LynxKiteFlow() {
                   {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
                 </button>
               </Tooltip>
+              {config.data?.assistant_available && (
+                <Tooltip doc={"Toggle assistant"}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                  >
+                    <RobotIcon />
+                  </button>
+                </Tooltip>
+              )}
               <Tooltip
                 doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
               >
@@ -604,79 +626,82 @@ function LynxKiteFlow() {
           </Tooltip>
         </div>
       </div>
-      <div
-        className="reactflow-container"
-        onDragOver={onDragOver}
-        onMouseMove={onMouseMove}
-        onDrop={onDrop}
-        ref={reactFlowContainer}
-      >
-        {crdt?.ws ? (
-          <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              edgeTypes={edgeTypes}
-              fitView
-              onNodesChange={(changes) => {
-                changes = snapChangesToGrid(
-                  changes,
-                  isShiftPressed || gridSnapEnabled,
-                  crdt?.ws?.nodes || [],
-                );
-                crdt?.onFENodesChange?.(changes);
-              }}
-              onEdgesChange={crdt?.onFEEdgesChange}
-              onPaneClick={toggleNodeSearch}
-              onConnect={onConnect}
-              proOptions={{ hideAttribution: true }}
-              maxZoom={10}
-              minZoom={0.1}
-              zoomOnScroll={true}
-              panOnScroll={false}
-              panOnDrag={[0]}
-              selectionOnDrag={false}
-              preventScrolling={true}
-              defaultEdgeOptions={{
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  color: "#888",
-                  width: 15,
-                  height: 15,
-                },
-              }}
-              fitViewOptions={{ maxZoom: 1 }}
-            >
-              <Background
-                variant={BackgroundVariant.Dots}
-                gap={35}
-                size={6}
-                color="#f0f0f0"
-                bgColor="#fafafa"
-                offset={3}
-              />
-              {nodeSearchSettings && categoryHierarchy && (
-                <NodeSearch
-                  pos={nodeSearchSettings.pos}
-                  categoryHierarchy={categoryHierarchy}
-                  onCancel={closeNodeSearch}
-                  onClick={addNodeFromSearch}
+      <div className="workspace-body">
+        <div
+          className="reactflow-container"
+          onDragOver={onDragOver}
+          onMouseMove={onMouseMove}
+          onDrop={onDrop}
+          ref={reactFlowContainer}
+        >
+          {crdt?.ws ? (
+            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
+                fitView
+                onNodesChange={(changes) => {
+                  changes = snapChangesToGrid(
+                    changes,
+                    isShiftPressed || gridSnapEnabled,
+                    crdt?.ws?.nodes || [],
+                  );
+                  crdt?.onFENodesChange?.(changes);
+                }}
+                onEdgesChange={crdt?.onFEEdgesChange}
+                onPaneClick={toggleNodeSearch}
+                onConnect={onConnect}
+                proOptions={{ hideAttribution: true }}
+                maxZoom={10}
+                minZoom={0.1}
+                zoomOnScroll={true}
+                panOnScroll={false}
+                panOnDrag={[0]}
+                selectionOnDrag={false}
+                preventScrolling={true}
+                defaultEdgeOptions={{
+                  markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    color: "#888",
+                    width: 15,
+                    height: 15,
+                  },
+                }}
+                fitViewOptions={{ maxZoom: 1 }}
+              >
+                <Background
+                  variant={BackgroundVariant.Dots}
+                  gap={35}
+                  size={6}
+                  color="#f0f0f0"
+                  bgColor="#fafafa"
+                  offset={3}
                 />
-              )}
-            </ReactFlow>
-          </LynxKiteState.Provider>
-        ) : (
-          <div className="workspace-loading">Loading workspace...</div>
-        )}
-        {message && (
-          <div className="workspace-message">
-            <span className="close" onClick={() => setMessage(null)}>
-              <Close />
-            </span>
-            {message}
-          </div>
-        )}
+                {nodeSearchSettings && categoryHierarchy && (
+                  <NodeSearch
+                    pos={nodeSearchSettings.pos}
+                    categoryHierarchy={categoryHierarchy}
+                    onCancel={closeNodeSearch}
+                    onClick={addNodeFromSearch}
+                  />
+                )}
+              </ReactFlow>
+            </LynxKiteState.Provider>
+          ) : (
+            <div className="workspace-loading">Loading workspace...</div>
+          )}
+          {message && (
+            <div className="workspace-message">
+              <span className="close" onClick={() => setMessage(null)}>
+                <Close />
+              </span>
+              {message}
+            </div>
+          )}
+        </div>
+        {isAssistantOpen && <Assistant workspace={path} />}
       </div>
     </div>
   );

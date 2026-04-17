@@ -27,14 +27,6 @@ jobs:
         run: |
           pre-commit run --all-files
 
-      - name: Run Python unittests
-        run: |
-          pytest --asyncio-mode=auto
-
-      - name: Build the documentation
-        run: |
-          mkdocs build
-
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -47,10 +39,22 @@ jobs:
           npm i
           npx playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Build the frontend
         run: |
           cd lynxkite-app/web
           npm run build
+
+      - name: Run Python unittests
+        run: |
+          uv run pytest
+
+      - name: Build the documentation
+        run: |
+          mkdocs build
+
+      - name: Run Playwright tests
+        run: |
+          cd lynxkite-app/web
           npm run test
 
       - uses: actions/upload-artifact@v4

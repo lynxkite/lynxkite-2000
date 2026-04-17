@@ -16,6 +16,13 @@ from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 
+try:
+    import lynxkite_assistant
+
+    assistant_router: fastapi.APIRouter | None = lynxkite_assistant.router
+except ImportError:
+    assistant_router = None
+
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
@@ -29,6 +36,8 @@ ops.save_catalogs("plugins loaded")
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 app.include_router(icons.router)
+if assistant_router is not None:
+    app.include_router(assistant_router)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -43,6 +52,11 @@ def _get_ops(env: str):
 def get_catalog(workspace: str):
     ops.load_user_scripts(workspace)
     return {env: _get_ops(env) for env in ops.CATALOGS}
+
+
+@app.get("/api/config")
+def get_config() -> dict[str, bool]:
+    return {"assistant_available": assistant_router is not None}
 
 
 data_path = pathlib.Path()
