@@ -170,6 +170,7 @@ def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.input_metadata = None
+        node.data.output_metadata = None
         node.data.error = None
         node.data.message = None
         node.data.collapsed = False
@@ -274,6 +275,33 @@ def load_workspace(ws: pycrdt.Map, name: str):
 
 last_known_versions = {}
 delayed_executions = {}
+
+
+def print_diff(old, new, prefix=""):
+    """Print the differences between two Python/Pydantic objects. For debugging."""
+    if hasattr(old, "model_dump"):
+        old = old.model_dump()
+    if hasattr(new, "model_dump"):
+        new = new.model_dump()
+    if type(old) is not type(new):
+        print(f"{prefix}- {old}")
+        print(f"{prefix}+ {new}")
+    elif isinstance(old, dict):
+        for key in set(old.keys()) | set(new.keys()):
+            print_diff(old.get(key), new.get(key), prefix + f"{key}.")
+    elif isinstance(old, list):
+        for i, (o, n) in enumerate(zip(old, new)):
+            print_diff(o, n, prefix + f"{i}.")
+        if len(old) < len(new):
+            for i in range(len(old), len(new)):
+                print(f"{prefix}+ {new[i]}")
+        elif len(old) > len(new):
+            for i in range(len(new), len(old)):
+                print(f"{prefix}- {old[i]}")
+    else:
+        if old != new:
+            print(f"{prefix}- {old}")
+            print(f"{prefix}+ {new}")
 
 
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
