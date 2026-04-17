@@ -34,6 +34,6 @@ test("Model use", async ({ page }) => {
     "records_train",
     "training",
   ]);
-  await b.expectParameterOptions("vector column", ["", "index", "pred", "x", "y"]);
-  await b.expectParameterOptions("label column", ["", "index", "pred", "x", "y"]);
+  await b.expectParameterOptions("vector column", ["", "index", "prediction", "x", "y"]);
+  await b.expectParameterOptions("label column", ["", "index", "prediction", "x", "y"]);
 });

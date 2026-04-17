@@ -157,7 +157,7 @@ function LynxKiteFlow() {
 
   // Global keyboard shortcuts.
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKey = (event: KeyboardEvent) => {
       const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
@@ -189,9 +189,9 @@ function LynxKiteFlow() {
         }
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKey);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKey);
     };
   }, [categoryHierarchy, nodeSearchSettings]);
 

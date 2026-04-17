@@ -24,6 +24,7 @@ test.describe("Directory operations", () => {
   test("Create & delete folder", async () => {
     const folderName = `TestFolder-${Date.now()}`;
     await splash.createFolder(folderName);
+    await splash.getEntry(folderName).click();
     await expect(splash.currentFolder()).toHaveText(`testing sandbox/${folderName}`);
     await splash.goHome();
     await splash.deleteEntry(folderName);
@@ -42,11 +43,13 @@ test("Nested folders & workspaces operations", async ({ page }) => {
   try {
     await test.step("Create parent folder", async () => {
       await splash.createFolder(parentFolderName);
+      await splash.getEntry(parentFolderName).click();
       await expect(splash.currentFolder()).toHaveText(`testing sandbox/${parentFolderName}`);
     });
 
     await test.step("Create nested folder", async () => {
       await splash.createFolder(childFolderName);
+      await splash.getEntry(childFolderName).click();
       await expect(splash.currentFolder()).toHaveText(
         `testing sandbox/${parentFolderName}/${childFolderName}`,
       );
@@ -73,7 +76,6 @@ test("Nested folders & workspaces operations", async ({ page }) => {
 
     await test.step("Rename folder", async () => {
       await splash.createFolder("RenameTest");
-      await splash.toParent();
       const renamedName = "RenameTest-Renamed";
       await splash.renameEntry("RenameTest", renamedName);
       await expect(splash.getEntry(renamedName)).toBeVisible();

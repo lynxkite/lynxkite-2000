@@ -25,7 +25,7 @@ export class Workspace {
   }
 
   static async open(page: Page, workspaceName: string): Promise<Workspace> {
-    const splash = await Splash.open(page);
+    const splash = await Splash.openRoot(page);
     const ws = await splash.openWorkspace(workspaceName);
     await ws.waitForNodesToLoad();
     await ws.expectCurrentWorkspaceIs(workspaceName);
@@ -348,5 +348,5 @@ export class Splash {
 }
 
 function getVisibleModal(page: Page) {
-  return page.locator(".modal").filter({ visible: true });
+  return page.locator(".modal[open]");
 }

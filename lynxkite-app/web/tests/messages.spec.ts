@@ -51,7 +51,4 @@ test("message caches correctly", async () => {
   );
 });
 
-test("terminal emulated message works as expected", async () => {
-  // TODO: No box currently uses this, make sure to fix later.
-  test.skip();
-});
+test.skip("terminal emulated message works as expected", async () => {});

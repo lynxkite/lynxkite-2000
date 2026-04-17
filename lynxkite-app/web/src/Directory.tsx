@@ -126,10 +126,8 @@ export default function Directory() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: pathSlash + folderName }),
     });
-    if (res.ok) {
-      const pathSlash = path ? `${encodePathSegments(path)}/` : "";
-      navigate(`/dir/${pathSlash}${encodeURIComponent(folderName)}`);
-    } else {
+    list.mutate();
+    if (!res.ok) {
       alert("Failed to create folder.");
     }
   }
