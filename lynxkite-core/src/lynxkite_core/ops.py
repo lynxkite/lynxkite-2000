@@ -244,9 +244,10 @@ class Op(BaseConfig):
     icon: str | None = None  # The icon of the operation in the UI.
     doc: list | None = None
     # ID is automatically set from the name and categories.
-    id: str = pydantic.Field(
-        default=None
-    )  # ty: ignore[invalid-assignment] (https://github.com/astral-sh/ty/issues/2403)
+    # For the ty issues see  https://github.com/astral-sh/ty/issues/2403.
+    id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
+    # Automatically set from `func`.
+    python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
@@ -299,6 +300,8 @@ class Op(BaseConfig):
         for c in self.categories:
             assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
+        if self.func and hasattr(self.func, "__module__") and hasattr(self.func, "__name__"):
+            self.python_function_name = f"{self.func.__module__}.{self.func.__name__}"
         return self
 
     @staticmethod

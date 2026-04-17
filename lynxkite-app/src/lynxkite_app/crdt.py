@@ -2,9 +2,7 @@
 
 import asyncio
 import contextlib
-import enum
 import pathlib
-from typing import Any
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -13,8 +11,10 @@ import uvicorn.protocols.utils
 import builtins
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
+from .crdt_update import crdt_update
 
 router = fastapi.APIRouter()
+main_loop = None
 
 
 def ws_exception_handler(exception, log):
@@ -68,7 +68,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            task = asyncio.create_task(workspace_changed(name, changes, ws))
+            task = loop.create_task(workspace_changed(name, changes, ws))
             # We have no way to await workspace_changed(). The best we can do is to
             # dereference its result after it's done, so exceptions are logged normally.
             task.add_done_callback(lambda t: t.result())
@@ -185,72 +185,6 @@ def clean_input(ws_pyd):
                 delattr(node, key)
 
 
-def crdt_update(
-    crdt_obj: pycrdt.Map[Any] | pycrdt.Array[Any],
-    python_obj: dict | list,
-    non_collaborative_fields: set[str] = set(),
-):
-    """Update a CRDT object to match a Python object.
-
-    The types between the CRDT object and the Python object must match. If the Python object
-    is a dict, the CRDT object must be a Map. If the Python object is a list, the CRDT object
-    must be an Array.
-
-    Args:
-        crdt_obj: The CRDT object, that will be updated to match the Python object.
-        python_obj: The Python object to update with.
-        non_collaborative_fields: List of fields to treat as a black box. Black boxes are
-        updated as a whole, instead of having a fine-grained data structure to edit
-        collaboratively. Useful for complex fields that contain auto-generated data or
-        metadata.
-        The default is an empty set.
-
-    Raises:
-        ValueError: If the Python object provided is not a dict or list.
-    """
-    if isinstance(python_obj, dict):
-        assert isinstance(crdt_obj, pycrdt.Map), f"expected CRDT Map, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        for key, value in python_obj.items():
-            if key in non_collaborative_fields:
-                crdt_obj[key] = value
-            elif isinstance(value, dict):
-                if crdt_obj.get(key) is None:
-                    crdt_obj[key] = pycrdt.Map()
-                crdt_update(crdt_obj[key], value, non_collaborative_fields)
-            elif isinstance(value, list):
-                if crdt_obj.get(key) is None:
-                    crdt_obj[key] = pycrdt.Array()
-                crdt_update(crdt_obj[key], value, non_collaborative_fields)
-            elif isinstance(value, enum.Enum):
-                crdt_obj[key] = str(value.value)
-            else:
-                crdt_obj[key] = value
-    elif isinstance(python_obj, list):
-        assert isinstance(crdt_obj, pycrdt.Array), f"expected CRDT Array, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        for i, value in enumerate(python_obj):
-            if isinstance(value, dict):
-                if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Map())  # ty: ignore[invalid-argument-type]
-                crdt_update(crdt_obj[i], value, non_collaborative_fields)
-            elif isinstance(value, list):
-                if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Array())  # ty: ignore[invalid-argument-type]
-                crdt_update(crdt_obj[i], value, non_collaborative_fields)
-            else:
-                if isinstance(value, enum.Enum):
-                    value = str(value.value)
-                if i >= len(crdt_obj):
-                    crdt_obj.append(value)  # ty: ignore[invalid-argument-type]
-                else:
-                    crdt_obj[i] = value  # ty: ignore[invalid-assignment]
-    else:
-        raise ValueError("Invalid type:", python_obj)
-
-
 def load_workspace(ws: pycrdt.Map, name: str):
     """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
 
@@ -259,12 +193,23 @@ def load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     ws_pyd = workspace.Workspace.load(name)
-    crdt_update(
-        ws,
-        ws_pyd.model_dump(),
-        # We treat some fields as black boxes. They are not edited on the frontend.
-        non_collaborative_fields={"display", "input_metadata", "meta"},
-    )
+    update_workspace(ws, ws_pyd)
+
+
+def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
+    """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
+
+    Args:
+        ws: CRDT object to udpate with the workspace contents.
+        ws_pyd: Workspace object to update the CRDT with.
+    """
+    with ws.doc.transaction():
+        crdt_update(
+            ws,
+            ws_pyd.model_dump(),
+            # We treat some fields as black boxes. They are not edited on the frontend.
+            non_collaborative_fields={"display", "input_metadata", "meta"},
+        )
 
 
 last_known_versions = {}
@@ -353,14 +298,20 @@ ws_websocket_server: WorkspaceWebsocketServer
 code_websocket_server: CodeWebsocketServer
 
 
-def get_room(name):
-    return ws_websocket_server.get_room(name)
+async def get_room(name):
+    return await ws_websocket_server.get_room(name)
+
+
+def get_room_or_none(name):
+    return ws_websocket_server.rooms.get(name)
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
+    global main_loop
     global ws_websocket_server
     global code_websocket_server
+    main_loop = asyncio.get_running_loop()
     ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:

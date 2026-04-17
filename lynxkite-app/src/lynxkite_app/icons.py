@@ -7,6 +7,7 @@ import os.path
 
 mem = joblib.Memory(".icon-cache")
 router = fastapi.APIRouter()
+icons = None
 
 
 def load_icons():
@@ -15,11 +16,11 @@ def load_icons():
         return json.load(f)
 
 
-icons = load_icons()
-
-
 @mem.cache
 def _get_icon(icon_name: str):
+    global icons
+    if icons is None:
+        icons = load_icons()
     body = icons["icons"][icon_name]["body"]
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">{body}</svg>'
 
