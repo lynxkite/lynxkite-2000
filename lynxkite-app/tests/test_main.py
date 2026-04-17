@@ -24,12 +24,12 @@ def test_list_dir():
     file.touch()
     ws = test_dir / "test_workspace.lynxkite.json"
     ws.touch()
-    response = client.get(f"/api/dir/list?path={str(test_dir)}")
+    response = client.get(f"/api/dir/list?path={test_dir.as_posix()}")
     assert response.status_code == 200
     assert response.json() == [
-        {"name": f"{test_dir}/test_dir", "type": "directory"},
-        {"name": f"{test_dir}/test_file.txt", "type": "file"},
-        {"name": f"{test_dir}/test_workspace.lynxkite.json", "type": "workspace"},
+        {"name": f"{test_dir.as_posix()}/test_dir", "type": "directory"},
+        {"name": f"{test_dir.as_posix()}/test_file.txt", "type": "file"},
+        {"name": f"{test_dir.as_posix()}/test_workspace.lynxkite.json", "type": "workspace"},
     ]
     file.unlink()
     ws.unlink()

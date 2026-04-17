@@ -6,6 +6,7 @@ from mcp.server.fastmcp import FastMCP, tools
 from mcp.server.fastmcp.utilities.func_metadata import FuncMetadata, ArgModelBase
 import pydantic
 import pydantic.fields
+import pathlib
 
 
 class WorkspaceAsTool:
@@ -23,7 +24,7 @@ class WorkspaceAsTool:
             edges_out.setdefault(e.source, []).append(e.target)
         input_nodes = []
         self.output_nodes = set()
-        func_name = self.ws_path.rsplit("/", 1)[-1].removesuffix(".lynxkite.json")
+        func_name = pathlib.Path(self.ws_path).name.removesuffix(".lynxkite.json")
         description = ""
         for n in self.ws.nodes:
             if n.data.op_id == "Comment":

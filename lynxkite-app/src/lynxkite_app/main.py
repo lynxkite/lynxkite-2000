@@ -93,7 +93,7 @@ def list_dir(path: str):
     return sorted(
         [
             DirectoryEntry(
-                name=str(p.relative_to(data_path)),
+                name=p.relative_to(data_path).as_posix(),
                 type=_get_path_type(p),
             )
             for p in dir_path.iterdir()

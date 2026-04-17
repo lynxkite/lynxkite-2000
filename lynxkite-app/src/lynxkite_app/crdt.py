@@ -3,6 +3,7 @@
 import asyncio
 import contextlib
 import pathlib
+import posixpath
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -326,7 +327,9 @@ def delete_room(name: str):
 
 
 def sanitize_path(path):
-    return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
+    # Here we always assume posix paths, the posixpath module is the os.path module
+    # for posix paths even on windows, so it will work correctly regardless of the host OS.
+    return posixpath.normpath("/" + path.replace("\\", "/")).lstrip("/")
 
 
 app: fastapi.FastAPI | None = None
