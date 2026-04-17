@@ -248,7 +248,7 @@ class Workspace(BaseConfig):
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()
-        ws.path = path
+        ws.path = pathlib.Path(path).as_posix()
         return ws
 
     def update_metadata(self):
