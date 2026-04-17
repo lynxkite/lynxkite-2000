@@ -4,7 +4,6 @@ import asyncio
 import contextlib
 import pathlib
 import posixpath
-from typing import Any
 import fastapi
 import os.path
 import pycrdt.websocket
