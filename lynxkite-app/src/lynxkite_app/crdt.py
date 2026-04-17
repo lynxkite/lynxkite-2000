@@ -374,7 +374,9 @@ def delete_room(name: str):
 
 
 def sanitize_path(path):
-    return posixpath.relpath(posixpath.normpath(posixpath.join("/", path.replace("\\", "/"))), "/")
+    # Here we always assume posix paths, the posixpath module is the os.path module
+    # for posix paths even on windows, so it will work correctly regardless of the host OS.
+    return posixpath.normpath("/" + path.replace("\\", "/")).lstrip("/")
 
 
 app: fastapi.FastAPI | None = None
