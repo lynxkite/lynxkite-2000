@@ -124,6 +124,11 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
             self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
 
+    def on_deleted(self, event):
+        if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
+            print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
+            delete_room(self.file_path)
+
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
     async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
