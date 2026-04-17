@@ -890,6 +890,11 @@ svg {
     button {
       padding-right: 10px;
     }
+
+    &.empty {
+      justify-content: center;
+      color: #0008;
+    }
   }
 
   .entry-list .open .entry,

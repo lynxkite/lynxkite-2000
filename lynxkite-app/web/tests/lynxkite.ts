@@ -20,7 +20,6 @@ export class Workspace {
   // Starts with a brand new workspace.
   static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
-    await splash.getEntry("testing sandbox").click();
     await expect(splash.currentFolder()).toHaveText("testing sandbox");
     return await splash.createWorkspace(workspaceName);
   }
@@ -243,15 +242,33 @@ export class Splash {
   }
 
   // Opens the LynxKite directory browser in the root.
-  static async open(page: Page): Promise<Splash> {
+  static async openRoot(page: Page): Promise<Splash> {
     await page.goto("/");
     await page.evaluate(() => {
       window.sessionStorage.clear();
       window.localStorage.clear();
+      window.localStorage.setItem("lynxkite-delete-confirmation", "false");
     });
     await page.reload();
     const splash = new Splash(page);
+    await splash.loaded();
     return splash;
+  }
+
+  // Opens the testing sandbox. Most tests should operate here.
+  static async open(page: Page): Promise<Splash> {
+    const splash = await Splash.openRoot(page);
+    await splash.enterSandbox();
+    return splash;
+  }
+
+  async loaded() {
+    await expect(this.page.locator(".entry").first()).toBeVisible();
+  }
+
+  async enterSandbox() {
+    await this.getEntry("testing sandbox").click();
+    await this.loaded();
   }
 
   workspace(name: string) {
@@ -259,7 +276,7 @@ export class Splash {
   }
 
   getEntry(name: string) {
-    return this.page.locator(".entry").filter({ hasText: name }).first();
+    return this.page.locator(".entry").filter({ hasText: name });
   }
 
   async createWorkspace(name: string) {
@@ -285,9 +302,13 @@ export class Splash {
     await nameBox.press("Enter");
   }
 
+  async openFolder(folderName: string) {
+    await this.getEntry(folderName).locator("a").click();
+  }
+
   async deleteEntry(entryName: string) {
-    await this.getEntry(entryName).locator("button").click();
-    await this.page.reload();
+    await this.getEntry(entryName).locator(".delete-button").click();
+    await expect(this.getEntry(entryName)).not.toBeVisible();
   }
 
   async deleteEntryIfExists(entryName: string) {
@@ -302,8 +323,21 @@ export class Splash {
     return this.page.locator(".current-folder");
   }
 
+  async toParent() {
+    const currentFolder = await this.currentFolder().innerText();
+    const parts = currentFolder.split("/").filter(Boolean);
+    const parent = parts.slice(0, -1);
+
+    if (parent.length === 0) {
+      await this.page.goto("/dir");
+      return;
+    }
+
+    await this.page.goto(`/dir/${parent.map((part) => encodeURIComponent(part)).join("/")}`);
+  }
+
   async goHome() {
     await this.page.getByRole("link", { name: "home" }).click();
-    await this.getEntry("testing sandbox").click();
+    await this.enterSandbox();
   }
 }

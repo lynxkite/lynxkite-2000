@@ -141,13 +141,16 @@ export default function Directory() {
   }
 
   async function deleteItem(item: DirectoryEntry) {
-    if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return;
+    const confirmationEnabled = localStorage.getItem("lynxkite-delete-confirmation") !== "false";
+    if (confirmationEnabled && !window.confirm(`Are you sure you want to delete "${item.name}"?`))
+      return;
     const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
     await fetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: item.name }),
     });
+    list.mutate();
   }
 
   return (
@@ -220,6 +223,7 @@ export default function Directory() {
                       <span className="entry-name">{shortName(item)}</span>
                     </Link>
                     <button
+                      className="delete-button"
                       type="button"
                       onClick={() => {
                         deleteItem(item);
@@ -230,6 +234,7 @@ export default function Directory() {
                   </div>
                 ),
             )}
+            {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
           </>
         )}
       </div>{" "}
