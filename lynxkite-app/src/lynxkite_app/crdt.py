@@ -2,8 +2,10 @@
 
 import asyncio
 import contextlib
+import importlib
 import pathlib
 import posixpath
+from typing import Any, cast
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -13,6 +15,12 @@ import builtins
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
 from .crdt_update import crdt_update
+
+enterprise_backend: Any = None
+try:
+    enterprise_backend = cast(Any, importlib.import_module("lynxkite_enterprise.backend"))
+except ImportError:
+    enterprise_backend = None
 
 router = fastapi.APIRouter()
 main_loop = None
@@ -226,6 +234,8 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         ws_crdt: CRDT object representing the workspace.
     """
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_changed(ws_websocket_server)
     ws_pyd.save(pathlib.Path() / name)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
@@ -317,13 +327,23 @@ async def lifespan(app):
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:
         async with code_websocket_server:
-            yield
+            if enterprise_backend is not None:
+                async with enterprise_backend.lifespan_context(ws_websocket_server):
+                    yield
+            else:
+                yield
     print("closing websocket server")
 
 
 def delete_room(name: str):
     if name in ws_websocket_server.rooms:
         del ws_websocket_server.rooms[name]
+    if name in delayed_executions:
+        delayed_executions[name].cancel()
+        del delayed_executions[name]
+    last_known_versions.pop(name, None)
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_deleted(name)
 
 
 def sanitize_path(path):
@@ -340,8 +360,14 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_connection_open(room_name, ws_websocket_server)
     server = pycrdt.websocket.ASGIServer(ws_websocket_server)
-    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    try:
+        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    finally:
+        if enterprise_backend is not None:
+            enterprise_backend.on_workspace_connection_close(room_name, ws_websocket_server)
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")

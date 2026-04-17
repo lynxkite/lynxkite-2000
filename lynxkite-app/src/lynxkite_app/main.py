@@ -2,6 +2,7 @@
 
 import importlib
 import shutil
+from typing import Any, cast
 import pydantic
 import fastapi
 import joblib
@@ -24,6 +25,12 @@ try:
 except ImportError:
     assistant_router = None
 
+enterprise_backend: Any = None
+try:
+    enterprise_backend = cast(Any, importlib.import_module("lynxkite_enterprise.backend"))
+except ImportError:
+    enterprise_backend = None
+
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
@@ -39,6 +46,8 @@ app.include_router(crdt.router)
 app.include_router(icons.router)
 if assistant_router is not None:
     app.include_router(assistant_router)
+if enterprise_backend is not None:
+    enterprise_backend.register_routes(app, crdt)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -57,7 +66,10 @@ def get_catalog(workspace: str):
 
 @app.get("/api/config")
 def get_config() -> dict[str, bool]:
-    return {"assistant_available": assistant_router is not None}
+    return {
+        "assistant_available": assistant_router is not None,
+        "enterprise_available": enterprise_backend is not None,
+    }
 
 
 data_path = pathlib.Path()
