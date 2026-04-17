@@ -21,6 +21,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-primary: oklch(75% 0.13 230);
+  --color-primary-content: white;
   --border: 1px;
   --radius-field: 0.5rem;
   --bold: 500;
@@ -683,8 +685,102 @@ svg {
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100vw;
+  flex: 1;
   background: #fafafa;
+}
+
+.workspace-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.assistant-panel {
+  width: min(34vw, 420px);
+  min-width: 300px;
+  border-left: 1px solid #d8dde3;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.assistant-messages {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 90%;
+  line-height: 1.5;
+
+  table {
+    line-height: 1.5;
+  }
+
+  .chat-bubble p:first-child {
+    margin-top: 0;
+  }
+}
+
+.assistant-empty {
+  text-align: center;
+  color: oklch(90% 0 0);
+  font-size: 100px;
+}
+
+.assistant-error {
+  margin: 0 12px 8px;
+  color: #9f1239;
+}
+
+.assistant-input-row {
+  padding: 12px;
+  border-top: 1px solid #d8dde3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .assistant-editor {
+    min-height: 72px;
+    max-height: 220px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+
+  .assistant-editor:empty::before {
+    content: attr(data-placeholder);
+    color: color-mix(in oklab, currentColor 50%, transparent);
+    pointer-events: none;
+  }
+}
+
+.assistant-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.prose {
+  max-width: none;
+}
+
+@media (max-width: 1100px) {
+  .workspace-body {
+    flex-direction: column;
+  }
+
+  .assistant-panel {
+    width: 100%;
+    min-width: 0;
+    height: 36vh;
+    border-left: none;
+    border-top: 1px solid #d8dde3;
+  }
 }
 
 .workspace-loading {
