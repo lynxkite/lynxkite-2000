@@ -70,6 +70,15 @@ test("Nested folders & workspaces operations", async ({ page }) => {
       await splash.deleteEntry(workspaceName);
       await expect(splash.getEntry(workspaceName)).not.toBeVisible();
     });
+
+    await test.step("Rename folder", async () => {
+      await splash.createFolder("RenameTest");
+      await splash.toParent();
+      const renamedName = "RenameTest-Renamed";
+      await splash.renameEntry("RenameTest", renamedName);
+      await expect(splash.getEntry(renamedName)).toBeVisible();
+      await splash.deleteEntry(renamedName);
+    });
   } finally {
     await test.step("Delete parent folder", async () => {
       await splash.goHome();

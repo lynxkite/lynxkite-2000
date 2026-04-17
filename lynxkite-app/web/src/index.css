@@ -11,7 +11,7 @@
 /* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --default-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -21,6 +21,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-primary: oklch(75% 0.13 230);
+  --color-primary-content: white;
   --border: 1px;
   --radius-field: 0.5rem;
   --bold: 500;
@@ -864,10 +866,15 @@ svg {
     padding-left: 10px;
     font-size: 20px;
     background: #002a4c20;
-  }
 
-  .breadcrumbs a:hover {
-    color: #39bcf3;
+    a,
+    .path-delimiter {
+      margin-right: 5px;
+    }
+
+    a:hover {
+      color: #39bcf3;
+    }
   }
 
   .entry-list .entry {
@@ -1174,4 +1181,32 @@ svg {
 select,
 textarea {
   border: var(--border) solid #0000;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 10px;
+
+  .label-text {
+    display: block;
+    background-color: oklch(97% 0 0);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    margin-left: 10px;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 4px 4px 0 0;
+  }
+
+  input,
+  textarea,
+  select {
+    border-color: oklch(90% 0 0);
+  }
+
+  .title {
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-primary);
+  }
 }

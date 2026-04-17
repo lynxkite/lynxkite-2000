@@ -2,7 +2,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 // Mirrors the "id" filter.
-export function toId(x) {
+export function toId(x: string) {
   return x.toLowerCase().replace(/[ !?,./]/g, "-");
 }
 
@@ -68,7 +68,7 @@ export class Workspace {
     }, nodeId);
   }
 
-  async expectCurrentWorkspaceIs(name) {
+  async expectCurrentWorkspaceIs(name: string) {
     await expect(this.page.locator(".ws-name")).toHaveText(name);
   }
 
@@ -78,7 +78,7 @@ export class Workspace {
     await this.page.locator(".react-flow__node").first().waitFor();
   }
 
-  async addBox(boxName) {
+  async addBox(boxName: string) {
     // TODO: Support passing box parameters.
     const allBoxes = await this.getBoxes().all();
     await this.page.locator(".ws-name").click();
@@ -200,7 +200,7 @@ export class Workspace {
     }
   }
 
-  async execute(opts?) {
+  async execute(opts?: object) {
     const request = this.page.waitForResponse(/api[/]execute_workspace/, opts);
     await this.page.keyboard.press("r");
     await request;
@@ -236,7 +236,7 @@ export class Splash {
   page: Page;
   root: Locator;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
     this.root = page.locator("#splash");
   }
@@ -281,7 +281,7 @@ export class Splash {
 
   async createWorkspace(name: string) {
     await this.page.getByRole("button", { name: "New workspace" }).click();
-    const nameBox = this.page.locator('input[name="entryName"]');
+    const nameBox = getVisibleModal(this.page).locator("input");
     await nameBox.fill(name);
     await nameBox.press("Enter");
     const ws = new Workspace(this.page, name);
@@ -297,7 +297,7 @@ export class Splash {
 
   async createFolder(folderName: string) {
     await this.page.getByRole("button", { name: "New folder" }).click();
-    const nameBox = this.page.locator('input[name="entryName"]');
+    const nameBox = getVisibleModal(this.page).locator("input");
     await nameBox.fill(folderName);
     await nameBox.press("Enter");
   }
@@ -307,7 +307,9 @@ export class Splash {
   }
 
   async deleteEntry(entryName: string) {
-    await this.getEntry(entryName).locator(".delete-button").click();
+    const entry = this.getEntry(entryName);
+    await entry.locator(".entry-actions-button").click();
+    await entry.locator("button").filter({ hasText: "Delete" }).click();
     await expect(this.getEntry(entryName)).not.toBeVisible();
   }
 
@@ -319,25 +321,32 @@ export class Splash {
     }
   }
 
+  async renameEntry(entryName: string, newName: string) {
+    const entry = this.getEntry(entryName);
+    await entry.locator(".entry-actions-button").click();
+    await entry.locator("button").filter({ hasText: "Rename" }).click();
+    const input = getVisibleModal(this.page).locator("input");
+    await input.fill(newName);
+    await input.press("Enter");
+    await expect(this.getEntry(newName)).toBeVisible();
+  }
+
   currentFolder() {
     return this.page.locator(".current-folder");
   }
 
   async toParent() {
-    const currentFolder = await this.currentFolder().innerText();
-    const parts = currentFolder.split("/").filter(Boolean);
-    const parent = parts.slice(0, -1);
-
-    if (parent.length === 0) {
-      await this.page.goto("/dir");
-      return;
-    }
-
-    await this.page.goto(`/dir/${parent.map((part) => encodeURIComponent(part)).join("/")}`);
+    const breadcrumbLinks = this.page.locator(".breadcrumbs a");
+    const linkCount = await breadcrumbLinks.count();
+    await breadcrumbLinks.nth(linkCount - 1).click();
   }
 
   async goHome() {
     await this.page.getByRole("link", { name: "home" }).click();
     await this.enterSandbox();
   }
+}
+
+function getVisibleModal(page: Page) {
+  return page.locator(".modal").filter({ visible: true });
 }

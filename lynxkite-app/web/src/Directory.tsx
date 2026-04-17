@@ -1,4 +1,4 @@
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
@@ -14,73 +14,65 @@ import type { DirectoryEntry } from "./apiTypes.ts";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
 import { usePath } from "./common.ts";
+import { Modal, type ModalHandle } from "./Modal.tsx";
 
 function EntryCreator(props: {
   label: string;
   icon: ReactElement;
   onCreate: (name: string) => void;
 }) {
-  const [isCreating, setIsCreating] = useState(false);
-  const [nameValidationError, setNameValidationError] = useState("");
-
-  function validateName(name: string): boolean {
-    if (name.includes("/")) {
-      setNameValidationError("Name cannot contain '/' characters");
-      return false;
-    }
-    if (name.trim() === "") {
-      setNameValidationError("Name cannot be empty");
-      return false;
-    }
-    setNameValidationError("");
-    return true;
-  }
+  const modalRef = useRef<ModalHandle>(null);
 
   return (
     <>
-      {isCreating ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const name = (e.target as HTMLFormElement).entryName.value.trim();
-            if (validateName(name)) {
-              props.onCreate(name);
-              setIsCreating(false);
-            }
-          }}
-        >
-          <input
-            className={`input input-ghost w-full ${nameValidationError ? "input-error" : ""}`}
-            autoFocus
-            type="text"
-            name="entryName"
-            onBlur={() => setIsCreating(false)}
-            onChange={(e) => validateName(e.target.value)}
-            placeholder={`${props.label} name`}
-          />
-          {nameValidationError && (
-            <div
-              className="error-message"
-              role="alert"
-              style={{ position: "absolute", zIndex: 10 }}
-            >
-              <span className="error-icon" aria-hidden="true">
-                ⚠️
-              </span>
-              <span className="error-text">{nameValidationError}</span>
-            </div>
-          )}
-        </form>
-      ) : (
-        <button type="button" onClick={() => setIsCreating(true)}>
-          {props.icon} {props.label}
-        </button>
-      )}
+      <button type="button" onClick={() => modalRef.current?.open()}>
+        {props.icon} {props.label}
+      </button>
+      <Modal
+        ref={modalRef}
+        title={props.label}
+        inputLabel="Name"
+        submitLabel="Create"
+        onSubmit={props.onCreate}
+      />
     </>
   );
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+function Breadcrumbs(props: { path: string }) {
+  if (!props.path) {
+    return <title>LynxKite 2000:MM</title>;
+  }
+
+  return (
+    <div className="breadcrumbs">
+      <Link to="/dir/" aria-label="home">
+        <Home />
+      </Link>
+      <span className="current-folder">
+        {props.path
+          .split("/")
+          .filter(Boolean)
+          .map((part, index, parts) => {
+            const encodedPartPath = parts
+              .slice(0, index + 1)
+              .map((segment) => encodeURIComponent(segment))
+              .join("/");
+            const isLast = index === parts.length - 1;
+            return (
+              <span key={encodedPartPath}>
+                {index > 0 ? <span className="path-delimiter">/</span> : null}
+                {isLast ? <span>{part}</span> : <Link to={`/dir/${encodedPartPath}`}>{part}</Link>}
+              </span>
+            );
+          })}
+      </span>
+      <title>{props.path}</title>
+    </div>
+  );
+}
 
 export default function Directory() {
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
@@ -89,6 +81,8 @@ export default function Directory() {
     dedupingInterval: 0,
   });
   const navigate = useNavigate();
+  const renameModalRef = useRef<ModalHandle>(null);
+  const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
 
   function link(item: DirectoryEntry) {
     const encodedName = encodePathSegments(item.name);
@@ -153,6 +147,39 @@ export default function Directory() {
     list.mutate();
   }
 
+  function openRenameModal(item: DirectoryEntry) {
+    setRenameTarget(item);
+    renameModalRef.current?.open(shortName(item) ?? "");
+  }
+
+  async function submitRename(newName: string) {
+    if (!renameTarget) return;
+
+    const oldParts = renameTarget.name.split("/");
+    oldParts.pop();
+    const parentPath = oldParts.join("/");
+    const targetName = renameTarget.type === "workspace" ? `${newName}.lynxkite.json` : newName;
+    const newPath = parentPath ? `${parentPath}/${targetName}` : targetName;
+    if (newPath === renameTarget.name) {
+      setRenameTarget(null);
+      return;
+    }
+
+    const res = await fetch("/api/rename", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ old_path: renameTarget.name, new_path: newPath }),
+    });
+
+    if (!res.ok) {
+      alert("Failed to rename item.");
+      return;
+    }
+
+    setRenameTarget(null);
+    list.mutate();
+  }
+
   return (
     <div className="directory">
       <div className="logo">
@@ -196,17 +223,7 @@ export default function Directory() {
               />
             </div>
 
-            {path ? (
-              <div className="breadcrumbs">
-                <Link to="/dir/" aria-label="home">
-                  <Home />
-                </Link>{" "}
-                <span className="current-folder">{path}</span>
-                <title>{path}</title>
-              </div>
-            ) : (
-              <title>LynxKite 2000:MM</title>
-            )}
+            <Breadcrumbs path={path} />
 
             {list.data.map(
               (item: DirectoryEntry) =>
@@ -224,6 +241,7 @@ export default function Directory() {
                     </Link>
                     <div className="dropdown dropdown-left dropdown-end">
                       <button
+                        className="entry-actions-button"
                         tabIndex={0}
                         type="button"
                         aria-label={`Open actions for ${shortName(item)}`}
@@ -246,7 +264,7 @@ export default function Directory() {
                           <button
                             type="button"
                             onClick={() => {
-                              renameItem(item);
+                              openRenameModal(item);
                             }}
                           >
                             Rename
@@ -260,7 +278,16 @@ export default function Directory() {
             {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
           </>
         )}
-      </div>{" "}
+      </div>
+
+      <Modal
+        ref={renameModalRef}
+        title="Rename item"
+        description={renameTarget ? `Current: ${shortName(renameTarget)}` : ""}
+        inputLabel="New name"
+        submitLabel="Rename"
+        onSubmit={submitRename}
+      />
     </div>
   );
 }
