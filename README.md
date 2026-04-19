@@ -28,5 +28,5 @@ pip install lynxkite
 
 LynxKite 2000:MM is licensed under the GNU AGPLv3. See the [LICENSE](LICENSE) file for details.
 
-[LynxKite Technologies] offers a commercial license of LynxKite 2000:MM that includes additional features and support. Get in touch if you are interested in life sciences tools
+[LynxKite Technologies](https://lynxkite.com/) offers a commercial license of LynxKite 2000:MM that includes additional features and support. Get in touch if you are interested in life sciences tools
 and cluster deployment!
