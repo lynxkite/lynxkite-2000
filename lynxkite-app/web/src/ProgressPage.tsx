@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import useSWR from "swr";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
@@ -37,6 +38,8 @@ function timeLeft(ws: any): string {
   return `~${seconds}s left`;
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
   const [, setTick] = useState(0);
@@ -50,6 +53,8 @@ export default function ProgressPage() {
     { id: "gpu-services", label: "Running GPU services" },
     { id: "users", label: "Users & groups" },
   ];
+  const config = useSWR<{ enterprise_available?: boolean }>("/api/config", fetcher);
+  const enterpriseAvailable = config.data?.enterprise_available === true;
 
   // Mock data for now.
   const [data, setData] = useState<{
@@ -160,6 +165,10 @@ export default function ProgressPage() {
     }
   }
   useEffect(() => {
+    if (!enterpriseAvailable) {
+      return;
+    }
+
     const doc = new Y.Doc();
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const provider = new WebsocketProvider(
@@ -228,7 +237,7 @@ export default function ProgressPage() {
       provider.destroy();
       doc.destroy();
     };
-  }, []);
+  }, [enterpriseAvailable]);
 
   return (
     <div className="progress-page">
@@ -240,6 +249,11 @@ export default function ProgressPage() {
         <div className="tagline">The Complete Graph Data Science Platform</div>
       </div>
       <div className="entry-list">
+        {config.data && !enterpriseAvailable && (
+          <output className="breadcrumbs">
+            Enterprise features are not available in this deployment.
+          </output>
+        )}
         <div role="tablist" className="tabs tabs-border">
           <div className="tab">
             <Link to="/">
