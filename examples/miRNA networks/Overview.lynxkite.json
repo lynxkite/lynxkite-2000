@@ -929,7 +929,7 @@
           "columns": "<from file>",
           "file_format": "csv",
           "file_format_group": "csv",
-          "file_path": "miRNA networks/nodes.csv",
+          "file_path": "miRNA networks/edges.csv",
           "separator": ";",
           "table_name": null
         },
