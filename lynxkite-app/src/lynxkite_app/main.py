@@ -120,6 +120,20 @@ def delete_dir(req: dict):
     shutil.rmtree(path)
 
 
+@app.post("/api/rename")
+def rename_path(req: dict):
+    old_path: pathlib.Path = data_path / req["old_path"]
+    new_path: pathlib.Path = data_path / req["new_path"]
+    assert old_path.is_relative_to(data_path), f"Path '{old_path}' is invalid"
+    assert new_path.is_relative_to(data_path), f"Path '{new_path}' is invalid"
+    assert old_path.exists(), f"Path '{old_path}' does not exist"
+    assert not new_path.exists(), f"Path '{new_path}' already exists"
+    old_rel = req["old_path"]
+    old_path.rename(new_path)
+    # Drop any open room under the old name so clients don't keep stale pointers.
+    crdt.delete_room(old_rel)
+
+
 @app.get("/api/service/{module_path:path}")
 async def service_get(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""

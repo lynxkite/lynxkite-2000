@@ -74,7 +74,7 @@ class Bundle:
 
     @classmethod
     def from_df(cls, df: pd.DataFrame):
-        return cls(dfs={"df": df})
+        return cls(dfs={"records": df})
 
     def to_nx(self):
         # TODO: Use relations.
@@ -116,6 +116,7 @@ class Bundle:
                 name: {
                     "key": name,
                     "columns": sorted(str(c) for c in df.columns),
+                    "length": len(df),
                 }
                 for name, df in self.dfs.items()
             },

@@ -15,9 +15,6 @@ test.beforeEach(async ({ browser }) => {
 test.afterEach(async () => {
   await workspace.close();
   const splash = await new Splash(workspace.page);
-  splash.page.on("dialog", async (dialog) => {
-    await dialog.accept();
-  });
   await splash.deleteEntry("graph_creation_spec_test");
 });
 

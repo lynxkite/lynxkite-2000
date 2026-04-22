@@ -11,7 +11,7 @@
 /* biome-ignore-end lint/suspicious/noUnknownAtRules: plugin */
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --default-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -415,6 +415,32 @@ svg {
 
   .node-container:hover .handle-name {
     visibility: visible;
+  }
+
+  .handle-metadata-label {
+    font-size: 9px;
+    color: #666;
+    width: 120px;
+    line-height: 190%;
+    position: absolute;
+    top: -10px;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .react-flow__handle-left .handle-metadata-label {
+    right: 18px;
+    text-align: right;
+  }
+
+  .react-flow__handle-right .handle-metadata-label {
+    left: 18px;
+    text-align: left;
+  }
+
+  .react-flow__handle-top .handle-metadata-label,
+  .react-flow__handle-bottom .handle-metadata-label {
+    left: 15px;
   }
 
   .node-resizer {
@@ -934,14 +960,20 @@ svg {
     padding-left: 10px;
     font-size: 20px;
     background: #002a4c20;
-  }
 
-  .breadcrumbs a:hover {
-    color: #39bcf3;
+    a,
+    .path-delimiter {
+      margin-right: 5px;
+    }
+
+    a:hover {
+      color: #39bcf3;
+    }
   }
 
   .entry-list .entry {
     display: flex;
+    align-items: center;
     border-bottom: 1px solid whitesmoke;
     color: #004165;
     cursor: pointer;
@@ -959,6 +991,18 @@ svg {
 
     button {
       padding-right: 10px;
+    }
+
+    &.empty {
+      justify-content: center;
+      color: #0008;
+    }
+
+    .dropdown-content.menu {
+      background: white;
+      color: #000;
+      box-shadow: 0px 5px 20px 0px #002a4c80;
+      border-radius: 20px 20px 0 20px;
     }
   }
 
@@ -1231,4 +1275,37 @@ svg {
 select,
 textarea {
   border: var(--border) solid #0000;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 10px;
+
+  .label-text {
+    display: block;
+    background-color: oklch(97% 0 0);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    margin-left: 10px;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 4px 4px 0 0;
+  }
+
+  input,
+  textarea,
+  select {
+    border-color: oklch(90% 0 0);
+  }
+
+  .description {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-primary);
+  }
 }

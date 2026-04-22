@@ -125,6 +125,11 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
             self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
 
+    def on_deleted(self, event):
+        if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
+            print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
+            delete_room(self.file_path)
+
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
     async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
@@ -166,6 +171,7 @@ def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.input_metadata = None
+        node.data.output_metadata = None
         node.data.error = None
         node.data.message = None
         node.data.collapsed = False
@@ -215,6 +221,33 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
 
 last_known_versions = {}
 delayed_executions = {}
+
+
+def print_diff(old, new, prefix=""):
+    """Print the differences between two Python/Pydantic objects. For debugging."""
+    if hasattr(old, "model_dump"):
+        old = old.model_dump()
+    if hasattr(new, "model_dump"):
+        new = new.model_dump()
+    if type(old) is not type(new):
+        print(f"{prefix}- {old}")
+        print(f"{prefix}+ {new}")
+    elif isinstance(old, dict):
+        for key in set(old.keys()) | set(new.keys()):
+            print_diff(old.get(key), new.get(key), prefix + f"{key}.")
+    elif isinstance(old, list):
+        for i, (o, n) in enumerate(zip(old, new)):
+            print_diff(o, n, prefix + f"{i}.")
+        if len(old) < len(new):
+            for i in range(len(old), len(new)):
+                print(f"{prefix}+ {new[i]}")
+        elif len(old) > len(new):
+            for i in range(len(new), len(old)):
+                print(f"{prefix}- {old[i]}")
+    else:
+        if old != new:
+            print(f"{prefix}- {old}")
+            print(f"{prefix}+ {new}")
 
 
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
