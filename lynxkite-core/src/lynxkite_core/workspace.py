@@ -39,6 +39,7 @@ class WorkspaceNodeData(BaseConfig):
     params: dict
     display: Optional[Any] = None
     input_metadata: Optional[list[dict]] = None
+    output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
     message: Optional[str] = None
     collapsed: Optional[bool] = None
@@ -101,6 +102,7 @@ class WorkspaceNode(BaseConfig):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
         self.data.input_metadata = result.input_metadata
+        self.data.output_metadata = result.output_metadata
         self.data.error = result.error
         self.data.status = NodeStatus.done
         nc = self._find_crdt_node()
@@ -110,6 +112,7 @@ class WorkspaceNode(BaseConfig):
                     nc["data"]["status"] = NodeStatus.done
                     nc["data"]["display"] = self.data.display
                     nc["data"]["input_metadata"] = self.data.input_metadata
+                    nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
                 except Exception as e:
                     # This can fail when display contains unserializable data.
