@@ -14,6 +14,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
+import AuthCallback from "./AuthCallback.tsx";
 import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
 import Workspace from "./workspace/Workspace.tsx";
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Directory />} />
       <Route path="/dir" element={<Directory />} />
       <Route path="/dir/*" element={<Directory />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/edit/*" element={<Workspace />} errorElement={<WorkspaceError />} />
       <Route path="/code/*" element={<Code />} />
     </>,

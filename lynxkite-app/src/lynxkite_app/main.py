@@ -13,6 +13,7 @@ from lynxkite_core import opcontext
 from lynxkite_core import workspace
 from . import crdt
 from . import icons
+from . import auth
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 
@@ -55,8 +56,12 @@ def get_catalog(workspace: str):
 
 
 @app.get("/api/config")
-def get_config() -> dict[str, bool]:
-    return {"assistant_available": assistant_router is not None}
+def get_config() -> dict[str, bool | str | None]:
+    return {
+        "assistant_available": assistant_router is not None,
+        "authentication_issuer": auth.issuer,
+        "authentication_audience": auth.audience,
+    }
 
 
 data_path = pathlib.Path()
@@ -86,7 +91,10 @@ def _get_path_type(path: pathlib.Path) -> str:
         return "file"
 
 
-@app.get("/api/dir/list")
+@app.get(
+    "/api/dir/list",
+    dependencies=[fastapi.Depends(auth.check_permission("read", path_param="path"))],
+)
 def list_dir(path: str):
     dir_path = data_path / path
     assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
@@ -103,7 +111,10 @@ def list_dir(path: str):
     )
 
 
-@app.post("/api/dir/mkdir")
+@app.post(
+    "/api/dir/mkdir",
+    dependencies=[fastapi.Depends(auth.check_permission("write", path_param="path"))],
+)
 def make_dir(req: dict):
     path = data_path / req["path"]
     assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
@@ -111,7 +122,10 @@ def make_dir(req: dict):
     path.mkdir()
 
 
-@app.post("/api/dir/delete")
+@app.post(
+    "/api/dir/delete",
+    dependencies=[fastapi.Depends(auth.check_permission("write", path_param="path"))],
+)
 def delete_dir(req: dict):
     path: pathlib.Path = data_path / req["path"]
     assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()]), (
@@ -120,7 +134,13 @@ def delete_dir(req: dict):
     shutil.rmtree(path)
 
 
-@app.post("/api/rename")
+@app.post(
+    "/api/rename",
+    dependencies=[
+        fastapi.Depends(auth.check_permission("write", path_param="old_path")),
+        fastapi.Depends(auth.check_permission("write", path_param="new_path")),
+    ],
+)
 def rename_path(req: dict):
     old_path: pathlib.Path = data_path / req["old_path"]
     new_path: pathlib.Path = data_path / req["new_path"]
