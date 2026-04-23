@@ -24,10 +24,7 @@ license = "AGPL-3.0-or-later"
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [dependency-groups]
-dev = [
-    "pydantic-to-typescript>=2.0.0",
-    "setuptools>=80.9.0",
-]
+dev = ["pydantic-to-typescript>=2.0.0", "setuptools>=80.9.0"]
 
 [build-system]
 requires = ["setuptools", "wheel", "setuptools-scm"]
@@ -53,8 +50,10 @@ lynxkite = "lynxkite_app.__main__:main"
 
 [tool.deptry.package_module_name_map]
 sse-starlette = "starlette"
+"pydantic-to-typescript" = "pydantic_to_typescript"
 
 [tool.deptry.per_rule_ignores]
+DEP001 = ["lynxkite_enterprise"]
 DEP002 = ["pycrdt-websocket", "griffe"]
-DEP003 = ["lynxkite_assistant"]
+DEP003 = ["lynxkite_assistant", "lynxkite_enterprise"]
 DEP004 = ["setuptools"]
