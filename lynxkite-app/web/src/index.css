@@ -24,13 +24,21 @@
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
+  --input-color: oklch(75% 0.13 230);
   --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --radius-selector: 0.5rem;
   --bold: 500;
 }
 
 img,
 svg {
   display: inline-block;
+}
+
+.modal-box {
+  background: white;
+  max-width: calc(max(32rem, 70vw));
 }
 
 .path-input-container {
@@ -876,7 +884,8 @@ svg {
   transform: rotate(-90deg);
 }
 
-.directory {
+.directory,
+.progress-page {
   padding-top: 50px;
 
   .entry-list {
@@ -1272,9 +1281,80 @@ svg {
   }
 }
 
-select,
-textarea {
-  border: var(--border) solid #0000;
+.progress-page {
+  .entry-list {
+    padding: 20px;
+    padding-top: 0;
+  }
+
+  .tabs {
+    justify-content: center;
+  }
+
+  .progress-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 5px;
+    }
+  }
+
+  .workspace-progress {
+    text-align: right;
+  }
+
+  .progress-details {
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+
+  .gpu-service-users {
+    font-size: 10px;
+    letter-spacing: 1px;
+
+    .gpu-service-user {
+      margin-left: 10px;
+    }
+  }
+
+  .workspace-eta {
+    white-space: nowrap;
+    width: 8em;
+  }
+
+  .gpu-service-replica-count,
+  .workspace-resources {
+    text-align: right;
+  }
+
+  .gpu-service-status {
+    text-align: center;
+  }
+
+  .gpu-service-publisher {
+    font-size: 0.8em;
+    color: #0008;
+  }
+
+  .table-actions {
+    text-align: right;
+
+    button {
+      background: transparent;
+      border: none;
+      color: oklch(75% 0.13 230);
+    }
+  }
+
+  .label {
+    margin-top: 10px;
+  }
 }
 
 .modal-box {

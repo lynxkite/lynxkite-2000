@@ -16,6 +16,7 @@ import {
 } from "react-router";
 import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
+import ProgressPage from "./ProgressPage.tsx";
 import Workspace from "./workspace/Workspace.tsx";
 
 function WorkspaceError() {
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
       <Route path="/dir/*" element={<Directory />} />
       <Route path="/edit/*" element={<Workspace />} errorElement={<WorkspaceError />} />
       <Route path="/code/*" element={<Code />} />
+      <Route path="/progress" element={<ProgressPage />} />
     </>,
   ),
 );
