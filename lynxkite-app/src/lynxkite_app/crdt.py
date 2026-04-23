@@ -2,10 +2,8 @@
 
 import asyncio
 import contextlib
-import importlib
 import pathlib
 import posixpath
-from typing import Any, cast
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -16,9 +14,8 @@ from lynxkite_core import workspace, ops
 from watchdog import events, observers
 from .crdt_update import crdt_update
 
-enterprise_backend: Any = None
 try:
-    enterprise_backend = cast(Any, importlib.import_module("lynxkite_enterprise.backend"))
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
     enterprise_backend = None
 

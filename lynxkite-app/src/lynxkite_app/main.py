@@ -1,8 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
-import importlib
 import shutil
-from typing import Any, cast
 import pydantic
 import fastapi
 import joblib
@@ -25,9 +23,8 @@ try:
 except ImportError:
     assistant_router = None
 
-enterprise_backend: Any = None
 try:
-    enterprise_backend = cast(Any, importlib.import_module("lynxkite_enterprise.backend"))
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
     enterprise_backend = None
 
