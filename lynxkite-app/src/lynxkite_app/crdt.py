@@ -179,6 +179,7 @@ def clean_input(ws_pyd):
         node.data.output_metadata = None
         node.data.error = None
         node.data.message = None
+        node.data.telemetry = None
         node.data.collapsed = False
         node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
