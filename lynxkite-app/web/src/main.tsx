@@ -17,6 +17,7 @@ import {
 import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
 import ProgressPage from "./ProgressPage.tsx";
+import ProgressPageDemo from "./ProgressPageDemo.tsx";
 import Workspace from "./workspace/Workspace.tsx";
 
 function WorkspaceError() {
@@ -48,6 +49,7 @@ const router = createBrowserRouter(
       <Route path="/edit/*" element={<Workspace />} errorElement={<WorkspaceError />} />
       <Route path="/code/*" element={<Code />} />
       <Route path="/progress" element={<ProgressPage />} />
+      <Route path="/progress-demo" element={<ProgressPageDemo />} />
     </>,
   ),
 );

@@ -1,10 +1,7 @@
-// A system-wide progress page, that gives an overview of workspaces running, resources used, etc.
+// A demo of ProgressPage with mock data.
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import useSWR from "swr";
-import { WebsocketProvider } from "y-websocket";
-import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
 import Back from "~icons/tabler/arrow-left";
 import ScaleUp from "~icons/tabler/arrow-up";
@@ -17,16 +14,34 @@ import ManagementPage from "./ManagementPage";
 
 const echarts = await import("echarts");
 
-function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
+// Generate fake per-day GPU-hours for a user over the last 30 days.
+function generateDailyUsage(avgHours: number): number[] {
+  const days = [];
+  for (let i = 0; i < 30; i++) {
+    days.push(
+      Math.max(0, Math.round(avgHours + (Math.sin(i * 1.3) + Math.cos(i * 0.7)) * avgHours * 0.4)),
+    );
+  }
+  return days;
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+function timeLeft(workspace: any) {
+  if (!workspace.resources.gpus) {
+    return "paused";
+  }
+  const now = Date.now();
+  const eta = workspace.eta;
+  const diff = (eta - now) / workspace.resources.gpus;
+
+  if (diff <= 0) {
+    return "Done";
+  }
+
+  const minutes = Math.floor(diff / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  return `${minutes}m ${seconds}s left`;
+}
 
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
@@ -38,148 +53,236 @@ export default function ProgressPage() {
   const [currentTab, setCurrentTab] = useState("workspaces");
   const tabs = [
     { id: "workspaces", label: "Running workspaces" },
-    { id: "gpu-services", label: "Running GPU services" },
-    // { id: "users", label: "Users & groups" },
+    { id: "gpuServices", label: "Running GPU services" },
+    { id: "users", label: "Users & groups" },
   ];
-  const config = useSWR<{ enterprise_available?: boolean }>("/api/config", fetcher);
-  const enterpriseAvailable = config.data?.enterprise_available === true;
 
-  const [data, setData] = useState<{
-    workspaces: any[];
-    gpuServices: any[];
-    users: any[];
-  }>({
-    workspaces: [],
-    gpuServices: [],
-    users: [],
+  // Mock data for now.
+  const [data, setData] = useState({
+    workspaces: [
+      {
+        name: "Drug discovery pipeline",
+        user: "Derek Smith",
+        start_time: Date.now() - 1000 * 60 * 60 * 2,
+        eta: Date.now() + 1000 * 60 * 134.3,
+        boxes_done: 18,
+        total_boxes: 24,
+        current_box_progress: { name: "Query Boltz-2", input_size: 123123, done: 76434 },
+        overall_progress: 0.75,
+        resources: { gpus: 8 },
+      },
+      {
+        name: "Generating receptor conformations",
+        user: "Derek Smith",
+        start_time: Date.now() - 1000 * 60 * 45,
+        eta: Date.now() + 1000 * 60 * 21.1,
+        boxes_done: 3,
+        total_boxes: 12,
+        current_box_progress: { name: "Prepare data (local)" },
+        overall_progress: 0.28,
+        resources: { gpus: 2 },
+      },
+      {
+        name: "Training docking model",
+        user: "Dora Gera",
+        start_time: Date.now() - 1000 * 60 * 10,
+        eta: Date.now() + 1000 * 60 * 1227.5,
+        boxes_done: 1,
+        total_boxes: 20,
+        current_box_progress: { name: "Fine-tuning", input_size: 4536, done: 123 },
+        overall_progress: 0.05,
+        resources: { gpus: 4 },
+      },
+      {
+        name: "Side effects and toxicity screening",
+        user: "Rajat Kumar Pal",
+        start_time: Date.now() - 1000 * 60 * 60 * 6,
+        eta: Date.now() + 1000 * 60 * 60 * 8.77,
+        boxes_done: 40,
+        total_boxes: 50,
+        current_box_progress: { name: "ADMET model", input_size: 342432, done: 276567 },
+        overall_progress: 0.82,
+        resources: { gpus: 6 },
+      },
+      {
+        name: "Molecular dynamics simulation",
+        user: "Rajat Kumar Pal",
+        start_time: Date.now() - 1000 * 60 * 60 * 24,
+        eta: Date.now() + 1000 * 60 * 60 * 120.1,
+        boxes_done: 120,
+        total_boxes: 200,
+        current_box_progress: { name: "Run FEP+", input_size: 1323, done: 225 },
+        overall_progress: 0.6,
+        resources: { gpus: 16 },
+      },
+      {
+        name: "MicroRNA experiment",
+        user: "Livia Babos",
+        start_time: Date.now() - 1000 * 60 * 15,
+        eta: Date.now() + 1000 * 60 * 45.8,
+        boxes_done: 2,
+        total_boxes: 8,
+        current_box_progress: { name: "Create visualization (local)" },
+        overall_progress: 0.2,
+        resources: { gpus: 1 },
+      },
+    ],
+    gpuServices: [
+      {
+        publisher: "MIT",
+        name: "Boltz-2",
+        status: "running",
+        replicasHealthy: 3,
+        replicasRequested: 3,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "Colabfold",
+        name: "msa-search",
+        status: "running",
+        replicasHealthy: 10,
+        replicasRequested: 10,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "Openfold",
+        name: "openfold2",
+        status: "running",
+        replicasHealthy: 1,
+        replicasRequested: 1,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "Arc",
+        name: "evo2-40b",
+        status: "running",
+        replicasHealthy: 0,
+        replicasRequested: 3,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "NVIDIA",
+        name: "genmol",
+        status: "running",
+        replicasHealthy: 10,
+        replicasRequested: 1,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "DeepMind",
+        name: "alphafold2-multimer",
+        status: "running",
+        replicasHealthy: 3,
+        replicasRequested: 3,
+        usedByWorkspaces: [] as any[],
+      },
+      {
+        publisher: "Meta",
+        name: "esm2-650m",
+        status: "running",
+        replicasHealthy: 12,
+        replicasRequested: 12,
+        usedByWorkspaces: [] as any[],
+      },
+      // { publisher: "DeepMind", name: "alphafold2", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+      // { publisher: "IPD", name: "ProteinMPNN", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+      // { publisher: "IPD", name: "rfdiffusion", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+      // { publisher: "NVIDIA", name: "MolMIM", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+      // { publisher: "Meta", name: "esmfold", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+      // { publisher: "MIT", name: "diffdock", status: "running", replicasHealthy: 3, replicasRequested: 3 },
+    ],
+    users: [
+      {
+        name: "Botond Banhidi",
+        group: "Engineering",
+        gpuQuota: 500,
+        dailyUsage: generateDailyUsage(15),
+        email: "botond.banhidi@lynxkite.com",
+      },
+      {
+        name: "Daniel Darabos",
+        group: "Engineering",
+        gpuQuota: 800,
+        dailyUsage: generateDailyUsage(22),
+        email: "daniel.darabos@lynxkite.com",
+      },
+      {
+        name: "Derek Smith",
+        group: "Drug Discovery",
+        gpuQuota: 2000,
+        dailyUsage: generateDailyUsage(55),
+        email: "derek.smith@lynxkite.com",
+      },
+      {
+        name: "Dora Gera",
+        group: "Drug Discovery",
+        gpuQuota: 1500,
+        dailyUsage: generateDailyUsage(40),
+        email: "dora.gera@lynxkite.com",
+      },
+      {
+        name: "Gergo Szabo",
+        group: "Engineering",
+        gpuQuota: 1500,
+        dailyUsage: generateDailyUsage(35),
+        email: "gergo.szabo@lynxkite.com",
+      },
+      {
+        name: "Gyorgy Lajtai",
+        group: "Engineering",
+        gpuQuota: 2500,
+        dailyUsage: generateDailyUsage(70),
+        email: "gyorgy.lajtai@lynxkite.com",
+      },
+      {
+        name: "Livia Babos",
+        group: "Micro RNA",
+        gpuQuota: 800,
+        dailyUsage: generateDailyUsage(15),
+        email: "livia.babos@lynxkite.com",
+      },
+      {
+        name: "Rajat Kumar Pal",
+        group: "Molecular Simulation",
+        gpuQuota: 3000,
+        dailyUsage: generateDailyUsage(80),
+        email: "rajat.kumar.pal@lynxkite.com",
+      },
+    ],
   });
-
-  async function pauseWorkspace(roomName: string, paused: boolean) {
-    try {
-      await fetch("/api/pause_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName, paused }),
-      });
-    } catch (e) {
-      console.error("Failed to pause workspace", e);
-    }
-  }
-
-  async function stopWorkspace(roomName: string) {
-    try {
-      await fetch("/api/stop_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName }),
-      });
-    } catch (e) {
-      console.error("Failed to stop workspace", e);
-    }
-  }
-
-  async function scaleGpuService(gpuService: any, newReplicaCount: number) {
-    const targetReplicas = Math.max(0, newReplicaCount);
-    try {
-      await fetch("/api/scale_gpu_service", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: gpuService.name,
-          namespace: gpuService.publisher,
-          replicas: targetReplicas,
-        }),
-      });
-    } catch (e) {
-      console.error("Failed to scale GPU service", e);
-    }
-  }
-  useEffect(() => {
-    if (!enterpriseAvailable) {
-      return;
-    }
-
-    const doc = new Y.Doc();
-    const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    const provider = new WebsocketProvider(
-      `${proto}//${location.host}/ws/progress/crdt`,
-      "progress",
-      doc,
-    );
-
-    const wsMap = doc.getMap("workspaces");
-    const gpuServicesText = doc.getText("gpu_services");
-
-    function parseWorkspace(value: unknown) {
-      if (typeof value === "string") {
-        return JSON.parse(value);
+  for (const gpuService of data.gpuServices) {
+    if (gpuService.usedByWorkspaces.length) continue;
+    for (const ws of data.workspaces) {
+      if (ws.resources.gpus > 0 && Math.random() < 0.2) {
+        gpuService.usedByWorkspaces.push(ws);
       }
-      return value as any;
     }
+  }
 
-    function syncWorkspaces() {
-      const workspaces: any[] = [];
-      for (const value of (wsMap as Y.Map<unknown>).values()) {
-        try {
-          const ws = parseWorkspace(value);
-          if (ws && typeof ws === "object") {
-            workspaces.push({ ...ws, user: "Test User" });
-          }
-        } catch (e) {
-          console.warn("failed to parse workspace entry from CRDT", e);
+  function scaleGPUService(gpuService: any, newReplicaCount: number) {
+    // For now, just update the mock data. In a real implementation, this would make an API call.
+    setData((prevData) => {
+      const newNims = prevData.gpuServices.map((n) => {
+        if (n.name === gpuService.name) {
+          return { ...n, replicasRequested: newReplicaCount };
         }
-      }
-      setData((prev) => ({ ...prev, workspaces }));
-    }
+        return n;
+      });
+      return { ...prevData, gpuServices: newNims };
+    });
+  }
 
-    function syncGpuServices() {
-      const raw = gpuServicesText.toString();
-      if (!raw) {
-        return;
-      }
-      try {
-        const gpuServices = JSON.parse(raw);
-        if (Array.isArray(gpuServices)) {
-          setData((prev) => ({ ...prev, gpuServices }));
+  function setResources(ws: any, resources: any) {
+    // For now, just update the mock data. In a real implementation, this would make an API call.
+    setData((prevData) => {
+      const newWorkspaces = prevData.workspaces.map((w) => {
+        if (w.name === ws.name) {
+          return { ...w, resources, prevResources: w.resources };
         }
-      } catch {
-        // ignore malformed JSON during partial updates
-      }
-    }
-
-    wsMap.observe(syncWorkspaces);
-    gpuServicesText.observe(syncGpuServices);
-    // Sync once the provider has connected and received initial state.
-    provider.on("sync", () => {
-      syncWorkspaces();
-      syncGpuServices();
+        return w;
+      });
+      return { ...prevData, workspaces: newWorkspaces };
     });
-    provider.on("status", (event: any) => {
-      if (event?.status === "connected") {
-        syncWorkspaces();
-        syncGpuServices();
-      }
-    });
-
-    return () => {
-      wsMap.unobserve(syncWorkspaces);
-      gpuServicesText.unobserve(syncGpuServices);
-      provider.destroy();
-      doc.destroy();
-    };
-  }, [enterpriseAvailable]);
-
-  if (config.data && !enterpriseAvailable) {
-    return (
-      <ManagementPage>
-        <p className="p-4 prose">
-          The deployment-wide progress management page requires the LynxKite Enterprise backend. Hit
-          us up at <a href="mailto:lynxkite@lynxkite.com">lynxkite@lynxkite.com</a> if you're
-          interested! Check out <Link to="/progress-demo">the demo page</Link> to see what it looks
-          like.
-        </p>
-      </ManagementPage>
-    );
   }
 
   return (
@@ -203,25 +306,26 @@ export default function ProgressPage() {
       </div>
 
       {currentTab === "workspaces" && (
-        <Workspaces
-          workspaces={data.workspaces}
-          onPause={(roomName, paused) => pauseWorkspace(roomName, paused)}
-          onStop={(roomName) => stopWorkspace(roomName)}
-        />
+        <Workspaces workspaces={data.workspaces} setResources={setResources} />
       )}
-      {currentTab === "gpu-services" && (
-        <GpuServices gpuServices={data.gpuServices} scaleGpuService={scaleGpuService} />
+      {currentTab === "gpuServices" && (
+        <GpuServices gpuServices={data.gpuServices} scaleGPUService={scaleGPUService} />
       )}
       {currentTab === "users" && <UsersAndGroups users={data.users} />}
     </ManagementPage>
   );
 }
 
-function Workspaces(props: {
-  workspaces: any[];
-  onPause: (roomName: string, paused: boolean) => void;
-  onStop: (roomName: string) => void;
-}) {
+function Workspaces(props: { workspaces: any[]; setResources: (ws: any, resources: any) => void }) {
+  const [showProgressDetails, setShowProgressDetails] = useState({} as Record<string, boolean>);
+  const [currentBoxDemoCounter, setCurrentBoxDemoCounter] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(
+      () => Math.random() < 0.5 && setCurrentBoxDemoCounter((c) => c + 1),
+      100,
+    );
+    return () => clearInterval(interval);
+  }, []);
   if ((props.workspaces?.length ?? 0) === 0) {
     return <div>No workspaces in progress.</div>;
   }
@@ -237,68 +341,86 @@ function Workspaces(props: {
         </tr>
       </thead>
       <tbody>
-        {props.workspaces.map((ws) => {
-          const roomName = ws.room_name || ws.name;
-          const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
-          const tqdm = ws.active_node?.tqdm;
-          // Combined progress: box fraction covers full bar, tqdm refines the current box's slice
-          const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
-          // Each box is 1/total wide. The active box contributes its tqdm progress within that slice.
-          const combinedProgress =
-            tqdmFraction != null ? (ws.boxes_done + tqdmFraction) / ws.boxes_total : boxFraction;
-          return (
-            <tr key={ws.name}>
-              <td className="workspace-name">{ws.name}</td>
-              <td className="workspace-user">{ws.user}</td>
-              <td className="workspace-progress">
+        {props.workspaces.map((ws) => (
+          <tr key={ws.name}>
+            <td className="workspace-name">{ws.name}</td>
+            <td className="workspace-user">{ws.user}</td>
+            <td
+              className="workspace-progress cursor-pointer"
+              onClick={() =>
+                setShowProgressDetails((prev) => ({ ...prev, [ws.name]: !prev[ws.name] }))
+              }
+            >
+              {showProgressDetails[ws.name] ? (
                 <div className="progress-details">
-                  {ws.active_node && (
-                    <span className="active-node-label">
-                      {ws.active_node.title}
-                      {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
-                    </span>
+                  <span>
+                    {ws.current_box_progress.name}{" "}
+                    {ws.current_box_progress.input_size &&
+                      `(${ws.current_box_progress.done + currentBoxDemoCounter * (ws.resources.gpus ?? 0)}/${ws.current_box_progress.input_size})`}
+                  </span>
+                  {ws.current_box_progress.input_size && (
+                    <>
+                      <progress
+                        className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
+                        value={
+                          ws.current_box_progress.done +
+                          currentBoxDemoCounter * (ws.resources.gpus ?? 0)
+                        }
+                        max={ws.current_box_progress.input_size}
+                      />
+                    </>
                   )}
-                  <progress
-                    className={`progress progress-${ws.status === "active" ? "primary" : "neutral"} w-50`}
-                    value={combinedProgress * 100}
-                    max={100}
-                  />
                 </div>
-              </td>
-              <td className="workspace-eta">
-                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
-                {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
-              </td>
-              <td className="workspace-resources">{ws.gpus || "—"}</td>
-              <td className="table-actions">
-                {ws.paused ? (
-                  <button
-                    className="btn btn-sm"
-                    title="Resume"
-                    onClick={() => props.onPause(roomName, false)}
-                  >
-                    <Play />
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-sm"
-                    title="Pause"
-                    onClick={() => props.onPause(roomName, true)}
-                  >
-                    <Pause />
-                  </button>
-                )}
+              ) : (
+                <progress
+                  className={`progress progress-${ws.resources.gpus ? "primary" : "neutral"} w-50`}
+                  value={ws.overall_progress * 100}
+                  max="100"
+                />
+              )}
+            </td>
+            <td className="workspace-eta">{timeLeft(ws)}</td>
+            <td className="workspace-resources">{ws.resources.gpus}</td>
+            <td className="table-actions">
+              <button
+                className="btn btn-sm"
+                title="Scale up"
+                onClick={() => props.setResources(ws, { gpus: (ws.resources.gpus || 1) + 1 })}
+              >
+                <ScaleUp />
+              </button>
+              <button
+                className="btn btn-sm"
+                title="Scale down"
+                onClick={() =>
+                  props.setResources(ws, { gpus: Math.max(1, (ws.resources.gpus || 1) - 1) })
+                }
+              >
+                <ScaleDown />
+              </button>
+              {ws.resources.gpus ? (
                 <button
                   className="btn btn-sm"
-                  title="Stop (reset all boxes)"
-                  onClick={() => props.onStop(roomName)}
+                  title="Pause"
+                  onClick={() => props.setResources(ws, {})}
                 >
-                  <Stop />
+                  <Pause />
                 </button>
-              </td>
-            </tr>
-          );
-        })}
+              ) : (
+                <button
+                  className="btn btn-sm"
+                  title="Resume"
+                  onClick={() => props.setResources(ws, ws.prevResources ?? {})}
+                >
+                  <Play />
+                </button>
+              )}
+              <button className="btn btn-sm" title="Stop">
+                <Stop />
+              </button>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
@@ -306,7 +428,7 @@ function Workspaces(props: {
 
 function GpuServices(props: {
   gpuServices: any[];
-  scaleGpuService: (gpuService: any, replicas: number) => void;
+  scaleGPUService: (gpuService: any, replicas: number) => void;
 }) {
   const [showUsers, setShowUsers] = useState({} as Record<string, boolean>);
   if ((props.gpuServices?.length ?? 0) === 0) {
@@ -316,7 +438,7 @@ function GpuServices(props: {
     <table className="progress-table">
       <thead>
         <tr>
-          <th>GPU service</th>
+          <th>GPU Service</th>
           <th>Replicas</th>
           <th>Status</th>
           <th></th>
@@ -336,16 +458,18 @@ function GpuServices(props: {
               {showUsers[gpuService.name] && (
                 <div className="gpu-service-users">
                   Used by workspaces:
-                  {gpuService.usedByWorkspaces.map((ws: string) => (
-                    <div className="gpu-service-user" key={ws}>
-                      {ws}
+                  {gpuService.usedByWorkspaces.map((ws: any) => (
+                    <div className="gpu-service-user" key={ws.name}>
+                      {ws.name}
                     </div>
                   ))}
                 </div>
               )}
             </td>
-            <td className="gpu-service-replica-count" title="Running / set">
-              {gpuService.replicasHealthy} / {gpuService.replicasRequested}
+            <td className="gpu-service-replica-count">
+              {gpuService.replicasHealthy}
+              {gpuService.replicasHealthy !== gpuService.replicasRequested &&
+                ` / ${gpuService.replicasRequested}`}
             </td>
             <td className="gpu-service-status">
               {" "}
@@ -357,21 +481,21 @@ function GpuServices(props: {
               <button
                 className="btn btn-sm"
                 title="Scale up"
-                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested + 1)}
+                onClick={() => props.scaleGPUService(gpuService, gpuService.replicasRequested + 1)}
               >
                 <ScaleUp />
               </button>
               <button
                 className="btn btn-sm"
                 title="Scale down"
-                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested - 1)}
+                onClick={() => props.scaleGPUService(gpuService, gpuService.replicasRequested - 1)}
               >
                 <ScaleDown />
               </button>
               <button
                 className="btn btn-sm"
                 title="Stop"
-                onClick={() => props.scaleGpuService(gpuService, 0)}
+                onClick={() => props.scaleGPUService(gpuService, 0)}
               >
                 <Stop />
               </button>

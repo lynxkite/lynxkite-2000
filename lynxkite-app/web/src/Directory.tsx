@@ -11,9 +11,8 @@ import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import logo from "./assets/logo.png";
-import logoSparky from "./assets/logo-sparky.jpg";
 import { usePath } from "./common.ts";
+import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 
 function EntryCreator(props: {
@@ -176,110 +175,100 @@ export default function Directory() {
   }
 
   return (
-    <div className="directory">
-      <div className="logo">
-        <a href="https://lynxkite.com/">
-          <img src={logo} className="logo-image" alt="LynxKite logo" />
-        </a>
-        <img src={logoSparky} className="logo-image-sparky" alt="LynxKite logo" />
-        <div className="tagline">The Complete Graph Data Science Platform</div>
-      </div>
-      <div className="entry-list">
-        {list.error && <p className="error">{list.error.message}</p>}
-        {list.isLoading && (
-          <output className="loading spinner-border">
-            <span className="visually-hidden">Loading...</span>
-          </output>
-        )}
+    <ManagementPage>
+      {list.error && <p className="error">{list.error.message}</p>}
+      {list.isLoading && (
+        <output className="loading spinner-border">
+          <span className="visually-hidden">Loading...</span>
+        </output>
+      )}
 
-        {list.data && (
-          <>
-            <div className="actions">
-              <EntryCreator
-                onCreate={(name) => {
-                  newWorkspaceIn(path || "", name);
-                }}
-                icon={<LayoutGridAdd />}
-                label="New workspace"
-              />
-              {config.data?.enterprise_available && (
-                <Link to="/progress">
-                  <LayoutGrid /> Enterprise progress
-                </Link>
-              )}
-              <EntryCreator
-                onCreate={(name) => {
-                  newCodeFile(path || "", name);
-                }}
-                icon={<FilePlus />}
-                label="New code file"
-              />
-              <EntryCreator
-                onCreate={(name: string) => {
-                  newFolderIn(path || "", name);
-                }}
-                icon={<FolderPlus />}
-                label="New folder"
-              />
-            </div>
-
-            <Breadcrumbs path={path} />
-
-            {list.data.map(
-              (item: DirectoryEntry) =>
-                !shortName(item)?.startsWith("__") && (
-                  <div key={item.name} className="entry">
-                    <Link key={link(item)} to={link(item)}>
-                      {item.type === "directory" ? (
-                        <Folder />
-                      ) : item.type === "workspace" ? (
-                        <LayoutGrid />
-                      ) : (
-                        <File />
-                      )}
-                      <span className="entry-name">{shortName(item)}</span>
-                    </Link>
-                    <div className="dropdown dropdown-left dropdown-end">
-                      <button
-                        className="entry-actions-button"
-                        tabIndex={0}
-                        type="button"
-                        aria-label={`Open actions for ${shortName(item)}`}
-                      >
-                        <DotsVertical />
-                      </button>
-                      <ul tabIndex={0} className="dropdown-content menu">
-                        <li>
-                          <button
-                            className="delete-button"
-                            type="button"
-                            onClick={() => {
-                              deleteItem(item);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              openRenameModal(item);
-                            }}
-                          >
-                            Rename
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                ),
+      {list.data && (
+        <>
+          <div className="actions">
+            <EntryCreator
+              onCreate={(name) => {
+                newWorkspaceIn(path || "", name);
+              }}
+              icon={<LayoutGridAdd />}
+              label="New workspace"
+            />
+            {config.data?.enterprise_available && (
+              <Link to="/progress">
+                <LayoutGrid /> Enterprise progress
+              </Link>
             )}
-            {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
-          </>
-        )}
-      </div>
+            <EntryCreator
+              onCreate={(name) => {
+                newCodeFile(path || "", name);
+              }}
+              icon={<FilePlus />}
+              label="New code file"
+            />
+            <EntryCreator
+              onCreate={(name: string) => {
+                newFolderIn(path || "", name);
+              }}
+              icon={<FolderPlus />}
+              label="New folder"
+            />
+          </div>
 
+          <Breadcrumbs path={path} />
+
+          {list.data.map(
+            (item: DirectoryEntry) =>
+              !shortName(item)?.startsWith("__") && (
+                <div key={item.name} className="entry">
+                  <Link key={link(item)} to={link(item)}>
+                    {item.type === "directory" ? (
+                      <Folder />
+                    ) : item.type === "workspace" ? (
+                      <LayoutGrid />
+                    ) : (
+                      <File />
+                    )}
+                    <span className="entry-name">{shortName(item)}</span>
+                  </Link>
+                  <div className="dropdown dropdown-left dropdown-end">
+                    <button
+                      className="entry-actions-button"
+                      tabIndex={0}
+                      type="button"
+                      aria-label={`Open actions for ${shortName(item)}`}
+                    >
+                      <DotsVertical />
+                    </button>
+                    <ul tabIndex={0} className="dropdown-content menu">
+                      <li>
+                        <button
+                          className="delete-button"
+                          type="button"
+                          onClick={() => {
+                            deleteItem(item);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            openRenameModal(item);
+                          }}
+                        >
+                          Rename
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              ),
+          )}
+          {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
+        </>
+      )}
       <Modal
         ref={renameModalRef}
         title="Rename item"
@@ -288,6 +277,6 @@ export default function Directory() {
         submitLabel="Rename"
         onSubmit={submitRename}
       />
-    </div>
+    </ManagementPage>
   );
 }
