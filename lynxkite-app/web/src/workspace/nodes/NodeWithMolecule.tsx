@@ -1,5 +1,7 @@
 import React, { type CSSProperties, useEffect } from "react";
 import "molstar/build/viewer/molstar.css";
+import { PluginCommands } from "molstar/lib/mol-plugin/commands";
+import AdjustmentsHorizontal from "~icons/tabler/adjustments-horizontal.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
@@ -100,6 +102,25 @@ const NodeWithMolecule = (props: any) => {
     };
   }, [props.data?.display]);
 
+  const toggleRightPanel = () => {
+    if (!viewerRef.current?.plugin) return;
+    const plugin = viewerRef.current.plugin;
+    const currentLayoutState = plugin.layout.state;
+    const rightIsOpen =
+      currentLayoutState.showControls && currentLayoutState.regionState.right === "full";
+
+    PluginCommands.Layout.Update(plugin, {
+      state: {
+        ...currentLayoutState,
+        showControls: true,
+        regionState: {
+          ...currentLayoutState.regionState,
+          right: rightIsOpen ? "hidden" : "full",
+        },
+      },
+    });
+  };
+
   const vizStyle: CSSProperties = {
     flex: 1,
     minHeight: "300px",
@@ -117,18 +138,11 @@ const NodeWithMolecule = (props: any) => {
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%" }}>
         <button
           onClick={toggleRightPanel}
-          style={{
-            padding: "8px 12px",
-            fontSize: "12px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            backgroundColor: "#f5f5f5",
-            cursor: "pointer",
-            fontWeight: 500,
-          }}
-          title="Toggle right panel (properties/controls)"
+          className="btn-link cursor-pointer self-end mr-1"
+          title="Toggle control panel"
+          aria-label="Toggle control panel"
         >
-          Toggle Panel
+          <AdjustmentsHorizontal />
         </button>
         <div style={vizStyle} ref={containerRef} className="msp-lynxkite-container" />
       </div>
