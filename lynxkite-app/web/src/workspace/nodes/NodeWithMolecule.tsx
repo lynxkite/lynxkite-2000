@@ -2,13 +2,35 @@ import React, { type CSSProperties, useEffect } from "react";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
+type MoleculeDisplayConfig = {
+  data?: string;
+  format?: string;
+  filename?: string;
+  ligand?: string;
+};
+
 const NodeWithMolecule = (props: any) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const viewerRef = React.useRef<any>(null);
 
+  const handleDownload = () => {
+    const config = props.data?.display as MoleculeDisplayConfig | undefined;
+    if (!config?.data) return;
+    const blob = new Blob([config.data]);
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = config.filename ?? `molecule.${config.format ?? "txt"}`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
-    const config = props.data?.display;
-    if (!config || !containerRef.current) return;
+    const displayConfig = props.data?.display as MoleculeDisplayConfig | undefined;
+    if (!displayConfig || !containerRef.current) return;
+    const config = displayConfig;
 
     const observed = containerRef.current;
 
@@ -171,7 +193,28 @@ const NodeWithMolecule = (props: any) => {
 
   return (
     <NodeWithParams collapsed {...props}>
-      <div style={vizStyle} ref={containerRef} />
+      <div style={vizStyle}>
+        <button
+          onClick={handleDownload}
+          type="button"
+          style={{
+            position: "absolute",
+            top: "8px",
+            right: "8px",
+            zIndex: 2,
+            padding: "4px 8px",
+            border: "1px solid #cfcfcf",
+            borderRadius: "4px",
+            background: "white",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+          title="Download displayed molecule"
+        >
+          Download
+        </button>
+        <div style={{ width: "100%", height: "100%" }} ref={containerRef} />
+      </div>
     </NodeWithParams>
   );
 };
