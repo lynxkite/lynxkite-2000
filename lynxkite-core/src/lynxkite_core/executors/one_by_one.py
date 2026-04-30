@@ -181,6 +181,7 @@ class _ProxyApp:
 
     @contextlib.asynccontextmanager
     async def lifespan_context(self, app):
+        """Does nothing. This will be replaced by `mount_gradio_app` with a custom lifespan context."""
         yield
 
     def mount(self, path, gradio_app):
