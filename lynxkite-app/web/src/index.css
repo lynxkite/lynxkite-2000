@@ -1384,3 +1384,9 @@ svg {
     color: var(--color-primary);
   }
 }
+
+.msp-lynxkite-container {
+  .msp-plugin .msp-layout-expanded {
+    position: absolute !important;
+  }
+}

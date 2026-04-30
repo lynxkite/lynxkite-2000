@@ -107,11 +107,31 @@ const NodeWithMolecule = (props: any) => {
     borderRadius: "4px",
     overflow: "hidden",
     position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
   };
 
   return (
     <NodeWithParams collapsed {...props}>
-      <div style={vizStyle} ref={containerRef} />
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%" }}>
+        <button
+          onClick={toggleRightPanel}
+          style={{
+            padding: "8px 12px",
+            fontSize: "12px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f5f5f5",
+            cursor: "pointer",
+            fontWeight: 500,
+          }}
+          title="Toggle right panel (properties/controls)"
+        >
+          Toggle Panel
+        </button>
+        <div style={vizStyle} ref={containerRef} className="msp-lynxkite-container" />
+      </div>
     </NodeWithParams>
   );
 };
