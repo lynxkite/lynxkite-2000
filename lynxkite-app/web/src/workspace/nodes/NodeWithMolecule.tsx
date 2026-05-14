@@ -58,6 +58,11 @@ const NodeWithMolecule = (props: any) => {
 
         viewerRef.current = viewer;
 
+        // Load context (target) first, then designed structure.
+        if (config.context && active) {
+          await viewer.loadStructureFromData(config.context, inferFormat(config.context));
+        }
+
         if (config.data && active) {
           await viewer.loadStructureFromData(config.data, inferFormat(config.data));
         }
