@@ -30,6 +30,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import { edgeExists, findClosestHandlePair, MIN_AUTO_CONNECT_DISTANCE } from "./autoConnect.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
@@ -60,43 +61,6 @@ const PlayIcon = memo(Play);
 const PauseIcon = memo(Pause);
 const CloseIcon = memo(Close);
 const ChangeTypeIcon = memo(Transfer);
-const MIN_AUTO_CONNECT_DISTANCE = 220;
-
-function allowsMultipleConnections(inputType: unknown): boolean {
-  const LIST_TYPE_RE = /(^|[^a-z])list\b|typing\.list\[|list\[/i;
-  if (!inputType) return false;
-  if (typeof inputType === "string") {
-    return LIST_TYPE_RE.test(inputType);
-  }
-  if (typeof inputType !== "object") {
-    return false;
-  }
-  const t = inputType as Record<string, unknown>;
-  if (typeof t.type === "string") {
-    const lower = t.type.toLowerCase();
-    if (lower === "array") return true;
-    if (LIST_TYPE_RE.test(t.type)) return true;
-  }
-  if (typeof t.origin === "string" && t.origin.toLowerCase() === "list") return true;
-  if ("items" in t) return true;
-  for (const key of ["anyOf", "oneOf", "allOf"] as const) {
-    const variants = t[key];
-    if (!Array.isArray(variants)) continue;
-    if (variants.some((v) => allowsMultipleConnections(v))) {
-      return true;
-    }
-  }
-  // Last-resort heuristic for serialized typing metadata variants.
-  try {
-    const serialized = JSON.stringify(t).toLowerCase();
-    if (serialized.includes('"type":"array"')) return true;
-    if (serialized.includes('"origin":"list"')) return true;
-    if (LIST_TYPE_RE.test(serialized)) return true;
-  } catch {
-    // Ignore non-serializable metadata shapes.
-  }
-  return false;
-}
 
 export default function Workspace(props: any) {
   return (
@@ -341,134 +305,6 @@ function LynxKiteFlow() {
     return internal?.internals.positionAbsolute ?? node.position;
   }
 
-  function getNodeHandles(node: Node) {
-    const nodeMetaInputs = (node.data as any)?.meta?.inputs ?? [];
-    const nodeData = (node.data as any) ?? {};
-    const opId = nodeData.op_id;
-    const opMeta = nodeData.meta ?? {};
-    const env = crdt?.ws?.env;
-    const envCatalog = (env && catalog.data?.[env]) || {};
-    const catalogKeyCandidates = [opId, opMeta.id, opMeta.name, nodeData.title].filter(
-      (k): k is string => typeof k === "string" && k.length > 0,
-    );
-    const matchedCatalogOp = catalogKeyCandidates
-      .map((k) => (envCatalog as any)[k])
-      .find((entry) => entry && Array.isArray(entry.inputs));
-    const catalogInputs = matchedCatalogOp?.inputs || [];
-    const catalogInputsByName = new Map((catalogInputs as any[]).map((h: any) => [h.name, h]));
-    const inputs = nodeMetaInputs.map((h: any) => {
-      const catalogInput = catalogInputsByName.get(h.name);
-      const resolvedType = h.type ?? catalogInput?.type;
-      return {
-        ...h,
-        type: "target",
-        acceptsMultipleConnections: allowsMultipleConnections(resolvedType),
-      };
-    });
-    const outputs = ((node.data as any)?.meta?.outputs ?? []).map((h: any) => ({
-      ...h,
-      type: "source",
-    }));
-    const handles = [...inputs, ...outputs] as Array<{
-      position: "top" | "bottom" | "left" | "right";
-      name: string;
-      type: "source" | "target";
-      index?: number;
-      offsetPercentage?: number;
-      acceptsMultipleConnections?: boolean;
-    }>;
-    const counts = { top: 0, bottom: 0, left: 0, right: 0 };
-    for (const h of handles) {
-      h.index = counts[h.position];
-      counts[h.position] += 1;
-    }
-    for (const h of handles) {
-      h.offsetPercentage = (100 * (h.index! + 1)) / (counts[h.position] + 1);
-    }
-    // Keep unknown/renamed handles available for auto-connect if they already exist on edges.
-    for (const e of edges) {
-      if (
-        e.target === node.id &&
-        !handles.find((h) => h.type === "target" && h.name === e.targetHandle)
-      ) {
-        handles.push({
-          position: "left",
-          name: e.targetHandle!,
-          type: "target",
-          offsetPercentage: 50,
-          acceptsMultipleConnections: false,
-        });
-      }
-      if (
-        e.source === node.id &&
-        !handles.find((h) => h.type === "source" && h.name === e.sourceHandle)
-      ) {
-        handles.push({
-          position: "right",
-          name: e.sourceHandle!,
-          type: "source",
-          offsetPercentage: 50,
-        });
-      }
-    }
-    return handles;
-  }
-
-  function getHandlePosition(node: Node, handle: { position: string; offsetPercentage?: number }) {
-    const p = getAbsPos(node);
-    const width = node.width ?? 200;
-    const height = node.height ?? 200;
-    const offset = (handle.offsetPercentage ?? 50) / 100;
-    if (handle.position === "left") return { x: p.x, y: p.y + height * offset };
-    if (handle.position === "right") return { x: p.x + width, y: p.y + height * offset };
-    if (handle.position === "top") return { x: p.x + width * offset, y: p.y };
-    return { x: p.x + width * offset, y: p.y + height };
-  }
-
-  function findClosestHandlePair(sourceNode: Node, targetNode: Node) {
-    const sourceHandles = getNodeHandles(sourceNode).filter((h) => h.type === "source");
-    const targetHandles = getNodeHandles(targetNode).filter((h) => h.type === "target");
-    if (!sourceHandles.length || !targetHandles.length) {
-      return null;
-    }
-    let bestPair: { sourceHandle: string; targetHandle: string; distance: number } | null = null;
-    let bestDistance = Number.POSITIVE_INFINITY;
-    for (const sh of sourceHandles) {
-      const sp = getHandlePosition(sourceNode, sh);
-      for (const th of targetHandles) {
-        const isOccupied = edges.some(
-          (e) => e.target === targetNode.id && e.targetHandle === th.name,
-        );
-        if (isOccupied && !th.acceptsMultipleConnections) {
-          continue;
-        }
-        const tp = getHandlePosition(targetNode, th);
-        const distance = Math.hypot(sp.x - tp.x, sp.y - tp.y);
-        if (distance < bestDistance) {
-          bestDistance = distance;
-          bestPair = { sourceHandle: sh.name, targetHandle: th.name, distance };
-        }
-      }
-    }
-    return bestPair;
-  }
-
-  function edgeExists(
-    source: string,
-    sourceHandle: string,
-    target: string,
-    targetHandle: string,
-    edgeList: Edge[] = edges,
-  ) {
-    return edgeList.some(
-      (e) =>
-        e.source === source &&
-        e.sourceHandle === sourceHandle &&
-        e.target === target &&
-        e.targetHandle === targetHandle,
-    );
-  }
-
   const getClosestEdge = useCallback(
     (draggedNode: Node) => {
       const draggedPos = getAbsPos(draggedNode);
@@ -486,7 +322,7 @@ function LynxKiteFlow() {
         const closeNodeIsSource = pos.x < draggedPos.x;
         const sourceNode = closeNodeIsSource ? n : draggedNode;
         const targetNode = closeNodeIsSource ? draggedNode : n;
-        const bestPair = findClosestHandlePair(sourceNode, targetNode);
+        const bestPair = findClosestHandlePair(sourceNode, targetNode, edges, getAbsPos);
         if (!bestPair) continue;
         if (bestPair.distance >= MIN_AUTO_CONNECT_DISTANCE || bestPair.distance >= bestDistance) {
           continue;
@@ -516,14 +352,17 @@ function LynxKiteFlow() {
           closeEdge.sourceHandle!,
           closeEdge.target,
           closeEdge.targetHandle!,
+          edges,
         )
       ) {
-        setPreviewEdge(null);
+        if (previewEdge) setPreviewEdge(null);
         return;
       }
+      const previewId = `preview:${closeEdge.id}`;
+      if (previewEdge?.id === previewId) return;
       setPreviewEdge({
         ...closeEdge,
-        id: `preview:${closeEdge.id}`,
+        id: previewId,
         className: "temp-preview-edge",
         style: {
           strokeDasharray: "8 6",
@@ -534,7 +373,7 @@ function LynxKiteFlow() {
         focusable: false,
       });
     },
-    [getClosestEdge, edges],
+    [getClosestEdge, edges, previewEdge],
   );
 
   const onNodeDragStop = useCallback(
@@ -548,6 +387,7 @@ function LynxKiteFlow() {
           closeEdge.sourceHandle!,
           closeEdge.target,
           closeEdge.targetHandle!,
+          edges,
         )
       ) {
         return;
