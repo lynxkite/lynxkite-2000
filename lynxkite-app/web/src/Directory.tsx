@@ -38,7 +38,26 @@ function EntryCreator(props: {
   );
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+async function fetcher(url: string) {
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch (error) {
+    throw new Error(
+      error instanceof TypeError
+        ? "Cannot reach the LynxKite backend. Please check that it is running and reload the page."
+        : `Failed to load directory data: ${String(error)}`,
+    );
+  }
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    const detail = body.trim() ? ` ${body.trim()}` : "";
+    throw new Error(`Failed to load directory data (${res.status} ${res.statusText}).${detail}`);
+  }
+
+  return res.json();
+}
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {

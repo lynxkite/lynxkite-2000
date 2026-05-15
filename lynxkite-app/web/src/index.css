@@ -195,6 +195,8 @@ svg {
     background: #ffdddd;
     padding: 8px;
     font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 
   .node-message {
