@@ -38,7 +38,14 @@ function EntryCreator(props: {
   );
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const error = new Error(`Server error: ${res.status} ${res.statusText}`);
+    throw error;
+  }
+  return res.json();
+};
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
@@ -176,7 +183,14 @@ export default function Directory() {
 
   return (
     <ManagementPage>
-      {list.error && <p className="error">{list.error.message}</p>}
+      {list.error && (
+        <div className="dir-error" role="alert">
+          <p>Failed to load the directory. {list.error.message}</p>
+          <button type="button" onClick={() => list.mutate()}>
+            Retry
+          </button>
+        </div>
+      )}
       {list.isLoading && (
         <output className="loading spinner-border">
           <span className="visually-hidden">Loading...</span>
