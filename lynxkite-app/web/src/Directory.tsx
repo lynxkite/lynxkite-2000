@@ -38,7 +38,25 @@ function EntryCreator(props: {
   );
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch (error) {
+    throw new Error(
+      `Could not reach the LynxKite backend. ${error instanceof Error ? error.message : ""}`,
+    );
+  }
+  if (!res.ok) {
+    const details = await res.text();
+    throw new Error(
+      `The LynxKite backend returned ${res.status} ${res.statusText}.${
+        details ? ` ${details}` : ""
+      }`,
+    );
+  }
+  return res.json();
+};
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
@@ -176,7 +194,15 @@ export default function Directory() {
 
   return (
     <ManagementPage>
-      {list.error && <p className="error">{list.error.message}</p>}
+      {list.error && (
+        <div className="error" role="alert">
+          <p>Failed to load the directory.</p>
+          <p>{list.error.message}</p>
+          <button type="button" onClick={() => list.mutate()}>
+            Retry
+          </button>
+        </div>
+      )}
       {list.isLoading && (
         <output className="loading spinner-border">
           <span className="visually-hidden">Loading...</span>
