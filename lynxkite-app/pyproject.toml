@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]>=0.115.6",
-    "griffe>=1.7.3",
+    "griffe>=2.0.2",
     "joblib>=1.5.1",
     "lynxkite-core",
     "pycrdt-websocket>=0.16",
