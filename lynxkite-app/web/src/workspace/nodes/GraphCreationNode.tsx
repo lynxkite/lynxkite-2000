@@ -233,6 +233,18 @@ function NodeWithGraphCreationView(props: any) {
 
   return (
     <div className="graph-creation-view">
+      <label className="param">
+        Merge mode:
+        <select
+          id="merge-mode-select"
+          value={props.data.params?.merge_mode || "must be unique"}
+          onChange={(e) => setParam("merge_mode", e.target.value, {})}
+        >
+          <option value="must be unique">must be unique</option>
+          <option value="rename non-unique">rename non-unique</option>
+          <option value="concatenate non-unique">concatenate non-unique</option>
+        </select>
+      </label>
       <div className="graph-tables">
         <div className="graph-table-header">Node Tables</div>
         {display && [
