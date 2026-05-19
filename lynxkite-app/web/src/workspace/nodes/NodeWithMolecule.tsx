@@ -16,18 +16,21 @@ function inferFormat(data: string): "pdb" | "mmcif" | "sdf" | "mol" | "mol2" {
 
 const NodeWithMolecule = (props: any) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const viewerRef = React.useRef<any>(null);
 
   useEffect(() => {
     const config = props.data?.display;
-    if (!config || !containerRef.current) return;
-
-    const observed = containerRef.current;
+    const wrapper = wrapperRef.current;
+    const container = containerRef.current;
+    if (!config || !container || !wrapper) return;
     let active = true;
     let isInitializing = false;
 
     async function run() {
       if (isInitializing) return; // Prevent concurrent initializations
+      const container = containerRef.current;
+      if (!container) return;
       isInitializing = true;
 
       const { Viewer } = await import("molstar/lib/apps/viewer/app");
@@ -41,9 +44,9 @@ const NodeWithMolecule = (props: any) => {
 
         if (!active) return; // Check before clearing DOM
 
-        observed.innerHTML = "";
+        container.innerHTML = "";
 
-        const viewer = await Viewer.create(observed, {
+        const viewer = await Viewer.create(container, {
           layoutShowControls: false,
           layoutShowRemoteState: false,
           layoutShowLog: false,
@@ -80,22 +83,28 @@ const NodeWithMolecule = (props: any) => {
       }
       viewerRef.current?.handleResize?.();
     });
-
-    resizeObserver.observe(observed);
+    resizeObserver.observe(container);
+    const handleWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+    };
+    wrapper.addEventListener("wheel", handleWheel, {
+      passive: false,
+    });
 
     return () => {
       active = false;
-      resizeObserver.unobserve(observed);
-      if (viewerRef.current?.dispose) {
-        viewerRef.current.dispose();
-      }
+      resizeObserver.unobserve(container);
+      wrapper.removeEventListener("wheel", handleWheel);
+      viewerRef.current?.dispose?.();
       viewerRef.current = null;
     };
   }, [props.data?.display]);
 
   return (
     <NodeWithParams collapsed {...props}>
-      <div ref={containerRef} className="msp-lynxkite-container" />
+      <div ref={wrapperRef} className="msp-lynxkite-wrapper">
+        <div ref={containerRef} />
+      </div>
     </NodeWithParams>
   );
 };
