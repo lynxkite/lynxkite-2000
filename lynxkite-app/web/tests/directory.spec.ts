@@ -7,10 +7,6 @@ test.describe("Directory operations", () => {
 
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
-    // To make deletion confirmation dialog to be automatically accepted
-    page.on("dialog", async (dialog) => {
-      await dialog.accept();
-    });
     splash = await Splash.open(page);
   });
 
@@ -28,58 +24,67 @@ test.describe("Directory operations", () => {
   test("Create & delete folder", async () => {
     const folderName = `TestFolder-${Date.now()}`;
     await splash.createFolder(folderName);
-    await expect(splash.currentFolder()).toHaveText(folderName);
+    await splash.getEntry(folderName).click();
+    await expect(splash.currentFolder()).toHaveText(`testing sandbox/${folderName}`);
     await splash.goHome();
     await splash.deleteEntry(folderName);
     await expect(splash.getEntry(folderName)).not.toBeVisible();
   });
 });
 
-test.describe
-  .serial("Nested folders & workspaces operations", () => {
-    let splash: Splash;
+test("Nested folders & workspaces operations", async ({ page }) => {
+  const parentFolderName = "ParentFolder";
+  const childFolderName = "ChildFolder";
+  const workspaceName = "NestedWorkspace";
+  const splash = await Splash.open(page);
 
-    test.beforeEach(() => {
-      // Nested navigation doesn't work yet
-      test.skip();
+  await splash.deleteEntryIfExists(parentFolderName);
+
+  try {
+    await test.step("Create parent folder", async () => {
+      await splash.createFolder(parentFolderName);
+      await splash.getEntry(parentFolderName).click();
+      await expect(splash.currentFolder()).toHaveText(`testing sandbox/${parentFolderName}`);
     });
 
-    test.beforeAll(async ({ browser }) => {
-      const page = await browser.newPage();
-      // To make deletion confirmation dialog to be automatically accepted
-      page.on("dialog", async (dialog) => {
-        await dialog.accept();
-      });
-      splash = await Splash.open(page);
-      await splash.createFolder("TestFolder");
-    });
-
-    test.afterAll(async () => {
-      //cleanup
-      test.skip();
-      await splash.goHome();
-      await splash.deleteEntry("TestFolder");
-    });
-
-    test("Create nested folder", async () => {
-      await splash.createFolder("TestFolder2");
-      await expect(splash.currentFolder()).toHaveText("TestFolder2");
+    await test.step("Create nested folder", async () => {
+      await splash.createFolder(childFolderName);
+      await splash.getEntry(childFolderName).click();
+      await expect(splash.currentFolder()).toHaveText(
+        `testing sandbox/${parentFolderName}/${childFolderName}`,
+      );
       await splash.toParent();
+      await expect(splash.currentFolder()).toHaveText(`testing sandbox/${parentFolderName}`);
     });
 
-    test("Delete nested folder", async () => {
-      await splash.deleteEntry("TestFolder2");
-      await expect(splash.getEntry("TestFolder2")).not.toBeVisible();
+    await test.step("Delete nested folder", async () => {
+      await splash.deleteEntry(childFolderName);
+      await expect(splash.getEntry(childFolderName)).not.toBeVisible();
     });
 
-    test("Create nested workspace", async () => {
-      const workspace = splash.createWorkspace("TestWorkspace");
-      await workspace.expectCurrentWorkspaceIs("TestWorkspace");
+    await test.step("Create nested workspace", async () => {
+      const workspace = await splash.createWorkspace(workspaceName);
+      await workspace.expectCurrentWorkspaceIs(workspaceName);
       await workspace.close();
+      await expect(splash.getEntry(workspaceName)).toBeVisible();
     });
 
-    test("Delete nested workspace", async () => {
-      await splash.deleteEntry("TestWorkspace");
-      await expect(splash.getEntry("TestWorkspace")).not.toBeVisible();
+    await test.step("Delete nested workspace", async () => {
+      await splash.deleteEntry(workspaceName);
+      await expect(splash.getEntry(workspaceName)).not.toBeVisible();
     });
-  });
+
+    await test.step("Rename folder", async () => {
+      await splash.createFolder("RenameTest");
+      const renamedName = "RenameTest-Renamed";
+      await splash.renameEntry("RenameTest", renamedName);
+      await expect(splash.getEntry(renamedName)).toBeVisible();
+      await splash.deleteEntry(renamedName);
+    });
+  } finally {
+    await test.step("Delete parent folder", async () => {
+      await splash.goHome();
+      await splash.deleteEntryIfExists(parentFolderName);
+    });
+  }
+});

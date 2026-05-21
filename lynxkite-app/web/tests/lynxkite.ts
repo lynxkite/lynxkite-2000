@@ -2,7 +2,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 // Mirrors the "id" filter.
-export function toId(x) {
+export function toId(x: string) {
   return x.toLowerCase().replace(/[ !?,./]/g, "-");
 }
 
@@ -20,11 +20,12 @@ export class Workspace {
   // Starts with a brand new workspace.
   static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
+    await expect(splash.currentFolder()).toHaveText("testing sandbox");
     return await splash.createWorkspace(workspaceName);
   }
 
   static async open(page: Page, workspaceName: string): Promise<Workspace> {
-    const splash = await Splash.open(page);
+    const splash = await Splash.openRoot(page);
     const ws = await splash.openWorkspace(workspaceName);
     await ws.waitForNodesToLoad();
     await ws.expectCurrentWorkspaceIs(workspaceName);
@@ -42,7 +43,32 @@ export class Workspace {
     await this.page.locator('select[name="workspace-env"]').selectOption(env);
   }
 
-  async expectCurrentWorkspaceIs(name) {
+  async groupSelection() {
+    await this.page.locator('button[name="groupBtn"]').click();
+  }
+
+  async ungroupSelection() {
+    await this.page.locator('button[name="ungroupBtn"]').click();
+  }
+
+  async getNodeParentId(nodeId: string): Promise<string | undefined> {
+    return this.page.evaluate((id) => {
+      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+      if (!el) return undefined;
+      const key = Object.keys(el).find((k) => k.startsWith("__reactFiber$"));
+      if (!key) return undefined;
+      let fiber = (el as any)[key];
+      while (fiber) {
+        if (fiber.memoizedProps?.id === id && "parentId" in fiber.memoizedProps) {
+          return fiber.memoizedProps.parentId || undefined;
+        }
+        fiber = fiber.child;
+      }
+      return undefined;
+    }, nodeId);
+  }
+
+  async expectCurrentWorkspaceIs(name: string) {
     await expect(this.page.locator(".ws-name")).toHaveText(name);
   }
 
@@ -52,7 +78,7 @@ export class Workspace {
     await this.page.locator(".react-flow__node").first().waitFor();
   }
 
-  async addBox(boxName) {
+  async addBox(boxName: string) {
     // TODO: Support passing box parameters.
     const allBoxes = await this.getBoxes().all();
     await this.page.locator(".ws-name").click();
@@ -81,6 +107,14 @@ export class Workspace {
     // Click on the resizer, so we don't click on any parameters by accident.
     await box.locator(".react-flow__resize-control.handle").click();
     await expect(box).toHaveClass(/selected/);
+  }
+  async selectBoxes(boxIds: string[]) {
+    for (const boxId of boxIds) {
+      await this.getBox(boxId)
+        .locator(".react-flow__resize-control.handle")
+        .click({ modifiers: ["Control"] });
+      await expect(this.getBox(boxId)).toHaveClass(/selected/);
+    }
   }
 
   async deleteBoxes(boxIds: string[]) {
@@ -133,6 +167,15 @@ export class Workspace {
     }
     await this.page.mouse.up();
   }
+  async copySelection() {
+    await this.page.keyboard.press("Control+c");
+  }
+  async pasteSelection() {
+    await this.page.keyboard.press("Control+v");
+  }
+  async cutSelection() {
+    await this.page.keyboard.press("Control+x");
+  }
 
   async tryToConnectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
@@ -157,7 +200,7 @@ export class Workspace {
     }
   }
 
-  async execute(opts?) {
+  async execute(opts?: object) {
     const request = this.page.waitForResponse(/api[/]execute_workspace/, opts);
     await this.page.keyboard.press("r");
     await request;
@@ -193,21 +236,39 @@ export class Splash {
   page: Page;
   root: Locator;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
     this.root = page.locator("#splash");
   }
 
   // Opens the LynxKite directory browser in the root.
-  static async open(page: Page): Promise<Splash> {
+  static async openRoot(page: Page): Promise<Splash> {
     await page.goto("/");
     await page.evaluate(() => {
       window.sessionStorage.clear();
       window.localStorage.clear();
+      window.localStorage.setItem("lynxkite-delete-confirmation", "false");
     });
     await page.reload();
     const splash = new Splash(page);
+    await splash.loaded();
     return splash;
+  }
+
+  // Opens the testing sandbox. Most tests should operate here.
+  static async open(page: Page): Promise<Splash> {
+    const splash = await Splash.openRoot(page);
+    await splash.enterSandbox();
+    return splash;
+  }
+
+  async loaded() {
+    await expect(this.page.locator(".entry").first()).toBeVisible();
+  }
+
+  async enterSandbox() {
+    await this.getEntry("testing sandbox").click();
+    await this.loaded();
   }
 
   workspace(name: string) {
@@ -215,16 +276,17 @@ export class Splash {
   }
 
   getEntry(name: string) {
-    return this.page.locator(".entry").filter({ hasText: name }).first();
+    return this.page.locator(".entry").filter({ hasText: name });
   }
 
   async createWorkspace(name: string) {
     await this.page.getByRole("button", { name: "New workspace" }).click();
-    const nameBox = this.page.locator('input[name="entryName"]');
+    const nameBox = getVisibleModal(this.page).locator("input");
     await nameBox.fill(name);
     await nameBox.press("Enter");
     const ws = new Workspace(this.page, name);
     await ws.setEnv("LynxKite Graph Analytics");
+    await expect(ws.getBoxes()).toHaveCount(0);
     return ws;
   }
 
@@ -235,21 +297,56 @@ export class Splash {
 
   async createFolder(folderName: string) {
     await this.page.getByRole("button", { name: "New folder" }).click();
-    const nameBox = this.page.locator('input[name="entryName"]');
+    const nameBox = getVisibleModal(this.page).locator("input");
     await nameBox.fill(folderName);
     await nameBox.press("Enter");
   }
 
+  async openFolder(folderName: string) {
+    await this.getEntry(folderName).locator("a").click();
+  }
+
   async deleteEntry(entryName: string) {
-    await this.getEntry(entryName).locator("button").click();
-    await this.page.reload();
+    const entry = this.getEntry(entryName);
+    await entry.locator(".entry-actions-button").click();
+    await entry.locator("button").filter({ hasText: "Delete" }).click();
+    await expect(this.getEntry(entryName)).not.toBeVisible();
+  }
+
+  async deleteEntryIfExists(entryName: string) {
+    const entry = this.getEntry(entryName);
+    const count = await entry.count();
+    if (count > 0) {
+      await this.deleteEntry(entryName);
+    }
+  }
+
+  async renameEntry(entryName: string, newName: string) {
+    const entry = this.getEntry(entryName);
+    await entry.locator(".entry-actions-button").click();
+    await entry.locator("button").filter({ hasText: "Rename" }).click();
+    const input = getVisibleModal(this.page).locator("input");
+    await input.fill(newName);
+    await input.press("Enter");
+    await expect(this.getEntry(newName)).toBeVisible();
   }
 
   currentFolder() {
     return this.page.locator(".current-folder");
   }
 
+  async toParent() {
+    const breadcrumbLinks = this.page.locator(".breadcrumbs a");
+    const linkCount = await breadcrumbLinks.count();
+    await breadcrumbLinks.nth(linkCount - 1).click();
+  }
+
   async goHome() {
     await this.page.getByRole("link", { name: "home" }).click();
+    await this.enterSandbox();
   }
+}
+
+function getVisibleModal(page: Page) {
+  return page.locator(".modal[open]");
 }

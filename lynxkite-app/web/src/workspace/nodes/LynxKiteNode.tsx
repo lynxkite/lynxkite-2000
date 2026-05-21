@@ -12,6 +12,7 @@ import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
 import { LynxKiteState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
+import { NodeProgress } from "./ProgressBar.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
@@ -44,7 +45,22 @@ function docToString(doc: any): string {
   );
 }
 
-export function getHandles(
+export function formatOutputMetadata(metadata: any): string | undefined {
+  if (!metadata?.dataframes) return undefined;
+  const parts: string[] = [];
+  const tableNames = Object.keys(metadata.dataframes);
+  tableNames.sort();
+  const nbsp = "\u00A0";
+  for (const name of tableNames) {
+    const df = metadata.dataframes[name];
+    if (typeof df.length === "number") {
+      parts.push(`${df.length}${nbsp}${name}`);
+    }
+  }
+  return parts.length > 0 ? parts.join(", ") : undefined;
+}
+
+function getHandles(
   ws: {
     edges?: {
       source: string;
@@ -56,6 +72,7 @@ export function getHandles(
   id: string,
   inputs: any[],
   outputs: any[],
+  outputMetadata?: any[],
 ) {
   const handles: {
     position: "top" | "bottom" | "left" | "right";
@@ -64,12 +81,15 @@ export function getHandles(
     offsetPercentage: number;
     showLabel: boolean;
     type: "source" | "target";
+    metadataLabel?: string;
   }[] = [];
   for (const e of inputs) {
     handles.push({ ...e, type: "target" });
   }
-  for (const e of outputs) {
-    handles.push({ ...e, type: "source" });
+  for (let i = 0; i < outputs.length; i++) {
+    const e = outputs[i];
+    const metadataLabel = formatOutputMetadata(outputMetadata?.[i]);
+    handles.push({ ...e, type: "source", metadataLabel });
   }
   const counts = { top: 0, bottom: 0, left: 0, right: 0 };
   for (const e of handles) {
@@ -163,6 +183,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     props.id,
     data.meta?.inputs || [],
     data.meta?.outputs || [],
+    data.output_metadata,
   );
   React.useEffect(() => {
     // ReactFlow handles wheel events to zoom/pan and this would prevent scrolling inside the node.
@@ -251,6 +272,13 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
         {!data.collapsed && (
           <>
             <div className="node-content">
+              {data.telemetry && (
+                <NodeProgress
+                  telemetry={data.telemetry}
+                  color={titleStyle.backgroundColor}
+                  status={data.status}
+                />
+              )}
               {data.message && data.message.length > 0 && (
                 <div className="node-message" title="Execution status">
                   {data.message}
@@ -300,6 +328,9 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
             {handle.showLabel && (
               <span className="handle-name">{handle.name.replace(/_/g, " ")}</span>
             )}
+            {handle.metadataLabel && (
+              <span className="handle-metadata-label">{handle.metadataLabel}</span>
+            )}
           </Handle>
         ))}
       </div>
@@ -344,7 +375,7 @@ function UnknownOperationNode(props: { op_id: string; onChange: (newName: string
           )}
         </div>
         <NodeSearchInternal
-          onCancel={() => {}}
+          onCancel={() => { }}
           onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
           categoryHierarchy={categoryHierarchy}
         />

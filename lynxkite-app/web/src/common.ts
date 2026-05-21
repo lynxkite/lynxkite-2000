@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useMemo } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
@@ -26,6 +27,35 @@ export function useCategoryHierarchy() {
     return buildCategoryHierarchy(catalog.data[env]);
   }, [catalog, env]);
   return categoryHierarchy;
+}
+
+export const pathFetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export function parentPath(path: string): string {
+  const parts = path.split("/").filter(Boolean);
+  return parts.slice(0, -1).join("/");
+}
+
+export function shortName(path: string): string {
+  return path.split("/").pop() ?? path;
+}
+
+export async function uploadFile(
+  file: File,
+  opts?: {
+    onProgress?: (percent: number) => void;
+  },
+): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file);
+  await axios.post("/api/upload", formData, {
+    onUploadProgress: (event) => {
+      if (!opts?.onProgress) return;
+      if (!event.total) return;
+      const percent = Math.round((100 * event.loaded) / event.total);
+      opts.onProgress(percent);
+    },
+  });
 }
 
 export const COLORS: { [key: string]: string } = {

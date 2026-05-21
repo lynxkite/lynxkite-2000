@@ -8,25 +8,43 @@ import pathlib
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
-import tqdm
 from lynxkite_core import ops
+from lynxkite_core import opcontext
 from lynxkite_core import workspace
 from . import crdt
 from . import icons
 from .terminal_emulator import capture_output, enable_thread_proxies
+from .tqdm_emulator import capture_tqdm, ProgressReporter
 
-mem = joblib.Memory(".joblib-cache")
+try:
+    import lynxkite_assistant
+
+    assistant_router: fastapi.APIRouter | None = lynxkite_assistant.router
+except ImportError:
+    assistant_router = None
+
+try:
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
+except ImportError:
+    enterprise_backend = None
+
+mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
 enable_thread_proxies()
-ops.TERMINAL_EMULATOR = capture_output
-ops.TQDM_TQDM = tqdm.tqdm
+opcontext.TERMINAL_EMULATOR = capture_output
+opcontext.PROGRESS_REPORTER = ProgressReporter
+opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 app.include_router(icons.router)
+if assistant_router is not None:
+    app.include_router(assistant_router)
+if enterprise_backend is not None:
+    enterprise_backend.register_routes(app, crdt)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -41,6 +59,14 @@ def _get_ops(env: str):
 def get_catalog(workspace: str):
     ops.load_user_scripts(workspace)
     return {env: _get_ops(env) for env in ops.CATALOGS}
+
+
+@app.get("/api/config")
+def get_config() -> dict[str, bool]:
+    return {
+        "assistant_available": assistant_router is not None,
+        "enterprise_available": enterprise_backend is not None,
+    }
 
 
 data_path = pathlib.Path()
@@ -77,7 +103,7 @@ def list_dir(path: str):
     return sorted(
         [
             DirectoryEntry(
-                name=str(p.relative_to(data_path)),
+                name=p.relative_to(data_path).as_posix(),
                 type=_get_path_type(p),
             )
             for p in dir_path.iterdir()
@@ -102,6 +128,20 @@ def delete_dir(req: dict):
         f"Path '{path}' is invalid"
     )
     shutil.rmtree(path)
+
+
+@app.post("/api/rename")
+def rename_path(req: dict):
+    old_path: pathlib.Path = data_path / req["old_path"]
+    new_path: pathlib.Path = data_path / req["new_path"]
+    assert old_path.is_relative_to(data_path), f"Path '{old_path}' is invalid"
+    assert new_path.is_relative_to(data_path), f"Path '{new_path}' is invalid"
+    assert old_path.exists(), f"Path '{old_path}' does not exist"
+    assert not new_path.exists(), f"Path '{new_path}' already exists"
+    old_rel = req["old_path"]
+    old_path.rename(new_path)
+    # Drop any open room under the old name so clients don't keep stale pointers.
+    crdt.delete_room(old_rel)
 
 
 @app.get("/api/service/{module_path:path}")

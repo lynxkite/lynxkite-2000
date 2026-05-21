@@ -17,6 +17,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git merge origin/main --no-ff --commit -X ours -m "Merge main into no-workspace"
+          git merge origin/main --no-ff --no-commit -X ours || true
+          git diff --name-only --diff-filter=U | while read -r f; do
+            if ! git cat-file -e "HEAD:$f" 2>/dev/null; then
+              git rm -- "$f"
+            fi
+          done
+          git add -A
+          git commit -m "Merge main into no-workspace"
       - name: Push changes
         run: git push origin no-workspace

@@ -2,9 +2,8 @@
 
 import asyncio
 import contextlib
-import enum
 import pathlib
-from typing import Any
+import posixpath
 import fastapi
 import os.path
 import pycrdt.websocket
@@ -13,8 +12,15 @@ import uvicorn.protocols.utils
 import builtins
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
+from .crdt_update import crdt_update
+
+try:
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
+except ImportError:
+    enterprise_backend = None
 
 router = fastapi.APIRouter()
+main_loop = None
 
 
 def ws_exception_handler(exception, log):
@@ -68,7 +74,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            task = asyncio.create_task(workspace_changed(name, changes, ws))
+            task = loop.create_task(workspace_changed(name, changes, ws))
             # We have no way to await workspace_changed(). The best we can do is to
             # dereference its result after it's done, so exceptions are logged normally.
             task.add_done_callback(lambda t: t.result())
@@ -124,6 +130,11 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
             self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
 
+    def on_deleted(self, event):
+        if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
+            print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
+            delete_room(self.file_path)
+
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
     async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
@@ -165,8 +176,10 @@ def clean_input(ws_pyd):
     for node in ws_pyd.nodes:
         node.data.display = None
         node.data.input_metadata = None
+        node.data.output_metadata = None
         node.data.error = None
         node.data.message = None
+        node.data.telemetry = None
         node.data.collapsed = False
         node.data.expanded_height = 0
         node.data.status = workspace.NodeStatus.done
@@ -185,72 +198,6 @@ def clean_input(ws_pyd):
                 delattr(node, key)
 
 
-def crdt_update(
-    crdt_obj: pycrdt.Map[Any] | pycrdt.Array[Any],
-    python_obj: dict | list,
-    non_collaborative_fields: set[str] = set(),
-):
-    """Update a CRDT object to match a Python object.
-
-    The types between the CRDT object and the Python object must match. If the Python object
-    is a dict, the CRDT object must be a Map. If the Python object is a list, the CRDT object
-    must be an Array.
-
-    Args:
-        crdt_obj: The CRDT object, that will be updated to match the Python object.
-        python_obj: The Python object to update with.
-        non_collaborative_fields: List of fields to treat as a black box. Black boxes are
-        updated as a whole, instead of having a fine-grained data structure to edit
-        collaboratively. Useful for complex fields that contain auto-generated data or
-        metadata.
-        The default is an empty set.
-
-    Raises:
-        ValueError: If the Python object provided is not a dict or list.
-    """
-    if isinstance(python_obj, dict):
-        assert isinstance(crdt_obj, pycrdt.Map), f"expected CRDT Map, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        for key, value in python_obj.items():
-            if key in non_collaborative_fields:
-                crdt_obj[key] = value
-            elif isinstance(value, dict):
-                if crdt_obj.get(key) is None:
-                    crdt_obj[key] = pycrdt.Map()
-                crdt_update(crdt_obj[key], value, non_collaborative_fields)
-            elif isinstance(value, list):
-                if crdt_obj.get(key) is None:
-                    crdt_obj[key] = pycrdt.Array()
-                crdt_update(crdt_obj[key], value, non_collaborative_fields)
-            elif isinstance(value, enum.Enum):
-                crdt_obj[key] = str(value.value)
-            else:
-                crdt_obj[key] = value
-    elif isinstance(python_obj, list):
-        assert isinstance(crdt_obj, pycrdt.Array), f"expected CRDT Array, got {type(crdt_obj)}"
-        if crdt_obj.to_py() == python_obj:
-            return
-        for i, value in enumerate(python_obj):
-            if isinstance(value, dict):
-                if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Map())  # ty: ignore[invalid-argument-type]
-                crdt_update(crdt_obj[i], value, non_collaborative_fields)
-            elif isinstance(value, list):
-                if i >= len(crdt_obj):
-                    crdt_obj.append(pycrdt.Array())  # ty: ignore[invalid-argument-type]
-                crdt_update(crdt_obj[i], value, non_collaborative_fields)
-            else:
-                if isinstance(value, enum.Enum):
-                    value = str(value.value)
-                if i >= len(crdt_obj):
-                    crdt_obj.append(value)  # ty: ignore[invalid-argument-type]
-                else:
-                    crdt_obj[i] = value  # ty: ignore[invalid-assignment]
-    else:
-        raise ValueError("Invalid type:", python_obj)
-
-
 def load_workspace(ws: pycrdt.Map, name: str):
     """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
 
@@ -259,16 +206,54 @@ def load_workspace(ws: pycrdt.Map, name: str):
         name: Name of the workspace to load.
     """
     ws_pyd = workspace.Workspace.load(name)
-    crdt_update(
-        ws,
-        ws_pyd.model_dump(),
-        # We treat some fields as black boxes. They are not edited on the frontend.
-        non_collaborative_fields={"display", "input_metadata", "meta"},
-    )
+    update_workspace(ws, ws_pyd)
+
+
+def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
+    """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
+
+    Args:
+        ws: CRDT object to udpate with the workspace contents.
+        ws_pyd: Workspace object to update the CRDT with.
+    """
+    with ws.doc.transaction():
+        crdt_update(
+            ws,
+            ws_pyd.model_dump(),
+            # We treat some fields as black boxes. They are not edited on the frontend.
+            non_collaborative_fields={"display", "input_metadata", "meta"},
+        )
 
 
 last_known_versions = {}
 delayed_executions = {}
+
+
+def print_diff(old, new, prefix=""):
+    """Print the differences between two Python/Pydantic objects. For debugging."""
+    if hasattr(old, "model_dump"):
+        old = old.model_dump()
+    if hasattr(new, "model_dump"):
+        new = new.model_dump()
+    if type(old) is not type(new):
+        print(f"{prefix}- {old}")
+        print(f"{prefix}+ {new}")
+    elif isinstance(old, dict):
+        for key in set(old.keys()) | set(new.keys()):
+            print_diff(old.get(key), new.get(key), prefix + f"{key}.")
+    elif isinstance(old, list):
+        for i, (o, n) in enumerate(zip(old, new)):
+            print_diff(o, n, prefix + f"{i}.")
+        if len(old) < len(new):
+            for i in range(len(old), len(new)):
+                print(f"{prefix}+ {new[i]}")
+        elif len(old) > len(new):
+            for i in range(len(new), len(old)):
+                print(f"{prefix}- {old[i]}")
+    else:
+        if old != new:
+            print(f"{prefix}- {old}")
+            print(f"{prefix}+ {new}")
 
 
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
@@ -280,6 +265,8 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         ws_crdt: CRDT object representing the workspace.
     """
     ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_changed(ws_websocket_server)
     ws_pyd.save(pathlib.Path() / name)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
@@ -288,10 +275,10 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     if ws_simple == last_known_versions.get(name):
         return
     last_known_versions[name] = ws_simple
-    # Frontend changes that result from typing are delayed to avoid
-    # rerunning the workspace for every keystroke.
     if name in delayed_executions:
         delayed_executions[name].cancel()
+    # Frontend changes that result from typing are delayed to avoid
+    # rerunning the workspace for every keystroke.
     delay = max(
         getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
         for change in changes
@@ -299,11 +286,16 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     # Check if workspace is paused - if so, skip automatic execution
     if getattr(ws_pyd, "paused", False):
         return
-    if delay:
-        task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
-        delayed_executions[name] = task
-    else:
-        await execute(name, ws_crdt, ws_pyd)
+
+    task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
+    delayed_executions[name] = task
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+    finally:
+        if delayed_executions.get(name) is task:
+            del delayed_executions[name]
 
 
 async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *, delay: int = 0):
@@ -317,10 +309,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
         delay: Wait time before executing the workspace. The default is 0.
     """
     if delay:
-        try:
-            await asyncio.sleep(delay)
-        except asyncio.CancelledError:
-            return
+        await asyncio.sleep(delay)
     print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
@@ -351,29 +340,47 @@ ws_websocket_server: WorkspaceWebsocketServer
 code_websocket_server: CodeWebsocketServer
 
 
-def get_room(name):
-    return ws_websocket_server.get_room(name)
+async def get_room(name):
+    return await ws_websocket_server.get_room(name)
+
+
+def get_room_or_none(name):
+    return ws_websocket_server.rooms.get(name)
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
+    global main_loop
     global ws_websocket_server
     global code_websocket_server
+    main_loop = asyncio.get_running_loop()
     ws_websocket_server = WorkspaceWebsocketServer(auto_clean_rooms=False)
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:
         async with code_websocket_server:
-            yield
+            if enterprise_backend is not None:
+                async with enterprise_backend.lifespan_context(ws_websocket_server):
+                    yield
+            else:
+                yield
     print("closing websocket server")
 
 
 def delete_room(name: str):
     if name in ws_websocket_server.rooms:
         del ws_websocket_server.rooms[name]
+    if name in delayed_executions:
+        delayed_executions[name].cancel()
+        del delayed_executions[name]
+    last_known_versions.pop(name, None)
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_deleted(name)
 
 
 def sanitize_path(path):
-    return os.path.relpath(os.path.normpath(os.path.join("/", path)), "/")
+    # Here we always assume posix paths, the posixpath module is the os.path module
+    # for posix paths even on windows, so it will work correctly regardless of the host OS.
+    return posixpath.normpath("/" + path.replace("\\", "/")).lstrip("/")
 
 
 app: fastapi.FastAPI | None = None
@@ -384,8 +391,14 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
+    if enterprise_backend is not None:
+        enterprise_backend.on_workspace_connection_open(room_name, ws_websocket_server)
     server = pycrdt.websocket.ASGIServer(ws_websocket_server)
-    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    try:
+        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    finally:
+        if enterprise_backend is not None:
+            enterprise_backend.on_workspace_connection_close(room_name, ws_websocket_server)
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")

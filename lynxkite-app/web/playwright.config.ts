@@ -15,16 +15,22 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:8000",
     trace: "on",
     testIdAttribute: "data-nodeid", // Useful for easily selecting nodes using getByTestId
+    permissions: ["clipboard-read", "clipboard-write"], // Needed for testing copy-paste functionality
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /global\.setup\.ts/,
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
     },
   ],
   webServer: {
     command: "cd ../../examples && LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite",
     port: 8000,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
   },
 });

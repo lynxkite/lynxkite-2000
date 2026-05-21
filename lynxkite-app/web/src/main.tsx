@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "@fontsource/inter";
 import "@fontsource/inter/500.css";
-import "@fontsource/inter/900.css";
+import "@fontsource/inter/700.css";
 import "@xyflow/react/dist/style.css";
 import "./index.css";
 import {
@@ -16,6 +16,8 @@ import {
 } from "react-router";
 import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
+import ProgressPage from "./ProgressPage.tsx";
+import ProgressPageDemo from "./ProgressPageDemo.tsx";
 import Workspace from "./workspace/Workspace.tsx";
 
 function WorkspaceError() {
@@ -46,6 +48,8 @@ const router = createBrowserRouter(
       <Route path="/dir/*" element={<Directory />} />
       <Route path="/edit/*" element={<Workspace />} errorElement={<WorkspaceError />} />
       <Route path="/code/*" element={<Code />} />
+      <Route path="/progress" element={<ProgressPage />} />
+      <Route path="/progress-demo" element={<ProgressPageDemo />} />
     </>,
   ),
 );

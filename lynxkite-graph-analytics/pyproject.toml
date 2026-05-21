@@ -52,6 +52,7 @@ url = "https://pypi.nvidia.com"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["numba", "pyarrow", "nx-cugraph-cu12", "pylibcugraph-cu12"]
+DEP003 = ["fastapi"]
 
 [tool.deptry.package_module_name_map]
 grand-cypher = "grandcypher"

@@ -17,6 +17,7 @@ class FileFormat(enum.StrEnum):
     parquet = "parquet"
     json = "json"
     excel = "excel"
+    cif = "cif"
 
 
 @op(
@@ -35,6 +36,7 @@ class FileFormat(enum.StrEnum):
                 "parquet": [],
                 "json": [],
                 "excel": [ops.Parameter.basic("sheet_name", type=str, default="Sheet1")],
+                "cif": [],
             },
             default=FileFormat.csv,
         ),
@@ -67,6 +69,9 @@ def import_file(
         df = pd.read_parquet(file_path)
     elif file_format == "excel":
         df = pd.read_excel(file_path, sheet_name=kwargs.get("sheet_name", "Sheet1"))
+    elif file_format == "cif":
+        with open(file_path, "r") as f:
+            df = pd.DataFrame({"cif": [f.read()]})
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
     return core.Bundle(dfs={table_name: df})

@@ -11,9 +11,6 @@ test.beforeEach(async ({ browser }) => {
 test.afterEach(async () => {
   await workspace.close();
   const splash = await new Splash(workspace.page);
-  splash.page.on("dialog", async (dialog) => {
-    await dialog.accept();
-  });
   await splash.deleteEntry("message_spec_test");
 });
 
@@ -54,7 +51,6 @@ test("message caches correctly", async () => {
   );
 });
 
-test("terminal emulated message works as expected", async () => {
+test.skip("terminal emulated message works as expected", async () => {
   // TODO: No box currently uses this, make sure to fix later.
-  test.skip();
 });

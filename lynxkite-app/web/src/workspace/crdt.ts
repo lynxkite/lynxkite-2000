@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import type { WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
+import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 
 function endpointSignature(endpoints: any[] | undefined) {
   return (endpoints || []).map((x) => `${x?.name ?? ""}:${x?.position ?? ""}`).join("|");
@@ -49,9 +49,11 @@ type CRDTWorkspace = {
   setExecutionOptions: (options: Record<string, any>) => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
-  addEdge: (edge: Edge) => void;
+  addEdge: (edge: Partial<WorkspaceEdge>) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
+  undo: () => void;
+  redo: () => void;
 };
 
 export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
@@ -78,6 +80,7 @@ export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
 class CRDTConnection {
   doc: Y.Doc;
   ws: Y.Map<any>;
+  undoManager: Y.UndoManager;
   wsProvider: WebsocketProvider;
   reactFlow: ReturnType<typeof useReactFlow>;
   updateNodeInternals: (id: string) => void;
@@ -91,6 +94,7 @@ class CRDTConnection {
     this.reactFlow = reactFlow;
     this.updateNodeInternals = updateNodeInternals;
     this.doc = new Y.Doc();
+    this.undoManager = new Y.UndoManager(this.doc, { captureTimeout: 600 });
     this.ws = this.doc.getMap("workspace");
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const encodedPath = path!
@@ -103,48 +107,55 @@ class CRDTConnection {
       this.doc,
     );
     this.doc.on("update", this.onBackendChange);
-    const that = this;
     this.state = {
       feNodes: [],
       feEdges: [],
       setPausedState: (paused: boolean) => {
-        that.ws.set("paused", paused);
-        that.updateState();
+        this.ws.set("paused", paused);
+        this.updateState();
       },
       setEnv: (env: string) => {
-        that.ws.set("env", env);
-        that.updateState();
+        this.ws.set("env", env);
+        this.updateState();
       },
       setExecutionOptions: (options: Record<string, any>) => {
-        that.ws.set("execution_options", options);
-        that.updateState();
+        this.ws.set("execution_options", options);
+        this.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
         const ynode = nodeToYMap(node);
-        that.doc.transact(() => {
-          const wnodes = that.ws.get("nodes") as Y.Array<any>;
+        this.doc.transact(() => {
+          const wnodes = this.ws.get("nodes") as Y.Array<any>;
           wnodes.push([ynode]);
         });
-        that.updateState();
+        this.updateState();
       },
-      addEdge(edge) {
+      addEdge: (edge: Partial<WorkspaceEdge>) => {
         const yedge = new Y.Map<any>();
         for (const [key, value] of Object.entries(edge)) {
           yedge.set(key, value);
         }
-        that.doc.transact(() => {
-          const wedges = that.ws.get("edges") as Y.Array<any>;
+        this.doc.transact(() => {
+          const wedges = this.ws.get("edges") as Y.Array<any>;
           wedges.push([yedge]);
         });
-        that.updateState();
+        this.updateState();
       },
-      onFENodesChange: that.onFENodesChange,
-      onFEEdgesChange: that.onFEEdgesChange,
+      onFENodesChange: this.onFENodesChange,
+      onFEEdgesChange: this.onFEEdgesChange,
       applyChange: (fn: (conn: CRDTConnection) => void) => {
-        that.doc.transact(() => {
-          fn(that);
+        this.doc.transact(() => {
+          fn(this);
         });
-        that.updateState();
+        this.updateState();
+      },
+      undo: () => {
+        this.undoManager.undo();
+        this.updateState();
+      },
+      redo: () => {
+        this.undoManager.redo();
+        this.updateState();
       },
     };
   }
@@ -291,6 +302,24 @@ class CRDTConnection {
         n.dragHandle = ".drag-handle";
       }
       const mergedNode = { ...oldNodes[n.id], ...n };
+
+      // Clean up parent-child properties that may be stale from the old ReactFlow node.
+      if (n.parentId === undefined) {
+        delete mergedNode.parentId;
+      }
+      if (n.extent === undefined) {
+        delete mergedNode.extent;
+      }
+
+      if (
+        n.width != null &&
+        n.height != null &&
+        (oldNodes[n.id]?.measured?.width !== n.width ||
+          oldNodes[n.id]?.measured?.height !== n.height)
+      ) {
+        mergedNode.measured = { width: n.width, height: n.height };
+      }
+
       newNodes.push(mergedNode);
       if (needsNodeInternalsUpdate(oldNodes[n.id], mergedNode)) {
         changedNodeIds.push(n.id);

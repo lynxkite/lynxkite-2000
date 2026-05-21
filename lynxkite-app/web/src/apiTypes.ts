@@ -102,11 +102,19 @@ export interface WorkspaceNodeData {
         [k: string]: unknown;
       }[]
     | null;
+  output_metadata?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
   error?: string | null;
   message?: string | null;
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
+  telemetry?: {
+    [k: string]: unknown;
+  } | null;
   meta?: Op | null;
   [k: string]: unknown;
 }

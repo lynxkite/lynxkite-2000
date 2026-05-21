@@ -3,13 +3,14 @@ import Tooltip from "../../Tooltip";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
 import ParameterInput from "./ParameterInput";
+import PathStrInput from "./parameters/PathStrInput";
 
 const BOOLEAN = "<class 'bool'>";
 const MODEL_TRAINING_INPUT_MAPPING =
-  "lynxkite_graph_analytics.ml_ops.ModelTrainingInputMapping | None";
+  "lynxkite_graph_analytics.operations.ml_ops.ModelTrainingInputMapping | None";
 const MODEL_INFERENCE_INPUT_MAPPING =
-  "lynxkite_graph_analytics.ml_ops.ModelInferenceInputMapping | None";
-const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.ml_ops.ModelOutputMapping | None";
+  "lynxkite_graph_analytics.operations.ml_ops.ModelInferenceInputMapping | None";
+const MODEL_OUTPUT_MAPPING = "lynxkite_graph_analytics.operations.ml_ops.ModelOutputMapping | None";
 
 function ParamName({ name, doc }: { name: string; doc: string }) {
   return (
@@ -44,7 +45,7 @@ function findDocs(docs: any, parameter: string) {
 }
 
 export default function NodeParameter({ name, value, meta, data, setParam }: NodeParameterProps) {
-  const doc = findDocs(data.meta?.value?.doc ?? [], name);
+  const doc = findDocs(data.meta?.doc ?? [], name);
   function onChange(value: any, opts?: UpdateOptions) {
     setParam(meta.name, value, opts || {});
   }
@@ -148,6 +149,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <ModelMapping value={value} data={data} variant="output" onChange={onChange} />
     </label>
+  ) : meta?.type?.format === "path" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <PathStrInput value={value ?? ""} onChange={onChange} />
+    </label>
   ) : (
     <label className="param">
       <ParamName name={name} doc={doc} />
@@ -162,10 +168,7 @@ function getDropDownValues(
   substitutions?: Record<string, string>,
 ): string[] {
   const metadata = data.input_metadata;
-  if (!metadata || !query) {
-    return [];
-  }
-  // Substitute parameters in the query.
+  if (!metadata || !query) return [];
   const ss = { ...data.params, ...substitutions };
   for (const k in ss) {
     query = query.replace(`<${k}>`, ss[k]);
