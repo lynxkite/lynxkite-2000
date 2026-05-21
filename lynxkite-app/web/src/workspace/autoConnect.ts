@@ -3,16 +3,16 @@
 
 import { type Edge, type Node, type ReactFlowInstance, useReactFlow } from "@xyflow/react";
 import type { InternalNodeBase } from "@xyflow/system";
-import { type MouseEvent, useCallback, useMemo, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import type { WorkspaceEdge } from "../apiTypes.ts";
 
 const MIN_AUTO_CONNECT_DISTANCE = 100;
 
 function edgeExists(
   source: string,
-  sourceHandle: string,
+  sourceHandle: string | undefined,
   target: string,
-  targetHandle: string,
+  targetHandle: string | undefined,
   edges: Edge[],
 ) {
   return edges.some(
@@ -33,7 +33,7 @@ function allHandles(node: InternalNodeBase) {
 
 // Finds the shortest edge between the handles of the dragged node and the handles of other nodes,
 // if it's within the threshold distance.
-function closestEdge(reactFlow: ReactFlowInstance, draggedNode: Node): WorkspaceEdge | null {
+function getClosestEdge(reactFlow: ReactFlowInstance, draggedNode: Node): WorkspaceEdge | null {
   if (draggedNode.type === "node_group") return null;
   const internalNode = reactFlow.getInternalNode(draggedNode.id);
   if (!internalNode) return null;
@@ -80,65 +80,55 @@ function closestEdge(reactFlow: ReactFlowInstance, draggedNode: Node): Workspace
 export function useAutoConnect(edges: Edge[], crdt: any) {
   const reactFlow = useReactFlow();
   const [previewEdge, setPreviewEdge] = useState<Edge | null>(null);
-  const renderedEdges = useMemo(() => {
-    return previewEdge ? [...edges.filter((e) => e.id !== previewEdge.id), previewEdge] : edges;
-  }, [edges, previewEdge]);
-  const getClosestEdge = useCallback((n: Node) => closestEdge(reactFlow, n), [reactFlow]);
+  const renderedEdges = previewEdge ? [...edges, previewEdge] : edges;
 
-  const onNodeDrag = useCallback(
-    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
-      const closeEdge = getClosestEdge(draggedNode);
-      if (
-        !closeEdge ||
-        edgeExists(
-          closeEdge.source,
-          closeEdge.sourceHandle!,
-          closeEdge.target,
-          closeEdge.targetHandle!,
-          edges,
-        )
-      ) {
-        if (previewEdge) setPreviewEdge(null);
-        return;
-      }
-      const previewId = `preview:${closeEdge.id}`;
-      if (previewEdge?.id === previewId) return;
-      setPreviewEdge({
-        ...closeEdge,
-        id: previewId,
-        className: "temp-preview-edge",
-        style: {
-          strokeDasharray: "8 6",
-          strokeLinecap: "round",
-        },
-        selectable: false,
-        deletable: false,
-        focusable: false,
-      });
-    },
-    [getClosestEdge, edges, previewEdge],
-  );
+  function onNodeDrag(_event: MouseEvent | TouchEvent, draggedNode: Node) {
+    const closeEdge = getClosestEdge(reactFlow, draggedNode);
+    if (
+      !closeEdge ||
+      edgeExists(
+        closeEdge.source,
+        closeEdge.sourceHandle,
+        closeEdge.target,
+        closeEdge.targetHandle,
+        edges,
+      )
+    ) {
+      if (previewEdge) setPreviewEdge(null);
+      return;
+    }
+    const previewId = `preview:${closeEdge.id}`;
+    if (previewEdge?.id === previewId) return;
+    setPreviewEdge({
+      ...closeEdge,
+      id: previewId,
+      className: "temp-preview-edge",
+      style: {
+        strokeDasharray: "8 6",
+        strokeLinecap: "round",
+      },
+      selectable: false,
+      deletable: false,
+      focusable: false,
+    });
+  }
 
-  const onNodeDragStop = useCallback(
-    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
-      const closeEdge = getClosestEdge(draggedNode);
-      setPreviewEdge(null);
-      if (!closeEdge) return;
-      if (
-        edgeExists(
-          closeEdge.source,
-          closeEdge.sourceHandle!,
-          closeEdge.target,
-          closeEdge.targetHandle!,
-          edges,
-        )
-      ) {
-        return;
-      }
+  function onNodeDragStop(_event: MouseEvent | TouchEvent, draggedNode: Node) {
+    const closeEdge = getClosestEdge(reactFlow, draggedNode);
+    setPreviewEdge(null);
+    if (
+      closeEdge &&
+      !edgeExists(
+        closeEdge.source,
+        closeEdge.sourceHandle,
+        closeEdge.target,
+        closeEdge.targetHandle,
+        edges,
+      )
+    ) {
       crdt?.addEdge(closeEdge);
-    },
-    [getClosestEdge, crdt, edges],
-  );
+    }
+  }
   return {
     // Handlers to register with React Flow.
     onNodeDrag,
