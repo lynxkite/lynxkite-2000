@@ -32,8 +32,8 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import { edgeExists, findClosestHandlePair, MIN_AUTO_CONNECT_DISTANCE } from "./autoConnect.ts";
 import Assistant from "./Assistant.tsx";
+import { edgeExists, findClosestHandlePair, MIN_AUTO_CONNECT_DISTANCE } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -148,10 +148,10 @@ function LynxKiteFlow() {
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-    | {
-      pos: XYPosition;
-    }
-    | undefined,
+      | {
+          pos: XYPosition;
+        }
+      | undefined,
   );
   const nodeTypes = useMemo(
     () => ({

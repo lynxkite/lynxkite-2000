@@ -60,7 +60,7 @@ export function formatOutputMetadata(metadata: any): string | undefined {
   return parts.length > 0 ? parts.join(", ") : undefined;
 }
 
-function getHandles(
+export function getHandles(
   ws: {
     edges?: {
       source: string;
@@ -375,7 +375,7 @@ function UnknownOperationNode(props: { op_id: string; onChange: (newName: string
           )}
         </div>
         <NodeSearchInternal
-          onCancel={() => { }}
+          onCancel={() => {}}
           onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
           categoryHierarchy={categoryHierarchy}
         />
