@@ -6,7 +6,7 @@ import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
-import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
+import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
@@ -45,7 +45,7 @@ function docToString(doc: any): string {
   );
 }
 
-export function formatOutputMetadata(metadata: any): string | undefined {
+function formatOutputMetadata(metadata: any): string | undefined {
   if (!metadata?.dataframes) return undefined;
   const parts: string[] = [];
   const tableNames = Object.keys(metadata.dataframes);
@@ -61,14 +61,7 @@ export function formatOutputMetadata(metadata: any): string | undefined {
 }
 
 export function getHandles(
-  ws: {
-    edges?: {
-      source: string;
-      target: string;
-      sourceHandle?: string | null;
-      targetHandle?: string | null;
-    }[];
-  },
+  ws: Workspace,
   id: string,
   inputs: any[],
   outputs: any[],

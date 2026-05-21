@@ -33,7 +33,7 @@ import favicon from "../assets/favicon.ico";
 import { parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import Assistant from "./Assistant.tsx";
-import { edgeExists, findClosestHandlePair, MIN_AUTO_CONNECT_DISTANCE } from "./autoConnect.ts";
+import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -90,7 +90,6 @@ function LynxKiteFlow() {
   );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
-  const [previewEdge, setPreviewEdge] = useState<Edge | null>(null);
   const shortPath = path!
     .split("/")
     .pop()!
@@ -98,10 +97,7 @@ function LynxKiteFlow() {
   const crdt = useCRDTWorkspace(path);
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
-  const renderedEdges = useMemo(
-    () => (previewEdge ? [...edges.filter((e) => e.id !== previewEdge.id), previewEdge] : edges),
-    [edges, previewEdge],
-  );
+  const autoConnect = useAutoConnect(edges, crdt);
 
   // Track Shift key state
   useEffect(() => {
@@ -333,102 +329,6 @@ function LynxKiteFlow() {
     [crdt],
   );
 
-  function getAbsPos(node: Node) {
-    const internal = reactFlow.getInternalNode(node.id);
-    return internal?.internals.positionAbsolute ?? node.position;
-  }
-
-  const getClosestEdge = useCallback(
-    (draggedNode: Node) => {
-      const draggedPos = getAbsPos(draggedNode);
-      if (!draggedPos || draggedNode.type === "node_group") {
-        return null;
-      }
-
-      let bestEdge: Edge | null = null;
-      let bestDistance = Number.POSITIVE_INFINITY;
-      for (const n of reactFlow.getNodes()) {
-        if (n.id === draggedNode.id || n.type === "node_group") {
-          continue;
-        }
-        const pos = getAbsPos(n);
-        const closeNodeIsSource = pos.x < draggedPos.x;
-        const sourceNode = closeNodeIsSource ? n : draggedNode;
-        const targetNode = closeNodeIsSource ? draggedNode : n;
-        const bestPair = findClosestHandlePair(sourceNode, targetNode, edges, getAbsPos);
-        if (!bestPair) continue;
-        if (bestPair.distance >= MIN_AUTO_CONNECT_DISTANCE || bestPair.distance >= bestDistance) {
-          continue;
-        }
-        bestDistance = bestPair.distance;
-        bestEdge = {
-          id: `${sourceNode.id} ${bestPair.sourceHandle} ${targetNode.id} ${bestPair.targetHandle}`,
-          source: sourceNode.id,
-          sourceHandle: bestPair.sourceHandle,
-          target: targetNode.id,
-          targetHandle: bestPair.targetHandle,
-        };
-      }
-
-      return bestEdge;
-    },
-    [reactFlow, edges],
-  );
-
-  const onNodeDrag = useCallback(
-    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
-      const closeEdge = getClosestEdge(draggedNode);
-      if (
-        !closeEdge ||
-        edgeExists(
-          closeEdge.source,
-          closeEdge.sourceHandle!,
-          closeEdge.target,
-          closeEdge.targetHandle!,
-          edges,
-        )
-      ) {
-        if (previewEdge) setPreviewEdge(null);
-        return;
-      }
-      const previewId = `preview:${closeEdge.id}`;
-      if (previewEdge?.id === previewId) return;
-      setPreviewEdge({
-        ...closeEdge,
-        id: previewId,
-        className: "temp-preview-edge",
-        style: {
-          strokeDasharray: "8 6",
-          strokeLinecap: "round",
-        },
-        selectable: false,
-        deletable: false,
-        focusable: false,
-      });
-    },
-    [getClosestEdge, edges, previewEdge],
-  );
-
-  const onNodeDragStop = useCallback(
-    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
-      const closeEdge = getClosestEdge(draggedNode);
-      setPreviewEdge(null);
-      if (!closeEdge) return;
-      if (
-        edgeExists(
-          closeEdge.source,
-          closeEdge.sourceHandle!,
-          closeEdge.target,
-          closeEdge.targetHandle!,
-          edges,
-        )
-      ) {
-        return;
-      }
-      crdt?.addEdge(closeEdge);
-    },
-    [getClosestEdge, crdt, edges],
-  );
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
@@ -745,7 +645,7 @@ function LynxKiteFlow() {
             <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
               <ReactFlow
                 nodes={nodes}
-                edges={renderedEdges}
+                edges={autoConnect.renderedEdges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
                 fitView
@@ -760,8 +660,8 @@ function LynxKiteFlow() {
                 onEdgesChange={crdt?.onFEEdgesChange}
                 onPaneClick={toggleNodeSearch}
                 onConnect={onConnect}
-                onNodeDrag={onNodeDrag}
-                onNodeDragStop={onNodeDragStop}
+                onNodeDrag={autoConnect.onNodeDrag}
+                onNodeDragStop={autoConnect.onNodeDragStop}
                 proOptions={{ hideAttribution: true }}
                 maxZoom={10}
                 minZoom={0.1}
