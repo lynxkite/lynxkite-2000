@@ -1,58 +1,12 @@
-// Auto-connect logic extracted from Workspace.tsx for readability.
+// Auto-connect boxes when they get close, with a preview edge.
+// Based on https://reactflow.dev/examples/nodes/proximity-connect.
 
-import { type Edge, type Node, useReactFlow, type XYPosition } from "@xyflow/react";
+import { type Edge, type Node, type ReactFlowInstance, useReactFlow } from "@xyflow/react";
+import type { InternalNodeBase } from "@xyflow/system";
 import { type MouseEvent, useCallback, useMemo, useState } from "react";
-import type { Workspace, WorkspaceEdge } from "../apiTypes.ts";
-import { getHandles } from "./nodes/LynxKiteNode.tsx";
+import type { WorkspaceEdge } from "../apiTypes.ts";
 
-const MIN_AUTO_CONNECT_DISTANCE = 220;
-
-function getNodeHandles(node: Node, edges: Edge[]) {
-  const inputs = (node.data as any)?.meta?.inputs ?? [];
-  const outputs = (node.data as any)?.meta?.outputs ?? [];
-  return getHandles({ edges } as Workspace, node.id, inputs, outputs);
-}
-
-function getHandlePosition(
-  absPos: XYPosition,
-  node: Node,
-  handle: { position: string; offsetPercentage?: number },
-) {
-  const width = node.width ?? 200;
-  const height = node.height ?? 200;
-  const offset = (handle.offsetPercentage ?? 50) / 100;
-  if (handle.position === "left") return { x: absPos.x, y: absPos.y + height * offset };
-  if (handle.position === "right") return { x: absPos.x + width, y: absPos.y + height * offset };
-  if (handle.position === "top") return { x: absPos.x + width * offset, y: absPos.y };
-  return { x: absPos.x + width * offset, y: absPos.y + height };
-}
-
-function findClosestHandlePair(
-  sourceNode: Node,
-  targetNode: Node,
-  edges: Edge[],
-  getAbsPos: (node: Node) => XYPosition,
-) {
-  const sourceHandles = getNodeHandles(sourceNode, edges).filter((h) => h.type === "source");
-  const targetHandles = getNodeHandles(targetNode, edges).filter((h) => h.type === "target");
-  if (!sourceHandles.length || !targetHandles.length) {
-    return null;
-  }
-  let bestPair: { sourceHandle: string; targetHandle: string; distance: number } | null = null;
-  let bestDistance = Number.POSITIVE_INFINITY;
-  for (const sh of sourceHandles) {
-    const sp = getHandlePosition(getAbsPos(sourceNode), sourceNode, sh);
-    for (const th of targetHandles) {
-      const tp = getHandlePosition(getAbsPos(targetNode), targetNode, th);
-      const distance = Math.hypot(sp.x - tp.x, sp.y - tp.y);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestPair = { sourceHandle: sh.name, targetHandle: th.name, distance };
-      }
-    }
-  }
-  return bestPair;
-}
+const MIN_AUTO_CONNECT_DISTANCE = 100;
 
 function edgeExists(
   source: string,
@@ -70,55 +24,66 @@ function edgeExists(
   );
 }
 
+function allHandles(node: InternalNodeBase) {
+  return [
+    ...(node.internals.handleBounds?.source ?? []),
+    ...(node.internals.handleBounds?.target ?? []),
+  ];
+}
+
+// Finds the shortest edge between the handles of the dragged node and the handles of other nodes,
+// if it's within the threshold distance.
+function closestEdge(reactFlow: ReactFlowInstance, draggedNode: Node): WorkspaceEdge | null {
+  if (draggedNode.type === "node_group") return null;
+  const internalNode = reactFlow.getInternalNode(draggedNode.id);
+  if (!internalNode) return null;
+  const draggedHandles = allHandles(internalNode);
+  if (!draggedHandles.length) return null;
+  const draggedPos = internalNode.internals.positionAbsolute;
+  let bestEdge: WorkspaceEdge | null = null;
+  let bestDistance = MIN_AUTO_CONNECT_DISTANCE;
+  for (const n of reactFlow.getNodes()) {
+    if (n.id === draggedNode.id || n.type === "node_group") continue;
+    const i = reactFlow.getInternalNode(n.id);
+    if (!i) continue;
+    const handles = allHandles(i);
+    const pos = i.internals.positionAbsolute;
+    for (const h1 of draggedHandles) {
+      if (!h1.id) continue;
+      for (const h2 of handles) {
+        if (!h2.id || h1.type === h2.type) continue;
+        const hp1 = {
+          x: draggedPos.x + h1.x,
+          y: draggedPos.y + h1.y,
+        };
+        const hp2 = {
+          x: pos.x + h2.x,
+          y: pos.y + h2.y,
+        };
+        const distance = Math.hypot(hp1.x - hp2.x, hp1.y - hp2.y);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestEdge = {
+            id: `${draggedNode.id} ${h1.id} ${n.id} ${h2.id}`,
+            source: h1.type === "source" ? draggedNode.id : n.id,
+            sourceHandle: h1.type === "source" ? h1.id : h2.id,
+            target: h1.type === "target" ? draggedNode.id : n.id,
+            targetHandle: h1.type === "target" ? h1.id : h2.id,
+          };
+        }
+      }
+    }
+  }
+  return bestEdge;
+}
+
 export function useAutoConnect(edges: Edge[], crdt: any) {
   const reactFlow = useReactFlow();
-  // A preview of the auto-connect edge while dragging a node.
   const [previewEdge, setPreviewEdge] = useState<Edge | null>(null);
   const renderedEdges = useMemo(() => {
     return previewEdge ? [...edges.filter((e) => e.id !== previewEdge.id), previewEdge] : edges;
   }, [edges, previewEdge]);
-
-  function getAbsPos(node: Node) {
-    const internal = reactFlow.getInternalNode(node.id);
-    return internal?.internals.positionAbsolute ?? node.position;
-  }
-
-  const getClosestEdge = useCallback(
-    (draggedNode: Node) => {
-      const draggedPos = getAbsPos(draggedNode);
-      if (!draggedPos || draggedNode.type === "node_group") {
-        return null;
-      }
-
-      let bestEdge: WorkspaceEdge | null = null;
-      let bestDistance = Number.POSITIVE_INFINITY;
-      for (const n of reactFlow.getNodes()) {
-        if (n.id === draggedNode.id || n.type === "node_group") {
-          continue;
-        }
-        const pos = getAbsPos(n);
-        const closeNodeIsSource = pos.x < draggedPos.x;
-        const sourceNode = closeNodeIsSource ? n : draggedNode;
-        const targetNode = closeNodeIsSource ? draggedNode : n;
-        const bestPair = findClosestHandlePair(sourceNode, targetNode, edges, getAbsPos);
-        if (!bestPair) continue;
-        if (bestPair.distance >= MIN_AUTO_CONNECT_DISTANCE || bestPair.distance >= bestDistance) {
-          continue;
-        }
-        bestDistance = bestPair.distance;
-        bestEdge = {
-          id: `${sourceNode.id} ${bestPair.sourceHandle} ${targetNode.id} ${bestPair.targetHandle}`,
-          source: sourceNode.id,
-          sourceHandle: bestPair.sourceHandle,
-          target: targetNode.id,
-          targetHandle: bestPair.targetHandle,
-        };
-      }
-
-      return bestEdge;
-    },
-    [reactFlow, edges],
-  );
+  const getClosestEdge = useCallback((n: Node) => closestEdge(reactFlow, n), [reactFlow]);
 
   const onNodeDrag = useCallback(
     (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
@@ -174,5 +139,11 @@ export function useAutoConnect(edges: Edge[], crdt: any) {
     },
     [getClosestEdge, crdt, edges],
   );
-  return { onNodeDrag, onNodeDragStop, renderedEdges };
+  return {
+    // Handlers to register with React Flow.
+    onNodeDrag,
+    onNodeDragStop,
+    // Includes a preview edge while dragging.
+    renderedEdges,
+  };
 }
