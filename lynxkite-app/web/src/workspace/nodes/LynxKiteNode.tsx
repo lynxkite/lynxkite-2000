@@ -60,7 +60,7 @@ function formatOutputMetadata(metadata: any): string | undefined {
   return parts.length > 0 ? parts.join(", ") : undefined;
 }
 
-export function getHandles(
+function getHandles(
   ws: Workspace,
   id: string,
   inputs: any[],

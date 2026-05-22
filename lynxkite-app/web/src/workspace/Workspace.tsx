@@ -326,7 +326,6 @@ function LynxKiteFlow() {
     },
     [crdt],
   );
-
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
