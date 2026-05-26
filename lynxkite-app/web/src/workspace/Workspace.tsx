@@ -285,7 +285,8 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
-      height: 200,
+      width: 300,
+      height: 300,
       data: {
         meta: meta,
         title: meta.name,
