@@ -47,6 +47,7 @@ const NodeWithMolecule = (props: any) => {
         container.innerHTML = "";
 
         const viewer = await Viewer.create(container, {
+          layoutIsExpanded: false,
           layoutShowControls: false,
           layoutShowRemoteState: false,
           layoutShowLog: false,
