@@ -337,7 +337,7 @@
           "type": "basic"
         },
         "params": {
-          "model_workspace": "Model definition",
+          "model_workspace": "Basic examples/Model definition",
           "save_as": "model"
         },
         "status": "done",
@@ -582,7 +582,7 @@
           }
         ],
         "params": {
-          "model_workspace": "Model definition",
+          "model_workspace": "Basic examples/Model definition",
           "save_as": "model"
         },
         "status": "done",
