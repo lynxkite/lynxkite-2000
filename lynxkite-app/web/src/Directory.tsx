@@ -261,6 +261,34 @@ export default function Directory() {
                           Rename
                         </button>
                       </li>
+                      {item.type === "workspace" && (
+                        <li>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const res = await fetch(
+                                `/api/load?path=${encodeURIComponent(item.name)}`,
+                              );
+                              if (!res.ok) {
+                                alert("Failed to download workspace.");
+                                return;
+                              }
+                              const data = await res.json();
+                              const blob = new Blob([JSON.stringify(data, null, 2)], {
+                                type: "application/json",
+                              });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = `${shortName(item)}.lynxkite.json`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }}
+                          >
+                            Download
+                          </button>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>
