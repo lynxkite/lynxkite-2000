@@ -172,6 +172,16 @@ async def upload(req: fastapi.Request):
     return {"status": "ok"}
 
 
+@app.post("/api/download")
+async def download(req: dict):
+    """Sends a file from DATA_PATH to the client."""
+    file_path = data_path / req["path"]
+    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    if not file_path.exists() or not file_path.is_file():
+        raise fastapi.HTTPException(status_code=404, detail="File not found")
+    return fastapi.responses.FileResponse(file_path)
+
+
 @app.post("/api/execute_workspace")
 async def execute_workspace(name: str):
     """Trigger and await the execution of a workspace."""

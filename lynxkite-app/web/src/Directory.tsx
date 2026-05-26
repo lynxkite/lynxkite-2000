@@ -266,9 +266,11 @@ export default function Directory() {
                           <button
                             type="button"
                             onClick={async () => {
-                              const res = await fetch(
-                                `/api/load?path=${encodeURIComponent(item.name)}`,
-                              );
+                              const res = await fetch("/api/download", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ path: item.name }),
+                              });
                               if (!res.ok) {
                                 alert("Failed to download workspace.");
                                 return;
