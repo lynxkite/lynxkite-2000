@@ -261,7 +261,7 @@ export default function Directory() {
                           Rename
                         </button>
                       </li>
-                      {item.type === "workspace" && (
+                      {item.type !== "directory" && (
                         <li>
                           <button
                             type="button"
@@ -272,17 +272,14 @@ export default function Directory() {
                                 body: JSON.stringify({ path: item.name }),
                               });
                               if (!res.ok) {
-                                alert("Failed to download workspace.");
+                                alert("Failed to download file.");
                                 return;
                               }
-                              const data = await res.json();
-                              const blob = new Blob([JSON.stringify(data, null, 2)], {
-                                type: "application/json",
-                              });
+                              const blob = await res.blob();
                               const url = URL.createObjectURL(blob);
                               const a = document.createElement("a");
                               a.href = url;
-                              a.download = `${shortName(item)}.lynxkite.json`;
+                              a.download = shortName(item) || item.name;
                               a.click();
                               URL.revokeObjectURL(url);
                             }}
