@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import enum
 import functools
+import hashlib
 import json
 import importlib.util
 import inspect
@@ -602,12 +603,14 @@ def install_requirements(req: pathlib.Path):
 
 
 def run_user_script(script_path: pathlib.Path):
-    spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
+    path_hash = hashlib.md5(str(script_path.parent).encode()).hexdigest()[:8]
+    module_name = f"_lynxkite_userscript_{path_hash}_{script_path.stem}"
+    spec = importlib.util.spec_from_file_location(module_name, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
     assert spec.loader
-    # Register the module in sys.modules so that classes defined in user scripts are importable.
-    sys.modules[script_path.stem] = module
+    # Register the module so that classes defined in user scripts are picklable by joblib.
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
 
 
