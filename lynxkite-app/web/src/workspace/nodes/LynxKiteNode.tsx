@@ -197,7 +197,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     };
     if (data.collapsed) {
       reactFlow.updateNode(props.id, {
-        height: data.expanded_height || 200,
+        height: data.expanded_height || 315,
       });
     } else {
       dataUpdate.expanded_height = props.height;
@@ -210,7 +210,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       error: undefined,
     });
   }
-  const height = Math.max(67, node?.height ?? props.height ?? 200);
+  const height = Math.max(67, node?.height ?? props.height ?? 315);
   const meta = data.meta ?? {};
   const summary: string = data.error
     ? `Error: ${data.error}`
@@ -239,7 +239,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
       style={{
-        width: props.width || 200,
+        width: props.width || 315,
         height: data.collapsed ? undefined : height,
       }}
       ref={containerRef}
