@@ -261,6 +261,33 @@ export default function Directory() {
                           Rename
                         </button>
                       </li>
+                      {item.type !== "directory" && (
+                        <li>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const res = await fetch("/api/download", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ path: item.name }),
+                              });
+                              if (!res.ok) {
+                                alert("Failed to download file.");
+                                return;
+                              }
+                              const blob = await res.blob();
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = item.name;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }}
+                          >
+                            Download
+                          </button>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>
