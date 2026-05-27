@@ -11,12 +11,21 @@ export function usePath() {
   return path;
 }
 
+async function fetchJSON(url: string, init?: RequestInit) {
+  const res = await fetch(url, init);
+  if (!res.ok) {
+    const error = new Error(`Server error: ${res.status} ${res.statusText}`);
+    throw error;
+  }
+  return res.json();
+}
+
 export function useCategoryHierarchy() {
   const ws = useContext(LynxKiteState).workspace;
   const env = ws?.env;
   const path = usePath().replace(/^[/]edit[/]/, "");
   const fetcher: Fetcher<Catalogs> = (resource: string, init?: RequestInit) =>
-    fetch(resource, init).then((res) => res.json());
+    fetchJSON(resource, init);
   const encodedPathForAPI = path!
     .split("/")
     .map((segment) => encodeURIComponent(segment))
@@ -29,7 +38,7 @@ export function useCategoryHierarchy() {
   return categoryHierarchy;
 }
 
-export const pathFetcher = (url: string) => fetch(url).then((res) => res.json());
+export const pathFetcher = (url: string) => fetchJSON(url);
 
 export function parentPath(path: string): string {
   const parts = path.split("/").filter(Boolean);
