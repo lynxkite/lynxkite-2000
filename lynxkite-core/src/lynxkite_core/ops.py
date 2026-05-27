@@ -11,6 +11,7 @@ import inspect
 import pathlib
 import pkgutil
 import subprocess
+import sys
 import traceback
 import types
 import typing
@@ -605,6 +606,8 @@ def run_user_script(script_path: pathlib.Path):
     assert spec
     module = importlib.util.module_from_spec(spec)
     assert spec.loader
+    # Register the module in sys.modules so that classes defined in user scripts are importable.
+    sys.modules[script_path.stem] = module
     spec.loader.exec_module(module)
 
 
