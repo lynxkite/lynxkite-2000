@@ -1,24 +1,29 @@
 // Test the execution of the example workspaces
+import type { Page } from "@playwright/test";
 import { test } from "@playwright/test";
-import { Workspace } from "./lynxkite";
+import { Splash } from "./lynxkite";
 
-const WORKSPACES = [
-  "Airlines demo",
-  // "Graph RAG",
-  "Image processing",
-  "NetworkX demo",
-];
+const WORKSPACES = ["Airlines demo", "Image processing", "NetworkX demo"];
+
+async function openWorkspace(page: Page, name: string) {
+  const splash = await Splash.openRoot(page);
+  await splash.openFolder("Basic examples");
+  const ws = await splash.openWorkspace(name);
+  await ws.waitForNodesToLoad();
+  await ws.expectCurrentWorkspaceIs(name);
+  return ws;
+}
 
 for (const name of WORKSPACES) {
   test(name, async ({ page }) => {
-    const ws = await Workspace.open(page, name);
+    const ws = await openWorkspace(page, name);
     await ws.execute();
     await ws.expectErrorFree();
   });
 }
 
 test("Model use", async ({ page }) => {
-  const ws = await Workspace.open(page, "Model use");
+  const ws = await openWorkspace(page, "Model use");
   await ws.execute({ timeout: 30000 }); // Actually trains the model.
   await ws.expectErrorFree();
   let b = ws.boxByTitle("Train/test split");
