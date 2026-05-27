@@ -279,7 +279,7 @@ export default function Directory() {
                               const url = URL.createObjectURL(blob);
                               const a = document.createElement("a");
                               a.href = url;
-                              a.download = shortName(item) || item.name;
+                              a.download = item.name;
                               a.click();
                               URL.revokeObjectURL(url);
                             }}
