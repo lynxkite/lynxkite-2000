@@ -49,12 +49,15 @@ cat >"$client_json" <<EOF
   "rootUrl": "$frontend_origin",
   "baseUrl": "$frontend_origin",
   "redirectUris": ["$redirect_uri"],
-  "webOrigins": ["$frontend_origin"]
+  "webOrigins": ["$frontend_origin"],
+  "attributes": {
+    "post.logout.redirect.uris": "$frontend_origin/*"
+  }
 }
 EOF
 trap 'rm -f "$client_json"' EXIT
 
-themes_dir="$(cd "$(dirname "$0")/../../keycloak/themes" && pwd)"
+themes_dir="$(cd "$(dirname "$0")/../../keycloak/theme" && pwd)"
 
 docker run --name "$container_name" \
   -d \
