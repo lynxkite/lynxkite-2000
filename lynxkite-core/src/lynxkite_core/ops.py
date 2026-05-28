@@ -116,6 +116,11 @@ class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict()
 
 
+# Cache for dynamically created option enums. Ensures the same class object is reused
+# across calls so pickle can resolve it via sys.modules.
+_options_enum_cache: dict[tuple, enum.StrEnum] = {}
+
+
 class Parameter(BaseConfig):
     """Defines a parameter for an operation."""
 
@@ -125,8 +130,14 @@ class Parameter(BaseConfig):
 
     @staticmethod
     def options(name, options: list[str], default=None):
-        e = enum.StrEnum(f"OptionsFor_{name}", [(o, o) for o in options])
-        return Parameter.basic(name, default or options[0], e)
+        key = (name, tuple(options))
+        if key not in _options_enum_cache:
+            opts_hash = hashlib.md5(str(key).encode()).hexdigest()[:8]
+            cls_name = f"OptionsFor_{name}_{opts_hash}"
+            e = enum.StrEnum(cls_name, [(o, o) for o in options])
+            setattr(sys.modules[__name__], cls_name, e)
+            _options_enum_cache[key] = e
+        return Parameter.basic(name, default or options[0], _options_enum_cache[key])
 
     @staticmethod
     def basic(name, default=None, type=None):
