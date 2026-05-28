@@ -4,6 +4,7 @@
 !.vscode/settings.json
 .idea
 .DS_Store
+*:Zone.Identifier
 *.suo
 *.ntvs*
 *.njsproj
