@@ -145,6 +145,26 @@ class WorkspaceResult:
     services: dict[str, Service]
 
 
+class RedirectToCurrentUrlService(Service):
+    """Temporary redirect used while Gradio routes are being mounted."""
+
+    async def get(self, request: "fastapi.Request"):
+        from fastapi.responses import RedirectResponse
+
+        url = request.url.path
+        if request.url.query:
+            url += "?" + request.url.query
+        return RedirectResponse(url=url, status_code=307)
+
+    async def post(self, request: "fastapi.Request"):
+        from fastapi.responses import RedirectResponse
+
+        url = request.url.path
+        if request.url.query:
+            url += "?" + request.url.query
+        return RedirectResponse(url=url, status_code=307)
+
+
 @ops.register_executor(ENV)
 async def execute(
     ws: workspace.Workspace, ctx: workspace.WorkspaceExecutionContext | None = None
@@ -290,10 +310,14 @@ async def _execute_node(
             }
             result.output = None
         elif node.type == "gradio" and result.output and ctx and ctx.app:
-            url = f"/api/lynxkite_graph_analytics/{ws.path}/{node.id}"
+            url = f"/api/service/lynxkite_graph_analytics/{ws.path}/{node.id}"
             await mount_gradio(ctx.app, result.output, url)
             result.display = {"backend": urllib.parse.quote(url)}
             result.output = None
+            # If we are called from a /api/service/ endpoint, this endpoint will be served
+            # by Gradio the next time it is called. But this time we need to return a service
+            # that just redirects to the same URL.
+            wsres.services[node.id] = RedirectToCurrentUrlService()
         elif len(op.outputs) > 1:
             assert isinstance(result.output, dict), f"Multi-output op {node.id} must return a dict"
             for k, v in result.output.items():
@@ -343,8 +367,8 @@ async def get_node_service(request: "fastapi.Request") -> Service:
     ops.load_user_scripts(str(path))
     ws.update_metadata()
     ws.normalize()
-    executor = ops.EXECUTORS[ws.env]
-    wsres = await executor(ws)
+    ctx = workspace.WorkspaceExecutionContext(app=request.app)
+    wsres = await ws.execute(ctx=ctx)
     [node] = [n for n in ws.nodes if n.id == node_id]
     assert not node.data.error, f"Node {node_id} has an error: {node.data.error}"
     request.state.remaining_path = "/".join(parts[i + 1 :])

@@ -45,7 +45,7 @@ function findDocs(docs: any, parameter: string) {
 }
 
 export default function NodeParameter({ name, value, meta, data, setParam }: NodeParameterProps) {
-  const doc = findDocs(data.meta?.value?.doc ?? [], name);
+  const doc = findDocs(data.meta?.doc ?? [], name);
   function onChange(value: any, opts?: UpdateOptions) {
     setParam(meta.name, value, opts || {});
   }

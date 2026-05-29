@@ -10,6 +10,7 @@ export type GlobalConfig = {
   assistant_available: boolean;
   authentication_issuer: string | null;
   authentication_audience: string | null;
+  enterprise_available: boolean;
 };
 
 let cachedConfig: GlobalConfig | undefined;

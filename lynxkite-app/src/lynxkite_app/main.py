@@ -24,6 +24,11 @@ try:
 except ImportError:
     assistant_router = None
 
+try:
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
+except ImportError:
+    enterprise_backend = None
+
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
@@ -39,6 +44,8 @@ app.include_router(crdt.router)
 app.include_router(icons.router)
 if assistant_router is not None:
     app.include_router(assistant_router)
+if enterprise_backend is not None:
+    enterprise_backend.register_routes(app, crdt)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -62,6 +69,7 @@ def get_config() -> dict[str, bool | str | None]:
         "assistant_available": assistant_router is not None,
         "authentication_issuer": auth.issuer,
         "authentication_audience": auth.audience,
+        "enterprise_available": enterprise_backend is not None,
     }
 
 
@@ -175,6 +183,16 @@ async def upload(req: fastapi.Request):
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     return {"status": "ok"}
+
+
+@app.post("/api/download")
+async def download(req: dict):
+    """Sends a file from DATA_PATH to the client."""
+    file_path = data_path / req["path"]
+    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    if not file_path.exists() or not file_path.is_file():
+        raise fastapi.HTTPException(status_code=404, detail="File not found")
+    return fastapi.responses.FileResponse(file_path)
 
 
 @app.post("/api/execute_workspace")

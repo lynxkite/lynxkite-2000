@@ -1,177 +1,111 @@
-import React, { type CSSProperties, useEffect } from "react";
+import React, { useEffect } from "react";
+import "molstar/build/viewer/molstar.css";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
+function inferFormat(data: string): "pdb" | "mmcif" | "sdf" | "mol" | "mol2" {
+  const trimmed = data.trimStart();
+  if (trimmed.startsWith("data_")) return "mmcif";
+  if (trimmed.includes("@<TRIPOS>MOLECULE")) return "mol2";
+  if (trimmed.includes("M  END")) {
+    if (trimmed.includes("$$$$")) return "sdf";
+    return "mol";
+  }
+  return "pdb";
+}
+
 const NodeWithMolecule = (props: any) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const viewerRef = React.useRef<any>(null);
 
   useEffect(() => {
     const config = props.data?.display;
-    if (!config || !containerRef.current) return;
-
-    const observed = containerRef.current;
+    const wrapper = wrapperRef.current;
+    const container = containerRef.current;
+    if (!config || !container || !wrapper) return;
+    let active = true;
+    let isInitializing = false;
 
     async function run() {
-      const $3Dmol = await import("3dmol");
+      if (isInitializing) return; // Prevent concurrent initializations
+      const container = containerRef.current;
+      if (!container) return;
+      isInitializing = true;
+
+      const { Viewer } = await import("molstar/lib/apps/viewer/app");
 
       try {
-        // Initialize viewer only once
-        if (!viewerRef.current) {
-          viewerRef.current = $3Dmol.createViewer(observed, {
-            backgroundColor: "white",
-          });
+        // Dispose old viewer if it exists
+        if (viewerRef.current?.dispose) {
+          viewerRef.current.dispose();
+          viewerRef.current = null;
         }
 
-        const viewer = viewerRef.current;
-        viewer.clear();
+        if (!active) return; // Check before clearing DOM
 
-        // Load main structure (3dmol will auto-detect format)
-        if (config.data) {
-          try {
-            viewer.addModel(config.data, "");
-          } catch (error) {
-            console.error("Failed to load molecular data:", error);
-          }
+        container.innerHTML = "";
+
+        const viewer = await Viewer.create(container, {
+          layoutIsExpanded: false,
+          layoutShowControls: false,
+          layoutShowRemoteState: false,
+          layoutShowLog: false,
+          viewportShowAnimation: false,
+          collapseLeftPanel: true,
+        });
+
+        if (!active) {
+          viewer.dispose();
+          return;
         }
 
-        // Try to load ligand if present
-        if (config.ligand) {
-          try {
-            viewer.addModel(config.ligand, "");
-            console.log("Ligand loaded");
-          } catch (error) {
-            console.log("Could not load ligand:", error);
-          }
+        viewerRef.current = viewer;
+
+        if (config.data && active) {
+          await viewer.loadStructureFromData(config.data, inferFormat(config.data));
         }
 
-        // Apply styling
-        const model = viewer.getModel();
-        if (model?.atoms) {
-          // Define colors for each chain
-          const chainColors: { [key: string]: number } = {
-            A: 0xff00ff, // Magenta
-            B: 0x00ff00, // Green
-            G: 0xff8c00, // Orange
-            R: 0x0000ff, // Blue
-            S: 0xff0000, // Red
-          };
-
-          // Set default cartoon style
-          viewer.setStyle({}, { cartoon: { color: "spectrum" } });
-
-          // Get unique chains and apply chain-specific colors
-          const chains = new Set<string>();
-          for (const atom of model.atoms) {
-            if (atom.chain) {
-              chains.add(atom.chain);
-            }
-          }
-
-          for (const chain of chains) {
-            const color = chainColors[chain] || 0x888888;
-            viewer.setStyle(
-              { chain: chain },
-              {
-                cartoon: {
-                  color: color,
-                  thickness: 0.9,
-                },
-                tube: {
-                  color: color,
-                  radius: 0.3,
-                },
-              },
-            );
-          }
-
-          // Style heteroatoms (ligands, ions, etc) as ball-and-stick
-          viewer.setStyle(
-            { hetflag: true },
-            {
-              stick: {
-                radius: 0.25,
-                colorscheme: "default",
-              },
-              sphere: {
-                scale: 0.35,
-                colorscheme: "default",
-              },
-            },
-          );
-
-          // Style non-standard residues as stick-and-sphere
-          const nonStandardResidues = ["LIG", "AVE", "SDF", "MOL"];
-          for (const res of nonStandardResidues) {
-            viewer.setStyle(
-              { resn: res },
-              {
-                stick: {
-                  radius: 0.25,
-                  colorscheme: "Jmol",
-                },
-                sphere: {
-                  scale: 0.35,
-                  colorscheme: "Jmol",
-                },
-              },
-            );
-          }
+        if (config.ligand && active) {
+          await viewer.loadStructureFromData(config.ligand, inferFormat(config.ligand));
         }
-
-        viewer.zoomTo();
-        viewer.render();
       } catch (error) {
-        console.error("Error rendering 3D molecule:", error);
+        console.error("Error rendering Mol* molecule:", error);
+      } finally {
+        isInitializing = false;
       }
     }
 
     run();
 
     const resizeObserver = new ResizeObserver(() => {
-      viewerRef.current?.resize();
-    });
-
-    resizeObserver.observe(observed);
-
-    // Block wheel events and implement custom zoom
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-
-      if (viewerRef.current) {
-        const viewer = viewerRef.current;
-        const factor = e.deltaY > 0 ? 0.95 : 1.05;
-        viewer.zoom(factor);
-        viewer.render();
+      if (viewerRef.current?.plugin?.canvas3d?.requestResize) {
+        viewerRef.current.plugin.canvas3d.requestResize();
       }
+      viewerRef.current?.handleResize?.();
+    });
+    resizeObserver.observe(container);
+    const handleWheel = (e: WheelEvent) => {
+      e.stopPropagation();
     };
-
-    observed.addEventListener("wheel", handleWheel, {
+    wrapper.addEventListener("wheel", handleWheel, {
       passive: false,
-      capture: true,
     });
 
     return () => {
-      resizeObserver.unobserve(observed);
-      observed.removeEventListener("wheel", handleWheel, { capture: true });
-      viewerRef.current?.clear();
+      active = false;
+      resizeObserver.unobserve(container);
+      wrapper.removeEventListener("wheel", handleWheel);
+      viewerRef.current?.dispose?.();
+      viewerRef.current = null;
     };
   }, [props.data?.display]);
 
-  const vizStyle: CSSProperties = {
-    flex: 1,
-    minHeight: "300px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    overflow: "hidden",
-    position: "relative",
-  };
-
   return (
     <NodeWithParams collapsed {...props}>
-      <div style={vizStyle} ref={containerRef} />
+      <div ref={wrapperRef} className="msp-lynxkite-wrapper">
+        <div ref={containerRef} />
+      </div>
     </NodeWithParams>
   );
 };

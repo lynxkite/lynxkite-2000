@@ -31,6 +31,7 @@ import favicon from "../assets/favicon.ico";
 import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import Assistant from "./Assistant.tsx";
+import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
@@ -90,6 +91,7 @@ function LynxKiteFlow() {
   const crdt = useCRDTWorkspace(path);
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
+  const autoConnect = useAutoConnect(edges, crdt);
 
   // Track Shift key state
   useEffect(() => {
@@ -280,7 +282,8 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
-      height: 200,
+      width: 315,
+      height: 315,
       data: {
         meta: meta,
         title: meta.name,
@@ -358,6 +361,8 @@ function LynxKiteFlow() {
         node.data!.params.file_format = "json";
       } else if (file.name.includes(".xls")) {
         node.data!.params.file_format = "excel";
+      } else if (file.name.includes(".cif")) {
+        node.data!.params.file_format = "cif";
       }
       addNode(node);
     } catch (error) {
@@ -633,7 +638,7 @@ function LynxKiteFlow() {
             <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
               <ReactFlow
                 nodes={nodes}
-                edges={edges}
+                edges={autoConnect.renderedEdges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
                 fitView
@@ -648,6 +653,8 @@ function LynxKiteFlow() {
                 onEdgesChange={crdt?.onFEEdgesChange}
                 onPaneClick={toggleNodeSearch}
                 onConnect={onConnect}
+                onNodeDrag={autoConnect.onNodeDrag}
+                onNodeDragStop={autoConnect.onNodeDragStop}
                 proOptions={{ hideAttribution: true }}
                 maxZoom={10}
                 minZoom={0.1}

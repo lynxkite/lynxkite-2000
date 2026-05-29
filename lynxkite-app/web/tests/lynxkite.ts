@@ -24,14 +24,6 @@ export class Workspace {
     return await splash.createWorkspace(workspaceName);
   }
 
-  static async open(page: Page, workspaceName: string): Promise<Workspace> {
-    const splash = await Splash.openRoot(page);
-    const ws = await splash.openWorkspace(workspaceName);
-    await ws.waitForNodesToLoad();
-    await ws.expectCurrentWorkspaceIs(workspaceName);
-    return ws;
-  }
-
   async getEnvs() {
     // Return all available workspace environments
     const envs = this.page.locator('select[name="workspace-env"] option');
