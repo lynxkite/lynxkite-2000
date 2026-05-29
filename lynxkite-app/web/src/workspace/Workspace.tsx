@@ -11,7 +11,17 @@ import {
   type XYPosition,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  type MouseEvent,
+  memo,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import type { Array as YArray, Map as YMap } from "yjs";
@@ -30,7 +40,6 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import Assistant from "./Assistant.tsx";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
@@ -49,6 +58,8 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+
+const Assistant = lazy(() => import("./Assistant.tsx"));
 
 // The workspace gets re-rendered on every frame when a node is moved.
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
@@ -703,7 +714,11 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        {isAssistantOpen && <Assistant workspace={path} />}
+        {isAssistantOpen && (
+          <Suspense fallback={<aside className="assistant-panel" />}>
+            <Assistant workspace={path} />
+          </Suspense>
+        )}
       </div>
     </div>
   );

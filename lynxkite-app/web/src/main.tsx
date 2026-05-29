@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { lazy, type ReactElement, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "@fontsource/inter";
@@ -14,12 +14,17 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
-import AuthCallback from "./AuthCallback.tsx";
-import Code from "./Code.tsx";
 import Directory from "./Directory.tsx";
-import ProgressPage from "./ProgressPage.tsx";
-import ProgressPageDemo from "./ProgressPageDemo.tsx";
-import Workspace from "./workspace/Workspace.tsx";
+
+const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
+const Code = lazy(() => import("./Code.tsx"));
+const ProgressPage = lazy(() => import("./ProgressPage.tsx"));
+const ProgressPageDemo = lazy(() => import("./ProgressPageDemo.tsx"));
+const Workspace = lazy(() => import("./workspace/Workspace.tsx"));
+
+function withSuspense(element: ReactElement) {
+  return <Suspense>{element}</Suspense>;
+}
 
 function WorkspaceError() {
   const error = useRouteError();
@@ -47,11 +52,15 @@ const router = createBrowserRouter(
       <Route path="/" element={<Directory />} />
       <Route path="/dir" element={<Directory />} />
       <Route path="/dir/*" element={<Directory />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
-      <Route path="/edit/*" element={<Workspace />} errorElement={<WorkspaceError />} />
-      <Route path="/code/*" element={<Code />} />
-      <Route path="/progress" element={<ProgressPage />} />
-      <Route path="/progress-demo" element={<ProgressPageDemo />} />
+      <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
+      <Route
+        path="/edit/*"
+        element={withSuspense(<Workspace />)}
+        errorElement={<WorkspaceError />}
+      />
+      <Route path="/code/*" element={withSuspense(<Code />)} />
+      <Route path="/progress" element={withSuspense(<ProgressPage />)} />
+      <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
     </>,
   ),
 );
