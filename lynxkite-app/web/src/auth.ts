@@ -36,7 +36,7 @@ function base64UrlEncode(buffer: ArrayBuffer): string {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-export async function login(): Promise<void> {
+async function buildAuthUrl(action: "auth" | "registrations"): Promise<string> {
   const verifier = generateRandomString(64);
   sessionStorage.setItem(VERIFIER_STORAGE_KEY, verifier);
 
@@ -50,10 +50,17 @@ export async function login(): Promise<void> {
     scope: "openid profile email",
     code_challenge: challenge,
     code_challenge_method: "S256",
-    prompt: "login",
   });
 
-  window.location.href = `${BASE_URL}/auth?${params}`;
+  return `${BASE_URL}/${action}?${params}`;
+}
+
+export async function login(): Promise<void> {
+  window.location.href = await buildAuthUrl("auth");
+}
+
+export async function register(): Promise<void> {
+  window.location.href = await buildAuthUrl("registrations");
 }
 
 export async function handleCallback(): Promise<boolean> {

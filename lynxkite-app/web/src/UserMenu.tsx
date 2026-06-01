@@ -2,7 +2,8 @@ import { useState } from "react";
 import Login from "~icons/tabler/login";
 import Logout from "~icons/tabler/logout";
 import UserCircle from "~icons/tabler/user-circle";
-import { getUser, isLoggedIn, login, logout } from "./auth";
+import UserPlus from "~icons/tabler/user-plus";
+import { getUser, isLoggedIn, login, logout, register } from "./auth";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -11,9 +12,19 @@ export default function UserMenu() {
 
   if (!loggedIn) {
     return (
-      <button type="button" className="user-menu-button" onClick={() => login()} title="Log in">
-        <Login /> <span className="user-menu-label">Log in</span>
-      </button>
+      <div className="user-menu-actions">
+        <button type="button" className="user-menu-button" onClick={() => login()} title="Sign In">
+          <Login /> <span className="user-menu-label">Sign In</span>
+        </button>
+        <button
+          type="button"
+          className="user-menu-button"
+          onClick={() => register()}
+          title="Sign Up"
+        >
+          <UserPlus /> <span className="user-menu-label">Sign Up</span>
+        </button>
+      </div>
     );
   }
 
