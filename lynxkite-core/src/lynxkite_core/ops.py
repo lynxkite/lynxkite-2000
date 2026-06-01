@@ -5,12 +5,14 @@ from __future__ import annotations
 import asyncio
 import enum
 import functools
+import hashlib
 import json
 import importlib.util
 import inspect
 import pathlib
 import pkgutil
 import subprocess
+import sys
 import traceback
 import types
 import typing
@@ -114,6 +116,11 @@ class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict()
 
 
+# Cache for dynamically created option enums. Ensures the same class object is reused
+# across calls so pickle can resolve it via sys.modules.
+_options_enum_cache: dict[tuple, enum.StrEnum] = {}
+
+
 class Parameter(BaseConfig):
     """Defines a parameter for an operation."""
 
@@ -123,8 +130,14 @@ class Parameter(BaseConfig):
 
     @staticmethod
     def options(name, options: list[str], default=None):
-        e = enum.StrEnum(f"OptionsFor_{name}", [(o, o) for o in options])
-        return Parameter.basic(name, default or options[0], e)
+        key = (name, tuple(options))
+        if key not in _options_enum_cache:
+            opts_hash = hashlib.md5(str(key).encode()).hexdigest()[:8]
+            cls_name = f"OptionsFor_{name}_{opts_hash}"
+            e = enum.StrEnum(cls_name, [(o, o) for o in options])
+            setattr(sys.modules[__name__], cls_name, e)
+            _options_enum_cache[key] = e
+        return Parameter.basic(name, default or options[0], _options_enum_cache[key])
 
     @staticmethod
     def basic(name, default=None, type=None):
@@ -601,10 +614,14 @@ def install_requirements(req: pathlib.Path):
 
 
 def run_user_script(script_path: pathlib.Path):
-    spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
+    path_hash = hashlib.md5(str(script_path.parent).encode()).hexdigest()[:8]
+    module_name = f"_lynxkite_userscript_{path_hash}_{script_path.stem}"
+    spec = importlib.util.spec_from_file_location(module_name, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
     assert spec.loader
+    # Register the module so that classes defined in user scripts are picklable by joblib.
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
 
 
