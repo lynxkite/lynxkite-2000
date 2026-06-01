@@ -30,6 +30,7 @@ import Backspace from "~icons/tabler/backspace.jsx";
 import GridDots from "~icons/tabler/grid-dots.jsx";
 import LibraryMinus from "~icons/tabler/library-minus.jsx";
 import LibraryPlus from "~icons/tabler/library-plus.jsx";
+import Login from "~icons/tabler/login.jsx";
 import Pause from "~icons/tabler/player-pause.jsx";
 import Play from "~icons/tabler/player-play.jsx";
 import Robot from "~icons/tabler/robot.jsx";
@@ -38,6 +39,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
+import { login } from "../auth";
 import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { useAutoConnect } from "./autoConnect.ts";
@@ -148,10 +150,10 @@ function LynxKiteFlow() {
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-    | {
-      pos: XYPosition;
-    }
-    | undefined,
+      | {
+          pos: XYPosition;
+        }
+      | undefined,
   );
   const nodeTypes = useMemo(
     () => ({
@@ -635,6 +637,9 @@ function LynxKiteFlow() {
               <CloseIcon />
             </Link>
           </Tooltip>
+          <button type="button" className="btn btn-link" onClick={() => login()} title="Log in">
+            <Login />
+          </button>
         </div>
       </div>
       <div className="workspace-body">
