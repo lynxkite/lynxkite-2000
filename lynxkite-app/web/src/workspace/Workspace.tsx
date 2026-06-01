@@ -11,7 +11,17 @@ import {
   type XYPosition,
 } from "@xyflow/react";
 import axios from "axios";
-import { type MouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  type MouseEvent,
+  memo,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import type { Array as YArray, Map as YMap } from "yjs";
@@ -28,9 +38,8 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { parentPath, uploadFile, usePath } from "../common.ts";
+import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
-import Assistant from "./Assistant.tsx";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
@@ -50,9 +59,7 @@ import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
 
-type GlobalConfig = {
-  assistant_available: boolean;
-};
+const Assistant = lazy(() => import("./Assistant.tsx"));
 
 // The workspace gets re-rendered on every frame when a node is moved.
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
@@ -124,8 +131,7 @@ function LynxKiteFlow() {
     localStorage.setItem("gridSnapEnabled", String(gridSnapEnabled));
   }, [gridSnapEnabled]);
 
-  const fetcher: Fetcher = (resource: string, init?: RequestInit) =>
-    fetch(resource, init).then((res) => res.json());
+  const fetcher: Fetcher = (resource: string, init?: RequestInit) => apiJson(resource, init);
   const encodedPathForAPI = path!
     .split("/")
     .map((segment) => encodeURIComponent(segment))
@@ -134,7 +140,7 @@ function LynxKiteFlow() {
     `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher as Fetcher<Catalogs>,
   );
-  const config = useSWR<GlobalConfig>("/api/config", fetcher as Fetcher<GlobalConfig>);
+  const config = useConfig();
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
@@ -708,7 +714,11 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        {isAssistantOpen && <Assistant workspace={path} />}
+        {isAssistantOpen && (
+          <Suspense fallback={<aside className="assistant-panel" />}>
+            <Assistant workspace={path} />
+          </Suspense>
+        )}
       </div>
     </div>
   );
