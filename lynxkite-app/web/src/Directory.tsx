@@ -11,7 +11,7 @@ import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { usePath } from "./common.ts";
+import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 
@@ -38,7 +38,7 @@ function EntryCreator(props: {
   );
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
@@ -74,9 +74,10 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
+  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
-  const config = useSWR<{ enterprise_available?: boolean }>("/api/config", fetcher);
+  const config = useConfig();
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
@@ -121,7 +122,7 @@ export default function Directory() {
   }
   async function newFolderIn(path: string, folderName: string) {
     const pathSlash = path ? `${path}/` : "";
-    const res = await fetch("/api/dir/mkdir", {
+    const res = await apiFetch("/api/dir/mkdir", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: pathSlash + folderName }),
@@ -137,7 +138,7 @@ export default function Directory() {
     if (confirmationEnabled && !window.confirm(`Are you sure you want to delete "${item.name}"?`))
       return;
     const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
-    await fetch(apiPath, {
+    await apiFetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: item.name }),
@@ -161,7 +162,7 @@ export default function Directory() {
       setRenameTarget(null);
       return;
     }
-    const res = await fetch("/api/rename", {
+    const res = await apiFetch("/api/rename", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ old_path: renameTarget.name, new_path: newPath }),

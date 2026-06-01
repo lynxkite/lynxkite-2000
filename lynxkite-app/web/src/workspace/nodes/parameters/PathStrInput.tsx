@@ -28,7 +28,7 @@ export default function PathStrInput({ value, onChange }: PathStrInputProps) {
 
   const list = useSWR<DirectoryEntry[]>(
     isOpen ? `/api/dir/list?path=${encodeURIComponent(currentPath)}` : null,
-    pathFetcher,
+    (url: string) => pathFetcher<DirectoryEntry[]>(url),
     { dedupingInterval: 0 },
   );
 
