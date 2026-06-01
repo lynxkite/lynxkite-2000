@@ -192,6 +192,12 @@ svg {
     }
   }
 
+  .user-menu-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
   .user-menu-button {
     display: flex;
     align-items: center;
