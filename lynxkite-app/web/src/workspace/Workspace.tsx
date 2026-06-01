@@ -40,6 +40,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
@@ -635,6 +636,7 @@ function LynxKiteFlow() {
               <CloseIcon />
             </Link>
           </Tooltip>
+          <UserMenu />
         </div>
       </div>
       <div className="workspace-body">
