@@ -57,7 +57,7 @@ cat >"$client_json" <<EOF
 EOF
 trap 'rm -f "$client_json"' EXIT
 
-themes_dir="$(cd "$(dirname "$0")/../../keycloak/theme" && pwd)"
+themes_dir="$(cd "../../keycloak/theme" && pwd)"
 
 docker run --name "$container_name" \
   -d \
