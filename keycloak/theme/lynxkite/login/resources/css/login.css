@@ -189,6 +189,46 @@ body.login-pf::before {
   box-shadow: 0 0 0 3px rgba(57, 188, 243, 0.15);
 }
 
+/* Password visibility toggle */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper .login-input {
+  padding-right: 2.8rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.password-toggle:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.password-toggle .eye-off-icon {
+  display: none;
+}
+
+.password-toggle.visible .eye-icon {
+  display: none;
+}
+
+.password-toggle.visible .eye-off-icon {
+  display: block;
+}
+
 /* Options row */
 .login-options {
   display: flex;
@@ -201,15 +241,42 @@ body.login-pf::before {
 .remember-me {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
+  font-size: 0.85rem;
 }
 
 .remember-me input[type="checkbox"] {
-  accent-color: #39bcf3;
-  width: 14px;
-  height: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.remember-me input[type="checkbox"]:checked {
+  background: #39bcf3;
+  border-color: #39bcf3;
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 3px;
+  width: 5px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .forgot-link {

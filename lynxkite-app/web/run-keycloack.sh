@@ -83,7 +83,7 @@ if ! run_kcadm get "realms/$realm" >/dev/null 2>&1; then
   run_kcadm create realms -s realm="$realm" -s enabled=true
 fi
 
-run_kcadm update "realms/$realm" -s loginTheme=lynxkite
+run_kcadm update "realms/$realm" -s loginTheme=lynxkite -s rememberMe=true
 
 if [[ -z "$(client_uuid)" ]]; then
   run_kcadm_with_file create clients -r "$realm"
