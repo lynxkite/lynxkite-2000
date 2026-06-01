@@ -13,6 +13,7 @@ from lynxkite_core import opcontext
 from lynxkite_core import workspace
 from . import crdt
 from . import icons
+from . import auth
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 
@@ -56,15 +57,18 @@ def _get_ops(env: str):
 
 
 @app.get("/api/catalog")
-def get_catalog(workspace: str):
+async def get_catalog(workspace: str, request: fastapi.Request):
+    await auth.check_permission(request, "read", workspace)
     ops.load_user_scripts(workspace)
     return {env: _get_ops(env) for env in ops.CATALOGS}
 
 
 @app.get("/api/config")
-def get_config() -> dict[str, bool]:
+def get_config() -> dict[str, bool | str | None]:
     return {
         "assistant_available": assistant_router is not None,
+        "authentication_issuer": auth.issuer,
+        "authentication_audience": auth.audience,
         "enterprise_available": enterprise_backend is not None,
     }
 
@@ -73,7 +77,8 @@ data_path = pathlib.Path()
 
 
 @app.post("/api/delete")
-async def delete_workspace(req: dict):
+async def delete_workspace(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
     json_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
@@ -97,7 +102,8 @@ def _get_path_type(path: pathlib.Path) -> str:
 
 
 @app.get("/api/dir/list")
-def list_dir(path: str):
+async def list_dir(path: str, request: fastapi.Request):
+    await auth.check_permission(request, "read", path)
     dir_path = data_path / path
     assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
     return sorted(
@@ -114,7 +120,8 @@ def list_dir(path: str):
 
 
 @app.post("/api/dir/mkdir")
-def make_dir(req: dict):
+async def make_dir(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
     path = data_path / req["path"]
     assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
     assert not path.exists(), f"{path} already exists"
@@ -122,7 +129,8 @@ def make_dir(req: dict):
 
 
 @app.post("/api/dir/delete")
-def delete_dir(req: dict):
+async def delete_dir(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
     path: pathlib.Path = data_path / req["path"]
     assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()]), (
         f"Path '{path}' is invalid"
@@ -131,7 +139,9 @@ def delete_dir(req: dict):
 
 
 @app.post("/api/rename")
-def rename_path(req: dict):
+async def rename_path(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["old_path"])
+    await auth.check_permission(request, "write", req["new_path"])
     old_path: pathlib.Path = data_path / req["old_path"]
     new_path: pathlib.Path = data_path / req["new_path"]
     assert old_path.is_relative_to(data_path), f"Path '{old_path}' is invalid"
@@ -147,6 +157,7 @@ def rename_path(req: dict):
 @app.get("/api/service/{module_path:path}")
 async def service_get(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
+    await auth.check_permission(req, "read", "")
     module = lynxkite_plugins[module_path.split("/")[0]]
     return await module.api_service_get(req)
 
@@ -154,6 +165,7 @@ async def service_get(req: fastapi.Request, module_path: str):
 @app.post("/api/service/{module_path:path}")
 async def service_post(req: fastapi.Request, module_path: str):
     """Executors can provide extra HTTP APIs through the /api/service endpoint."""
+    await auth.check_permission(req, "write", "")
     module = lynxkite_plugins[module_path.split("/")[0]]
     return await module.api_service_post(req)
 
@@ -161,6 +173,7 @@ async def service_post(req: fastapi.Request, module_path: str):
 @app.post("/api/upload")
 async def upload(req: fastapi.Request):
     """Receives file uploads and stores them in DATA_PATH."""
+    await auth.check_permission(req, "write", "uploads")
     form = await req.form()
     for file in form.values():
         if not isinstance(file, fastapi.UploadFile) or not file.filename:
@@ -172,9 +185,20 @@ async def upload(req: fastapi.Request):
     return {"status": "ok"}
 
 
+@app.post("/api/download")
+async def download(req: dict):
+    """Sends a file from DATA_PATH to the client."""
+    file_path = data_path / req["path"]
+    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    if not file_path.exists() or not file_path.is_file():
+        raise fastapi.HTTPException(status_code=404, detail="File not found")
+    return fastapi.responses.FileResponse(file_path)
+
+
 @app.post("/api/execute_workspace")
-async def execute_workspace(name: str):
+async def execute_workspace(name: str, req: fastapi.Request):
     """Trigger and await the execution of a workspace."""
+    await auth.check_permission(req, "execute", name)
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
