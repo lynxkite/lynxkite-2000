@@ -1,6 +1,6 @@
 import axios from "axios";
-import { UserManager } from "oidc-client-ts";
-import { useContext, useEffect, useMemo } from "react";
+import { type User, UserManager } from "oidc-client-ts";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { LynxKiteState } from "./workspace/LynxKiteState";
@@ -73,6 +73,36 @@ export async function triggerLogin() {
   }
 }
 
+export async function triggerRegister() {
+  const manager = getUserManager();
+  if (!manager || loginStarted) {
+    return;
+  }
+  loginStarted = true;
+  try {
+    await manager.signinRedirect({
+      state: {
+        returnTo: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+      },
+      extraQueryParams: {
+        screen_hint: "signup",
+      },
+    });
+  } catch (_error) {
+    loginStarted = false;
+  }
+}
+
+export async function triggerLogout() {
+  const manager = getUserManager();
+  if (!manager) {
+    return;
+  }
+  await manager.signoutRedirect({
+    post_logout_redirect_uri: window.location.origin,
+  });
+}
+
 function ensureAxiosInterceptors() {
   if (axiosInterceptorsInstalled) {
     return;
@@ -142,6 +172,26 @@ export async function completeLoginCallback(): Promise<string> {
   loginStarted = false;
   const state = user?.state as { returnTo?: string } | undefined;
   return state?.returnTo || "/";
+}
+
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const manager = getUserManager();
+    if (!manager) {
+      return;
+    }
+    manager.getUser().then(setUser);
+    const onUserLoaded = (u: User) => setUser(u);
+    const onUserUnloaded = () => setUser(null);
+    manager.events.addUserLoaded(onUserLoaded);
+    manager.events.addUserUnloaded(onUserUnloaded);
+    return () => {
+      manager.events.removeUserLoaded(onUserLoaded);
+      manager.events.removeUserUnloaded(onUserUnloaded);
+    };
+  }, []);
+  return user;
 }
 
 export function useConfig() {
