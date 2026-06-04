@@ -20,13 +20,13 @@ try:
         make_service_name,
     )
     from lynxkite_enterprise import k8s
+
     enterpise_backend = True
 except ImportError:
     enterpise_backend = False
 
 from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
-
 
 
 def elementwise(
@@ -198,7 +198,9 @@ async def _elementwise_impl_async_remote(
         endpoint = f"http://{ip}:{port}{endpoint_path}"
         health_endpoint = f"http://{ip}:{port}/lim/health"
 
-        health_payload = await ensure_lim_worker_ready(endpoint=health_endpoint, timeout=min(timeout, 30))
+        health_payload = await ensure_lim_worker_ready(
+            endpoint=health_endpoint, timeout=min(timeout, 30)
+        )
         services = health_payload.get("services", [])
         if service_name not in services:
             raise RuntimeError(

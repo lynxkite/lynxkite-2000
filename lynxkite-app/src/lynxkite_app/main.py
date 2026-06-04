@@ -1,5 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import os
 import shutil
 import pydantic
 import fastapi
@@ -25,9 +26,19 @@ except ImportError:
     assistant_router = None
 
 try:
-    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
+    import lynxkite_enterprise.backend as enterprise_backend
 except ImportError:
     enterprise_backend = None
+
+LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER", "")
+
+if LIM_WORKER:
+    try:
+        from lynxkite_enterprise.lim_worker import register_lim_routes
+    except ImportError:
+        register_lim_routes = None
+else:
+    register_lim_routes = None
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -46,6 +57,8 @@ if assistant_router is not None:
     app.include_router(assistant_router)
 if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
+if register_lim_routes is not None and LIM_WORKER:
+    register_lim_routes(app)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
