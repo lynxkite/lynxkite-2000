@@ -57,6 +57,102 @@ def derive_property(
     return b
 
 
+@op("Filter with formula")
+def filter_with_formula(
+    b: core.Bundle, *, table_name: core.TableName, formula: ops.LongStr
+) -> core.Bundle:
+    """Removes all rows where the formula evaluates to false"""
+    b = b.copy()
+    df = b.dfs[table_name]
+    b.dfs[table_name] = df.query(formula)
+    return b
+
+
+@op("Vector from attribute pair", color="orange", icon="link")
+def vector_from_attribute_pair(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute1: core.ColumnNameByTableName,
+    attribute2: core.ColumnNameByTableName,
+    new_name: str,
+) -> core.Bundle:
+    """Creates a new column with vectors that contain the two attributes"""
+    b = b.copy()
+    df = b.dfs[table_name]
+    df[new_name] = list(zip(df[attribute1], df[attribute2]))
+    return b
+
+
+@op("Rename table", color="orange", icon="link")
+def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
+    """Assigns a new name to the table"""
+    b = b.copy()
+    b.dfs[new_name] = b.dfs.pop(old_name)
+    return b
+
+
+@op("Use table as vertices", color="orange", icon="link")
+def use_as_vertices(b: core.Bundle) -> core.Bundle:
+    """Creates a graph with vertices from the table and with no edges"""
+    b = b.copy()
+    b.dfs["nodes"] = b.dfs.pop(list(b.dfs.keys())[0])
+    b.dfs["edges"] = pd.DataFrame()
+    return b
+
+
+class OrderType(enum.StrEnum):
+    asc = "ascending"
+    desc = "descending"
+
+
+@op("Add rank attribute", color="orange", icon="link")
+def add_rank(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute: core.ColumnNameByTableName,
+    rank_name: str,
+    order: OrderType,
+):
+    """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"""
+    b = b.copy()
+    df = b.dfs[table_name]
+
+    df = df.sort_values(by=attribute, ascending=(order == OrderType.asc))
+    df[rank_name] = range(len(df))
+
+    b.dfs[table_name] = df
+    return b
+
+
+@op("Connect vertices on attribute")
+def connect_vertices(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute1: core.ColumnNameByTableName,
+    attribute2: core.ColumnNameByTableName,
+) -> core.Bundle:
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+
+    df["_id"] = range(len(df))
+
+    df_out = pd.merge(
+        df,
+        df,
+        left_on=attribute1,
+        right_on=attribute2,
+        suffixes=("_src", "_dst"),
+    )
+
+    df_out = df_out[df_out["_id_src"] < df_out["_id_dst"]]
+    df_out = df_out.drop(columns=["_id_src", "_id_dst"])
+    b.dfs["edges"] = df_out
+    return b
+
+
 @op("Enter table data", color="green", icon="table-filled")
 def enter_table_data(
     *,
