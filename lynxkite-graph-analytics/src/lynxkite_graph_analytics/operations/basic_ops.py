@@ -126,8 +126,8 @@ def add_rank(
     return b
 
 
-@op("Connect vertices on attribute")
-def connect_vertices(
+@op("Connect nodes on attribute")
+def connect_nodes(
     b: core.Bundle,
     *,
     table_name: core.TableName,
