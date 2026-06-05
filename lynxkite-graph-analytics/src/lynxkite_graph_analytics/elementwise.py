@@ -12,7 +12,6 @@ from lynxkite_core.ops import OpContext
 try:
     from lynxkite_enterprise import lim_worker
     from lynxkite_enterprise.lim import (
-        LimConfig,
         call_lim_worker,
         ensure_lim_worker_ready,
         is_lim_worker,
