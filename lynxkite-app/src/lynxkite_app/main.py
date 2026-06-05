@@ -1,6 +1,7 @@
 """The FastAPI server for serving the LynxKite application."""
 
 import shutil
+import orjson
 import pydantic
 import fastapi
 import joblib
@@ -56,6 +57,11 @@ def _get_ops(env: str):
     return res
 
 
+def _convert_to_json_response(data):
+    json_data = orjson.dumps(data)
+    return fastapi.responses.JSONResponse(content=json_data, media_type="application/json")
+
+
 @app.get("/api/catalog")
 async def get_catalog(workspace: str, request: fastapi.Request):
     await auth.check_permission(request, "read", workspace)
@@ -85,6 +91,23 @@ async def delete_workspace(req: dict, request: fastapi.Request):
     json_path.unlink()
     crdt_path.unlink()
     crdt.delete_room(req["path"])
+
+
+@app.get("/api/node_output")
+async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
+    print(f"Received request for output of node {node_id} in workspace {workspace}")
+    await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
+    json_path = data_path / ".workspace_files" / workspace / f"{node_id}.json"
+    assert json_path.is_relative_to(data_path / ".workspace_files"), (
+        f"Path '{json_path}' is invalid"
+    )
+    output = None
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as f:
+            output = orjson.loads(f.read())
+    if output is None:
+        raise fastapi.HTTPException(status_code=404, detail="Output not found")
+    return _convert_to_json_response(output)
 
 
 class DirectoryEntry(pydantic.BaseModel):

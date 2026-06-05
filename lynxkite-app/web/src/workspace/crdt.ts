@@ -14,6 +14,7 @@ import {
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
+import { apiFetch } from "../common.ts";
 import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 
 function endpointSignature(endpoints: any[] | undefined) {
@@ -36,6 +37,7 @@ function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
   ) {
     return true;
   }
+  if (nextNode.data?.display !== null) return true;
   return false;
 }
 
@@ -85,6 +87,7 @@ class CRDTConnection {
   reactFlow: ReturnType<typeof useReactFlow>;
   updateNodeInternals: (id: string) => void;
   state: CRDTWorkspace;
+  displayCache: Map<string, any | "loading"> = new Map();
   observers: Set<() => void> = new Set();
   constructor(
     reactFlow: ReturnType<typeof useReactFlow>,
@@ -320,6 +323,23 @@ class CRDTConnection {
         mergedNode.measured = { width: n.width, height: n.height };
       }
 
+      if (n.data?.display_version != null && ws.path) {
+        const cacheKey = `${n.id}-${n.data.display_version}`;
+        const cached = this.displayCache.get(cacheKey);
+        if (cached === 'loading') {
+          mergedNode.data.display = cached;
+        } else if (cached !== undefined) {
+          mergedNode.data.display = cached;
+        } else {
+          this.displayCache.set(cacheKey, "loading");
+          fetchDisplay(n.id, n.data.display_version, ws.path).then((display) => {
+            this.displayCache.set(cacheKey, display);
+            mergedNode.data.display = display;
+            this.updateState();
+          });
+        }
+      }
+
       newNodes.push(mergedNode);
       if (needsNodeInternalsUpdate(oldNodes[n.id], mergedNode)) {
         changedNodeIds.push(n.id);
@@ -346,6 +366,32 @@ class CRDTConnection {
     }
   };
 }
+
+async function fetchDisplay(nodeId: string, displayVersion: number, wsPath: string): Promise<any> {
+  try {
+    const workspace = wsPath.replace(/\.lynxkite\.json$/, "");
+    const sanitizedWorkspacePath = workspace.split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
+    const sanitizedNodeId = encodeURIComponent(nodeId);
+    const apiPath = `/api/node_output?workspace=${sanitizedWorkspacePath}&node_id=${sanitizedNodeId}&version=${displayVersion}`;
+    const response = await apiFetch(apiPath, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      console.error("Failed to fetch display", response.statusText);
+      return null;
+    }
+    console.log(`Fetched display for node ${nodeId} version ${displayVersion} from workspace ${workspace}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching display", error);
+    return null;
+  }
+}
+
+
 
 export function useCRDTWorkspace(path: string): CRDTWorkspace {
   const reactFlow = useReactFlow();
