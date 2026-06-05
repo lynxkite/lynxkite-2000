@@ -10,15 +10,15 @@ import pandas as pd
 from lynxkite_core.ops import OpContext
 
 try:
-    from lynxkite_enterprise import lim_worker
-    from lynxkite_enterprise.lim import (
+    from lynxkite_enterprise import lim_worker  # ty: ignore[unresolved-import]
+    from lynxkite_enterprise.lim import (  # ty: ignore[unresolved-import]
         call_lim_worker,
         ensure_lim_worker_ready,
         is_lim_worker,
         lim_to_k8s_needs_kwargs,
         make_service_name,
     )
-    from lynxkite_enterprise import k8s
+    from lynxkite_enterprise import k8s  # ty: ignore[unresolved-import]
 
     enterpise_backend = True
 except ImportError:

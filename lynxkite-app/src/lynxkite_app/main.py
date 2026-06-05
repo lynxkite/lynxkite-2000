@@ -26,7 +26,7 @@ except ImportError:
     assistant_router = None
 
 try:
-    import lynxkite_enterprise.backend as enterprise_backend
+    import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
     enterprise_backend = None
 
@@ -34,7 +34,9 @@ LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER", "")
 
 if LIM_WORKER:
     try:
-        from lynxkite_enterprise.lim_worker import register_lim_routes
+        from lynxkite_enterprise.lim_worker import (  # ty: ignore[unresolved-import]
+            register_lim_routes,
+        )
     except ImportError:
         register_lim_routes = None
 else:
