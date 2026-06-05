@@ -38,6 +38,7 @@ class WorkspaceNodeData(BaseConfig):
     op_id: str
     params: dict
     display: Optional[Any] = None
+    display_version: Optional[int] = None
     input_metadata: Optional[list[dict]] = None
     output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
@@ -73,6 +74,7 @@ class WorkspaceNode(BaseConfig):
     width: Optional[float] = None
     height: Optional[float] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
+    _ws_path: Optional[str] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
         """Look up this node's CRDT Map fresh from the live workspace CRDT. We always walk the live
@@ -110,7 +112,33 @@ class WorkspaceNode(BaseConfig):
             with nc.doc.transaction():
                 try:
                     nc["data"]["status"] = NodeStatus.done
-                    nc["data"]["display"] = self.data.display
+                    # If old version had display and new run has None,
+                    # frontend keeps previous cached display keyed by unchanged version.
+                    # TODO: check if this is an actual problem.
+                    #   (e.g. the boxes that use display always return something)
+                    if self._ws_path and result.display is not None:
+                        path = f".workspace_files/{self._ws_path.removesuffix('.lynxkite.json')}/{self.id}.json"
+                        dirname, basename = os.path.split(path)
+                        if dirname:
+                            os.makedirs(dirname, exist_ok=True)
+                        with tempfile.NamedTemporaryFile(
+                            "w",
+                            encoding="utf-8",
+                            prefix=f".{basename}.",
+                            dir=dirname,
+                            delete=False,
+                        ) as f:
+                            temp_name = f.name
+                            json.dump(
+                                result.display,
+                                f,
+                                indent=2,
+                            )
+                        os.replace(temp_name, path)
+                        # nc["data"]["display"] = "file://" + path
+                        nc["data"]["display_version"] = (nc["data"].get("display_version") or 0) + 1
+                    else:
+                        nc["data"]["display"] = self.data.display
                     nc["data"]["input_metadata"] = self.data.input_metadata
                     nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
@@ -211,12 +239,15 @@ class Workspace(BaseConfig):
 
     def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
-        # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
-        j = self.model_dump()
+        j = self.model_dump(mode="json")
+        for node in j.get("nodes", []):
+            if "display" in node.get("data", {}):
+                del node["data"]["display"]
+            if "display_version" in node.get("data", {}):
+                del node["data"]["display_version"]
         if "path" in j:
             del j["path"]
-        j = json.dumps(j, indent=2, sort_keys=True) + "\n"
-        return j
+        return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
     def save(self, path: str | pathlib.Path):
         """Persist the workspace to a local file in JSON format."""
@@ -291,7 +322,7 @@ class Workspace(BaseConfig):
                     nc["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
                     nc["data"]["error"] = "Unknown operation."
 
-    def connect_crdt(self, ws_crdt: "pycrdt.Map"):
+    def connect_crdt(self, ws_crdt: "pycrdt.Map", path: Optional[str] = None):
         import pycrdt
 
         self._crdt = ws_crdt
@@ -307,6 +338,7 @@ class Workspace(BaseConfig):
                     if "data" not in node_crdt:
                         node_crdt["data"] = pycrdt.Map()
                 node_python._ws_crdt = ws_crdt
+                node_python._ws_path = path if path else None
 
     def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""

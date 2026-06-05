@@ -8,6 +8,7 @@ import fastapi
 import os.path
 import pycrdt.websocket
 import pycrdt.store.file
+import typing
 import uvicorn.protocols.utils
 import builtins
 from lynxkite_core import workspace, ops
@@ -63,17 +64,15 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
                 workspace.Workspace().save(name)
             else:
                 load_workspace(ws, name)
-        ws_simple = workspace.Workspace.model_validate(ws.to_py())
-        clean_input(ws_simple)
         # Set the last known version to the current state, so we don't trigger a change event.
-        last_known_versions[name] = ws_simple
+        last_known_versions[name] = _workspace_fingerprint_from_dict(ws.to_py())
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
         # We hang the YDoc pointer on the room, so it only gets garbage collected when the room does.
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
-        def on_change(changes):
+        def on_change(changes: list[pycrdt.MapEvent]):
             task = loop.create_task(workspace_changed(name, changes, ws))
             # We have no way to await workspace_changed(). The best we can do is to
             # dereference its result after it's done, so exceptions are logged normally.
@@ -168,7 +167,46 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         return room
 
 
-last_ws_input = None
+def _workspace_fingerprint_from_dict(ws_dict):
+    """Produce a lightweight fingerprint for change detection.
+
+    Operates on a plain dict (e.g. from CRDT .to_py() or model_dump),
+    avoiding expensive model_validate, deep copy, and pydantic __eq__.
+    """
+    # Work on a shallow copy so we don't mutate the input.
+    ws_dict = dict(ws_dict)
+    nodes = []
+    for node in ws_dict.get("nodes", []):
+        node = dict(node)
+        data = dict(node.get("data", {}))
+        data["display"] = None
+        data["display_version"] = None
+        data["input_metadata"] = None
+        data["output_metadata"] = None
+        data["error"] = None
+        data["message"] = None
+        data["telemetry"] = None
+        data["collapsed"] = False
+        data["expanded_height"] = 0
+        data["status"] = "done"
+        params = dict(data.get("params", {}))
+        for p in list(params):
+            if p.startswith("_"):
+                del params[p]
+        if data.get("op_id") == "Comment":
+            params = {}
+        data["params"] = params
+        node["data"] = data
+        node["position"] = {"x": 0, "y": 0}
+        node["width"] = 0
+        node["height"] = 0
+        node["__execution_delay"] = 0
+        if node.get("model_extra"):
+            for key in list(node["model_extra"]):
+                del node[key]
+        nodes.append(node)
+    ws_dict["nodes"] = nodes
+    return ws_dict
 
 
 def clean_input(ws_pyd):
@@ -225,8 +263,8 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
         )
 
 
-last_known_versions = {}
-delayed_executions = {}
+last_known_versions: dict[str, typing.Any] = {}
+delayed_executions: dict[str, asyncio.Task] = {}
 
 
 def print_diff(old, new, prefix=""):
@@ -264,17 +302,19 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         changes: Changes performed to the workspace.
         ws_crdt: CRDT object representing the workspace.
     """
-    ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
+    # if all(all(key in ("height", "width") for key in change.keys) for change in changes):
+    #     # Ignore changes that only update the height and width, which are triggered by the frontend when moving nodes around.
+    #     print("Ignoring change with keys", [change.keys for change in changes])
+    #     return
+    raw = ws_crdt.to_py()
+    ws_fingerprint = _workspace_fingerprint_from_dict(raw)
+    if ws_fingerprint == last_known_versions.get(name):
+        return
+    last_known_versions[name] = ws_fingerprint
+    ws_pyd = workspace.Workspace.model_validate(raw)
     if enterprise_backend is not None:
         enterprise_backend.on_workspace_changed(ws_websocket_server)
     ws_pyd.save(pathlib.Path() / name)
-    # Do not trigger execution for superficial changes.
-    # This is a quick solution until we build proper caching.
-    ws_simple = ws_pyd.model_copy(deep=True)
-    clean_input(ws_simple)
-    if ws_simple == last_known_versions.get(name):
-        return
-    last_known_versions[name] = ws_simple
     if name in delayed_executions:
         delayed_executions[name].cancel()
     # Frontend changes that result from typing are delayed to avoid
@@ -315,7 +355,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     path = cwd / name
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
     ops.load_user_scripts(name)
-    ws_pyd.connect_crdt(ws_crdt)
+    ws_pyd.connect_crdt(ws_crdt, name)
     ws_pyd.update_metadata()
     ws_pyd.path = name
     ws_pyd.normalize()
