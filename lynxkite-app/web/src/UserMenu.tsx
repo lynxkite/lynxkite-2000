@@ -2,18 +2,19 @@ import { useState } from "react";
 import Login from "~icons/tabler/login";
 import Logout from "~icons/tabler/logout";
 import UserCircle from "~icons/tabler/user-circle";
-import UserPlus from "~icons/tabler/user-plus";
-import { triggerLogin, triggerLogout, triggerRegister, useAuth } from "./common";
+import { triggerLogin, triggerLogout, useAuth, useConfig } from "./common";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
+  const { data: config } = useConfig();
   const user = useAuth();
+  const authEnabled = !!config?.authentication_issuer;
   const loggedIn = !!user && !user.expired;
   const userName = user?.profile?.name || "User";
   const userEmail =
     user?.profile?.email || user?.profile?.preferred_username || user?.profile?.name;
 
-  if (!loggedIn) {
+  if (!loggedIn && authEnabled) {
     return (
       <div className="user-menu-actions">
         <button
@@ -23,14 +24,6 @@ export default function UserMenu() {
           title="Sign In"
         >
           <Login /> <span className="user-menu-label">Sign In</span>
-        </button>
-        <button
-          type="button"
-          className="user-menu-button"
-          onClick={() => void triggerRegister()}
-          title="Sign Up"
-        >
-          <UserPlus /> <span className="user-menu-label">Sign Up</span>
         </button>
       </div>
     );

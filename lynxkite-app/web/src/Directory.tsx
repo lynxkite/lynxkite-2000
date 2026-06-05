@@ -74,11 +74,10 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
-  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
   const config = useConfig();
-  const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
+  const list = useSWR(config.data ? `/api/dir/list?path=${encodedPath}` : null, fetcher, {
     dedupingInterval: 0,
   });
   const navigate = useNavigate();
