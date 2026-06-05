@@ -107,9 +107,19 @@ export async function triggerLogout() {
   if (!manager) {
     return;
   }
-  await manager.signoutRedirect({
+  // Remove local user state before redirecting.
+  await manager.removeUser();
+  // Build the logout URL manually with client_id instead of id_token_hint.
+  // Keycloak 26 skips the confirmation page when id_token_hint is present,
+  // but shows it when relying on the browser SSO session cookie + client_id.
+  const metadata = await manager.metadataService.getMetadata();
+  const endSessionEndpoint = metadata.end_session_endpoint;
+  if (!endSessionEndpoint) return;
+  const params = new URLSearchParams({
+    client_id: cachedConfig?.authentication_audience ?? "",
     post_logout_redirect_uri: window.location.origin,
   });
+  window.location.href = `${endSessionEndpoint}?${params}`;
 }
 
 function ensureAxiosInterceptors() {
@@ -126,12 +136,7 @@ function ensureAxiosInterceptors() {
   });
   axios.interceptors.response.use(
     (response) => response,
-    async (error) => {
-      if (error?.response?.status === 401) {
-        await triggerLogin();
-      }
-      return Promise.reject(error);
-    },
+    (error) => Promise.reject(error),
   );
   axiosInterceptorsInstalled = true;
 }
@@ -144,14 +149,10 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-  const response = await fetch(input, {
+  return fetch(input, {
     ...init,
     headers,
   });
-  if (response.status === 401) {
-    await triggerLogin();
-  }
-  return response;
 }
 
 export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
@@ -174,6 +175,7 @@ export async function completeLoginCallback(): Promise<string> {
 }
 
 export function useAuth() {
+  const config = getConfig();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     const manager = getUserManager();
@@ -189,7 +191,7 @@ export function useAuth() {
       manager.events.removeUserLoaded(onUserLoaded);
       manager.events.removeUserUnloaded(onUserUnloaded);
     };
-  }, []);
+  }, [config.authentication_issuer, config.authentication_audience]);
   return user;
 }
 
