@@ -93,7 +93,7 @@ def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> 
 
 
 @op("Use table as vertices", color="orange", icon="link")
-def use_as_vertices(b: core.Bundle) -> core.Bundle:
+def use_as_nodes(b: core.Bundle) -> core.Bundle:
     """Creates a graph with vertices from the table and with no edges"""
     b = b.copy()
     b.dfs["nodes"] = b.dfs.pop(list(b.dfs.keys())[0])
@@ -130,26 +130,40 @@ def add_rank(
 def connect_nodes(
     b: core.Bundle,
     *,
-    table_name: core.TableName,
-    attribute1: core.ColumnNameByTableName,
-    attribute2: core.ColumnNameByTableName,
+    table1: core.TableName,
+    id1: str,
+    attribute1: str,
+    table2: core.TableName,
+    id2: str,
+    attribute2: str,
 ) -> core.Bundle:
     b = b.copy()
-    df = b.dfs[table_name].copy()
+    df1 = b.dfs[table1][[id1, attribute1]].copy()
+    df2 = b.dfs[table2][[id2, attribute2]].copy()
 
-    df["_id"] = range(len(df))
+    df1.columns = ["source", "attribute"]
+    df2.columns = ["target", "attribute"]
 
-    df_out = pd.merge(
-        df,
-        df,
-        left_on=attribute1,
-        right_on=attribute2,
-        suffixes=("_src", "_dst"),
+    edges = pd.merge(df1, df2, on="attribute")
+    edges = edges[["source", "target"]]
+
+    if table1 == table2:
+        edges[["source", "target"]] = edges.apply(sorted, axis=1, result_type="expand")
+        edges = edges[edges["source"] != edges["target"]].drop_duplicates()
+
+    b.dfs["edges"] = edges
+    b.relations.append(
+        core.RelationDefinition(
+            name="graph",
+            df="edges",
+            source_column="source",
+            source_table=table1,
+            source_key=id1,
+            target_column="target",
+            target_table=table2,
+            target_key=id2,
+        )
     )
-
-    df_out = df_out[df_out["_id_src"] < df_out["_id_dst"]]
-    df_out = df_out.drop(columns=["_id_src", "_id_dst"])
-    b.dfs["edges"] = df_out
     return b
 
 
