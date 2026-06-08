@@ -1025,6 +1025,17 @@ svg {
     border-bottom: none;
   }
 
+  .entry-drop-zone {
+    min-height: 60px;
+    transition: background 0.15s;
+  }
+
+  .entry-drop-zone.drag-over {
+    background: #39bcf320;
+    outline: 2px dashed #39bcf3;
+    outline-offset: -2px;
+  }
+
   .loading {
     color: #39bcf3;
     margin: 10px;
