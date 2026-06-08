@@ -7,6 +7,7 @@ import enum
 import io
 import json
 import pandas as pd
+import numpy as np
 
 
 op = ops.op_registration(core.ENV)
@@ -138,30 +139,34 @@ def connect_nodes(
     attribute2: str,
 ) -> core.Bundle:
     b = b.copy()
-    df1 = b.dfs[table1][[id1, attribute1]].copy()
-    df2 = b.dfs[table2][[id2, attribute2]].copy()
 
-    df1.columns = ["source", "attribute"]
-    df2.columns = ["target", "attribute"]
-
-    edges = pd.merge(df1, df2, on="attribute")
-    edges = edges[["source", "target"]]
+    df1 = (b.dfs[table1]).add_suffix("_src")
+    df2 = (b.dfs[table2]).add_suffix("_dst")
+    source_key, target_key = id1, id2
+    attribute1, attribute2, id1, id2 = (
+        attribute1 + "_src",
+        attribute2 + "_dst",
+        id1 + "_src",
+        id2 + "_dst",
+    )
+    edges = pd.merge(df1, df2, left_on=attribute1, right_on=attribute2)
 
     if table1 == table2:
-        edges[["source", "target"]] = edges.apply(sorted, axis=1, result_type="expand")
-        edges = edges[edges["source"] != edges["target"]].drop_duplicates()
+        edges[[id1, id2]] = np.sort(edges[[id1, id2]], axis=1)
+        edges = edges[edges[id1] != edges[id2]].drop_duplicates()
 
     b.dfs["edges"] = edges
+
     b.relations.append(
         core.RelationDefinition(
             name="graph",
             df="edges",
-            source_column="source",
+            source_column=id1,
             source_table=table1,
-            source_key=id1,
-            target_column="target",
+            source_key=source_key,
+            target_column=id2,
             target_table=table2,
-            target_key=id2,
+            target_key=target_key,
         )
     )
     return b
