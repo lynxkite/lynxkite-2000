@@ -82,26 +82,6 @@ export async function triggerLogin() {
   }
 }
 
-export async function triggerRegister() {
-  const manager = getUserManager();
-  if (!manager || loginStarted) {
-    return;
-  }
-  loginStarted = true;
-  try {
-    await manager.signinRedirect({
-      state: {
-        returnTo: `${window.location.pathname}${window.location.search}${window.location.hash}`,
-      },
-      extraQueryParams: {
-        screen_hint: "signup",
-      },
-    });
-  } catch (_error) {
-    loginStarted = false;
-  }
-}
-
 export async function triggerLogout() {
   const manager = getUserManager();
   if (!manager) {
