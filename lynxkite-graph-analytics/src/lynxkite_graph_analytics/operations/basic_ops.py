@@ -111,19 +111,19 @@ class OrderType(enum.StrEnum):
 def add_rank(
     b: core.Bundle,
     *,
-    table_name: core.TableName,
-    attribute: core.ColumnNameByTableName,
+    table_column: core.TableColumn,
     rank_name: str,
     order: OrderType,
 ):
     """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"""
+    table, column = table_column
     b = b.copy()
-    df = b.dfs[table_name]
+    df = b.dfs[table]
 
-    df = df.sort_values(by=attribute, ascending=(order == OrderType.asc))
+    df = df.sort_values(by=column, ascending=(order == OrderType.asc))
     df[rank_name] = range(len(df))
 
-    b.dfs[table_name] = df
+    b.dfs[table] = df
     return b
 
 
