@@ -93,15 +93,6 @@ def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> 
     return b
 
 
-@op("Use table as vertices", color="orange", icon="link")
-def use_as_nodes(b: core.Bundle) -> core.Bundle:
-    """Creates a graph with vertices from the table and with no edges"""
-    b = b.copy()
-    b.dfs["nodes"] = b.dfs.pop(list(b.dfs.keys())[0])
-    b.dfs["edges"] = pd.DataFrame()
-    return b
-
-
 class OrderType(enum.StrEnum):
     asc = "ascending"
     desc = "descending"
@@ -138,6 +129,17 @@ def connect_nodes(
     id2: str,
     attribute2: str,
 ) -> core.Bundle:
+    """
+    Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
+
+    Parameters:
+    - table1: Name of the first table
+    - table2: Name of the second table
+    - id1: ID column in the first table
+    - attribute1: Attribute column in the first table used for matching
+    - id2: ID column in the second table
+    - attribute2: Attribute column in the second table used for matching
+    """
     b = b.copy()
 
     df1 = (b.dfs[table1]).add_suffix("_src")
