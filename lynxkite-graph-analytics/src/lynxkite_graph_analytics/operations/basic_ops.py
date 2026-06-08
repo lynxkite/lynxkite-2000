@@ -62,7 +62,7 @@ def derive_property(
 def filter_with_formula(
     b: core.Bundle, *, table_name: core.TableName, formula: ops.LongStr
 ) -> core.Bundle:
-    """Removes all rows where the formula evaluates to false"""
+    """Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"""
     b = b.copy()
     df = b.dfs[table_name]
     b.dfs[table_name] = df.query(formula)
