@@ -1,8 +1,14 @@
-import { useState } from "react";
-import Login from "~icons/tabler/login";
-import Logout from "~icons/tabler/logout";
-import UserCircle from "~icons/tabler/user-circle";
+// Dropdown user menu showing login/logout controls and the current user's name and email.
+import { memo, useState } from "react";
+import LoginIcon from "~icons/tabler/login";
+import LogoutIcon from "~icons/tabler/logout";
+import UserCircleIcon from "~icons/tabler/user-circle";
 import { triggerLogin, triggerLogout, useAuth, useConfig } from "./common";
+
+// Re-rendering icons is expensive in dev mode; memoizing prevents it.
+const Login = memo(LoginIcon);
+const Logout = memo(LogoutIcon);
+const UserCircle = memo(UserCircleIcon);
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -27,6 +33,10 @@ export default function UserMenu() {
         </button>
       </div>
     );
+  }
+
+  if (!loggedIn) {
+    return null;
   }
 
   return (
