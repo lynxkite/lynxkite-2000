@@ -7,12 +7,15 @@ import enum
 import functools
 import hashlib
 import json
+import orjson
 import importlib.util
 import inspect
+import os
 import pathlib
 import pkgutil
 import subprocess
 import sys
+import tempfile
 import traceback
 import types
 import typing
@@ -196,6 +199,16 @@ class Output(BaseConfig):
     position: Position
 
 
+def build_output_path(ws_path: str, node_id: str):
+    """Builds the path to save the display data for a given node output."""
+    if "/" in ws_path:
+        # If the ws is in a subdirectory, we save to that subdirectory
+        ws_path_obj = pathlib.Path(ws_path)
+        return f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.stem.removesuffix('.lynxkite')}/{node_id}.json"
+    else:
+        return f".workspace_files/{ws_path.removesuffix('.lynxkite.json')}/{node_id}.json"
+
+
 @dataclass
 class Result:
     """Represents the result of an operation.
@@ -212,6 +225,34 @@ class Result:
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
+
+    def save_display(self, path: str | None, node_id: str):
+        """Saves the display data to a file. The path is relative to the workspace's data directory."""
+        # If old version had display and new run has None,
+        # frontend keeps previous cached display keyed by unchanged version.
+        # TODO: check if this is an actual problem.
+        #   (e.g. the boxes that use display always return something)
+        if path and self.display is not None:
+            path = build_output_path(path, node_id)
+            dirname, basename = os.path.split(path)
+            if dirname:
+                os.makedirs(dirname, exist_ok=True)
+            with tempfile.NamedTemporaryFile(
+                "w",
+                encoding="utf-8",
+                prefix=f".{basename}.",
+                dir=dirname,
+                delete=False,
+            ) as f:
+                temp_name = f.name
+                f.write(
+                    orjson.dumps(
+                        self.display,
+                        option=orjson.OPT_INDENT_2,
+                    ).decode("utf-8")
+                )
+            os.replace(temp_name, path)
+            self.display = None
 
 
 def get_optional_type(type):
@@ -283,6 +324,7 @@ class Op(BaseConfig):
             ]:
                 # If the operation is a visualization, we use the returned value for display.
                 res = Result(display=res)
+                res.save_display(op_ctx.ws.path, op_ctx.node.id)
             else:
                 res = Result(output=res)
         return res

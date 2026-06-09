@@ -74,7 +74,6 @@ class WorkspaceNode(BaseConfig):
     width: Optional[float] = None
     height: Optional[float] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
-    _ws_path: Optional[str] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
         """Look up this node's CRDT Map fresh from the live workspace CRDT. We always walk the live
@@ -112,33 +111,8 @@ class WorkspaceNode(BaseConfig):
             with nc.doc.transaction():
                 try:
                     nc["data"]["status"] = NodeStatus.done
-                    # If old version had display and new run has None,
-                    # frontend keeps previous cached display keyed by unchanged version.
-                    # TODO: check if this is an actual problem.
-                    #   (e.g. the boxes that use display always return something)
-                    if self._ws_path and result.display is not None:
-                        path = f".workspace_files/{self._ws_path.removesuffix('.lynxkite.json')}/{self.id}.json"
-                        dirname, basename = os.path.split(path)
-                        if dirname:
-                            os.makedirs(dirname, exist_ok=True)
-                        with tempfile.NamedTemporaryFile(
-                            "w",
-                            encoding="utf-8",
-                            prefix=f".{basename}.",
-                            dir=dirname,
-                            delete=False,
-                        ) as f:
-                            temp_name = f.name
-                            json.dump(
-                                result.display,
-                                f,
-                                indent=2,
-                            )
-                        os.replace(temp_name, path)
-                        # nc["data"]["display"] = "file://" + path
-                        nc["data"]["display_version"] = (nc["data"].get("display_version") or 0) + 1
-                    else:
-                        nc["data"]["display"] = self.data.display
+                    nc["data"]["display"] = self.data.display
+                    nc["data"]["display_version"] = (nc["data"].get("display_version") or 0) + 1
                     nc["data"]["input_metadata"] = self.data.input_metadata
                     nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
@@ -338,7 +312,6 @@ class Workspace(BaseConfig):
                     if "data" not in node_crdt:
                         node_crdt["data"] = pycrdt.Map()
                 node_python._ws_crdt = ws_crdt
-                node_python._ws_path = path if path else None
 
     def add_node(self, func=None, **kwargs):
         """For convenience in e.g. tests."""
