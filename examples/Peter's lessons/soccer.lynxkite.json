@@ -64,6 +64,13 @@
       "targetHandle": "b"
     },
     {
+      "id": "Filter with formula 1 output Filter with formula 2 b",
+      "source": "Filter with formula 1",
+      "sourceHandle": "output",
+      "target": "Filter with formula 2",
+      "targetHandle": "b"
+    },
+    {
       "id": "Derive property 2 output Connect nodes on attribute 1 b",
       "source": "Derive property 2",
       "sourceHandle": "output",
@@ -75,13 +82,6 @@
       "source": "Connect nodes on attribute 1",
       "sourceHandle": "output",
       "target": "Filter with formula 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Filter with formula 1 output Filter with formula 2 b",
-      "source": "Filter with formula 1",
-      "sourceHandle": "output",
-      "target": "Filter with formula 2",
       "targetHandle": "b"
     }
   ],
@@ -856,150 +856,6 @@
         "input_metadata": [
           {
             "dataframes": {
-              "merged": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "field_pos_abs",
-                  "field_pos_rel",
-                  "id",
-                  "match_event",
-                  "match_id",
-                  "matchevent_next",
-                  "matchevent_seq",
-                  "name",
-                  "player_id",
-                  "team_name",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "merged",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Connect nodes on attribute",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "event_subtype_dst",
-                  "event_subtype_src",
-                  "event_type_dst",
-                  "event_type_src",
-                  "field_pos_abs_dst",
-                  "field_pos_abs_src",
-                  "field_pos_rel_dst",
-                  "field_pos_rel_src",
-                  "id_dst",
-                  "id_src",
-                  "match_event_dst",
-                  "match_event_src",
-                  "match_id_dst",
-                  "match_id_src",
-                  "matchevent_next_dst",
-                  "matchevent_next_src",
-                  "matchevent_seq_dst",
-                  "matchevent_seq_src",
-                  "name_dst",
-                  "name_src",
-                  "player_id_dst",
-                  "player_id_src",
-                  "team_name_dst",
-                  "team_name_src",
-                  "ts_dst",
-                  "ts_src",
-                  "x_abs_dst",
-                  "x_abs_src",
-                  "x_rel_dst",
-                  "x_rel_src",
-                  "y_abs_dst",
-                  "y_abs_src",
-                  "y_rel_dst",
-                  "y_rel_src"
-                ],
-                "key": "edges",
-                "length": 125462.0
-              },
-              "merged": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "field_pos_abs",
-                  "field_pos_rel",
-                  "id",
-                  "match_event",
-                  "match_id",
-                  "matchevent_next",
-                  "matchevent_seq",
-                  "name",
-                  "player_id",
-                  "team_name",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "merged",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "graph",
-                "source_column": "matchevent_seq_src",
-                "source_key": "matchevent_seq",
-                "source_table": "merged",
-                "target_column": "matchevent_seq_dst",
-                "target_key": "matchevent_seq",
-                "target_table": "merged"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "attribute1": "matchevent_next",
-          "attribute2": "matchevent_seq",
-          "id1": "matchevent_seq",
-          "id2": "matchevent_seq",
-          "table1": "merged",
-          "table2": "merged"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Connect nodes on attribute"
-      },
-      "height": 500.0,
-      "id": "Connect nodes on attribute 1",
-      "position": {
-        "x": 4324.117215521681,
-        "y": 549.6733414147875
-      },
-      "type": "basic",
-      "width": 594.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
               "edges": {
                 "columns": [
                   "event_subtype_dst",
@@ -1371,6 +1227,150 @@
       },
       "type": "basic",
       "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "merged": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "field_pos_abs",
+                  "field_pos_rel",
+                  "id",
+                  "match_event",
+                  "match_id",
+                  "matchevent_next",
+                  "matchevent_seq",
+                  "name",
+                  "player_id",
+                  "team_name",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "merged",
+                "length": 125463.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Connect nodes on attribute",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "event_subtype_dst",
+                  "event_subtype_src",
+                  "event_type_dst",
+                  "event_type_src",
+                  "field_pos_abs_dst",
+                  "field_pos_abs_src",
+                  "field_pos_rel_dst",
+                  "field_pos_rel_src",
+                  "id_dst",
+                  "id_src",
+                  "match_event_dst",
+                  "match_event_src",
+                  "match_id_dst",
+                  "match_id_src",
+                  "matchevent_next_dst",
+                  "matchevent_next_src",
+                  "matchevent_seq_dst",
+                  "matchevent_seq_src",
+                  "name_dst",
+                  "name_src",
+                  "player_id_dst",
+                  "player_id_src",
+                  "team_name_dst",
+                  "team_name_src",
+                  "ts_dst",
+                  "ts_src",
+                  "x_abs_dst",
+                  "x_abs_src",
+                  "x_rel_dst",
+                  "x_rel_src",
+                  "y_abs_dst",
+                  "y_abs_src",
+                  "y_rel_dst",
+                  "y_rel_src"
+                ],
+                "key": "edges",
+                "length": 125462.0
+              },
+              "merged": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "field_pos_abs",
+                  "field_pos_rel",
+                  "id",
+                  "match_event",
+                  "match_id",
+                  "matchevent_next",
+                  "matchevent_seq",
+                  "name",
+                  "player_id",
+                  "team_name",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "merged",
+                "length": 125463.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "graph",
+                "source_column": "matchevent_seq_src",
+                "source_key": "matchevent_seq",
+                "source_table": "merged",
+                "target_column": "matchevent_seq_dst",
+                "target_key": "matchevent_seq",
+                "target_table": "merged"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "source_attribute": "matchevent_next",
+          "source_id": "matchevent_seq",
+          "source_table": "merged",
+          "target_attribute": "matchevent_seq",
+          "target_id": "matchevent_seq",
+          "target_table": "merged"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Connect nodes on attribute"
+      },
+      "height": 606.0,
+      "id": "Connect nodes on attribute 1",
+      "position": {
+        "x": 4291.428804001014,
+        "y": 509.78714580247527
+      },
+      "type": "basic",
+      "width": 672.0
     }
   ],
   "paused": null

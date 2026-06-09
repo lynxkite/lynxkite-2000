@@ -1,5 +1,7 @@
 """Basic operations for this environment."""
 
+import typing
+
 from lynxkite_core import ops
 
 from .. import core, bundle
@@ -118,44 +120,52 @@ def add_rank(
     return b
 
 
+ColumnNameForSource = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<source_table>.columns[]"}
+]
+ColumnNameForTarget = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<target_table>.columns[]"}
+]
+
+
 @op("Connect nodes on attribute")
 def connect_nodes(
     b: core.Bundle,
     *,
-    table1: core.TableName,
-    id1: str,
-    attribute1: str,
-    table2: core.TableName,
-    id2: str,
-    attribute2: str,
+    source_table: core.TableName,
+    source_id: ColumnNameForSource,
+    source_attribute: ColumnNameForSource,
+    target_table: core.TableName,
+    target_id: ColumnNameForTarget,
+    target_attribute: ColumnNameForTarget,
 ) -> core.Bundle:
     """
     Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
 
     Parameters:
-    - table1: Name of the first table
-    - table2: Name of the second table
-    - id1: ID column in the first table
-    - attribute1: Attribute column in the first table used for matching
-    - id2: ID column in the second table
-    - attribute2: Attribute column in the second table used for matching
+    - source_table: Name of the first table
+    - source_id: ID column in the first table
+    - source_attribute: Attribute column in the first table used for matching
+    - target_table: Name of the second table
+    - target_id: ID column in the second table
+    - target_attribute: Attribute column in the second table used for matching
     """
     b = b.copy()
 
-    df1 = (b.dfs[table1]).add_suffix("_src")
-    df2 = (b.dfs[table2]).add_suffix("_dst")
-    source_key, target_key = id1, id2
-    attribute1, attribute2, id1, id2 = (
-        attribute1 + "_src",
-        attribute2 + "_dst",
-        id1 + "_src",
-        id2 + "_dst",
+    df1 = (b.dfs[source_table]).add_suffix("_src")
+    df2 = (b.dfs[target_table]).add_suffix("_dst")
+    source_key, target_key = source_id, target_id
+    source_attribute, target_attribute, source_id, target_id = (
+        source_attribute + "_src",
+        target_attribute + "_dst",
+        source_id + "_src",
+        target_id + "_dst",
     )
-    edges = pd.merge(df1, df2, left_on=attribute1, right_on=attribute2)
+    edges = pd.merge(df1, df2, left_on=source_attribute, right_on=target_attribute)
 
-    if table1 == table2:
-        edges[[id1, id2]] = np.sort(edges[[id1, id2]], axis=1)
-        edges = edges[edges[id1] != edges[id2]].drop_duplicates()
+    if source_table == target_table:
+        edges[[source_id, target_id]] = np.sort(edges[[source_id, target_id]], axis=1)
+        edges = edges[edges[source_id] != edges[target_id]].drop_duplicates()
 
     b.dfs["edges"] = edges
 
@@ -163,11 +173,11 @@ def connect_nodes(
         core.RelationDefinition(
             name="graph",
             df="edges",
-            source_column=id1,
-            source_table=table1,
+            source_column=source_id,
+            source_table=source_table,
             source_key=source_key,
-            target_column=id2,
-            target_table=table2,
+            target_column=target_id,
+            target_table=target_table,
             target_key=target_key,
         )
     )
