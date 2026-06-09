@@ -268,7 +268,7 @@ def print_diff(old, new, prefix=""):
             print(f"{prefix}+ {new}")
 
 
-async def _save_workspace_async(name: str, raw: dict):
+async def _save_workspace_async(name: str, raw: dict[str, typing.Any]):
     """Save the workspace with the given name and contents. This is debounced to avoid excessive saves during rapid changes."""
     this_task = asyncio.current_task()
     ws_pyd = None

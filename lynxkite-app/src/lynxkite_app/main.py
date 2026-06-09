@@ -57,11 +57,6 @@ def _get_ops(env: str):
     return res
 
 
-def _convert_to_json_response(data):
-    json_data = orjson.dumps(data)
-    return fastapi.responses.JSONResponse(content=json_data, media_type="application/json")
-
-
 @app.get("/api/catalog")
 async def get_catalog(workspace: str, request: fastapi.Request):
     await auth.check_permission(request, "read", workspace)
@@ -85,29 +80,30 @@ data_path = pathlib.Path()
 @app.post("/api/delete")
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
+    assert isinstance(req["path"], str)
     json_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
+    workspace_files_path = pathlib.Path(ops.build_output_path(req["path"], "node -1")).parent
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
+    if workspace_files_path.exists():
+        shutil.rmtree(workspace_files_path)
     crdt.delete_room(req["path"])
 
 
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
-    print(f"Received request for output of node {node_id} in workspace {workspace}")
     await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
-    json_path = data_path / ".workspace_files" / workspace / f"{node_id}.json"
-    assert json_path.is_relative_to(data_path / ".workspace_files"), (
-        f"Path '{json_path}' is invalid"
-    )
+    json_path = data_path / ops.build_output_path(workspace, node_id)
+    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     output = None
     if json_path.exists():
         with open(json_path, encoding="utf-8") as f:
             output = orjson.loads(f.read())
     if output is None:
         raise fastapi.HTTPException(status_code=404, detail="Output not found")
-    return _convert_to_json_response(output)
+    return output
 
 
 class DirectoryEntry(pydantic.BaseModel):
