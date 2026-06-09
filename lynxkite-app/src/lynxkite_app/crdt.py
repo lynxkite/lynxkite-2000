@@ -209,33 +209,6 @@ def _workspace_fingerprint_from_dict(ws_dict):
     return ws_dict
 
 
-def clean_input(ws_pyd):
-    """Delete everything that we want to ignore for the purposes of change detection."""
-    for node in ws_pyd.nodes:
-        node.data.display = None
-        node.data.input_metadata = None
-        node.data.output_metadata = None
-        node.data.error = None
-        node.data.message = None
-        node.data.telemetry = None
-        node.data.collapsed = False
-        node.data.expanded_height = 0
-        node.data.status = workspace.NodeStatus.done
-        for p in list(node.data.params):
-            if p.startswith("_"):
-                del node.data.params[p]
-        if node.data.op_id == "Comment":
-            node.data.params = {}
-        node.position.x = 0
-        node.position.y = 0
-        node.width = 0
-        node.height = 0
-        node.__execution_delay = 0
-        if node.model_extra:
-            for key in list(node.model_extra.keys()):
-                delattr(node, key)
-
-
 def load_workspace(ws: pycrdt.Map, name: str):
     """Load the workspace `name`, if it exists, and update the `ws` CRDT object to match its contents.
 
@@ -265,6 +238,7 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
 
 last_known_versions: dict[str, typing.Any] = {}
 delayed_executions: dict[str, asyncio.Task] = {}
+delayed_saves: dict[str, asyncio.Task] = {}
 
 
 def print_diff(old, new, prefix=""):
@@ -294,6 +268,23 @@ def print_diff(old, new, prefix=""):
             print(f"{prefix}+ {new}")
 
 
+async def _save_workspace_async(name: str, raw: dict):
+    """Save the workspace with the given name and contents. This is debounced to avoid excessive saves during rapid changes."""
+    this_task = asyncio.current_task()
+    ws_pyd = None
+    await asyncio.sleep(2)  # We only try to save every 2 seconds.
+    try:
+        path = pathlib.Path() / name
+        assert path.is_relative_to(pathlib.Path()), f"Path '{path}' is invalid"
+        ws_pyd = workspace.Workspace.model_validate(raw)
+        ws_pyd.save(path)
+    except asyncio.CancelledError:
+        pass
+    finally:
+        if delayed_saves.get(name) is this_task:
+            del delayed_saves[name]
+
+
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
@@ -302,19 +293,20 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         changes: Changes performed to the workspace.
         ws_crdt: CRDT object representing the workspace.
     """
-    # if all(all(key in ("height", "width") for key in change.keys) for change in changes):
-    #     # Ignore changes that only update the height and width, which are triggered by the frontend when moving nodes around.
-    #     print("Ignoring change with keys", [change.keys for change in changes])
-    #     return
     raw = ws_crdt.to_py()
+    if name in delayed_saves:
+        delayed_saves[name].cancel()
+    # We always want to save the workspace when it changes, as the user could've moved boxes, or written comments.
+    save_task = asyncio.create_task(_save_workspace_async(name, raw))
+    delayed_saves[name] = save_task
     ws_fingerprint = _workspace_fingerprint_from_dict(raw)
     if ws_fingerprint == last_known_versions.get(name):
+        # If the workspace is functionally the same, we don't execute it.
         return
     last_known_versions[name] = ws_fingerprint
     ws_pyd = workspace.Workspace.model_validate(raw)
     if enterprise_backend is not None:
         enterprise_backend.on_workspace_changed(ws_websocket_server)
-    ws_pyd.save(pathlib.Path() / name)
     if name in delayed_executions:
         delayed_executions[name].cancel()
     # Frontend changes that result from typing are delayed to avoid
@@ -412,6 +404,9 @@ def delete_room(name: str):
     if name in delayed_executions:
         delayed_executions[name].cancel()
         del delayed_executions[name]
+    if name in delayed_saves:
+        delayed_saves[name].cancel()
+        del delayed_saves[name]
     last_known_versions.pop(name, None)
     if enterprise_backend is not None:
         enterprise_backend.on_workspace_deleted(name)
