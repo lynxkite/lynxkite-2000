@@ -372,7 +372,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "SELECT ts, head, relation, tail\nFROM edges\nWHERE ts < 2011",
           "save_as": "edges_train"
@@ -473,7 +473,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "SELECT ts, head, relation, tail\nFROM edges\nWHERE ts > 2010",
           "save_as": "edges_2010"
@@ -24612,7 +24612,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "SELECT ts, head, relation_type AS relation, tail\nFROM edges",
           "save_as": "edges"

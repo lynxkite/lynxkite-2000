@@ -74440,7 +74440,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "select avg(betweenness_centrality) from nodes",
           "save_as": "result"
@@ -77850,7 +77850,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Cypher",
+        "op_id": "Query operations > Cypher",
         "params": {
           "query": "match (a {city: \"Debrecen\"})--(b)\nreturn a.city, b.city",
           "save_as": "result"

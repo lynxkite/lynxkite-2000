@@ -1609,7 +1609,7 @@
           }
         ],
         "meta": null,
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "output_metadata": [
           {
             "dataframes": {

@@ -4018,7 +4018,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "SELECT node_id as node_label, feature_vector\nFROM features",
           "save_as": "features"
