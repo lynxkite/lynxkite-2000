@@ -116,7 +116,12 @@ function ensureAxiosInterceptors() {
   });
   axios.interceptors.response.use(
     (response) => response,
-    (error) => Promise.reject(error),
+    async (error) => {
+      if (error.response?.status === 401) {
+        await triggerLogin();
+      }
+      return Promise.reject(error);
+    },
   );
   axiosInterceptorsInstalled = true;
 }
@@ -137,6 +142,10 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
 
 export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
   const response = await apiFetch(input, init);
+  if (response.status === 401) {
+    await triggerLogin();
+    throw new Error("Unauthorized");
+  }
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`);
   }
