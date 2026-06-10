@@ -10,7 +10,7 @@ export default function ManagementPage(props: { children: React.ReactNode; class
           <img src={logo} className="logo-image" alt="LynxKite logo" />
         </a>
         <img src={logoSparky} className="logo-image-sparky" alt="LynxKite logo" />
-        <div className="tagline">The Complete Graph Data Science Platform</div>
+        <div className="tagline">Discover Drugs, Graphs and the World!</div>
       </div>
       <div className="management-page-content">{props.children}</div>
     </div>
