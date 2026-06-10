@@ -943,7 +943,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test/validation split",
+        "op_id": "Machine learning operations > Train/test/validation split",
         "params": {
           "seed": "1234",
           "table_name": "edges",
@@ -3637,7 +3637,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -4361,7 +4361,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Define model",
+        "op_id": "Machine learning operations > Define model",
         "params": {
           "model_workspace": "Graph embedding demos with PyKEEN/MLP Model v2",
           "save_as": "MLPModel"
@@ -4943,7 +4943,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "params": {
           "batch_size": "607",
           "epochs": "50",
@@ -5492,7 +5492,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test split",
+        "op_id": "Machine learning operations > Train/test split",
         "params": {
           "seed": "1233",
           "table_name": "mlp_dataset",
@@ -6098,7 +6098,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -6677,7 +6677,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "params": {
           "batch_size": "1669",
           "input_mapping": "{\"map\":{\"Input__tensor_6_input\":{\"table_name\":\"mlp_dataset_test\",\"column_name\":\"embedding\"},\"Input__tensor_1_input\":{\"table_name\":\"mlp_dataset_test\",\"column_name\":\"embedding_tail\"},\"Input__tensor_2_input\":{\"table_name\":\"mlp_dataset_test\",\"column_name\":\"feature_vector\"},\"Input__tensor_3_input\":{\"table_name\":\"mlp_dataset_test\",\"column_name\":\"feature_vector_tail\"}}}",
@@ -8559,7 +8559,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "params": {
           "batch_size": "1669",
           "input_mapping": "{\"map\":{\"Input__tensor_6_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding\"},\"Input__tensor_1_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding_tail\"},\"Input__tensor_2_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector\"},\"Input__tensor_3_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector_tail\"}}}",
@@ -10482,7 +10482,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "params": {
           "batch_size": "1669",
           "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"permuted_data_test\",\"column\":\"embedding\"},\"Input__tensor_2_output\":{\"df\":\"permuted_data_test\",\"column\":\"feature_vector\"},\"Input__tensor_3_output\":{\"df\":\"permuted_data_test\",\"column\":\"embedding_tail\"},\"Input__tensor_4_output\":{\"df\":\"permuted_data_test\",\"column\":\"feature_vector_tail\"},\"Input__tensor_6_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding\"},\"Input__tensor_1_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding_tail\"},\"Input__tensor_2_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector\"},\"Input__tensor_3_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector_tail\"}}}",
@@ -15824,7 +15824,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "params": {
           "batch_size": "1669",
           "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"df\":\"permuted_data_test\",\"column\":\"embedding\"},\"Input__tensor_2_output\":{\"df\":\"permuted_data_test\",\"column\":\"feature_vector\"},\"Input__tensor_3_output\":{\"df\":\"permuted_data_test\",\"column\":\"embedding_tail\"},\"Input__tensor_4_output\":{\"df\":\"permuted_data_test\",\"column\":\"feature_vector_tail\"},\"Input__tensor_6_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding\"},\"Input__tensor_1_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"embedding_tail\"},\"Input__tensor_2_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector\"},\"Input__tensor_3_input\":{\"table_name\":\"permuted_data_test\",\"column_name\":\"feature_vector_tail\"}}}",
@@ -49839,7 +49839,7 @@
           ],
           "type": "visualization"
         },
-        "op_id": "View vectors",
+        "op_id": "Machine learning operations > View vectors",
         "params": {
           "label_column": "node_label",
           "metric": "euclidean",
@@ -50431,7 +50431,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test split",
+        "op_id": "Machine learning operations > Train/test split",
         "params": {
           "seed": 1234.0,
           "table_name": "permuted_data",
@@ -51055,7 +51055,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "params": {
           "batch_size": "607",
           "epochs": "50",
@@ -51645,7 +51645,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test split",
+        "op_id": "Machine learning operations > Train/test split",
         "params": {
           "seed": 1234.0,
           "table_name": "permuted_data",
@@ -52269,7 +52269,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "params": {
           "batch_size": "607",
           "epochs": "50",
@@ -52859,7 +52859,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test split",
+        "op_id": "Machine learning operations > Train/test split",
         "params": {
           "seed": 1234.0,
           "table_name": "permuted_data",
@@ -53483,7 +53483,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "params": {
           "batch_size": "607",
           "epochs": "50",
@@ -54131,7 +54131,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -54774,7 +54774,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -55417,7 +55417,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"

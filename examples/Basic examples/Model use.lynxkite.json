@@ -139,7 +139,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Train/test split",
+        "op_id": "Machine learning operations > Train/test split",
         "output_metadata": [
           {
             "dataframes": {
@@ -385,7 +385,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Define model",
+        "op_id": "Machine learning operations > Define model",
         "output_metadata": [
           {
             "dataframes": {
@@ -913,7 +913,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "output_metadata": [
           {
             "dataframes": {
@@ -1962,7 +1962,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "output_metadata": [
           {}
         ],
@@ -3658,7 +3658,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "View vectors",
+        "op_id": "Machine learning operations > View vectors",
         "output_metadata": [
           {}
         ],
@@ -3887,7 +3887,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "output_metadata": [
           {
             "dataframes": {

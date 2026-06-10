@@ -5981,7 +5981,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"

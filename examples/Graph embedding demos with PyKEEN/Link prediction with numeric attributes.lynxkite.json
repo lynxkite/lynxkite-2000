@@ -28488,7 +28488,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -56597,7 +56597,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -112258,7 +112258,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Train/test/validation split",
+        "op_id": "Machine learning operations > Train/test/validation split",
         "params": {
           "seed": 1234.0,
           "table_name": "edges",

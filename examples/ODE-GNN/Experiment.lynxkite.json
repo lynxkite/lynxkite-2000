@@ -14441,7 +14441,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Define model",
+        "op_id": "Machine learning operations > Define model",
         "params": {
           "model_workspace": "ODE-GNN/Model",
           "save_as": "model"
@@ -15444,7 +15444,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Train model",
+        "op_id": "Machine learning operations > Train model",
         "params": {
           "batch_size": 1.0,
           "epochs": 1.0,
@@ -16455,7 +16455,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Model inference",
+        "op_id": "Machine learning operations > Model inference",
         "params": {
           "batch_size": "1",
           "input_mapping": "{\"map\":{\"Input__sequential_2_input\":{\"table_name\":\"meta\",\"column_name\":\"future_timestamps\"},\"Input__sequential_3_input\":{\"table_name\":\"meta\",\"column_name\":\"past_volumes\"}}}",
