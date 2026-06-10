@@ -2630,7 +2630,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
           "color_edges_by": null,
@@ -2870,7 +2870,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Binned graph visualization",
+        "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
           "x_bins": "5",
@@ -2935,7 +2935,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Scatter plot",
+        "op_id": "Visualizations > Scatter plot",
         "output_metadata": [],
         "params": {
           "x": [
@@ -3101,7 +3101,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Binned graph visualization",
+        "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
           "show_loops": false,
@@ -3914,7 +3914,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
           "color_edges_by": null,

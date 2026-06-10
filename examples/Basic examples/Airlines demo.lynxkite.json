@@ -74312,7 +74312,7 @@
           ],
           "type": "visualization"
         },
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "params": {
           "color_nodes_by": "tz"
         },

@@ -3394,7 +3394,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
         ],
@@ -12568,7 +12568,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
         ],
@@ -16080,7 +16080,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
         ],
@@ -17218,7 +17218,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
         ],
