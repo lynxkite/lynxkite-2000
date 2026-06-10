@@ -3978,7 +3978,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Derive property",
+        "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
             "dataframes": {

@@ -233,7 +233,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Join tables",
+        "op_id": "Table operations > Join tables",
         "output_metadata": [
           {
             "dataframes": {
@@ -314,7 +314,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Rename table",
+        "op_id": "Table operations > Rename table",
         "output_metadata": [
           {
             "dataframes": {
@@ -381,7 +381,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Rename table",
+        "op_id": "Table operations > Rename table",
         "output_metadata": [
           {
             "dataframes": {
@@ -453,7 +453,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Derive property",
+        "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
             "dataframes": {
@@ -538,7 +538,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Add rank attribute",
+        "op_id": "Table operations > Add rank attribute",
         "output_metadata": [
           {
             "dataframes": {
@@ -626,7 +626,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Vector from attribute pair",
+        "op_id": "Table operations > Vector from attribute pair",
         "output_metadata": [
           {
             "dataframes": {
@@ -710,7 +710,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Vector from attribute pair",
+        "op_id": "Table operations > Vector from attribute pair",
         "output_metadata": [
           {
             "dataframes": {
@@ -797,7 +797,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Derive property",
+        "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
             "dataframes": {
@@ -937,7 +937,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Filter with formula",
+        "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
             "dataframes": {
@@ -1128,7 +1128,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Filter with formula",
+        "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
             "dataframes": {
@@ -1268,7 +1268,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Connect nodes on attribute",
+        "op_id": "Table operations > Connect nodes on attribute",
         "output_metadata": [
           {
             "dataframes": {

@@ -123360,7 +123360,7 @@
           ],
           "type": "graph_creation_view"
         },
-        "op_id": "Organize",
+        "op_id": "Table operations > Merge",
         "params": {
           "relations": ""
         },

@@ -30525,7 +30525,7 @@
           {}
         ],
         "meta": null,
-        "op_id": "Organize",
+        "op_id": "Table operations > Merge",
         "params": {
           "relations": ""
         },
@@ -46439,7 +46439,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Sample table",
+        "op_id": "Table operations > Sample table",
         "params": {
           "fraction": "0.001",
           "table_name": "meta"
