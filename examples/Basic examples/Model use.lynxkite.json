@@ -235,7 +235,7 @@
         "input_metadata": [],
         "message": null,
         "meta": null,
-        "op_id": "Import Parquet",
+        "op_id": "File operations > Import Parquet",
         "output_metadata": [
           {
             "dataframes": {

@@ -489,7 +489,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import file",
+        "op_id": "File operations > Import file",
         "params": {
           "file_format": "csv",
           "file_format_group": "csv",
@@ -645,7 +645,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import file",
+        "op_id": "File operations > Import file",
         "params": {
           "columns": "<from file>",
           "file_format": "parquet",

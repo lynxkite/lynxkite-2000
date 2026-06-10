@@ -117,7 +117,7 @@
         "expanded_height": null,
         "input_metadata": [],
         "meta": null,
-        "op_id": "Import CSV",
+        "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
             "dataframes": {
