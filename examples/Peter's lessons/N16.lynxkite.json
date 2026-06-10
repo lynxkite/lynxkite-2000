@@ -731,7 +731,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Graph from edge list",
+        "op_id": "Graph operations > Graph from edge list",
         "output_metadata": [
           {
             "dataframes": {
@@ -1713,7 +1713,7 @@
           }
         ],
         "meta": null,
-        "op_id": "NetworkX > Degree",
+        "op_id": "Graph operations > NetworkX > Degree",
         "output_metadata": [
           {
             "dataframes": {
@@ -2771,7 +2771,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Aggregate on neighbors",
+        "op_id": "Graph operations > Aggregate on neighbors",
         "output_metadata": [
           {
             "dataframes": {

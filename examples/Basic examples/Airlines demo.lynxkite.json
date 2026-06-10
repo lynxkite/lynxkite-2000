@@ -161,7 +161,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Sample graph",
+        "op_id": "Graph operations > Sample graph",
         "params": {
           "nodes": "1000"
         },

@@ -847,7 +847,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Graph from edge list",
+        "op_id": "Graph operations > Graph from edge list",
         "output_metadata": [
           {
             "dataframes": {

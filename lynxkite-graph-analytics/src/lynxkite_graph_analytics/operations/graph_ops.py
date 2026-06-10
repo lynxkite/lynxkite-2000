@@ -9,7 +9,7 @@ import enum
 import numpy as np
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "Graph operations")
 
 
 @op("Discard loop edges", icon="filter-filled")

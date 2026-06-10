@@ -12634,7 +12634,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Sample graph",
+        "op_id": "Graph operations > Sample graph",
         "output_metadata": [
           {
             "dataframes": {
@@ -12732,7 +12732,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Sample graph",
+        "op_id": "Graph operations > Sample graph",
         "output_metadata": [
           {
             "dataframes": {
@@ -16147,7 +16147,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Discard loop edges",
+        "op_id": "Graph operations > Discard loop edges",
         "output_metadata": [
           {
             "dataframes": {
