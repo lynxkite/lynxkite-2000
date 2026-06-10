@@ -1,5 +1,7 @@
 """Basic operations for this environment."""
 
+import typing
+
 from lynxkite_core import ops
 
 from .. import core, bundle
@@ -7,6 +9,7 @@ import enum
 import io
 import json
 import pandas as pd
+import numpy as np
 
 
 op = ops.op_registration(core.ENV)
@@ -54,6 +57,130 @@ def derive_property(
     b = b.copy()
     df = b.dfs[table_name]
     b.dfs[table_name] = df.eval(formula)
+    return b
+
+
+@op("Filter with formula")
+def filter_with_formula(
+    b: core.Bundle, *, table_name: core.TableName, formula: ops.LongStr
+) -> core.Bundle:
+    """Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"""
+    b = b.copy()
+    df = b.dfs[table_name]
+    b.dfs[table_name] = df.query(formula)
+    return b
+
+
+@op("Vector from attribute pair", color="orange", icon="link")
+def vector_from_attribute_pair(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute1: core.ColumnNameByTableName,
+    attribute2: core.ColumnNameByTableName,
+    new_name: str,
+) -> core.Bundle:
+    """Creates a new column with vectors that contain the two attributes"""
+    b = b.copy()
+    df = b.dfs[table_name]
+    df[new_name] = list(zip(df[attribute1], df[attribute2]))
+    return b
+
+
+@op("Rename table", color="orange", icon="link")
+def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
+    """Assigns a new name to the table"""
+    b = b.copy()
+    b.dfs[new_name] = b.dfs.pop(old_name)
+    return b
+
+
+class OrderType(enum.StrEnum):
+    asc = "ascending"
+    desc = "descending"
+
+
+@op("Add rank attribute", color="orange", icon="link")
+def add_rank(
+    b: core.Bundle,
+    *,
+    table_column: core.TableColumn,
+    rank_name: str,
+    order: OrderType,
+):
+    """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"""
+    table, column = table_column
+    b = b.copy()
+    df = b.dfs[table]
+
+    df = df.sort_values(by=column, ascending=(order == OrderType.asc))
+    df[rank_name] = range(len(df))
+
+    b.dfs[table] = df
+    return b
+
+
+ColumnNameForSource = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<source_table>.columns[]"}
+]
+ColumnNameForTarget = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<target_table>.columns[]"}
+]
+
+
+@op("Connect nodes on attribute")
+def connect_nodes(
+    b: core.Bundle,
+    *,
+    source_table: core.TableName,
+    source_id: ColumnNameForSource,
+    source_attribute: ColumnNameForSource,
+    target_table: core.TableName,
+    target_id: ColumnNameForTarget,
+    target_attribute: ColumnNameForTarget,
+) -> core.Bundle:
+    """
+    Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
+
+    Parameters:
+    - source_table: Name of the first table
+    - source_id: ID column in the first table
+    - source_attribute: Attribute column in the first table used for matching
+    - target_table: Name of the second table
+    - target_id: ID column in the second table
+    - target_attribute: Attribute column in the second table used for matching
+    """
+    b = b.copy()
+
+    df1 = (b.dfs[source_table]).add_suffix("_src")
+    df2 = (b.dfs[target_table]).add_suffix("_dst")
+    source_key, target_key = source_id, target_id
+    source_attribute, target_attribute, source_id, target_id = (
+        source_attribute + "_src",
+        target_attribute + "_dst",
+        source_id + "_src",
+        target_id + "_dst",
+    )
+    edges = pd.merge(df1, df2, left_on=source_attribute, right_on=target_attribute)
+
+    if source_table == target_table:
+        edges[[source_id, target_id]] = np.sort(edges[[source_id, target_id]], axis=1)
+        edges = edges[edges[source_id] != edges[target_id]].drop_duplicates()
+
+    b.dfs["edges"] = edges
+
+    b.relations.append(
+        core.RelationDefinition(
+            name="graph",
+            df="edges",
+            source_column=source_id,
+            source_table=source_table,
+            source_key=source_key,
+            target_column=target_id,
+            target_table=target_table,
+            target_key=target_key,
+        )
+    )
     return b
 
 
