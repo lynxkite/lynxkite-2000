@@ -117,7 +117,7 @@
         "expanded_height": null,
         "input_metadata": [],
         "meta": null,
-        "op_id": "Import CSV",
+        "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
             "dataframes": {
@@ -731,7 +731,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Graph from edge list",
+        "op_id": "Graph operations > Graph from edge list",
         "output_metadata": [
           {
             "dataframes": {
@@ -1609,7 +1609,7 @@
           }
         ],
         "meta": null,
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "output_metadata": [
           {
             "dataframes": {
@@ -1713,7 +1713,7 @@
           }
         ],
         "meta": null,
-        "op_id": "NetworkX > Degree",
+        "op_id": "Graph operations > NetworkX > Degree",
         "output_metadata": [
           {
             "dataframes": {
@@ -2630,7 +2630,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
           "color_edges_by": null,
@@ -2771,7 +2771,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Aggregate on neighbors",
+        "op_id": "Graph operations > Aggregate on neighbors",
         "output_metadata": [
           {
             "dataframes": {
@@ -2870,7 +2870,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Binned graph visualization",
+        "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
           "x_bins": "5",
@@ -2935,7 +2935,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Scatter plot",
+        "op_id": "Visualizations > Scatter plot",
         "output_metadata": [],
         "params": {
           "x": [
@@ -3101,7 +3101,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Binned graph visualization",
+        "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
           "show_loops": false,
@@ -3914,7 +3914,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
           "color_edges_by": null,
@@ -3978,7 +3978,7 @@
           }
         ],
         "meta": null,
-        "op_id": "Derive property",
+        "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
             "dataframes": {

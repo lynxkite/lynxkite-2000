@@ -5981,7 +5981,7 @@
           "params": [],
           "type": "visualization"
         },
-        "op_id": "View loss",
+        "op_id": "Machine learning operations > View loss",
         "params": {},
         "status": "done",
         "title": "View loss"
@@ -11989,7 +11989,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import file",
+        "op_id": "File operations > Import file",
         "params": {
           "file_format": "csv",
           "file_format_group": "csv",
