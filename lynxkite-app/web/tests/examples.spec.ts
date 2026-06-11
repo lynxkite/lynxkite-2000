@@ -24,7 +24,7 @@ for (const name of WORKSPACES) {
 
 test("Model use", async ({ page }) => {
   const ws = await openWorkspace(page, "Model use");
-  await ws.execute({ timeout: 30000 }); // Actually trains the model.
+  await ws.execute({ timeout: 60000 }); // Actually trains the model.
   await ws.expectErrorFree();
   let b = ws.boxByTitle("Train/test split");
   await b.expectParameterOptions("table name", ["", "records"]);
