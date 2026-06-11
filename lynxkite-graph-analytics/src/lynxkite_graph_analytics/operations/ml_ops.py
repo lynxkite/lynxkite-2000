@@ -12,7 +12,7 @@ import pandas as pd
 import pathlib
 
 
-op = ops.op_registration(core.ENV, icon="robot")
+op = ops.op_registration(core.ENV, "Machine learning operations", icon="robot")
 
 
 def load_ws(model_workspace: str):

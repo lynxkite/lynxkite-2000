@@ -93,7 +93,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import GraphML",
+        "op_id": "File operations > Import GraphML",
         "params": {
           "filename": "https://storage.googleapis.com/lynxkite_public_data/airlines.graphml.gz"
         },
@@ -161,7 +161,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Sample graph",
+        "op_id": "Graph operations > Sample graph",
         "params": {
           "nodes": "1000"
         },
@@ -74312,7 +74312,7 @@
           ],
           "type": "visualization"
         },
-        "op_id": "Visualize graph",
+        "op_id": "Visualizations > Visualize graph",
         "params": {
           "color_nodes_by": "tz"
         },
@@ -74440,7 +74440,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "SQL",
+        "op_id": "Query operations > SQL",
         "params": {
           "query": "select avg(betweenness_centrality) from nodes",
           "save_as": "result"
@@ -77850,7 +77850,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Cypher",
+        "op_id": "Query operations > Cypher",
         "params": {
           "query": "match (a {city: \"Debrecen\"})--(b)\nreturn a.city, b.city",
           "save_as": "result"
