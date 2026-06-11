@@ -71,7 +71,7 @@
       "targetHandle": "graph"
     }
   ],
-  "env": "LynxKite",
+  "env": "LynxKite Graph Analytics",
   "nodes": [
     {
       "data": {
