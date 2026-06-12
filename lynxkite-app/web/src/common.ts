@@ -134,18 +134,19 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-  return fetch(input, {
+  const response = await fetch(input, {
     ...init,
     headers,
   });
-}
-
-export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
-  const response = await apiFetch(input, init);
   if (response.status === 401) {
     await triggerLogin();
     throw new Error("Unauthorized");
   }
+  return response;
+}
+
+export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
+  const response = await apiFetch(input, init);
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`);
   }
