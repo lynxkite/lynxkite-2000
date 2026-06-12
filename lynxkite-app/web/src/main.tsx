@@ -14,7 +14,14 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
+import { useConfig } from "./common.ts";
 import Directory from "./Directory.tsx";
+
+function ConfigGuard({ children }: { children: ReactElement }) {
+  const config = useConfig();
+  if (!config.data) return null;
+  return children;
+}
 
 const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
 const Code = lazy(() => import("./Code.tsx"));
@@ -49,18 +56,45 @@ function WorkspaceError() {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<Directory />} />
-      <Route path="/dir" element={<Directory />} />
-      <Route path="/dir/*" element={<Directory />} />
+      <Route
+        path="/"
+        element={
+          <ConfigGuard>
+            <Directory />
+          </ConfigGuard>
+        }
+      />
+      <Route
+        path="/dir"
+        element={
+          <ConfigGuard>
+            <Directory />
+          </ConfigGuard>
+        }
+      />
+      <Route
+        path="/dir/*"
+        element={
+          <ConfigGuard>
+            <Directory />
+          </ConfigGuard>
+        }
+      />
       <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
       <Route
         path="/edit/*"
-        element={withSuspense(<Workspace />)}
+        element={<ConfigGuard>{withSuspense(<Workspace />)}</ConfigGuard>}
         errorElement={<WorkspaceError />}
       />
-      <Route path="/code/*" element={withSuspense(<Code />)} />
-      <Route path="/progress" element={withSuspense(<ProgressPage />)} />
-      <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
+      <Route path="/code/*" element={<ConfigGuard>{withSuspense(<Code />)}</ConfigGuard>} />
+      <Route
+        path="/progress"
+        element={<ConfigGuard>{withSuspense(<ProgressPage />)}</ConfigGuard>}
+      />
+      <Route
+        path="/progress-demo"
+        element={<ConfigGuard>{withSuspense(<ProgressPageDemo />)}</ConfigGuard>}
+      />
     </>,
   ),
 );

@@ -74,7 +74,6 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
-  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
   const config = useConfig();

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { UserManager } from "oidc-client-ts";
-import { useContext, useEffect, useMemo } from "react";
+import { type User, UserManager } from "oidc-client-ts";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { LynxKiteState } from "./workspace/LynxKiteState";
@@ -73,6 +73,26 @@ export async function triggerLogin() {
   }
 }
 
+export async function triggerLogout() {
+  const manager = getUserManager();
+  if (!manager) {
+    return;
+  }
+  // Remove local user state before redirecting.
+  await manager.removeUser();
+  // Build the logout URL manually with client_id instead of id_token_hint.
+  // Keycloak 26 skips the confirmation page when id_token_hint is present,
+  // but shows it when relying on the browser SSO session cookie + client_id.
+  const metadata = await manager.metadataService.getMetadata();
+  const endSessionEndpoint = metadata.end_session_endpoint;
+  if (!endSessionEndpoint) return;
+  const params = new URLSearchParams({
+    client_id: cachedConfig?.authentication_audience ?? "",
+    post_logout_redirect_uri: window.location.origin,
+  });
+  window.location.href = `${endSessionEndpoint}?${params}`;
+}
+
 function ensureAxiosInterceptors() {
   if (axiosInterceptorsInstalled) {
     return;
@@ -88,7 +108,7 @@ function ensureAxiosInterceptors() {
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (error?.response?.status === 401) {
+      if (error.response?.status === 401) {
         await triggerLogin();
       }
       return Promise.reject(error);
@@ -111,6 +131,7 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   });
   if (response.status === 401) {
     await triggerLogin();
+    throw new Error("Unauthorized");
   }
   return response;
 }
@@ -144,15 +165,34 @@ export async function completeLoginCallback(): Promise<string> {
   return state?.returnTo || "/";
 }
 
+export function useAuth() {
+  const { data: config } = useConfig();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const manager = getUserManager();
+    if (!manager) {
+      return;
+    }
+    manager.getUser().then(setUser);
+    const onUserLoaded = (u: User) => setUser(u);
+    const onUserUnloaded = () => setUser(null);
+    manager.events.addUserLoaded(onUserLoaded);
+    manager.events.addUserUnloaded(onUserUnloaded);
+    return () => {
+      manager.events.removeUserLoaded(onUserLoaded);
+      manager.events.removeUserUnloaded(onUserUnloaded);
+    };
+  }, [config?.authentication_issuer, config?.authentication_audience]);
+  return user;
+}
+
 export function useConfig() {
   const config = useSWR<GlobalConfig>("/api/config", (resource: string, init?: RequestInit) =>
     apiJson<GlobalConfig>(resource, init),
   );
-  useEffect(() => {
-    if (config.data) {
-      setCachedConfig(config.data);
-    }
-  }, [config.data]);
+  if (config.data) {
+    setCachedConfig(config.data);
+  }
   return config;
 }
 
