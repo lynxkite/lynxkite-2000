@@ -46,9 +46,37 @@ def visualize_graph(
     label_by: core.NodePropertyName | None = None,
     color_edges_by: core.EdgePropertyName | None = None,
 ):
-    nodes = bundle.df_for_frontend(graph.dfs["nodes"], 10_000)
-    if color_nodes_by:
+    if graph.relations:
+        node_tables = []
+        seen_tables = set()
+
+        def add_table(table: str, id: str):
+            if table not in seen_tables:
+                df = graph.dfs[table].copy()
+                df["_id"] = df[id]
+                df["_table"] = table
+                node_tables.append(df)
+                seen_tables.add(table)
+
+        for relation in graph.relations:
+            add_table(relation.source_table, relation.source_key)
+            add_table(relation.target_table, relation.target_key)
+        nodes_df = pd.concat(node_tables, ignore_index=True)
+        nodes_df["_unique_id"] = nodes_df["_table"].astype(str) + "_" + nodes_df["_id"].astype(str)
+        nodes_df = nodes_df.drop_duplicates(subset=["_unique_id"])
+    else:
+        # TODO: Delete if everything uses relations.
+        nodes_df = graph.dfs["nodes"].copy()
+        if "id" in nodes_df.columns:
+            nodes_df["_unique_id"] = nodes_df["id"].astype(str)
+        else:
+            nodes_df["_unique_id"] = nodes_df.index.astype(str)
+
+    nodes_df = nodes_df.set_index("_unique_id", drop=False)
+    nodes = bundle.df_for_frontend(nodes_df, 10_000)
+    if color_nodes_by and color_nodes_by in nodes.columns:
         nodes["color"] = _map_color(nodes[color_nodes_by])
+
     for cols in ["x y", "long lat"]:
         x, y = cols.split()
         if (
@@ -73,9 +101,38 @@ def visualize_graph(
     else:
         pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
-    nodes = nodes.to_records()
-    deduped_edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
-    edges = bundle.df_for_frontend(deduped_edges, 10_000)
+    nodes = nodes.to_records(index=False)
+
+    if graph.relations:
+        edge_tables = []
+        for relation in graph.relations:
+            df = graph.dfs[relation.df].copy()
+            df["_unique_source"] = (
+                relation.source_table + "_" + df[relation.source_column].astype(str)
+            )
+            df["_unique_target"] = (
+                relation.target_table + "_" + df[relation.target_column].astype(str)
+            )
+            edge_tables.append(df)
+        edges_df = pd.concat(edge_tables, ignore_index=True)
+    else:
+        # TODO: Delete if everything uses relations.
+        edges_df = graph.dfs["edges"].copy()
+        if "source" in edges_df.columns and "target" in edges_df.columns:
+            edges_df["_unique_source"] = edges_df["source"].astype(str)
+            edges_df["_unique_target"] = edges_df["target"].astype(str)
+        else:
+            edges_df = pd.DataFrame(columns=["_unique_source", "_unique_target"])
+
+    if not edges_df.empty:
+        valid_nodes = set(nodes_df["_unique_id"].astype(str))
+        edges_df = edges_df[
+            edges_df["_unique_source"].astype(str).isin(valid_nodes)
+            & edges_df["_unique_target"].astype(str).isin(valid_nodes)
+        ]
+
+    edges = edges_df.drop_duplicates(["_unique_source", "_unique_target"])
+    edges = bundle.df_for_frontend(edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
@@ -110,12 +167,12 @@ def visualize_graph(
                 "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
-                        "id": str(n.id),
-                        "x": float(pos[n.id][0]),
-                        "y": float(pos[n.id][1]),
+                        "id": str(n["_unique_id"]),
+                        "x": float(pos[n["_unique_id"]][0]),
+                        "y": float(pos[n["_unique_id"]][1]),
                         # Adjust node size to cover the same area no matter how many nodes there are.
                         "symbolSize": 50 / len(nodes) ** 0.5,
-                        "itemStyle": {"color": n.color} if color_nodes_by else {},
+                        "itemStyle": {"color": getattr(n, "color", None)} if color_nodes_by else {},
                         "label": {"show": label_by is not None},
                         "name": format_label(getattr(n, label_by, "")) if label_by else None,
                         "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
@@ -124,9 +181,9 @@ def visualize_graph(
                 ],
                 "links": [
                     {
-                        "source": str(r.source),
-                        "target": str(r.target),
-                        "lineStyle": {"color": r.color} if color_edges_by else {},
+                        "source": str(getattr(r, "_unique_source", "")),
+                        "target": str(getattr(r, "_unique_target", "")),
+                        "lineStyle": {"color": getattr(r, "color", None)} if color_edges_by else {},
                         "value": str(getattr(r, color_edges_by, "")) if color_edges_by else None,
                     }
                     for r in edges
