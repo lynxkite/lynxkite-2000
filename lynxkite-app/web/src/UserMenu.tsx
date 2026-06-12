@@ -20,7 +20,11 @@ export default function UserMenu() {
   const userEmail =
     user?.profile?.email || user?.profile?.preferred_username || user?.profile?.name;
 
-  if (!loggedIn && authEnabled) {
+  if (!authEnabled) {
+    return null;
+  }
+
+  if (!loggedIn) {
     return (
       <div className="user-menu-actions">
         <button
@@ -33,10 +37,6 @@ export default function UserMenu() {
         </button>
       </div>
     );
-  }
-
-  if (!loggedIn) {
-    return null;
   }
 
   return (
