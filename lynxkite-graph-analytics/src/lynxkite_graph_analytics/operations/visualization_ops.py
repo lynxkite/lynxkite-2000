@@ -64,13 +64,6 @@ def visualize_graph(
         nodes_df = pd.concat(node_tables, ignore_index=True)
         nodes_df["_unique_id"] = nodes_df["_table"].astype(str) + "_" + nodes_df["_id"].astype(str)
         nodes_df = nodes_df.drop_duplicates(subset=["_unique_id"])
-    else:
-        # TODO: Delete if everything uses relations.
-        nodes_df = graph.dfs["nodes"].copy()
-        if "id" in nodes_df.columns:
-            nodes_df["_unique_id"] = nodes_df["id"].astype(str)
-        else:
-            nodes_df["_unique_id"] = nodes_df.index.astype(str)
 
     nodes_df = nodes_df.set_index("_unique_id", drop=False)
     nodes = bundle.df_for_frontend(nodes_df, 10_000)
@@ -115,14 +108,6 @@ def visualize_graph(
             )
             edge_tables.append(df)
         edges_df = pd.concat(edge_tables, ignore_index=True)
-    else:
-        # TODO: Delete if everything uses relations.
-        edges_df = graph.dfs["edges"].copy()
-        if "source" in edges_df.columns and "target" in edges_df.columns:
-            edges_df["_unique_source"] = edges_df["source"].astype(str)
-            edges_df["_unique_target"] = edges_df["target"].astype(str)
-        else:
-            edges_df = pd.DataFrame(columns=["_unique_source", "_unique_target"])
 
     if not edges_df.empty:
         valid_nodes = set(nodes_df["_unique_id"].astype(str))
