@@ -38,15 +38,36 @@ def _map_color(value):
         ]
 
 
+def _graph_neighborhood(start_nodes: pd.DataFrame, edges: pd.DataFrame, hops: int):
+    """Get the neighborhood of a nodes in a graph."""
+    neighborhood = set(start_nodes.index)
+    current_layer = set(start_nodes.index)
+    for _ in range(hops):
+        next_layer = set()
+        for node in current_layer:
+            neighbors = edges.loc[edges["source"] == node, "target"].tolist()
+            next_layer.update(neighbors)
+        neighborhood.update(next_layer)
+        current_layer = next_layer
+    return list(neighborhood)
+
+
 @op("Visualize graph", view="visualization", icon="eye", color="blue")
 def visualize_graph(
     graph: core.Bundle,
     *,
-    color_nodes_by: core.NodePropertyName | None = None,
-    label_by: core.NodePropertyName | None = None,
-    color_edges_by: core.EdgePropertyName | None = None,
+    color_nodes_by: core.NodePropertyName,
+    label_by: core.NodePropertyName,
+    color_edges_by: core.EdgePropertyName,
+    pick_nodes_by: core.NodePropertyName,
+    equals: str | None = None,
+    hops: int = 0,
 ):
     nodes = bundle.df_for_frontend(graph.dfs["nodes"], 10_000)
+    if pick_nodes_by and equals:
+        start_nodes = nodes[nodes[pick_nodes_by].astype(str) == equals]
+        neighborhood = _graph_neighborhood(start_nodes, graph.dfs["edges"], hops)
+        nodes = nodes.loc[neighborhood]
     if color_nodes_by:
         nodes["color"] = _map_color(nodes[color_nodes_by])
     for cols in ["x y", "long lat"]:
