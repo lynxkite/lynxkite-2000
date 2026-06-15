@@ -9,7 +9,7 @@ import networkx as nx
 import pandas as pd
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "File operations")
 
 
 class FileFormat(enum.StrEnum):

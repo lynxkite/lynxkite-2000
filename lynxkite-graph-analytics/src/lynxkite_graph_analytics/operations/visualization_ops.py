@@ -12,7 +12,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "Visualizations")
 
 
 def _map_color(value):

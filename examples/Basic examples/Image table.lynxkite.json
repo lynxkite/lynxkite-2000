@@ -213,7 +213,7 @@
           ],
           "type": "basic"
         },
-        "op_id": "Import CSV",
+        "op_id": "File operations > Import CSV",
         "params": {
           "columns": "<from file>",
           "filename": "uploads/molecules2.csv",

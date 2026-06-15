@@ -15,7 +15,7 @@ test.afterEach(async () => {
 });
 
 test("undo/redo add_node transaction", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await workspace.page.keyboard.press("Control+z");
   await expect(workspace.getBox("Import Parquet 1")).not.toBeVisible();
@@ -37,7 +37,7 @@ test("undo/redo add_edge transaction", async () => {
 });
 
 test("undo/redo box dragging", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   const originalPos = await workspace.getBox("Import Parquet 1").boundingBox();
   await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.moveBox("Import Parquet 1", { offsetX: 100, offsetY: 100 });
@@ -61,7 +61,7 @@ test("undo/redo grouping boxes", async () => {
       consoleMessages.push({ type: msg.type(), text: msg.text() });
     }
   });
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   await workspace.addBox("View tables");
   await workspace.connectBoxes("Import Parquet 1", "View tables 1");
   await workspace.selectBoxes(["Import Parquet 1", "View tables 1"]);

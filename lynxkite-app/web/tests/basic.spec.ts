@@ -35,7 +35,7 @@ test("Delete multi-handle boxes", async () => {
 });
 
 test("Drag box", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   const originalPos = await workspace.getBox("Import Parquet 1").boundingBox();
   await workspace.moveBox("Import Parquet 1", { offsetX: 100, offsetY: 100 });
   const newPos = await workspace.getBox("Import Parquet 1").boundingBox();

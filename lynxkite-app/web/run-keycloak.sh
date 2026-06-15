@@ -49,10 +49,15 @@ cat >"$client_json" <<EOF
   "rootUrl": "$frontend_origin",
   "baseUrl": "$frontend_origin",
   "redirectUris": ["$redirect_uri"],
-  "webOrigins": ["$frontend_origin"]
+  "webOrigins": ["$frontend_origin"],
+  "attributes": {
+    "post.logout.redirect.uris": "$frontend_origin/*"
+  }
 }
 EOF
 trap 'rm -f "$client_json"' EXIT
+
+themes_dir="$(cd "../../keycloak/theme" && pwd)"
 
 docker run --name "$container_name" \
   -d \
@@ -60,6 +65,7 @@ docker run --name "$container_name" \
   -e KEYCLOAK_ADMIN="$admin_user" \
   -e KEYCLOAK_ADMIN_PASSWORD="$admin_password" \
   -v keycloak_data:$PWD/keycloak_data \
+  -v "$themes_dir:/opt/keycloak/themes" \
   "$image" \
   start-dev || docker start "$container_name"
 
@@ -76,6 +82,8 @@ run_kcadm config credentials \
 if ! run_kcadm get "realms/$realm" >/dev/null 2>&1; then
   run_kcadm create realms -s realm="$realm" -s enabled=true
 fi
+
+run_kcadm update "realms/$realm" -s loginTheme=lynxkite -s rememberMe=true -s registrationAllowed=true
 
 if [[ -z "$(client_uuid)" ]]; then
   run_kcadm_with_file create clients -r "$realm"
