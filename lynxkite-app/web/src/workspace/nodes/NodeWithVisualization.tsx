@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { getDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
@@ -8,7 +9,7 @@ function NodeWithVisualization(props: any) {
   const chartsRef = React.useRef<HTMLDivElement>(null);
   const chartsInstanceRef = React.useRef<echarts.ECharts>(null);
   useEffect(() => {
-    const opts = props.data?.display;
+    const opts = getDisplay(props.data?.display_version, props.id);
     if (!opts || !chartsRef.current) return;
     if (opts.tooltip?.formatter === "GET_THIRD_VALUE") {
       // We can't pass a function from the backend, and can't get good tooltips otherwise.

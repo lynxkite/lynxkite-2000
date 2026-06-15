@@ -132,6 +132,38 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
   return (await response.json()) as T;
 }
 
+function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string): string {
+  const workspace = wsPath.replace(/\.lynxkite\.json$/, "");
+  const sanitizedWorkspacePath = workspace
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  const sanitizedNodeId = encodeURIComponent(nodeId);
+  return `/api/node_output?workspace=${sanitizedWorkspacePath}&node_id=${sanitizedNodeId}&version=${displayVersion}`;
+}
+
+export function getDisplay(display_version: number, node_id: string): any {
+  const ws = useContext(LynxKiteState).workspace;
+  const wsPath = ws?.path as string | undefined;
+  const displayVersion = display_version;
+  const displayKey =
+    wsPath && displayVersion != null ? fetchDisplayUrl(node_id, displayVersion, wsPath) : null;
+  const { data } = useSWR(displayKey, (key: string) => apiJson(key), {
+    revalidateOnFocus: false,
+  });
+  return data;
+}
+
+export async function loadConfig(): Promise<GlobalConfig | null> {
+  try {
+    const config = await apiJson<GlobalConfig>("/api/config");
+    setCachedConfig(config);
+    return config;
+  } catch (_error) {
+    return null;
+  }
+}
+
 export async function completeLoginCallback(): Promise<string> {
   const manager = getUserManager();
   if (!manager) {

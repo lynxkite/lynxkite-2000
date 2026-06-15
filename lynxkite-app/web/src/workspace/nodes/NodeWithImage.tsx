@@ -1,10 +1,12 @@
+import { getDisplay } from "../../common.ts";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
 const NodeWithImage = (props: any) => {
+  const display = getDisplay(props.data?.display_version, props.id);
   return (
     <NodeWithParams collapsed {...props}>
-      {props.data.display && <img src={props.data.display} alt="Node Display" />}
+      {display && <img src={display} alt="Node Display" />}
     </NodeWithParams>
   );
 };

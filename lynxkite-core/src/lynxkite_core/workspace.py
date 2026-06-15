@@ -102,6 +102,9 @@ class WorkspaceNode(BaseConfig):
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
+        self.data.display_version = (
+            self.data.display_version + 1 if self.data.display_version else None
+        )
         self.data.input_metadata = result.input_metadata
         self.data.output_metadata = result.output_metadata
         self.data.error = result.error
@@ -112,7 +115,7 @@ class WorkspaceNode(BaseConfig):
                 try:
                     nc["data"]["status"] = NodeStatus.done
                     nc["data"]["display"] = self.data.display
-                    nc["data"]["display_version"] = (nc["data"].get("display_version") or 0) + 1
+                    nc["data"]["display_version"] = self.data.display_version
                     nc["data"]["input_metadata"] = self.data.input_metadata
                     nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
@@ -214,11 +217,6 @@ class Workspace(BaseConfig):
     def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
         j = self.model_dump(mode="json")
-        for node in j.get("nodes", []):
-            if "display" in node.get("data", {}):
-                del node["data"]["display"]
-            if "display_version" in node.get("data", {}):
-                del node["data"]["display_version"]
         if "path" in j:
             del j["path"]
         return json.dumps(j, indent=2, sort_keys=True) + "\n"
@@ -296,7 +294,7 @@ class Workspace(BaseConfig):
                     nc["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
                     nc["data"]["error"] = "Unknown operation."
 
-    def connect_crdt(self, ws_crdt: "pycrdt.Map", path: Optional[str] = None):
+    def connect_crdt(self, ws_crdt: "pycrdt.Map"):
         import pycrdt
 
         self._crdt = ws_crdt

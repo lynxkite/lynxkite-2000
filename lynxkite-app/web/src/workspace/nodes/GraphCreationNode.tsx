@@ -2,6 +2,7 @@ import { useReactFlow } from "@xyflow/react";
 import React, { type FormEventHandler, useState } from "react";
 import Markdown from "react-markdown";
 import Trash from "~icons/tabler/trash";
+import { getDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";
 
@@ -169,7 +170,7 @@ function RelationView({
 function NodeWithGraphCreationView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState({} as { [name: string]: boolean });
-  const display = props.data.display;
+  const display = getDisplay(props.data?.display_version, props.id);
   const tables = display?.dataframes || {};
   const singleTable = tables && Object.keys(tables).length === 1;
   const [relations, setRelations] = useState(relationsToDict(display?.relations) || {});

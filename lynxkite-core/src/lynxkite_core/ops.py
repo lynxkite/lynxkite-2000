@@ -7,7 +7,6 @@ import enum
 import functools
 import hashlib
 import json
-import orjson
 import importlib.util
 import inspect
 import os
@@ -222,6 +221,7 @@ class Result:
 
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
+    display_version: int | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
@@ -245,12 +245,7 @@ class Result:
                 delete=False,
             ) as f:
                 temp_name = f.name
-                f.write(
-                    orjson.dumps(
-                        self.display,
-                        option=orjson.OPT_INDENT_2,
-                    ).decode("utf-8")
-                )
+                json.dump(self.display, fp=f, indent=2, ensure_ascii=False, default=str)
             os.replace(temp_name, path)
             self.display = None
 
@@ -324,7 +319,8 @@ class Op(BaseConfig):
             ]:
                 # If the operation is a visualization, we use the returned value for display.
                 res = Result(display=res)
-                res.save_display(op_ctx.ws.path, op_ctx.node.id)
+                if op_ctx.ws and op_ctx.node:
+                    res.save_display(op_ctx.ws.path, op_ctx.node.id)
             else:
                 res = Result(output=res)
         return res

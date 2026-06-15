@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "molstar/build/viewer/molstar.css";
+import { getDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
@@ -20,7 +21,7 @@ const NodeWithMolecule = (props: any) => {
   const viewerRef = React.useRef<any>(null);
 
   useEffect(() => {
-    const config = props.data?.display;
+    const config = getDisplay(props.data?.display_version, props.id);
     const wrapper = wrapperRef.current;
     const container = containerRef.current;
     if (!config || !container || !wrapper) return;
