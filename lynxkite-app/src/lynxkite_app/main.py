@@ -30,17 +30,12 @@ try:
 except ImportError:
     enterprise_backend = None
 
-LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER", "")
-
-if LIM_WORKER:
-    try:
-        from lynxkite_enterprise.lim_worker import (  # ty: ignore[unresolved-import]
-            register_lim_routes,
-        )
-    except ImportError:
-        register_lim_routes = None
-else:
+try:
+    from lynxkite_enterprise.lim_worker import register_lim_routes  # ty: ignore[unresolved-import]
+except ImportError:
     register_lim_routes = None
+
+LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER")
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
