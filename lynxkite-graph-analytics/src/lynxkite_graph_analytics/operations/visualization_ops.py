@@ -56,7 +56,7 @@ def _graph_neighborhood(start_nodes: pd.DataFrame, edges: pd.DataFrame, hops: in
 def visualize_graph(
     graph: core.Bundle,
     *,
-    color_nodes_by: core.NodePropertyName,
+    color_nodes_by: core.NodePropertyName = "",
     label_by: core.NodePropertyName = "",
     color_edges_by: core.EdgePropertyName = "",
     pick_nodes_by: core.NodePropertyName = "",
