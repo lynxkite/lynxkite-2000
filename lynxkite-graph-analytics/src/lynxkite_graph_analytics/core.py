@@ -62,6 +62,14 @@ ColumnNameByTableName = typing.Annotated[
 rendered as a dropdown in the frontend, listing the columns of the DataFrame
 named by the "table_name" parameter. The column name is passed to the operation as a string."""
 
+MultiColumnNameByTableName = typing.Annotated[
+    list[str],
+    {"format": "multi-dropdown", "metadata_query": "[].dataframes[].<table_name>.columns[]"},
+]
+"""A type annotation to be used for parameters of an operation. MultiColumnNameByTableName is
+rendered as a multiple-choice dropdown in the frontend, listing the columns of the DataFrame
+named by the "table_name" parameter. The column names are passed to the operation as a list of strings."""
+
 TableColumn = typing.Annotated[
     tuple[str, str],
     {

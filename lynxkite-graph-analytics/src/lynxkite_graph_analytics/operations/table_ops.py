@@ -33,19 +33,19 @@ class OrderType(enum.StrEnum):
     desc = "descending"
 
 
-@op("Vector from attribute pair", icon="link")
-def vector_from_attribute_pair(
+@op("Vector from attributes", icon="link")
+def vector_from_attributes(
     b: core.Bundle,
     *,
     table_name: core.TableName,
-    attribute1: core.ColumnNameByTableName,
-    attribute2: core.ColumnNameByTableName,
-    new_name: str,
+    attributes: core.MultiColumnNameByTableName,
+    vector_name: str,
 ) -> core.Bundle:
-    """Creates a new column with vectors that contain the two attributes"""
+    """Creates a new column with vectors that contain the selected attributes in the selected order"""
     b = b.copy()
-    df = b.dfs[table_name]
-    df[new_name] = list(zip(df[attribute1], df[attribute2]))
+    df = b.dfs[table_name].copy()
+    df[vector_name] = list(zip(*(df[col] for col in attributes)))
+    b.dfs[table_name] = df
     return b
 
 

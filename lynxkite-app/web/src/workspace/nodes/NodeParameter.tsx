@@ -75,6 +75,60 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         ))}
       </select>
     </label>
+  ) : meta?.type?.format === "multi-dropdown" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+
+      <div className="dropdown dropdown-bottom w-full">
+        <button
+          tabIndex={0}
+          className="border border-base-300 bg-base-100 rounded-lg h-12 px-4 w-full flex items-center justify-between cursor-pointer"
+        >
+          <span className="truncate text-sm text-base-content/90">
+            {(Array.isArray(value) ? value : []).filter(Boolean).join(", ")}
+          </span>
+          <span className="text-[10px] opacity-60 text-base-content">▼</span>
+        </button>
+
+        <div
+          tabIndex={0}
+          className="dropdown-content left-0 mt-1 w-full bg-white z-[999] rounded-lg border p-2 max-h-60 overflow-y-auto"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {(getDropDownValues(data, meta?.type?.metadata_query) as string[])
+            ?.filter((option: string) => option && option.trim() !== "")
+            ?.map((option: string) => {
+              const currentSelection: string[] = Array.isArray(value) ? value : [];
+              const isChecked: boolean = currentSelection.includes(option);
+
+              return (
+                <label
+                  key={option}
+                  className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded text-gray-900"
+                >
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-primary"
+                    checked={isChecked}
+                    onChange={(evt) => {
+                      const target = evt.target as HTMLInputElement;
+                      const nextSelection: string[] = target.checked
+                        ? [...currentSelection, option]
+                        : currentSelection.filter((v: string) => v !== option);
+
+                      onChange(nextSelection);
+                    }}
+                  />
+                  <span className="text-sm select-none">{option}</span>
+                </label>
+              );
+            })}
+        </div>
+      </div>
+    </div>
   ) : meta?.type?.format === "double-dropdown" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
