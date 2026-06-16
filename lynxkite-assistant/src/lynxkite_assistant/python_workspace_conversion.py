@@ -31,6 +31,33 @@ def python_to_workspace(code: str) -> workspace.Workspace:
     saved_values = {}
     box_x = {}
     box_y = {}
+    comments = []
+    comment_lines = []
+    next_line = 0
+    # gather multiline comments
+    for i, line in enumerate(code.splitlines()):
+        if not line.strip().startswith("#"):
+            continue
+        if next_line == i:
+            comment_lines.append(line.strip()[1:].strip())
+        else:
+            if comment_lines:
+                comments.append((next_line - len(comment_lines), "\n".join(comment_lines)))
+            comment_lines = [line.strip()[1:].strip()]
+        next_line = i + 1
+    if comment_lines:
+        comments.append((next_line - len(comment_lines), "\n".join(comment_lines)))
+    for line, text in comments:
+        ws.add_node(
+            id=f"comment on line {line}",
+            title="Comment",
+            op_id="Comment",
+            type="comment",
+            params={"text": text.strip()},
+            width=400,
+            height=50,
+            position=workspace.Position(x=0, y=0),
+        )
     for s in tree.body:
         src = ast.get_source_segment(code, s)
         error_msg = f"Unexpected statement on line {s.lineno}:\n\n  {src}\n\nThe file must only contain function calls. Keyword arguments must be constants or previous results. Positional arguments are not allowed."
@@ -100,8 +127,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
 def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
-        "import boxes  # For boxes defined in boxes.py.",
-        "# Other imports are handled automatically. Do not add imports.",
+        "import boxes  # For boxes defined in boxes.py. Other imports are handled automatically. Do not add imports.",
     ]
     node_by_id = {node.id: node for node in ws.nodes}
     incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {node.id: [] for node in ws.nodes}
@@ -122,6 +148,13 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
 
     for node_id in sorted_node_ids:
         node = node_by_id[node_id]
+        if node.type == "comment":
+            comment_lines = node.data.params.get("text", "").split("\n")
+            for line in comment_lines:
+                code.append(f"# {line}")
+            if len(comment_lines) > 1:
+                code.append("")
+            continue
         inputs = sorted(
             f"{edge.targetHandle}={saved_values[edge.source]}" for edge in incoming_edges[node_id]
         )
