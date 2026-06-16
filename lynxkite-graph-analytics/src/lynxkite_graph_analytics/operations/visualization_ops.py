@@ -38,14 +38,7 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization", icon="eye", color="blue")
-def visualize_graph(
-    graph: core.Bundle,
-    *,
-    color_nodes_by: core.NodePropertyName | None = None,
-    label_by: core.NodePropertyName | None = None,
-    color_edges_by: core.EdgePropertyName | None = None,
-):
+def _nodes_and_edges(graph):
     node_tables = []
     seen_tables = set()
 
@@ -67,6 +60,43 @@ def visualize_graph(
 
     nodes = nodes.set_index("_unique_id", drop=False)
     nodes = bundle.df_for_frontend(nodes, 10_000)
+
+    if graph.relations:
+        edge_tables = []
+        for relation in graph.relations:
+            df = graph.dfs[relation.df].copy()
+            df["_unique_source"] = (
+                relation.source_table + "_" + df[relation.source_column].astype(str)
+            )
+            df["_unique_target"] = (
+                relation.target_table + "_" + df[relation.target_column].astype(str)
+            )
+            edge_tables.append(df)
+        edges_df = pd.concat(edge_tables, ignore_index=True)
+
+    if not edges_df.empty:
+        valid_nodes = set(nodes["_unique_id"].astype(str))
+        edges_df = edges_df[
+            edges_df["_unique_source"].astype(str).isin(valid_nodes)
+            & edges_df["_unique_target"].astype(str).isin(valid_nodes)
+        ]
+
+    edges = edges_df.drop_duplicates(["_unique_source", "_unique_target"])
+    edges = bundle.df_for_frontend(edges, 10_000)
+
+    return nodes, edges
+
+
+@op("Visualize graph", view="visualization", icon="eye", color="blue")
+def visualize_graph(
+    graph: core.Bundle,
+    *,
+    color_nodes_by: core.NodePropertyName | None = None,
+    label_by: core.NodePropertyName | None = None,
+    color_edges_by: core.EdgePropertyName | None = None,
+):
+    graph = graph.copy()
+    nodes, edges = _nodes_and_edges(graph)
     if color_nodes_by and color_nodes_by in nodes.columns:
         nodes["color"] = _map_color(nodes[color_nodes_by])
 
@@ -92,33 +122,9 @@ def visualize_graph(
             curveness = 0  # Street maps are better with straight streets.
             break
     else:
-        print(nodes.columns)
         pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
         curveness = 0.3
     nodes = nodes.to_records(index=False)
-
-    if graph.relations:
-        edge_tables = []
-        for relation in graph.relations:
-            df = graph.dfs[relation.df].copy()
-            df["_unique_source"] = (
-                relation.source_table + "_" + df[relation.source_column].astype(str)
-            )
-            df["_unique_target"] = (
-                relation.target_table + "_" + df[relation.target_column].astype(str)
-            )
-            edge_tables.append(df)
-        edges_df = pd.concat(edge_tables, ignore_index=True)
-
-    if not edges_df.empty:
-        valid_nodes = set(nodes["_unique_id"].astype(str))
-        edges_df = edges_df[
-            edges_df["_unique_source"].astype(str).isin(valid_nodes)
-            & edges_df["_unique_target"].astype(str).isin(valid_nodes)
-        ]
-
-    edges = edges_df.drop_duplicates(["_unique_source", "_unique_target"])
-    edges = bundle.df_for_frontend(edges, 10_000)
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
@@ -240,31 +246,8 @@ def binned_graph_visualization(
     Nodes binned together by x and y are aggregated into one node.
     Edges between bins are aggregated into one edge.
     """
-    node_tables = []
-    seen_tables = set()
-
-    def add_table(table: str, key: str):
-        if table not in seen_tables:
-            df = b.dfs[table].copy()
-            df["_id"] = df[key]
-            df["_table"] = table
-            node_tables.append(df)
-            seen_tables.add(table)
-
-    for relation in b.relations:
-        add_table(relation.source_table, relation.source_key)
-        add_table(relation.target_table, relation.target_key)
-    nodes = pd.concat(node_tables, ignore_index=True)
-    nodes["_unique_id"] = nodes["_table"].astype(str) + "_" + nodes["_id"].astype(str)
-    nodes = nodes.drop_duplicates(subset=["_unique_id"])
-
-    edge_tables = []
-    for relation in b.relations:
-        df = b.dfs[relation.df].copy()
-        df["_unique_source"] = relation.source_table + "_" + df[relation.source_column].astype(str)
-        df["_unique_target"] = relation.target_table + "_" + df[relation.target_column].astype(str)
-        edge_tables.append(df)
-    edges = pd.concat(edge_tables, ignore_index=True)
+    b = b.copy()
+    nodes, edges = _nodes_and_edges(b)
 
     nodes["x_bin"] = pd.cut(nodes[x_property], bins=x_bins)
     nodes["y_bin"] = pd.cut(nodes[y_property], bins=y_bins)
