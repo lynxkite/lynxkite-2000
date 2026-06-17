@@ -11,7 +11,7 @@ import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
+import { apiFetch, apiJson, getConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 
@@ -74,10 +74,9 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
-  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
-  const config = useConfig();
+  const config = getConfig();
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
@@ -194,7 +193,7 @@ export default function Directory() {
               icon={<LayoutGridAdd />}
               label="New workspace"
             />
-            {config.data?.enterprise_available && (
+            {config.enterprise_available && (
               <Link to="/progress">
                 <LayoutGrid /> Enterprise progress
               </Link>

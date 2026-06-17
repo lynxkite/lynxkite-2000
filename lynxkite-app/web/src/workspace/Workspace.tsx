@@ -38,7 +38,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
+import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
@@ -140,7 +140,7 @@ function LynxKiteFlow() {
     `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher as Fetcher<Catalogs>,
   );
-  const config = useConfig();
+  const config = getConfig();
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
@@ -596,7 +596,7 @@ function LynxKiteFlow() {
                   {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
                 </button>
               </Tooltip>
-              {config.data?.assistant_available && (
+              {config.assistant_available && (
                 <Tooltip doc={"Toggle assistant"}>
                   <button
                     className="btn btn-link"

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import useSWR from "swr";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
@@ -13,6 +12,7 @@ import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
+import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
 
 const echarts = await import("echarts");
@@ -25,8 +25,6 @@ function timeLeft(ws: any): string {
   if (minutes > 0) return `~${minutes}m ${seconds}s left`;
   return `~${seconds}s left`;
 }
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
@@ -41,8 +39,8 @@ export default function ProgressPage() {
     { id: "gpu-services", label: "Running GPU services" },
     // { id: "users", label: "Users & groups" },
   ];
-  const config = useSWR<{ enterprise_available?: boolean }>("/api/config", fetcher);
-  const enterpriseAvailable = config.data?.enterprise_available === true;
+  const config = getConfig();
+  const enterpriseAvailable = config.enterprise_available === true;
 
   const [data, setData] = useState<{
     workspaces: any[];
@@ -169,7 +167,7 @@ export default function ProgressPage() {
     };
   }, [enterpriseAvailable]);
 
-  if (config.data && !enterpriseAvailable) {
+  if (!enterpriseAvailable) {
     return (
       <ManagementPage>
         <p className="p-4 prose">
