@@ -11,7 +11,7 @@ import enum
 import numpy as np
 
 
-op = ops.op_registration(core.ENV, "Graph operations", color="green")
+op = ops.op_registration(core.ENV, "Graph operations")
 
 
 @op("Merge", icon="link")
@@ -22,6 +22,38 @@ def merge(
 ):
     """Merge multiple inputs"""
     b = bundle.merge_bundles(bundles, merge_mode=merge_mode)
+    return b
+
+
+@op("Merge nodes on attribute", icon="link")
+def merge_nodes(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute: core.ColumnNameByTableName,
+    aggregations: core.DropdownTextAdderByTableName,
+) -> core.Bundle:
+    """Merges the nodes that have the same value for the given attribute.
+    The aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies
+    which other columns should be included in the new DataFrame and how to aggregate them."""
+    b = b.copy()
+    old_df = b.dfs[table_name].copy()
+    agg_dict = {}
+    name_dict = {}
+
+    for column, funcs in aggregations:
+        if column not in agg_dict:
+            agg_dict[column] = []
+        for func in funcs.split(" "):
+            if func not in agg_dict[column]:
+                agg_dict[column].append(func)
+            name_dict[(column, func)] = f"{column}_{func}"
+
+    grouped_df = old_df.groupby(attribute).agg(agg_dict)
+    grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
+    new_df = grouped_df.reset_index()
+
+    b.dfs[table_name] = new_df
     return b
 
 

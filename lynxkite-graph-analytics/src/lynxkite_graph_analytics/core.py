@@ -90,6 +90,18 @@ RecordsColumn = typing.Annotated[
 rendered as a dropdown in the frontend, listing the columns of the "records" DataFrame.
 The column name is passed to the operation as a string."""
 
+DropdownTextAdderByTableName = typing.Annotated[
+    list[tuple[str, str]],
+    {
+        "format": "dropdown-textbox_adder",
+        "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. DropdownTextAdderByTableName is
+rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-textbox pairs, where the
+dropdown lists the columns of the DataFrame named by the "table_name" parameter.
+The column names are passed to the operation as a list of strings."""
+
 
 def nx_node_attribute_func(name):
     """Decorator for wrapping a function that adds a NetworkX node attribute."""
