@@ -87,7 +87,9 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         x = 0
         lowest_input = None
         for arg_name, arg_value in kwargs.items():
-            assert isinstance(arg_value, (ast.Constant, ast.Name)), error_msg
+            assert isinstance(arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)), (
+                error_msg
+            )
             if isinstance(arg_value, ast.Constant):
                 params[arg_name] = arg_value.value
             elif isinstance(arg_value, ast.Name):
@@ -99,6 +101,27 @@ def python_to_workspace(code: str) -> workspace.Workspace:
                 if lowest_input is None or box_y[src] < lowest_input:
                     lowest_input = box_y[src]
                 ws.add_edge(src, "output", box_id, arg_name)
+            elif isinstance(arg_value, ast.Dict):
+                dict_value = {}
+                for key_node, value_node in zip(arg_value.keys, arg_value.values):
+                    assert isinstance(key_node, ast.Constant) and isinstance(key_node.value, str), (
+                        error_msg
+                    )
+                    assert isinstance(value_node, ast.Constant), error_msg
+                    dict_value[key_node.value] = value_node.value
+                params[arg_name] = dict_value
+            elif isinstance(arg_value, ast.List):
+                list_value = []
+                for item in arg_value.elts:
+                    assert isinstance(item, ast.Constant), error_msg
+                    list_value.append(item.value)
+                params[arg_name] = list_value
+            elif isinstance(arg_value, ast.Tuple):
+                tuple_value = []
+                for item in arg_value.elts:
+                    assert isinstance(item, ast.Constant), error_msg
+                    tuple_value.append(item.value)
+                params[arg_name] = tuple(tuple_value)
         taken = {box_y[b] for b in box_y if box_x[b] == x}
         y = lowest_input or 0
         while y in taken:
