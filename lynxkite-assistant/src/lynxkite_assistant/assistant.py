@@ -71,7 +71,9 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
     backend = backends.CompositeBackend(
         default=workspace_backend,
         routes={
-            "/skills": backends.FilesystemBackend(root_dir=("../.agents/skills"), virtual_mode=True)
+            "/skills/": backends.FilesystemBackend(
+                root_dir=("../.agents/skills"), virtual_mode=True
+            )
         },
     )
     agent = deepagents.create_deep_agent(

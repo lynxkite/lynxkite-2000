@@ -62,7 +62,7 @@ def extract_ops_from_file(file_path: str):
                 and decorator.func.id == "op"
             ):
                 return (
-                    decorator.args[0].value.replace(" ", "_").replace("/", "-")
+                    decorator.args[0].value.replace(" ", "-").replace("/", "-").lower()
                     if decorator.args
                     else node.name
                 )
@@ -81,8 +81,7 @@ def create_skills_from_file(file_path: str, output_path: str = "./.agents/skills
     for name, node in extract_ops_from_file(file_path):
         python_path = file_path.replace("/", ".").replace("-", "_")[:-2]
         skill = create_skill_from_op(name, node, python_path=python_path)
-        content = f"""
----
+        content = f"""---
 name: {skill["name"]}
 description: {skill["description"]}
 ---
@@ -128,4 +127,5 @@ def main(argv):
 if __name__ == "__main__":
     import sys
 
+    # print(CATALOGS)
     main(sys.argv)
