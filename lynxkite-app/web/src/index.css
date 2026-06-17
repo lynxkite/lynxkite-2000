@@ -1397,6 +1397,54 @@ svg {
   }
 }
 
+.share-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+
+  input {
+    flex: 1;
+  }
+}
+
+.share-list {
+  margin-top: 16px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+  }
+}
+
+.share-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-bottom: 1px solid oklch(92% 0 0);
+  font-size: 14px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .delete-button {
+    color: oklch(55% 0.2 30);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: oklch(40% 0.25 30);
+    }
+  }
+}
+
 .msp-lynxkite-wrapper {
   flex: 1;
   position: relative;

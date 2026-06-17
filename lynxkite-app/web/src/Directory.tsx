@@ -11,6 +11,7 @@ import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Upload from "~icons/tabler/upload";
+import X from "~icons/tabler/x";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
@@ -87,6 +88,10 @@ export default function Directory() {
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const shareDialogRef = useRef<HTMLDialogElement>(null);
+  const [shareTarget, setShareTarget] = useState<DirectoryEntry | null>(null);
+  const [shareEmails, setShareEmails] = useState<string[]>([]);
+  const [shareEmailInput, setShareEmailInput] = useState("");
 
   function link(item: DirectoryEntry) {
     const encodedName = encodePathSegments(item.name);
@@ -193,6 +198,24 @@ export default function Directory() {
     }
     setRenameTarget(null);
     list.mutate();
+  }
+
+  function openShareModal(item: DirectoryEntry) {
+    setShareTarget(item);
+    setShareEmailInput("");
+    setShareEmails([]);
+    shareDialogRef.current?.showModal();
+  }
+
+  function addShare() {
+    const email = shareEmailInput.trim();
+    if (!email || shareEmails.includes(email)) return;
+    setShareEmails((prev) => [...prev, email]);
+    setShareEmailInput("");
+  }
+
+  function removeShare(email: string) {
+    setShareEmails((prev) => prev.filter((e) => e !== email));
   }
 
   return (
@@ -339,6 +362,11 @@ export default function Directory() {
                             </button>
                           </li>
                         )}
+                        <li>
+                          <button type="button" onClick={() => openShareModal(item)}>
+                            Share
+                          </button>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -356,6 +384,61 @@ export default function Directory() {
         submitLabel="Rename"
         onSubmit={submitRename}
       />
+      <dialog className="modal" ref={shareDialogRef}>
+        <div className="modal-box">
+          <h1 className="title">Share "{shareTarget ? shortName(shareTarget) : ""}"</h1>
+          <label className="form-control w-full">
+            <span className="label-text">Share with</span>
+            <div className="share-input-row">
+              <input
+                className="input input-bordered"
+                type="email"
+                placeholder="Email address"
+                value={shareEmailInput}
+                onChange={(e) => setShareEmailInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addShare();
+                  }
+                }}
+              />
+              <button className="btn btn-primary" type="button" onClick={addShare}>
+                Add
+              </button>
+            </div>
+          </label>
+          {shareEmails.length > 0 && (
+            <div className="share-list">
+              <span className="label-text">Shared with:</span>
+              <ul>
+                {shareEmails.map((email) => (
+                  <li key={email} className="share-entry">
+                    <span>{email}</span>
+                    <button
+                      className="delete-button"
+                      type="button"
+                      onClick={() => removeShare(email)}
+                      aria-label={`Remove share for ${email}`}
+                    >
+                      <X />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="modal-action">
+            <button
+              className="btn btn-ghost btn-primary"
+              type="button"
+              onClick={() => shareDialogRef.current?.close()}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </dialog>
     </ManagementPage>
   );
 }
