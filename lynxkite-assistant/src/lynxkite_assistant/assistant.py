@@ -6,6 +6,7 @@ import pydantic
 from typing import cast
 from fastapi.responses import StreamingResponse
 import deepagents
+from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 
 router = fastapi.APIRouter()
@@ -66,8 +67,19 @@ def _extract_token_text(token_content: object) -> str:
 @router.post("/api/assistant/stream")
 async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
-    backend = WorkspaceBackend(req.workspace)
-    agent = deepagents.create_deep_agent(model=model, backend=backend, system_prompt=SYSTEM_PROMPT)
+    workspace_backend = WorkspaceBackend(req.workspace)
+    backend = backends.CompositeBackend(
+        default=workspace_backend,
+        routes={
+            "/skills": backends.FilesystemBackend(root_dir=("../.agents/skills"), virtual_mode=True)
+        },
+    )
+    agent = deepagents.create_deep_agent(
+        model=model,
+        backend=backend,
+        skills=["/skills"],
+        system_prompt=SYSTEM_PROMPT,
+    )
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
         content = _extract_text_content(msg).strip()
