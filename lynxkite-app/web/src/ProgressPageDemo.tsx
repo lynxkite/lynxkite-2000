@@ -359,16 +359,14 @@ function Workspaces(props: { workspaces: any[]; setResources: (ws: any, resource
                       `(${ws.current_box_progress.done + currentBoxDemoCounter * (ws.resources.gpus ?? 0)}/${ws.current_box_progress.input_size})`}
                   </span>
                   {ws.current_box_progress.input_size && (
-                    <>
-                      <progress
-                        className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
-                        value={
-                          ws.current_box_progress.done +
-                          currentBoxDemoCounter * (ws.resources.gpus ?? 0)
-                        }
-                        max={ws.current_box_progress.input_size}
-                      />
-                    </>
+                    <progress
+                      className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
+                      value={
+                        ws.current_box_progress.done +
+                        currentBoxDemoCounter * (ws.resources.gpus ?? 0)
+                      }
+                      max={ws.current_box_progress.input_size}
+                    />
                   )}
                 </div>
               ) : (
