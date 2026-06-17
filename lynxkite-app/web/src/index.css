@@ -21,6 +21,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-base-100: white;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
