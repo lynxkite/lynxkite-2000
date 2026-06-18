@@ -155,16 +155,6 @@ export function getDisplay(display_version: number, node_id: string): any {
   return data;
 }
 
-export async function loadConfig(): Promise<GlobalConfig | null> {
-  try {
-    const config = await apiJson<GlobalConfig>("/api/config");
-    setCachedConfig(config);
-    return config;
-  } catch (_error) {
-    return null;
-  }
-}
-
 export async function completeLoginCallback(): Promise<string> {
   const manager = getUserManager();
   if (!manager) {
