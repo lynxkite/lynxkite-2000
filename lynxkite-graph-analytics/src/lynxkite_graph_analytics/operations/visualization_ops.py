@@ -38,7 +38,8 @@ def _map_color(value):
         ]
 
 
-def _nodes_and_edges(graph):
+def _nodes_and_edges(graph: core.Bundle) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Returns the nodes that appear in the relations of the graph and the edges between them."""
     node_tables = []
     seen_tables = set()
 
@@ -112,9 +113,7 @@ def visualize_graph(
             dx, dy = nodes[x].std(), nodes[y].std()
             # Scale up to avoid float precision issues and because eCharts omits short edges.
             scale_x = 100 / max(dx, dy)
-            scale_y = scale_x
-            if y == "lat":
-                scale_y *= -1
+            scale_y = -scale_x
             pos = {
                 node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
                 for node_id, row in nodes.iterrows()
