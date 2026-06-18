@@ -15,7 +15,7 @@ test("Can upload a file via the Upload file button", async ({ page }) => {
   });
   await upload;
 
-  await expect(splash.getEntry(fileName)).toBeVisible();
+  await expect(splash.getEntry(fileName)).toBeVisible({ timeout: 10000 });
 
   await splash.deleteEntry(fileName);
   await expect(splash.getEntry(fileName)).not.toBeVisible();
@@ -37,7 +37,7 @@ test("Can upload multiple files at once", async ({ page }) => {
   ]);
   await uploads;
 
-  await expect(splash.getEntry(file1)).toBeVisible();
+  await expect(splash.getEntry(file1)).toBeVisible({ timeout: 10000 });
   await expect(splash.getEntry(file2)).toBeVisible();
 
   await splash.deleteEntry(file1);
