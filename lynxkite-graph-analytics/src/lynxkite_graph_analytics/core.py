@@ -83,6 +83,11 @@ rendered as a pair of dropdowns for selecting a table in the Bundle and a column
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
 
+RelationName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].relations[].name"}
+]
+"""A type annotation to be used for parameters of an operation. RelationDropdown is rendered as a dropdown that lists the names of available relations."""
+
 RecordsColumn = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].records.columns[]"}
 ]

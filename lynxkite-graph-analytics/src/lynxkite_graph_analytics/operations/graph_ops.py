@@ -150,6 +150,17 @@ def discard_loop_edges(graph: nx.Graph):
     return graph
 
 
+@op("Discard loop edges in relation", icon="filter-filled")
+def discard_loop_edges_in_relation(bundle: core.Bundle, *, relation: core.RelationName):
+    bundle = bundle.copy()
+    for r in bundle.relations:
+        if r.name == relation:
+            df = bundle.dfs[r.df].copy()
+            bundle.dfs[r.df] = df[df[r.source_column] != df[r.target_column]]
+            break
+    return bundle
+
+
 @op("Discard parallel edges", icon="filter-filled")
 def discard_parallel_edges(graph: nx.Graph):
     return nx.DiGraph(graph)
