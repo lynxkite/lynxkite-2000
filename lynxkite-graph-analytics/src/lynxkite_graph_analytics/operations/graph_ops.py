@@ -54,6 +54,12 @@ def merge_nodes(
     new_df = grouped_df.reset_index()
 
     b.dfs[table_name] = new_df
+    for r in b.relations:
+        if r == r.source_table:
+            r.source_key = attribute
+        if r == r.target_table:
+            r.target_key = attribute
+
     return b
 
 
