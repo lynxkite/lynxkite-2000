@@ -12,7 +12,7 @@ each color differ by at most 1. `num_colors` must be greater than the
 maximum degree of `G`. The algorithm is described in [1]_ and has
 complexity O(num_colors * n**2).
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.coloring.equitable_coloring.equitable_color(G=<G_variable>)

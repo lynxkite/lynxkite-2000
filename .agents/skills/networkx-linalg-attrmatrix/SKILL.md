@@ -15,10 +15,10 @@ of the edge attribute `edge_attr`.  If ua and va are the values of the
 node attribute `node_attr` for u and v, respectively, then the value of
 the edge attribute is added to the matrix element at (ua, va).
 parameters:
-  - edge_attr: str | None = None -
-  - node_attr: str | None = None -
-  - normalized: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - edge_attr: str | None = None - .
+  - node_attr: str | None = None - .
+  - normalized: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.attrmatrix.attr_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)
@@ -35,10 +35,10 @@ of the edge attribute `edge_attr`.  If ua and va are the values of the
 node attribute `node_attr` for u and v, respectively, then the value of
 the edge attribute is added to the matrix element at (ua, va).
 parameters:
-  - edge_attr: str | None = None -
-  - node_attr: str | None = None -
-  - normalized: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - edge_attr: str | None = None - .
+  - node_attr: str | None = None - .
+  - normalized: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.attrmatrix.attr_sparse_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)

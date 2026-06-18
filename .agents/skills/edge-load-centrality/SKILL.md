@@ -12,8 +12,8 @@ It is based loosely on load_centrality in the sense that
 it counts the number of shortest paths which cross each edge.
 This function is for demonstration and testing purposes.
 parameters:
-  - cutoff: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - cutoff: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.load.edge_load_centrality(cutoff=<cutoff_value>, G=<G_variable>)

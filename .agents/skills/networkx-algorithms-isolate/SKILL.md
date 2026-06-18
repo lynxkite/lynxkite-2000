@@ -10,7 +10,7 @@ An *isolate* is a node with no neighbors (that is, with degree
 zero). For directed graphs, this means no in-neighbors and no
 out-neighbors.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.isolate.isolates(G=<G_variable>)
@@ -22,7 +22,7 @@ An *isolate* is a node with no neighbors (that is, with degree
 zero). For directed graphs, this means no in-neighbors and no
 out-neighbors.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.isolate.number_of_isolates(G=<G_variable>)

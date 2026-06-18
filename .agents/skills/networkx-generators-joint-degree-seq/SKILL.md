@@ -36,7 +36,7 @@ output_variable = networkx.generators.joint_degree_seq.is_valid_directed_joint_d
 **Joint degree graph:**
 Generates a random simple graph with the given joint degree dictionary.
 parameters:
-  - seed: int | None = None -
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.joint_degree_seq.joint_degree_graph(seed=<seed_value>)

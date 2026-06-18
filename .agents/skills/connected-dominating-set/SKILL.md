@@ -13,7 +13,7 @@ connected subgraph of *G* [2]_.
 Note that connected dominating sets are not unique in general and that there
 may be other connected dominating sets.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.dominating.connected_dominating_set(G=<G_variable>)

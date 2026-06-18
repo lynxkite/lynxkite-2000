@@ -14,8 +14,8 @@ This generator starts off from a single vertex and performs disjoint
 union and full join operations on itself.
 The decision on which operation will take place is random.
 parameters:
-  - n: <class 'int'> = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.cographs.random_cograph(n=<n_value>, seed=<seed_value>)

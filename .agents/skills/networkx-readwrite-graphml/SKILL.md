@@ -6,7 +6,7 @@ description: Collection of operations - Read GraphML, Parse GraphML
 **Read GraphML:**
 Read graph in GraphML format from path.
 parameters:
-  - force_multigraph: <class 'bool'> = None -
+  - force_multigraph: <class 'bool'> = None - .
 
 usage:
 output_variable = networkx.readwrite.graphml.read_graphml(force_multigraph=<force_multigraph_value>)
@@ -14,8 +14,8 @@ output_variable = networkx.readwrite.graphml.read_graphml(force_multigraph=<forc
 **Parse GraphML:**
 Read graph in GraphML format from string.
 parameters:
-  - graphml_string: <class 'str'> = None -
-  - force_multigraph: <class 'bool'> = None -
+  - graphml_string: <class 'str'> = None - .
+  - force_multigraph: <class 'bool'> = None - .
 
 usage:
 output_variable = networkx.readwrite.graphml.parse_graphml(graphml_string=<graphml_string_value>, force_multigraph=<force_multigraph_value>)

@@ -62,7 +62,7 @@ def create_box_description(skill) -> str:
 **{skill["name"]}:**
 {skill["long_description"]}
 parameters:
-{os.linesep.join([f"  - {param['name']}: {param['type']} = {param['default']} - {param['description']}" for param in skill["parameters"]])}
+{os.linesep.join([f"  - {param['name']}: {param['type']} = {param['default']} - {param['description']}." for param in skill["parameters"]])}
 
 usage:
 output_variable = {skill["usage"]}"""
@@ -97,7 +97,7 @@ def create_skills_from_catalog(output_path: str = "./.agents/skills"):
         if not os.path.exists(skill_file_path):
             os.makedirs(skill_file_path)
         with open(os.path.join(skill_file_path, "SKILL.md"), "w") as f:
-            f.write(content)
+            f.write(content.strip() + os.linesep)  # Add a newline at the end for proper formatting
             print(f"Created skill file: {os.path.join(skill_file_path, 'SKILL.md')}")
 
 

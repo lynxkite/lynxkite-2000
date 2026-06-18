@@ -11,9 +11,9 @@ edge that was incident to the original two nodes.
 Information about the contracted nodes and any modified edges are stored on
 the output graph in a ``"contraction"`` attribute - see Examples for details.
 parameters:
-  - self_loops: <class 'bool'> = None -
-  - copy: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - self_loops: <class 'bool'> = None - .
+  - copy: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)
@@ -26,9 +26,9 @@ edge that was incident to the original two nodes.
 Information about the contracted nodes and any modified edges are stored on
 the output graph in a ``"contraction"`` attribute - see Examples for details.
 parameters:
-  - self_loops: <class 'bool'> = None -
-  - copy: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - self_loops: <class 'bool'> = None - .
+  - copy: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)

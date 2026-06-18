@@ -17,7 +17,7 @@ The nodes of the line graph are 2-tuples of nodes in the original graph (or
 For information about self-loops and more discussion, see the **Notes**
 section below.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.generators.line.line_graph(G=<G_variable>)
@@ -31,7 +31,7 @@ Then H is the inverse line graph of G.
 Not all graphs are line graphs and these do not have an inverse line graph.
 In these cases this function raises a NetworkXError.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.generators.line.inverse_line_graph(G=<G_variable>)

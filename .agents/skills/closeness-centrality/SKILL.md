@@ -32,8 +32,8 @@ the number of nodes in the graph,
 
     C_{WF}(u) = \frac{n-1}{N-1} \frac{n - 1}{\sum_{v=1}^{n-1} d(v, u)},
 parameters:
-  - wf_improved: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - wf_improved: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.closeness.closeness_centrality(wf_improved=<wf_improved_value>, G=<G_variable>)

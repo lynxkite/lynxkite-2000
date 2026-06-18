@@ -10,8 +10,8 @@ Returns the perfectly balanced `r`-ary tree of height `h`.
 
     >>> nx.draw(nx.balanced_tree(2, 3))
 parameters:
-  - r: <class 'int'> = None -
-  - h: <class 'int'> = None -
+  - r: <class 'int'> = None - .
+  - h: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.balanced_tree(r=<r_value>, h=<h_value>)
@@ -23,8 +23,8 @@ Returns the Barbell Graph: two complete graphs connected by a path.
 
     >>> nx.draw(nx.barbell_graph(4, 2))
 parameters:
-  - m1: <class 'int'> = None -
-  - m2: <class 'int'> = None -
+  - m1: <class 'int'> = None - .
+  - m2: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.barbell_graph(m1=<m1_value>, m2=<m2_value>)
@@ -40,7 +40,7 @@ the leftmost child of the root of the other.
 
     >>> nx.draw(nx.binomial_tree(3))
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.binomial_tree(n=<n_value>)
@@ -84,7 +84,7 @@ Node labels are the integers 0 to n-1
 
     >>> nx.draw(nx.circular_ladder_graph(5))
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.circular_ladder_graph(n=<n_value>)
@@ -100,7 +100,7 @@ for all $x$ in $x_1, ..., x_m$. Thus $Ci_n(1)$ is a cycle graph.
 
     >>> nx.draw(nx.circulant_graph(10, [1]))
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.circulant_graph(n=<n_value>)
@@ -134,7 +134,7 @@ This is different from the parameter ``t = n - 1`` in [1]_.
 
     >>> nx.draw(nx.dorogovtsev_goltsev_mendes_graph(3))
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.dorogovtsev_goltsev_mendes_graph(n=<n_value>)
@@ -164,8 +164,8 @@ leaves to its right." [1]_
 
     >>> nx.draw(nx.full_rary_tree(2, 10))
 parameters:
-  - r: <class 'int'> = None -
-  - n: <class 'int'> = None -
+  - r: <class 'int'> = None - .
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.full_rary_tree(r=<r_value>, n=<n_value>)
@@ -176,8 +176,8 @@ Returns the Kneser Graph with parameters `n` and `k`.
 The Kneser Graph has nodes that are k-tuples (subsets) of the integers
 between 0 and ``n-1``. Nodes are adjacent if their corresponding sets are disjoint.
 parameters:
-  - n: <class 'int'> = None -
-  - k: <class 'int'> = None -
+  - n: <class 'int'> = None - .
+  - k: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.kneser_graph(n=<n_value>, k=<k_value>)
@@ -194,7 +194,7 @@ Node labels are the integers 0 to 2*n - 1.
 
     >>> nx.draw(nx.ladder_graph(5))
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.ladder_graph(n=<n_value>)
@@ -291,8 +291,8 @@ $n \mod r$ partitions of size $n/r+1$, rounded down.
 
     >>> nx.draw(nx.turan_graph(6, 2))
 parameters:
-  - n: <class 'int'> = None -
-  - r: <class 'int'> = None -
+  - n: <class 'int'> = None - .
+  - r: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.classic.turan_graph(n=<n_value>, r=<r_value>)

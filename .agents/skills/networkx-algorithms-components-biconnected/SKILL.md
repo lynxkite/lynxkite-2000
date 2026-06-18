@@ -16,7 +16,7 @@ components of the graph.
 
 Notice that by convention a dyad is considered a biconnected component.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.biconnected.biconnected_components(G=<G_variable>)
@@ -33,7 +33,7 @@ However, each edge belongs to one, and only one, biconnected component.
 
 Notice that by convention a dyad is considered a biconnected component.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.biconnected.biconnected_component_edges(G=<G_variable>)
@@ -47,7 +47,7 @@ removing a node increases the number of disconnected components
 in the graph, that node is called an articulation point, or cut
 vertex.  A biconnected graph has no articulation points.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.biconnected.is_biconnected(G=<G_variable>)
@@ -63,7 +63,7 @@ component of a graph.
 
 Notice that by convention a dyad is considered a biconnected component.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.biconnected.articulation_points(G=<G_variable>)

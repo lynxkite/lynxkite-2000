@@ -11,7 +11,7 @@ an AT-free graph. If no asteroidal triple is found the graph is
 AT-free and True is returned. If at least one asteroidal triple is
 found the graph is not AT-free and False is returned.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.asteroidal.is_at_free(G=<G_variable>)
@@ -31,7 +31,7 @@ one, outlined in [1]_, which has a runtime of
 :math:`O(|V||\overline{E} + |V||E|)`, where the second term is the
 creation of the component structure.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.asteroidal.find_asteroidal_triple(G=<G_variable>)

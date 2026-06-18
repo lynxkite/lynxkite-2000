@@ -11,8 +11,8 @@ with $n$ nodes and $m$ edges.
 
 This maximum node connectivity is known to be $\lfloor 2m/n \rfloor$. [1]_
 parameters:
-  - n: <class 'int'> = None -
-  - m: <class 'int'> = None -
+  - n: <class 'int'> = None - .
+  - m: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.harary_graph.hnm_harary_graph(n=<n_value>, m=<m_value>)
@@ -25,8 +25,8 @@ edges needed with given node connectivity $k$ and node number $n$.
 
 This smallest number of edges is known to be $\lceil kn/2 \rceil$ [1]_.
 parameters:
-  - k: <class 'int'> = None -
-  - n: <class 'int'> = None -
+  - k: <class 'int'> = None - .
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.harary_graph.hkn_harary_graph(k=<k_value>, n=<n_value>)

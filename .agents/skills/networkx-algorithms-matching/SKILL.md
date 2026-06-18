@@ -10,7 +10,7 @@ A *matching* in a graph is a set of edges in which no two distinct
 edges share a common endpoint. Each node is incident to at most one
 edge in the matching. The edges are said to be independent.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.is_matching(G=<G_variable>)
@@ -21,7 +21,7 @@ Return True if ``matching`` is a maximal matching of ``G``
 A *maximal matching* in a graph is a matching in which adding any
 edge would cause the set to no longer be a valid matching.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.is_maximal_matching(G=<G_variable>)
@@ -32,7 +32,7 @@ Return True if ``matching`` is a perfect matching for ``G``
 A *perfect matching* in a graph is a matching in which exactly one edge
 is incident upon each vertex.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.is_perfect_matching(G=<G_variable>)
@@ -45,9 +45,9 @@ The weight of a matching is the sum of the weights of its edges.
 A maximal matching cannot add more edges and still be a matching.
 The cardinality of a matching is the number of matched edges.
 parameters:
-  - maxcardinality: bool | None = None -
-  - weight: str | None = weight -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - maxcardinality: bool | None = None - .
+  - weight: str | None = weight - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.max_weight_matching(maxcardinality=<maxcardinality_value>, weight=<weight_value>, G=<G_variable>)
@@ -79,8 +79,8 @@ and as integers if they started as integers.
 
 Read the documentation of `max_weight_matching` for more information.
 parameters:
-  - weight: str | None = weight -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = weight - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.min_weight_matching(weight=<weight_value>, G=<G_variable>)
@@ -91,7 +91,7 @@ Find a maximal matching in the graph.
 A matching is a subset of edges in which no node occurs more than once.
 A maximal matching cannot add more edges and still be a matching.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.matching.maximal_matching(G=<G_variable>)

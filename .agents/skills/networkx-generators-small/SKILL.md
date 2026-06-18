@@ -104,8 +104,8 @@ Some well known graphs are examples of Generalized Petersen Graphs such
 as the Petersen Graph GP(5, 2), the Desargues graph GP(10, 3), the
 Moebius-Kantor graph GP(8, 3), and the dodecahedron graph GP(10, 2).
 parameters:
-  - n: <class 'int'> = None -
-  - k: <class 'int'> = None -
+  - n: <class 'int'> = None - .
+  - k: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.small.generalized_petersen_graph(n=<n_value>, k=<k_value>)

@@ -10,7 +10,7 @@ The undirected MultiGraph is regular with degree `8`. Nodes are integer
 pairs. The second-largest eigenvalue of the adjacency matrix of the graph
 is at most `5 \sqrt{2}`, regardless of `n`.
 parameters:
-  - n: <class 'int'> = None -
+  - n: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.expanders.margulis_gabber_galil_graph(n=<n_value>)
@@ -60,10 +60,10 @@ Utility for creating a random regular expander.
 Returns a random $d$-regular graph on $n$ nodes which is an expander
 graph with very good probability.
 parameters:
-  - n: <class 'int'> = None -
-  - d: <class 'int'> = None -
-  - max_tries: <class 'int'> = 100 -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - d: <class 'int'> = None - .
+  - max_tries: <class 'int'> = 100 - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.expanders.maybe_regular_expander_graph(n=<n_value>, d=<d_value>, max_tries=<max_tries_value>, seed=<seed_value>)
@@ -84,7 +84,7 @@ it is a Ramanujan graph. [3]_
 A Ramanujan graph has spectral gap almost as large as possible, which makes them
 excellent expanders.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.generators.expanders.is_regular_expander(G=<G_variable>)
@@ -101,9 +101,9 @@ In the case where $\epsilon = 0$ it returns a Ramanujan graph.
 A Ramanujan graph has spectral gap almost as large as possible,
 which makes them excellent expanders. [3]_
 parameters:
-  - n: <class 'int'> = None -
-  - d: <class 'int'> = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - d: <class 'int'> = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.expanders.random_regular_expander_graph(n=<n_value>, d=<d_value>, seed=<seed_value>)

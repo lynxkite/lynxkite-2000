@@ -11,12 +11,12 @@ A minimum spanning tree is a subgraph of the graph (a tree)
 with the minimum sum of edge weights.  A spanning forest is a
 union of the spanning trees for each connected component of the graph.
 parameters:
-  - algorithm: <class 'str'> = kruskal -
-  - weight: <class 'str'> = weight -
-  - keys: <class 'bool'> = None -
-  - data: bool | None = None -
-  - ignore_nan: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - algorithm: <class 'str'> = kruskal - .
+  - weight: <class 'str'> = weight - .
+  - keys: <class 'bool'> = None - .
+  - data: bool | None = None - .
+  - ignore_nan: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.minimum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -29,12 +29,12 @@ A maximum spanning tree is a subgraph of the graph (a tree)
 with the maximum possible sum of edge weights.  A spanning forest is a
 union of the spanning trees for each connected component of the graph.
 parameters:
-  - algorithm: <class 'str'> = kruskal -
-  - weight: <class 'str'> = weight -
-  - keys: <class 'bool'> = None -
-  - data: bool | None = None -
-  - ignore_nan: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - algorithm: <class 'str'> = kruskal - .
+  - weight: <class 'str'> = weight - .
+  - keys: <class 'bool'> = None - .
+  - data: bool | None = None - .
+  - ignore_nan: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -42,10 +42,10 @@ output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=
 **Minimum spanning tree:**
 Returns a minimum spanning tree or forest on an undirected graph `G`.
 parameters:
-  - weight: <class 'str'> = weight -
-  - algorithm: <class 'str'> = kruskal -
-  - ignore_nan: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: <class 'str'> = weight - .
+  - algorithm: <class 'str'> = kruskal - .
+  - ignore_nan: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.minimum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -53,10 +53,10 @@ output_variable = networkx.algorithms.tree.mst.minimum_spanning_tree(weight=<wei
 **Maximum spanning tree:**
 Returns a maximum spanning tree or forest on an undirected graph `G`.
 parameters:
-  - weight: <class 'str'> = weight -
-  - algorithm: <class 'str'> = kruskal -
-  - ignore_nan: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: <class 'str'> = weight - .
+  - algorithm: <class 'str'> = kruskal - .
+  - ignore_nan: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.maximum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -75,9 +75,9 @@ to be selected with uniform probability.
 
 The function uses algorithm A8 in [1]_ .
 parameters:
-  - weight: <class 'str'> = None -
-  - seed: int | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: <class 'str'> = None - .
+  - seed: int | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.random_spanning_tree(weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
@@ -91,11 +91,11 @@ returned tree, `EXCLUDED`, which cannot be in the returned tree and `OPEN`.
 This is used in the SpanningTreeIterator to create new partitions following
 the algorithm of Sörensen and Janssens [1]_.
 parameters:
-  - minimum: <class 'bool'> = None -
-  - weight: <class 'str'> = weight -
-  - partition: <class 'str'> = partition -
-  - ignore_nan: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - minimum: <class 'bool'> = None - .
+  - weight: <class 'str'> = weight - .
+  - partition: <class 'str'> = partition - .
+  - ignore_nan: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.tree.mst.partition_spanning_tree(minimum=<minimum_value>, weight=<weight_value>, partition=<partition_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)

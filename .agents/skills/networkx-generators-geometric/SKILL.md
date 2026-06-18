@@ -6,8 +6,8 @@ description: Collection of operations - Geometric edges, Navigable small-world g
 **Geometric edges:**
 Returns edge list of node pairs within `radius` of each other.
 parameters:
-  - radius: <class 'float'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - radius: <class 'float'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.generators.geometric.geometric_edges(radius=<radius_value>, G=<G_variable>)
@@ -34,12 +34,12 @@ connections that are chosen randomly.
 
   -- [1]_
 parameters:
-  - n: <class 'int'> = None -
-  - p: <class 'int'> = 1 -
-  - q: <class 'int'> = 1 -
-  - r: <class 'float'> = 2 -
-  - dim: <class 'int'> = 2 -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - p: <class 'int'> = 1 - .
+  - q: <class 'int'> = 1 - .
+  - r: <class 'float'> = 2 - .
+  - dim: <class 'int'> = 2 - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.geometric.navigable_small_world_graph(n=<n_value>, p=<p_value>, q=<q_value>, r=<r_value>, dim=<dim_value>, seed=<seed_value>)
@@ -54,10 +54,10 @@ distance between the nodes is at most `radius`.
 Edges are determined using a KDTree when SciPy is available.
 This reduces the time complexity from $O(n^2)$ to $O(n)$.
 parameters:
-  - radius: <class 'float'> = None -
-  - dim: int | None = 2 -
-  - p: float | None = 2 -
-  - seed: int | None = None -
+  - radius: <class 'float'> = None - .
+  - dim: int | None = 2 - .
+  - p: float | None = 2 - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.geometric.random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
@@ -75,10 +75,10 @@ Edges within `radius` of each other are determined using a KDTree when
 SciPy is available. This reduces the time complexity from :math:`O(n^2)`
 to :math:`O(n)`.
 parameters:
-  - radius: <class 'float'> = None -
-  - dim: int | None = 2 -
-  - p: float | None = 2 -
-  - seed: int | None = None -
+  - radius: <class 'float'> = None - .
+  - dim: int | None = 2 - .
+  - p: float | None = 2 - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.geometric.soft_random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
@@ -98,11 +98,11 @@ Edges within `radius` of each other are determined using a KDTree when
 SciPy is available. This reduces the time complexity from :math:`O(n^2)`
 to :math:`O(n)`.
 parameters:
-  - radius: <class 'float'> = None -
-  - theta: <class 'float'> = None -
-  - dim: int | None = 2 -
-  - p: float | None = 2 -
-  - seed: int | None = None -
+  - radius: <class 'float'> = None - .
+  - theta: <class 'float'> = None - .
+  - dim: int | None = 2 - .
+  - p: float | None = 2 - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.geometric.thresholded_random_geometric_graph(radius=<radius_value>, theta=<theta_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)

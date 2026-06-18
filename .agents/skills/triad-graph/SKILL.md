@@ -30,7 +30,7 @@ Each string in the following tuple is a valid triad name::
 Each triad name corresponds to one of the possible valid digraph on
 three nodes.
 parameters:
-  - triad_name: <class 'str'> = None -
+  - triad_name: <class 'str'> = None - .
 
 usage:
 output_variable = networkx.generators.triads.triad_graph(triad_name=<triad_name_value>)

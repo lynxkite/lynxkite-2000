@@ -10,7 +10,7 @@ The configuration model generates a random pseudograph (graph with
 parallel edges and self loops) by randomly assigning edges to
 match the given degree sequence.
 parameters:
-  - seed: int | None = None -
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.degree_seq.configuration_model(seed=<seed_value>)
@@ -22,7 +22,7 @@ The configuration model generates a random directed pseudograph
 (graph with parallel edges and self loops) by randomly assigning
 edges to match the given degree sequences.
 parameters:
-  - seed: int | None = None -
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.degree_seq.directed_configuration_model(seed=<seed_value>)
@@ -51,8 +51,8 @@ If the maximum degree $d_m$ in the sequence is $O(m^{1/4})$ then the
 algorithm produces almost uniform random graphs in $O(m d_m)$ time
 where $m$ is the number of edges.
 parameters:
-  - seed: int | None = None -
-  - tries: int | None = 10 -
+  - seed: int | None = None - .
+  - tries: int | None = 10 - .
 
 usage:
 output_variable = networkx.generators.degree_seq.random_degree_sequence_graph(seed=<seed_value>, tries=<tries_value>)

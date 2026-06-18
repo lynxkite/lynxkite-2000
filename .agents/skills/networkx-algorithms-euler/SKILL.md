@@ -15,7 +15,7 @@ considered to have Eulerian circuits. Therefore, if the graph is not
 connected (or not strongly connected, for directed graphs), this function
 returns False.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.euler.is_eulerian(G=<G_variable>)
@@ -26,8 +26,8 @@ Returns an iterator over the edges of an Eulerian circuit in `G`.
 An *Eulerian circuit* is a closed walk that includes each edge of a
 graph exactly once.
 parameters:
-  - keys: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - keys: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.euler.eulerian_circuit(keys=<keys_value>, G=<G_variable>)
@@ -38,7 +38,7 @@ Transforms a graph into an Eulerian graph.
 If `G` is Eulerian the result is `G` as a MultiGraph, otherwise the result is a smallest
 (in terms of the number of edges) multigraph whose underlying simple graph is `G`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.euler.eulerize(G=<G_variable>)
@@ -74,7 +74,7 @@ Graphs with isolated vertices (i.e. vertices with zero degree) are not considere
 to have an Eulerian path. Therefore, if the graph is not connected (or not strongly
 connected, for directed graphs), this function returns False.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.euler.has_eulerian_path(G=<G_variable>)
@@ -82,8 +82,8 @@ output_variable = networkx.algorithms.euler.has_eulerian_path(G=<G_variable>)
 **Eulerian path:**
 Return an iterator over the edges of an Eulerian path in `G`.
 parameters:
-  - keys: <class 'bool'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - keys: <class 'bool'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.euler.eulerian_path(keys=<keys_value>, G=<G_variable>)

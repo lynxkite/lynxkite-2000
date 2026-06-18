@@ -33,10 +33,10 @@ where `s_i` is the weighted degree of node `i`, `w_{ij}`
 is the weight of the edge that links `i` and `j` and
 `N(i)` are the neighbors of node `i`.
 parameters:
-  - source: str | None = out -
-  - target: str | None = out -
-  - weight: str | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - source: str | None = out - .
+  - target: str | None = out - .
+  - weight: str | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.assortativity.neighbor_degree.average_neighbor_degree(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)

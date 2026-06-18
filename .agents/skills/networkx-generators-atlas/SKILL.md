@@ -8,7 +8,7 @@ Returns graph number `i` from the Graph Atlas.
 
 For more information, see :func:`.graph_atlas_g`.
 parameters:
-  - i: <class 'int'> = None -
+  - i: <class 'int'> = None - .
 
 usage:
 output_variable = networkx.generators.atlas.graph_atlas(i=<i_value>)

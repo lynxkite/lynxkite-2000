@@ -22,11 +22,11 @@ and $\lambda_i$ are the eigenvalues of `G`'s Laplacian matrix.
 This formula shows the normalized value. Without normalization,
 the numerator on the right side is returned.
 parameters:
-  - normalized: <class 'bool'> = None -
-  - weight: str | None = weight -
-  - walk_type: str | None = None -
-  - alpha: <class 'float'> = 0.95 -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - normalized: <class 'bool'> = None - .
+  - weight: str | None = weight - .
+  - walk_type: str | None = None - .
+  - alpha: <class 'float'> = 0.95 - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.laplacian.laplacian_centrality(normalized=<normalized_value>, weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)

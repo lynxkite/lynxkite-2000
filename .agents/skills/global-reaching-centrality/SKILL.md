@@ -14,9 +14,9 @@ reaching centrality, see :func:`local_reaching_centrality`.
 Informally, the local reaching centrality is the proportion of the
 graph that is reachable from the neighbors of the node.
 parameters:
-  - weight: str | None = None -
-  - normalized: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = None - .
+  - normalized: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.reaching.global_reaching_centrality(weight=<weight_value>, normalized=<normalized_value>, G=<G_variable>)

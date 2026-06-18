@@ -6,7 +6,7 @@ description: Collection of operations - Number attracting components, Attracting
 **Number attracting components:**
 Returns the number of attracting components in `G`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.attracting.number_attracting_components(G=<G_variable>)
@@ -25,7 +25,7 @@ the node will be visited infinitely often.
 To obtain induced subgraphs on each component use:
 ``(G.subgraph(c).copy() for c in attracting_components(G))``
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.attracting.attracting_components(G=<G_variable>)
@@ -33,7 +33,7 @@ output_variable = networkx.algorithms.components.attracting.attracting_component
 **Is attracting component:**
 Returns True if `G` consists of a single attracting component.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.attracting.is_attracting_component(G=<G_variable>)

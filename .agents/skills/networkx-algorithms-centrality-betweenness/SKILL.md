@@ -21,12 +21,12 @@ $\sigma(s, t | v) = 0$ [2]_.
 The denominator $\sigma(s, t)$ is a normalization factor that can be
 turned off to get the raw path counts.
 parameters:
-  - k: int | None = None -
-  - normalized: bool | None = None -
-  - weight: str | None = None -
-  - endpoints: bool | None = None -
-  - seed: int | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - k: int | None = None - .
+  - normalized: bool | None = None - .
+  - weight: str | None = None - .
+  - endpoints: bool | None = None - .
+  - seed: int | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.betweenness.betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, endpoints=<endpoints_value>, seed=<seed_value>, G=<G_variable>)
@@ -47,11 +47,11 @@ those paths passing through edge $e$ [1]_.
 The denominator $\sigma(s, t)$ is a normalization factor that can be
 turned off to get the raw path counts.
 parameters:
-  - k: int | None = None -
-  - normalized: bool | None = None -
-  - weight: str | None = None -
-  - seed: int | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - k: int | None = None - .
+  - normalized: bool | None = None - .
+  - weight: str | None = None - .
+  - seed: int | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.betweenness.edge_betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)

@@ -27,11 +27,11 @@ If no node or edge attributes are provided, the degree of each node
 is used as its initial label.
 Otherwise, node and/or edge labels are used to compute the hash.
 parameters:
-  - edge_attr: str | None = None -
-  - node_attr: str | None = None -
-  - iterations: int | None = 3 -
-  - digest_size: int | None = 16 -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - edge_attr: str | None = None - .
+  - node_attr: str | None = None - .
+  - iterations: int | None = 3 - .
+  - digest_size: int | None = 16 - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_graph_hash(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, G=<G_variable>)
@@ -90,12 +90,12 @@ If no node or edge attributes are provided, the degree of each node
 is used as its initial label.
 Otherwise, node and/or edge labels are used to compute the hash.
 parameters:
-  - edge_attr: str | None = None -
-  - node_attr: str | None = None -
-  - iterations: int | None = 3 -
-  - digest_size: int | None = 16 -
-  - include_initial_labels: bool | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - edge_attr: str | None = None - .
+  - node_attr: str | None = None - .
+  - iterations: int | None = 3 - .
+  - digest_size: int | None = 16 - .
+  - include_initial_labels: bool | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_subgraph_hashes(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, include_initial_labels=<include_initial_labels_value>, G=<G_variable>)

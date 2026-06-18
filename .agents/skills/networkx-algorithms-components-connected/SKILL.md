@@ -18,7 +18,7 @@ to as "disconnected").
 A graph consisting of a single node and no edges is connected.
 Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.connected.number_connected_components(G=<G_variable>)
@@ -38,7 +38,7 @@ to as "disconnected").
 A graph consisting of a single node and no edges is connected.
 Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.connected.connected_components(G=<G_variable>)
@@ -53,7 +53,7 @@ not exist, the graph is not connected (also referred to as "disconnected").
 A graph consisting of a single node and no edges is connected.
 Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.connected.is_connected(G=<G_variable>)
@@ -72,8 +72,8 @@ to as "disconnected").
 A graph consisting of a single node and no edges is connected.
 Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
-  - n: <class 'str'> = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - n: <class 'str'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.connected.node_connected_component(n=<n_value>, G=<G_variable>)

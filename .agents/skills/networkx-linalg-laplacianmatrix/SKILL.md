@@ -9,8 +9,8 @@ Returns the Laplacian matrix of G.
 The graph Laplacian is the matrix L = D - A, where
 A is the adjacency matrix and D is the diagonal matrix of node degrees.
 parameters:
-  - weight: str | None = weight -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = weight - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.laplacianmatrix.laplacian_matrix(weight=<weight_value>, G=<G_variable>)
@@ -27,8 +27,8 @@ The normalized graph Laplacian is the matrix
 where `L` is the graph Laplacian and `D` is the diagonal matrix of
 node degrees [1]_.
 parameters:
-  - weight: str | None = weight -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = weight - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.laplacianmatrix.normalized_laplacian_matrix(weight=<weight_value>, G=<G_variable>)
@@ -50,10 +50,10 @@ Depending on the value of walk_type, `P` can be the transition matrix
 induced by a random walk, a lazy random walk, or a random walk with
 teleportation (PageRank).
 parameters:
-  - weight: str | None = weight -
-  - walk_type: str | None = None -
-  - alpha: <class 'float'> = 0.95 -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = weight - .
+  - walk_type: str | None = None - .
+  - alpha: <class 'float'> = 0.95 - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.laplacianmatrix.directed_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
@@ -74,10 +74,10 @@ Depending on the value of walk_type, `P` can be the transition matrix
 induced by a random walk, a lazy random walk, or a random walk with
 teleportation (PageRank).
 parameters:
-  - weight: str | None = weight -
-  - walk_type: str | None = None -
-  - alpha: <class 'float'> = 0.95 -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = weight - .
+  - walk_type: str | None = None - .
+  - alpha: <class 'float'> = 0.95 - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.linalg.laplacianmatrix.directed_combinatorial_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)

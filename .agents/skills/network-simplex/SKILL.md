@@ -16,10 +16,10 @@ positive demand means that the node want to receive flow. A flow on
 the digraph G satisfies all demand if the net flow into each node
 is equal to the demand of that node.
 parameters:
-  - demand: <class 'str'> = demand -
-  - capacity: <class 'str'> = capacity -
-  - weight: <class 'str'> = weight -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - demand: <class 'str'> = demand - .
+  - capacity: <class 'str'> = capacity - .
+  - weight: <class 'str'> = weight - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.flow.networksimplex.network_simplex(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)

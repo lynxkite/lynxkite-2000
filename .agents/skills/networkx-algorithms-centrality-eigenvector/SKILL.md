@@ -36,10 +36,10 @@ If G is not strongly connected there might be several left
 eigenvectors associated with $\lambda$, and some of their elements
 might be zero.
 parameters:
-  - max_iter: int | None = 100 -
-  - tol: float | None = 1e-06 -
-  - weight: str | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - max_iter: int | None = 100 - .
+  - tol: float | None = 1e-06 - .
+  - weight: str | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality(max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
@@ -82,10 +82,10 @@ This can lead to inconsistent results for the same graph,
 which the underlying implementation is not robust to.
 For this reason, only (strongly) connected graphs are accepted.
 parameters:
-  - weight: str | None = None -
-  - max_iter: int | None = 50 -
-  - tol: float | None = 0 -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - weight: str | None = None - .
+  - max_iter: int | None = 50 - .
+  - tol: float | None = 0 - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality_numpy(weight=<weight_value>, max_iter=<max_iter_value>, tol=<tol_value>, G=<G_variable>)

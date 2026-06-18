@@ -6,7 +6,7 @@ description: Collection of operations - Number weakly connected components, Weak
 **Number weakly connected components:**
 Returns the number of weakly connected components in G.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.weakly_connected.number_weakly_connected_components(G=<G_variable>)
@@ -14,7 +14,7 @@ output_variable = networkx.algorithms.components.weakly_connected.number_weakly_
 **Weakly connected components:**
 Generate weakly connected components of G.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.weakly_connected.weakly_connected_components(G=<G_variable>)
@@ -29,7 +29,7 @@ Note that if a graph is strongly connected (i.e. the graph is connected
 even when we account for directionality), it is by definition weakly
 connected as well.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.components.weakly_connected.is_weakly_connected(G=<G_variable>)

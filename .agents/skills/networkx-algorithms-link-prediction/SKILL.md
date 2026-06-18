@@ -14,7 +14,7 @@ Resource allocation index of `u` and `v` is defined as
 
 where $\Gamma(u)$ denotes the set of neighbors of $u$.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.resource_allocation_index(G=<G_variable>)
@@ -30,7 +30,7 @@ Jaccard coefficient of nodes `u` and `v` is defined as
 
 where $\Gamma(u)$ denotes the set of neighbors of $u$.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.jaccard_coefficient(G=<G_variable>)
@@ -48,7 +48,7 @@ where $\Gamma(u)$ denotes the set of neighbors of $u$.
 This index leads to zero-division for nodes only connected via self-loops.
 It is intended to be used when no self-loops are present.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.adamic_adar_index(G=<G_variable>)
@@ -64,7 +64,7 @@ Preferential attachment score of `u` and `v` is defined as
 
 where $\Gamma(u)$ denotes the set of neighbors of $u$.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.preferential_attachment(G=<G_variable>)
@@ -85,8 +85,8 @@ where $f(w)$ equals 1 if $w$ belongs to the same community as $u$
 and $v$ or 0 otherwise and $\Gamma(u)$ denotes the set of
 neighbors of $u$.
 parameters:
-  - community: str | None = community -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - community: str | None = community - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.cn_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)
@@ -107,8 +107,8 @@ where $f(w)$ equals 1 if $w$ belongs to the same community as $u$
 and $v$ or 0 otherwise and $\Gamma(u)$ denotes the set of
 neighbors of $u$.
 parameters:
-  - community: str | None = community -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - community: str | None = community - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.ra_index_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)
@@ -124,9 +124,9 @@ inter-cluster common neighbor of `u` and `v`. The ratio between the
 size of the set of within- and inter-cluster common neighbors is
 defined as the WIC measure. [1]_
 parameters:
-  - delta: float | None = 0.001 -
-  - community: str | None = community -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - delta: float | None = 0.001 - .
+  - community: str | None = community - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.within_inter_cluster(delta=<delta_value>, community=<community_value>, G=<G_variable>)
@@ -157,7 +157,7 @@ in a network.
 
     :func:`common_neighbors`
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.link_prediction.common_neighbor_centrality(G=<G_variable>)

@@ -88,8 +88,8 @@ converting them into the corresponding trees is a straightforward
 method of generating uniformly distributed random labeled trees.
 This function implements this method.
 parameters:
-  - n: <class 'int'> = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_labeled_tree(n=<n_value>, seed=<seed_value>)
@@ -99,8 +99,8 @@ Returns a labeled rooted tree with `n` nodes.
 
 The returned tree is chosen uniformly at random from all labeled rooted trees.
 parameters:
-  - n: <class 'int'> = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_labeled_rooted_tree(n=<n_value>, seed=<seed_value>)
@@ -111,8 +111,8 @@ Returns a labeled rooted forest with `n` nodes.
 The returned forest is chosen uniformly at random using a
 generalization of Prüfer sequences [1]_ in the form described in [2]_.
 parameters:
-  - n: <class 'int'> = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_labeled_rooted_forest(n=<n_value>, seed=<seed_value>)
@@ -123,9 +123,9 @@ Returns a tree or list of trees chosen randomly.
 Returns one or more (depending on `number_of_trees`)
 unlabeled trees with `n` nodes drawn uniformly at random.
 parameters:
-  - n: <class 'int'> = None -
-  - number_of_trees: int | None = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - number_of_trees: int | None = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_unlabeled_tree(n=<n_value>, number_of_trees=<number_of_trees_value>, seed=<seed_value>)
@@ -137,9 +137,9 @@ Returns one or more (depending on `number_of_trees`)
 unlabeled rooted trees with `n` nodes drawn uniformly
 at random.
 parameters:
-  - n: <class 'int'> = None -
-  - number_of_trees: int | None = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - number_of_trees: int | None = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_unlabeled_rooted_tree(n=<n_value>, number_of_trees=<number_of_trees_value>, seed=<seed_value>)
@@ -152,10 +152,10 @@ unlabeled rooted forests with `n` nodes, and with no more than
 `q` nodes per tree, drawn uniformly at random.
 The "roots" graph attribute identifies the roots of the forest.
 parameters:
-  - n: <class 'int'> = None -
-  - q: int | None = None -
-  - number_of_forests: int | None = None -
-  - seed: int | None = None -
+  - n: <class 'int'> = None - .
+  - q: int | None = None - .
+  - number_of_forests: int | None = None - .
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.trees.random_unlabeled_rooted_forest(n=<n_value>, q=<q_value>, number_of_forests=<number_of_forests_value>, seed=<seed_value>)

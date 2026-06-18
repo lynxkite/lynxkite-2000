@@ -34,13 +34,13 @@ should be strictly less than the inverse largest eigenvalue of the
 adjacency matrix in order for the Katz centrality to be computed
 correctly. More information is provided in [1]_.
 parameters:
-  - alpha: float | None = 0.1 -
-  - beta: float | None = 1.0 -
-  - max_iter: int | None = 1000 -
-  - tol: float | None = 1e-06 -
-  - normalized: bool | None = None -
-  - weight: str | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - alpha: float | None = 0.1 - .
+  - beta: float | None = 1.0 - .
+  - max_iter: int | None = 1000 - .
+  - tol: float | None = 1e-06 - .
+  - normalized: bool | None = None - .
+  - weight: str | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.katz.katz_centrality(alpha=<alpha_value>, beta=<beta_value>, max_iter=<max_iter_value>, tol=<tol_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)
@@ -76,11 +76,11 @@ should be strictly less than the inverse largest eigenvalue of the
 adjacency matrix in order for the Katz centrality to be computed
 correctly. More information is provided in [1]_.
 parameters:
-  - alpha: <class 'float'> = 0.1 -
-  - beta: float | None = 1.0 -
-  - normalized: <class 'bool'> = None -
-  - weight: str | None = None -
-  - G: <class 'networkx.classes.graph.Graph'> = None -
+  - alpha: <class 'float'> = 0.1 - .
+  - beta: float | None = 1.0 - .
+  - normalized: <class 'bool'> = None - .
+  - weight: str | None = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = None - .
 
 usage:
 output_variable = networkx.algorithms.centrality.katz.katz_centrality_numpy(alpha=<alpha_value>, beta=<beta_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)

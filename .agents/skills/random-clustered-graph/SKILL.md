@@ -17,7 +17,7 @@ vertex $u$ is a member of $d_{u,t}$ triangles and has $d_{u, i}$ other
 edges. The number $d_{u,t}$ is the *triangle degree* of $u$ and the number
 $d_{u,i}$ is the *independent edge degree*.
 parameters:
-  - seed: int | None = None -
+  - seed: int | None = None - .
 
 usage:
 output_variable = networkx.generators.random_clustered.random_clustered_graph(seed=<seed_value>)
