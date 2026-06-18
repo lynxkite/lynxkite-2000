@@ -41,6 +41,18 @@ def merge_nodes(
     agg_dict = {}
     name_dict = {}
 
+    key_attributes = []
+    for r in b.relations:
+        if table_name == r.source_table:
+            key_attributes.append(r.source_key)
+        if table_name == r.target_table:
+            key_attributes.append(r.target_key)
+
+    for column in key_attributes:
+        agg_dict[column] = []
+        agg_dict[column].append("first")
+        name_dict[(column, "first")] = column
+
     for column, funcs in aggregations:
         if column not in agg_dict:
             agg_dict[column] = []
@@ -54,12 +66,6 @@ def merge_nodes(
     new_df = grouped_df.reset_index()
 
     b.dfs[table_name] = new_df
-    for r in b.relations:
-        if r == r.source_table:
-            r.source_key = attribute
-        if r == r.target_table:
-            r.target_key = attribute
-
     return b
 
 
