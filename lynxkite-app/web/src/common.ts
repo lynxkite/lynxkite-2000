@@ -144,7 +144,8 @@ function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string)
 
 export function getDisplay(display_version: number, node_id: string): any {
   const ws = useContext(LynxKiteState).workspace;
-  const wsPath = ws?.path as string | undefined;
+  const routePath = usePath().replace(/^[/]edit[/]/, "");
+  const wsPath = (ws?.path as string | undefined) || routePath || undefined;
   const displayVersion = display_version;
   const displayKey =
     wsPath && displayVersion != null ? fetchDisplayUrl(node_id, displayVersion, wsPath) : null;

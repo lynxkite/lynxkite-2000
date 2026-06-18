@@ -1,8 +1,8 @@
 """The FastAPI server for serving the LynxKite application."""
 
 import shutil
-import orjson
 import pydantic
+from pydantic_core import from_json
 import fastapi
 import joblib
 import pathlib
@@ -99,8 +99,8 @@ async def get_node_output(workspace: str, node_id: str, version: int, request: f
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     output = None
     if json_path.exists():
-        with open(json_path, encoding="utf-8") as f:
-            output = orjson.loads(f.read())
+        with open(json_path, mode="r") as f:
+            output = from_json(f.read())
     if output is None:
         raise fastapi.HTTPException(status_code=404, detail="Output not found")
     return output

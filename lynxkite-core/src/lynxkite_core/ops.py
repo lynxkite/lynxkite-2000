@@ -20,6 +20,7 @@ import types
 import typing
 from dataclasses import dataclass
 import pydantic
+from pydantic_core import to_json
 from .matplotlib_to_image import matplotlib_to_image
 from .opcontext import OpContext, CONTEXT_PARAM_NAME
 
@@ -226,7 +227,7 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
-    def save_display(self, path: str | None, node_id: str):
+    def save_display(self, path: str | None, node_id: str, version: int):
         """Saves the display data to a file. The path is relative to the workspace's data directory."""
         # If old version had display and new run has None,
         # frontend keeps previous cached display keyed by unchanged version.
@@ -238,16 +239,16 @@ class Result:
             if dirname:
                 os.makedirs(dirname, exist_ok=True)
             with tempfile.NamedTemporaryFile(
-                "w",
-                encoding="utf-8",
+                "w+b",
                 prefix=f".{basename}.",
                 dir=dirname,
                 delete=False,
             ) as f:
                 temp_name = f.name
-                json.dump(self.display, fp=f, indent=2, ensure_ascii=False, default=str)
+                f.write(to_json(self.display))
             os.replace(temp_name, path)
             self.display = None
+            self.display_version = version
 
 
 def get_optional_type(type):
@@ -308,21 +309,29 @@ class Op(BaseConfig):
             res = self.func(op_ctx, *inputs, **params)
         else:
             res = self.func(*inputs, **params)
+
+        is_visualization_type = self.type in [
+            "visualization",
+            "table_view",
+            "graph_creation_view",
+            "image",
+            "molecule",
+        ]
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
-            if self.type in [
-                "visualization",
-                "table_view",
-                "graph_creation_view",
-                "image",
-                "molecule",
-            ]:
+            if is_visualization_type:
                 # If the operation is a visualization, we use the returned value for display.
                 res = Result(display=res)
-                if op_ctx.ws and op_ctx.node:
-                    res.save_display(op_ctx.ws.path, op_ctx.node.id)
             else:
                 res = Result(output=res)
+
+        # Save display if needed
+        if is_visualization_type:
+            if op_ctx.ws and op_ctx.node:
+                res.save_display(
+                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0) + 1
+                )
+
         return res
 
     def get_input(self, name: str):

@@ -102,9 +102,7 @@ class WorkspaceNode(BaseConfig):
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
-        self.data.display_version = (
-            self.data.display_version + 1 if self.data.display_version else None
-        )
+        self.data.display_version = result.display_version
         self.data.input_metadata = result.input_metadata
         self.data.output_metadata = result.output_metadata
         self.data.error = result.error
