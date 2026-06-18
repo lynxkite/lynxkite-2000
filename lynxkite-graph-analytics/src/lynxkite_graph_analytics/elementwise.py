@@ -19,7 +19,7 @@ try:
     enterprise_backend = True
 except ImportError:
     enterprise_backend = False
-    execution_parallelism = None  # type: ignore[assignment]
+    execution_parallelism = None  # type: ignore[assignment,misc]
 
 from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
@@ -30,6 +30,7 @@ def elementwise(
     *,
     input_table: str,
     desc: str = "",
+    concurrency: int = 1,
     lim_config: typing.Any = None,
 ) -> typing.Callable:
     """Decorator for operations that process each row independently.
@@ -37,20 +38,27 @@ def elementwise(
     The wrapped function receives a Record and can update output fields directly.
     Iteration, progress display, and DataFrame writes are handled by the decorator.
 
+    Set ``concurrency`` above 1 to process multiple rows in parallel. With LynxKite Enterprise,
+    effective parallelism is ``max(concurrency, ws.execution_options['gpus'])``; otherwise only
+    ``concurrency`` is used. Async row functions, effective parallelism above 1, and LIM-backed
+    ops use the async row runner; otherwise sync row functions run sequentially.
+
     Example:
-        @elementwise(input_table="protein_table_column", desc="Processing proteins")
+        @op("Process proteins", slow=True)
+        @elementwise(input_table="protein_table_column", desc="Processing proteins", concurrency=8)
         async def process(record: Record, *, protein_table_column: TableColumn):
             record.result = await api_call(record[protein_table_column])
 
-    With LIM, pass a small ``lim_config``; storage and k8s defaults are filled in
-    automatically::
-
+    If LynxKite 2000:MM Enterprise is installed, you can run elementwise operations on Kubernetes
+    as LIMs. With LIM, pass a small ``lim_config``; storage and k8s defaults are filled in
+    automatically:
+        @op("ESM2", slow=True)
         @elementwise(
             input_table="protein_table_column",
             desc="ESM2",
             lim_config={"cpu": "4", "memory": "8Gi"},
         )
-        async def query_esm2(record: Record, *, protein_table_column: TableColumn):
+        def query_esm2(record: Record, *, protein_table_column: TableColumn) -> None:
             record.embeddings = my_inference(record[protein_table_column])
     """
 
@@ -64,6 +72,8 @@ def elementwise(
             )
 
         service_name = None
+        if lim_config and not enterprise_backend:
+            raise ValueError("@elementwise(lim_config=...) requires LynxKite Enterprise")
         if enterprise_backend and lim_config:
             service_name = register_lim_function_if_worker(func, lim_config)
 
@@ -75,7 +85,7 @@ def elementwise(
             ]
         )
 
-        if inspect.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func) or lim_config or concurrency > 1:
 
             async def async_wrapper(
                 self: OpContext,
@@ -90,29 +100,41 @@ def elementwise(
                     selected_input_table,
                     kwargs,
                     desc=desc,
+                    concurrency=concurrency,
                     lim_config=lim_config,
                     service_name=service_name,
                 )
 
             setattr(async_wrapper, "__signature__", public_signature)
             return async_wrapper
-        else:
-            if lim_config:
-                raise ValueError("@elementwise(lim_config=...) supports async functions only")
 
-            def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
-                selected_input_table = kwargs[input_table]
-                return _elementwise_impl_sync(
-                    self,
-                    bundle,
-                    func,
-                    selected_input_table,
-                    kwargs,
-                    desc=desc,
+        def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
+            selected_input_table = kwargs[input_table]
+            if max(concurrency, execution_parallelism(self) if execution_parallelism else 1) > 1:
+                return asyncio.run(
+                    _elementwise_impl_async(
+                        self,
+                        bundle,
+                        func,
+                        selected_input_table,
+                        kwargs,
+                        desc=desc,
+                        concurrency=concurrency,
+                        lim_config=None,
+                        service_name=None,
+                    )
                 )
+            return _elementwise_impl_sync(
+                self,
+                bundle,
+                func,
+                selected_input_table,
+                kwargs,
+                desc=desc,
+            )
 
-            setattr(sync_wrapper, "__signature__", public_signature)
-            return sync_wrapper
+        setattr(sync_wrapper, "__signature__", public_signature)
+        return sync_wrapper
 
     return decorator if func is None else decorator(func)
 
@@ -125,6 +147,7 @@ async def _elementwise_impl_async(
     kwargs: dict[str, typing.Any],
     *,
     desc: str,
+    concurrency: int,
     lim_config: typing.Any | None,
     service_name: str | None,
 ) -> Bundle:
@@ -135,7 +158,12 @@ async def _elementwise_impl_async(
 
     async def process_row_updates(idx: RowIndex, row: pd.Series) -> dict[ColumnKey, typing.Any]:
         record = Record(row, idx)
-        await func(record, **kwargs)
+        if inspect.iscoroutinefunction(func):
+            result = func(record, **kwargs)
+            if inspect.isawaitable(result):
+                await result
+        else:
+            await asyncio.to_thread(func, record, **kwargs)
         return record.get_updates()
 
     lim_cleanup = None
@@ -156,7 +184,9 @@ async def _elementwise_impl_async(
             df,
             process_row_updates,
             desc=desc,
-            parallelism=execution_parallelism(self) if execution_parallelism else 1,
+            parallelism=max(
+                concurrency, execution_parallelism(self) if execution_parallelism else 1
+            ),
         )
     finally:
         if lim_cleanup is not None:
