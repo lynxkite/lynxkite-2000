@@ -1,16 +1,13 @@
 ---
 name: view-tables
-description: view-tables
+description: View tables
 ---
 
-
+**View tables:**
 
 parameters:
-  - bundle: core.Bundle = None
-  - _tables_open: str =
-  - limit: int = 100
+  - limit: <class 'int'> = 100 -
+  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = None -
 
 usage:
-output_variable = lynxkite_graph_analytics.operations.basic_ops.view_tables(bundle=<bundle_variable>, _tables_open=<_tables_open_value>, limit=<limit_value>)
-
-Replace <*_variable> with the output of a previous operation, and <*_value> with a constant value.
+output_variable = lynxkite_graph_analytics.operations.basic_ops.view_tables(limit=<limit_value>, bundle=<bundle_variable>)
