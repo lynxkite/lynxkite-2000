@@ -41,18 +41,6 @@ def merge_nodes(
     agg_dict = {}
     name_dict = {}
 
-    key_attributes = []
-    for r in b.relations:
-        if table_name == r.source_table:
-            key_attributes.append(r.source_key)
-        if table_name == r.target_table:
-            key_attributes.append(r.target_key)
-
-    for column in key_attributes:
-        agg_dict[column] = []
-        agg_dict[column].append("first")
-        name_dict[(column, "first")] = column
-
     for column, funcs in aggregations:
         if column not in agg_dict:
             agg_dict[column] = []
@@ -60,12 +48,26 @@ def merge_nodes(
             if func not in agg_dict[column]:
                 agg_dict[column].append(func)
             name_dict[(column, func)] = f"{column}_{func}"
-
     grouped_df = old_df.groupby(attribute).agg(agg_dict)
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
-    new_df = grouped_df.reset_index()
+    b.dfs[table_name] = grouped_df.reset_index()
 
-    b.dfs[table_name] = new_df
+    def _update_relation(r, suffix, column_attr, key_attr):
+        new_column = attribute + suffix
+        edge_column = getattr(r, column_attr)
+        node_key = getattr(r, key_attr)
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(
+            old_df.set_index(node_key)[attribute]
+        )
+        setattr(r, column_attr, new_column)
+        setattr(r, key_attr, attribute)
+
+    for r in b.relations.copy():
+        if table_name == r.source_table:
+            _update_relation(r, "_src", "source_column", "source_key")
+        if table_name == r.target_table:
+            _update_relation(r, "_dst", "target_column", "target_key")
+
     return b
 
 
