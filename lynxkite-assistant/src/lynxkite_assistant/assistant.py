@@ -2,6 +2,7 @@
 
 import os
 import fastapi
+import openai
 import pydantic
 from typing import cast
 from fastapi.responses import StreamingResponse
@@ -103,4 +104,20 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
             if delta:
                 yield delta
 
-    return StreamingResponse(generate(), media_type="text/event-stream; charset=utf-8")
+    try:
+        gen = generate()
+        first_chunk = (
+            await gen.__anext__()
+        )  # peek the first chunk to check for authentication errors
+
+        async def chained_generator():
+            yield first_chunk
+            async for chunk in gen:
+                yield chunk
+
+        return StreamingResponse(chained_generator(), media_type="text/event-stream; charset=utf-8")
+    except openai.AuthenticationError:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
+            detail="OpenAI Authentication failed. Check your API key.",
+        )
