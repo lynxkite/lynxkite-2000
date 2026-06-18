@@ -182,14 +182,17 @@ export class Workspace {
       this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
     ).toBeAttached({ timeout: 1000 });
   }
-  async connectBoxes(sourceId: string, targetId: string) {
-    // The method above is unreliable. I gave up after a lot of debugging and added these retries.
-    while (true) {
+  async connectBoxes(sourceId: string, targetId: string, maxRetries = 20) {
+    // Drag-and-drop in ReactFlow is flaky, so we retry. Cap retries to avoid infinite hangs.
+    for (let i = 0; i < maxRetries; i++) {
       try {
         await this.tryToConnectBoxes(sourceId, targetId);
         return;
       } catch (_) {}
     }
+    throw new Error(
+      `Failed to connect "${sourceId}" to "${targetId}" after ${maxRetries} attempts`,
+    );
   }
 
   async execute(opts?: object) {
