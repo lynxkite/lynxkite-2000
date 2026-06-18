@@ -38,8 +38,10 @@ def _map_color(value):
         ]
 
 
-def _nodes_and_edges(graph: core.Bundle) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Returns the nodes that appear in the relations of the graph and the edges between them."""
+def _nodes_and_edges(
+    graph: core.Bundle,
+) -> tuple[tuple[pd.DataFrame, str], tuple[pd.DataFrame, str, str]]:
+    """Returns the nodes that appear in the relations of the graph and the edges between them in the form: (nodes, id), (edges, source_id, target_id)"""
     node_tables = []
     seen_tables = set()
 
@@ -55,37 +57,34 @@ def _nodes_and_edges(graph: core.Bundle) -> tuple[pd.DataFrame, pd.DataFrame]:
         add_table(relation.source_table, relation.source_key)
         add_table(relation.target_table, relation.target_key)
     nodes = pd.concat(node_tables, ignore_index=True)
-
-    nodes["_unique_id"] = nodes["_table"].astype(str) + "_" + nodes["_id"].astype(str)
-    nodes = nodes.drop_duplicates(subset=["_unique_id"])
-
-    nodes = nodes.set_index("_unique_id", drop=False)
+    node_id = "_unique_id"
+    nodes[node_id] = nodes["_table"].astype(str) + "_" + nodes["_id"].astype(str)
+    nodes = nodes.drop_duplicates(subset=[node_id])
+    nodes = nodes.set_index(node_id, drop=False)
     nodes = bundle.df_for_frontend(nodes, 10_000)
 
+    source_id = "_unique_source"
+    target_id = "_unique_target"
     if graph.relations:
         edge_tables = []
         for relation in graph.relations:
             df = graph.dfs[relation.df].copy()
-            df["_unique_source"] = (
-                relation.source_table + "_" + df[relation.source_column].astype(str)
-            )
-            df["_unique_target"] = (
-                relation.target_table + "_" + df[relation.target_column].astype(str)
-            )
+            df[source_id] = relation.source_table + "_" + df[relation.source_column].astype(str)
+            df[target_id] = relation.target_table + "_" + df[relation.target_column].astype(str)
             edge_tables.append(df)
         edges_df = pd.concat(edge_tables, ignore_index=True)
 
     if not edges_df.empty:
-        valid_nodes = set(nodes["_unique_id"].astype(str))
+        valid_nodes = set(nodes[node_id].astype(str))
         edges_df = edges_df[
-            edges_df["_unique_source"].astype(str).isin(valid_nodes)
-            & edges_df["_unique_target"].astype(str).isin(valid_nodes)
+            edges_df[source_id].astype(str).isin(valid_nodes)
+            & edges_df[target_id].astype(str).isin(valid_nodes)
         ]
 
-    edges = edges_df.drop_duplicates(["_unique_source", "_unique_target"])
+    edges = edges_df.drop_duplicates([source_id, target_id])
     edges = bundle.df_for_frontend(edges, 10_000)
 
-    return nodes, edges
+    return (nodes, node_id), (edges, source_id, target_id)
 
 
 @op("Visualize graph", view="visualization", icon="eye", color="blue")
@@ -97,7 +96,7 @@ def visualize_graph(
     color_edges_by: core.EdgePropertyName | None = None,
 ):
     graph = graph.copy()
-    nodes, edges = _nodes_and_edges(graph)
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(graph)
     if color_nodes_by and color_nodes_by in nodes.columns:
         nodes["color"] = _map_color(nodes[color_nodes_by])
 
@@ -158,9 +157,9 @@ def visualize_graph(
                 "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
-                        "id": str(n["_unique_id"]),
-                        "x": float(pos[n["_unique_id"]][0]),
-                        "y": float(pos[n["_unique_id"]][1]),
+                        "id": str(n[node_id]),
+                        "x": float(pos[n[node_id]][0]),
+                        "y": float(pos[n[node_id]][1]),
                         # Adjust node size to cover the same area no matter how many nodes there are.
                         "symbolSize": 50 / len(nodes) ** 0.5,
                         "itemStyle": {"color": getattr(n, "color", None)} if color_nodes_by else {},
@@ -172,8 +171,8 @@ def visualize_graph(
                 ],
                 "links": [
                     {
-                        "source": str(getattr(r, "_unique_source", "")),
-                        "target": str(getattr(r, "_unique_target", "")),
+                        "source": str(getattr(r, source_id, "")),
+                        "target": str(getattr(r, target_id, "")),
                         "lineStyle": {"color": getattr(r, "color", None)} if color_edges_by else {},
                         "value": str(getattr(r, color_edges_by, "")) if color_edges_by else None,
                     }
@@ -246,7 +245,7 @@ def binned_graph_visualization(
     Edges between bins are aggregated into one edge.
     """
     b = b.copy()
-    nodes, edges = _nodes_and_edges(b)
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(b)
 
     nodes["x_bin"] = pd.cut(nodes[x_property], bins=x_bins)
     nodes["y_bin"] = pd.cut(nodes[y_property], bins=y_bins)
@@ -258,9 +257,9 @@ def binned_graph_visualization(
     nodes["bin"] = list(zip(nodes["x_bin"], nodes["y_bin"]))
     nodes["bin_key"] = nodes["bin"].apply(lambda b: f"{b[0]},{b[1]}")
     # Aggregate edges between bins.
-    node_bins = nodes.set_index("_unique_id")["bin_key"]
-    edges["source_bin"] = edges["_unique_source"].map(node_bins)
-    edges["target_bin"] = edges["_unique_target"].map(node_bins)
+    node_bins = nodes.set_index(node_id)["bin_key"]
+    edges["source_bin"] = edges[source_id].map(node_bins)
+    edges["target_bin"] = edges[target_id].map(node_bins)
     edges = edges.dropna(subset=["source_bin", "target_bin"])
 
     edge_counts = (
