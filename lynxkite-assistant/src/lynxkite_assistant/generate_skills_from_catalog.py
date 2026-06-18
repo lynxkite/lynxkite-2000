@@ -1,10 +1,10 @@
 import os
 import sys
 import itertools
+import pkgutil
+import importlib
 
 from lynxkite_core import ops
-
-ops.detect_plugins()
 
 
 def get_box_skills():
@@ -85,7 +85,30 @@ description: {skill_desc}
     return skill_name, content
 
 
-def create_skills_from_catalog(output_path: str = "./.agents/skills"):
+def _detect_certain_plugins(plugins_to_load: list[str]):
+    plugins = {}
+    for _, name, _ in pkgutil.iter_modules():
+        if (
+            name.startswith("lynxkite_")
+            and name != "lynxkite_app"
+            and name != "lynxkite_core"
+            and name != "lynxkite_mcp"
+            and name in plugins_to_load
+        ):
+            plugins[name] = importlib.import_module(name)
+            if hasattr(plugins[name], "register_ops"):
+                plugins[name].register_ops()
+
+
+def create_skills_from_catalog(
+    output_path: str = "./.agents/skills", changed_files: list[str] | None = None
+):
+    if changed_files:
+        # assuming plugin name is the first part of the path, and - can be replaced with _ in the module name
+        changed_plugins = list({f.split("/")[0].replace("-", "_") for f in changed_files})
+        _detect_certain_plugins(changed_plugins)
+    else:
+        ops.detect_plugins()
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     box_skills = get_box_skills()
@@ -98,12 +121,14 @@ def create_skills_from_catalog(output_path: str = "./.agents/skills"):
             os.makedirs(skill_file_path)
         with open(os.path.join(skill_file_path, "SKILL.md"), "w") as f:
             f.write(content.strip() + os.linesep)  # Add a newline at the end for proper formatting
-            print(f"Created skill file: {os.path.join(skill_file_path, 'SKILL.md')}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
+    if len(sys.argv) == 2:
         output_path = sys.argv[1]
         create_skills_from_catalog(output_path)
+    elif len(sys.argv) > 2:
+        output_path = sys.argv[1]
+        create_skills_from_catalog(output_path, sys.argv[2:])
     else:
         create_skills_from_catalog()
