@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 import typing
 import pandas as pd
@@ -9,16 +10,16 @@ import pandas as pd
 from lynxkite_core.ops import OpContext
 
 try:
+    from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
     from lynxkite_enterprise.lim import (  # ty: ignore[unresolved-import]
         get_remote_row_processor,
-        merge_lim_config,
         register_lim_function_if_worker,
     )
 
     enterprise_backend = True
 except ImportError:
     enterprise_backend = False
-    merge_lim_config = None
+    execution_parallelism = None  # type: ignore[assignment]
 
 from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
@@ -38,7 +39,7 @@ def elementwise(
 
     Example:
         @elementwise(input_table="protein_table_column", desc="Processing proteins")
-        async def process(record: Record, *, protein_table_column: tuple[str, str]):
+        async def process(record: Record, *, protein_table_column: TableColumn):
             record.result = await api_call(record[protein_table_column])
 
     With LIM, pass a small ``lim_config``; storage and k8s defaults are filled in
@@ -49,7 +50,7 @@ def elementwise(
             desc="ESM2",
             lim_config={"cpu": "4", "memory": "8Gi"},
         )
-        async def query_esm2(record: Record, *, protein_table_column):
+        async def query_esm2(record: Record, *, protein_table_column: TableColumn):
             record.embeddings = my_inference(record[protein_table_column])
     """
 
@@ -63,10 +64,8 @@ def elementwise(
             )
 
         service_name = None
-        resolved_lim_config = None
         if enterprise_backend and lim_config:
-            resolved_lim_config = merge_lim_config(lim_config)
-            service_name = register_lim_function_if_worker(func, resolved_lim_config)
+            service_name = register_lim_function_if_worker(func, lim_config)
 
         public_signature = sig.replace(
             parameters=[
@@ -91,7 +90,7 @@ def elementwise(
                     selected_input_table,
                     kwargs,
                     desc=desc,
-                    lim_config=resolved_lim_config,
+                    lim_config=lim_config,
                     service_name=service_name,
                 )
 
@@ -139,6 +138,7 @@ async def _elementwise_impl_async(
         await func(record, **kwargs)
         return record.get_updates()
 
+    lim_cleanup = None
     if service_name and lim_config:
         remote_processor = await get_remote_row_processor(
             self,
@@ -147,14 +147,59 @@ async def _elementwise_impl_async(
             lim_config=lim_config,
         )
         if remote_processor is not None:
-            process_row_updates = remote_processor
+            process_row_updates = remote_processor  # type: ignore[assignment]
+            lim_cleanup = getattr(remote_processor, "lim_cleanup", None)
 
-    for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
-        updates = await process_row_updates(idx, row)
-        _apply_updates(df, row_pos, updates)
+    try:
+        await _process_rows_concurrently(
+            self,
+            df,
+            process_row_updates,
+            desc=desc,
+            parallelism=execution_parallelism(self) if execution_parallelism else 1,
+        )
+    finally:
+        if lim_cleanup is not None:
+            await lim_cleanup()
 
     bundle.dfs[table_name] = df
     return bundle
+
+
+async def _process_rows_concurrently(
+    op_ctx: OpContext,
+    df: pd.DataFrame,
+    process_row_updates: typing.Callable[
+        [RowIndex, pd.Series], typing.Awaitable[dict[ColumnKey, typing.Any]]
+    ],
+    *,
+    desc: str,
+    parallelism: int,
+) -> None:
+    rows = list(enumerate(df.iterrows()))
+    if not rows:
+        return
+
+    semaphore = asyncio.Semaphore(parallelism)
+
+    async def process_one_row(
+        row_pos: int, idx: RowIndex, row: pd.Series
+    ) -> tuple[int, dict[ColumnKey, typing.Any]]:
+        async with semaphore:
+            updates = await process_row_updates(idx, row)
+        return row_pos, updates
+
+    tasks = [
+        asyncio.create_task(process_one_row(row_pos, idx, row)) for row_pos, (idx, row) in rows
+    ]
+    try:
+        for done in op_ctx.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc=desc):
+            row_pos, updates = await done
+            _apply_updates(df, row_pos, updates)
+    except BaseException:
+        for task in tasks:
+            task.cancel()
+        raise
 
 
 def _elementwise_impl_sync(
