@@ -1,0 +1,32 @@
+**Mycielskian:**
+Returns the Mycielskian of a simple, undirected graph G
+
+The Mycielskian of graph preserves a graph's triangle free
+property while increasing the chromatic number by 1.
+
+The Mycielski Operation on a graph, :math:`G=(V, E)`, constructs a new
+graph with :math:`2|V| + 1` nodes and :math:`3|E| + |V|` edges.
+
+The construction is as follows:
+
+Let :math:`V = {0, ..., n-1}`. Construct another vertex set
+:math:`U = {n, ..., 2n}` and a vertex, `w`.
+Construct a new graph, `M`, with vertices :math:`U \bigcup V \bigcup w`.
+For edges, :math:`(u, v) \in E` add edges :math:`(u, v), (u, v + n)`, and
+:math:`(u + n, v)` to M. Finally, for all vertices :math:`u \in U`, add
+edge :math:`(u, w)` to M.
+
+The Mycielski Operation can be done multiple times by repeating the above
+process iteratively.
+
+More information can be found at https://en.wikipedia.org/wiki/Mycielskian
+parameters:
+  - iterations: <class 'int'> = 1 --The number of iterations of the Mycielski operation to
+perform on G. Defaults to 1. Must be a non-negative integer.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A simple, undirected NetworkX graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
+usage:
+output_variable = networkx.generators.mycielski.mycielskian(iterations=<iterations_value>, G=<G_variable>)

@@ -1,6 +1,5 @@
 import os
 import sys
-import itertools
 import pkgutil
 import importlib
 
@@ -29,12 +28,15 @@ def get_box_skills():
             skill = {
                 "id": name.replace(" ", "-").replace("/", "-").replace("–", "-").lower(),
                 "name": name,
-                "description": short_description if short_description else name,
+                "short_description": short_description if short_description else name,
                 "long_description": text_doc,
                 "parameters": [],
                 "usage": "",
                 "returns": [(o.name, o.type, output_docs.get(o.name, "")) for o in op.outputs],
                 "package": ".".join(op.python_function_name.split(".")[:-1])
+                if op.python_function_name
+                else "",
+                "function_name": op.python_function_name.split(".")[-1]
                 if op.python_function_name
                 else "",
             }
@@ -72,20 +74,11 @@ output_variable = {skill["usage"]}"""
     return desc
 
 
-def create_package_skill(package, skills) -> tuple[str, str]:
-    if len(skills) == 1:
-        skill_name = skills[0]["id"]
-        skill_desc = skills[0]["description"]
-    else:
-        skill_name = package.replace("_", "-").replace(".", "-").lower()
-        skill_desc = f"Collection of operations - {', '.join(s['name'] for s in skills)}"
-    content = f"""---
-name: {skill_name}
-description: {skill_desc}
----
-{os.linesep.join([create_box_description(s) for s in skills])}
-"""
-    return skill_name, content
+def create_short_box_description(skill) -> str:
+    desc = f"""**{skill["name"]}:**
+{skill["short_description"]}
+for usage information, see references/{skill["function_name"] or skill["id"]}.md"""
+    return desc
 
 
 def _detect_certain_plugins(plugins_to_load: list[str]):
@@ -109,21 +102,46 @@ def create_skills_from_catalog(
     if changed_files:
         # assuming plugin name is the first part of the path, and - can be replaced with _ in the module name
         changed_plugins = list({f.split("/")[0].replace("-", "_") for f in changed_files})
-        _detect_certain_plugins(changed_plugins)
+        if any(
+            p.startswith("lynxkite_")
+            and p != "lynxkite_app"
+            and p != "lynxkite_core"
+            and p != "lynxkite_mcp"
+            for p in changed_plugins
+        ):
+            ops.detect_plugins()
+        else:
+            return
     else:
         ops.detect_plugins()
+    output_path = os.path.join(output_path, "use-lynxkite-boxes")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
+    if not os.path.exists(os.path.join(output_path, "references")):
+        os.makedirs(os.path.join(output_path, "references"))
     box_skills = get_box_skills()
-    package_skills = itertools.groupby(box_skills, key=lambda s: s["package"])
-    for package, skills in package_skills:
-        skills = list(skills)
-        name, content = create_package_skill(package, skills)
-        skill_file_path = os.path.join(output_path, f"{name}")
-        if not os.path.exists(skill_file_path):
-            os.makedirs(skill_file_path)
-        with open(os.path.join(skill_file_path, "SKILL.md"), "w") as f:
-            f.write(content.strip() + os.linesep)  # Add a newline at the end for proper formatting
+    main_skill_file = f"""---
+name: use-lynxkite-boxes
+description: Use the boxes already defined in LynxKite.
+---
+## Available boxes
+The following boxes are available for use in your workflows.
+Each box corresponds to a specific operation or function that can be used to build your workflow.
+For detailed information on each box, please refer to the individual box documentation in the references folder.
+
+{(os.linesep * 2).join([create_short_box_description(s) for s in box_skills])}
+"""
+    with open(os.path.join(output_path, "SKILL.md"), "w") as f:
+        f.write(
+            main_skill_file.strip() + os.linesep
+        )  # Add a newline at the end for proper formatting
+    for s in box_skills:
+        with open(
+            os.path.join(output_path, "references", f"{s['function_name'] or s['id']}.md"), "w"
+        ) as f:
+            f.write(
+                create_box_description(s).strip() + os.linesep
+            )  # Add a newline at the end for proper formatting
 
 
 if __name__ == "__main__":
