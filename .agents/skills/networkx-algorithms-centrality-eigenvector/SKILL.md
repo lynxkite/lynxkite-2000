@@ -36,10 +36,16 @@ If G is not strongly connected there might be several left
 eigenvectors associated with $\lambda$, and some of their elements
 might be zero.
 parameters:
-  - max_iter: int | None = 100 - .
-  - tol: float | None = 1e-06 - .
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - max_iter: int | None = 100 --Maximum number of power iterations.
+  - tol: float | None = 1e-06 --Error tolerance (in Euclidean norm) used to check convergence in
+power iteration.
+  - weight: str | None = ? --If None, all edge weights are considered equal. Otherwise holds the
+name of the edge attribute used as weight. In this measure the
+weight is interpreted as the connection strength.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality(max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
@@ -82,10 +88,16 @@ This can lead to inconsistent results for the same graph,
 which the underlying implementation is not robust to.
 For this reason, only (strongly) connected graphs are accepted.
 parameters:
-  - weight: str | None = None - .
-  - max_iter: int | None = 50 - .
-  - tol: float | None = 0 - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If ``None``, all edge weights are considered equal. Otherwise holds the
+name of the edge attribute used as weight. In this measure the
+weight is interpreted as the connection strength.
+  - max_iter: int | None = 50 --Maximum number of Arnoldi update iterations allowed.
+  - tol: float | None = 0 --Relative accuracy for eigenvalues (stopping criterion).
+The default value of 0 implies machine precision.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A connected NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality_numpy(weight=<weight_value>, max_iter=<max_iter_value>, tol=<tol_value>, G=<G_variable>)

@@ -13,10 +13,16 @@ SGF has been proved to be particularly useful for synthesizing
 realistic social networks and it can also be used to anonymize
 graph sensitive data.
 parameters:
-  - alpha: <class 'float'> = None - .
-  - transformation: str | None = identity - .
-  - seed: int | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - alpha: <class 'float'> = ? --Ratio representing the percentage of eigenvectors of G to consider,
+values in [0,1].
+  - transformation: str | None = identity --Represents the intended matrix linear transformation, possible values
+are 'identity' and 'modularity'
+  - seed: int | None = ? --Indicator of numpy random number generation state.
+See :ref:`Randomness<randomness>`.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.spectral_graph_forge.spectral_graph_forge(alpha=<alpha_value>, transformation=<transformation_value>, seed=<seed_value>, G=<G_variable>)

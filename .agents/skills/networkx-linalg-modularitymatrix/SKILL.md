@@ -19,8 +19,12 @@ where k_i is the degree of node i, and where m is the number of edges
 in the graph. When weight is set to a name of an attribute edge, Aij, k_i,
 k_j and m are computed using its value.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --The edge attribute that holds the numerical value used for
+the edge weight.  If None then all edge weights are 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.linalg.modularitymatrix.modularity_matrix(weight=<weight_value>, G=<G_variable>)
@@ -42,8 +46,12 @@ of node j, with m the number of edges in the graph. When weight is set
 to a name of an attribute edge, Aij, k_i, k_j and m are computed using
 its value.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --The edge attribute that holds the numerical value used for
+the edge weight.  If None then all edge weights are 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DiGraph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.linalg.modularitymatrix.directed_modularity_matrix(weight=<weight_value>, G=<G_variable>)

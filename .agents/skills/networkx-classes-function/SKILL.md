@@ -9,8 +9,11 @@ Sets node attributes from a given value or dictionary of values.
 .. Warning:: The call order of arguments `values` and `name`
     switched between v1.x & v2.x.
 parameters:
-  - name: <class 'str'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - name: <class 'str'> = ? --Name of the node attribute to set if values is a scalar.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.classes.function.set_node_attributes(name=<name_value>, G=<G_variable>)
@@ -21,8 +24,11 @@ Sets edge attributes from a given value or dictionary of values.
 .. Warning:: The call order of arguments `values` and `name`
     switched between v1.x & v2.x.
 parameters:
-  - name: <class 'str'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - name: <class 'str'> = ? --Name of the edge attribute to set if values is a scalar.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.classes.function.set_edge_attributes(name=<name_value>, G=<G_variable>)
@@ -30,8 +36,11 @@ output_variable = networkx.classes.function.set_edge_attributes(name=<name_value
 **Is weighted:**
 Returns True if `G` has weighted edges.
 parameters:
-  - weight: str | None = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --The attribute name used to query for edge weights.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.classes.function.is_weighted(weight=<weight_value>, G=<G_variable>)
@@ -39,8 +48,11 @@ output_variable = networkx.classes.function.is_weighted(weight=<weight_value>, G
 **Is negatively weighted:**
 Returns True if `G` has negatively weighted edges.
 parameters:
-  - weight: str | None = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --The attribute name used to query for edge weights.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.classes.function.is_negatively_weighted(weight=<weight_value>, G=<G_variable>)
@@ -48,7 +60,10 @@ output_variable = networkx.classes.function.is_negatively_weighted(weight=<weigh
 **Is empty:**
 Returns True if `G` has no edges.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.classes.function.is_empty(G=<G_variable>)

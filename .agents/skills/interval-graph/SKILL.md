@@ -16,5 +16,8 @@ https://en.wikipedia.org/wiki/Interval_graph
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.interval_graph.interval_graph()

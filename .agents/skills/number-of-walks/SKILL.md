@@ -16,8 +16,11 @@ the number of nodes in the walk sequence is one more than `walk_length`.
 The number of walks can grow very quickly on a larger graph
 and with a larger walk length.
 parameters:
-  - walk_length: <class 'int'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - walk_length: <class 'int'> = ? --A nonnegative integer representing the length of a walk.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.walks.number_of_walks(walk_length=<walk_length_value>, G=<G_variable>)

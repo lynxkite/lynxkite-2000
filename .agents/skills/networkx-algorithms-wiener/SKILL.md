@@ -11,8 +11,14 @@ The *Wiener index* of a graph is the sum of the shortest-path
 For pairs of nodes in undirected graphs, only one orientation
 of the pair is counted.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If None, every edge has weight 1.
+If a string, use this edge attribute as the edge weight.
+Any edge attribute not present defaults to 1.
+The edge weights are used to computing shortest-path distances.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.wiener.wiener_index(weight=<weight_value>, G=<G_variable>)
@@ -29,8 +35,14 @@ is the degree of a node.
 The Schultz Index is the sum of these quantities over all (unordered)
 pairs of nodes.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If None, every edge has weight 1.
+If a string, use this edge attribute as the edge weight.
+Any edge attribute not present defaults to 1.
+The edge weights are used to computing shortest-path distances.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The undirected graph of interest.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.wiener.schultz_index(weight=<weight_value>, G=<G_variable>)
@@ -47,8 +59,14 @@ The Gutman Index of a graph is the sum over all (unordered) pairs of nodes
 of nodes ``(u, v)``, with distance ``dist(u, v)`` and degrees ``deg(u)``
 and ``deg(v)``, of ``dist(u, v) * deg(u) * deg(v)``
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If None, every edge has weight 1.
+If a string, use this edge attribute as the edge weight.
+Any edge attribute not present defaults to 1.
+The edge weights are used to computing shortest-path distances.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.wiener.gutman_index(weight=<weight_value>, G=<G_variable>)
@@ -63,8 +81,12 @@ The Hyper-Wiener index of a connected graph `G` is defined as
 
 where ``d(u, v)`` is the shortest-path distance between nodes ``u`` and ``v``.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --The edge attribute to use for calculating shortest-path distances.
+If None, all edges are considered to have a weight of 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected, connected graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.wiener.hyper_wiener_index(weight=<weight_value>, G=<G_variable>)

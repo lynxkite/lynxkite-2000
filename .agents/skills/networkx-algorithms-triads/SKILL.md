@@ -6,7 +6,10 @@ description: Collection of operations - Is triad, All triads, Triads by type, Tr
 **Is triad:**
 Returns True if the graph G is a triad, else False.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX Graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.triads.is_triad(G=<G_variable>)
@@ -14,7 +17,10 @@ output_variable = networkx.algorithms.triads.is_triad(G=<G_variable>)
 **All triads:**
 A generator of all possible triads in G.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DiGraph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.triads.all_triads(G=<G_variable>)
@@ -45,7 +51,10 @@ are as follows:
 Refer to the :doc:`example gallery </auto_examples/graph/plot_triad_types>`
 for visual examples of the triad types.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DiGraph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.triads.triads_by_type(G=<G_variable>)
@@ -53,7 +62,10 @@ output_variable = networkx.algorithms.triads.triads_by_type(G=<G_variable>)
 **Triad type:**
 Returns the sociological triad type for a triad.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DiGraph with 3 nodes
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.triads.triad_type(G=<G_variable>)

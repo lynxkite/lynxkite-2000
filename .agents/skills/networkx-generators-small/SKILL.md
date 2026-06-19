@@ -13,6 +13,9 @@ respectively the body and legs of a bull.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.bull_graph()
 
@@ -24,6 +27,9 @@ It has 370 distinct (directed) Hamiltonian cycles, giving a unique generalized
 LCF notation of order 4, two of order 6 , and 43 of order 1 [2]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.chvatal_graph()
@@ -39,6 +45,9 @@ Such graphs arise in parallel processing in computers.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.cubical_graph()
 
@@ -52,6 +61,9 @@ in LCF notation as [5,-5,9,-9]^5 [2]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.desargues_graph()
 
@@ -62,6 +74,9 @@ The Diamond Graph is  planar undirected graph with 4 nodes and 5 edges.
 It is also sometimes known as the double triangle graph or kite graph [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.diamond_graph()
@@ -76,6 +91,9 @@ It can be described in LCF notation as:
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.dodecahedral_graph()
 
@@ -88,6 +106,9 @@ It has 12 nodes and 18 edges and no nontrivial symmetries.
 It is planar and Hamiltonian [2]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.frucht_graph()
@@ -104,8 +125,13 @@ Some well known graphs are examples of Generalized Petersen Graphs such
 as the Petersen Graph GP(5, 2), the Desargues graph GP(10, 3), the
 Moebius-Kantor graph GP(8, 3), and the dodecahedron graph GP(10, 2).
 parameters:
-  - n: <class 'int'> = None - .
-  - k: <class 'int'> = None - .
+  - n: <class 'int'> = ? --Number of nodes in the outer cycle and inner circulant. ``n >= 3`` is required.
+  - k: <class 'int'> = ? --Neighbor to connect in the inner circulant. ``1 <= k <= n/2``.
+Note that some people require ``k < n/2`` but we and others allow equality.
+Also, ``k < n/2`` is equivalent to ``k <= floor((n-1)/2)``
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.generalized_petersen_graph(n=<n_value>, k=<k_value>)
@@ -122,6 +148,9 @@ minimal number of vertices [3]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.heawood_graph()
 
@@ -137,6 +166,9 @@ copies of the Petersen Graph [2]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.hoffman_singleton_graph()
 
@@ -147,6 +179,9 @@ The house graph is a simple undirected graph with
 5 nodes and 6 edges [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.house_graph()
@@ -160,6 +195,9 @@ obtained by removing two edges from the pentatope graph [1]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.house_x_graph()
 
@@ -172,6 +210,9 @@ regular and Hamiltonian [1]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.icosahedral_graph()
 
@@ -182,6 +223,9 @@ A 10 actor social network introduced by David Krackhardt
 to illustrate different centrality measures [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.krackhardt_kite_graph()
@@ -194,6 +238,9 @@ Its LCF notation is [5,-5]^8, and it is isomorphic to the generalized
 Petersen Graph GP(8, 3) [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.moebius_kantor_graph()
@@ -209,6 +256,9 @@ for this reason it is also called the cocktail party graph [2]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.octahedral_graph()
 
@@ -220,6 +270,9 @@ and 27 edges. It is Hamiltonian and can be represented in LCF notation as
 [5,7,-7,7,-7,-5]^3 [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.pappus_graph()
@@ -234,6 +287,9 @@ has an edge colouring with three colours [2]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.petersen_graph()
 
@@ -246,6 +302,9 @@ Nodes are numbered 0,..,7
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.sedgewick_maze_graph()
 
@@ -257,6 +316,9 @@ special case of the complete graph, K4, and wheel graph, W4.
 It is one of the 5 platonic graphs [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.tetrahedral_graph()
@@ -271,6 +333,9 @@ of the cube one third of the way into each edge [2]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.small.truncated_cube_graph()
 
@@ -282,6 +347,9 @@ The truncated tetrahedron is an Archimedean solid with 4 regular hexagonal faces
 all 4 vertices of a regular tetrahedron at one third of the original edge length [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.truncated_tetrahedron_graph()
@@ -297,6 +365,9 @@ It can be realized geometrically from a tetrahedron by multiply truncating
 three of its vertices [1]_.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.small.tutte_graph()

@@ -12,9 +12,13 @@ with a degree greater than a given threshold).  Dedensification also has
 the added benefit of reducing the number of edges around high-degree nodes.
 The implementation currently supports graphs with a single edge type.
 parameters:
-  - threshold: <class 'int'> = None - .
-  - copy: bool | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - threshold: <class 'int'> = ? --Minimum degree threshold of a node to be considered a high degree node.
+The threshold must be greater than or equal to 2.
+  - copy: bool | None = ? --Indicates if dedensification should be done inplace
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.summarization.dedensify(threshold=<threshold_value>, copy=<copy_value>, G=<G_variable>)
@@ -52,10 +56,13 @@ A SNAP summary graph can be used to visualize graphs that are too large to displ
 or visually analyze, or to efficiently identify sets of similar nodes with similar connectivity
 patterns to other sets of similar nodes based on specified node and/or edge attributes in a graph.
 parameters:
-  - prefix: <class 'str'> = Supernode- - .
-  - supernode_attribute: <class 'str'> = group - .
-  - superedge_attribute: <class 'str'> = types - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - prefix: <class 'str'> = Supernode- --The prefix used to denote supernodes in the summary graph. Defaults to 'Supernode-'.
+  - supernode_attribute: <class 'str'> = group --The node attribute for recording the supernode groupings of nodes. Defaults to 'group'.
+  - superedge_attribute: <class 'str'> = types --The edge attribute for recording the edge types of multiple edges. Defaults to 'types'.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --Networkx Graph to be summarized
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.summarization.snap_aggregation(prefix=<prefix_value>, supernode_attribute=<supernode_attribute_value>, superedge_attribute=<superedge_attribute_value>, G=<G_variable>)

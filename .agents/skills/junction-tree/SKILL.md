@@ -26,7 +26,10 @@ The junction tree algorithm consists of five steps [1]_:
    nodes, set edge-weight to number of shared variables
 5. Find maximum spanning tree
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --Directed or undirected graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.decomposition.junction_tree(G=<G_variable>)

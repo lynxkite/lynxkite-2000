@@ -13,7 +13,10 @@ is defined as "exclusive or" of the edges. Cycle bases are
 useful, e.g. when deriving equations for electric circuits
 using Kirchhoff's Laws.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.cycle_basis(G=<G_variable>)
@@ -47,8 +50,12 @@ Likewise, self-loops are considered to be cycles of length 1.  We define
 cycles as sequences of nodes; so the presence of loops and parallel edges
 does not change the number of simple cycles in a graph.
 parameters:
-  - length_bound: int | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - length_bound: int | None = ? --If `length_bound` is an int, generate all simple cycles of `G` with length at
+most `length_bound`.  Otherwise, generate all simple cycles of `G`.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph. Undirected, directed, and multigraphs are all supported.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.simple_cycles(length_bound=<length_bound_value>, G=<G_variable>)
@@ -65,7 +72,10 @@ You should probably use the iterator version called simple_cycles().
 Warning: This recursive version uses lots of RAM!
 It appears in NetworkX for pedagogical value.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.recursive_simple_cycles(G=<G_variable>)
@@ -76,7 +86,10 @@ Returns a cycle found via depth-first traversal.
 The cycle is a list of edges indicating the cyclic path.
 Orientation of directed edges is controlled by `orientation`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed/undirected graph/multigraph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.find_cycle(G=<G_variable>)
@@ -87,8 +100,11 @@ Returns a minimum weight cycle basis for G
 Minimum weight means a cycle basis for which the total weight
 (length for unweighted graphs) of all the cycles is minimum.
 parameters:
-  - weight: <class 'str'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = ? --name of the edge attribute to use for edge weights
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.minimum_cycle_basis(weight=<weight_value>, G=<G_variable>)
@@ -143,8 +159,12 @@ been modified in the following ways:
     5. Support for multigraphs is provided by omitting digons from the set
        of forward edges.
 parameters:
-  - length_bound: int | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - length_bound: int | None = ? --If length_bound is an int, generate all simple cycles of G with length at
+most length_bound.  Otherwise, generate all simple cycles of G.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.chordless_cycles(length_bound=<length_bound_value>, G=<G_variable>)
@@ -157,7 +177,10 @@ the graph is acyclic. The algorithm follows the description given on the
 Wikipedia page [1]_, and runs in time O(mn) on a graph with m edges and n
 nodes.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cycles.girth(G=<G_variable>)

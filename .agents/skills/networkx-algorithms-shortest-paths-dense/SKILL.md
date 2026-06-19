@@ -6,8 +6,11 @@ description: Collection of operations - Floyd–Warshall, Floyd–Warshall prede
 **Floyd–Warshall:**
 Find all-pairs shortest path lengths using Floyd's algorithm.
 parameters:
-  - weight: str | None = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --Edge data key corresponding to the edge weight.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.dense.floyd_warshall(weight=<weight_value>, G=<G_variable>)
@@ -15,8 +18,11 @@ output_variable = networkx.algorithms.shortest_paths.dense.floyd_warshall(weight
 **Floyd–Warshall predecessor and distance:**
 Find all-pairs shortest path lengths using Floyd's algorithm.
 parameters:
-  - weight: str | None = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --Edge data key corresponding to the edge weight.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.dense.floyd_warshall_predecessor_and_distance(weight=<weight_value>, G=<G_variable>)
@@ -32,8 +38,11 @@ where i and j are the indexes of two nodes in nodelist.
 The entry distance[i, j] is the distance along a shortest
 path from i to j. If no path exists the distance is Inf.
 parameters:
-  - weight: str | None = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --Edge data key corresponding to the edge weight.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.dense.floyd_warshall_numpy(weight=<weight_value>, G=<G_variable>)

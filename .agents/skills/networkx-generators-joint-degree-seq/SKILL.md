@@ -22,6 +22,9 @@ if the following conditions are satisfied.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.joint_degree_seq.is_valid_joint_degree()
 
@@ -30,13 +33,20 @@ Checks whether the given directed joint degree input is realizable
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.joint_degree_seq.is_valid_directed_joint_degree()
 
 **Joint degree graph:**
 Generates a random simple graph with the given joint degree dictionary.
 parameters:
-  - seed: int | None = None - .
+  - seed: int | None = ? --Indicator of random number generation state.
+See :ref:`Randomness<randomness>`.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.joint_degree_seq.joint_degree_graph(seed=<seed_value>)

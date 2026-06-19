@@ -6,7 +6,10 @@ description: Collection of operations - Descendants, Ancestors, Topological sort
 **Descendants:**
 Returns all nodes reachable from `source` in `G`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.descendants(G=<G_variable>)
@@ -14,7 +17,10 @@ output_variable = networkx.algorithms.dag.descendants(G=<G_variable>)
 **Ancestors:**
 Returns all nodes having a path to `source` in `G`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.ancestors(G=<G_variable>)
@@ -27,7 +33,10 @@ directed graph such that an edge from u to v implies that u
 appears before v in the topological sort order. This ordering is
 valid only if the graph has no directed cycles.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.topological_sort(G=<G_variable>)
@@ -54,7 +63,10 @@ The function takes a single argument and returns a key to use for sorting purpos
 Lexicographical sorting can fail if the node names are un-sortable. See the example below.
 The solution is to provide a function to the `key=` argument that returns sortable keys.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.lexicographical_topological_sort(G=<G_variable>)
@@ -66,7 +78,10 @@ A topological sort is a nonunique permutation of the nodes such that an
 edge from u to v implies that u appears before v in the topological sort
 order.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.all_topological_sorts(G=<G_variable>)
@@ -79,7 +94,10 @@ generation are guaranteed to be in a previous generation, and any descendants of
 a node are guaranteed to be in a following generation. Nodes are guaranteed to
 be in the earliest possible generation that they can belong to.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.topological_generations(G=<G_variable>)
@@ -88,7 +106,10 @@ output_variable = networkx.algorithms.dag.topological_generations(G=<G_variable>
 Returns True if the graph `G` is a directed acyclic graph (DAG) or
 False if not.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.is_directed_acyclic_graph(G=<G_variable>)
@@ -107,7 +128,10 @@ or attracting components
 (using :func:`~networkx.algorithms.components.attracting_components`),
 and then apply this function to those individual components.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.is_aperiodic(G=<G_variable>)
@@ -125,7 +149,10 @@ from v to v of length 0. The usual transitive closure creates a
 self-loop only if a cycle exists (a path from v to v with length > 0).
 We also allow an option for no self-loops.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed/undirected graph/multigraph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.transitive_closure(G=<G_variable>)
@@ -140,7 +167,10 @@ The transitive closure of G = (V,E) is a graph G+ = (V,E+) such that
 for all v, w in V there is an edge (v, w) in E+ if and only if there
 is a non-null path from v to w in G.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.transitive_closure_dag(G=<G_variable>)
@@ -152,7 +182,10 @@ The transitive reduction of G = (V,E) is a graph G- = (V,E-) such that
 for all v,w in V there is an edge (v,w) in E- if and only if (v,w) is
 in E and there is no path from v to w in G with length greater than 1.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.transitive_reduction(G=<G_variable>)
@@ -163,7 +196,10 @@ Generates antichains from a directed acyclic graph (DAG).
 An antichain is a subset of a partially ordered set such that any
 two elements in the subset are incomparable.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.antichains(G=<G_variable>)
@@ -174,9 +210,12 @@ Returns the longest path in a directed acyclic graph (DAG).
 If `G` has edges with `weight` attribute the edge data are used as
 weight values.
 parameters:
-  - weight: str | None = weight - .
-  - default_weight: int | None = 1 - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --Edge data key to use for weight
+  - default_weight: int | None = 1 --The weight of edges that do not have a weight attribute
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.dag_longest_path(weight=<weight_value>, default_weight=<default_weight_value>, G=<G_variable>)
@@ -184,9 +223,12 @@ output_variable = networkx.algorithms.dag.dag_longest_path(weight=<weight_value>
 **DAG longest path length:**
 Returns the longest path length in a DAG
 parameters:
-  - weight: str | None = weight - .
-  - default_weight: int | None = 1 - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = weight --Edge data key to use for weight
+  - default_weight: int | None = 1 --The weight of edges that do not have a weight attribute
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.dag_longest_path_length(weight=<weight_value>, default_weight=<default_weight_value>, G=<G_variable>)
@@ -208,7 +250,10 @@ the returned branching, one for each parent, and the sub-DAG rooted
 at `v` is duplicated for each copy. The algorithm then recurses on
 the children of each copy of `v`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.dag.dag_to_branching(G=<G_variable>)

@@ -12,5 +12,8 @@ Each node in the first is connected to each node in the second.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.algorithms.bipartite.generators.complete_bipartite_graph()

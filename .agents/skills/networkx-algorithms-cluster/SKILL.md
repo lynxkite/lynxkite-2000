@@ -8,7 +8,10 @@ Compute the number of triangles.
 
 Finds the number of triangles that include a node as one vertex.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.triangles(G=<G_variable>)
@@ -19,7 +22,10 @@ Yields all unique triangles in an undirected graph.
 A triangle is a set of three distinct nodes where each node is connected to
 the other two.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.all_triangles(G=<G_variable>)
@@ -35,9 +41,13 @@ The clustering coefficient for the graph is the average,
 
 where :math:`n` is the number of nodes in `G`.
 parameters:
-  - weight: str | None = None - .
-  - count_zeros: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --The edge attribute that holds the numerical value used as a weight.
+If None, then each edge has weight 1.
+  - count_zeros: <class 'bool'> = ? --If False include only the nodes with nonzero clustering in the average.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.average_clustering(weight=<weight_value>, count_zeros=<count_zeros_value>, G=<G_variable>)
@@ -84,8 +94,12 @@ where :math:`T(u)` is the number of directed triangles through node
 :math:`u` and :math:`deg^{\leftrightarrow}(u)` is the reciprocal degree of
 :math:`u`.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --The edge attribute that holds the numerical value used as a weight.
+If None, then each edge has weight 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.clustering(weight=<weight_value>, G=<G_variable>)
@@ -103,7 +117,10 @@ The transitivity is
 
     T = 3\frac{\#triangles}{\#triads}.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.transitivity(G=<G_variable>)
@@ -125,7 +142,10 @@ where :math:`q_v(u,w)` are the number of common neighbors of :math:`u` and
 :math:`\theta_{uw} = 1` if :math:`u` and :math:`w` are connected and 0
 otherwise. [2]_
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.square_clustering(G=<G_variable>)
@@ -141,7 +161,10 @@ generalized degree of node :math:`i` can be written as a vector
 :math:`k_i^{(j)}` is the number of edges attached to node :math:`i` that
 participate in :math:`j` triangles.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.cluster.generalized_degree(G=<G_variable>)

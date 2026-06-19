@@ -56,7 +56,10 @@ and `l(G)` the number of self-loops of `G`:
        T_{G-e}(x, y) + T_{G/e}(x, y), & \text{otherwise, for an arbitrary edge $e$ not a cut-edge or loop}
     \end{cases}
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.polynomials.tutte_polynomial(G=<G_variable>)
@@ -104,7 +107,10 @@ the number of vertices of `G`, and `e(G)` the number of edges of `G` [3]_:
 
 This formulation is also known as the Fundamental Reduction Theorem [4]_.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.polynomials.chromatic_polynomial(G=<G_variable>)

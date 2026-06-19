@@ -11,8 +11,11 @@ voting scheme. With VoteRank, all nodes vote for each of its in-neighbors
 and the node with the highest votes is elected iteratively. The voting
 ability of out-neighbors of elected nodes is decreased in subsequent turns.
 parameters:
-  - number_of_nodes: int | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - number_of_nodes: int | None = ? --Number of ranked nodes to extract (default all nodes).
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.voterank_alg.voterank(number_of_nodes=<number_of_nodes_value>, G=<G_variable>)

@@ -11,8 +11,12 @@ walks of all lengths starting and ending at node `n`. The weights
 decrease with path length. Each closed walk is associated with a
 connected subgraph ([1]_).
 parameters:
-  - normalized: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - normalized: <class 'bool'> = ? --If True, normalize the centrality values using the largest eigenvalue of the
+adjacency matrix so that the centrality values are generally between 0 and 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.subgraph_alg.subgraph_centrality_exp(normalized=<normalized_value>, G=<G_variable>)
@@ -25,8 +29,12 @@ walks of all lengths starting and ending at node `n`. The weights
 decrease with path length. Each closed walk is associated with a
 connected subgraph ([1]_).
 parameters:
-  - normalized: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - normalized: <class 'bool'> = ? --If True, normalize the centrality values using the largest eigenvalue of the
+adjacency matrix so that the centrality values are generally between 0 and 1.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.subgraph_alg.subgraph_centrality(normalized=<normalized_value>, G=<G_variable>)
@@ -38,7 +46,10 @@ Communicability betweenness measure makes use of the number of walks
 connecting every pair of nodes as the basis of a betweenness centrality
 measure.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.subgraph_alg.communicability_betweenness_centrality(G=<G_variable>)
@@ -48,7 +59,10 @@ Returns the Estrada index of a the graph G.
 
 The Estrada Index is a topological index of folding or 3D "compactness" ([1]_).
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.subgraph_alg.estrada_index(G=<G_variable>)

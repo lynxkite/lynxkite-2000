@@ -10,8 +10,12 @@ Returns the perfectly balanced `r`-ary tree of height `h`.
 
     >>> nx.draw(nx.balanced_tree(2, 3))
 parameters:
-  - r: <class 'int'> = None - .
-  - h: <class 'int'> = None - .
+  - r: <class 'int'> = ? --Branching factor of the tree; each node will have `r`
+children.
+  - h: <class 'int'> = ? --Height of the tree.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.balanced_tree(r=<r_value>, h=<h_value>)
@@ -23,8 +27,11 @@ Returns the Barbell Graph: two complete graphs connected by a path.
 
     >>> nx.draw(nx.barbell_graph(4, 2))
 parameters:
-  - m1: <class 'int'> = None - .
-  - m2: <class 'int'> = None - .
+  - m1: <class 'int'> = ? --Size of the left and right barbells, must be greater than 2.
+  - m2: <class 'int'> = ? --Length of the path connecting the barbells.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.barbell_graph(m1=<m1_value>, m2=<m2_value>)
@@ -40,7 +47,10 @@ the leftmost child of the root of the other.
 
     >>> nx.draw(nx.binomial_tree(3))
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --Order of the binomial tree.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.binomial_tree(n=<n_value>)
@@ -57,6 +67,9 @@ of distinct nodes have an edge connecting them.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.classic.complete_graph()
 
@@ -68,6 +81,9 @@ Returns the complete multipartite graph with the specified subset sizes.
     >>> nx.draw(nx.complete_multipartite_graph(1, 2, 3))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.complete_multipartite_graph()
@@ -84,7 +100,10 @@ Node labels are the integers 0 to n-1
 
     >>> nx.draw(nx.circular_ladder_graph(5))
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.circular_ladder_graph(n=<n_value>)
@@ -100,7 +119,10 @@ for all $x$ in $x_1, ..., x_m$. Thus $Ci_n(1)$ is a cycle graph.
 
     >>> nx.draw(nx.circulant_graph(10, [1]))
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --The number of nodes in the graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.circulant_graph(n=<n_value>)
@@ -115,6 +137,9 @@ $C_n$ is a path with its two end-nodes connected.
     >>> nx.draw(nx.cycle_graph(5))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.cycle_graph()
@@ -134,7 +159,10 @@ This is different from the parameter ``t = n - 1`` in [1]_.
 
     >>> nx.draw(nx.dorogovtsev_goltsev_mendes_graph(3))
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --The generation number.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.dorogovtsev_goltsev_mendes_graph(n=<n_value>)
@@ -147,6 +175,9 @@ Returns the empty graph with n nodes and zero edges.
     >>> nx.draw(nx.empty_graph(5))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.empty_graph()
@@ -164,8 +195,11 @@ leaves to its right." [1]_
 
     >>> nx.draw(nx.full_rary_tree(2, 10))
 parameters:
-  - r: <class 'int'> = None - .
-  - n: <class 'int'> = None - .
+  - r: <class 'int'> = ? --branching factor of the tree
+  - n: <class 'int'> = ? --Number of nodes in the tree
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.full_rary_tree(r=<r_value>, n=<n_value>)
@@ -176,8 +210,12 @@ Returns the Kneser Graph with parameters `n` and `k`.
 The Kneser Graph has nodes that are k-tuples (subsets) of the integers
 between 0 and ``n-1``. Nodes are adjacent if their corresponding sets are disjoint.
 parameters:
-  - n: <class 'int'> = None - .
-  - k: <class 'int'> = None - .
+  - n: <class 'int'> = ? --Number of integers from which to make node subsets.
+Subsets are drawn from ``set(range(n))``.
+  - k: <class 'int'> = ? --Size of the subsets.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.kneser_graph(n=<n_value>, k=<k_value>)
@@ -194,7 +232,10 @@ Node labels are the integers 0 to 2*n - 1.
 
     >>> nx.draw(nx.ladder_graph(5))
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.ladder_graph(n=<n_value>)
@@ -210,6 +251,9 @@ This is the Barbell Graph without the right barbell.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.classic.lollipop_graph()
 
@@ -219,6 +263,9 @@ Returns the Null graph with no nodes or edges.
 See empty_graph for the use of create_using.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.null_graph()
@@ -231,6 +278,9 @@ Returns the Path graph `P_n` of linearly connected nodes.
     >>> nx.draw(nx.path_graph(5))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.path_graph()
@@ -245,6 +295,9 @@ The star graph consists of one center node connected to `n` outer nodes.
     >>> nx.draw(nx.star_graph(6))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.star_graph()
@@ -261,6 +314,9 @@ It looks like a tadpole. It is also called a kite graph or a dragon graph.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.classic.tadpole_graph()
 
@@ -272,6 +328,9 @@ Return the Trivial graph with one node (with label 0) and no edges.
     >>> nx.draw(nx.trivial_graph(), with_labels=True)
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.trivial_graph()
@@ -291,8 +350,12 @@ $n \mod r$ partitions of size $n/r+1$, rounded down.
 
     >>> nx.draw(nx.turan_graph(6, 2))
 parameters:
-  - n: <class 'int'> = None - .
-  - r: <class 'int'> = None - .
+  - n: <class 'int'> = ? --The number of nodes.
+  - r: <class 'int'> = ? --The number of partitions.
+Must be less than or equal to n.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.turan_graph(n=<n_value>, r=<r_value>)
@@ -307,6 +370,9 @@ The wheel graph consists of a hub node connected to a cycle of (n-1) nodes.
     >>> nx.draw(nx.wheel_graph(5))
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.classic.wheel_graph()

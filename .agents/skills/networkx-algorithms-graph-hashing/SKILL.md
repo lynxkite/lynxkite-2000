@@ -27,11 +27,18 @@ If no node or edge attributes are provided, the degree of each node
 is used as its initial label.
 Otherwise, node and/or edge labels are used to compute the hash.
 parameters:
-  - edge_attr: str | None = None - .
-  - node_attr: str | None = None - .
-  - iterations: int | None = 3 - .
-  - digest_size: int | None = 16 - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - edge_attr: str | None = ? --The key in edge attribute dictionary to be used for hashing.
+If None, edge labels are ignored.
+  - node_attr: str | None = ? --The key in node attribute dictionary to be used for hashing.
+If None, and no edge_attr given, use the degrees of the nodes as labels.
+  - iterations: int | None = 3 --Number of neighbor aggregations to perform.
+Should be larger for larger graphs.
+  - digest_size: int | None = 16 --Size (in bytes) of blake2b hash digest to use for hashing node labels.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be hashed.
+Can have node and/or edge attributes. Can also have no attributes.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_graph_hash(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, G=<G_variable>)
@@ -90,12 +97,22 @@ If no node or edge attributes are provided, the degree of each node
 is used as its initial label.
 Otherwise, node and/or edge labels are used to compute the hash.
 parameters:
-  - edge_attr: str | None = None - .
-  - node_attr: str | None = None - .
-  - iterations: int | None = 3 - .
-  - digest_size: int | None = 16 - .
-  - include_initial_labels: bool | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - edge_attr: str | None = ? --The key in edge attribute dictionary to be used for hashing.
+If None, edge labels are ignored.
+  - node_attr: str | None = ? --The key in node attribute dictionary to be used for hashing.
+If None, and no edge_attr given, use the degrees of the nodes as labels.
+If None, and edge_attr is given, each node starts with an identical label.
+  - iterations: int | None = 3 --Number of neighbor aggregations to perform.
+Should be larger for larger graphs.
+  - digest_size: int | None = 16 --Size (in bytes) of blake2b hash digest to use for hashing node labels.
+The default size is 16 bytes.
+  - include_initial_labels: bool | None = ? --If True, include the hashed initial node label as the first subgraph
+hash for each node.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be hashed.
+Can have node and/or edge attributes. Can also have no attributes.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_subgraph_hashes(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, include_initial_labels=<include_initial_labels_value>, G=<G_variable>)

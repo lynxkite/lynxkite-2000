@@ -16,8 +16,11 @@ The default choice of regularizer should be the ratio [2]_
 .. math::
   r_m = \left(\sum k_i \right)^{-1}\left(\sum k_i^2 \right) - 1
 parameters:
-  - r: <class 'float'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - r: <class 'float'> = ? --Regularizer parameter
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.linalg.bethehessianmatrix.bethe_hessian_matrix(r=<r_value>, G=<G_variable>)

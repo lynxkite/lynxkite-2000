@@ -26,8 +26,12 @@ process iteratively.
 
 More information can be found at https://en.wikipedia.org/wiki/Mycielskian
 parameters:
-  - iterations: <class 'int'> = 1 - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - iterations: <class 'int'> = 1 --The number of iterations of the Mycielski operation to
+perform on G. Defaults to 1. Must be a non-negative integer.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A simple, undirected NetworkX graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.mycielski.mycielskian(iterations=<iterations_value>, G=<G_variable>)
@@ -43,7 +47,10 @@ edge, and, for :math:`i > 2`, :math:`M_i` is the Mycielskian of
 More information can be found at
 http://mathworld.wolfram.com/MycielskiGraph.html
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --The desired Mycielski Graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.mycielski.mycielski_graph(n=<n_value>)

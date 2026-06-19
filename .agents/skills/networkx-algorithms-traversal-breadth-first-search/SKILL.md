@@ -6,7 +6,10 @@ description: Collection of operations - Descendants at distance, BFS layers, BFS
 **Descendants at distance:**
 Returns all nodes at a fixed `distance` from `source` in `G`.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.traversal.breadth_first_search.descendants_at_distance(G=<G_variable>)
@@ -14,7 +17,10 @@ output_variable = networkx.algorithms.traversal.breadth_first_search.descendants
 **BFS layers:**
 Returns an iterator of all the layers in breadth-first search traversal.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A graph over which to find the layers using breadth-first search.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.traversal.breadth_first_search.bfs_layers(G=<G_variable>)
@@ -34,7 +40,10 @@ below *v*.
 We emit each edge exactly once.  In an undirected graph, 'reverse' edges do
 not occur, because each is discovered either as a 'tree' or 'forward' edge.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A graph over which to find the layers using breadth-first search.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.traversal.breadth_first_search.bfs_labeled_edges(G=<G_variable>)

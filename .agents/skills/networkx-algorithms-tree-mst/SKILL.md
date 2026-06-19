@@ -11,12 +11,19 @@ A minimum spanning tree is a subgraph of the graph (a tree)
 with the minimum sum of edge weights.  A spanning forest is a
 union of the spanning trees for each connected component of the graph.
 parameters:
-  - algorithm: <class 'str'> = kruskal - .
-  - weight: <class 'str'> = weight - .
-  - keys: <class 'bool'> = None - .
-  - data: bool | None = None - .
-  - ignore_nan: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - algorithm: <class 'str'> = kruskal --The algorithm to use when finding a minimum spanning tree. Valid
+choices are 'kruskal', 'prim', or 'boruvka'. The default is 'kruskal'.
+  - weight: <class 'str'> = weight --Edge data key to use for weight (default 'weight').
+  - keys: <class 'bool'> = ? --Whether to yield edge key in multigraphs in addition to the edge.
+If `G` is not a multigraph, this is ignored.
+  - data: bool | None = ? --If True yield the edge data along with the edge.
+  - ignore_nan: <class 'bool'> = ? --If a NaN is found as an edge weight normally an exception is raised.
+If `ignore_nan is True` then that edge is ignored instead.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph. If `G` is connected, then the algorithm finds a
+spanning tree. Otherwise, a spanning forest is found.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.minimum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -29,12 +36,19 @@ A maximum spanning tree is a subgraph of the graph (a tree)
 with the maximum possible sum of edge weights.  A spanning forest is a
 union of the spanning trees for each connected component of the graph.
 parameters:
-  - algorithm: <class 'str'> = kruskal - .
-  - weight: <class 'str'> = weight - .
-  - keys: <class 'bool'> = None - .
-  - data: bool | None = None - .
-  - ignore_nan: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - algorithm: <class 'str'> = kruskal --The algorithm to use when finding a maximum spanning tree. Valid
+choices are 'kruskal', 'prim', or 'boruvka'. The default is 'kruskal'.
+  - weight: <class 'str'> = weight --Edge data key to use for weight (default 'weight').
+  - keys: <class 'bool'> = ? --Whether to yield edge key in multigraphs in addition to the edge.
+If `G` is not a multigraph, this is ignored.
+  - data: bool | None = ? --If True yield the edge data along with the edge.
+  - ignore_nan: <class 'bool'> = ? --If a NaN is found as an edge weight normally an exception is raised.
+If `ignore_nan is True` then that edge is ignored instead.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph. If `G` is connected, then the algorithm finds a
+spanning tree. Otherwise, a spanning forest is found.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -42,10 +56,17 @@ output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=
 **Minimum spanning tree:**
 Returns a minimum spanning tree or forest on an undirected graph `G`.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - algorithm: <class 'str'> = kruskal - .
-  - ignore_nan: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --Data key to use for edge weights.
+  - algorithm: <class 'str'> = kruskal --The algorithm to use when finding a minimum spanning tree. Valid
+choices are 'kruskal', 'prim', or 'boruvka'. The default is
+'kruskal'.
+  - ignore_nan: <class 'bool'> = ? --If a NaN is found as an edge weight normally an exception is raised.
+If `ignore_nan is True` then that edge is ignored instead.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph. If `G` is connected, then the algorithm finds a
+spanning tree. Otherwise, a spanning forest is found.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.minimum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -53,10 +74,17 @@ output_variable = networkx.algorithms.tree.mst.minimum_spanning_tree(weight=<wei
 **Maximum spanning tree:**
 Returns a maximum spanning tree or forest on an undirected graph `G`.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - algorithm: <class 'str'> = kruskal - .
-  - ignore_nan: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --Data key to use for edge weights.
+  - algorithm: <class 'str'> = kruskal --The algorithm to use when finding a maximum spanning tree. Valid
+choices are 'kruskal', 'prim', or 'boruvka'. The default is
+'kruskal'.
+  - ignore_nan: <class 'bool'> = ? --If a NaN is found as an edge weight normally an exception is raised.
+If `ignore_nan is True` then that edge is ignored instead.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph. If `G` is connected, then the algorithm finds a
+spanning tree. Otherwise, a spanning forest is found.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.maximum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
@@ -75,9 +103,13 @@ to be selected with uniform probability.
 
 The function uses algorithm A8 in [1]_ .
 parameters:
-  - weight: <class 'str'> = None - .
-  - seed: int | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = ? --The edge key for the edge attribute holding edge weight.
+  - seed: int | None = ? --Indicator of random number generation state.
+See :ref:`Randomness<randomness>`.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected version of the original graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.random_spanning_tree(weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
@@ -91,11 +123,18 @@ returned tree, `EXCLUDED`, which cannot be in the returned tree and `OPEN`.
 This is used in the SpanningTreeIterator to create new partitions following
 the algorithm of Sörensen and Janssens [1]_.
 parameters:
-  - minimum: <class 'bool'> = None - .
-  - weight: <class 'str'> = weight - .
-  - partition: <class 'str'> = partition - .
-  - ignore_nan: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - minimum: <class 'bool'> = ? --Determines whether the returned tree is the minimum spanning tree of
+the partition of the maximum one.
+  - weight: <class 'str'> = weight --Data key to use for edge weights.
+  - partition: <class 'str'> = partition --The key for the edge attribute containing the partition
+data on the graph. Edges can be included, excluded or open using the
+`EdgePartition` enum.
+  - ignore_nan: <class 'bool'> = ? --If a NaN is found as an edge weight normally an exception is raised.
+If `ignore_nan is True` then that edge is ignored instead.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.tree.mst.partition_spanning_tree(minimum=<minimum_value>, weight=<weight_value>, partition=<partition_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)

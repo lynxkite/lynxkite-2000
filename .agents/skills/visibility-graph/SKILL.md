@@ -19,5 +19,8 @@ into random graphs, and fractal series convert into scale-free networks [1]_.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.time_series.visibility_graph()

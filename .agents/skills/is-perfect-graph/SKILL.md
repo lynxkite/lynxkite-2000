@@ -14,7 +14,10 @@ A graph is perfect if and only if neither the graph G nor its complement
 :math:`\overline{G}` contains an **induced odd hole** — an induced cycle of
 odd length at least five without chords.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to check. Must be a finite, simple, undirected graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.perfect_graph.is_perfect_graph(G=<G_variable>)

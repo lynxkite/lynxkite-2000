@@ -20,8 +20,12 @@ predecessors or successors of `v` and $\ell(v, w)$ is the local
 constraint on `v` with respect to `w` [1]_. For the definition of local
 constraint, see :func:`local_constraint`.
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If None, all edge weights are considered equal.
+Otherwise holds the name of the edge attribute used as weight.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph containing ``v``. This can be either directed or undirected.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.structuralholes.constraint(weight=<weight_value>, G=<G_variable>)
@@ -59,8 +63,13 @@ a simplified formula to compute effective size [2]_
 where `t` is the number of ties in the ego network (not including
 ties to ego) and `n` is the number of nodes (excluding ego).
 parameters:
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: str | None = ? --If None, all edge weights are considered equal.
+Otherwise holds the name of the edge attribute used as weight.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph containing ``v``. Directed graphs are treated like
+undirected graphs when computing neighbors of ``v``.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.structuralholes.effective_size(weight=<weight_value>, G=<G_variable>)

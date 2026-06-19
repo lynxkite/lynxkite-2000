@@ -22,9 +22,18 @@ between 0.0 and 1.0.
 When all nodes are in the same percolated state this measure is
 equivalent to betweenness centrality.
 parameters:
-  - attribute: str | None = percolation - .
-  - weight: str | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - attribute: str | None = percolation --Name of the node attribute to use for percolation state, used
+if `states` is None. If a node does not set the attribute the
+state of that node will be set to the default value of 1.
+If all nodes do not have the attribute all nodes will be set to
+1 and the centrality measure will be equivalent to betweenness centrality.
+  - weight: str | None = ? --If None, all edge weights are considered equal.
+Otherwise holds the name of the edge attribute used as weight.
+The weight of an edge is treated as the length or distance between the two sides.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.percolation.percolation_centrality(attribute=<attribute_value>, weight=<weight_value>, G=<G_variable>)

@@ -36,6 +36,9 @@ References
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.social.karate_club_graph()
 
@@ -51,6 +54,9 @@ References
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.social.davis_southern_women_graph()
 
@@ -65,6 +71,9 @@ References
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.social.florentine_families_graph()
 
@@ -78,6 +87,9 @@ References
    pp. 74-87. New York: AcM Press.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.social.les_miserables_graph()

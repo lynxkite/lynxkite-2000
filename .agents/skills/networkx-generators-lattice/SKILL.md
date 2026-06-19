@@ -10,6 +10,9 @@ The grid graph has each node connected to its four nearest neighbors.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.lattice.grid_2d_graph()
 
@@ -21,6 +24,9 @@ each dimension is the value of the corresponding list element.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.lattice.grid_graph()
 
@@ -31,7 +37,10 @@ The *n*-dimensional hypercube graph [1]_ has ``2**n`` nodes, each represented as
 a binary integer in the form of a tuple of 0's and 1's. Edges exist between
 nodes that differ in exactly one bit.
 parameters:
-  - n: <class 'int'> = None - .
+  - n: <class 'int'> = ? --Dimension of the hypercube, must be a positive integer.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.lattice.hypercube_graph(n=<n_value>)
@@ -61,10 +70,20 @@ Nodes lie in the first quadrant with the node $(0, 0)$ at the origin.
 .. _grid graph: http://www-cs-students.stanford.edu/~amitp/game-programming/grids/
 .. _Triangular Tiling: https://en.wikipedia.org/wiki/Triangular_tiling
 parameters:
-  - m: <class 'int'> = None - .
-  - n: <class 'int'> = None - .
-  - periodic: <class 'bool'> = None - .
-  - with_positions: <class 'bool'> = None - .
+  - m: <class 'int'> = ? --The number of rows in the lattice.
+  - n: <class 'int'> = ? --The number of columns in the lattice.
+  - periodic: <class 'bool'> = ? --If True, join the boundary vertices of the grid using periodic
+boundary conditions. The join between boundaries is the final row
+and column of triangles. This means there is one row and one column
+fewer nodes for the periodic lattice. Periodic lattices require
+`m >= 3`, `n >= 5` and are allowed but misaligned if `m` or `n` are odd
+  - with_positions: <class 'bool'> = ? --Store the coordinates of each node in the graph node attribute 'pos'.
+The coordinates provide a lattice with equilateral triangles.
+Periodic positions shift the nodes vertically in a nonlinear way so
+the edges don't overlap so much.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.lattice.triangular_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)
@@ -86,10 +105,20 @@ with sidelength 1 and are stored in the node attribute 'pos'.
 .. _hexagonal tiling: https://en.wikipedia.org/wiki/Hexagonal_tiling
 .. _Odd numbered columns: http://www-cs-students.stanford.edu/~amitp/game-programming/grids/
 parameters:
-  - m: <class 'int'> = None - .
-  - n: <class 'int'> = None - .
-  - periodic: <class 'bool'> = None - .
-  - with_positions: <class 'bool'> = None - .
+  - m: <class 'int'> = ? --The number of rows of hexagons in the lattice.
+  - n: <class 'int'> = ? --The number of columns of hexagons in the lattice.
+  - periodic: <class 'bool'> = ? --Whether to make a periodic grid by joining the boundary vertices.
+For this to work `n` must be even and both `n > 1` and `m > 1`.
+The periodic connections create another row and column of hexagons
+so these graphs have fewer nodes as boundary nodes are identified.
+  - with_positions: <class 'bool'> = ? --Store the coordinates of each node in the graph node attribute 'pos'.
+The coordinates provide a lattice with vertical columns of hexagons
+offset to interleave and cover the plane.
+Periodic positions shift the nodes vertically in a nonlinear way so
+the edges don't overlap so much.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.lattice.hexagonal_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)

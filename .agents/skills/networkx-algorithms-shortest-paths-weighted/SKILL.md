@@ -9,10 +9,23 @@ Returns the shortest weighted path length in G from source to target.
 Uses Dijkstra's Method to compute the shortest weighted path length
 between two nodes in a graph.
 parameters:
-  - source: <class 'str'> = None - .
-  - target: <class 'str'> = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --starting node for path
+  - target: <class 'str'> = ? --ending node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.dijkstra_path_length(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
@@ -26,11 +39,25 @@ reachable nodes for a weighted graph.
 Uses Dijkstra's algorithm to compute shortest paths and lengths
 between a source and all other reachable nodes in a weighted graph.
 parameters:
-  - source: <class 'str'> = None - .
-  - target: str | None = None - .
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - target: str | None = ? --Ending node for path
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.single_source_dijkstra(source=<source_value>, target=<target_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -41,10 +68,24 @@ Find shortest weighted path lengths in G from a source node.
 Compute the shortest path length between source and all other
 reachable nodes for a weighted graph.
 parameters:
-  - source: <class 'str'> = None - .
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.single_source_dijkstra_path_length(source=<source_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -57,10 +98,24 @@ Uses Dijkstra's algorithm to compute the shortest paths and lengths
 between one of the source nodes and the given `target`, or all other
 reachable nodes if not specified, for a weighted graph.
 parameters:
-  - target: str | None = None - .
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - target: str | None = ? --Ending node for path
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra(target=<target_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -72,9 +127,23 @@ nodes.
 Compute shortest path between any of the source nodes and all other
 reachable nodes for a weighted graph.
 parameters:
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -86,9 +155,23 @@ source nodes.
 Compute the shortest path length between any of the source nodes and
 all other reachable nodes for a weighted graph.
 parameters:
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -96,9 +179,23 @@ output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijks
 **All pairs Dijkstra:**
 Find shortest weighted paths and lengths between all nodes.
 parameters:
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edge[u][v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -106,9 +203,23 @@ output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra
 **All pairs Dijkstra path:**
 Compute shortest paths between all nodes in a weighted graph.
 parameters:
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra_path(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -116,9 +227,23 @@ output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra
 **All pairs Dijkstra path length:**
 Compute shortest path lengths between all nodes in a weighted graph.
 parameters:
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -130,10 +255,24 @@ Uses Dijkstra's Method to obtain the shortest weighted paths
 and return dictionaries of predecessors for each node and
 distance for each node from the `source`.
 parameters:
-  - source: <class 'str'> = None - .
-  - cutoff: float | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - cutoff: float | None = ? --Length (sum of edge weights) at which the search is stopped.
+If cutoff is provided, only return paths with summed weight <= cutoff.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number or None to indicate a hidden edge.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.dijkstra_predecessor_and_distance(source=<source_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
@@ -142,10 +281,23 @@ output_variable = networkx.algorithms.shortest_paths.weighted.dijkstra_predecess
 Returns the shortest path length from source to target
 in a weighted graph.
 parameters:
-  - source: <class 'str'> = None - .
-  - target: <class 'str'> = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --starting node for path
+  - target: <class 'str'> = ? --ending node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.bellman_ford_path_length(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
@@ -155,10 +307,23 @@ Compute shortest paths and lengths in a weighted graph G.
 
 Uses Bellman-Ford algorithm for shortest paths.
 parameters:
-  - source: <class 'str'> = None - .
-  - target: str | None = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - target: str | None = ? --Ending node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.single_source_bellman_ford(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
@@ -167,9 +332,22 @@ output_variable = networkx.algorithms.shortest_paths.weighted.single_source_bell
 Compute the shortest path length between source and all other
 reachable nodes for a weighted graph.
 parameters:
-  - source: <class 'str'> = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.single_source_bellman_ford_path_length(source=<source_value>, weight=<weight_value>, G=<G_variable>)
@@ -177,8 +355,21 @@ output_variable = networkx.algorithms.shortest_paths.weighted.single_source_bell
 **All pairs Bellman–Ford path:**
 Compute shortest paths between all nodes in a weighted graph.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path(weight=<weight_value>, G=<G_variable>)
@@ -186,8 +377,21 @@ output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_
 **All pairs Bellman–Ford path length:**
 Compute shortest path lengths between all nodes in a weighted graph.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path_length(weight=<weight_value>, G=<G_variable>)
@@ -205,11 +409,26 @@ to return the cycle and examine it. Shortest paths are not defined when
 a negative cycle exists because once reached, the path can cycle forever
 to build up arbitrarily low weights.
 parameters:
-  - source: <class 'str'> = None - .
-  - target: str | None = None - .
-  - weight: <class 'str'> = weight - .
-  - heuristic: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - target: str | None = ? --Ending node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - heuristic: <class 'bool'> = ? --Determines whether to use a heuristic to early detect negative
+cycles at a hopefully negligible cost.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The algorithm works for all types of graphs, including directed
+graphs and multigraphs.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.bellman_ford_predecessor_and_distance(source=<source_value>, target=<target_value>, weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
@@ -217,9 +436,24 @@ output_variable = networkx.algorithms.shortest_paths.weighted.bellman_ford_prede
 **Negative edge cycle:**
 Returns True if there exists a negative edge cycle anywhere in G.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - heuristic: <class 'bool'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - heuristic: <class 'bool'> = ? --Determines whether to use a heuristic to early detect negative
+cycles at a negligible cost. In case of graphs with a negative cycle,
+the performance of detection increases by at least an order of magnitude.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.negative_edge_cycle(weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
@@ -239,9 +473,22 @@ the nodes in the 2-tuple.
 
 If the graph has no negative cycle, a NetworkXError is raised.
 parameters:
-  - source: <class 'str'> = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --The search for the negative cycle will start from this node.
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.find_negative_cycle(source=<source_value>, weight=<weight_value>, G=<G_variable>)
@@ -254,9 +501,23 @@ The algorithm has a running time of $O(mn)$ where $n$ is the number of
 nodes and $m$ is the number of edges.  It is slower than Dijkstra but
 can handle negative edge weights.
 parameters:
-  - source: <class 'str'> = None - .
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - source: <class 'str'> = ? --Starting node for path
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The algorithm works for all types of graphs, including directed
+graphs and multigraphs.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.goldberg_radzik(source=<source_value>, weight=<weight_value>, G=<G_variable>)
@@ -267,8 +528,21 @@ Uses Johnson's Algorithm to compute shortest paths.
 Johnson's Algorithm finds a shortest path between each pair of
 nodes in a weighted graph even if negative weights are present.
 parameters:
-  - weight: <class 'str'> = weight - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = weight --If this is a string, then edge weights will be accessed via the
+edge attribute with this key (that is, the weight of the edge
+joining `u` to `v` will be ``G.edges[u, v][weight]``). If no
+such edge attribute exists, the weight of the edge is assumed to
+be one.
+
+If this is a function, the weight of an edge is the value
+returned by the function. The function must accept exactly three
+positional arguments: the two endpoints of an edge and the
+dictionary of edge attributes for that edge. The function must
+return a number.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.shortest_paths.weighted.johnson(weight=<weight_value>, G=<G_variable>)

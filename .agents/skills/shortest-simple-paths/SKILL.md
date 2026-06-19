@@ -59,8 +59,11 @@ References
    Network", Management Science, Vol. 17, No. 11, Theory Series
    (Jul., 1971), pp. 712-716.
 parameters:
-  - weight: <class 'str'> = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - weight: <class 'str'> = ? --?
+  - G: <class 'networkx.classes.graph.Graph'> = ? --?
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.simple_paths.shortest_simple_paths(weight=<weight_value>, G=<G_variable>)

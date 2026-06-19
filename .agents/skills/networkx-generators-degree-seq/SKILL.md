@@ -10,7 +10,11 @@ The configuration model generates a random pseudograph (graph with
 parallel edges and self loops) by randomly assigning edges to
 match the given degree sequence.
 parameters:
-  - seed: int | None = None - .
+  - seed: int | None = ? --Indicator of random number generation state.
+See :ref:`Randomness<randomness>`.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.degree_seq.configuration_model(seed=<seed_value>)
@@ -22,7 +26,11 @@ The configuration model generates a random directed pseudograph
 (graph with parallel edges and self loops) by randomly assigning
 edges to match the given degree sequences.
 parameters:
-  - seed: int | None = None - .
+  - seed: int | None = ? --Indicator of random number generation state.
+See :ref:`Randomness<randomness>`.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.degree_seq.directed_configuration_model(seed=<seed_value>)
@@ -33,6 +41,9 @@ using the Havel-Hakimi algorithm.
 parameters:
 
 
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
+
 usage:
 output_variable = networkx.generators.degree_seq.havel_hakimi_graph()
 
@@ -40,6 +51,9 @@ output_variable = networkx.generators.degree_seq.havel_hakimi_graph()
 Returns a directed graph with the given degree sequences.
 parameters:
 
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.degree_seq.directed_havel_hakimi_graph()
@@ -51,8 +65,12 @@ If the maximum degree $d_m$ in the sequence is $O(m^{1/4})$ then the
 algorithm produces almost uniform random graphs in $O(m d_m)$ time
 where $m$ is the number of edges.
 parameters:
-  - seed: int | None = None - .
-  - tries: int | None = 10 - .
+  - seed: int | None = ? --Indicator of random number generation state.
+See :ref:`Randomness<randomness>`.
+  - tries: int | None = 10 --Maximum number of tries to create a graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.generators.degree_seq.random_degree_sequence_graph(seed=<seed_value>, tries=<tries_value>)

@@ -6,7 +6,10 @@ description: Collection of operations - Number strongly connected components, St
 **Number strongly connected components:**
 Returns number of strongly connected components in graph.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.components.strongly_connected.number_strongly_connected_components(G=<G_variable>)
@@ -14,7 +17,10 @@ output_variable = networkx.algorithms.components.strongly_connected.number_stron
 **Strongly connected components:**
 Generate nodes in strongly connected components of graph.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.components.strongly_connected.strongly_connected_components(G=<G_variable>)
@@ -25,7 +31,10 @@ Test directed graph for strong connectivity.
 A directed graph is strongly connected if and only if every vertex in
 the graph is reachable from every other vertex.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.components.strongly_connected.is_strongly_connected(G=<G_variable>)
@@ -33,7 +42,10 @@ output_variable = networkx.algorithms.components.strongly_connected.is_strongly_
 **Kosaraju strongly connected components:**
 Generate nodes in strongly connected components of graph.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.components.strongly_connected.kosaraju_strongly_connected_components(G=<G_variable>)
@@ -44,7 +56,10 @@ Returns the condensation of G.
 The condensation of G is the graph with each of the strongly connected
 components contracted into a single node.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.components.strongly_connected.condensation(G=<G_variable>)

@@ -38,7 +38,7 @@ def get_box_skills():
                 if op.python_function_name
                 else "",
             }
-            paramdocs = doc["params"]["value"] if "params" in doc else []
+            paramdocs = doc["parameters"]["value"] if "parameters" in doc else []
             paramdocs = {p["name"]: p["description"] for p in paramdocs}
             for argtype in [op.params, op.inputs]:
                 for i, arg in enumerate(argtype):
@@ -62,7 +62,10 @@ def create_box_description(skill) -> str:
 **{skill["name"]}:**
 {skill["long_description"]}
 parameters:
-{os.linesep.join([f"  - {param['name']}: {param['type']} = {param['default']} - {param['description']}." for param in skill["parameters"]])}
+{os.linesep.join([f"  - {param['name']}: {param['type'] or '?'} = {param['default'] or '?'} --{param['description'] or '?'}" for param in skill["parameters"]])}
+
+returns:
+{os.linesep.join([f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}." for ret in skill["returns"]])}
 
 usage:
 output_variable = {skill["usage"]}"""

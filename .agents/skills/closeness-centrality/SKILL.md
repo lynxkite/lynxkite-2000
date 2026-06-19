@@ -32,8 +32,13 @@ the number of nodes in the graph,
 
     C_{WF}(u) = \frac{n-1}{N-1} \frac{n - 1}{\sum_{v=1}^{n-1} d(v, u)},
 parameters:
-  - wf_improved: bool | None = None - .
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - wf_improved: bool | None = ? --If True, scale by the fraction of nodes reachable. This gives the
+Wasserman and Faust improved formula. For single component graphs
+it is the same as the original formula.
+  - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.centrality.closeness.closeness_centrality(wf_improved=<wf_improved_value>, G=<G_variable>)

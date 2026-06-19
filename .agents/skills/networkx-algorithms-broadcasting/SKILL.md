@@ -11,7 +11,10 @@ minimum broadcast time [1]_. This function implements a linear algorithm
 for determining the broadcast center of a tree with ``n`` nodes. As a
 by-product, it also determines the broadcast time from the broadcast center.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph should be an undirected tree.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.broadcasting.tree_broadcast_center(G=<G_variable>)
@@ -26,7 +29,10 @@ all nodes of the minimum broadcast time from that node [1]_.
 This function returns the minimum broadcast time of `node`.
 If `node` is `None`, the broadcast time for the graph is returned.
 parameters:
-  - G: <class 'networkx.classes.graph.Graph'> = None - .
+  - G: <class 'networkx.classes.graph.Graph'> = ? --The graph should be an undirected tree.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.broadcasting.tree_broadcast_time(G=<G_variable>)

@@ -6,7 +6,10 @@ description: Collection of operations - Sin, Cos, Log, Exp, Multiply, Add, Subtr
 **Sin:**
 
 parameters:
-  - input: <class 'inspect._empty'> = None - .
+  - input: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
@@ -14,7 +17,10 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<i
 **Cos:**
 
 parameters:
-  - input: <class 'inspect._empty'> = None - .
+  - input: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
@@ -22,7 +28,10 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<i
 **Log:**
 
 parameters:
-  - input: <class 'inspect._empty'> = None - .
+  - input: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
@@ -30,7 +39,10 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<i
 **Exp:**
 
 parameters:
-  - input: <class 'inspect._empty'> = None - .
+  - input: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
@@ -38,8 +50,11 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<i
 **Multiply:**
 
 parameters:
-  - a: <class 'inspect._empty'> = None - .
-  - b: <class 'inspect._empty'> = None - .
+  - a: <class 'inspect._empty'> = ? --?
+  - b: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
@@ -47,8 +62,11 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_var
 **Add:**
 
 parameters:
-  - a: <class 'inspect._empty'> = None - .
-  - b: <class 'inspect._empty'> = None - .
+  - a: <class 'inspect._empty'> = ? --?
+  - b: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
@@ -56,8 +74,11 @@ output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_var
 **Subtract:**
 
 parameters:
-  - a: <class 'inspect._empty'> = None - .
-  - b: <class 'inspect._empty'> = None - .
+  - a: <class 'inspect._empty'> = ? --?
+  - b: <class 'inspect._empty'> = ? --?
+
+returns:
+  - output: ? - ?.
 
 usage:
 output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)

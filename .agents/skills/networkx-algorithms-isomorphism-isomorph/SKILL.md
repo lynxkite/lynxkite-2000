@@ -7,8 +7,11 @@ description: Collection of operations - Could be isomorphic, Fast could be isomo
 Returns False if graphs are definitely not isomorphic.
 True does NOT guarantee isomorphism.
 parameters:
-  - G1: <class 'networkx.classes.graph.Graph'> = None - .
-  - G2: <class 'networkx.classes.graph.Graph'> = None - .
+  - G1: <class 'networkx.classes.graph.Graph'> = ? --The two graphs `G1` and `G2` must be the same type.
+  - G2: <class 'networkx.classes.graph.Graph'> = ? --The two graphs `G1` and `G2` must be the same type.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.isomorphism.isomorph.could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
@@ -18,8 +21,11 @@ Returns False if graphs are definitely not isomorphic.
 
 True does NOT guarantee isomorphism.
 parameters:
-  - G1: <class 'networkx.classes.graph.Graph'> = None - .
-  - G2: <class 'networkx.classes.graph.Graph'> = None - .
+  - G1: <class 'networkx.classes.graph.Graph'> = ? --The two graphs G1 and G2 must be the same type.
+  - G2: <class 'networkx.classes.graph.Graph'> = ? --The two graphs G1 and G2 must be the same type.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.isomorphism.isomorph.fast_could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
@@ -29,8 +35,11 @@ Returns False if graphs are definitely not isomorphic.
 
 True does NOT guarantee isomorphism.
 parameters:
-  - G1: <class 'networkx.classes.graph.Graph'> = None - .
-  - G2: <class 'networkx.classes.graph.Graph'> = None - .
+  - G1: <class 'networkx.classes.graph.Graph'> = ? --The two graphs G1 and G2 must be the same type.
+  - G2: <class 'networkx.classes.graph.Graph'> = ? --The two graphs G1 and G2 must be the same type.
+
+returns:
+  - output: <class 'networkx.classes.graph.Graph'> - ?.
 
 usage:
 output_variable = networkx.algorithms.isomorphism.isomorph.faster_could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
