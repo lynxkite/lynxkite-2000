@@ -46,6 +46,7 @@ class WorkspaceBackend(state.StateBackend):
                 "modified_at": "",
             },
             "/boxes.py": {"content": get_boxes_file_content(self._workspace), "modified_at": ""},
+            "/errors.txt": {"content": get_errors_file_content(self._workspace), "modified_at": ""},
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
@@ -242,3 +243,9 @@ def set_boxes_file_content(ws_path: str, content: str) -> None:
     p = pathlib.Path(ws_path).parent / "boxes.py"
     with open(p, "w") as f:
         f.write(content)
+
+
+def get_errors_file_content(ws_path: str) -> str:
+    ws = workspace.Workspace.load(ws_path)
+    errors = ((n.id, n.data.error) for n in ws.nodes if n.data.error)
+    return "\n---\n".join(f"An error occured in {node_id}:\n {error}" for node_id, error in errors)

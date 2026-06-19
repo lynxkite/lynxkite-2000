@@ -22,6 +22,8 @@ Keyword arguments must be constants or previous results. Positional arguments ar
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
 The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available in the `boxes` module.
 You must use existing boxes directly in `workspace.py` without adding them to the `boxes` module.
+You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you must fix all errors in the new boxes.
+If you cannot fix an error, you must ask the user for clarification.
 """
 
 
