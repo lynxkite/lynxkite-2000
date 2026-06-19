@@ -263,7 +263,7 @@ export class Splash {
 
   async enterSandbox() {
     await this.getEntry("testing sandbox").click();
-    await this.loaded();
+    await expect(this.page.locator(".current-folder")).toHaveText("testing sandbox");
   }
 
   workspace(name: string) {
