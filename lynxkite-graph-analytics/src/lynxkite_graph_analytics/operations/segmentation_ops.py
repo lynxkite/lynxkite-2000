@@ -21,6 +21,13 @@ def sample_table(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_
 
     graph, meta = b.to_nx_meta()
 
+    colum_names = set()
+    for r in b.relations:
+        colum_names.update(b.dfs[r.source_table].columns.values)
+        colum_names.update(b.dfs[r.target_table].columns.values)
+    if segmentation_name in colum_names:
+        raise ValueError(f"{segmentation_name} already exists")
+
     if edge_direction == EdgeDirection.Ignore:
         graph = graph.to_undirected()
     components = nx.connected_components(graph)
