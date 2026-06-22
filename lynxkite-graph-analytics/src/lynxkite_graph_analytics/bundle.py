@@ -27,6 +27,13 @@ class BundleMergeMode(enum.StrEnum):
     concatenate_non_unique = "concatenate non-unique"
 
 
+class NodeMetaData:
+    def __init__(self, table: str, id_column: str, node_id: str):
+        self.table = table
+        self.id_column = id_column
+        self.node_id = node_id
+
+
 @dataclasses.dataclass
 class Bundle:
     """A collection of DataFrames and other data.
@@ -76,29 +83,31 @@ class Bundle:
     def from_df(cls, df: pd.DataFrame):
         return cls(dfs={"records": df})
 
-    def to_nx(self):
+    def to_nx_meta(self):
         graph = nx.DiGraph()
+        meta = {}
         added_tables = set()
+
+        def collect_nodes(table, key):
+            df = self.dfs[table].copy()
+            if df.index.name != key:
+                df = df.set_index(key)
+            nodes_for_adding = []
+            for node_id, attrs in df.to_dict("index").items():
+                node_key = f"{table}_{node_id}"
+                nodes_for_adding.append((node_key, attrs))
+                meta[node_key] = NodeMetaData(
+                    table=str(table), id_column=str(key), node_id=str(node_id)
+                )
+            graph.add_nodes_from(nodes_for_adding)
+            added_tables.add(table)
+
         for relation in self.relations:
             if relation.source_table not in added_tables:
-                source_df = self.dfs[relation.source_table].copy()
-                if source_df.index.name != relation.source_key:
-                    source_df = source_df.set_index(relation.source_key)
-                graph.add_nodes_from(
-                    (f"{relation.source_table}_{node_id}", attrs)
-                    for node_id, attrs in source_df.to_dict("index").items()
-                )
-                added_tables.add(relation.source_table)
+                collect_nodes(relation.source_table, relation.source_key)
 
             if relation.target_table not in added_tables:
-                target_df = self.dfs[relation.target_table].copy()
-                if target_df.index.name != relation.target_key:
-                    target_df = target_df.set_index(relation.target_key)
-                graph.add_nodes_from(
-                    (f"{relation.target_table}_{node_id}", attrs)
-                    for node_id, attrs in target_df.to_dict("index").items()
-                )
-                added_tables.add(relation.target_table)
+                collect_nodes(relation.target_table, relation.target_key)
 
             if relation.df in self.dfs:
                 edges = self.dfs[relation.df]
@@ -114,7 +123,10 @@ class Bundle:
                     )
                     for e in edges.to_records()
                 )
-        return graph
+        return graph, meta
+
+    def to_nx(self):
+        return self.to_nx_meta()[0]
 
     def copy(self):
         """
