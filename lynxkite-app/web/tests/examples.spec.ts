@@ -23,6 +23,7 @@ for (const name of WORKSPACES) {
 }
 
 test("Model use", async ({ page }) => {
+  test.setTimeout(60000);
   const ws = await openWorkspace(page, "Model use");
   await ws.execute({ timeout: 60000 }); // Actually trains the model.
   await ws.expectErrorFree();
