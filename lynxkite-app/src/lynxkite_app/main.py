@@ -6,6 +6,7 @@ import pydantic
 import fastapi
 import joblib
 import pathlib
+import starlette.datastructures
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
@@ -181,14 +182,16 @@ async def service_post(req: fastapi.Request, module_path: str):
 
 
 @app.post("/api/upload")
-async def upload(req: fastapi.Request):
-    """Receives file uploads and stores them in DATA_PATH."""
-    await auth.check_permission(req, "write", "uploads")
+async def upload(req: fastapi.Request, dir: str = "uploads"):
+    """Receives file uploads and stores them in DATA_PATH/dir."""
+    await auth.check_permission(req, "write", dir)
+    upload_dir = data_path / dir
+    assert upload_dir.is_relative_to(data_path), f"Path '{upload_dir}' is invalid"
     form = await req.form()
     for file in form.values():
-        if not isinstance(file, fastapi.UploadFile) or not file.filename:
+        if not isinstance(file, starlette.datastructures.UploadFile) or not file.filename:
             continue
-        file_path = data_path / "uploads" / file.filename
+        file_path = upload_dir / file.filename
         assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
