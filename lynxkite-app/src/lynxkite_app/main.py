@@ -52,13 +52,13 @@ app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 def _get_ops(env: str):
     catalog = ops.CATALOGS[env]
-    res = {op.name: op.model_dump() for op in catalog.values()}
-    res.setdefault("Comment", ops.COMMENT_OP.model_dump())
+    res = {op.name: op for op in catalog.values()}
+    res.setdefault("Comment", ops.COMMENT_OP)
     return res
 
 
 @app.get("/api/catalog")
-async def get_catalog(workspace: str, request: fastapi.Request):
+async def get_catalog(workspace: str, request: fastapi.Request) -> dict[str, dict[str, ops.Op]]:
     await auth.check_permission(request, "read", workspace)
     ops.load_user_scripts(workspace)
     return {env: _get_ops(env) for env in ops.CATALOGS}
@@ -83,7 +83,7 @@ async def delete_workspace(req: dict, request: fastapi.Request):
     assert isinstance(req["path"], str)
     json_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
-    workspace_files_path = pathlib.Path(ops.build_output_path(req["path"], "node -1")).parent
+    workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
@@ -190,7 +190,7 @@ async def service_post(req: fastapi.Request, module_path: str):
 
 
 @app.post("/api/upload")
-async def upload(req: fastapi.Request):
+async def upload(req: fastapi.Request) -> dict[str, str]:
     """Receives file uploads and stores them in DATA_PATH."""
     await auth.check_permission(req, "write", "uploads")
     form = await req.form()

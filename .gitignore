@@ -17,7 +17,7 @@ build
 *.egg-info
 
 examples/.*
-examples/*/.*
+!.workspace_files
 
 # Playwright
 test-results

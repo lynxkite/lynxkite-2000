@@ -28,15 +28,23 @@ WORKSPACE_CHANGED_THROTTLE_SECONDS = 1.0
 
 @dataclass
 class WorkspaceRuntimeState:
-    last_known_versions: dict[str, typing.Any] = field(default_factory=dict)
-    delayed_executions: dict[str, asyncio.Task] = field(default_factory=dict)
-    delayed_saves: dict[str, asyncio.Task] = field(default_factory=dict)
-    pending_workspace_changes: dict[str, list[typing.Any]] = field(default_factory=dict)
-    delayed_workspace_changes: dict[str, asyncio.Task] = field(default_factory=dict)
-    next_allowed_workspace_flush_at: dict[str, float] = field(default_factory=dict)
+    last_known_version: typing.Any = None
+    delayed_execution: asyncio.Task | None = None
+    pending_workspace_changes: list[typing.Any] = field(default_factory=list)
+    delayed_workspace_change: asyncio.Task | None = None
+    next_allowed_flush_at: float = 0.0
+
+    def destroy(self):
+        self.last_known_version = None
+        if self.delayed_workspace_change:
+            self.delayed_workspace_change.cancel()
+        self.pending_workspace_changes = []
+        self.next_allowed_flush_at = 0.0
+        if self.delayed_execution:
+            self.delayed_execution.cancel()
 
 
-state = WorkspaceRuntimeState()
+state: dict[str, WorkspaceRuntimeState] = {}
 
 
 def ws_exception_handler(exception, log):
@@ -59,28 +67,24 @@ async def _flush_workspace_changes_async(name: str, ws: pycrdt.Map):
     loop = asyncio.get_running_loop()
     try:
         now = loop.time()
-        next_allowed = state.next_allowed_workspace_flush_at.get(name, 0.0)
+        next_allowed = state[name].next_allowed_flush_at
         if now < next_allowed:
             await asyncio.sleep(next_allowed - now)
 
-        changes = state.pending_workspace_changes.pop(name, [])
+        changes = state[name].pending_workspace_changes[:]
+        state[name].pending_workspace_changes.clear()
         if changes:
             await workspace_changed(name, changes, ws)
-            state.next_allowed_workspace_flush_at[name] = (
-                loop.time() + WORKSPACE_CHANGED_THROTTLE_SECONDS
-            )
+            state[name].next_allowed_flush_at = loop.time() + WORKSPACE_CHANGED_THROTTLE_SECONDS
     except asyncio.CancelledError:
         pass
     finally:
-        if state.delayed_workspace_changes.get(name) is this_task:
-            del state.delayed_workspace_changes[name]
+        if state[name].delayed_workspace_change is this_task:
+            state[name].delayed_workspace_change = None
         # Ensure trailing changes are not dropped while throttling.
-        if (
-            state.pending_workspace_changes.get(name)
-            and name not in state.delayed_workspace_changes
-        ):
+        if state[name].pending_workspace_changes and state[name].delayed_workspace_change is None:
             task = asyncio.create_task(_flush_workspace_changes_async(name, ws))
-            state.delayed_workspace_changes[name] = task
+            state[name].delayed_workspace_change = task
             task.add_done_callback(_task_result_callback)
 
 
@@ -115,7 +119,8 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
             else:
                 load_workspace(ws, name)
         # Set the last known version to the current state, so we don't trigger a change event.
-        state.last_known_versions[name] = _workspace_fingerprint_from_dict(ws.to_py())
+        state[name] = WorkspaceRuntimeState()
+        state[name].last_known_version = _workspace_fingerprint_from_dict(ws.to_py())
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
@@ -123,10 +128,10 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            state.pending_workspace_changes.setdefault(name, []).extend(changes)
-            if name not in state.delayed_workspace_changes:
+            state[name].pending_workspace_changes.extend(changes)
+            if state[name].delayed_workspace_change is None:
                 task = asyncio.create_task(_flush_workspace_changes_async(name, ws))
-                state.delayed_workspace_changes[name] = task
+                state[name].delayed_workspace_change = task
                 task.add_done_callback(_task_result_callback)
 
         ws.observe_deep(on_change)
@@ -314,23 +319,6 @@ def print_diff(old, new, prefix=""):
             print(f"{prefix}+ {new}")
 
 
-async def _save_workspace_async(name: str, raw: dict[str, typing.Any]):
-    """Save the workspace with the given name and contents. This is debounced to avoid excessive saves during rapid changes."""
-    this_task = asyncio.current_task()
-    ws_pyd = None
-    await asyncio.sleep(2)  # We only try to save every 2 seconds.
-    try:
-        path = pathlib.Path() / name
-        assert path.is_relative_to(pathlib.Path()), f"Path '{path}' is invalid"
-        ws_pyd = workspace.Workspace.model_validate(raw)
-        ws_pyd.save(path)
-    except asyncio.CancelledError:
-        pass
-    finally:
-        if state.delayed_saves.get(name) is this_task:
-            del state.delayed_saves[name]
-
-
 async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
@@ -339,25 +327,21 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         changes: Changes performed to the workspace.
         ws_crdt: CRDT object representing the workspace.
     """
-    raw_obj = ws_crdt.to_py()
-    if not isinstance(raw_obj, dict):
-        return
-    raw: dict[str, typing.Any] = raw_obj
-    if name in state.delayed_saves:
-        state.delayed_saves[name].cancel()
-    # We always want to save the workspace when it changes, as the user could've moved boxes, or written comments.
-    save_task = asyncio.create_task(_save_workspace_async(name, raw))
-    state.delayed_saves[name] = save_task
+    raw = ws_crdt.to_py()
     ws_fingerprint = _workspace_fingerprint_from_dict(raw)
-    if ws_fingerprint == state.last_known_versions.get(name):
-        # If the workspace is functionally the same, we don't execute it.
-        return
-    state.last_known_versions[name] = ws_fingerprint
-    ws_pyd = workspace.Workspace.model_validate(raw)
     if enterprise_backend is not None:
         enterprise_backend.on_workspace_changed(ws_websocket_server)
-    if name in state.delayed_executions:
-        state.delayed_executions[name].cancel()
+    ws_pyd = workspace.Workspace.model_validate(raw)
+    ws_pyd.save(pathlib.Path() / name)
+    # Do not trigger execution for superficial changes.
+    # This is a quick solution until we build proper caching.
+    if ws_fingerprint == state[name].last_known_version:
+        return
+    state[name].last_known_version = ws_fingerprint
+
+    runtime_state = state.get(name)
+    if runtime_state is not None and runtime_state.delayed_execution is not None:
+        runtime_state.delayed_execution.cancel()
     # Frontend changes that result from typing are delayed to avoid
     # rerunning the workspace for every keystroke.
     delay = max(
@@ -369,14 +353,14 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         return
 
     task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
-    state.delayed_executions[name] = task
+    state[name].delayed_execution = task
     try:
         await task
     except asyncio.CancelledError:
         pass
     finally:
-        if state.delayed_executions.get(name) is task:
-            del state.delayed_executions[name]
+        if state[name].delayed_execution is task:
+            state[name].delayed_execution = None
 
 
 async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *, delay: int = 0):
@@ -449,19 +433,11 @@ async def lifespan(app):
 
 def delete_room(name: str):
     if name in ws_websocket_server.rooms:
-        del ws_websocket_server.rooms[name]
-    if name in state.delayed_workspace_changes:
-        state.delayed_workspace_changes[name].cancel()
-        del state.delayed_workspace_changes[name]
-    state.pending_workspace_changes.pop(name, None)
-    state.next_allowed_workspace_flush_at.pop(name, None)
-    if name in state.delayed_executions:
-        state.delayed_executions[name].cancel()
-        del state.delayed_executions[name]
-    if name in state.delayed_saves:
-        state.delayed_saves[name].cancel()
-        del state.delayed_saves[name]
-    state.last_known_versions.pop(name, None)
+        room_entry = ws_websocket_server.rooms.pop(name)
+        del room_entry
+    if name in state:
+        state_entry = state.pop(name)
+        state_entry.destroy()
     if enterprise_backend is not None:
         enterprise_backend.on_workspace_deleted(name)
 

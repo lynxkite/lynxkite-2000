@@ -133,8 +133,7 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
 }
 
 function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string): string {
-  const workspace = wsPath.replace(/\.lynxkite\.json$/, "");
-  const sanitizedWorkspacePath = workspace
+  const sanitizedWorkspacePath = wsPath
     .split("/")
     .map((segment) => encodeURIComponent(segment))
     .join("/");

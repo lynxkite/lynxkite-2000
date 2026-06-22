@@ -199,14 +199,10 @@ class Output(BaseConfig):
     position: Position
 
 
-def build_output_path(ws_path: str, node_id: str):
+def build_output_path(ws_path: str, node_id: str) -> pathlib.Path:
     """Builds the path to save the display data for a given node output."""
-    if "/" in ws_path:
-        # If the ws is in a subdirectory, we save to that subdirectory
-        ws_path_obj = pathlib.Path(ws_path)
-        return f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.stem.removesuffix('.lynxkite')}/{node_id}.json"
-    else:
-        return f".workspace_files/{ws_path.removesuffix('.lynxkite.json')}/{node_id}.json"
+    ws_path_obj = pathlib.Path(ws_path)
+    return pathlib.Path(f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.name}/{node_id}.json")
 
 
 @dataclass
@@ -227,28 +223,36 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
-    def save_display(self, path: str | None, node_id: str, version: int):
+    def save_display(self, ws_path: str | None, node_id: str, version: int):
         """Saves the display data to a file. The path is relative to the workspace's data directory."""
         # If old version had display and new run has None,
         # frontend keeps previous cached display keyed by unchanged version.
         # TODO: check if this is an actual problem.
         #   (e.g. the boxes that use display always return something)
-        if path and self.display is not None:
-            path = build_output_path(path, node_id)
-            dirname, basename = os.path.split(path)
-            if dirname:
-                os.makedirs(dirname, exist_ok=True)
+        if ws_path and self.display is not None:
+            path = build_output_path(ws_path, node_id)
+            path.parent.mkdir(exist_ok=True, parents=True)
+            display_json = to_json(self.display)
+            try:
+                with open(path, "r+b") as f:
+                    old_display = f.read()
+            except Exception:
+                old_display = None
+            if old_display == display_json:
+                self.display = None
+                self.display_version = version
+                return
             with tempfile.NamedTemporaryFile(
                 "w+b",
-                prefix=f".{basename}.",
-                dir=dirname,
+                prefix=f".{path.name}.",
+                dir=path.parent,
                 delete=False,
             ) as f:
                 temp_name = f.name
-                f.write(to_json(self.display))
+                f.write(display_json)
             os.replace(temp_name, path)
             self.display = None
-            self.display_version = version
+            self.display_version = version + 1
 
 
 def get_optional_type(type):
@@ -329,7 +333,7 @@ class Op(BaseConfig):
         if is_visualization_type:
             if op_ctx.ws and op_ctx.node:
                 res.save_display(
-                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0) + 1
+                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
                 )
 
         return res
