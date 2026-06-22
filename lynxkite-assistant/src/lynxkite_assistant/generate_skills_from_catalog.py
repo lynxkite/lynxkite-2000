@@ -127,6 +127,16 @@ def create_skills_from_catalog(
 
 
 if __name__ == "__main__":
+    """
+    Usage examples:
+    python generate_skills_from_catalog.py
+    - This will generate skills for all plugins and save them under .agents/skills/ in the working directory.
+    python generate_skills_from_catalog.py ./output_path
+    - This will generate skills for all plugins and save them under the specified output_path.
+    python generate_skills_from_catalog.py ./output_path changed_file1.py changed_file2.py
+    - This will generate skills only for the plugins that have changed files and save them under the specified output_path.
+      (this is mainly for the pre-commit hook)
+    """
     if len(sys.argv) == 2:
         output_path = sys.argv[1]
         create_skills_from_catalog(output_path)
