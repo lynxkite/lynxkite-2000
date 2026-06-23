@@ -1,7 +1,6 @@
 """Operations for tables."""
 
 import enum
-
 import networkx as nx
 
 from lynxkite_core import ops
@@ -16,7 +15,7 @@ class EdgeDirection(enum.StrEnum):
 
 
 @op("Find Connected Components", icon="filter-filled")
-def sample_table(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
+def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
     b = b.copy()
 
     graph, meta = b.to_nx_meta()
@@ -40,12 +39,13 @@ def sample_table(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_
     mapping = {}
     table_id_cols = {}
 
-    for comp_id, comp in enumerate(components):
+    for comp_id, comp in enumerate(list(components)):
         for node in comp:
             m = meta[node]
-            mapping[str(m.node_id)] = comp_id
+            mapping[m.table] = mapping.get(m.table, {})
+            mapping[m.table][str(m.node_id)] = comp_id
             table_id_cols[m.table] = m.id_column
 
     for table, id_column in table_id_cols.items():
-        b.dfs[table][segmentation_name] = b.dfs[table][id_column].astype(str).map(mapping)
+        b.dfs[table][segmentation_name] = b.dfs[table][id_column].astype(str).map(mapping[table])
     return b
