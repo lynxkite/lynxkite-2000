@@ -40,7 +40,7 @@ def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segme
         for node in comp:
             m = meta[node]
             mapping[m.table] = mapping.get(m.table, {})
-            mapping[m.table][str(m.node_id)] = comp_id
+            mapping[m.table][str(m.node_id)] = {comp_id}
             table_id_cols[m.table] = m.id_column
 
     for table, id_column in table_id_cols.items():
@@ -67,7 +67,7 @@ def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: s
     for table in node_tables:
         values.update(b.dfs[table][attribute])
 
-    mapping = {v: i for i, v in enumerate(values)}
+    mapping = {v: {i} for i, v in enumerate(values)}
     for table in node_tables:
         b.dfs[table] = b.dfs[table].copy()
         b.dfs[table][segmentation_name] = b.dfs[table][attribute].map(mapping)
@@ -75,12 +75,10 @@ def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: s
 
 
 @op("Aggregate to segmentation", icon="filter-filled")
-def aggregate_to_segmentation_test(
+def aggregate_to_segmentation(
     b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
 ):
     b = b.copy()
-
-    """raise error if no table with segmentation_name column exists"""
     if segmentation_name not in set.union(*[set(b.dfs[table].columns) for table in b.dfs.keys()]):
         raise ValueError(f"{segmentation_name} does not exist")
 
@@ -95,6 +93,7 @@ def aggregate_to_segmentation_test(
         all_tables.append(b.dfs[table][list(columns) + [segmentation_name]])
 
     combined = pandas.concat(all_tables, ignore_index=True)
+    combined = combined.explode(segmentation_name)
     agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
 
     aggregated = combined.groupby(segmentation_name).agg(agg_dict)
