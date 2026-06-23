@@ -30,7 +30,9 @@ def sample_table(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_
 
     if edge_direction == EdgeDirection.Ignore:
         graph = graph.to_undirected()
-    components = nx.connected_components(graph)
+        components = nx.connected_components(graph)
+    else:
+        components = nx.strongly_connected_components(graph)
 
     for table in b.dfs:
         b.dfs[table] = b.dfs[table].copy()
