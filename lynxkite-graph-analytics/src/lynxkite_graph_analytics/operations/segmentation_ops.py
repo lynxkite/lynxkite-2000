@@ -28,13 +28,9 @@ def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segme
         raise ValueError(f"{segmentation_name} already exists")
 
     if edge_direction == EdgeDirection.Ignore:
-        graph = graph.to_undirected()
-        components = nx.connected_components(graph)
+        components = nx.connected_components(graph.to_undirected())
     else:
         components = nx.strongly_connected_components(graph)
-
-    for table in b.dfs:
-        b.dfs[table] = b.dfs[table].copy()
 
     mapping = {}
     table_id_cols = {}
@@ -47,6 +43,7 @@ def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segme
             table_id_cols[m.table] = m.id_column
 
     for table, id_column in table_id_cols.items():
+        b.dfs[table] = b.dfs[table].copy()
         b.dfs[table][segmentation_name] = b.dfs[table][id_column].astype(str).map(mapping[table])
     return b
 
