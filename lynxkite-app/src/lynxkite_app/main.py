@@ -1,10 +1,12 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import os
 import shutil
 import pydantic
 import fastapi
 import joblib
 import pathlib
+import starlette.datastructures
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 import starlette.exceptions
@@ -29,6 +31,13 @@ try:
 except ImportError:
     enterprise_backend = None
 
+try:
+    from lynxkite_enterprise.lim_worker import register_lim_routes  # ty: ignore[unresolved-import]
+except ImportError:
+    register_lim_routes = None
+
+LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER")
+
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
 
@@ -46,6 +55,8 @@ if assistant_router is not None:
     app.include_router(assistant_router)
 if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
+if register_lim_routes is not None and LIM_WORKER:
+    register_lim_routes(app)
 app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
@@ -171,14 +182,16 @@ async def service_post(req: fastapi.Request, module_path: str):
 
 
 @app.post("/api/upload")
-async def upload(req: fastapi.Request):
-    """Receives file uploads and stores them in DATA_PATH."""
-    await auth.check_permission(req, "write", "uploads")
+async def upload(req: fastapi.Request, dir: str = "uploads"):
+    """Receives file uploads and stores them in DATA_PATH/dir."""
+    await auth.check_permission(req, "write", dir)
+    upload_dir = data_path / dir
+    assert upload_dir.is_relative_to(data_path), f"Path '{upload_dir}' is invalid"
     form = await req.form()
     for file in form.values():
-        if not isinstance(file, fastapi.UploadFile) or not file.filename:
+        if not isinstance(file, starlette.datastructures.UploadFile) or not file.filename:
             continue
-        file_path = data_path / "uploads" / file.filename
+        file_path = upload_dir / file.filename
         assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
