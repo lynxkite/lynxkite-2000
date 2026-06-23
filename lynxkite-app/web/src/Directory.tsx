@@ -362,11 +362,13 @@ export default function Directory() {
                             </button>
                           </li>
                         )}
-                        <li>
-                          <button type="button" onClick={() => openShareModal(item)}>
-                            Share
-                          </button>
-                        </li>
+                        {item.type === "directory" && (
+                          <li>
+                            <button type="button" onClick={() => openShareModal(item)}>
+                              Share
+                            </button>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
