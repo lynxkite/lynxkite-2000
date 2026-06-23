@@ -1,10 +1,12 @@
-**Recurrent chain:**
+**Triplet margin loss:**
 
 parameters:
-  - input: tensor = ? --?
+  - x: tensor = ? --?
+  - x_pos: tensor = ? --?
+  - x_neg: tensor = ? --?
 
 returns:
-  - output: tensor - ?.
+  - loss: tensor - ?.
 
 usage:
-output_variable = lynxkite_core.ops.no_op(input=<input_variable>)
+output_variable = lynxkite_core.ops.no_op(x=<x_variable>, x_pos=<x_pos_variable>, x_neg=<x_neg_variable>)

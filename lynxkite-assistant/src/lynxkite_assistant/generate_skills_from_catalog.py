@@ -120,6 +120,7 @@ def create_skills_from_catalog(
     if not os.path.exists(os.path.join(output_path, "references")):
         os.makedirs(os.path.join(output_path, "references"))
     box_skills = get_box_skills()
+    box_skills.sort(key=lambda x: (x["package"], x["id"]))
     main_skill_file = f"""---
 name: use-lynxkite-boxes
 description: Use the boxes already defined in LynxKite.

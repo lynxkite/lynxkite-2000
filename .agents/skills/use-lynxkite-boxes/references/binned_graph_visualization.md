@@ -2,8 +2,8 @@
 Nodes binned together by x and y are aggregated into one node.
 Edges between bins are aggregated into one edge.
 parameters:
-  - x_property: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}] = ? --?
-  - y_property: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}] = ? --?
+  - x_property: <class 'str'> = ? --?
+  - y_property: <class 'str'> = ? --?
   - x_bins: <class 'int'> = 5 --?
   - y_bins: <class 'int'> = 5 --?
   - show_loops: <class 'bool'> = ? --?

@@ -1,4 +1,4 @@
-**Binomial graph:**
+**G(n,p) random graph:**
 Returns a $G_{n,p}$ random graph, also known as an Erdős-Rényi graph
 or a binomial graph.
 

@@ -21,6 +21,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-base-100: white;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
@@ -1023,6 +1024,17 @@ svg {
 
   .management-page-content .entry:last-child {
     border-bottom: none;
+  }
+
+  .entry-drop-zone {
+    min-height: 60px;
+    transition: background 0.15s;
+  }
+
+  .entry-drop-zone.drag-over {
+    background: #39bcf320;
+    outline: 2px dashed #39bcf3;
+    outline-offset: -2px;
   }
 
   .loading {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { UserManager } from "oidc-client-ts";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { LynxKiteState } from "./workspace/LynxKiteState";
@@ -19,8 +19,17 @@ let userManagerKey: string | undefined;
 let loginStarted = false;
 let axiosInterceptorsInstalled = false;
 
-function setCachedConfig(config: GlobalConfig | undefined) {
-  cachedConfig = config;
+export async function loadConfig() {
+  if (cachedConfig) {
+    throw new Error("loadConfig() has already been called. Call getConfig() instead.");
+  }
+  cachedConfig = await apiJson<GlobalConfig>("/api/config");
+}
+export function getConfig(): GlobalConfig {
+  if (!cachedConfig) {
+    throw new Error("Global configuration is not initialized.");
+  }
+  return cachedConfig;
 }
 
 async function getAccessToken(): Promise<string | null> {
@@ -123,16 +132,6 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
   return (await response.json()) as T;
 }
 
-export async function loadConfig(): Promise<GlobalConfig | null> {
-  try {
-    const config = await apiJson<GlobalConfig>("/api/config");
-    setCachedConfig(config);
-    return config;
-  } catch (_error) {
-    return null;
-  }
-}
-
 export async function completeLoginCallback(): Promise<string> {
   const manager = getUserManager();
   if (!manager) {
@@ -142,18 +141,6 @@ export async function completeLoginCallback(): Promise<string> {
   loginStarted = false;
   const state = user?.state as { returnTo?: string } | undefined;
   return state?.returnTo || "/";
-}
-
-export function useConfig() {
-  const config = useSWR<GlobalConfig>("/api/config", (resource: string, init?: RequestInit) =>
-    apiJson<GlobalConfig>(resource, init),
-  );
-  useEffect(() => {
-    if (config.data) {
-      setCachedConfig(config.data);
-    }
-  }, [config.data]);
-  return config;
 }
 
 export function usePath() {
