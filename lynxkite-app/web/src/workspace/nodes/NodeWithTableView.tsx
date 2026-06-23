@@ -1,7 +1,7 @@
 import { useReactFlow } from "@xyflow/react";
 import React, { useState } from "react";
 import Markdown from "react-markdown";
-import { getDisplay } from "../../common.ts";
+import { useDisplay } from "../../common.ts";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";
 
@@ -20,7 +20,7 @@ type OpenState = { [name: string]: boolean };
 function NodeWithTableView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
-  const display = getDisplay(props.data?.display_version, props.id);
+  const display = useDisplay(props.data?.display_version, props.id);
   const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();

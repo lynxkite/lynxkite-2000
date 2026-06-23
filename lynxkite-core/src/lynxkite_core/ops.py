@@ -330,7 +330,7 @@ class Op(BaseConfig):
                 res = Result(output=res)
 
         # Save display if needed
-        if is_visualization_type:
+        if is_visualization_type and not self.type == "graph_creation_view":
             if op_ctx.ws and op_ctx.node:
                 res.save_display(
                     op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)

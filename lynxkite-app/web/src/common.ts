@@ -141,7 +141,7 @@ function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string)
   return `/api/node_output?workspace=${sanitizedWorkspacePath}&node_id=${sanitizedNodeId}&version=${displayVersion}`;
 }
 
-export function getDisplay(display_version: number, node_id: string): any {
+export function useDisplay(display_version: number, node_id: string): any {
   const ws = useContext(LynxKiteState).workspace;
   const routePath = usePath().replace(/^[/]edit[/]/, "");
   const wsPath = (ws?.path as string | undefined) || routePath || undefined;

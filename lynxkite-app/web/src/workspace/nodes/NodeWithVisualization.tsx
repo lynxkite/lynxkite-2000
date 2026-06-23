@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { getDisplay } from "../../common";
+import { useDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
@@ -8,19 +8,20 @@ const echarts = await import("echarts");
 function NodeWithVisualization(props: any) {
   const chartsRef = React.useRef<HTMLDivElement>(null);
   const chartsInstanceRef = React.useRef<echarts.ECharts>(null);
+  const opts = useDisplay(props.data?.display_version, props.id);
   useEffect(() => {
-    const opts = getDisplay(props.data?.display_version, props.id);
     if (!opts || !chartsRef.current) return;
-    if (opts.tooltip?.formatter === "GET_THIRD_VALUE") {
+    const chartOpts = { ...opts };
+    if (chartOpts.tooltip?.formatter === "GET_THIRD_VALUE") {
       // We can't pass a function from the backend, and can't get good tooltips otherwise.
-      opts.tooltip.formatter = (params: any) => params.value[2];
+      chartOpts.tooltip.formatter = (params: any) => params.value[2];
     }
     chartsInstanceRef.current = echarts.init(chartsRef.current, null, {
       renderer: "canvas",
       width: "auto",
       height: "auto",
     });
-    chartsInstanceRef.current.setOption(opts);
+    chartsInstanceRef.current.setOption(chartOpts);
     const resizeObserver = new ResizeObserver(() => {
       const e = chartsRef.current;
       if (!e) return;
@@ -34,7 +35,7 @@ function NodeWithVisualization(props: any) {
       resizeObserver.unobserve(observed);
       chartsInstanceRef.current?.dispose();
     };
-  }, [props.data?.display]);
+  }, [opts]);
   return (
     <NodeWithParams collapsed {...props}>
       <div style={{ flex: 1 }} ref={chartsRef} />

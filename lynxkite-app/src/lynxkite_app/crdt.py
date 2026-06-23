@@ -30,7 +30,7 @@ WORKSPACE_CHANGED_THROTTLE_SECONDS = 1.0
 class WorkspaceRuntimeState:
     last_known_version: typing.Any = None
     delayed_execution: asyncio.Task | None = None
-    pending_workspace_changes: list[typing.Any] = field(default_factory=list)
+    pending_workspace_changes: list[int] = field(default_factory=list)
     delayed_workspace_change: asyncio.Task | None = None
     next_allowed_flush_at: float = 0.0
 
@@ -71,21 +71,26 @@ async def _flush_workspace_changes_async(name: str, ws: pycrdt.Map):
         if now < next_allowed:
             await asyncio.sleep(next_allowed - now)
 
-        changes = state[name].pending_workspace_changes[:]
+        delays = state[name].pending_workspace_changes[:]
         state[name].pending_workspace_changes.clear()
-        if changes:
-            await workspace_changed(name, changes, ws)
+        if delays:
+            delay = max(delays)
+            await workspace_changed(name, delay, ws)
             state[name].next_allowed_flush_at = loop.time() + WORKSPACE_CHANGED_THROTTLE_SECONDS
     except asyncio.CancelledError:
         pass
     finally:
-        if state[name].delayed_workspace_change is this_task:
-            state[name].delayed_workspace_change = None
-        # Ensure trailing changes are not dropped while throttling.
-        if state[name].pending_workspace_changes and state[name].delayed_workspace_change is None:
-            task = asyncio.create_task(_flush_workspace_changes_async(name, ws))
-            state[name].delayed_workspace_change = task
-            task.add_done_callback(_task_result_callback)
+        if name in state:
+            if state[name].delayed_workspace_change is this_task:
+                state[name].delayed_workspace_change = None
+            # Ensure trailing changes are not dropped while throttling.
+            if (
+                state[name].pending_workspace_changes
+                and state[name].delayed_workspace_change is None
+            ):
+                task = asyncio.create_task(_flush_workspace_changes_async(name, ws))
+                state[name].delayed_workspace_change = task
+                task.add_done_callback(_task_result_callback)
 
 
 class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
@@ -128,7 +133,14 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            state[name].pending_workspace_changes.extend(changes)
+            # Frontend changes that result from typing are delayed to avoid
+            # rerunning the workspace for every keystroke.
+            delay = max(
+                getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
+                for change in changes
+            )
+            state[name].pending_workspace_changes.append(delay)
+
             if state[name].delayed_workspace_change is None:
                 task = asyncio.create_task(_flush_workspace_changes_async(name, ws))
                 state[name].delayed_workspace_change = task
@@ -319,7 +331,7 @@ def print_diff(old, new, prefix=""):
             print(f"{prefix}+ {new}")
 
 
-async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
+async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
     Args:
@@ -342,12 +354,6 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
     runtime_state = state.get(name)
     if runtime_state is not None and runtime_state.delayed_execution is not None:
         runtime_state.delayed_execution.cancel()
-    # Frontend changes that result from typing are delayed to avoid
-    # rerunning the workspace for every keystroke.
-    delay = max(
-        getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
-        for change in changes
-    )
     # Check if workspace is paused - if so, skip automatic execution
     if getattr(ws_pyd, "paused", False):
         return
