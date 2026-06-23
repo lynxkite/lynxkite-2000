@@ -105,7 +105,18 @@ DropdownTextAdderByTableName = typing.Annotated[
 """A type annotation to be used for parameters of an operation. DropdownTextAdderByTableName is
 rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-textbox pairs, where the
 dropdown lists the columns of the DataFrame named by the "table_name" parameter.
-The column names are passed to the operation as a list of strings."""
+The column names are passed to the operation as a list of string 2-tuples."""
+
+DoubleTextAdder = typing.Annotated[
+    list[tuple[str, str]],
+    {
+        "format": "double-textbox_adder",
+        "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. DoubleTextAdder is
+rendered as a button in the frontend, that is able to add arbitrary amount of textbox-textbox pairs.
+The inputs are passed to the operation as a list of string 2-tuples."""
 
 
 def nx_node_attribute_func(name):

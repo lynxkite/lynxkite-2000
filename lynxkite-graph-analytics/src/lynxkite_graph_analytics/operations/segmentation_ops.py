@@ -2,6 +2,7 @@
 
 import enum
 import networkx as nx
+import pandas
 
 from lynxkite_core import ops
 from .. import core
@@ -70,4 +71,33 @@ def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: s
     for table in node_tables:
         b.dfs[table] = b.dfs[table].copy()
         b.dfs[table][segmentation_name] = b.dfs[table][attribute].map(mapping)
+    return b
+
+
+@op("Aggregate to segmentation", icon="filter-filled")
+def aggregate_to_segmentation_test(
+    b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
+):
+    b = b.copy()
+
+    """raise error if no table with segmentation_name column exists"""
+    if segmentation_name not in set.union(*[set(b.dfs[table].columns) for table in b.dfs.keys()]):
+        raise ValueError(f"{segmentation_name} does not exist")
+
+    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
+    columns = {item[0] for item in aggregations}
+    for table in tables:
+        if not columns.issubset(b.dfs[table].columns):
+            raise ValueError("Not all columns exist in table")
+
+    all_tables = []
+    for table in tables:
+        all_tables.append(b.dfs[table][list(columns) + [segmentation_name]])
+
+    combined = pandas.concat(all_tables, ignore_index=True)
+    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
+
+    aggregated = combined.groupby(segmentation_name).agg(agg_dict)
+    aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
+    b.dfs["aggregated"] = aggregated.reset_index()
     return b
