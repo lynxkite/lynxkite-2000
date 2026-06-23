@@ -200,15 +200,29 @@ def _update_ws_positions(source: workspace.Workspace, target: workspace.Workspac
             x /= count
             y /= count
             node.position = workspace.Position(x=x, y=y)
+
     # For new comments, place them above the box defined in the next available line.
-    node_by_line_id = {int(node.id.split()[-1]): node for node in target.nodes}
+    # We assume that the comment's ID is of the form "comment on line N" where N is an integer.
+    def _intd(s: str) -> int | None:
+        try:
+            return int(s)
+        except ValueError:
+            return None
+
+    node_by_line_id = {
+        _intd(node.id.split()[-1]): node
+        for node in target.nodes
+        if _intd(node.id.split()[-1]) is not None
+    }
     for node in target.nodes:
         source_node = source_nodes_by_id.get(node.id)
         if source_node is not None or node.type != "comment":
             continue
-        line_id = int(node.id.split()[-1])
+        line_id = _intd(node.id.split()[-1])
         next_line_id = min(filter(lambda x: x > line_id, node_by_line_id.keys()), default=line_id)
-        next_line_node = node_by_line_id[next_line_id]
+        next_line_node = node_by_line_id.get(next_line_id)
+        if next_line_node is None:
+            continue
         node.position = workspace.Position(
             x=next_line_node.position.x, y=next_line_node.position.y - 50
         )
