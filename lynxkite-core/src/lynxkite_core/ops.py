@@ -614,8 +614,11 @@ def install_requirements(req: pathlib.Path):
 
 
 def run_user_script(script_path: pathlib.Path):
-    path_hash = hashlib.md5(str(script_path.parent).encode()).hexdigest()[:8]
-    module_name = f"_lynxkite_userscript_{path_hash}_{script_path.stem}"
+    module_name = (
+        f"{str(script_path.parent).replace(' ', '_')}_{script_path.stem}"
+        if str(script_path.parent) != "."
+        else script_path.stem
+    )
     spec = importlib.util.spec_from_file_location(module_name, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)

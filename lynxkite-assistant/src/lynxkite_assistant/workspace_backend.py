@@ -26,6 +26,10 @@ E.g.:
     def read_csv(*, path: str):
         return pd.read_csv(path)
 
+To use them in the workspace, call them in `workspace.py` with this custom module name: MODULE_NAME.
+For example:
+    MODULE_NAME.blur(...)
+    MODULE_NAME.read_csv(...)
 """
 from lynxkite_core import ops
 op = ops.op_registration(ENV)
@@ -248,7 +252,10 @@ def get_boxes_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
     p = pathlib.Path(ws_path).parent / "boxes.py"
     if not p.exists():
-        return BOXES_PLACEHOLDER.replace("ENV", f'"{ws.env}"')
+        module_name = (
+            f"{str(p.parent).replace(' ', '_')}_boxes" if str(p.parent) != "." else "boxes"
+        )
+        return BOXES_PLACEHOLDER.replace("ENV", f'"{ws.env}"').replace("MODULE_NAME", module_name)
     with open(p) as f:
         return f.read()
 

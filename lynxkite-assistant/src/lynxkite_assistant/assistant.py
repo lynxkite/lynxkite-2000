@@ -20,9 +20,11 @@ Edit this file to implement the user's requests. `workspace.py` must only contai
 DO NOT REMOVE any existing code or comments! (unless asked explicitly by the user)
 Keyword arguments must be constants or previous results. Positional arguments are not allowed.
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
-The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available in the `boxes` module.
+The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available under a custom module name, specified at the beginning of `boxes.py`.
 You must use existing boxes directly in `workspace.py` without adding them to the `boxes` module.
 You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you must fix all errors in the new boxes.
+If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box.
+The module name and usage examples are specified at the beginning of `boxes.py`.
 If you cannot fix an error, you must ask the user for clarification.
 """
 
