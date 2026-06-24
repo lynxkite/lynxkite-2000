@@ -100,3 +100,53 @@ def aggregate_to_segmentation(
     aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
     b.dfs["aggregated"] = aggregated.reset_index()
     return b
+
+
+@op("Aggregate from segmentation", icon="filter-filled")
+def aggregate_from_segmentation(
+    b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
+):
+    b = b.copy()
+
+    if segmentation_name not in set.union(*[set(b.dfs[table].columns) for table in b.dfs.keys()]):
+        raise ValueError(f"{segmentation_name} does not exist")
+
+    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
+    columns = {item[0] for item in aggregations}
+    for table in tables:
+        if not columns.issubset(b.dfs[table].columns):
+            raise ValueError("Not all columns exist in every table")
+
+    key_dict = {}
+    for r in b.relations:
+        key_dict[r.source_table] = r.source_key
+        key_dict[r.target_table] = r.target_key
+
+    all_tables = []
+    for table in tables:
+        df = b.dfs[table].copy()
+        df["_id"] = df[key_dict[table]]
+        df["_table"] = table
+        all_tables.append(df)
+
+    combined = pandas.concat(all_tables, ignore_index=True)
+    exploded = combined.explode(segmentation_name)
+    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
+
+    aggregated = []
+    for table in all_tables:
+        for index, row in table.iterrows():
+            relevant = exploded[exploded[segmentation_name].isin(row[segmentation_name])]
+            row_aggregation = {
+                "table_id": f"{row['_table']}_{row['_id']}",
+                segmentation_name: row[segmentation_name],
+            }
+            unique_nodes = relevant.drop_duplicates(subset=["_id", "_table"])
+            agg_res = unique_nodes.groupby(lambda x: "group").agg(agg_dict)
+            for col, func in agg_res.columns:
+                row_aggregation[f"{col}_{func}"] = agg_res.at["group", (col, func)]
+
+            aggregated.append(row_aggregation)
+
+    b.dfs["aggregated"] = pandas.DataFrame(aggregated)
+    return b
