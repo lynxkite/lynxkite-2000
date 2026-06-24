@@ -1,0 +1,1 @@
+{"dataframes":{"corrupted_edges":{"columns":["metric","score"],"data":[["accuracy",0.5095865787896944],["precision",0.8],["recall",0.009702850212249849],["f1 score",0.019173157579388856]]}},"relations":[],"other":{}}
