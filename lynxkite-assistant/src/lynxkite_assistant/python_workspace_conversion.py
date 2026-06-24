@@ -155,7 +155,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
 def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
-        "import boxes  # For boxes defined in boxes.py. Other imports are handled automatically. Do not add imports.",
+        '"""All imports are handled automatically. Do not add imports."""',
     ]
     node_by_id = {node.id: node for node in ws.nodes}
     incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {node.id: [] for node in ws.nodes}

@@ -613,9 +613,14 @@ def install_requirements(req: pathlib.Path):
     subprocess.check_call(cmd)
 
 
+def to_python_module_name(path: pathlib.Path) -> str:
+    """Converts a path to a Python module name."""
+    return str(path).replace(" ", "_").replace("/", ".").replace("-", "_")
+
+
 def run_user_script(script_path: pathlib.Path):
     module_name = (
-        f"{str(script_path.parent).replace(' ', '_')}_{script_path.stem}"
+        f"{to_python_module_name(script_path.parent)}.{script_path.stem}"
         if str(script_path.parent) != "."
         else script_path.stem
     )
