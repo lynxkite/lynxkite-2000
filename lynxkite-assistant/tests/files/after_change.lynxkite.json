@@ -1,0 +1,208 @@
+{
+  "edges": [
+    {
+      "id": "lynxkite_graph_analytics.operations.table_ops.enter_table_data on line 3 output to lynxkite_graph_analytics.operations.visualization_ops.scatter_plot on line 8 b",
+      "source": "lynxkite_graph_analytics.operations.table_ops.enter_table_data on line 3",
+      "sourceHandle": "output",
+      "target": "lynxkite_graph_analytics.operations.visualization_ops.scatter_plot on line 8",
+      "targetHandle": "b"
+    },
+    {
+      "id": "lynxkite_graph_analytics.operations.table_ops.enter_table_data on line 3 output to lynxkite_assistant.tests.files.boxes.copy_column_from_selector on line 11 b",
+      "source": "lynxkite_graph_analytics.operations.table_ops.enter_table_data on line 3",
+      "sourceHandle": "output",
+      "target": "lynxkite_assistant.tests.files.boxes.copy_column_from_selector on line 11",
+      "targetHandle": "b"
+    },
+    {
+      "id": "lynxkite_assistant.tests.files.boxes.copy_column_from_selector on line 11 output to lynxkite_graph_analytics.operations.basic_ops.view_tables on line 12 bundle",
+      "source": "lynxkite_assistant.tests.files.boxes.copy_column_from_selector on line 11",
+      "sourceHandle": "output",
+      "target": "lynxkite_graph_analytics.operations.basic_ops.view_tables on line 12",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "## A beautiful comment\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 150.0,
+      "id": "comment on line 3",
+      "op_id": "Comment",
+      "params": {
+        "text": "## A beautiful comment\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      },
+      "position": {
+        "x": 518.0210659424863,
+        "y": 202.31319782745896
+      },
+      "title": "Comment",
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Enter table data",
+        "output_metadata": null,
+        "params": {
+          "data": "c,x,y,z\nx,1,2,3\nx,0,6,7\nz,2,3,8",
+          "table_name": "table"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Enter table data"
+      },
+      "height": 315.0,
+      "id": "lynxkite_graph_analytics.operations.table_ops.enter_table_data on line 3",
+      "op_id": "Table operations > Enter table data",
+      "params": {
+        "data": "c,x,y,z\nx,1,2,3\nx,0,6,7\nz,2,3,8",
+        "table_name": "table"
+      },
+      "position": {
+        "x": 512.0,
+        "y": 369.0
+      },
+      "title": "Enter table data",
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": null,
+        "params": {
+          "x": [
+            "table",
+            "x"
+          ],
+          "y": [
+            "table",
+            "y"
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 467.0,
+      "id": "lynxkite_graph_analytics.operations.visualization_ops.scatter_plot on line 8",
+      "op_id": "Visualizations > Scatter plot",
+      "params": {
+        "x": [
+          "table",
+          "x"
+        ],
+        "y": [
+          "table",
+          "y"
+        ]
+      },
+      "position": {
+        "x": 1005.5,
+        "y": 158.0
+      },
+      "title": "Scatter plot",
+      "type": "basic",
+      "width": 372.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Copy column from selector",
+        "output_metadata": null,
+        "params": {
+          "tc": [
+            "table",
+            "c"
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Copy column from selector"
+      },
+      "height": 400.0,
+      "id": "lynxkite_assistant.tests.files.boxes.copy_column_from_selector on line 11",
+      "op_id": "Copy column from selector",
+      "params": {
+        "tc": [
+          "table",
+          "c"
+        ]
+      },
+      "position": {
+        "x": 1012.0,
+        "y": 369.0
+      },
+      "title": "Copy column from selector",
+      "type": "basic",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": null,
+        "params": {},
+        "status": "done",
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 400.0,
+      "id": "lynxkite_graph_analytics.operations.basic_ops.view_tables on line 12",
+      "op_id": "View tables",
+      "params": {},
+      "position": {
+        "x": 1000.0,
+        "y": 450.0
+      },
+      "title": "View tables",
+      "type": "basic",
+      "width": 400.0
+    }
+  ],
+  "paused": null
+}
