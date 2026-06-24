@@ -31,6 +31,7 @@ def merge_nodes(
     *,
     table_name: core.TableName,
     attribute: core.ColumnNameByTableName,
+    add_suffixes: bool = False,
     aggregations: core.DropdownTextAdderByTableName,
 ) -> core.Bundle:
     """Merges the nodes that have the same value for the given attribute.
@@ -44,10 +45,15 @@ def merge_nodes(
     for column, funcs in aggregations:
         if column not in agg_dict:
             agg_dict[column] = []
-        for func in funcs.split(" "):
+        funcs = funcs.split(" ")
+        if len(funcs) > 1 and not add_suffixes:
+            raise ValueError(
+                "Adding suffixes is required when multiple aggregation functions are specified for a column."
+            )
+        for func in funcs:
             if func not in agg_dict[column]:
                 agg_dict[column].append(func)
-            name_dict[(column, func)] = f"{column}_{func}"
+            name_dict[(column, func)] = f"{column}_{func}" if add_suffixes else column
     grouped_df = old_df.groupby(attribute).agg(agg_dict)
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
