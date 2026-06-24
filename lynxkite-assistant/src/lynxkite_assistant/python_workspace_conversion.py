@@ -132,6 +132,11 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         if op:
             func_name = op.name
             op_id = op.id
+        else:
+            raise AssertionError(
+                f"Unknown operation '{func_name}' on line {s.lineno}. "
+                "Make sure the function is defined in boxes.py or is a pre-defined function."
+            )
         ws.add_node(
             id=box_id,
             title=func_name,
