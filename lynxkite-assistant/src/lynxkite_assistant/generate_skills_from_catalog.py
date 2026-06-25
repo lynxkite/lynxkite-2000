@@ -113,23 +113,16 @@ def create_skills_from_catalog(
     output_path: str = "./.agents/skills", changed_files: list[str] | None = None
 ):
     if changed_files:
+        regenerate = False
         # assuming plugin name is the first part of the path, and - can be replaced with _ in the module name
-        changed_plugins = list(
-            {f.split("/")[0].replace("-", "_") for f in changed_files}
-        )
-        if any(
-            p.startswith("lynxkite_")
-            and p != "lynxkite_app"
-            and p != "lynxkite_core"
-            and p != "lynxkite_mcp"
-            and p != "lynxkite_assistant"
-            for p in changed_plugins
-        ):
-            ops.detect_plugins()
-        else:
-            return
-    else:
-        ops.detect_plugins()
+        for fn in changed_files:
+            with open(fn, "r") as f:
+                if "@op" in f.read():
+                    regenerate = True
+                    break
+        if not regenerate:
+            return  # if no changed files contain @op, we don't generate any skills
+    ops.detect_plugins()
     output_path = os.path.join(output_path, "use-lynxkite-boxes")
     if not os.path.exists(output_path):
         os.makedirs(output_path)

@@ -49,15 +49,23 @@ class WorkspaceBackend(state.StateBackend):
                 "content": get_workspace_file_content(self._workspace),
                 "modified_at": "",
             },
-            "/boxes.py": {"content": get_boxes_file_content(self._workspace), "modified_at": ""},
-            "/errors.txt": {"content": get_errors_file_content(self._workspace), "modified_at": ""},
+            "/boxes.py": {
+                "content": get_boxes_file_content(self._workspace),
+                "modified_at": "",
+            },
+            "/errors.txt": {
+                "content": get_errors_file_content(self._workspace),
+                "modified_at": "",
+            },
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
         if "/boxes.py" in update:
             set_boxes_file_content(self._workspace, update["/boxes.py"]["content"])
         if "/workspace.py" in update:
-            set_workspace_file_content(self._workspace, update["/workspace.py"]["content"])
+            set_workspace_file_content(
+                self._workspace, update["/workspace.py"]["content"]
+            )
 
     def edit(
         self,
@@ -98,7 +106,9 @@ def _get_node_neighbors(
     return inputs, outputs
 
 
-def _replace_node_id_and_edges(ws: workspace.Workspace, old_id: str, new_id: str) -> None:
+def _replace_node_id_and_edges(
+    ws: workspace.Workspace, old_id: str, new_id: str
+) -> None:
     if old_id == new_id:
         return
     for node in ws.nodes:
@@ -148,7 +158,9 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
             return True
         return False
 
-    while len(assigned_target) < len(target.nodes) and len(assigned_source) < len(source.nodes):
+    while len(assigned_target) < len(target.nodes) and len(assigned_source) < len(
+        source.nodes
+    ):
         # Try to match by op ID only.
         assigned = try_match_by(lambda s, t: s.data.op_id == t.data.op_id)
         if assigned:
@@ -160,8 +172,12 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
         if assigned:
             continue
         # Try to match by op ID, params, and neighbors.
-        source_neighbors = {node.id: _get_node_neighbors(source, node.id) for node in source.nodes}
-        target_neighbors = {node.id: _get_node_neighbors(target, node.id) for node in target.nodes}
+        source_neighbors = {
+            node.id: _get_node_neighbors(source, node.id) for node in source.nodes
+        }
+        target_neighbors = {
+            node.id: _get_node_neighbors(target, node.id) for node in target.nodes
+        }
         assigned = try_match_by(
             lambda s, t: s.data.op_id == t.data.op_id
             and s.data.params == t.data.params
@@ -172,7 +188,9 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
         return  # Give up if we can't find any more matches.
 
 
-def _update_ws_positions(source: workspace.Workspace, target: workspace.Workspace) -> None:
+def _update_ws_positions(
+    source: workspace.Workspace, target: workspace.Workspace
+) -> None:
     """Update node positions in target by node ID."""
     source_nodes_by_id = {node.id: node for node in source.nodes}
     # Copy the dimensions of existing nodes.
@@ -224,7 +242,9 @@ def _update_ws_positions(source: workspace.Workspace, target: workspace.Workspac
         if source_node is not None or node.type != "comment":
             continue
         line_id = _intd(node.id.split()[-1])
-        next_line_id = min(filter(lambda x: x > line_id, node_by_line_id.keys()), default=line_id)
+        next_line_id = min(
+            filter(lambda x: x > line_id, node_by_line_id.keys()), default=line_id
+        )
         next_line_node = node_by_line_id.get(next_line_id)
         if next_line_node is None:
             continue
@@ -253,9 +273,13 @@ def get_boxes_file_content(ws_path: str) -> str:
     p = pathlib.Path(ws_path).parent / "boxes.py"
     if not p.exists():
         module_name = (
-            f"{ops.to_python_module_name(p.parent)}.boxes" if str(p.parent) != "." else "boxes"
+            f"{ops.to_python_module_name(p.parent)}.boxes"
+            if str(p.parent) != "."
+            else "boxes"
         )
-        return BOXES_PLACEHOLDER.replace("ENV", f'"{ws.env}"').replace("MODULE_NAME", module_name)
+        return BOXES_PLACEHOLDER.replace("ENV", f'"{ws.env}"').replace(
+            "MODULE_NAME", module_name
+        )
     with open(p) as f:
         return f.read()
 
@@ -269,4 +293,6 @@ def set_boxes_file_content(ws_path: str, content: str) -> None:
 def get_errors_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
     errors = ((n.id, n.data.error) for n in ws.nodes if n.data.error)
-    return "\n---\n".join(f"An error occured in {node_id}:\n {error}" for node_id, error in errors)
+    return "\n---\n".join(
+        f"An error occured in {node_id}:\n {error}" for node_id, error in errors
+    )
