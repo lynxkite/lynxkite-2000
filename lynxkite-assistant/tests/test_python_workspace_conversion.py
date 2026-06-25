@@ -1,7 +1,10 @@
 import pytest
 from lynxkite_core import workspace
 
-from lynxkite_assistant.python_workspace_conversion import python_to_workspace, workspace_to_python
+from lynxkite_assistant.python_workspace_conversion import (
+    python_to_workspace,
+    workspace_to_python,
+)
 
 
 def test_python_to_workspace_builds_chain_with_constants_and_references():
@@ -13,7 +16,7 @@ def test_python_to_workspace_builds_chain_with_constants_and_references():
         ]
     )
 
-    ws = python_to_workspace(code)
+    ws = python_to_workspace(code, error_on_unknown_ops=False)
 
     assert [node.id for node in ws.nodes] == [
         "load on line 1",
@@ -44,7 +47,7 @@ def test_python_to_workspace_stacks_parallel_inputs_on_different_rows():
         ]
     )
 
-    ws = python_to_workspace(code)
+    ws = python_to_workspace(code, error_on_unknown_ops=False)
     positions = {node.id: node.position for node in ws.nodes}
 
     assert positions["left on line 2"] == workspace.Position(x=0, y=0)
@@ -74,7 +77,7 @@ def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
 
     code = workspace_to_python(ws)
 
-    assert code.splitlines()[2] == "source(k=1)"
+    assert code.splitlines()[7] == "source(k=1)"
 
 
 def test_workspace_to_python_orders_dependencies_and_handles():
@@ -88,6 +91,6 @@ def test_workspace_to_python_orders_dependencies_and_handles():
     code = workspace_to_python(ws)
     lines = code.splitlines()
 
-    assert lines[2] == "res_alpha_1 = alpha()"
-    assert lines[3] == "res_beta_2 = beta()"
-    assert lines[4] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"
+    assert lines[7] == "res_alpha_1 = alpha()"
+    assert lines[8] == "res_beta_2 = beta()"
+    assert lines[9] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"

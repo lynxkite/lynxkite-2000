@@ -24,7 +24,9 @@ def _get_catalog():
     return catalog
 
 
-def python_to_workspace(code: str) -> workspace.Workspace:
+def python_to_workspace(
+    code: str, error_on_unknown_ops: bool = True
+) -> workspace.Workspace:
     catalog = _get_catalog()
     tree = ast.parse(code)
     ws = workspace.Workspace()
@@ -34,16 +36,18 @@ def python_to_workspace(code: str) -> workspace.Workspace:
     comments = []
     comment_lines = []
     next_line = 0
-    # gather multiline comments
+    # gather multiline user comments
     for i, line in enumerate(code.splitlines()):
-        if not line.strip().startswith("#"):
+        if not line.strip().startswith("#!"):
             continue
         if next_line == i:
-            comment_lines.append(line.strip()[1:].strip())
+            comment_lines.append(line.strip()[2:].strip())
         else:
             if comment_lines:
-                comments.append((next_line - len(comment_lines), "\n".join(comment_lines)))
-            comment_lines = [line.strip()[1:].strip()]
+                comments.append(
+                    (next_line - len(comment_lines), "\n".join(comment_lines))
+                )
+            comment_lines = [line.strip()[2:].strip()]
         next_line = i + 1
     if comment_lines:
         comments.append((next_line - len(comment_lines), "\n".join(comment_lines)))
@@ -62,7 +66,11 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         src = ast.get_source_segment(code, s)
         error_msg = f"Unexpected statement on line {s.lineno}:\n\n  {src}\n\nThe file must only contain function calls. Keyword arguments must be constants or previous results. Positional arguments are not allowed."
         save_as = None
-        if isinstance(s, ast.Import) and len(s.names) == 1 and s.names[0].name == "boxes":
+        if (
+            isinstance(s, ast.Import)
+            and len(s.names) == 1
+            and s.names[0].name == "boxes"
+        ):
             # Ignore "import boxes".
             continue
         if isinstance(s, ast.Assign):
@@ -81,15 +89,17 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         assert len(s.args) == 0, error_msg
         kwargs = {}
         for kw in s.keywords:
-            assert kw.arg is not None, f"{error_msg}\n\n**kwargs expansion is not supported."
+            assert kw.arg is not None, (
+                f"{error_msg}\n\n**kwargs expansion is not supported."
+            )
             kwargs[kw.arg] = kw.value
         params = {}
         x = 0
         lowest_input = None
         for arg_name, arg_value in kwargs.items():
-            assert isinstance(arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)), (
-                error_msg
-            )
+            assert isinstance(
+                arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)
+            ), error_msg
             if isinstance(arg_value, ast.Constant):
                 params[arg_name] = arg_value.value
             elif isinstance(arg_value, ast.Name):
@@ -104,9 +114,9 @@ def python_to_workspace(code: str) -> workspace.Workspace:
             elif isinstance(arg_value, ast.Dict):
                 dict_value = {}
                 for key_node, value_node in zip(arg_value.keys, arg_value.values):
-                    assert isinstance(key_node, ast.Constant) and isinstance(key_node.value, str), (
-                        error_msg
-                    )
+                    assert isinstance(key_node, ast.Constant) and isinstance(
+                        key_node.value, str
+                    ), error_msg
                     assert isinstance(value_node, ast.Constant), error_msg
                     dict_value[key_node.value] = value_node.value
                 params[arg_name] = dict_value
@@ -132,7 +142,7 @@ def python_to_workspace(code: str) -> workspace.Workspace:
         if op:
             func_name = op.name
             op_id = op.id
-        else:
+        elif error_on_unknown_ops:
             raise AssertionError(
                 f"Unknown operation '{func_name}' on line {s.lineno}. "
                 "Make sure the function is defined in boxes.py or is a pre-defined function."
@@ -155,10 +165,17 @@ def python_to_workspace(code: str) -> workspace.Workspace:
 def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
-        '"""All imports are handled automatically. Do not add imports."""',
+        "# All imports are handled automatically. Do not add imports.",
+        '# Only comments starting with "#!" are visible to the user. All other comments are for internal use only.',
+        "# Comments not separated by a non-comment line are grouped together into a single comment. For example, the following two lines:",
+        "#   #! This is a comment",
+        "#   #! This is part of the same comment",
+        "",
     ]
     node_by_id = {node.id: node for node in ws.nodes}
-    incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {node.id: [] for node in ws.nodes}
+    incoming_edges: dict[str, list[workspace.WorkspaceEdge]] = {
+        node.id: [] for node in ws.nodes
+    }
     outgoing_count: dict[str, int] = {node.id: 0 for node in ws.nodes}
     dependencies: dict[str, set[str]] = {node.id: set() for node in ws.nodes}
     for edge in ws.edges:
@@ -179,14 +196,17 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         if node.type == "comment":
             comment_lines = node.data.params.get("text", "").split("\n")
             for line in comment_lines:
-                code.append(f"# {line}")
+                code.append(f"#! {line}")
             if len(comment_lines) > 1:
                 code.append("")
             continue
         inputs = sorted(
-            f"{edge.targetHandle}={saved_values[edge.source]}" for edge in incoming_edges[node_id]
+            f"{edge.targetHandle}={saved_values[edge.source]}"
+            for edge in incoming_edges[node_id]
         )
-        params = sorted(f"{name}={repr(value)}" for name, value in node.data.params.items())
+        params = sorted(
+            f"{name}={repr(value)}" for name, value in node.data.params.items()
+        )
         meta = node.data.meta
         short_id = "".join(c if c.isalnum() else "_" for c in node.data.title.lower())
         if meta and meta.python_function_name:

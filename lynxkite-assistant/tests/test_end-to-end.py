@@ -18,7 +18,7 @@ def data_path():
     relative_data_dir = relative_path.parent / "files"
     (relative_data_dir / "modified.lynxkite.json").touch()
     yield relative_data_dir
-    # os.remove(relative_data_dir / "modified.lynxkite.json")
+    os.remove(relative_data_dir / "modified.lynxkite.json")
 
 
 def test_workspace_unchanged(data_path):
