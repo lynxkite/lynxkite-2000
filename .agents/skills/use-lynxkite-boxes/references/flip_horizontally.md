@@ -1,10 +1,8 @@
 **Flip horizontally:**
 
-parameters:
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Flip horizontally", icon="flip-horizontal")
+def flip_horizontally(image: Image.Image):
+    return image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.flip_horizontally(image=<image_variable>)
+```

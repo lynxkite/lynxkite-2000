@@ -27,9 +27,7 @@ nodes in C.
 group. For scale free networks the results are negligibly below the optimal
 results.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.group.prominent_group(k=<k_value>, weight=<weight_value>, endpoints=<endpoints_value>, normalized=<normalized_value>, greedy=<greedy_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.group.prominent_group(k=<k_value>, weight=<weight_value>, endpoints=<endpoints_value>, normalized=<normalized_value>, greedy=<greedy_value>, G=<G_variable>)

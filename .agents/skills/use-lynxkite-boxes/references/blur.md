@@ -1,11 +1,8 @@
 **Blur:**
 
-parameters:
-  - radius: <class 'float'> = 5 --?
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Blur", icon="filters-filled")
+def blur(image: Image.Image, *, radius: float = 5):
+    return image.filter(ImageFilter.GaussianBlur(radius))
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.blur(radius=<radius_value>, image=<image_variable>)
+```

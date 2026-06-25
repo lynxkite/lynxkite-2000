@@ -1,11 +1,6 @@
 **Subtract:**
 
-parameters:
-  - a: <class 'inspect._empty'> = ? --?
-  - b: <class 'inspect._empty'> = ? --?
+```python
+    op = ops.op(ENV, func.__name__.title())(lambda a, b: func)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
+```

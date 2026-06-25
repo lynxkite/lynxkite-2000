@@ -9,9 +9,7 @@ attribute uses `default_label` instead.
 named `node_label`. Default is `None`.
   - G1: <class 'networkx.classes.graph.Graph'> = ? --The two graphs to check for isomorphism.
   - G2: <class 'networkx.classes.graph.Graph'> = ? --The two graphs to check for isomorphism.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.isomorphism.vf2pp.vf2pp_isomorphism(node_label=<node_label_value>, default_label=<default_label_value>, G1=<G1_variable>, G2=<G2_variable>)
+  output_variable = networkx.algorithms.isomorphism.vf2pp.vf2pp_isomorphism(node_label=<node_label_value>, default_label=<default_label_value>, G1=<G1_variable>, G2=<G2_variable>)

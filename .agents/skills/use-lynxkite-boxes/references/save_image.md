@@ -1,11 +1,9 @@
 **Save image:**
 
-parameters:
-  - filename: <class 'str'> = ? --?
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Save image", color="green", icon="device-floppy")
+def save_image(image: Image.Image, *, filename: str):
+    with fsspec.open(filename, "wb") as f:
+        image.save(f)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.save_image(filename=<filename_value>, image=<image_variable>)
+```

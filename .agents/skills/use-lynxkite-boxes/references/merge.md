@@ -1,11 +1,14 @@
 **Merge:**
 Merge multiple inputs
-parameters:
-  - merge_mode: <enum 'BundleMergeMode'> = must be unique --?
-  - bundles: list[lynxkite_graph_analytics.bundle.Bundle] = ? --?
+```python
+@op("Merge", icon="link")
+def merge(
+    bundles: list[core.Bundle],
+    *,
+    merge_mode: bundle.BundleMergeMode = bundle.BundleMergeMode.must_be_unique,
+):
+    """Merge multiple inputs"""
+    b = bundle.merge_bundles(bundles, merge_mode=merge_mode)
+    return b
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.graph_ops.merge(merge_mode=<merge_mode_value>, bundles=<bundles_variable>)
+```

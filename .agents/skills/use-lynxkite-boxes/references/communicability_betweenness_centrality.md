@@ -6,9 +6,7 @@ connecting every pair of nodes as the basis of a betweenness centrality
 measure.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.subgraph_alg.communicability_betweenness_centrality(G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.subgraph_alg.communicability_betweenness_centrality(G=<G_variable>)

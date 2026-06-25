@@ -16,9 +16,7 @@ a strongly regular graph. For more information on distance-regular
 graphs, see :func:`is_distance_regular`.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_regular.is_strongly_regular(G=<G_variable>)
+  output_variable = networkx.algorithms.distance_regular.is_strongly_regular(G=<G_variable>)

@@ -15,9 +15,7 @@ More formally::
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graphs to take the modular product of.
   - H: <class 'networkx.classes.graph.Graph'> = ? --The graphs to take the modular product of.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.product.modular_product(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.product.modular_product(G=<G_variable>, H=<H_variable>)

@@ -8,9 +8,7 @@ maximum degree of `G`. The algorithm is described in [1]_ and has
 complexity O(num_colors * n**2).
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The nodes of this graph will be colored.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.coloring.equitable_coloring.equitable_color(G=<G_variable>)
+  output_variable = networkx.algorithms.coloring.equitable_coloring.equitable_color(G=<G_variable>)

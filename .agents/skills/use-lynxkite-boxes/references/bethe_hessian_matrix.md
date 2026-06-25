@@ -13,9 +13,7 @@ The default choice of regularizer should be the ratio [2]_
 parameters:
   - r: <class 'float'> = ? --Regularizer parameter
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.bethehessianmatrix.bethe_hessian_matrix(r=<r_value>, G=<G_variable>)
+  output_variable = networkx.linalg.bethehessianmatrix.bethe_hessian_matrix(r=<r_value>, G=<G_variable>)

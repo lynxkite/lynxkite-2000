@@ -21,9 +21,7 @@ Lexicographical sorting can fail if the node names are un-sortable. See the exam
 The solution is to provide a function to the `key=` argument that returns sortable keys.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.lexicographical_topological_sort(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.lexicographical_topological_sort(G=<G_variable>)

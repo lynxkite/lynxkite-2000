@@ -43,9 +43,7 @@ parameters:
   - weight: str | None = ? --The edge attribute that holds the numerical value used as a weight.
 If None, then each edge has weight 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cluster.clustering(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.cluster.clustering(weight=<weight_value>, G=<G_variable>)

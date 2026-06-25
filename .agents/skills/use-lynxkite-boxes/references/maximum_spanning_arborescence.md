@@ -10,9 +10,7 @@ passed to `attr`)
 data on the graph. Edges can be included, excluded or open using the
 `EdgePartition` enum.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be searched.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.tree.branchings.maximum_spanning_arborescence(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.tree.branchings.maximum_spanning_arborescence(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)

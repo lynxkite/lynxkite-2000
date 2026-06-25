@@ -10,9 +10,7 @@ Jaccard coefficient of nodes `u` and `v` is defined as
 where $\Gamma(u)$ denotes the set of neighbors of $u$.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.link_prediction.jaccard_coefficient(G=<G_variable>)
+  output_variable = networkx.algorithms.link_prediction.jaccard_coefficient(G=<G_variable>)

@@ -7,10 +7,7 @@ References
    Cumulated social roles: The duality of persons and their algebras,1
    Social Networks, Volume 8, Issue 3, September 1986, Pages 215-256
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.social.florentine_families_graph()
+  output_variable = networkx.generators.social.florentine_families_graph()
