@@ -562,6 +562,13 @@ svg {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
     }
+
+    .category-ops-contained {
+      font-size: 80%;
+      color: #0008;
+      margin-left: auto;
+      margin-right: 5px;
+    }
   }
 
   .react-flow__node {
