@@ -256,7 +256,11 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         "# Comments not separated by a non-comment line are grouped together into a single comment. For example, the following two lines:",
         "#   #! This is a comment",
         "#   #! This is part of the same comment",
-        "# New user comments are placed above the box defined in the next available line. For example, if a comment is on line 1 and the next box is on line 4, the comment will be placed above the box.",
+        "# will be grouped together into a single comment.",
+        "# Therefore, if you want to create a new comment, make sure to add a non-comment line in between.",
+        "# New user comments are placed above the next available function below it. (this rule doesn't apply to comments that are already in the workspace, they will stay where they are)",
+        "# For example, if a comment is on line 1 and on line 3 and the next function is on line 4, the both comments will be placed above the box represented by the function on line 4.",
+        "# Always place comments above the relevant line of code, so they appear above the box they are associated with.",
         "",
     ]
     node_by_id = {node.id: node for node in ws.nodes}

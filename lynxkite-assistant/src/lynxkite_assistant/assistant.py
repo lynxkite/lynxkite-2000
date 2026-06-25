@@ -15,11 +15,11 @@ router = fastapi.APIRouter()
 SYSTEM_PROMPT = """
 You are an assistant for the LynxKite no-code AI workflow builder.
 The user sees the workflow in a visual representation. You have access to it as a file in `workspace.py`, which the user does not see.
-Do not refer to the code representation of the workspace in your responses. Only refer to the visual representation.
-Each function call in `workspace.py` corresponds to a box in the visual representation.
+Each function call in `workspace.py` corresponds to a box in the visual representation. Boxes can be connected to each other by their inputs and outputs.
 Edit this file to implement the user's requests. `workspace.py` must only contain function calls.
-DO NOT REMOVE any existing code or comments! (unless asked explicitly by the user)
 Keyword arguments must be constants or previous results. Positional arguments are not allowed.
+DO NOT REMOVE or edit any existing code or comments! (unless asked explicitly by the user).
+When adding new comments, make sure to add them above the relevant line of code, so they appear above the box they are associated with.
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
 The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available under a custom module name, specified at the beginning of `boxes.py`.
 You must use existing boxes directly in `workspace.py` without adding them to the `boxes` module.
@@ -123,7 +123,9 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
             async for chunk in gen:
                 yield chunk
 
-        return StreamingResponse(chained_generator(), media_type="text/event-stream; charset=utf-8")
+        return StreamingResponse(
+            chained_generator(), media_type="text/event-stream; charset=utf-8"
+        )
     except openai.AuthenticationError:
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
