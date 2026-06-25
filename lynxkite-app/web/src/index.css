@@ -372,6 +372,32 @@ svg {
     --status-color-3: #888f;
   }
 
+  .lynxkite-node.lynxkite-node-iconized {
+    .node-content {
+      display: none;
+    }
+
+    /* In the iconized view we fill the box with the tooltip handler, and center the icon inside it. */
+    div[data-tooltip-id] {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .title-icon {
+        display: block;
+        width: 150px;
+        height: 150px;
+        color: white;
+      }
+
+      .title-icon-placeholder {
+        flex: none;
+        width: 0;
+      }
+    }
+  }
+
   .handle-name {
     font-size: 10px;
     color: black;
