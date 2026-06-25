@@ -135,6 +135,8 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
     """Update node IDs in target to match those in source as much as possible."""
     assigned_source: set[int] = set()
     assigned_target: set[int] = set()
+    # used for sorting source nodes to match the order of target nodes as much as possible (important for testing)
+    new_id_old_order = {sn.id: len(target.nodes) for sn in source.nodes}
 
     def try_match_by(
         match: Callable[[workspace.WorkspaceNode, workspace.WorkspaceNode], bool],
@@ -161,6 +163,7 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
             source_idx = candidates[0]
             source_node = source.nodes[source_idx]
             old_target_id = target_node.id
+            new_id_old_order[source_node.id] = target.nodes.index(target_node)
             _replace_node_id_and_edges(target, old_target_id, source_node.id)
             assigned_source.add(source_idx)
             assigned_target.add(target_idx)
@@ -194,7 +197,9 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
         )
         if assigned:
             continue
+        source.nodes.sort(key=lambda n: new_id_old_order.get(n.id, len(source.nodes)))
         return  # Give up if we can't find any more matches.
+    source.nodes.sort(key=lambda n: new_id_old_order.get(n.id, len(source.nodes)))
 
 
 def _update_ws_positions(
