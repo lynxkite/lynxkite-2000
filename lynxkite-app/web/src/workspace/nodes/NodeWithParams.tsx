@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import React from "react";
+import React, { memo } from "react";
 import Triangle from "~icons/tabler/triangle-inverted-filled.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 import NodeParameter, { type UpdateOptions } from "./NodeParameter";
@@ -40,4 +40,4 @@ export function NodeWithParams(props: any) {
   );
 }
 
-export default LynxKiteNode(NodeWithParams);
+export default memo(LynxKiteNode(NodeWithParams));

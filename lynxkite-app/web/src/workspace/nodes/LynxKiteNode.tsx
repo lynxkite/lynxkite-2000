@@ -1,6 +1,6 @@
-import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import { Handle, NodeResizeControl, type Position, useEdges, useNodeConnections, useReactFlow } from "@xyflow/react";
 import Color from "colorjs.io";
-import React, { useContext, useMemo } from "react";
+import React, { memo, useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
@@ -62,7 +62,7 @@ function formatOutputMetadata(metadata: any): string | undefined {
 }
 
 function getHandles(
-  ws: Workspace,
+  connections: any[],
   id: string,
   inputs: any[],
   outputs: any[],
@@ -100,11 +100,11 @@ function getHandles(
   }
   // Add handles for connections that exist but are not defined in inputs/outputs.
   // This can happen on unknown operations, or when the inputs/outputs are renamed.
-  for (const e of ws.edges ?? []) {
-    if (e.target === id && !handles.find((h) => h.name === e.targetHandle)) {
+  for (const conn of connections ?? []) {
+    if (conn.target === id && !handles.find((h) => h.name === conn.targetHandle)) {
       handles.push({
         position: "left",
-        name: e.targetHandle,
+        name: conn.targetHandle,
         index: counts.left,
         offsetPercentage: 50,
         showLabel: true,
@@ -112,10 +112,10 @@ function getHandles(
       });
       counts.left++;
     }
-    if (e.source === id && !handles.find((h) => h.name === e.sourceHandle)) {
+    if (conn.source === id && !handles.find((h) => h.name === conn.sourceHandle)) {
       handles.push({
         position: "right",
-        name: e.sourceHandle,
+        name: conn.sourceHandle,
         index: counts.right,
         offsetPercentage: 50,
         showLabel: true,
@@ -169,6 +169,7 @@ function onWheel(e: WheelEvent) {
 
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
+  const connections = useNodeConnections({ id: props.id });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
   const state = useContext(LynxKiteState);
@@ -176,7 +177,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     !data.collapsed && !["visualization", "image", "molecule"].includes(props.type);
   const iconized = state.iconized && canIconize;
   const handles = getHandles(
-    state.workspace,
+    connections,
     props.id,
     data.meta?.inputs || [],
     data.meta?.outputs || [],
@@ -214,7 +215,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       error: undefined,
     });
   }
-  const height = Math.max(67, node?.height ?? props.height ?? 315);
+  const height = Math.max(67, data.crdtHeight ?? node?.height ?? props.height ?? 315);
   const meta = data.meta ?? {};
   const icon = useMemo(() => <Icon name={meta.icon} />, [meta.icon]);
   const summary: string = data.error
@@ -226,6 +227,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     left: "top",
     right: "top",
   };
+  // const color = useMemo(() => new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)"), [meta.color]);
   const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
   const titleStyle = { backgroundColor: color.toString() };
   color.lch[0] = 20;
@@ -244,7 +246,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
       style={{
-        width: props.width || 315,
+        width: data.crdtWidth ?? props.width ?? 315,
         height: data.collapsed ? undefined : height,
       }}
       ref={containerRef}
@@ -355,14 +357,75 @@ function Icon({ name }: { name: string }) {
   return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
 }
 
+// Custom comparator to safely ignore object reference changes and position changes
+// function areNodePropsEqual(prev: any, next: any) {
+//   const d1 = prev.data;
+//   const d2 = next.data;
+//   if (prev.id === next.id &&
+//     prev.selected === next.selected &&
+//     prev.dragging === next.dragging &&
+//     d1.crdtWidth === d2.crdtWidth &&
+//     d1.crdtHeight === d2.crdtHeight &&
+//     d1.collapsed === d2.collapsed &&
+//     d1.status === d2.status &&
+//     d1.error === d2.error &&
+//     d1.message === d2.message &&
+//     d1.op_id === d2.op_id) {
+//     console.log("falling back to param comparison");
+//     // Only stringify the tiny params object, NEVER the massive 'meta' object!
+//     if (JSON.stringify(d1.params) === JSON.stringify(d2.params)) {
+//       return true;
+//     }
+//   }
+//   return false;
+
+//   // return (
+//   // );
+// }
+// 1. Blazing fast object comparison (nanoseconds instead of milliseconds)
+function shallowCompare(obj1: any, obj2: any) {
+  if (obj1 === obj2) return true;
+  if (!obj1 || !obj2) return false;
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) return false;
+  for (let i = 0; i < keys1.length; i++) {
+    if (obj1[keys1[i]] !== obj2[keys1[i]]) return false;
+  }
+  return true;
+}
+
+// 2. The perfect comparator
+function areNodePropsEqual(prev: any, next: any) {
+  const d1 = prev.data;
+  const d2 = next.data;
+
+  return (
+    prev.id === next.id &&
+    prev.selected === next.selected &&
+    prev.dragging === next.dragging &&
+    prev.width === next.width &&     // <-- Fixes the resize glitch organically!
+    prev.height === next.height &&   // <-- Fixes the resize glitch organically!
+    d1.collapsed === d2.collapsed &&
+    d1.status === d2.status &&
+    d1.error === d2.error &&
+    d1.message === d2.message &&
+    d1.op_id === d2.op_id &&
+    shallowCompare(d1.params, d2.params) // <-- Microsecond check, NO JSON.stringify!
+  );
+}
+
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
-  return (props: any) => {
+  const WrappedNode = (props: any) => {
     return (
       <LynxKiteNodeComponent {...props}>
         <Component {...props} />
       </LynxKiteNodeComponent>
     );
   };
+
+  // Apply our custom memoization rules
+  return memo(WrappedNode, areNodePropsEqual);
 }
 
 function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {
@@ -382,7 +445,7 @@ function UnknownOperationNode(props: { op_id: string; onChange: (newName: string
           )}
         </div>
         <NodeSearchInternal
-          onCancel={() => {}}
+          onCancel={() => { }}
           onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
           categoryHierarchy={categoryHierarchy}
         />

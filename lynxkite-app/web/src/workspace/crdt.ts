@@ -36,6 +36,7 @@ function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
   ) {
     return true;
   }
+  if (prevNode.parentId !== nextNode.parentId) return true;
   if (nextNode.data?.display_version !== prevNode.data?.display_version) return true;
   return false;
 }
@@ -95,8 +96,8 @@ class CRDTConnection {
     this.reactFlow = reactFlow;
     this.updateNodeInternals = updateNodeInternals;
     this.doc = new Y.Doc();
-    this.undoManager = new Y.UndoManager(this.doc, { captureTimeout: 600 });
     this.ws = this.doc.getMap("workspace");
+    this.undoManager = new Y.UndoManager(this.ws, { captureTimeout: 600 });
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const encodedPath = path!
       .split("/")
@@ -152,11 +153,11 @@ class CRDTConnection {
       },
       undo: () => {
         this.undoManager.undo();
-        this.updateState();
+        this.applyStateAndInternals();
       },
       redo: () => {
         this.undoManager.redo();
-        this.updateState();
+        this.applyStateAndInternals();
       },
     };
   }
@@ -164,6 +165,18 @@ class CRDTConnection {
     this.doc.destroy();
     this.wsProvider.destroy();
   };
+
+  applyStateAndInternals = () => {
+    const changedNodeIds = this.updateState();
+    if (changedNodeIds.length > 0) {
+      requestAnimationFrame(() => {
+        for (const nodeId of changedNodeIds) {
+          this.updateNodeInternals(nodeId);
+        }
+      });
+    }
+  };
+
   onBackendChange = (_update: any, origin: any, _doc: any, _tr: any) => {
     if (origin === this.wsProvider) {
       if (!this.ws) return;
@@ -330,10 +343,10 @@ class CRDTConnection {
       const mergedNode = { ...oldNodes[n.id], ...n };
 
       // Clean up parent-child properties that may be stale from the old ReactFlow node.
-      if (n.parentId === undefined) {
+      if (!n.parentId) {
         delete mergedNode.parentId;
       }
-      if (n.extent === undefined) {
+      if (!n.extent) {
         delete mergedNode.extent;
       }
 

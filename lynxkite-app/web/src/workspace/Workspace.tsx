@@ -23,6 +23,7 @@ import {
   useState,
 } from "react";
 import { Link } from "react-router";
+import { throttle } from 'lodash';
 import useSWR, { type Fetcher } from "swr";
 import type { Array as YArray, Map as YMap } from "yjs";
 import Arrow from "~icons/tabler/arrow-wave-right-up.jsx";
@@ -49,7 +50,7 @@ import ExecutionOptions from "./ExecutionOptions.tsx";
 import { snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { buildCategoryHierarchy, type Catalogs } from "./NodeSearch.tsx";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs, type Category } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
@@ -91,6 +92,7 @@ function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const cursorScreenPos = useRef<XYPosition | null>(null);
+  const categoryHierarchy = useRef<Category | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
@@ -104,7 +106,33 @@ function LynxKiteFlow() {
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
   const crdt = useCRDTWorkspace(path);
+  const crdtUpdaterRef = useRef(crdt?.onFENodesChange);
+  useEffect(() => {
+    crdtUpdaterRef.current = crdt?.onFENodesChange;
+  }, [crdt?.onFENodesChange]);
   const nodes = crdt.feNodes;
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(crdt.feEdges);
+  const crdtRef = useRef(crdt);
+  useEffect(() => {
+    nodesRef.current = nodes;
+    edgesRef.current = crdt.feEdges;
+    crdtRef.current = crdt;
+  }, [nodes, crdt.feEdges, crdt]);
+  const throttledCRDTUpdate = useMemo(
+    () => throttle((changes) => crdtUpdaterRef.current?.(changes), 0, { leading: true, trailing: true }),
+    []
+  );
+  const memoizedNodes = useMemo(() => {
+    return crdt.feNodes.map((n) => ({
+      ...n,
+      data: {
+        ...n.data,
+        crdtWidth: n.width, // Force CRDT dimensions into data
+        crdtHeight: n.height,
+      },
+    }));
+  }, [crdt.feNodes]);
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
 
@@ -145,17 +173,26 @@ function LynxKiteFlow() {
     fetcher as Fetcher<Catalogs>,
   );
   const config = getConfig();
-  const categoryHierarchy = useMemo(() => {
-    if (!catalog.data || !crdt?.ws?.env) return undefined;
-    return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
-  }, [catalog, crdt]);
+  const refreshCategoryHierarchy = useCallback(() => {
+    if (!catalog.data || !crdt?.ws?.env) {
+      categoryHierarchy.current = null;
+      return null;
+    }
+    const hierarchy = buildCategoryHierarchy(catalog.data[crdt.ws.env] ?? {});
+    categoryHierarchy.current = hierarchy;
+    return hierarchy;
+  }, [catalog.data, crdt?.ws?.env]);
+  useEffect(() => {
+    // Rebuild when catalog/env first become available (initial load) or env changes.
+    refreshCategoryHierarchy();
+  }, [refreshCategoryHierarchy]);
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-      | {
-          pos: XYPosition;
-        }
-      | undefined,
+    | {
+      pos: XYPosition;
+    }
+    | undefined,
   );
   const nodeTypes = useMemo(
     () => ({
@@ -185,7 +222,9 @@ function LynxKiteFlow() {
       const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
-      if (event.key === "/" && categoryHierarchy) {
+      if (event.key === "/") {
+        const hierarchy = categoryHierarchy.current ?? refreshCategoryHierarchy();
+        if (!hierarchy) return;
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
@@ -195,17 +234,17 @@ function LynxKiteFlow() {
         executeWorkspace();
       } else if (isPrimaryModifierPressed) {
         if (event.key === "z") {
-          crdt?.undo();
+          crdtRef.current?.undo();
         } else if (event.key === "y") {
-          crdt?.redo();
+          crdtRef.current?.redo();
         } else if (!(nodeSearchSettings || isTypingInFormElement())) {
           const key = event.key.toLowerCase();
           if (key === "c") {
-            copySelection(nodes, edges, crdt?.ws ?? {});
+            copySelection(nodesRef.current, edgesRef.current, crdtRef.current?.ws ?? {});
           } else if (key === "v") {
-            pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
+            pasteSelection(crdtRef.current, cursorScreenPos, reactFlow, setMessage);
           } else if (key === "x") {
-            cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
+            cutSelection(nodesRef.current, edgesRef.current, crdtRef.current?.ws ?? {}, deleteSelection);
           } else if (key === "a") {
             event.preventDefault();
             selectAll();
@@ -217,7 +256,7 @@ function LynxKiteFlow() {
     return () => {
       document.removeEventListener("keyup", handleKey);
     };
-  }, [categoryHierarchy, nodeSearchSettings]);
+  }, [nodeSearchSettings, refreshCategoryHierarchy]);
 
   function getBestPosition() {
     const W = reactFlowContainer.current!.clientWidth;
@@ -268,18 +307,19 @@ function LynxKiteFlow() {
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
-      if (!categoryHierarchy) return;
       if (suppressSearchUntil > Date.now()) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
         return;
       }
+      const hierarchy = refreshCategoryHierarchy();
+      if (!hierarchy) return;
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [categoryHierarchy, crdt.ws, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [nodeSearchSettings, suppressSearchUntil, closeNodeSearch, refreshCategoryHierarchy],
   );
   function findFreeId(prefix: string) {
     let i = 1;
@@ -529,6 +569,13 @@ function LynxKiteFlow() {
   }
   const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
+  // Memoize the context so it doesn't create a new object on every render
+  const lynxKiteStateValue = useMemo(
+    () => ({
+      workspace: crdt?.ws!
+    }),
+    [crdt?.ws, crdt?.onFENodesChange],
+  );
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
@@ -651,9 +698,9 @@ function LynxKiteFlow() {
           ref={reactFlowContainer}
         >
           {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized }}>
+            <LynxKiteState.Provider value={lynxKiteStateValue}>
               <ReactFlow
-                nodes={nodes}
+                nodes={memoizedNodes}
                 edges={autoConnect.renderedEdges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
@@ -664,7 +711,8 @@ function LynxKiteFlow() {
                     isShiftPressed || gridSnapEnabled,
                     crdt?.ws?.nodes || [],
                   );
-                  crdt?.onFENodesChange?.(changes);
+                  // crdt?.onFENodesChange?.(changes);
+                  throttledCRDTUpdate(changes);
                 }}
                 onEdgesChange={crdt?.onFEEdgesChange}
                 onPaneClick={toggleNodeSearch}
@@ -701,14 +749,16 @@ function LynxKiteFlow() {
                   bgColor="#fafafa"
                   offset={3}
                 />
-                {nodeSearchSettings && categoryHierarchy && (
-                  <NodeSearch
-                    pos={nodeSearchSettings.pos}
-                    categoryHierarchy={categoryHierarchy}
-                    onCancel={closeNodeSearch}
-                    onClick={addNodeFromSearch}
-                  />
-                )}
+                {nodeSearchSettings
+                  // && categoryHierarchy.current
+                  && (
+                    <NodeSearch
+                      pos={nodeSearchSettings.pos}
+                      categoryHierarchy={categoryHierarchy.current!}
+                      onCancel={closeNodeSearch}
+                      onClick={addNodeFromSearch}
+                    />
+                  )}
               </ReactFlow>
             </LynxKiteState.Provider>
           ) : (

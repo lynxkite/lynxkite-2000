@@ -320,13 +320,11 @@ svg {
     height: 53px;
     font-weight: var(--bold);
     padding: 8px;
-    background-image: linear-gradient(
-      to right,
-      var(--status-color-1),
-      var(--status-color-2) 40%,
-      var(--status-color-2) 60%,
-      var(--status-color-3)
-    );
+    background-image: linear-gradient(to right,
+        var(--status-color-1),
+        var(--status-color-2) 40%,
+        var(--status-color-2) 60%,
+        var(--status-color-3));
     background-blend-mode: luminosity;
     background-size: 180% 180%;
     background-color: oklch(97% 0 0);
@@ -629,6 +627,11 @@ svg {
   .react-flow__node {
     width: auto !important;
     height: auto !important;
+    transition: transform 0.04s linear !important;
+  }
+
+  .react-flow__node.dragging {
+    transition: none !important;
   }
 
   .react-flow__node-table_view {
@@ -1128,13 +1131,11 @@ svg {
   --status-color-1: #0000;
   --status-color-2: #fff4;
   --status-color-3: #888f;
-  background-image: linear-gradient(
-    to right,
-    var(--status-color-1),
-    var(--status-color-2) 40%,
-    var(--status-color-2) 60%,
-    var(--status-color-3)
-  );
+  background-image: linear-gradient(to right,
+      var(--status-color-1),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
+      var(--status-color-3));
   background-blend-mode: luminosity;
   background-size: 180% 180%;
   animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
