@@ -22,11 +22,11 @@ DO NOT REMOVE or edit any existing code or comments! (unless asked explicitly by
 When adding new comments, make sure to add them above the relevant line of code, so they appear above the box they are associated with.
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
 The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available under a custom module name, specified at the beginning of `boxes.py`.
-You must use existing boxes directly in `workspace.py` without adding them to the `boxes` module.
-You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you must fix all errors in the new boxes.
+You must use existing boxes directly in `workspace.py` without adding them to `boxes.py`.
+You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you MUST FIX ALL ERRORS in the new boxes.
 If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box.
 The module name and usage examples are specified at the beginning of `boxes.py`.
-If you cannot fix an error, you must ask the user for clarification.
+Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
 """
 
 

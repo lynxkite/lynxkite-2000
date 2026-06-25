@@ -305,7 +305,6 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         else:
             function_name = short_id
         call = f"{function_name}({', '.join(inputs + params)})"
-        print(function_name)
         parent_op_metadata = [
             node_by_id[e.source].data.output_metadata
             for e in incoming_edges[node_id]

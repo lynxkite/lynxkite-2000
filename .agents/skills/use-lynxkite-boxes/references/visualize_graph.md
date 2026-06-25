@@ -98,3 +98,7 @@ def visualize_graph(
     return v
 
 ```
+Custom types:
+  - color_nodes_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}]]
+  - label_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}]]
+  - color_edges_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].edges[].columns[]'}]]
