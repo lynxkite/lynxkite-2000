@@ -76,8 +76,11 @@ def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
     ws.add_edge("missing-node", "output", "node-a", "x")
 
     code = workspace_to_python(ws)
+    lines = [
+        line for line in code.splitlines() if line.strip() and not line.startswith("#")
+    ]
 
-    assert code.splitlines()[7] == "source(k=1)"
+    assert lines[1] == "source(k=1)"
 
 
 def test_workspace_to_python_orders_dependencies_and_handles():
@@ -89,8 +92,10 @@ def test_workspace_to_python_orders_dependencies_and_handles():
     ws.add_edge("b", "output", "c", "a")
 
     code = workspace_to_python(ws)
-    lines = code.splitlines()
+    lines = [
+        line for line in code.splitlines() if line.strip() and not line.startswith("#")
+    ]
 
-    assert lines[7] == "res_alpha_1 = alpha()"
-    assert lines[8] == "res_beta_2 = beta()"
-    assert lines[9] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"
+    assert lines[1] == "res_alpha_1 = alpha()"
+    assert lines[2] == "res_beta_2 = beta()"
+    assert lines[3] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"
