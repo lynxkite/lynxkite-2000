@@ -1,5 +1,6 @@
 """A Deep Agents backend that represents a workspace as a file."""
 
+import json
 import pathlib
 from typing import Any, Callable
 from deepagents.backends import protocol, state
@@ -57,6 +58,10 @@ class WorkspaceBackend(state.StateBackend):
                 "content": get_errors_file_content(self._workspace),
                 "modified_at": "",
             },
+            "/layout.json": {
+                "content": get_workspace_layout(self._workspace),
+                "modified_at": "",
+            },
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
@@ -65,6 +70,10 @@ class WorkspaceBackend(state.StateBackend):
         if "/workspace.py" in update:
             set_workspace_file_content(
                 self._workspace, update["/workspace.py"]["content"]
+            )
+        if "/layout.json" in update:
+            set_layout_file_content(
+                self._workspace, json.loads(update["/layout.json"]["content"])
             )
 
     def edit(
@@ -296,3 +305,44 @@ def get_errors_file_content(ws_path: str) -> str:
     return "\n---\n".join(
         f"An error occured in {node_id}:\n {error}" for node_id, error in errors
     )
+
+
+def get_workspace_layout(ws_path: str) -> str:
+    ws = workspace.Workspace.load(ws_path)
+    layout = {
+        "nodes": [
+            {
+                "id": node.id,
+                "position": {"x": node.position.x, "y": node.position.y},
+                "width": node.width,
+                "height": node.height,
+                "collapsed": node.data.collapsed,
+            }
+            for node in ws.nodes
+        ]
+    }
+    return json.dumps(layout)
+
+
+def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
+    ws = workspace.Workspace.load(ws_path)
+    node_by_id = {node.id: node for node in ws.nodes}
+    for node_layout in layout.get("nodes", []):
+        node_id = node_layout.get("id")
+        if not node_id or node_id not in node_by_id:
+            continue
+        node = node_by_id[node_id]
+        position = node_layout.get("position", {})
+        if "x" in position and "y" in position:
+            node.position = workspace.Position(x=position["x"], y=position["y"])
+        if "width" in node_layout:
+            node.width = node_layout["width"]
+        if "height" in node_layout:
+            node.height = node_layout["height"]
+        if "collapsed" in node_layout:
+            node.data.collapsed = bool(node_layout["collapsed"])
+    ws.save(ws_path)
+    if crdt:
+        room = crdt.get_room_or_none(ws_path)
+        if room is not None:
+            crdt.update_workspace(room.ws, ws)
