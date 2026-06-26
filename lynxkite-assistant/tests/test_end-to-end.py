@@ -52,14 +52,34 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
         )
     workspace_backend.set_workspace_file_content(mod_ws_path, resp)
     mod_ws = workspace.Workspace.load(mod_ws_path)
-    assert len(og_ws.edges) == len(mod_ws.edges)
+
+    def get_idx(nodes, nid):
+        ids = [n.id for n in nodes]
+        return ids.index(nid) if nid in ids else -1
+
+    s1 = set(
+        (get_idx(og_ws.nodes, e.source), get_idx(og_ws.nodes, e.target))
+        for e in og_ws.edges
+    )
+    s2 = set(
+        (get_idx(mod_ws.nodes, e.source), get_idx(mod_ws.nodes, e.target))
+        for e in mod_ws.edges
+    )
+    assert s1 == s2, "Edges differ"
     for og_node, mod_node in zip(og_ws.nodes, mod_ws.nodes):
         assert og_node.width == mod_node.width
         assert og_node.height == mod_node.height
         assert og_node.type == mod_node.type
         assert og_node.data.op_id == mod_node.data.op_id
         assert og_node.data.title == mod_node.data.title
-        assert og_node.data.params == mod_node.data.params
+        if (
+            og_node.type == "comment" and mod_node.type == "comment"
+        ):  # for comments, match based on text without whitespace and line breaks
+            assert og_node.data.params.get("text", "").replace(" ", "").replace(
+                "\n", ""
+            ) == mod_node.data.params.get("text", "").replace(" ", "").replace("\n", "")
+        else:
+            assert og_node.data.params == mod_node.data.params
         assert og_node.position == mod_node.position
 
 
@@ -86,7 +106,20 @@ def test_workspace_changed(data_path, create_temp_file):
     workspace_backend.set_workspace_file_content(mod_ws_path, resp)
     mod_ws = workspace.Workspace.load(mod_ws_path)
     expected_ws = workspace.Workspace.load(expected_ws_path)
-    assert len(expected_ws.edges) == len(mod_ws.edges)
+
+    def get_idx(nodes, nid):
+        ids = [n.id for n in nodes]
+        return ids.index(nid) if nid in ids else -1
+
+    s1 = set(
+        (get_idx(expected_ws.nodes, e.source), get_idx(expected_ws.nodes, e.target))
+        for e in expected_ws.edges
+    )
+    s2 = set(
+        (get_idx(mod_ws.nodes, e.source), get_idx(mod_ws.nodes, e.target))
+        for e in mod_ws.edges
+    )
+    assert s1 == s2, "Edges differ"
     for expected_node, mod_node in zip(expected_ws.nodes, mod_ws.nodes):
         assert expected_node.width == mod_node.width
         assert expected_node.height == mod_node.height

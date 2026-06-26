@@ -6,6 +6,7 @@ import ast
 import graphlib
 from lynxkite_core import ops, workspace
 from functools import reduce
+from itertools import groupby
 
 
 def _get_func_name(func: ast.expr, error_msg: str) -> str:
@@ -97,13 +98,10 @@ def python_to_workspace(
         params = {}
         x = 0
         lowest_input = None
-        for arg_name, arg_value in kwargs.items():
-            assert isinstance(
-                arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)
-            ), error_msg
-            if isinstance(arg_value, ast.Constant):
-                params[arg_name] = arg_value.value
-            elif isinstance(arg_value, ast.Name):
+
+        def add_edge(arg_name, arg_value_list):
+            nonlocal x, lowest_input
+            for arg_value in arg_value_list:
                 assert arg_value.id in saved_values, (
                     f"{error_msg}\n\nUnknown variable reference: {arg_value.id}"
                 )
@@ -112,6 +110,15 @@ def python_to_workspace(
                 if lowest_input is None or box_y[src] < lowest_input:
                     lowest_input = box_y[src]
                 ws.add_edge(src, "output", box_id, arg_name)
+
+        for arg_name, arg_value in kwargs.items():
+            assert isinstance(
+                arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)
+            ), error_msg
+            if isinstance(arg_value, ast.Constant):
+                params[arg_name] = arg_value.value
+            elif isinstance(arg_value, ast.Name):
+                add_edge(arg_name, [arg_value])
             elif isinstance(arg_value, ast.Dict):
                 dict_value = {}
                 for key_node, value_node in zip(arg_value.keys, arg_value.values):
@@ -122,11 +129,14 @@ def python_to_workspace(
                     dict_value[key_node.value] = value_node.value
                 params[arg_name] = dict_value
             elif isinstance(arg_value, ast.List):
-                list_value = []
-                for item in arg_value.elts:
-                    assert isinstance(item, ast.Constant), error_msg
-                    list_value.append(item.value)
-                params[arg_name] = list_value
+                if all(isinstance(item, ast.Name) for item in arg_value.elts):
+                    add_edge(arg_name, arg_value.elts)
+                else:
+                    list_value = []
+                    for item in arg_value.elts:
+                        assert isinstance(item, ast.Constant), error_msg
+                        list_value.append(item.value)
+                    params[arg_name] = list_value
             elif isinstance(arg_value, ast.Tuple):
                 tuple_value = []
                 for item in arg_value.elts:
@@ -288,12 +298,18 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
             comment_lines = node.data.params.get("text", "").split("\n")
             for line in comment_lines:
                 code.append(f"#! {line}")
-            if len(comment_lines) > 1:
-                code.append("")
+            code.append("")
             continue
+        grouped_by_target_handle = [
+            (th, [saved_values[n.source] for n in gr])
+            for th, gr in groupby(incoming_edges[node_id], key=lambda e: e.targetHandle)
+        ]
+        grouped_by_target_handle = [
+            (th, li[0] if len(li) == 1 else f"[{', '.join(li)}]")
+            for th, li in grouped_by_target_handle
+        ]
         inputs = sorted(
-            f"{edge.targetHandle}={saved_values[edge.source]}"
-            for edge in incoming_edges[node_id]
+            f"{targetHandle}={srcs}" for targetHandle, srcs in grouped_by_target_handle
         )
         params = sorted(
             f"{name}={repr(value)}" for name, value in node.data.params.items()

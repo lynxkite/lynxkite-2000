@@ -194,6 +194,11 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
             lambda s, t: s.data.op_id == t.data.op_id
             and s.data.params == t.data.params
             and source_neighbors.get(s.id) == target_neighbors.get(t.id)
+            if s.type != "comment"
+            and t.type
+            != "comment"  # for coments, mathch based on text without whitespace and line breaks
+            else s.data.params.get("text", "").replace(" ", "").replace("\n", "")
+            == t.data.params.get("text", "").replace(" ", "").replace("\n", "")
         )
         if assigned:
             continue
@@ -216,10 +221,10 @@ def _update_ws_positions(
         node.width = source_node.width
         node.height = source_node.height
         node.data.collapsed = source_node.data.collapsed
-    # For new nodes, make up a new position based on the positions of their neighbors.
+    # For new non-comment nodes, make up a new position based on the positions of their neighbors.
     for node in target.nodes:
         source_node = source_nodes_by_id.get(node.id)
-        if source_node is not None:
+        if source_node is not None or node.type == "comment":
             continue
         inputs, outputs = _get_node_neighbors(target, node.id)
         x = 0
