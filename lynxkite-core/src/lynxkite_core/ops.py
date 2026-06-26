@@ -316,7 +316,9 @@ class Op(BaseConfig):
             assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         if self.func and hasattr(self.func, "__module__") and hasattr(self.func, "__name__"):
-            self.python_function_name = f"{self.func.__module__}.{self.func.__name__}"
+            self.python_function_name = (
+                f"{self.func.__module__.replace('-', '_')}.{self.func.__name__}"
+            )
         return self
 
     @staticmethod

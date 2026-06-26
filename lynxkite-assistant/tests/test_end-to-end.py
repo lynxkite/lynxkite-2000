@@ -44,6 +44,7 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
     )
     with open(mod_ws_path, "w") as f, open(og_ws_path) as og_f:
         f.write(og_f.read())
+    ops.load_user_scripts(og_ws_path)
     og_ws = workspace.Workspace.load(og_ws_path)
     resp = python_workspace_conversion.workspace_to_python(og_ws)
     if "<lambda>" in resp:
