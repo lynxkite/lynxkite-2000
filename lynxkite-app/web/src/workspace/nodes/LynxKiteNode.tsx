@@ -16,6 +16,7 @@ import { NodeProgress } from "./ProgressBar.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
+  type: string;
   width: number;
   height: number;
   nodeStyle: any;
@@ -171,7 +172,9 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
   const state = useContext(LynxKiteState);
-  const iconized = state.iconized;
+  const canIconize =
+    !data.collapsed && !["visualization", "image", "molecule"].includes(props.type);
+  const iconized = state.iconized && canIconize;
   const handles = getHandles(
     state.workspace,
     props.id,
