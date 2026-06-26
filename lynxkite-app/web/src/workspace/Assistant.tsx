@@ -68,7 +68,18 @@ export default function Assistant(props: { workspace: string }) {
         )}
       </div>
 
-      {error && <div className="assistant-error">{error.message}</div>}
+      {error && (
+        <div className="assistant-error">
+          {(() => {
+            try {
+              // For HTTPException, the error message is a JSON string with a "detail" field.
+              return JSON.parse(error.message).detail;
+            } catch {
+              return error.message;
+            }
+          })()}
+        </div>
+      )}
 
       <form
         className="assistant-input-row"

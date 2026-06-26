@@ -2,21 +2,26 @@
 
 import os
 import fastapi
+import openai
 import pydantic
 from typing import cast
 from fastapi.responses import StreamingResponse
 import deepagents
+from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 
 router = fastapi.APIRouter()
 
 SYSTEM_PROMPT = """
 You are an assistant for the LynxKite no-code AI workflow builder.
-The user sees the workflow in a visual representation. You have access to it as a file in `workspace.py`.
+The user sees the workflow in a visual representation. You have access to it as a file in `workspace.py`, which the user does not see.
+Each function call in `workspace.py` corresponds to a box in the visual representation.
 Edit this file to implement the user's requests. `workspace.py` must only contain function calls.
+DO NOT REMOVE any existing code or comments! (unless asked explicitly by the user)
 Keyword arguments must be constants or previous results. Positional arguments are not allowed.
 New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
 The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available in the `boxes` module.
+You must use existing boxes directly in `workspace.py` without adding them to the `boxes` module.
 """
 
 
@@ -66,8 +71,21 @@ def _extract_token_text(token_content: object) -> str:
 @router.post("/api/assistant/stream")
 async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
-    backend = WorkspaceBackend(req.workspace)
-    agent = deepagents.create_deep_agent(model=model, backend=backend, system_prompt=SYSTEM_PROMPT)
+    workspace_backend = WorkspaceBackend(req.workspace)
+    backend = backends.CompositeBackend(
+        default=workspace_backend,
+        routes={
+            "/skills/": backends.FilesystemBackend(
+                root_dir=("../.agents/skills"), virtual_mode=True
+            )
+        },
+    )
+    agent = deepagents.create_deep_agent(
+        model=model,
+        backend=backend,
+        skills=["/skills"],
+        system_prompt=SYSTEM_PROMPT,
+    )
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
         content = _extract_text_content(msg).strip()
@@ -89,4 +107,20 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
             if delta:
                 yield delta
 
-    return StreamingResponse(generate(), media_type="text/event-stream; charset=utf-8")
+    try:
+        gen = generate()
+        first_chunk = (
+            await gen.__anext__()
+        )  # peek the first chunk to check for authentication errors
+
+        async def chained_generator():
+            yield first_chunk
+            async for chunk in gen:
+                yield chunk
+
+        return StreamingResponse(chained_generator(), media_type="text/event-stream; charset=utf-8")
+    except openai.AuthenticationError:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
+            detail="OpenAI Authentication failed. Check your API key.",
+        )
