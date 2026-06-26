@@ -84,6 +84,8 @@ export default function Workspace(props: any) {
   );
 }
 
+const ICONIZE_THRESHOLD = 0.3;
+
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
@@ -95,6 +97,7 @@ function LynxKiteFlow() {
   );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
+  const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
   const shortPath = path!
     .split("/")
     .pop()!
@@ -646,7 +649,7 @@ function LynxKiteFlow() {
           ref={reactFlowContainer}
         >
           {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized }}>
               <ReactFlow
                 nodes={nodes}
                 edges={autoConnect.renderedEdges}
@@ -666,6 +669,10 @@ function LynxKiteFlow() {
                 onConnect={onConnect}
                 onNodeDrag={autoConnect.onNodeDrag}
                 onNodeDragStop={autoConnect.onNodeDragStop}
+                onMove={() => {
+                  const zoom = reactFlow.getZoom();
+                  setIconized(zoom < ICONIZE_THRESHOLD);
+                }}
                 proOptions={{ hideAttribution: true }}
                 maxZoom={10}
                 minZoom={0.1}
