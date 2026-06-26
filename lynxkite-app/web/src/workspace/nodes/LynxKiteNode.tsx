@@ -1,6 +1,6 @@
 import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
 import Color from "colorjs.io";
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
@@ -16,6 +16,7 @@ import { NodeProgress } from "./ProgressBar.tsx";
 
 interface LynxKiteNodeProps {
   id: string;
+  type: string;
   width: number;
   height: number;
   nodeStyle: any;
@@ -171,6 +172,9 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
   const state = useContext(LynxKiteState);
+  const canIconize =
+    !data.collapsed && !["visualization", "image", "molecule"].includes(props.type);
+  const iconized = state.iconized && canIconize;
   const handles = getHandles(
     state.workspace,
     props.id,
@@ -212,6 +216,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   }
   const height = Math.max(67, node?.height ?? props.height ?? 315);
   const meta = data.meta ?? {};
+  const icon = useMemo(() => <Icon name={meta.icon} />, [meta.icon]);
   const summary: string = data.error
     ? `Error: ${data.error}`
     : (data.collapsed && paramSummary(data)) || docToString(meta.doc);
@@ -244,24 +249,33 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       }}
       ref={containerRef}
     >
-      <div className="lynxkite-node" style={nodeStyle}>
-        <Tooltip doc={titleTooltip} disabled={props.dragging}>
-          <div
-            style={titleStyle}
-            className={`title drag-handle ${data.status}`}
-            onClick={titleClicked}
-          >
-            <Icon name={meta.icon} />
-            <div className="title-right-side">
-              <div className="title-right-side-top">
-                <span className="title-title">{data.title}</span>
-                {data.error && <AlertTriangle />}
-                {data.collapsed && <Dots />}
+      <div
+        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized" : ""}`}
+        style={iconized ? { ...nodeStyle, ...titleStyle } : nodeStyle}
+      >
+        {iconized ? (
+          <Tooltip doc={data.title} disabled={props.dragging}>
+            {icon}
+          </Tooltip>
+        ) : (
+          <Tooltip doc={titleTooltip} disabled={props.dragging}>
+            <div
+              style={titleStyle}
+              className={`title drag-handle ${data.status}`}
+              onClick={titleClicked}
+            >
+              {icon}
+              <div className="title-right-side">
+                <div className="title-right-side-top">
+                  <span className="title-title">{data.title}</span>
+                  {data.error && <AlertTriangle />}
+                  {data.collapsed && <Dots />}
+                </div>
+                {summary && <span className="title-summary">{summary}</span>}
               </div>
-              {summary && <span className="title-summary">{summary}</span>}
             </div>
-          </div>
-        </Tooltip>
+          </Tooltip>
+        )}
         {!data.collapsed && (
           <>
             <div className="node-content">
