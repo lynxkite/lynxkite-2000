@@ -99,7 +99,9 @@ def aggregate_to_segmentation(
 
     aggregated = combined.groupby(segmentation_name).agg(agg_dict)
     aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
-    b.dfs["aggregated"] = aggregated.reset_index()
+    aggregated = aggregated.reset_index()
+    aggregated[segmentation_name] = aggregated[segmentation_name].apply(lambda x: {x})
+    b.dfs["aggregated"] = aggregated
     return b
 
 
@@ -140,7 +142,7 @@ def aggregate_from_segmentation(
     aggregated = []
     for table in all_tables:
         for index, row in table.iterrows():
-            relevant = exploded[exploded[segmentation_name].isin({row[segmentation_name]})]
+            relevant = exploded[exploded[segmentation_name].isin(row[segmentation_name])]
             row_aggregation = {
                 "table_id": f"{row['_table']}_{row['_id']}",
                 segmentation_name: row[segmentation_name],
