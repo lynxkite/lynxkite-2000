@@ -18,7 +18,8 @@ class EdgeDirection(enum.StrEnum):
 @op("Find Connected Components", icon="filter-filled")
 def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
     b = b.copy()
-
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
     graph, meta = b.to_nx_meta()
 
     colum_names = set()
@@ -102,7 +103,7 @@ def aggregate_to_segmentation(
     return b
 
 
-@op("Aggregate from segmentation", icon="filter-filled")
+@op("Aggregate from segmentation", icon="filter-filled", slow=True)
 def aggregate_from_segmentation(
     b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
 ):
@@ -125,7 +126,10 @@ def aggregate_from_segmentation(
     all_tables = []
     for table in tables:
         df = b.dfs[table].copy()
-        df["_id"] = df[key_dict[table]]
+        if table in key_dict.keys():
+            df["_id"] = df[key_dict[table]]
+        else:
+            df["_id"] = df.index
         df["_table"] = table
         all_tables.append(df)
 
@@ -136,7 +140,7 @@ def aggregate_from_segmentation(
     aggregated = []
     for table in all_tables:
         for index, row in table.iterrows():
-            relevant = exploded[exploded[segmentation_name].isin(row[segmentation_name])]
+            relevant = exploded[exploded[segmentation_name].isin({row[segmentation_name]})]
             row_aggregation = {
                 "table_id": f"{row['_table']}_{row['_id']}",
                 segmentation_name: row[segmentation_name],

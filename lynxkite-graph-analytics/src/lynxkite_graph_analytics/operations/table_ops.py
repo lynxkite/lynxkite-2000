@@ -5,7 +5,7 @@ import enum
 from lynxkite_core import ops
 import pandas as pd
 import io
-from .. import core
+from .. import core, bundle
 
 op = ops.op_registration(core.ENV, "Table operations")
 
@@ -69,11 +69,31 @@ def add_rank(
     return b
 
 
+@op("Remove table", color="orange", icon="table-filled")
+def remove_table(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
+    """Removes the specified table"""
+    b = b.copy()
+    b.dfs.pop(table_name)
+    for r in b.relations:
+        if r.source_table == table_name or r.target_table == table_name:
+            b.relations.remove(r)
+    return b
+
+
 @op("Rename table", color="orange", icon="table-filled")
 def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
     """Assigns a new name to the table"""
     b = b.copy()
     b.dfs[new_name] = b.dfs.pop(old_name)
+    relations = []
+    for r in b.relations:
+        r = r.copy()
+        if r.source_table == old_name:
+            r.source_table = new_name
+        if r.target_table == old_name:
+            r.target_table = new_name
+        relations.append(r)
+    b.relations = relations
     return b
 
 
@@ -140,9 +160,10 @@ def join_tables(
     - right_on: Column name in right table (when column names differ)
     - suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")
     """
-
-    df_a = bundle_a.dfs[table_a]
-    df_b = bundle_b.dfs[table_b]
+    bundle_a = bundle_a.copy()
+    bundle_b = bundle_b.copy()
+    df_a = bundle_a.dfs[table_a].copy()
+    df_b = bundle_b.dfs[table_b].copy()
 
     # Parse suffixes
     suffix_parts = [s.strip() for s in suffixes.split(",")]
@@ -168,5 +189,8 @@ def join_tables(
         merged_df = pd.merge(
             df_a, df_b, left_index=True, right_index=True, how=join_type.value, suffixes=suffix_list
         )
-
-    return core.Bundle(dfs={"merged": merged_df})
+    b = bundle.merge_bundles([bundle_a, bundle_b], merge_mode=bundle.BundleMergeMode.must_be_unique)
+    b.dfs.pop(table_a, None)
+    b.dfs.pop(table_b, None)
+    b.dfs["merged"] = merged_df
+    return b

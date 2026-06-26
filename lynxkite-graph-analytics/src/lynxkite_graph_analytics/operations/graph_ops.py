@@ -38,6 +38,14 @@ def merge_nodes(
     The aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies
     which other columns should be included in the new DataFrame and how to aggregate them."""
     b = b.copy()
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
+
+    relations = b.relations.copy()
+    b.relations = []
+    for r in relations:
+        b.relations.append(r.copy())
+
     old_df = b.dfs[table_name].copy()
     agg_dict = {}
     name_dict = {}
@@ -68,12 +76,53 @@ def merge_nodes(
         setattr(r, column_attr, new_column)
         setattr(r, key_attr, attribute)
 
-    for r in b.relations.copy():
+    for r in b.relations:
         if table_name == r.source_table:
             _update_relation(r, "_src", "source_column", "source_key")
         if table_name == r.target_table:
             _update_relation(r, "_dst", "target_column", "target_key")
 
+    return b
+
+
+@op("Merge parallel edges", icon="link")
+def merge_parallel_edges(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    source_key: core.ColumnNameByTableName,
+    target_key: core.ColumnNameByTableName,
+    aggregations: core.DropdownTextAdderByTableName,
+) -> core.Bundle:
+    """Merges parallel edges for a selected relation."""
+    b = b.copy()
+    edges = b.dfs[table_name].copy()
+    group_cols = [source_key, target_key]
+    agg_dict = {}
+
+    for column, funcs in aggregations:
+        func_list = [f for f in funcs.split(" ") if f]
+        if func_list:
+            if column not in agg_dict:
+                agg_dict[column] = []
+            for func in func_list:
+                if func not in agg_dict[column]:
+                    agg_dict[column].append(func)
+
+    if agg_dict:
+        merged = edges.groupby(group_cols).agg(agg_dict).reset_index()
+        new_columns = []
+        for col, func in merged.columns:
+            if func == "":
+                new_columns.append(col)
+            else:
+                new_columns.append(f"{col}_{func}")
+
+        merged.columns = new_columns
+    else:
+        merged = edges.drop_duplicates(subset=group_cols).reset_index(drop=True)
+
+    b.dfs[table_name] = merged
     return b
 
 
@@ -118,6 +167,8 @@ def connect_nodes(
     - target_attribute: Attribute column in the second table used for matching
     """
     b = b.copy()
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
 
     df1 = (b.dfs[source_table]).add_suffix("_src")
     df2 = (b.dfs[target_table]).add_suffix("_dst")
@@ -159,14 +210,14 @@ def discard_loop_edges(graph: nx.Graph):
 
 
 @op("Discard loop edges in relation", icon="filter-filled")
-def discard_loop_edges_in_relation(bundle: core.Bundle, *, relation: core.RelationName):
-    bundle = bundle.copy()
-    for r in bundle.relations:
+def discard_loop_edges_in_relation(b: core.Bundle, *, relation: core.RelationName):
+    b = b.copy()
+    for r in b.relations:
         if r.name == relation:
-            df = bundle.dfs[r.df].copy()
-            bundle.dfs[r.df] = df[df[r.source_column] != df[r.target_column]]
+            df = b.dfs[r.df].copy()
+            b.dfs[r.df] = df[df[r.source_column] != df[r.target_column]]
             break
-    return bundle
+    return b
 
 
 @op("Discard parallel edges", icon="filter-filled")
