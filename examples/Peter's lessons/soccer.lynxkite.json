@@ -979,7 +979,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113409.0
+                "length": 113410.0
               },
               "merged": {
                 "columns": [
@@ -1085,7 +1085,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113409.0
+                "length": 113410.0
               },
               "merged": {
                 "columns": [
@@ -1170,7 +1170,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98644.0
+                "length": 98643.0
               },
               "merged": {
                 "columns": [
@@ -1268,7 +1268,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Table operations > Connect nodes on attribute",
+        "op_id": "Graph operations > Connect nodes on attribute",
         "output_metadata": [
           {
             "dataframes": {

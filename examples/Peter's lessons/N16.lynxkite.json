@@ -36,34 +36,6 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Graph from edge list 1 output Degree 1 g",
-      "source": "Graph from edge list 1",
-      "sourceHandle": "output",
-      "target": "Degree 1",
-      "targetHandle": "g"
-    },
-    {
-      "id": "Degree 1 output SQL 1 bundle",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "SQL 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Degree 1 output Visualize graph 1 graph",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Visualize graph 1",
-      "targetHandle": "graph"
-    },
-    {
-      "id": "Degree 1 output Aggregate on neighbors 1 g",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Aggregate on neighbors 1",
-      "targetHandle": "g"
-    },
-    {
       "id": "Aggregate on neighbors 1 output Binned graph visualization 1 b",
       "source": "Aggregate on neighbors 1",
       "sourceHandle": "output",
@@ -76,13 +48,6 @@
       "sourceHandle": "output",
       "target": "Scatter plot 1",
       "targetHandle": "b"
-    },
-    {
-      "id": "Degree 1 output Clustering 1 G",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Clustering 1",
-      "targetHandle": "G"
     },
     {
       "id": "Clustering 1 output Binned graph visualization 2 b",
@@ -104,9 +69,45 @@
       "sourceHandle": "output",
       "target": "Visualize graph 2",
       "targetHandle": "graph"
+    },
+    {
+      "id": "Graph from edge list 1 output Degree 2 g",
+      "source": "Graph from edge list 1",
+      "sourceHandle": "output",
+      "target": "Degree 2",
+      "targetHandle": "g"
+    },
+    {
+      "id": "Degree 2 output Visualize graph 1 graph",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Degree 2 output SQL 1 bundle",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "SQL 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Degree 2 output Aggregate on neighbors 1 g",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Aggregate on neighbors 1",
+      "targetHandle": "g"
+    },
+    {
+      "id": "Degree 2 output Clustering 1 G",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Clustering 1",
+      "targetHandle": "G"
     }
   ],
   "env": "LynxKite Graph Analytics",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
@@ -116,6 +117,7 @@
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
+        "message": null,
         "meta": null,
         "op_id": "File operations > Import CSV",
         "output_metadata": [
@@ -141,6 +143,7 @@
           "separator": "<auto>"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Import CSV"
       },
       "height": 320.0,
@@ -154,7 +157,6 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": {
           "dataframes": {
@@ -684,6 +686,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "View tables",
         "output_metadata": [],
@@ -695,6 +698,7 @@
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "height": 320.0,
@@ -730,6 +734,7 @@
             "relations": []
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Graph operations > Graph from edge list",
         "output_metadata": [
@@ -772,6 +777,7 @@
           "target": "dst"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Graph from edge list"
       },
       "height": 320.0,
@@ -785,7 +791,6 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
         "error": null,
@@ -825,6 +830,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "NetworkX > Algorithms > Distance measures > Diameter",
         "output_metadata": [
@@ -842,14 +848,12 @@
             "relations": []
           }
         ],
-        "params": {
-          "usebounds": null,
-          "weight": null
-        },
+        "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Diameter"
       },
-      "height": 70.0,
+      "height": 71.0,
       "id": "Diameter 1",
       "position": {
         "x": 735.0,
@@ -894,6 +898,7 @@
             "relations": []
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "View tables",
         "output_metadata": [],
@@ -901,6 +906,7 @@
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "height": 140.0,
@@ -914,7 +920,6 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": {
           "dataframes": {
@@ -1542,6 +1547,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "View tables",
         "output_metadata": [],
@@ -1554,6 +1560,7 @@
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "height": 400.0,
@@ -1608,6 +1615,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Query operations > SQL",
         "output_metadata": [
@@ -1659,6 +1667,7 @@
           "save_as": "results"
         },
         "status": "done",
+        "telemetry": null,
         "title": "SQL"
       },
       "height": 320.0,
@@ -1672,105 +1681,13 @@
     },
     {
       "data": {
-        "__execution_delay": null,
-        "collapsed": true,
-        "display": null,
-        "error": null,
-        "expanded_height": 200.0,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target",
-                  "wt"
-                ],
-                "key": "edges",
-                "length": 82.0
-              },
-              "nodes": {
-                "columns": [
-                  "id"
-                ],
-                "key": "nodes",
-                "length": 16.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "meta": null,
-        "op_id": "Graph operations > NetworkX > Degree",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target",
-                  "wt"
-                ],
-                "key": "edges",
-                "length": 82.0
-              },
-              "nodes": {
-                "columns": [
-                  "degree",
-                  "id"
-                ],
-                "key": "nodes",
-                "length": 16.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "params": {},
-        "status": "done",
-        "title": "Degree"
-      },
-      "height": 68.0,
-      "id": "Degree 1",
-      "position": {
-        "x": 980.0,
-        "y": 1120.0
-      },
-      "type": "basic",
-      "width": 200.0
-    },
-    {
-      "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -1778,6 +1695,7 @@
           "text": "Input file for creating the graph."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 38.0,
@@ -1797,6 +1715,7 @@
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -1804,6 +1723,7 @@
           "text": "Example for displaying vertex attributes in a graph visualization."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 66.0,
@@ -1823,6 +1743,7 @@
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -1830,6 +1751,7 @@
           "text": "Compute the degree (number of neighbors) of each node, and run a simple query to create aggregate statistics of this variable."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 94.0,
@@ -2629,15 +2551,16 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
-          "color_edges_by": null,
           "color_nodes_by": "degree",
           "label_by": "degree"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Visualize graph"
       },
       "height": 542.0,
@@ -2657,6 +2580,7 @@
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -2664,6 +2588,7 @@
           "text": "Calculating the average degree of the neighbors of each node, and creating an attribute comparing this to the degree of the focal vertex."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 94.0,
@@ -2683,6 +2608,7 @@
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -2690,6 +2616,7 @@
           "text": "Visualizing the \"friendship paradox\" - note the vertices with more / as many / fewer neighbors than the average of their neighbors' degrees.\n"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 94.0,
@@ -2709,6 +2636,7 @@
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
@@ -2716,6 +2644,7 @@
           "text": "Computing the diameter of the graph."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "height": 38.0,
@@ -2770,6 +2699,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Graph operations > Aggregate on neighbors",
         "output_metadata": [
@@ -2814,6 +2744,7 @@
           "property": "degree"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Aggregate on neighbors"
       },
       "height": 240.0,
@@ -2869,6 +2800,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
@@ -2879,6 +2811,7 @@
           "y_property": "degree_neighborhood_mean"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Binned graph visualization"
       },
       "height": 440.0,
@@ -2934,6 +2867,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Visualizations > Scatter plot",
         "output_metadata": [],
@@ -2948,6 +2882,7 @@
           ]
         },
         "status": "done",
+        "telemetry": null,
         "title": "Scatter plot"
       },
       "height": 440.0,
@@ -2961,7 +2896,6 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
         "error": null,
@@ -3002,6 +2936,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "NetworkX > Algorithms > Cluster > Clustering",
         "output_metadata": [
@@ -3041,10 +2976,9 @@
             ]
           }
         ],
-        "params": {
-          "weight": null
-        },
+        "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Clustering"
       },
       "height": 71.0,
@@ -3100,6 +3034,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
@@ -3111,6 +3046,7 @@
           "y_property": "clustering"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Binned graph visualization"
       },
       "height": 630.0,
@@ -3913,15 +3849,16 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [],
         "params": {
-          "color_edges_by": null,
           "color_nodes_by": "color",
           "label_by": "friendship_difference"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Visualize graph"
       },
       "height": 635.0,
@@ -3977,6 +3914,7 @@
             ]
           }
         ],
+        "message": null,
         "meta": null,
         "op_id": "Table operations > Derive property",
         "output_metadata": [
@@ -4023,6 +3961,7 @@
           "table_name": "nodes"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Derive property"
       },
       "height": 356.0,
@@ -4033,6 +3972,32 @@
       },
       "type": "basic",
       "width": 537.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "expanded_height": 169.0,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Degree",
+        "output_metadata": null,
+        "params": {},
+        "status": "done",
+        "telemetry": null,
+        "title": "Degree"
+      },
+      "height": 71.0,
+      "id": "Degree 2",
+      "position": {
+        "x": 981.4746400799664,
+        "y": 1121.0649223272528
+      },
+      "type": "basic",
+      "width": 199.0
     }
   ],
   "paused": true
