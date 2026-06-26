@@ -77,7 +77,9 @@ export class Workspace {
     await this.page.keyboard.press("/");
     const parts = boxName.split(" › ");
     for (const part of parts) {
-      await this.page.locator(".node-search").getByText(part.trim(), { exact: true }).click();
+      // Allow for category counts at the end.
+      const re = new RegExp(`^${part.trim()}\\s*\\d*`);
+      await this.page.locator(".node-search").getByText(re).click();
     }
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
