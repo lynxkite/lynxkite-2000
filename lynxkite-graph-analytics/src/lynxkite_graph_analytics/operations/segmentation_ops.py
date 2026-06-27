@@ -28,11 +28,11 @@ def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segme
         b.dfs[table] = b.dfs[table].copy()
     graph, meta = b.to_nx_meta()
 
-    colum_names = set()
+    column_names = set()
     for r in b.relations:
-        colum_names.update(b.dfs[r.source_table].columns.values)
-        colum_names.update(b.dfs[r.target_table].columns.values)
-    if segmentation_name in colum_names:
+        column_names.update(b.dfs[r.source_table].columns.values)
+        column_names.update(b.dfs[r.target_table].columns.values)
+    if segmentation_name in column_names:
         raise ValueError(f"{segmentation_name} already exists")
 
     if edge_direction == EdgeDirection.Ignore:
