@@ -69,14 +69,20 @@ def add_rank(
     return b
 
 
-@op("Remove table", color="orange", icon="table-filled")
-def remove_table(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
-    """Removes the specified table"""
+@op("Filter tables", color="orange", icon="table-filled")
+def filter_tables(
+    b: core.Bundle, *, drop_selected: bool, tables: core.MultiTableName
+) -> core.Bundle:
+    """
+    Keeps/removes the selected tables based on the value of drop_selected
+    :param b: the bundle
+    :param drop_selected: if True, removes the selected tables, otherwise keeps them
+    :param tables: the tables to keep/remove
+    """
     b = b.copy()
-    b.dfs.pop(table_name)
-    for r in b.relations:
-        if r.source_table == table_name or r.target_table == table_name:
-            b.relations.remove(r)
+
+    b.dfs = {k: v for k, v in b.dfs.items() if (k in tables) != drop_selected}
+    b.relations = [r for r in b.relations if r.source_table in b.dfs and r.target_table in b.dfs]
     return b
 
 
@@ -95,14 +101,6 @@ def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> 
         relations.append(r)
     b.relations = relations
     return b
-
-
-@op("Select Table", icon="table-filled")
-def select_table(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
-    df = b.dfs[table_name]
-    bundle = core.Bundle()
-    bundle.dfs[table_name] = df
-    return bundle
 
 
 @op("Derive property", icon="arrow-big-right-lines")
