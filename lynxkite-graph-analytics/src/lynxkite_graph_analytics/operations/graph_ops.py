@@ -36,7 +36,13 @@ def merge_nodes(
 ) -> core.Bundle:
     """Merges the nodes that have the same value for the given attribute.
     The aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies
-    which other columns should be included in the new DataFrame and how to aggregate them."""
+    which other columns should be included in the new DataFrame and how to aggregate them.
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param attribute: the name of the attribute to merge on
+    :param add_suffixes: whether to add suffixes to the aggregated columns
+    :param aggregations: the aggregations to perform, specified as a list of tuples
+    """
     b = b.copy()
     for table in b.dfs.keys():
         b.dfs[table] = b.dfs[table].copy()
@@ -94,7 +100,14 @@ def merge_parallel_edges(
     target_key: core.ColumnNameByTableName,
     aggregations: core.DropdownTextAdderByTableName,
 ) -> core.Bundle:
-    """Merges parallel edges for a selected relation."""
+    """
+    Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats).
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param source_key: the name of the key in the source table
+    :param target_key: the name of the key in the target table
+    :param aggregations: the aggregations to perform, specified as a list of tuples
+    """
     b = b.copy()
     edges = b.dfs[table_name].copy()
     group_cols = [source_key, target_key]
@@ -211,6 +224,11 @@ def discard_loop_edges(graph: nx.Graph):
 
 @op("Discard loop edges in relation", icon="filter-filled")
 def discard_loop_edges_in_relation(b: core.Bundle, *, relation: core.RelationName):
+    """
+    Discards loop edges in the specified relation.
+    :param b: the bundle
+    :param relation: the relation
+    """
     b = b.copy()
     for r in b.relations:
         if r.name == relation:
