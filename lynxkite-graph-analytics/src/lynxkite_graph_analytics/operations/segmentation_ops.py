@@ -17,6 +17,12 @@ class EdgeDirection(enum.StrEnum):
 
 @op("Find Connected Components", icon="filter-filled")
 def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
+    """
+    Finds the connected components of the graph and put the nodes into a segment accordingly.
+    :param b: the bundle
+    :param edge_direction: whether to ignore the direction of the edges
+    :param segmentation_name: the name of the segmentation.
+    """
     b = b.copy()
     for table in b.dfs.keys():
         b.dfs[table] = b.dfs[table].copy()
@@ -52,6 +58,12 @@ def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segme
 
 @op("Segment by attribute", icon="filter-filled")
 def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: str):
+    """
+    Segments the nodes based on the values of the specified attribute.
+    :param b: the bundle
+    :param attribute: the attribute to segment by
+    :param segmentation_name: the name of the segmentation
+    """
     b = b.copy()
 
     node_tables = set()
@@ -75,19 +87,53 @@ def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: s
     return b
 
 
-@op("Aggregate to segmentation", icon="filter-filled")
-def aggregate_to_segmentation(
-    b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
-):
-    b = b.copy()
-    if segmentation_name not in set.union(*[set(b.dfs[table].columns) for table in b.dfs.keys()]):
+def _aggregation_prechecks(b, tables, columns, segmentation_name):
+    """
+    Checks whether the segmentation exists, and whether all columns exist in the tables with the segmentation.
+    :param b: the bundle
+    :param tables: the tables
+    :param columns: the columns with the specified segmentation
+    :param segmentation_name: the name of the segmentation
+    """
+    if len(tables) == 0:
         raise ValueError(f"{segmentation_name} does not exist")
-
-    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
-    columns = {item[0] for item in aggregations}
     for table in tables:
         if not columns.issubset(b.dfs[table].columns):
-            raise ValueError("Not all columns exist in table")
+            raise ValueError(f"Not all columns exist in table {table}")
+
+
+def _suffix_check(add_suffixes, funcs_values):
+    """
+    Checks if suffixes are required for the aggregation functions.
+    :param add_suffixes: whether to add suffixes or not
+    :param funcs_values: the aggregation functions to check
+    """
+    for funcs in funcs_values:
+        if len(funcs) > 1 and not add_suffixes:
+            raise ValueError(
+                "Adding suffixes is required when multiple aggregation functions are specified for a column."
+            )
+
+
+@op("Aggregate to segmentation", icon="filter-filled")
+def aggregate_to_segmentation(
+    b: core.Bundle,
+    *,
+    segmentation_name: str,
+    add_suffixes: bool = False,
+    aggregations: core.DoubleTextAdder,
+):
+    """
+    For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
+    :param b: the bundle to operate on
+    :param segmentation_name: the name of the segmentation
+    :param add_suffixes: whether to add suffixes or not
+    :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
+    """
+    b = b.copy()
+    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
+    columns = {item[0] for item in aggregations}
+    _aggregation_prechecks(b, tables, columns, segmentation_name)
 
     all_tables = []
     for table in tables:
@@ -96,6 +142,7 @@ def aggregate_to_segmentation(
     combined = pandas.concat(all_tables, ignore_index=True)
     combined = combined.explode(segmentation_name)
     agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
+    _suffix_check(add_suffixes, agg_dict.values())
 
     aggregated = combined.groupby(segmentation_name).agg(agg_dict)
     aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
@@ -107,18 +154,21 @@ def aggregate_to_segmentation(
 
 @op("Aggregate from segmentation", icon="filter-filled", slow=True)
 def aggregate_from_segmentation(
-    b: core.Bundle, *, segmentation_name: str, aggregations: core.DoubleTextAdder
+    b: core.Bundle,
+    *,
+    segmentation_name: str,
+    add_suffixes: bool = False,
+    aggregations: core.DoubleTextAdder,
 ):
+    """
+    For every node it aggregates the specified parameters of every node that share a segment with it.
+    :param segmentation_name: the name of the segmentation to check for shared segments
+    :param add_suffixes: whether to add suffixes or not
+    """
     b = b.copy()
-
-    if segmentation_name not in set.union(*[set(b.dfs[table].columns) for table in b.dfs.keys()]):
-        raise ValueError(f"{segmentation_name} does not exist")
-
     tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
     columns = {item[0] for item in aggregations}
-    for table in tables:
-        if not columns.issubset(b.dfs[table].columns):
-            raise ValueError("Not all columns exist in every table")
+    _aggregation_prechecks(b, tables, columns, segmentation_name)
 
     key_dict = {}
     for r in b.relations:
@@ -138,6 +188,7 @@ def aggregate_from_segmentation(
     combined = pandas.concat(all_tables, ignore_index=True)
     exploded = combined.explode(segmentation_name)
     agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
+    _suffix_check(add_suffixes, agg_dict.values())
 
     aggregated = []
     for table in all_tables:
