@@ -127,6 +127,10 @@ for usage information, see references/merge_nodes.md
 Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats).
 for usage information, see references/merge_parallel_edges.md
 
+**Merge two attributes:**
+An attribute may not be defined everywhere. This operation uses the secondary attribute to fill in the values where the primary attribute is undefined. If both are undefined then the result is undefined too.
+for usage information, see references/merge_two_attributes.md
+
 **Sample graph:**
 Takes a (preferably connected) subgraph.
 for usage information, see references/sample_graph.md
