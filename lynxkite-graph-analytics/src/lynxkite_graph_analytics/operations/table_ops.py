@@ -203,7 +203,24 @@ def join_tables(
             df_a, df_b, left_index=True, right_index=True, how=join_type.value, suffixes=suffix_list
         )
     b = bundle.merge_bundles([bundle_a, bundle_b], merge_mode=bundle.BundleMergeMode.must_be_unique)
+
+    new_table = "merged"
+    table_suffixes = {table_a: suffix_list[0], table_b: suffix_list[1]}
+
+    for r in b.relations:
+        if r.source_table in table_suffixes:
+            suffixed_key = r.source_key + table_suffixes[r.source_table]
+            r.source_table = new_table
+            if suffixed_key in merged_df.columns:
+                r.source_key = suffixed_key
+
+        if r.target_table in table_suffixes:
+            suffixed_key = r.target_key + table_suffixes[r.target_table]
+            r.target_table = new_table
+            if suffixed_key in merged_df.columns:
+                r.target_key = suffixed_key
+
     b.dfs.pop(table_a, None)
     b.dfs.pop(table_b, None)
-    b.dfs["merged"] = merged_df
+    b.dfs[new_table] = merged_df
     return b
