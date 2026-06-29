@@ -103,6 +103,10 @@ for usage information, see references/degree.md
 Discard loop edges
 for usage information, see references/discard_loop_edges.md
 
+**Discard loop edges in relation:**
+Discards loop edges in the specified relation.
+for usage information, see references/discard_loop_edges_in_relation.md
+
 **Discard parallel edges:**
 Discard parallel edges
 for usage information, see references/discard_parallel_edges.md
@@ -114,6 +118,14 @@ for usage information, see references/graph_from_edge_list.md
 **Merge:**
 Merge multiple inputs
 for usage information, see references/merge.md
+
+**Merge nodes on attribute:**
+Merges the nodes that have the same value for the given attribute.
+for usage information, see references/merge_nodes.md
+
+**Merge parallel edges:**
+Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats).
+for usage information, see references/merge_parallel_edges.md
 
 **Sample graph:**
 Takes a (preferably connected) subgraph.
@@ -215,6 +227,22 @@ for usage information, see references/cypher.md
 Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
 for usage information, see references/sql.md
 
+**Aggregate from segmentation:**
+For every node it aggregates the specified parameters of every node that share a segment with it.
+for usage information, see references/aggregate_from_segmentation.md
+
+**Aggregate to segmentation:**
+For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
+for usage information, see references/aggregate_to_segmentation.md
+
+**Find Connected Components:**
+Finds the connected components of the graph and put the nodes into a segment accordingly.
+for usage information, see references/connected_components.md
+
+**Segment by attribute:**
+Segments the nodes based on the values of the specified attribute.
+for usage information, see references/segment_by_attribute.md
+
 **Add rank attribute:**
 Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
 for usage information, see references/add_rank.md
@@ -226,6 +254,10 @@ for usage information, see references/derive_property.md
 **Enter table data:**
 Enter table data as CSV. The first row should contain column names.
 for usage information, see references/enter_table_data.md
+
+**Filter tables:**
+Keeps/removes the selected tables based on the value of drop_selected
+for usage information, see references/filter_tables.md
 
 **Filter with formula:**
 Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false
@@ -243,13 +275,9 @@ for usage information, see references/rename_table.md
 Sample table
 for usage information, see references/sample_table.md
 
-**Select Table:**
-Select Table
-for usage information, see references/select_table.md
-
-**Vector from attribute pair:**
-Creates a new column with vectors that contain the two attributes
-for usage information, see references/vector_from_attribute_pair.md
+**Vector from attributes:**
+Creates a new column with vectors that contain the selected attributes in the selected order
+for usage information, see references/vector_from_attributes.md
 
 **Bar chart:**
 Bar chart
