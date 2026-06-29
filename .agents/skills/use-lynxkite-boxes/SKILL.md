@@ -135,6 +135,10 @@ for usage information, see references/merge_two_attributes.md
 Takes a (preferably connected) subgraph.
 for usage information, see references/sample_graph.md
 
+**Supplement edges with node attributes:**
+Adds the attributes of the source and target nodes to the edges in the specified relation.
+for usage information, see references/supplement_edges.md
+
 **Define model:**
 Trains the selected model on the selected dataset. Most training parameters are set in the model definition.
 for usage information, see references/define_model.md
