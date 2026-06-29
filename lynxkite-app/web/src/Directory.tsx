@@ -1,7 +1,8 @@
-import { type ReactElement, useRef, useState } from "react";
+import { useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
+import ChevronDown from "~icons/tabler/chevron-down";
 import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
@@ -10,40 +11,24 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Plus from "~icons/tabler/plus";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
-
-function EntryCreator(props: {
-  label: string;
-  icon: ReactElement;
-  onCreate: (name: string) => void;
-}) {
-  const modalRef = useRef<ModalHandle>(null);
-
-  return (
-    <>
-      <button type="button" onClick={() => modalRef.current?.open()}>
-        {props.icon} {props.label}
-      </button>
-      <Modal
-        ref={modalRef}
-        title={props.label}
-        inputLabel="Name"
-        submitLabel="Create"
-        onSubmit={props.onCreate}
-      />
-    </>
-  );
-}
+import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
-    return <title>LynxKite 2000:MM</title>;
+    return (
+      <div className="breadcrumbs">
+        <span className="current-folder">Files</span>
+        <title>LynxKite 2000:MM</title>
+      </div>
+    );
   }
 
   return (
@@ -87,6 +72,9 @@ export default function Directory() {
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const newWorkspaceModalRef = useRef<ModalHandle>(null);
+  const newCodeFileModalRef = useRef<ModalHandle>(null);
+  const newFolderModalRef = useRef<ModalHandle>(null);
 
   function link(item: DirectoryEntry) {
     const encodedName = encodePathSegments(item.name);
@@ -195,8 +183,74 @@ export default function Directory() {
     list.mutate();
   }
 
+  const [newMenuOpen, setNewMenuOpen] = useState(false);
+
+  const sidebar = (
+    <div className="directory-sidebar">
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        multiple
+        onChange={(e) => {
+          if (e.target.files?.length) uploadFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+      <button
+        type="button"
+        className="sidebar-new-button"
+        onClick={() => setNewMenuOpen((o) => !o)}
+      >
+        <Plus />
+        <span className="sidebar-label">New</span>
+        <ChevronDown className={`new-menu-chevron sidebar-label${newMenuOpen ? " open" : ""}`} />
+      </button>
+      {newMenuOpen && (
+        <div className="sidebar-new-menu">
+          <button
+            type="button"
+            onClick={() => {
+              setNewMenuOpen(false);
+              newWorkspaceModalRef.current?.open();
+            }}
+          >
+            <LayoutGridAdd /> <span className="sidebar-label">Workspace</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setNewMenuOpen(false);
+              newCodeFileModalRef.current?.open();
+            }}
+          >
+            <FilePlus /> <span className="sidebar-label">Code file</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setNewMenuOpen(false);
+              newFolderModalRef.current?.open();
+            }}
+          >
+            <FolderPlus /> <span className="sidebar-label">Folder</span>
+          </button>
+        </div>
+      )}
+      <button
+        type="button"
+        className="sidebar-upload-button"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <Upload />
+        <span className="sidebar-label">Upload</span>
+      </button>
+      {config.data?.enterprise_available && <WorkspaceProgressList />}
+    </div>
+  );
+
   return (
-    <ManagementPage>
+    <ManagementPage sidebar={sidebar}>
       {list.error && <p className="error">{list.error.message}</p>}
       {list.isLoading && (
         <output className="loading spinner-border">
@@ -206,48 +260,6 @@ export default function Directory() {
 
       {list.data && (
         <>
-          <div className="actions">
-            <EntryCreator
-              onCreate={(name) => {
-                newWorkspaceIn(path || "", name);
-              }}
-              icon={<LayoutGridAdd />}
-              label="New workspace"
-            />
-            {config.data?.enterprise_available && (
-              <Link to="/progress">
-                <LayoutGrid /> Enterprise progress
-              </Link>
-            )}
-            <EntryCreator
-              onCreate={(name) => {
-                newCodeFile(path || "", name);
-              }}
-              icon={<FilePlus />}
-              label="New code file"
-            />
-            <EntryCreator
-              onCreate={(name: string) => {
-                newFolderIn(path || "", name);
-              }}
-              icon={<FolderPlus />}
-              label="New folder"
-            />
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              multiple
-              onChange={(e) => {
-                if (e.target.files?.length) uploadFiles(e.target.files);
-                e.target.value = "";
-              }}
-            />
-            <button type="button" onClick={() => fileInputRef.current?.click()}>
-              <Upload /> Upload file
-            </button>
-          </div>
-
           <Breadcrumbs path={path} />
 
           <div
@@ -355,6 +367,27 @@ export default function Directory() {
         inputLabel="New name"
         submitLabel="Rename"
         onSubmit={submitRename}
+      />
+      <Modal
+        ref={newWorkspaceModalRef}
+        title="New workspace"
+        inputLabel="Name"
+        submitLabel="Create"
+        onSubmit={(name) => newWorkspaceIn(path || "", name)}
+      />
+      <Modal
+        ref={newCodeFileModalRef}
+        title="New code file"
+        inputLabel="Name"
+        submitLabel="Create"
+        onSubmit={(name) => newCodeFile(path || "", name)}
+      />
+      <Modal
+        ref={newFolderModalRef}
+        title="New folder"
+        inputLabel="Name"
+        submitLabel="Create"
+        onSubmit={(name) => newFolderIn(path || "", name)}
       />
     </ManagementPage>
   );
