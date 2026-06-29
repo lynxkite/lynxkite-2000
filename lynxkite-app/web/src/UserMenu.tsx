@@ -3,7 +3,7 @@ import { memo, useState } from "react";
 import LoginIcon from "~icons/tabler/login";
 import LogoutIcon from "~icons/tabler/logout";
 import UserCircleIcon from "~icons/tabler/user-circle";
-import { triggerLogin, triggerLogout, useAuth, useConfig } from "./common";
+import { getConfig, triggerLogin, triggerLogout, useAuth } from "./common";
 
 // Re-rendering icons is expensive in dev mode; memoizing prevents it.
 const Login = memo(LoginIcon);
@@ -12,7 +12,7 @@ const UserCircle = memo(UserCircleIcon);
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
-  const { data: config } = useConfig();
+  const config = getConfig();
   const user = useAuth();
   const authEnabled = !!config?.authentication_issuer;
   const loggedIn = !!user && !user.expired;

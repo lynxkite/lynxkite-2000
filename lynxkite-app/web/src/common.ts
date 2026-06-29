@@ -164,10 +164,6 @@ export async function completeLoginCallback(): Promise<string> {
   return state?.returnTo || "/";
 }
 
-export function useConfig() {
-  return { data: cachedConfig };
-}
-
 export function useAuth() {
   const config = getConfig();
   const [user, setUser] = useState<User | null>(null);
