@@ -1,6 +1,6 @@
 import axios from "axios";
 import { UserManager } from "oidc-client-ts";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import { LynxKiteState } from "./workspace/LynxKiteState";
@@ -54,6 +54,26 @@ function getUserManager() {
   });
   userManagerKey = key;
   return userManager;
+}
+
+export async function triggerLogout() {
+  const manager = getUserManager();
+  if (!manager) return;
+  await manager.signoutRedirect();
+}
+
+export function useCurrentUser(): string | null {
+  const config = useConfig();
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  useEffect(() => {
+    if (!config.data?.authentication_issuer) return;
+    const manager = getUserManager();
+    if (!manager) return;
+    manager.getUser().then((u) => {
+      setDisplayName(u?.profile?.name ?? (u?.profile?.email as string | undefined) ?? null);
+    });
+  }, [config.data?.authentication_issuer]);
+  return displayName;
 }
 
 export async function triggerLogin() {
