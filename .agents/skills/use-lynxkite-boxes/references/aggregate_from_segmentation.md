@@ -1,9 +1,9 @@
 **Aggregate from segmentation:**
-For every node it aggregates the specified parameters of every node that shares a segment with it.
+For every node, it aggregates the specified parameters of the segments it belongs to.
 parameters:
   - relation_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].relations[].name'}] = ? --the relation connecting the node table to the segmentation table
   - add_suffixes: <class 'bool'> = ? --whether to add suffixes or not
-  - aggregations: typing.Annotated[list[tuple[str, str]], {'format': 'double-textbox_adder', 'metadata_query1': '[].dataframes[].<table_name>.columns[]'}] = ? --the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
+  - aggregations: typing.Annotated[list[tuple[str, str]], {'format': 'double-textbox_adder', 'metadata_query1': '[].dataframes[].<table_name>.columns[]'}] = ? --the aggregations to perform, specified as a list of tuples (column_name, aggregation_function)
   - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --the bundle to operate on
 
 returns:

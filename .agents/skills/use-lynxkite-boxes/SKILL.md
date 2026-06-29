@@ -131,6 +131,10 @@ for usage information, see references/merge_parallel_edges.md
 Takes a (preferably connected) subgraph.
 for usage information, see references/sample_graph.md
 
+**Use table as attributes:**
+Uses the columns from one table as attributes for the other.
+for usage information, see references/table_as_attributes.md
+
 **Define model:**
 Trains the selected model on the selected dataset. Most training parameters are set in the model definition.
 for usage information, see references/define_model.md
@@ -228,7 +232,7 @@ Run a SQL query on the DataFrames in the bundle. Save the results as a new DataF
 for usage information, see references/sql.md
 
 **Aggregate from segmentation:**
-For every node it aggregates the specified parameters of every node that shares a segment with it.
+For every node, it aggregates the specified parameters of the segments it belongs to.
 for usage information, see references/aggregate_from_segmentation.md
 
 **Aggregate to segmentation:**
