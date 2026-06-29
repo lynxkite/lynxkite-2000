@@ -139,6 +139,10 @@ for usage information, see references/sample_graph.md
 Adds the attributes of the source and target nodes to the edges in the specified relation.
 for usage information, see references/supplement_edges.md
 
+**Use table as attributes:**
+Uses the columns from one table as attributes for the other.
+for usage information, see references/table_as_attributes.md
+
 **Define model:**
 Trains the selected model on the selected dataset. Most training parameters are set in the model definition.
 for usage information, see references/define_model.md
