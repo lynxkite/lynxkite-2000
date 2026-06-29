@@ -57,7 +57,22 @@ def add_rank(
     rank_name: str,
     order: OrderType,
 ):
-    """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"""
+    """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
+
+    Parameters
+    ----------
+    table_column : core.TableColumn
+        The table and column to rank
+    rank_name : str
+        The name of the new rank column
+    order : OrderType
+        The order in which to rank the rows either 'ascending' or 'descending'
+
+    Returns
+    -------
+    output : core.Bundle
+        The updated bundle with the new rank column
+    """
     table, column = table_column
     b = b.copy()
     df = b.dfs[table]

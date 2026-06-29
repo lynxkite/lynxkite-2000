@@ -2,12 +2,25 @@
 
 from __future__ import annotations
 
-import inspect
 import asyncio
+import inspect
 import typing
 import pandas as pd
 
 from lynxkite_core.ops import OpContext
+
+try:
+    from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
+    from lynxkite_enterprise.lim import (  # ty: ignore[unresolved-import]
+        get_remote_row_processor,
+        register_lim_function_if_worker,
+    )
+
+    enterprise_backend = True
+except ImportError:
+    enterprise_backend = False
+    execution_parallelism = None  # type: ignore[assignment,misc]
+
 from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
 
@@ -18,16 +31,35 @@ def elementwise(
     input_table: str,
     desc: str = "",
     concurrency: int = 1,
+    lim_config: typing.Any = None,
 ) -> typing.Callable:
     """Decorator for operations that process each row independently.
 
     The wrapped function receives a Record and can update output fields directly.
     Iteration, progress display, and DataFrame writes are handled by the decorator.
 
+    Set ``concurrency`` above 1 to process multiple rows in parallel. With LynxKite Enterprise,
+    effective parallelism is ``max(concurrency, ws.execution_options['gpus'])``; otherwise only
+    ``concurrency`` is used. Async row functions, effective parallelism above 1, and LIM-backed
+    ops use the async row runner; otherwise sync row functions run sequentially.
+
     Example:
-        @elementwise(input_table="protein_table_column", desc="Processing proteins")
-        async def process(record: Record, *, protein_table_column: tuple[str, str]):
+        @op("Process proteins", slow=True)
+        @elementwise(input_table="protein_table_column", desc="Processing proteins", concurrency=8)
+        async def process(record: Record, *, protein_table_column: TableColumn):
             record.result = await api_call(record[protein_table_column])
+
+    If LynxKite 2000:MM Enterprise is installed, you can run elementwise operations on Kubernetes
+    as LIMs. With LIM, pass a small ``lim_config``; storage and k8s defaults are filled in
+    automatically:
+        @op("ESM2", slow=True)
+        @elementwise(
+            input_table="protein_table_column",
+            desc="ESM2",
+            lim_config={"cpu": "4", "memory": "8Gi"},
+        )
+        def query_esm2(record: Record, *, protein_table_column: TableColumn) -> None:
+            record.embeddings = my_inference(record[protein_table_column])
     """
 
     def decorator(func: typing.Callable) -> typing.Callable:
@@ -39,6 +71,12 @@ def elementwise(
                 f"@elementwise requires 'record: Record' as first parameter, got: {params[0].name if params else 'none'}"
             )
 
+        service_name = None
+        if lim_config and not enterprise_backend:
+            raise ValueError("@elementwise(lim_config=...) requires LynxKite Enterprise")
+        if enterprise_backend and lim_config:
+            service_name = register_lim_function_if_worker(func, lim_config)
+
         public_signature = sig.replace(
             parameters=[
                 inspect.Parameter("self", inspect.Parameter.POSITIONAL_OR_KEYWORD),
@@ -47,7 +85,7 @@ def elementwise(
             ]
         )
 
-        if inspect.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func) or lim_config or concurrency > 1:
 
             async def async_wrapper(
                 self: OpContext,
@@ -63,25 +101,40 @@ def elementwise(
                     kwargs,
                     desc=desc,
                     concurrency=concurrency,
+                    lim_config=lim_config,
+                    service_name=service_name,
                 )
 
             setattr(async_wrapper, "__signature__", public_signature)
             return async_wrapper
-        else:
 
-            def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
-                selected_input_table = kwargs[input_table]
-                return _elementwise_impl_sync(
-                    self,
-                    bundle,
-                    func,
-                    selected_input_table,
-                    kwargs,
-                    desc=desc,
+        def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
+            selected_input_table = kwargs[input_table]
+            if max(concurrency, execution_parallelism(self) if execution_parallelism else 1) > 1:
+                return asyncio.run(
+                    _elementwise_impl_async(
+                        self,
+                        bundle,
+                        func,
+                        selected_input_table,
+                        kwargs,
+                        desc=desc,
+                        concurrency=concurrency,
+                        lim_config=None,
+                        service_name=None,
+                    )
                 )
+            return _elementwise_impl_sync(
+                self,
+                bundle,
+                func,
+                selected_input_table,
+                kwargs,
+                desc=desc,
+            )
 
-            setattr(sync_wrapper, "__signature__", public_signature)
-            return sync_wrapper
+        setattr(sync_wrapper, "__signature__", public_signature)
+        return sync_wrapper
 
     return decorator if func is None else decorator(func)
 
@@ -95,36 +148,88 @@ async def _elementwise_impl_async(
     *,
     desc: str,
     concurrency: int,
+    lim_config: typing.Any | None,
+    service_name: str | None,
 ) -> Bundle:
     bundle, table_name, df = _prepare_elementwise(
         bundle=bundle,
         input_table_selection=input_table_selection,
     )
 
-    concurrency = max(1, int(concurrency))
+    async def process_row_updates(idx: RowIndex, row: pd.Series) -> dict[ColumnKey, typing.Any]:
+        record = Record(row, idx)
+        if inspect.iscoroutinefunction(func):
+            result = func(record, **kwargs)
+            if inspect.isawaitable(result):
+                await result
+        else:
+            await asyncio.to_thread(func, record, **kwargs)
+        return record.get_updates()
 
-    if concurrency == 1:
-        for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
-            record = Record(row, idx)
-            await func(record, **kwargs)
-            _apply_record_updates(df, row_pos, record)
-    else:
-        semaphore = asyncio.Semaphore(concurrency)
-        rows = list(enumerate(df.iterrows()))
+    lim_cleanup = None
+    if service_name and lim_config:
+        remote_processor = await get_remote_row_processor(
+            self,
+            kwargs,
+            service_name=service_name,
+            lim_config=lim_config,
+        )
+        if remote_processor is not None:
+            process_row_updates = remote_processor  # type: ignore[assignment]
+            lim_cleanup = getattr(remote_processor, "lim_cleanup", None)
 
-        async def process_one(row_pos: int, idx: RowIndex, row: pd.Series):
-            async with semaphore:
-                record = Record(row, idx)
-                await func(record, **kwargs)
-                return row_pos, record.get_updates()
-
-        pending = [process_one(row_pos, idx, row) for row_pos, (idx, row) in rows]
-        for completed in self.tqdm(asyncio.as_completed(pending), total=len(rows), desc=desc):
-            row_pos, updates = await completed
-            _apply_updates(df, row_pos, updates)
+    try:
+        await _process_rows_concurrently(
+            self,
+            df,
+            process_row_updates,
+            desc=desc,
+            parallelism=max(
+                concurrency, execution_parallelism(self) if execution_parallelism else 1
+            ),
+        )
+    finally:
+        if lim_cleanup is not None:
+            await lim_cleanup()
 
     bundle.dfs[table_name] = df
     return bundle
+
+
+async def _process_rows_concurrently(
+    op_ctx: OpContext,
+    df: pd.DataFrame,
+    process_row_updates: typing.Callable[
+        [RowIndex, pd.Series], typing.Awaitable[dict[ColumnKey, typing.Any]]
+    ],
+    *,
+    desc: str,
+    parallelism: int,
+) -> None:
+    rows = list(enumerate(df.iterrows()))
+    if not rows:
+        return
+
+    semaphore = asyncio.Semaphore(parallelism)
+
+    async def process_one_row(
+        row_pos: int, idx: RowIndex, row: pd.Series
+    ) -> tuple[int, dict[ColumnKey, typing.Any]]:
+        async with semaphore:
+            updates = await process_row_updates(idx, row)
+        return row_pos, updates
+
+    tasks = [
+        asyncio.create_task(process_one_row(row_pos, idx, row)) for row_pos, (idx, row) in rows
+    ]
+    try:
+        for done in op_ctx.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc=desc):
+            row_pos, updates = await done
+            _apply_updates(df, row_pos, updates)
+    except BaseException:
+        for task in tasks:
+            task.cancel()
+        raise
 
 
 def _elementwise_impl_sync(
@@ -144,7 +249,7 @@ def _elementwise_impl_sync(
     for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
         record = Record(row, idx)
         func(record, **kwargs)
-        _apply_record_updates(df, row_pos, record)
+        _apply_updates(df, row_pos, record.get_updates())
 
     bundle.dfs[table_name] = df
     return bundle
@@ -175,10 +280,6 @@ def _resolve_input_table_name(input_table_selection: typing.Any) -> str:
     raise TypeError(
         "Unsupported input table selector type. Expected table name string or (table, column) pair."
     )
-
-
-def _apply_record_updates(df: pd.DataFrame, row_pos: int, record: Record) -> None:
-    _apply_updates(df, row_pos, record.get_updates())
 
 
 def _apply_updates(

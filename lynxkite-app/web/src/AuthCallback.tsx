@@ -1,7 +1,7 @@
 // This component handles the callback from the authentication provider (e.g., Keycloak).
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { completeLoginCallback, loadConfig } from "./common.ts";
+import { completeLoginCallback } from "./common.ts";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -10,7 +10,6 @@ export default function AuthCallback() {
   useEffect(() => {
     const run = async () => {
       try {
-        await loadConfig();
         const returnTo = await completeLoginCallback();
         navigate(returnTo, { replace: true });
       } catch (e) {

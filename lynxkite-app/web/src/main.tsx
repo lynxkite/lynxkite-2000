@@ -14,6 +14,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
+import { loadConfig } from "./common.ts";
 import Directory from "./Directory.tsx";
 
 const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
@@ -65,9 +66,31 @@ const router = createBrowserRouter(
   ),
 );
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-    <ReactTooltip id="tooltip-global" opacity={1} />
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById("root")!);
+
+async function bootstrap() {
+  try {
+    await loadConfig();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to reach the server.";
+    root.render(
+      <div className="hero min-h-screen">
+        <div className="card bg-base-100 shadow-sm">
+          <div className="card-body">
+            <h2 className="card-title">LynxKite failed to load</h2>
+            <p>{message}</p>
+          </div>
+        </div>
+      </div>,
+    );
+    return;
+  }
+  root.render(
+    <StrictMode>
+      <RouterProvider router={router} />
+      <ReactTooltip id="tooltip-global" opacity={1} />
+    </StrictMode>,
+  );
+}
+
+void bootstrap();

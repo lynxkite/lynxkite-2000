@@ -38,7 +38,7 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
+import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
@@ -84,6 +84,8 @@ export default function Workspace(props: any) {
   );
 }
 
+const ICONIZE_THRESHOLD = 0.3;
+
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
@@ -95,6 +97,7 @@ function LynxKiteFlow() {
   );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
+  const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
   const shortPath = path!
     .split("/")
     .pop()!
@@ -140,7 +143,7 @@ function LynxKiteFlow() {
     `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher as Fetcher<Catalogs>,
   );
-  const config = useConfig();
+  const config = getConfig();
   const categoryHierarchy = useMemo(() => {
     if (!catalog.data || !crdt?.ws?.env) return undefined;
     return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
@@ -596,7 +599,7 @@ function LynxKiteFlow() {
                   {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
                 </button>
               </Tooltip>
-              {config.data?.assistant_available && (
+              {config.assistant_available && (
                 <Tooltip doc={"Toggle assistant"}>
                   <button
                     className="btn btn-link"
@@ -646,7 +649,7 @@ function LynxKiteFlow() {
           ref={reactFlowContainer}
         >
           {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized }}>
               <ReactFlow
                 nodes={nodes}
                 edges={autoConnect.renderedEdges}
@@ -666,6 +669,10 @@ function LynxKiteFlow() {
                 onConnect={onConnect}
                 onNodeDrag={autoConnect.onNodeDrag}
                 onNodeDragStop={autoConnect.onNodeDragStop}
+                onMove={() => {
+                  const zoom = reactFlow.getZoom();
+                  setIconized(zoom < ICONIZE_THRESHOLD);
+                }}
                 proOptions={{ hideAttribution: true }}
                 maxZoom={10}
                 minZoom={0.1}

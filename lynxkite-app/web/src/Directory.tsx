@@ -10,8 +10,9 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
+import { apiFetch, apiJson, getConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 
@@ -74,16 +75,17 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
-  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
-  const config = useConfig();
+  const config = getConfig();
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
   const navigate = useNavigate();
   const renameModalRef = useRef<ModalHandle>(null);
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   function link(item: DirectoryEntry) {
     const encodedName = encodePathSegments(item.name);
@@ -120,6 +122,23 @@ export default function Directory() {
       replace: true,
     });
   }
+  async function uploadFiles(files: FileList | File[]) {
+    const dirParam = encodeURIComponent(path || "");
+    for (const file of Array.from(files)) {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        alert(`Failed to upload ${file.name}.`);
+        return;
+      }
+    }
+    list.mutate();
+  }
+
   async function newFolderIn(path: string, folderName: string) {
     const pathSlash = path ? `${path}/` : "";
     const res = await apiFetch("/api/dir/mkdir", {
@@ -194,7 +213,7 @@ export default function Directory() {
               icon={<LayoutGridAdd />}
               label="New workspace"
             />
-            {config.data?.enterprise_available && (
+            {config.enterprise_available && (
               <Link to="/progress">
                 <LayoutGrid /> Enterprise progress
               </Link>
@@ -213,88 +232,119 @@ export default function Directory() {
               icon={<FolderPlus />}
               label="New folder"
             />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              multiple
+              onChange={(e) => {
+                if (e.target.files?.length) uploadFiles(e.target.files);
+                e.target.value = "";
+              }}
+            />
+            <button type="button" onClick={() => fileInputRef.current?.click()}>
+              <Upload /> Upload file
+            </button>
           </div>
 
           <Breadcrumbs path={path} />
 
-          {list.data.map(
-            (item: DirectoryEntry) =>
-              !shortName(item)?.startsWith("__") && (
-                <div key={item.name} className="entry">
-                  <Link key={link(item)} to={link(item)}>
-                    {item.type === "directory" ? (
-                      <Folder />
-                    ) : item.type === "workspace" ? (
-                      <LayoutGrid />
-                    ) : (
-                      <File />
-                    )}
-                    <span className="entry-name">{shortName(item)}</span>
-                  </Link>
-                  <div className="dropdown dropdown-left dropdown-end">
-                    <button
-                      className="entry-actions-button"
-                      tabIndex={0}
-                      type="button"
-                      aria-label={`Open actions for ${shortName(item)}`}
-                    >
-                      <DotsVertical />
-                    </button>
-                    <ul tabIndex={0} className="dropdown-content menu">
-                      <li>
-                        <button
-                          className="delete-button"
-                          type="button"
-                          onClick={() => {
-                            deleteItem(item);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            openRenameModal(item);
-                          }}
-                        >
-                          Rename
-                        </button>
-                      </li>
-                      {item.type !== "directory" && (
+          <div
+            className={`entry-drop-zone${isDragOver ? " drag-over" : ""}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setIsDragOver(false);
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+            }}
+          >
+            {list.data.map(
+              (item: DirectoryEntry) =>
+                !shortName(item)?.startsWith("__") && (
+                  <div key={item.name} className="entry">
+                    <Link key={link(item)} to={link(item)}>
+                      {item.type === "directory" ? (
+                        <Folder />
+                      ) : item.type === "workspace" ? (
+                        <LayoutGrid />
+                      ) : (
+                        <File />
+                      )}
+                      <span className="entry-name">{shortName(item)}</span>
+                    </Link>
+                    <div className="dropdown dropdown-left dropdown-end">
+                      <button
+                        className="entry-actions-button"
+                        tabIndex={0}
+                        type="button"
+                        aria-label={`Open actions for ${shortName(item)}`}
+                      >
+                        <DotsVertical />
+                      </button>
+                      <ul tabIndex={0} className="dropdown-content menu">
+                        <li>
+                          <button
+                            className="delete-button"
+                            type="button"
+                            onClick={() => {
+                              deleteItem(item);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </li>
                         <li>
                           <button
                             type="button"
-                            onClick={async () => {
-                              const res = await fetch("/api/download", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ path: item.name }),
-                              });
-                              if (!res.ok) {
-                                alert("Failed to download file.");
-                                return;
-                              }
-                              const blob = await res.blob();
-                              const url = URL.createObjectURL(blob);
-                              const a = document.createElement("a");
-                              a.href = url;
-                              a.download = item.name;
-                              a.click();
-                              URL.revokeObjectURL(url);
+                            onClick={() => {
+                              openRenameModal(item);
                             }}
                           >
-                            Download
+                            Rename
                           </button>
                         </li>
-                      )}
-                    </ul>
+                        {item.type !== "directory" && (
+                          <li>
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const res = await fetch("/api/download", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ path: item.name }),
+                                });
+                                if (!res.ok) {
+                                  alert("Failed to download file.");
+                                  return;
+                                }
+                                const blob = await res.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = item.name;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                              }}
+                            >
+                              Download
+                            </button>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              ),
-          )}
-          {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
+                ),
+            )}
+            {list.data.length === 0 && <div className="entry empty">This folder is empty.</div>}
+          </div>
         </>
       )}
       <Modal

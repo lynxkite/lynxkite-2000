@@ -138,25 +138,25 @@ def _crdt_update_list_by_index(
             # Update in place.
             if isinstance(value, dict):
                 if not isinstance(crdt_obj[i], pycrdt.Map):
-                    crdt_obj[i] = pycrdt.Map()  # ty: ignore[invalid-assignment]
+                    crdt_obj[i] = pycrdt.Map()
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             elif isinstance(value, list):
                 if not isinstance(crdt_obj[i], pycrdt.Array):
-                    crdt_obj[i] = pycrdt.Array()  # ty: ignore[invalid-assignment]
+                    crdt_obj[i] = pycrdt.Array()
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             else:
                 if crdt_obj[i] != value:
-                    crdt_obj[i] = value  # ty: ignore[invalid-assignment]
+                    crdt_obj[i] = value
         else:
             # Append new item.
             if isinstance(value, dict):
-                crdt_obj.append(pycrdt.Map())  # ty: ignore[invalid-argument-type]
+                crdt_obj.append(pycrdt.Map())
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             elif isinstance(value, list):
-                crdt_obj.append(pycrdt.Array())  # ty: ignore[invalid-argument-type]
+                crdt_obj.append(pycrdt.Array())
                 crdt_update(crdt_obj[i], value, non_collaborative_fields)
             else:
-                crdt_obj.append(value)  # ty: ignore[invalid-argument-type]
+                crdt_obj.append(value)
     # Delete items that are no longer present.
     while len(crdt_obj) > len(python_obj):
         del crdt_obj[-1]

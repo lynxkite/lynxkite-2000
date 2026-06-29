@@ -18,6 +18,7 @@ type SearchResult = {
 
 export type Category = {
   name: string;
+  opsContained: number;
   ops: OpsOp[]; // Operations at this level.
   categories: Category[]; // Subcategories.
 };
@@ -27,11 +28,13 @@ function sortHierarchy(level: Category): Category {
   sortedOps.sort((a, b) => a.name.localeCompare(b.name));
   const sortedCategories = level.categories.map(sortHierarchy);
   sortedCategories.sort((a, b) => a.name.localeCompare(b.name));
-  return { name: level.name, ops: sortedOps, categories: sortedCategories };
+  const opsContained =
+    sortedOps.length + sortedCategories.reduce((sum, cat) => sum + cat.opsContained, 0);
+  return { name: level.name, ops: sortedOps, categories: sortedCategories, opsContained };
 }
 
 export function buildCategoryHierarchy(boxes: Catalog): Category {
-  const hierarchy: Category = { name: "<<root>>", ops: [], categories: [] };
+  const hierarchy: Category = { name: "<<root>>", ops: [], categories: [], opsContained: 0 };
   for (const op of Object.values(boxes || {})) {
     const categories = op.categories;
     let currentLevel = hierarchy;
@@ -42,6 +45,7 @@ export function buildCategoryHierarchy(boxes: Catalog): Category {
           name: category,
           ops: [],
           categories: [],
+          opsContained: 0,
         };
         currentLevel.categories.push(newCategory);
         currentLevel = newCategory;
@@ -301,6 +305,11 @@ export function NodeSearchInternal(props: {
           >
             {result.isCategory ? <FolderIcon /> : result.isBack ? <ArrowLeftIcon /> : null}
             {result.name}{" "}
+            {result.isCategory && (
+              <span className="category-ops-contained">
+                {(result.item as Category).opsContained}
+              </span>
+            )}
             {result.parentPath.length ? (
               <span className="search-result-path">({result.parentPath.join(" › ")})</span>
             ) : null}

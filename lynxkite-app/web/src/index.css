@@ -21,6 +21,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-base-100: white;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
@@ -371,6 +372,32 @@ svg {
     --status-color-3: #888f;
   }
 
+  .lynxkite-node.lynxkite-node-iconized {
+    .node-content {
+      display: none;
+    }
+
+    /* In the iconized view we fill the box with the tooltip handler, and center the icon inside it. */
+    div[data-tooltip-id] {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .title-icon {
+        display: block;
+        width: 150px;
+        height: 150px;
+        color: white;
+      }
+
+      .title-icon-placeholder {
+        flex: none;
+        width: 0;
+      }
+    }
+  }
+
   .handle-name {
     font-size: 10px;
     color: black;
@@ -560,6 +587,13 @@ svg {
     .search-result.selected {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
+    }
+
+    .category-ops-contained {
+      font-size: 80%;
+      color: #0008;
+      margin-left: auto;
+      margin-right: 5px;
     }
   }
 
@@ -1023,6 +1057,17 @@ svg {
 
   .management-page-content .entry:last-child {
     border-bottom: none;
+  }
+
+  .entry-drop-zone {
+    min-height: 60px;
+    transition: background 0.15s;
+  }
+
+  .entry-drop-zone.drag-over {
+    background: #39bcf320;
+    outline: 2px dashed #39bcf3;
+    outline-offset: -2px;
   }
 
   .loading {
