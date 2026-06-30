@@ -111,6 +111,10 @@ for usage information, see references/discard_loop_edges_in_relation.md
 Discard parallel edges
 for usage information, see references/discard_parallel_edges.md
 
+**Distance via shortest path:**
+Computes the shortest distance from each node to the starting nodes using the specified edge distances.
+for usage information, see references/shortest_distance.md
+
 **Graph from edge list:**
 Graph from edge list
 for usage information, see references/graph_from_edge_list.md
