@@ -25,6 +25,40 @@ def merge(
     return b
 
 
+def remap(
+    b: core.Bundle,
+    table_name: core.TableName,
+    attribute: str,
+    old_df: pd.DataFrame,
+) -> core.Bundle:
+    """
+    Remaps the node ids and updates the relations.
+    :param b: The bundle
+    :param table_name: The name of the node table that was modified.
+    :param attribute: The name of the new attribute.
+    :param old_df: The old dataframe.
+    """
+    b = b.copy()
+
+    def _update_relation(r, suffix, column_attr, key_attr):
+        new_column = attribute + suffix
+        edge_column = getattr(r, column_attr)
+        node_key = getattr(r, key_attr)
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(
+            old_df.set_index(node_key)[attribute]
+        )
+        setattr(r, column_attr, new_column)
+        setattr(r, key_attr, attribute)
+
+    for r in b.relations:
+        if table_name == r.source_table:
+            _update_relation(r, "_src", "source_column", "source_key")
+        if table_name == r.target_table:
+            _update_relation(r, "_dst", "target_column", "target_key")
+
+    return b
+
+
 @op("Merge nodes on attribute", icon="link")
 def merge_nodes(
     b: core.Bundle,
@@ -71,23 +105,7 @@ def merge_nodes(
     grouped_df = old_df.groupby(attribute).agg(agg_dict)
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
-
-    def _update_relation(r, suffix, column_attr, key_attr):
-        new_column = attribute + suffix
-        edge_column = getattr(r, column_attr)
-        node_key = getattr(r, key_attr)
-        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(
-            old_df.set_index(node_key)[attribute]
-        )
-        setattr(r, column_attr, new_column)
-        setattr(r, key_attr, attribute)
-
-    for r in b.relations:
-        if table_name == r.source_table:
-            _update_relation(r, "_src", "source_column", "source_key")
-        if table_name == r.target_table:
-            _update_relation(r, "_dst", "target_column", "target_key")
-
+    remap(b, table_name, attribute, old_df)
     return b
 
 
