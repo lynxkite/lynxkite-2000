@@ -15,7 +15,7 @@ class EdgeDirection(enum.StrEnum):
     Both = "Require both directions"
 
 
-@op("Find Connected Components", icon="filter-filled")
+@op("Find connected components", icon="filter-filled")
 def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
     """
     Finds the connected components of the graph and put the nodes into a segment accordingly.

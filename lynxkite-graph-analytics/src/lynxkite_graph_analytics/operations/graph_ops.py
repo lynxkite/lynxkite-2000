@@ -139,7 +139,7 @@ def merge_parallel_edges(
     return b
 
 
-@op("Define Edges", view="graph_creation_view", outputs=["output"], icon="link")
+@op("Define edges", view="graph_creation_view", outputs=["output"], icon="link")
 def define_edges(b: core.Bundle, *, relations: str = ""):
     """Define edges between node tables"""
     b = b.copy()

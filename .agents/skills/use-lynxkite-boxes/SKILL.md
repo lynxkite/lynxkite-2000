@@ -91,7 +91,7 @@ for usage information, see references/aggregate_on_neighbors.md
 Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
 for usage information, see references/connect_nodes.md
 
-**Define Edges:**
+**Define edges:**
 Define edges between node tables
 for usage information, see references/define_edges.md
 
@@ -235,7 +235,7 @@ for usage information, see references/aggregate_from_segmentation.md
 For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
 for usage information, see references/aggregate_to_segmentation.md
 
-**Find Connected Components:**
+**Find connected components:**
 Finds the connected components of the graph and put the nodes into a segment accordingly.
 for usage information, see references/connected_components.md
 
