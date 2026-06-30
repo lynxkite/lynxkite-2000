@@ -36,6 +36,7 @@ function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
   ) {
     return true;
   }
+  if (nextNode.data?.display_version !== prevNode.data?.display_version) return true;
   return false;
 }
 
@@ -167,8 +168,13 @@ class CRDTConnection {
     if (origin === this.wsProvider) {
       if (!this.ws) return;
       const changedNodeIds = this.updateState();
-      for (const nodeId of changedNodeIds) {
-        this.updateNodeInternals(nodeId);
+      // Batch DOM updates for better performance
+      if (changedNodeIds.length > 0) {
+        requestAnimationFrame(() => {
+          for (const nodeId of changedNodeIds) {
+            this.updateNodeInternals(nodeId);
+          }
+        });
       }
     }
   };
@@ -179,7 +185,12 @@ class CRDTConnection {
     // ...and to the CRDT state.
     const wnodes = this.ws.get("nodes") as Y.Array<any>;
     let wsChanged = false;
-    for (const ch of changes) {
+
+    // Process changes more efficiently by batching operations
+    const changesToProcess = [...changes];
+    const removeOperations: { index: number }[] = [];
+
+    for (const ch of changesToProcess) {
       const nodeIndex = wnodes.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
       if (nodeIndex === -1) continue;
       const node = wnodes.get(nodeIndex) as Y.Map<any>;
@@ -210,7 +221,7 @@ class CRDTConnection {
         // Update edge positions when node size changes.
         this.updateNodeInternals(ch.id);
       } else if (ch.type === "remove") {
-        wnodes.delete(nodeIndex);
+        removeOperations.push({ index: nodeIndex });
         wsChanged = true;
       } else if (ch.type === "replace") {
         this.doc.transact(() => {
@@ -253,6 +264,13 @@ class CRDTConnection {
         console.log("Unknown node change", ch);
       }
     }
+
+    // Remove items in reverse order to avoid index shifting issues
+    for (let i = removeOperations.length - 1; i >= 0; i--) {
+      const { index } = removeOperations[i];
+      wnodes.delete(index);
+    }
+
     if (wsChanged) {
       this.updateState();
     } else {
@@ -264,15 +282,21 @@ class CRDTConnection {
     const wedges = this.ws.get("edges") as Y.Array<any>;
     if (!wedges) return;
     let wsChanged = false;
+    const removeOperations: { index: number }[] = [];
     for (const ch of changes) {
       if (ch.type === "remove") {
         const edgeIndex = wedges.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
-        wedges.delete(edgeIndex);
+        removeOperations.push({ index: edgeIndex });
         wsChanged = true;
       } else if (ch.type === "select") {
       } else {
         console.log("Unknown edge change", ch);
       }
+    }
+    // Remove edges in reverse order to avoid index shifting
+    for (let i = removeOperations.length - 1; i >= 0; i--) {
+      const { index } = removeOperations[i];
+      wedges.delete(index);
     }
     if (wsChanged) {
       this.updateState();
