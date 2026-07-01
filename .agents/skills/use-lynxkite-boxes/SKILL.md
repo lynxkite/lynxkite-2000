@@ -240,7 +240,7 @@ Finds the connected components of the graph and put the nodes into a segment acc
 for usage information, see references/connected_components.md
 
 **Segment by attribute:**
-Segments the nodes based on the values of the specified attribute.
+Segments the nodes in a table based on the values of the specified attribute.
 for usage information, see references/segment_by_attribute.md
 
 **Add rank attribute:**
