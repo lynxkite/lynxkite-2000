@@ -202,53 +202,46 @@ def _suffix_check(add_suffixes, funcs_values):
 def aggregate_to_segmentation(
     b: core.Bundle,
     *,
-    segmentation_name: str,
+    relation_name: core.RelationName,
     add_suffixes: bool = False,
     aggregations: core.DoubleTextAdder,
 ):
     """
     For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
     :param b: the bundle to operate on
-    :param segmentation_name: the name of the segmentation
+    :param relation_name: the relation connecting the node table to the segmentation table
     :param add_suffixes: whether to add suffixes or not
     :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
     """
     b = b.copy()
 
-    # Find relations connecting to the segmentation
-    relations = _find_segmentation_relations(b, segmentation_name)
+    relation = next(r for r in b.relations if r.name == relation_name)
+    segmentation_name = relation.target_table
+    node_table = relation.source_table
+    segment_df = b.dfs[segmentation_name].copy()
 
-    columns = {item[0] for item in aggregations}
-    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
-    _suffix_check(add_suffixes, agg_dict.values())
+    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
+    agg_dict = dict(parsed_aggregations)
+    columns = [col for col, _ in parsed_aggregations]
+    funcs = [func for _, func in parsed_aggregations]
 
-    all_tables = []
-    for relation, node_table in relations:
-        # Get the edge table
-        edge_df = b.dfs[relation.df].copy()
-        node_df = b.dfs[node_table]
+    _suffix_check(add_suffixes, funcs)
 
-        # Merge nodes with edges to get segment assignments
-        merged = edge_df.merge(
-            node_df[[relation.source_key] + list(columns)],
-            left_on=relation.source_column,
-            right_on=relation.source_key,
-            how="left",
-        )
+    node_df = b.dfs[node_table][[relation.source_key] + columns]
+    merged = b.dfs[relation.df].merge(
+        node_df, left_on=relation.source_column, right_on=relation.source_key, how="inner"
+    )
 
-        # Keep only the segment ID and the columns to aggregate
-        merged = merged[[relation.target_column] + list(columns)]
-        merged = merged.rename(columns={relation.target_column: segmentation_name})
-        all_tables.append(merged)
+    aggregated = merged.groupby(relation.target_column).agg(agg_dict)
+    aggregated.columns = [
+        f"{col}_{func}" if add_suffixes or len(agg_dict[col]) > 1 else col
+        for col, func in aggregated.columns
+    ]
 
-    combined = pandas.concat(all_tables, ignore_index=True)
-
-    # Group by segment and aggregate
-    aggregated = combined.groupby(segmentation_name).agg(agg_dict)  # type: ignore
-    aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
-    aggregated = aggregated.reset_index()
-
-    b.dfs["aggregated"] = aggregated
+    aggregated = aggregated.reset_index().rename(
+        columns={relation.target_column: relation.target_key}
+    )
+    b.dfs[segmentation_name] = segment_df.merge(aggregated, on=relation.target_key, how="left")
     return b
 
 
