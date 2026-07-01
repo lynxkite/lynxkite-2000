@@ -26,14 +26,5 @@ class RelationDefinition:
     target_key: str
     name: str
 
-    def copy(self):
-        return RelationDefinition(
-            self.df,
-            self.source_column,
-            self.target_column,
-            self.source_table,
-            self.target_table,
-            self.source_key,
-            self.target_key,
-            self.name,
-        )
+    def copy(self, /, **changes):
+        return dataclasses.replace(self, **changes)
