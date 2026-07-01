@@ -236,7 +236,7 @@ For every segment in the segmentation it aggregates the specified parameters of 
 for usage information, see references/aggregate_to_segmentation.md
 
 **Find connected components:**
-Finds the connected components of the graph and put the nodes into a segment accordingly.
+Finds connected components in the graph of the relation.
 for usage information, see references/connected_components.md
 
 **Segment by attribute:**

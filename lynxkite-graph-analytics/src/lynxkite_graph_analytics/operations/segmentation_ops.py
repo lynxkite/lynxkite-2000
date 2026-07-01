@@ -16,43 +16,71 @@ class EdgeDirection(enum.StrEnum):
 
 
 @op("Find connected components", icon="filter-filled")
-def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
+def connected_components(
+    b: core.Bundle,
+    *,
+    relation_name: core.RelationName,
+    edge_direction: EdgeDirection,
+    segmentation_name: str,
+):
     """
-    Finds the connected components of the graph and put the nodes into a segment accordingly.
+    Finds connected components in the graph of the relation.
     :param b: the bundle
+    :param relation_name: the relation whose graph is segmented
     :param edge_direction: whether to ignore the direction of the edges
     :param segmentation_name: the name of the segmentation.
     """
     b = b.copy()
     for table in b.dfs.keys():
         b.dfs[table] = b.dfs[table].copy()
-    graph, meta = b.to_nx_meta()
 
-    column_names = set()
-    for r in b.relations:
-        column_names.update(b.dfs[r.source_table].columns.values)
-        column_names.update(b.dfs[r.target_table].columns.values)
-    if segmentation_name in column_names:
-        raise ValueError(f"{segmentation_name} already exists")
+    relation = next((r for r in b.relations if r.name == relation_name))
+    if relation.source_table != relation.target_table:
+        raise ValueError("source_table and target_table must be the same")
+
+    node_table = relation.source_table
+    id_column = relation.source_key
+    node_df = b.dfs[node_table]
+    edge_df = b.dfs[relation.df]
+
+    graph = nx.DiGraph()
+    graph.add_nodes_from(node_df[id_column].tolist())
+    graph.add_edges_from(
+        zip(edge_df[relation.source_column].tolist(), edge_df[relation.target_column].tolist())
+    )
 
     if edge_direction == EdgeDirection.Ignore:
         components = nx.connected_components(graph.to_undirected())
     else:
         components = nx.strongly_connected_components(graph)
 
-    mapping = {}
-    table_id_cols = {}
+    node_to_segment: dict[object, int] = {}
+    segment_rows = []
+    for comp_id, comp in enumerate(components):
+        segment_rows.append({"id": comp_id, "value": comp_id})
+        for node_id in comp:
+            node_to_segment[node_id] = comp_id
 
-    for comp_id, comp in enumerate(list(components)):
-        for node in comp:
-            m = meta[node]
-            mapping[m.table] = mapping.get(m.table, {})
-            mapping[m.table][str(m.node_id)] = {comp_id}
-            table_id_cols[m.table] = m.id_column
-
-    for table, id_column in table_id_cols.items():
-        b.dfs[table] = b.dfs[table].copy()
-        b.dfs[table][segmentation_name] = b.dfs[table][id_column].astype(str).map(mapping[table])
+    b.dfs[segmentation_name] = pandas.DataFrame(segment_rows)
+    edge_table = f"{segmentation_name}_edges"
+    b.dfs[edge_table] = pandas.DataFrame(
+        {
+            "node_id": node_df[id_column],
+            "segment_id": node_df[id_column].map(node_to_segment),
+        }
+    )
+    b.relations.append(
+        core.RelationDefinition(
+            name=f"{segmentation_name}_edges",
+            df=edge_table,
+            source_column="node_id",
+            target_column="segment_id",
+            source_table=node_table,
+            target_table=segmentation_name,
+            source_key=id_column,
+            target_key="id",
+        )
+    )
     return b
 
 
