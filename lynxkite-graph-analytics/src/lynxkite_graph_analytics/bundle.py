@@ -84,6 +84,7 @@ class Bundle:
         return cls(dfs={"records": df})
 
     def to_nx_meta(self):
+        """Returns a NetworkX DiGraph created from the nodes and edges in the relations of the bundle, along with a dictionary that tells what metadata (table, key column and id) belonged to the nodes based on their new id"""
         graph = nx.DiGraph()
         meta = {}
         added_tables = set()
@@ -126,6 +127,7 @@ class Bundle:
         return graph, meta
 
     def to_nx(self):
+        """Returns a NetworkX DiGraph created from the nodes and edges in the relations of the bundle."""
         return self.to_nx_meta()[0]
 
     def copy(self):
