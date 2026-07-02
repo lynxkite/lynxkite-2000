@@ -228,7 +228,7 @@ Run a SQL query on the DataFrames in the bundle. Save the results as a new DataF
 for usage information, see references/sql.md
 
 **Aggregate from segmentation:**
-For every node it aggregates the specified parameters of every node that share a segment with it.
+For every node it aggregates the specified parameters of every node that shares a segment with it.
 for usage information, see references/aggregate_from_segmentation.md
 
 **Aggregate to segmentation:**

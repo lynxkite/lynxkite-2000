@@ -27,13 +27,6 @@ class BundleMergeMode(enum.StrEnum):
     concatenate_non_unique = "concatenate non-unique"
 
 
-class NodeMetaData:
-    def __init__(self, table: str, id_column: str, node_id: str):
-        self.table = table
-        self.id_column = id_column
-        self.node_id = node_id
-
-
 @dataclasses.dataclass
 class Bundle:
     """A collection of DataFrames and other data.

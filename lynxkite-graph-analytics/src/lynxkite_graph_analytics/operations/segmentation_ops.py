@@ -121,7 +121,7 @@ def segment_by_attribute(
     b.dfs[segmentation_name] = pandas.DataFrame(
         {
             "id": range(len(unique_values)),
-            "value": unique_values,
+            attribute: unique_values,
         }
     )
 
@@ -147,42 +147,6 @@ def segment_by_attribute(
     )
 
     return b
-
-
-def _aggregation_prechecks(b, tables, columns, segmentation_name):
-    """
-    Checks whether the segmentation exists, and whether all columns exist in the tables with the segmentation.
-    :param b: the bundle
-    :param tables: the tables
-    :param columns: the columns with the specified segmentation
-    :param segmentation_name: the name of the segmentation
-    """
-    if len(tables) == 0:
-        raise ValueError(f"{segmentation_name} does not exist")
-    for table in tables:
-        if not columns.issubset(b.dfs[table].columns):
-            raise ValueError(f"Not all columns exist in table {table}")
-
-
-def _find_segmentation_relations(b, segmentation_name):
-    """
-    Finds all relations that connect nodes to a segmentation table.
-    Returns a list of (relation, node_table) tuples.
-    :param b: the bundle
-    :param segmentation_name: the name of the segmentation
-    """
-    if segmentation_name not in b.dfs:
-        raise ValueError(f"Segmentation table {segmentation_name} does not exist")
-
-    relations = []
-    for relation in b.relations:
-        if relation.target_table == segmentation_name:
-            relations.append((relation, relation.source_table))
-
-    if not relations:
-        raise ValueError(f"No relations found connecting to segmentation {segmentation_name}")
-
-    return relations
 
 
 def _suffix_check(add_suffixes, funcs_values):
@@ -216,6 +180,7 @@ def aggregate_to_segmentation(
     b = b.copy()
 
     relation = next(r for r in b.relations if r.name == relation_name)
+
     segmentation_name = relation.target_table
     node_table = relation.source_table
     segment_df = b.dfs[segmentation_name].copy()
@@ -227,7 +192,7 @@ def aggregate_to_segmentation(
 
     _suffix_check(add_suffixes, funcs)
 
-    node_df = b.dfs[node_table][[relation.source_key] + columns]
+    node_df = b.dfs[node_table][[relation.source_key] + columns].copy()
     merged = b.dfs[relation.df].merge(
         node_df, left_on=relation.source_column, right_on=relation.source_key, how="inner"
     )
@@ -245,75 +210,64 @@ def aggregate_to_segmentation(
     return b
 
 
-@op("Aggregate from segmentation", icon="filter-filled", slow=True)
+@op("Aggregate from segmentation", icon="filter-filled")
 def aggregate_from_segmentation(
     b: core.Bundle,
     *,
-    segmentation_name: str,
+    relation_name: core.RelationName,
     add_suffixes: bool = False,
     aggregations: core.DoubleTextAdder,
 ):
     """
-    For every node it aggregates the specified parameters of every node that share a segment with it.
-    :param segmentation_name: the name of the segmentation to check for shared segments
+    For every node it aggregates the specified parameters of every node that shares a segment with it.
+    :param b: the bundle to operate on
+    :param relation_name: the relation connecting the node table to the segmentation table
     :param add_suffixes: whether to add suffixes or not
+    :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
     """
     b = b.copy()
 
-    # Find relations connecting to the segmentation
-    relations = _find_segmentation_relations(b, segmentation_name)
+    relation = next(r for r in b.relations if r.name == relation_name)
 
-    columns = {item[0] for item in aggregations}
-    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
-    _suffix_check(add_suffixes, agg_dict.values())
+    node_table = relation.source_table
+    node_df = b.dfs[node_table].copy()
+    edge_df = b.dfs[relation.df].copy()
 
-    aggregated = []
-    for relation, node_table in relations:
-        # Get the edge table and node table
-        edge_df = b.dfs[relation.df]
-        node_df = b.dfs[node_table]
+    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
+    agg_dict = dict(parsed_aggregations)
+    columns = [col for col, _ in parsed_aggregations]
+    funcs = [func for _, func in parsed_aggregations]
 
-        # Create a mapping from segment ID to list of node IDs
-        segment_to_nodes = {}
-        for idx, row in edge_df.iterrows():
-            segment_id = row[relation.target_column]
-            node_id = row[relation.source_column]
-            if segment_id not in segment_to_nodes:
-                segment_to_nodes[segment_id] = []
-            segment_to_nodes[segment_id].append(node_id)
+    _suffix_check(add_suffixes, funcs)
 
-        # For each node, find nodes in the same segments and aggregate
-        for idx, row in node_df.iterrows():
-            node_id = row[relation.source_key]
+    shared_segments = edge_df.merge(edge_df, on=relation.target_column, suffixes=("_a", "_b"))
+    shared_segments = shared_segments[
+        [f"{relation.source_column}_a", f"{relation.source_column}_b"]
+    ].drop_duplicates()
 
-            # Find all nodes that share a segment with this node
-            node_segments = edge_df[edge_df[relation.source_column] == node_id][
-                relation.target_column
-            ].tolist()
-            nodes_in_segments = set()
-            for segment_id in node_segments:
-                if segment_id in segment_to_nodes:
-                    nodes_in_segments.update(segment_to_nodes[segment_id])
+    node_data = node_df[[relation.source_key] + columns]
+    merged = shared_segments.merge(
+        node_data,
+        left_on=f"{relation.source_column}_b",
+        right_on=relation.source_key,
+        how="inner",
+    )
 
-            # Get all nodes in the same segments
-            relevant_nodes = node_df[node_df[relation.source_key].isin(nodes_in_segments)]
+    aggregated = merged.groupby(f"{relation.source_column}_a").agg(agg_dict)
+    aggregated.columns = [
+        f"{col}_{func}" if add_suffixes or len(agg_dict[col]) > 1 else col
+        for col, func in aggregated.columns
+    ]
 
-            # Aggregate
-            row_aggregation = {
-                "table_id": f"{node_table}_{node_id}",
-                segmentation_name: set(node_segments),
-            }
-
-            agg_res = relevant_nodes[list(columns)].agg(agg_dict)
-            if isinstance(agg_res, pandas.DataFrame):
-                for col, func in agg_res.columns:
-                    row_aggregation[f"{col}_{func}"] = agg_res.iloc[0][(col, func)]
-            else:
-                # If it's a Series, it means single aggregation per column
-                for col, func in agg_res.index:
-                    row_aggregation[f"{col}_{func}"] = agg_res[(col, func)]
-
-            aggregated.append(row_aggregation)
-
-    b.dfs["aggregated"] = pandas.DataFrame(aggregated)
+    aggregated = aggregated.reset_index().rename(
+        columns={f"{relation.source_column}_a": relation.source_key}
+    )
+    node_df = node_df[
+        [
+            col
+            for col in node_df.columns
+            if col not in aggregated.columns or col == relation.source_key
+        ]
+    ]
+    b.dfs[node_table] = node_df.merge(aggregated, on=relation.source_key, how="left")
     return b
