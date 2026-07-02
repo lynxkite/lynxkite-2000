@@ -241,7 +241,7 @@ ColumnNameForTarget = typing.Annotated[
 ]
 
 
-@op("Connect nodes on attribute", icon="ai-gateway")
+@op("Connect nodes on attribute", icon="share")
 def connect_nodes(
     b: core.Bundle,
     *,
