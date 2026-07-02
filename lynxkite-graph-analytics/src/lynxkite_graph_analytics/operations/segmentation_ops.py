@@ -1,4 +1,4 @@
-"""Operations for tables."""
+"""Operations for segmentations."""
 
 import enum
 import networkx as nx
