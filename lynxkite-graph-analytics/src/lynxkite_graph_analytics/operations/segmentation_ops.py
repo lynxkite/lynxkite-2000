@@ -15,7 +15,7 @@ class EdgeDirection(enum.StrEnum):
     Both = "Require both directions"
 
 
-@op("Find connected components", icon="filter-filled")
+@op("Find connected components", icon="chart-dots-3")
 def connected_components(
     b: core.Bundle,
     *,
@@ -167,7 +167,7 @@ class Direction(enum.StrEnum):
     from_neighbour = "Aggregate from neighbour"
 
 
-@op("Aggregate between neighbours", icon="filter-filled")
+@op("Aggregate between neighbours", icon="topology-star-3")
 def aggregate_between_neighbours(
     b: core.Bundle,
     *,

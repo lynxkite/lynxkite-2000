@@ -14,7 +14,7 @@ import numpy as np
 op = ops.op_registration(core.ENV, "Graph operations")
 
 
-@op("Merge", icon="link")
+@op("Merge", icon="arrows-join")
 def merge(
     bundles: list[core.Bundle],
     *,
@@ -34,7 +34,7 @@ class MergeMode(enum.StrEnum):
     disallow = "Disallow this"
 
 
-@op("Use table as attributes", icon="link")
+@op("Use table as attributes", icon="table-plus")
 def table_as_attributes(
     bundle_graph: core.Bundle,
     bundle_att: core.Bundle,
@@ -125,7 +125,7 @@ def update_relations(
     return b
 
 
-@op("Merge nodes on attribute", icon="link")
+@op("Merge nodes on attribute", icon="affiliate")
 def merge_nodes(
     b: core.Bundle,
     *,
@@ -175,7 +175,7 @@ def merge_nodes(
     return b
 
 
-@op("Merge parallel edges", icon="link")
+@op("Merge parallel edges", icon="arrows-right")
 def merge_parallel_edges(
     b: core.Bundle,
     *,
@@ -223,7 +223,7 @@ def merge_parallel_edges(
     return b
 
 
-@op("Define edges", view="graph_creation_view", outputs=["output"], icon="link")
+@op("Define edges", view="graph_creation_view", outputs=["output"], icon="route")
 def define_edges(b: core.Bundle, *, relations: str = ""):
     """Define edges between node tables"""
     b = b.copy()
@@ -241,7 +241,7 @@ ColumnNameForTarget = typing.Annotated[
 ]
 
 
-@op("Connect nodes on attribute", icon="link")
+@op("Connect nodes on attribute", icon="ai-gateway")
 def connect_nodes(
     b: core.Bundle,
     *,
@@ -306,7 +306,7 @@ def discard_loop_edges(graph: nx.Graph):
     return graph
 
 
-@op("Discard loop edges in relation", icon="filter-filled")
+@op("Discard loop edges in relation", icon="circle-off")
 def discard_loop_edges_in_relation(b: core.Bundle, *, relation: core.RelationName):
     """
     Discards loop edges in the specified relation.
