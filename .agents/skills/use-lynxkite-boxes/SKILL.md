@@ -231,13 +231,9 @@ for usage information, see references/cypher.md
 Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
 for usage information, see references/sql.md
 
-**Aggregate from segmentation:**
-For every node, it aggregates the specified parameters of the segments it belongs to.
-for usage information, see references/aggregate_from_segmentation.md
-
-**Aggregate to segmentation:**
-For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
-for usage information, see references/aggregate_to_segmentation.md
+**Aggregate between neighbours:**
+Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
+for usage information, see references/aggregate_between_neighbours.md
 
 **Find connected components:**
 Finds connected components in the graph of the relation.

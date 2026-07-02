@@ -162,102 +162,61 @@ def _suffix_check(add_suffixes, funcs_values):
             )
 
 
-@op("Aggregate to segmentation", icon="filter-filled")
-def aggregate_to_segmentation(
+class Direction(enum.StrEnum):
+    to_neighbour = "Aggregate to neighbour"
+    from_neighbour = "Aggregate from neighbour"
+
+
+@op("Aggregate between neighbours", icon="filter-filled")
+def aggregate_between_neighbours(
     b: core.Bundle,
     *,
     relation_name: core.RelationName,
-    add_suffixes: bool = False,
+    add_suffixes: bool,
+    direction: Direction,
     aggregations: core.DoubleTextAdder,
-):
+) -> core.Bundle:
     """
-    For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
+    Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
     :param b: the bundle to operate on
-    :param relation_name: the relation connecting the node table to the segmentation table
+    :param relation_name: the relation connecting the two tables
     :param add_suffixes: whether to add suffixes or not
-    :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
-    """
-    b = b.copy()
-
-    relation = next(r for r in b.relations if r.name == relation_name)
-
-    segmentation_name = relation.target_table
-    node_table = relation.source_table
-    segment_df = b.dfs[segmentation_name].copy()
-
-    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
-    agg_dict = dict(parsed_aggregations)
-    columns = [col for col, _ in parsed_aggregations]
-    funcs = [func for _, func in parsed_aggregations]
-
-    _suffix_check(add_suffixes, funcs)
-
-    node_df = b.dfs[node_table][[relation.source_key] + columns].copy()
-    merged = b.dfs[relation.df].merge(
-        node_df, left_on=relation.source_column, right_on=relation.source_key, how="inner"
-    )
-
-    aggregated = merged.groupby(relation.target_column).agg(agg_dict)
-    aggregated.columns = [
-        f"{col}_{func}" if add_suffixes else col for col, func in aggregated.columns
-    ]
-
-    aggregated = aggregated.reset_index().rename(
-        columns={relation.target_column: relation.target_key}
-    )
-    b.dfs[segmentation_name] = segment_df.merge(aggregated, on=relation.target_key, how="left")
-    return b
-
-
-@op("Aggregate from segmentation", icon="filter-filled")
-def aggregate_from_segmentation(
-    b: core.Bundle,
-    *,
-    relation_name: core.RelationName,
-    add_suffixes: bool = False,
-    aggregations: core.DoubleTextAdder,
-):
-    """
-    For every node, it aggregates the specified parameters of the segments it belongs to.
-    :param b: the bundle to operate on
-    :param relation_name: the relation connecting the node table to the segmentation table
-    :param add_suffixes: whether to add suffixes or not
+    :param direction: whether to aggregate "To" or "From" the target table
     :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function)
     """
     b = b.copy()
-
     relation = next(r for r in b.relations if r.name == relation_name)
 
-    segmentation_name = relation.target_table
-    node_table = relation.source_table
-    node_df = b.dfs[node_table].copy()
-
     parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
-    agg_dict = dict(parsed_aggregations)
-    columns = [col for col, _ in parsed_aggregations]
-    funcs = [func for _, func in parsed_aggregations]
+    _suffix_check(add_suffixes, [f for _, funcs in parsed_aggregations for f in funcs])
 
-    _suffix_check(add_suffixes, funcs)
+    to_neighbour = direction == Direction.to_neighbour
+    primary_pre = "target" if to_neighbour else "source"
+    secondary_pre = "source" if to_neighbour else "target"
 
-    segment_df = b.dfs[segmentation_name][[relation.target_key] + columns].copy()
+    primary_table = getattr(relation, f"{primary_pre}_table")
+    primary_key = getattr(relation, f"{primary_pre}_key")
+    primary_col = getattr(relation, f"{primary_pre}_column")
+    secondary_table = getattr(relation, f"{secondary_pre}_table")
+    secondary_key = getattr(relation, f"{secondary_pre}_key")
+    secondary_col = getattr(relation, f"{secondary_pre}_column")
+
+    cols = [col for col, _ in parsed_aggregations]
+    secondary_df = b.dfs[secondary_table][[secondary_key] + cols].copy()
     merged = b.dfs[relation.df].merge(
-        segment_df, left_on=relation.target_column, right_on=relation.target_key, how="inner"
+        secondary_df, left_on=secondary_col, right_on=secondary_key, how="inner"
     )
 
-    aggregated = merged.groupby(relation.source_column).agg(agg_dict)
+    aggregated = merged.groupby(primary_col).agg(dict(parsed_aggregations))
     aggregated.columns = [
         f"{col}_{func}" if add_suffixes else col for col, func in aggregated.columns
     ]
+    aggregated = aggregated.reset_index().rename(columns={primary_col: primary_key})
 
-    aggregated = aggregated.reset_index().rename(
-        columns={relation.source_column: relation.source_key}
-    )
-    node_df = node_df[
-        [
-            col
-            for col in node_df.columns
-            if col not in aggregated.columns or col == relation.source_key
-        ]
+    primary_df = b.dfs[primary_table].copy()
+    primary_df = primary_df[
+        [col for col in primary_df.columns if col not in aggregated.columns or col == primary_key]
     ]
-    b.dfs[node_table] = node_df.merge(aggregated, on=relation.source_key, how="left")
+
+    b.dfs[primary_table] = primary_df.merge(aggregated, on=primary_key, how="left")
     return b
