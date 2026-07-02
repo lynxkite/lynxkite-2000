@@ -5,7 +5,7 @@ import enum
 from lynxkite_core import ops
 import pandas as pd
 import io
-from .. import core
+from .. import core, bundle
 
 op = ops.op_registration(core.ENV, "Table operations")
 
@@ -33,23 +33,23 @@ class OrderType(enum.StrEnum):
     desc = "descending"
 
 
-@op("Vector from attribute pair", icon="link")
-def vector_from_attribute_pair(
+@op("Vector from attributes", icon="brackets-contain")
+def vector_from_attributes(
     b: core.Bundle,
     *,
     table_name: core.TableName,
-    attribute1: core.ColumnNameByTableName,
-    attribute2: core.ColumnNameByTableName,
-    new_name: str,
+    attributes: core.MultiColumnNameByTableName,
+    vector_name: str,
 ) -> core.Bundle:
-    """Creates a new column with vectors that contain the two attributes"""
+    """Creates a new column with vectors that contain the selected attributes in the selected order"""
     b = b.copy()
-    df = b.dfs[table_name]
-    df[new_name] = list(zip(df[attribute1], df[attribute2]))
+    df = b.dfs[table_name].copy()
+    df[vector_name] = list(zip(*(df[col] for col in attributes)))
+    b.dfs[table_name] = df
     return b
 
 
-@op("Add rank attribute", icon="link")
+@op("Add rank attribute", icon="sort-descending")
 def add_rank(
     b: core.Bundle,
     *,
@@ -84,20 +84,38 @@ def add_rank(
     return b
 
 
-@op("Rename table", color="orange", icon="table-filled")
+@op("Filter tables", color="orange", icon="table-minus")
+def filter_tables(
+    b: core.Bundle, *, drop_selected: bool, tables: core.MultiTableName
+) -> core.Bundle:
+    """
+    Keeps/removes the selected tables based on the value of drop_selected
+    :param b: the bundle
+    :param drop_selected: if True, removes the selected tables, otherwise keeps them
+    :param tables: the tables to keep/remove
+    """
+    b = b.copy()
+
+    b.dfs = {k: v for k, v in b.dfs.items() if (k in tables) != drop_selected}
+    b.relations = [r for r in b.relations if r.source_table in b.dfs and r.target_table in b.dfs]
+    return b
+
+
+@op("Rename table", color="orange", icon="writing")
 def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
     """Assigns a new name to the table"""
     b = b.copy()
     b.dfs[new_name] = b.dfs.pop(old_name)
+    relations = []
+    for r in b.relations:
+        r = r.copy()
+        if r.source_table == old_name:
+            r.source_table = new_name
+        if r.target_table == old_name:
+            r.target_table = new_name
+        relations.append(r)
+    b.relations = relations
     return b
-
-
-@op("Select Table", icon="table-filled")
-def select_table(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
-    df = b.dfs[table_name]
-    bundle = core.Bundle()
-    bundle.dfs[table_name] = df
-    return bundle
 
 
 @op("Derive property", icon="arrow-big-right-lines")
@@ -155,9 +173,10 @@ def join_tables(
     - right_on: Column name in right table (when column names differ)
     - suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")
     """
-
-    df_a = bundle_a.dfs[table_a]
-    df_b = bundle_b.dfs[table_b]
+    bundle_a = bundle_a.copy()
+    bundle_b = bundle_b.copy()
+    df_a = bundle_a.dfs[table_a].copy()
+    df_b = bundle_b.dfs[table_b].copy()
 
     # Parse suffixes
     suffix_parts = [s.strip() for s in suffixes.split(",")]
@@ -183,5 +202,8 @@ def join_tables(
         merged_df = pd.merge(
             df_a, df_b, left_index=True, right_index=True, how=join_type.value, suffixes=suffix_list
         )
-
-    return core.Bundle(dfs={"merged": merged_df})
+    b = bundle.merge_bundles([bundle_a, bundle_b], merge_mode=bundle.BundleMergeMode.must_be_unique)
+    b.dfs.pop(table_a, None)
+    b.dfs.pop(table_b, None)
+    b.dfs["merged"] = merged_df
+    return b

@@ -1,4 +1,4 @@
-**Define Edges:**
+**Define edges:**
 Define edges between node tables
 parameters:
   - relations: <class 'str'> = ? --?

@@ -11,10 +11,10 @@ import enum
 import numpy as np
 
 
-op = ops.op_registration(core.ENV, "Graph operations", color="green")
+op = ops.op_registration(core.ENV, "Graph operations")
 
 
-@op("Merge", icon="link")
+@op("Merge", icon="arrows-join")
 def merge(
     bundles: list[core.Bundle],
     *,
@@ -25,7 +25,205 @@ def merge(
     return b
 
 
-@op("Define Edges", view="graph_creation_view", outputs=["output"], icon="link")
+class MergeMode(enum.StrEnum):
+    merge_table = "Merge, prefer the table's version"
+    merge_graph = "Merge, prefer the graph's version"
+    report_conflict = "Merge, report error on conflict"
+    keep_graph = "Keep the graph's version"
+    use_table = "Use the table's version"
+    disallow = "Disallow this"
+
+
+@op("Use table as attributes", icon="table-plus")
+def table_as_attributes(
+    bundle_graph: core.Bundle,
+    bundle_att: core.Bundle,
+    *,
+    table_id: core.TableColumn,
+    attribute_table_id: core.TableColumn,
+    merge_mode: MergeMode,
+) -> core.Bundle:
+    """
+    Uses the columns from one table as attributes for the other.
+    :param bundle_graph: the bundle of the graph
+    :param bundle_att: the bundle of the attributes
+    :param table_id: the table that gets the attributes
+    :param attribute_table_id: the table that provides the attributes
+    :param merge_mode: determines what happens if an attribute already exists in the original table.
+    Merge, prefer the table’s version: Where the table defines new values, those will be used. Elsewhere the existing values are kept.
+    Merge, prefer the graph’s version: Where the vertex attribute is already defined, it is left unchanged. Elsewhere the value from the table is used.
+    Merge, report error on conflict: An assertion is made to ensure that the values in the table are identical to the values in the graph on vertices where both are defined.
+    Keep the graph’s version: The data in the table is ignored.
+    Use the table’s version: The attribute is deleted from the graph and replaced with the attribute imported from the table.
+    Disallow this: A name conflict is treated as an error.
+    """
+    bundle_graph = bundle_graph.copy()
+    bundle_att = bundle_att.copy()
+
+    graph_table = bundle_graph.dfs[table_id[0]].copy()
+    attribute_table = bundle_att.dfs[attribute_table_id[0]].copy()
+    merged = graph_table.merge(
+        attribute_table,
+        how="left",
+        left_on=table_id[1],
+        right_on=attribute_table_id[1],
+        suffixes=("_graph", "_att"),
+    )
+    for column in attribute_table.columns:
+        if column == attribute_table_id[1] or f"{column}_graph" not in merged.columns:
+            continue
+
+        if merge_mode == MergeMode.merge_table:
+            merged[column] = merged[f"{column}_att"].combine_first(merged[f"{column}_graph"])
+        elif merge_mode == MergeMode.merge_graph:
+            merged[column] = merged[f"{column}_graph"].combine_first(merged[f"{column}_att"])
+        elif merge_mode == MergeMode.report_conflict:
+            conflict = merged[f"{column}_graph"] != merged[f"{column}_att"]
+            if conflict.any():
+                raise ValueError(f"Conflict in column {column}: {merged[conflict]}")
+            merged[column] = merged[f"{column}_graph"].combine_first(merged[f"{column}_att"])
+        elif merge_mode == MergeMode.use_table:
+            merged[column] = merged[f"{column}_att"]
+        elif merge_mode == MergeMode.keep_graph:
+            merged[column] = merged[f"{column}_graph"]
+        elif merge_mode == MergeMode.disallow:
+            raise ValueError(f"Both tables have {column} column")
+        merged.drop(columns=[f"{column}_graph", f"{column}_graph"], inplace=True)
+    bundle_graph.dfs[table_id[0]] = merged
+    return bundle_graph
+
+
+def update_relations(
+    b: core.Bundle,
+    table_name: core.TableName,
+    new_id: str,
+    old_df: pd.DataFrame,
+) -> core.Bundle:
+    """
+    Updates the relations to use the new id column instead of the old ones.
+    :param b: The bundle
+    :param table_name: The name of the node table that was modified.
+    :param new_id: The name of the new attribute.
+    :param old_df: The old dataframe.
+    """
+    b = b.copy()
+
+    def _update_relation(r, suffix, column_attr, key_attr):
+        new_column = new_id + suffix
+        edge_column = getattr(r, column_attr)
+        node_key = getattr(r, key_attr)
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(old_df.set_index(node_key)[new_id])
+        setattr(r, column_attr, new_column)
+        setattr(r, key_attr, new_id)
+
+    for r in b.relations:
+        if table_name == r.source_table:
+            _update_relation(r, "_src", "source_column", "source_key")
+        if table_name == r.target_table:
+            _update_relation(r, "_dst", "target_column", "target_key")
+
+    return b
+
+
+@op("Merge nodes on attribute", icon="affiliate")
+def merge_nodes(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute: core.ColumnNameByTableName,
+    add_suffixes: bool = False,
+    aggregations: core.DropdownTextAdderByTableName,
+) -> core.Bundle:
+    """Merges the nodes that have the same value for the given attribute.
+    The aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies
+    which other columns should be included in the new DataFrame and how to aggregate them.
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param attribute: the name of the attribute to merge on
+    :param add_suffixes: whether to add suffixes to the aggregated columns
+    :param aggregations: the aggregations to perform, specified as a list of tuples
+    """
+    b = b.copy()
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
+
+    relations = b.relations.copy()
+    b.relations = []
+    for r in relations:
+        b.relations.append(r.copy())
+
+    old_df = b.dfs[table_name].copy()
+    agg_dict = {}
+    name_dict = {}
+
+    for column, funcs in aggregations:
+        if column not in agg_dict:
+            agg_dict[column] = []
+        funcs = funcs.split(" ")
+        if len(funcs) > 1 and not add_suffixes:
+            raise ValueError(
+                "Adding suffixes is required when multiple aggregation functions are specified for a column."
+            )
+        for func in funcs:
+            if func not in agg_dict[column]:
+                agg_dict[column].append(func)
+            name_dict[(column, func)] = f"{column}_{func}" if add_suffixes else column
+    grouped_df = old_df.groupby(attribute).agg(agg_dict)
+    grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
+    b.dfs[table_name] = grouped_df.reset_index()
+    update_relations(b, table_name, attribute, old_df)
+    return b
+
+
+@op("Merge parallel edges", icon="arrows-right")
+def merge_parallel_edges(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    source_key: core.ColumnNameByTableName,
+    target_key: core.ColumnNameByTableName,
+    aggregations: core.DropdownTextAdderByTableName,
+) -> core.Bundle:
+    """
+    Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats).
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param source_key: the name of the key in the source table
+    :param target_key: the name of the key in the target table
+    :param aggregations: the aggregations to perform, specified as a list of tuples
+    """
+    b = b.copy()
+    edges = b.dfs[table_name].copy()
+    group_cols = [source_key, target_key]
+    agg_dict = {}
+
+    for column, funcs in aggregations:
+        func_list = [f for f in funcs.split(" ") if f]
+        if func_list:
+            if column not in agg_dict:
+                agg_dict[column] = []
+            for func in func_list:
+                if func not in agg_dict[column]:
+                    agg_dict[column].append(func)
+
+    if agg_dict:
+        merged = edges.groupby(group_cols).agg(agg_dict).reset_index()
+        new_columns = []
+        for col, func in merged.columns:
+            if func == "":
+                new_columns.append(col)
+            else:
+                new_columns.append(f"{col}_{func}")
+
+        merged.columns = new_columns
+    else:
+        merged = edges.drop_duplicates(subset=group_cols).reset_index(drop=True)
+
+    b.dfs[table_name] = merged
+    return b
+
+
+@op("Define edges", view="graph_creation_view", outputs=["output"], icon="route")
 def define_edges(b: core.Bundle, *, relations: str = ""):
     """Define edges between node tables"""
     b = b.copy()
@@ -43,7 +241,7 @@ ColumnNameForTarget = typing.Annotated[
 ]
 
 
-@op("Connect nodes on attribute", icon="link")
+@op("Connect nodes on attribute", icon="share")
 def connect_nodes(
     b: core.Bundle,
     *,
@@ -66,6 +264,8 @@ def connect_nodes(
     - target_attribute: Attribute column in the second table used for matching
     """
     b = b.copy()
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
 
     df1 = (b.dfs[source_table]).add_suffix("_src")
     df2 = (b.dfs[target_table]).add_suffix("_dst")
@@ -104,6 +304,22 @@ def discard_loop_edges(graph: nx.Graph):
     graph = graph.copy()
     graph.remove_edges_from(nx.selfloop_edges(graph))
     return graph
+
+
+@op("Discard loop edges in relation", icon="circle-off")
+def discard_loop_edges_in_relation(b: core.Bundle, *, relation: core.RelationName):
+    """
+    Discards loop edges in the specified relation.
+    :param b: the bundle
+    :param relation: the relation
+    """
+    b = b.copy()
+    for r in b.relations:
+        if r.name == relation:
+            df = b.dfs[r.df].copy()
+            b.dfs[r.df] = df[df[r.source_column] != df[r.target_column]]
+            break
+    return b
 
 
 @op("Discard parallel edges", icon="filter-filled")
