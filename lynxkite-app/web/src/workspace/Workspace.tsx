@@ -40,6 +40,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
@@ -84,6 +85,8 @@ export default function Workspace(props: any) {
   );
 }
 
+const ICONIZE_THRESHOLD = 0.3;
+
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
@@ -95,6 +98,7 @@ function LynxKiteFlow() {
   );
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
+  const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
   const shortPath = path!
     .split("/")
     .pop()!
@@ -635,6 +639,7 @@ function LynxKiteFlow() {
               <CloseIcon />
             </Link>
           </Tooltip>
+          <UserMenu />
         </div>
       </div>
       <div className="workspace-body">
@@ -646,7 +651,7 @@ function LynxKiteFlow() {
           ref={reactFlowContainer}
         >
           {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
+            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized }}>
               <ReactFlow
                 nodes={nodes}
                 edges={autoConnect.renderedEdges}
@@ -666,6 +671,10 @@ function LynxKiteFlow() {
                 onConnect={onConnect}
                 onNodeDrag={autoConnect.onNodeDrag}
                 onNodeDragStop={autoConnect.onNodeDragStop}
+                onMove={() => {
+                  const zoom = reactFlow.getZoom();
+                  setIconized(zoom < ICONIZE_THRESHOLD);
+                }}
                 proOptions={{ hideAttribution: true }}
                 maxZoom={10}
                 minZoom={0.1}
