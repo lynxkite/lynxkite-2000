@@ -93,30 +93,28 @@ def table_as_attributes(
     return bundle_graph
 
 
-def remap(
+def update_relations(
     b: core.Bundle,
     table_name: core.TableName,
-    attribute: str,
+    new_id: str,
     old_df: pd.DataFrame,
 ) -> core.Bundle:
     """
-    Remaps the node ids and updates the relations.
+    Updates the relations to use the new id column instead of the old ones.
     :param b: The bundle
     :param table_name: The name of the node table that was modified.
-    :param attribute: The name of the new attribute.
+    :param new_id: The name of the new attribute.
     :param old_df: The old dataframe.
     """
     b = b.copy()
 
     def _update_relation(r, suffix, column_attr, key_attr):
-        new_column = attribute + suffix
+        new_column = new_id + suffix
         edge_column = getattr(r, column_attr)
         node_key = getattr(r, key_attr)
-        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(
-            old_df.set_index(node_key)[attribute]
-        )
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(old_df.set_index(node_key)[new_id])
         setattr(r, column_attr, new_column)
-        setattr(r, key_attr, attribute)
+        setattr(r, key_attr, new_id)
 
     for r in b.relations:
         if table_name == r.source_table:
@@ -173,7 +171,7 @@ def merge_nodes(
     grouped_df = old_df.groupby(attribute).agg(agg_dict)
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
-    remap(b, table_name, attribute, old_df)
+    update_relations(b, table_name, attribute, old_df)
     return b
 
 
