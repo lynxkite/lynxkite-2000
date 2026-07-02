@@ -2,7 +2,7 @@
 
 import enum
 import networkx as nx
-import pandas
+import pandas as pd
 
 from lynxkite_core import ops
 from .. import core
@@ -61,9 +61,9 @@ def connected_components(
         for node_id in comp:
             node_to_segment[node_id] = comp_id
 
-    b.dfs[segmentation_name] = pandas.DataFrame(segment_rows)
+    b.dfs[segmentation_name] = pd.DataFrame(segment_rows)
     edge_table = f"{segmentation_name}_edges"
-    b.dfs[edge_table] = pandas.DataFrame(
+    b.dfs[edge_table] = pd.DataFrame(
         {
             "node_id": node_df[id_column],
             "segment_id": node_df[id_column].map(node_to_segment),
@@ -118,7 +118,7 @@ def segment_by_attribute(
     node_df = b.dfs[table_name]
     unique_values = node_df[attribute].unique()
 
-    b.dfs[segmentation_name] = pandas.DataFrame(
+    b.dfs[segmentation_name] = pd.DataFrame(
         {
             "id": range(len(unique_values)),
             attribute: unique_values,
@@ -126,7 +126,7 @@ def segment_by_attribute(
     )
 
     edge_table_name = f"{segmentation_name}_edges"
-    b.dfs[edge_table_name] = pandas.DataFrame(
+    b.dfs[edge_table_name] = pd.DataFrame(
         {
             "node_id": node_df[id_column],
             "segment_id": node_df[attribute].map({v: i for i, v in enumerate(unique_values)}),
