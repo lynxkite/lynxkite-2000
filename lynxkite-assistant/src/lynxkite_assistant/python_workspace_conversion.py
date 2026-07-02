@@ -102,22 +102,31 @@ def python_to_workspace(
         def add_edge(arg_name, arg_value_list):
             nonlocal x, lowest_input
             for arg_value in arg_value_list:
-                assert arg_value.id in saved_values, (
-                    f"{error_msg}\n\nUnknown variable reference: {arg_value.id}"
+                if isinstance(arg_value, ast.Subscript):
+                    assert isinstance(arg_value.value, ast.Name), error_msg
+                    assert isinstance(arg_value.slice, (ast.Constant)), error_msg
+                    name = arg_value.value.id
+                    sourceHandle = arg_value.slice.value
+                else:
+                    name = arg_value.id
+                    sourceHandle = "output"
+                assert name in saved_values, (
+                    f"{error_msg}\n\nUnknown variable reference: {name}"
                 )
-                src = saved_values[arg_value.id]
+                src = saved_values[name]
                 x = max(x, box_x[src] + 1)
                 if lowest_input is None or box_y[src] < lowest_input:
                     lowest_input = box_y[src]
-                ws.add_edge(src, "output", box_id, arg_name)
+                ws.add_edge(src, sourceHandle, box_id, arg_name)
 
         for arg_name, arg_value in kwargs.items():
             assert isinstance(
-                arg_value, (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple)
+                arg_value,
+                (ast.Constant, ast.Name, ast.Dict, ast.List, ast.Tuple, ast.Subscript),
             ), error_msg
             if isinstance(arg_value, ast.Constant):
                 params[arg_name] = arg_value.value
-            elif isinstance(arg_value, ast.Name):
+            elif isinstance(arg_value, (ast.Name, ast.Subscript)):
                 add_edge(arg_name, [arg_value])
             elif isinstance(arg_value, ast.Dict):
                 dict_value = {}
@@ -129,7 +138,10 @@ def python_to_workspace(
                     dict_value[key_node.value] = value_node.value
                 params[arg_name] = dict_value
             elif isinstance(arg_value, ast.List):
-                if all(isinstance(item, ast.Name) for item in arg_value.elts):
+                if all(
+                    isinstance(item, (ast.Name, ast.Subscript))
+                    for item in arg_value.elts
+                ):
                     add_edge(arg_name, arg_value.elts)
                 else:
                     list_value = []
@@ -258,6 +270,28 @@ def get_inp_op_metadata_comments(
     return input_comment, output_comment
 
 
+def inputs_to_python(
+    incoming_edges: list[workspace.WorkspaceEdge], saved_values: dict[str, str]
+) -> list[str]:
+    def handle_multi_output(edge: workspace.WorkspaceEdge) -> str:
+        if edge.sourceHandle != "output":
+            return f'{saved_values[edge.source]}["{edge.sourceHandle}"]'
+        return saved_values[edge.source]
+
+    grouped_by_target_handle_lists = [
+        (th, [handle_multi_output(n) for n in gr])
+        for th, gr in groupby(incoming_edges, key=lambda e: e.targetHandle)
+    ]
+    grouped_by_target_handle = [
+        (th, li[0] if len(li) == 1 else f"[{', '.join(li)}]")
+        for th, li in grouped_by_target_handle_lists
+    ]
+    inputs = sorted(
+        f"{targetHandle}={srcs}" for targetHandle, srcs in grouped_by_target_handle
+    )
+    return inputs
+
+
 def workspace_to_python(ws: workspace.Workspace) -> str:
     code = [
         '"""The Python representation of the workspace."""',
@@ -300,17 +334,7 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
                 code.append(f"#! {line}")
             code.append("")
             continue
-        grouped_by_target_handle = [
-            (th, [saved_values[n.source] for n in gr])
-            for th, gr in groupby(incoming_edges[node_id], key=lambda e: e.targetHandle)
-        ]
-        grouped_by_target_handle = [
-            (th, li[0] if len(li) == 1 else f"[{', '.join(li)}]")
-            for th, li in grouped_by_target_handle
-        ]
-        inputs = sorted(
-            f"{targetHandle}={srcs}" for targetHandle, srcs in grouped_by_target_handle
-        )
+        inputs = inputs_to_python(incoming_edges[node_id], saved_values)
         params = sorted(
             f"{name}={repr(value)}" for name, value in node.data.params.items()
         )

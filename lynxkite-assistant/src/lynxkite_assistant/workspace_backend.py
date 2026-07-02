@@ -33,7 +33,7 @@ For example:
     MODULE_NAME.read_csv(...)
 """
 from lynxkite_core import ops
-op = ops.op_registration(ENV)
+op = ops.op_registration(ENV) # DO NOT CHANGE THIS LINE!
 
 # Add new box definitions here.
 '''.strip()
