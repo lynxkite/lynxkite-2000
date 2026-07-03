@@ -188,7 +188,7 @@ def aggregate_between_neighbours(
     relation = next(r for r in b.relations if r.name == relation_name)
 
     parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
-    _suffix_check(add_suffixes, [f for _, funcs in parsed_aggregations for f in funcs])
+    _suffix_check(add_suffixes, [funcs for _, funcs in parsed_aggregations])
 
     to_neighbour = direction == Direction.to_neighbour
     primary_pre = "target" if to_neighbour else "source"
