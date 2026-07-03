@@ -250,7 +250,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div
-        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized" : ""}`}
+        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized" : ""} ${data.status}`}
         style={iconized ? { ...nodeStyle, ...titleStyle } : nodeStyle}
       >
         {iconized ? (
