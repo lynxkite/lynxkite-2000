@@ -16,93 +16,54 @@
     }
   ],
   "env": "LynxKite Graph Analytics",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [],
-        "meta": {
-          "categories": [
-            "Examples"
-          ],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Returns two outputs. Also demonstrates Numpy-style docstrings."
-            },
-            {
-              "kind": "parameters",
-              "value": [
-                {
-                  "annotation": "int",
-                  "description": "Number of elements in output \"one\".",
-                  "name": "a_limit"
-                },
-                {
-                  "annotation": "int",
-                  "description": "Number of elements in output \"two\".",
-                  "name": "b_limit"
-                }
-              ]
-            },
-            {
-              "kind": "returns",
-              "value": [
-                {
-                  "annotation": "A dict with two DataFrames in it.",
-                  "description": "",
-                  "name": ""
-                }
-              ]
-            }
-          ],
-          "id": "Examples > Multi-output example",
-          "inputs": [],
-          "name": "Multi-output example",
-          "outputs": [
-            {
-              "name": "one",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            },
-            {
-              "name": "two",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 4,
-              "name": "a_limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            },
-            {
-              "default": 10,
-              "name": "b_limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "Examples > Multi-output example",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "a"
+                ],
+                "key": "records",
+                "length": 2.0
+              }
+            },
+            "other": {},
+            "relations": []
+          },
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "b"
+                ],
+                "key": "records",
+                "length": 10.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "a_limit": "2",
           "b_limit": "10"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Multi-output example"
       },
       "dragHandle": ".drag-handle",
@@ -117,71 +78,37 @@
     },
     {
       "data": {
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "a"
-              ],
-              "data": [
-                [
-                  0
-                ],
-                [
-                  1
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "a"
-                ]
+                ],
+                "key": "records",
+                "length": 2.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "table_view"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".drag-handle",
@@ -196,95 +123,37 @@
     },
     {
       "data": {
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "b"
-              ],
-              "data": [
-                [
-                  0
-                ],
-                [
-                  1
-                ],
-                [
-                  2
-                ],
-                [
-                  3
-                ],
-                [
-                  4
-                ],
-                [
-                  5
-                ],
-                [
-                  6
-                ],
-                [
-                  7
-                ],
-                [
-                  8
-                ],
-                [
-                  9
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "b"
-                ]
+                ],
+                "key": "records",
+                "length": 10.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": null,
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "table_view"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".drag-handle",
@@ -297,5 +166,6 @@
       "type": "table_view",
       "width": 225.0
     }
-  ]
+  ],
+  "paused": null
 }

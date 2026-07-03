@@ -2246,6 +2246,7 @@ dependencies = [
     { name = "pycrdt" },
     { name = "pycrdt-websocket" },
     { name = "pydantic" },
+    { name = "pydantic-core" },
     { name = "pyte" },
     { name = "python-jose", extra = ["cryptography"] },
     { name = "sse-starlette" },
@@ -2271,6 +2272,7 @@ requires-dist = [
     { name = "pycrdt", specifier = ">=0.12.26" },
     { name = "pycrdt-websocket", specifier = ">=0.16" },
     { name = "pydantic", specifier = ">=2.11.7" },
+    { name = "pydantic-core", specifier = ">=2.46.4" },
     { name = "pyte", specifier = ">=0.8.2" },
     { name = "python-jose", extras = ["cryptography"], specifier = ">=3.5.0" },
     { name = "sse-starlette", specifier = ">=2.2.1" },
@@ -2308,10 +2310,14 @@ version = "0.3.0"
 source = { editable = "lynxkite-core" }
 dependencies = [
     { name = "pydantic" },
+    { name = "pydantic-core" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.11.7" }]
+requires-dist = [
+    { name = "pydantic", specifier = ">=2.11.7" },
+    { name = "pydantic-core", specifier = ">=2.46.4" },
+]
 
 [[package]]
 name = "lynxkite-graph-analytics"

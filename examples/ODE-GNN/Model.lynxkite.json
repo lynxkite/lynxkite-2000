@@ -100,21 +100,25 @@
     }
   ],
   "env": "PyTorch model",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Group",
+        "output_metadata": null,
         "params": {
           "color": "orange"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Group"
       },
       "height": 1266.0,
@@ -129,18 +133,21 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Group",
+        "output_metadata": null,
         "params": {
           "color": "blue"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Group"
       },
       "height": 1049.0,
@@ -154,18 +161,21 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Group",
+        "output_metadata": null,
         "params": {
           "color": "purple"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Group"
       },
       "height": 896.0,
@@ -182,17 +192,21 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "LSTM",
+        "output_metadata": null,
         "params": {
           "dropout": "0",
           "hidden_size": "32",
           "input_size": "1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "LSTM"
       },
       "dragHandle": ".drag-handle",
@@ -213,16 +227,20 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: sequential",
+        "output_metadata": null,
         "params": {
           "_input_name": "future volumes",
           "per_sample": true
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: sequential"
       },
       "dragHandle": ".drag-handle",
@@ -240,21 +258,24 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "MSE loss",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "MSE loss"
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 69.0,
+      "height": 71.0,
       "id": "MSE loss 1",
       "parentId": "Group 5",
       "position": {
@@ -270,16 +291,20 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Optimizer",
+        "output_metadata": null,
         "params": {
           "lr": "0.0001",
           "type": "AdamW"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Optimizer"
       },
       "dragHandle": ".drag-handle",
@@ -300,16 +325,20 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: sequential",
+        "output_metadata": null,
         "params": {
           "_input_name": "future timestamps",
           "per_sample": true
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: sequential"
       },
       "dragHandle": ".drag-handle",
@@ -327,11 +356,14 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Neural ODE with MLP",
+        "output_metadata": null,
         "params": {
           "absolute_tolerance": "0.001",
           "method": "dopri5",
@@ -342,6 +374,7 @@
           "state_dimensions": "192"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Neural ODE with MLP"
       },
       "dragHandle": ".drag-handle",
@@ -359,16 +392,20 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: sequential",
+        "output_metadata": null,
         "params": {
           "_input_name": "past volumes",
           "per_sample": true
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: sequential"
       },
       "dragHandle": ".drag-handle",
@@ -389,15 +426,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Output",
+        "output_metadata": null,
         "params": {
           "name": "future volume predictions"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
@@ -415,15 +456,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
+        "output_metadata": null,
         "params": {
           "text": "# Past tumor volume embedding with LSTM"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "dragHandle": ".drag-handle",
@@ -444,15 +489,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
+        "output_metadata": null,
         "params": {
           "text": "# Tumor volume trajectory predictions with ODE\n\nAn MLP is used to predict the derivative of the tumor volume at different stages, based on the knowledge graph embedding and the past tumor volume embeddings."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "dragHandle": ".drag-handle",
@@ -470,15 +519,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
+        "output_metadata": null,
         "params": {
           "text": "# Training configuration\n\nThe loss for the whole model is simply the MSE loss over the future volume measurements."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "dragHandle": ".drag-handle",
@@ -499,15 +552,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "128"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "dragHandle": ".drag-handle",
@@ -527,17 +584,21 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
-      "height": 69.0,
+      "height": 71.0,
       "id": "Concatenate 2",
       "position": {
         "x": 210.60112224325755,
@@ -551,11 +612,14 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Drug, disease, gene GNN",
+        "output_metadata": null,
         "params": {
           "gene_in_dim": "1281",
           "hidden_dim": "64",
@@ -564,6 +628,7 @@
           "out_dim": "64"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Drug, disease, gene GNN"
       },
       "dragHandle": ".drag-handle",
@@ -584,15 +649,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: disease-assoc-gene graph",
+        "output_metadata": null,
         "params": {
           "_input_name": "disease-assoc-gene"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: disease-assoc-gene graph"
       },
       "dragHandle": ".drag-handle",
@@ -613,15 +682,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: drug-targets-gene graph",
+        "output_metadata": null,
         "params": {
           "_input_name": "drug-targets-gene"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: drug-targets-gene graph"
       },
       "dragHandle": ".drag-handle",
@@ -642,15 +715,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: gene features",
+        "output_metadata": null,
         "params": {
           "_input_name": "gene-embeddings"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: gene features"
       },
       "dragHandle": ".drag-handle",
@@ -671,15 +748,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: gene-interacts-gene graph",
+        "output_metadata": null,
         "params": {
           "_input_name": "gene-interacts-gene"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: gene-interacts-gene graph"
       },
       "dragHandle": ".drag-handle",
@@ -700,15 +781,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
+        "output_metadata": null,
         "params": {
           "text": "# Graph embedding\n\nWe take the tissue-specific PPI graph plus the drug-targets-gene and disease-associated-with-gene edges to construct the graph.\n\nThe GNN state of the gene nodes is initialized with the gene-embeddings vectors. For the drug and disease nodes the initial embedding is learned.\n\nThis custom GNN box hides a lot of complexity, including the way the graph-level embedding is generated from the node-level embeddings."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
       "extent": "parent",
@@ -728,18 +813,22 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Comment",
+        "output_metadata": null,
         "params": {
           "text": ":::highlight\n# Overview\n\nThis is the architecture of our ODE+GNN tumor volume prediction model. The three main parts of the model are:\n- Take a sample-specific graph that includes one drug node and one disease node, both connected to their associated gene nodes, and gene nodes are connected to each other based on the tissue-specific PPI data. A custom GNN processes this graph into a graph embedding.\n- Take the past tumor volume time series data and process it into an embedding with an LSTM.\n- Take the future timestamps and generate predictions for them with a neural ODE module conditioned on the combined embeddings the the graph and the time series.\n\nThe loss function is computed by comparing the predictions to the ground truth data."
         },
         "status": "done",
+        "telemetry": null,
         "title": "Comment"
       },
-      "height": 1530.0,
+      "height": 1533.0,
       "id": "Comment 3",
       "position": {
         "x": -784.3153207697787,
