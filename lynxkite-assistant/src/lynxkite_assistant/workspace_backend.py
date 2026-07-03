@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import networkx
 from typing import Any, Callable
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
@@ -233,11 +234,53 @@ def _update_node_ids(source: workspace.Workspace, target: workspace.Workspace) -
     source.nodes.sort(key=lambda n: new_id_old_order.get(n.id, len(source.nodes)))
 
 
+def _organize_new_nodes(nodes, all_edges, offset):
+    node_ids = {n.id for n in nodes}
+    edges = [
+        (e.source, e.target)
+        for e in all_edges
+        if e.source in node_ids and e.target in node_ids
+    ]
+    G = networkx.DiGraph()
+    G.add_nodes_from(node_ids | {"master_root"})
+    G.add_edges_from(edges)
+    roots = [n.id for n in nodes if not any(e[1] == n.id for e in edges)]
+    G.add_edges_from([("master_root", r) for r in roots])
+    dists_from_root = networkx.single_source_shortest_path_length(G, "master_root")
+    dists = set(dists_from_root.values())
+    layers = {
+        dist: [node_id for node_id, d in dists_from_root.items() if d == dist]
+        for dist in dists
+    }
+    max_height = max((node.height for node in nodes), default=100)
+    max_width = max((node.width for node in nodes), default=100)
+    pos = networkx.multipartite_layout(G, subset_key=layers)
+    leftmost_point = (
+        min((pos[node.id][0] for node in nodes), default=0)
+        * (len(layers) - 1)
+        * max_width
+    )
+    highest_point = (
+        min((pos[node.id][1] for node in nodes), default=0)
+        * (len(layers) - 1)
+        * max_height
+    )
+    offset = (offset[0] - leftmost_point, offset[1] - highest_point)
+    for node in nodes:
+        node.position.x = (
+            float(pos[node.id][0]) * (len(layers) - 1) * max_width + offset[0]
+        )
+        node.position.y = (
+            float(pos[node.id][1]) * (len(layers) - 1) * max_height + offset[1]
+        )
+
+
 def _update_ws_positions(
     source: workspace.Workspace, target: workspace.Workspace
 ) -> None:
     """Update node positions in target by node ID."""
     source_nodes_by_id = {node.id: node for node in source.nodes}
+    target_nodes_by_id = {node.id: node for node in target.nodes}
     # Copy the dimensions of existing nodes.
     for node in target.nodes:
         source_node = source_nodes_by_id.get(node.id)
@@ -248,45 +291,71 @@ def _update_ws_positions(
         node.height = source_node.height
         node.data.collapsed = source_node.data.collapsed
     # For new non-comment nodes, make up a new position based on the positions of their neighbors.
-    for node in target.nodes:
-        source_node = source_nodes_by_id.get(node.id)
-        if source_node is not None or node.type == "comment":
-            continue
-        inputs, outputs = _get_node_neighbors(target, node.id)
-        x = 0
-        y = 0
-        count = 0
-        for neighbors, x_offset in [(inputs, 500), (outputs, -500)]:
-            for neighbor_id, _, _ in neighbors:
-                neighbor_source_node = source_nodes_by_id.get(neighbor_id)
-                if neighbor_source_node is None:
-                    continue
-                x += neighbor_source_node.position.x + x_offset
-                y += neighbor_source_node.position.y
-                count += 1
-        if count > 0:
-            x /= count
-            y /= count
-            node.position = workspace.Position(x=x, y=y)
-
+    unpositioned_nodes = [
+        n
+        for n in target.nodes
+        if n.id not in source_nodes_by_id and n.type != "comment"
+    ]
+    newly_positioned = [
+        n for n in target.nodes if n.id in source_nodes_by_id and n.type != "comment"
+    ]
+    last_positioned = []
+    while len(newly_positioned) > 0:
+        last_positioned = [n.id for n in newly_positioned]
+        newly_positioned = []
+        for node in unpositioned_nodes:
+            inputs, outputs = _get_node_neighbors(target, node.id)
+            x = 0
+            y = 0
+            count = 0
+            for neighbors, x_offset in [(inputs, 500), (outputs, -500)]:
+                for neighbor_id, _, _ in neighbors:
+                    if neighbor_id in last_positioned:
+                        x += target_nodes_by_id[neighbor_id].position.x + x_offset
+                        y += target_nodes_by_id[neighbor_id].position.y
+                        count += 1
+            if count > 0:
+                x /= count
+                y /= count
+                node.position = workspace.Position(x=x, y=y)
+                newly_positioned.append(node)
+                print(
+                    "positioned node", node.id, "at", node.position.x, node.position.y
+                )
+        for newly_positioned_node in newly_positioned:
+            unpositioned_nodes.remove(newly_positioned_node)
+    if unpositioned_nodes:
+        min_x = min(
+            (n.position.x for n in target.nodes if n not in unpositioned_nodes),
+            default=0,
+        )
+        max_y = max(
+            (
+                (n.position.y + n.height) if n.height else n.position.y
+                for n in target.nodes
+                if n not in unpositioned_nodes
+            ),
+            default=0,
+        )
+        _organize_new_nodes(unpositioned_nodes, target.edges, offset=(min_x, max_y))
     # For new comments, place them above the box defined in the next available line.
     # We assume that the comment's ID is of the form "comment on line N" where N is an integer.
-    def _intd(s: str) -> int | None:
+    node_by_line_id: dict[int, workspace.WorkspaceNode] = {}
+    for node in target.nodes:
+        line_id = node.id.split()[-1]
         try:
-            return int(s)
+            line_id_int = int(line_id)
         except ValueError:
-            return None
-
-    node_by_line_id = {
-        _intd(node.id.split()[-1]): node
-        for node in target.nodes
-        if _intd(node.id.split()[-1]) is not None
-    }
+            continue
+        node_by_line_id[line_id_int] = node
     for node in target.nodes:
         source_node = source_nodes_by_id.get(node.id)
         if source_node is not None or node.type != "comment":
             continue
-        line_id = _intd(node.id.split()[-1])
+        try:
+            line_id = int(node.id.split()[-1])
+        except ValueError:
+            continue
         next_line_id = min(
             filter(lambda x: x > line_id, node_by_line_id.keys()), default=line_id
         )

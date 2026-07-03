@@ -26,19 +26,10 @@ def _get_catalog():
     return catalog
 
 
-def python_to_workspace(
-    code: str, error_on_unknown_ops: bool = True
-) -> workspace.Workspace:
-    catalog = _get_catalog()
-    tree = ast.parse(code)
-    ws = workspace.Workspace()
-    saved_values = {}
-    box_x = {}
-    box_y = {}
+def _gather_multiline_comments(code: str) -> list[tuple[int, str]]:
     comments = []
     comment_lines = []
     next_line = 0
-    # gather multiline user comments
     for i, line in enumerate(code.splitlines()):
         if not line.strip().startswith("#!"):
             continue
@@ -53,7 +44,17 @@ def python_to_workspace(
         next_line = i + 1
     if comment_lines:
         comments.append((next_line - len(comment_lines), "\n".join(comment_lines)))
-    for line, text in comments:
+    return comments
+
+
+def python_to_workspace(
+    code: str, error_on_unknown_ops: bool = True
+) -> workspace.Workspace:
+    catalog = _get_catalog()
+    tree = ast.parse(code)
+    ws = workspace.Workspace()
+    saved_values = {}
+    for line, text in _gather_multiline_comments(code):
         ws.add_node(
             id=f"comment on line {line}",
             title="Comment",
@@ -96,11 +97,8 @@ def python_to_workspace(
             )
             kwargs[kw.arg] = kw.value
         params = {}
-        x = 0
-        lowest_input = None
 
         def add_edge(arg_name, arg_value_list):
-            nonlocal x, lowest_input
             for arg_value in arg_value_list:
                 if isinstance(arg_value, ast.Subscript):
                     assert isinstance(arg_value.value, ast.Name), error_msg
@@ -114,9 +112,6 @@ def python_to_workspace(
                     f"{error_msg}\n\nUnknown variable reference: {name}"
                 )
                 src = saved_values[name]
-                x = max(x, box_x[src] + 1)
-                if lowest_input is None or box_y[src] < lowest_input:
-                    lowest_input = box_y[src]
                 ws.add_edge(src, sourceHandle, box_id, arg_name)
 
         for arg_name, arg_value in kwargs.items():
@@ -155,12 +150,6 @@ def python_to_workspace(
                     assert isinstance(item, ast.Constant), error_msg
                     tuple_value.append(item.value)
                 params[arg_name] = tuple(tuple_value)
-        taken = {box_y[b] for b in box_y if box_x[b] == x}
-        y = lowest_input or 0
-        while y in taken:
-            y += 1
-        box_x[box_id] = x
-        box_y[box_id] = y
         op = catalog.get(func_name)
         if op:
             func_name = op.name
@@ -177,7 +166,6 @@ def python_to_workspace(
             params=params,
             width=400,
             height=400,
-            position=workspace.Position(x=x * 500, y=y * 450),
         )
         if save_as:
             saved_values[save_as] = box_id
