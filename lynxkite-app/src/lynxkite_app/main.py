@@ -3,6 +3,7 @@
 import os
 import shutil
 import pydantic
+from pydantic_core import from_json
 import fastapi
 import joblib
 import pathlib
@@ -62,13 +63,13 @@ app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 def _get_ops(env: str):
     catalog = ops.CATALOGS[env]
-    res = {op.name: op.model_dump() for op in catalog.values()}
-    res.setdefault("Comment", ops.COMMENT_OP.model_dump())
+    res = {op.name: op for op in catalog.values()}
+    res.setdefault("Comment", ops.COMMENT_OP)
     return res
 
 
 @app.get("/api/catalog")
-async def get_catalog(workspace: str, request: fastapi.Request):
+async def get_catalog(workspace: str, request: fastapi.Request) -> dict[str, dict[str, ops.Op]]:
     await auth.check_permission(request, "read", workspace)
     ops.load_user_scripts(workspace)
     return {env: _get_ops(env) for env in ops.CATALOGS}
@@ -90,12 +91,30 @@ data_path = pathlib.Path()
 @app.post("/api/delete")
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
+    assert isinstance(req["path"], str)
     json_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
+    workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     json_path.unlink()
     crdt_path.unlink()
+    if workspace_files_path.exists():
+        shutil.rmtree(workspace_files_path)
     crdt.delete_room(req["path"])
+
+
+@app.get("/api/node_output")
+async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
+    await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
+    json_path = data_path / ops.build_output_path(workspace, node_id)
+    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
+    output = None
+    if json_path.exists():
+        with open(json_path, mode="r") as f:
+            output = from_json(f.read())
+    if output is None:
+        raise fastapi.HTTPException(status_code=404, detail="Output not found")
+    return output
 
 
 class DirectoryEntry(pydantic.BaseModel):
@@ -182,7 +201,7 @@ async def service_post(req: fastapi.Request, module_path: str):
 
 
 @app.post("/api/upload")
-async def upload(req: fastapi.Request, dir: str = "uploads"):
+async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
     """Receives file uploads and stores them in DATA_PATH/dir."""
     await auth.check_permission(req, "write", dir)
     upload_dir = data_path / dir

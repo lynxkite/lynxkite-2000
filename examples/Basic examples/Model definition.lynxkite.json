@@ -72,21 +72,27 @@
     }
   ],
   "env": "PyTorch model",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Optimizer",
+        "output_metadata": null,
         "params": {
           "lr": "0.1",
           "type": "SGD"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Optimizer"
       },
       "dragHandle": ".drag-handle",
@@ -104,14 +110,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Activation",
+        "output_metadata": null,
         "params": {
           "type": "Leaky ReLU"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Activation"
       },
       "dragHandle": ".drag-handle",
@@ -126,19 +137,23 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "MSE loss",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "MSE loss"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 71.0,
       "id": "MSE loss 2",
       "position": {
         "x": 375.21624462193034,
@@ -152,15 +167,20 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Repeat",
+        "output_metadata": null,
         "params": {
           "same_weights": false,
           "times": "2"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Repeat"
       },
       "dragHandle": ".drag-handle",
@@ -178,14 +198,19 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "4"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "dragHandle": ".drag-handle",
@@ -203,15 +228,20 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Constant vector",
+        "output_metadata": null,
         "params": {
           "size": "1",
           "value": "1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Constant vector"
       },
       "dragHandle": ".drag-handle",
@@ -226,19 +256,23 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Add",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Add"
       },
       "dragHandle": ".drag-handle",
-      "height": 200.0,
+      "height": 71.0,
       "id": "Add 1",
       "position": {
         "x": 631.934390777073,
@@ -249,19 +283,23 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Output",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
-      "height": 234.0,
+      "height": 71.0,
       "id": "Output 1",
       "position": {
         "x": 108.18701117589333,
@@ -273,17 +311,23 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "_input_name": "Y",
           "per_sample": true,
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
@@ -299,17 +343,23 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
+        "message": null,
         "meta": null,
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "_input_name": "X",
           "per_sample": true,
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",

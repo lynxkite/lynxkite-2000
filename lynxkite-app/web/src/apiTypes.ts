@@ -97,6 +97,7 @@ export interface WorkspaceNodeData {
     [k: string]: unknown;
   };
   display?: unknown;
+  display_version?: number | null;
   input_metadata?:
     | {
         [k: string]: unknown;
