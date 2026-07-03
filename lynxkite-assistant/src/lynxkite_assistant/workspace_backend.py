@@ -319,9 +319,6 @@ def _update_ws_positions(
                 y /= count
                 node.position = workspace.Position(x=x, y=y)
                 newly_positioned.append(node)
-                print(
-                    "positioned node", node.id, "at", node.position.x, node.position.y
-                )
         for newly_positioned_node in newly_positioned:
             unpositioned_nodes.remove(newly_positioned_node)
     if unpositioned_nodes:

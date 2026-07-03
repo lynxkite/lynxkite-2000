@@ -15,52 +15,40 @@ For detailed information on each box, please refer to the individual box documen
 Always check the references before using the box, and pay close attention to the parameters and their types.
 
 **Cross-entropy loss:**
-usage: lynxkite_core.ops.no_op(x=<x_variable>, y=<y_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.cross_entropy_loss(x=<x_variable>, y=<y_variable>)
 
 **Drop first n:**
-usage: lynxkite_core.ops.no_op(n=<n_value>, x=<x_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.drop_first_n(n=<n_value>, x=<x_variable>)
 
 **Graph conv:**
-usage: lynxkite_core.ops.no_op(type=<type_value>, x=<x_variable>, edges=<edges_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.graph_conv(type=<type_value>, x=<x_variable>, edges=<edges_variable>)
 
 **Heterogeneous graph conv:**
-usage: lynxkite_core.ops.no_op(node_embeddings_order=<node_embeddings_order_value>, edge_modules_order=<edge_modules_order_value>, node_embeddings=<node_embeddings_variable>, edge_modules=<edge_modules_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.heterogeneous_graph_conv(node_embeddings_order=<node_embeddings_order_value>, edge_modules_order=<edge_modules_order_value>, node_embeddings=<node_embeddings_variable>, edge_modules=<edge_modules_variable>)
 
 **Optimizer:**
-usage: lynxkite_core.ops.no_op(type=<type_value>, lr=<lr_value>, loss=<loss_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.optimizer(type=<type_value>, lr=<lr_value>, loss=<loss_variable>)
 
 **Output:**
-usage: lynxkite_core.ops.no_op(name=<name_value>, x=<x_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.output(name=<name_value>, x=<x_variable>)
 
 **Pick element by constant:**
-usage: lynxkite_core.ops.no_op(index=<index_value>, x=<x_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.pick_element_by_constant(index=<index_value>, x=<x_variable>)
 
 **Pick element by index:**
-usage: lynxkite_core.ops.no_op(x=<x_variable>, index=<index_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.pick_element_by_index(x=<x_variable>, index=<index_variable>)
 
 **Recurrent chain:**
-usage: lynxkite_core.ops.no_op(input=<input_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.recurrent_chain(input=<input_variable>)
 
 **Repeat:**
-usage: lynxkite_core.ops.no_op(times=<times_value>, same_weights=<same_weights_value>, input=<input_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.repeat(times=<times_value>, same_weights=<same_weights_value>, input=<input_variable>)
 
 **Take first n:**
-usage: lynxkite_core.ops.no_op(n=<n_value>, x=<x_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.take_first_n(n=<n_value>, x=<x_variable>)
 
 **Triplet margin loss:**
-usage: lynxkite_core.ops.no_op(x=<x_variable>, x_pos=<x_pos_variable>, x_neg=<x_neg_variable>)
-for detailed information, see references/no_op.md
+usage: lynxkite_core.ops.triplet_margin_loss(x=<x_variable>, x_pos=<x_pos_variable>, x_neg=<x_neg_variable>)
 
 **View tables:**
 usage: lynxkite_graph_analytics.operations.basic_ops.view_tables(limit=<limit_value>, bundle=<bundle_variable>)
@@ -283,8 +271,7 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.activation(type=<type_value>
 for detailed information, see references/activation.md
 
 **Add:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.add(a=<a_variable>, b=<b_variable>)
 
 **Attention:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.attention(embed_dim=<embed_dim_value>, num_heads=<num_heads_value>, dropout=<dropout_value>, query=<query_variable>, key=<key_variable>, value=<value_variable>)
@@ -303,8 +290,7 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.constant_vector(value=<value
 for detailed information, see references/constant_vector.md
 
 **Cos:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.cos(input=<input_variable>)
 
 **Dropout:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.dropout(p=<p_value>, x=<x_variable>)
@@ -315,8 +301,7 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.embedding(num_embeddings=<nu
 for detailed information, see references/embedding.md
 
 **Exp:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.exp(input=<input_variable>)
 
 **Input: graph edges:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_edges_input(_input_name=<_input_name_value>)
@@ -339,8 +324,7 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.linear(output_dim=<output_di
 for detailed information, see references/linear.md
 
 **Log:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.log(input=<input_variable>)
 
 **LSTM:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.lstm(input_size=<input_size_value>, hidden_size=<hidden_size_value>, dropout=<dropout_value>, x=<x_variable>)
@@ -355,24 +339,21 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.mse_loss(x=<x_variable>, y=<
 for detailed information, see references/mse_loss.md
 
 **Multiply:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.multiply(a=<a_variable>, b=<b_variable>)
 
 **Neural ODE with MLP:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.neural_ode_mlp(method=<method_value>, relative_tolerance=<relative_tolerance_value>, absolute_tolerance=<absolute_tolerance_value>, state_dimensions=<state_dimensions_value>, mlp_layers=<mlp_layers_value>, mlp_hidden_size=<mlp_hidden_size_value>, mlp_activation=<mlp_activation_value>, state_0=<state_0_variable>, timestamps=<timestamps_variable>)
 for detailed information, see references/neural_ode_mlp.md
 
 **Sin:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(input=<input_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.sin(input=<input_variable>)
 
 **Softmax:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.softmax(dim=<dim_value>, x=<x_variable>)
 for detailed information, see references/softmax.md
 
 **Subtract:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.<lambda>(a=<a_variable>, b=<b_variable>)
-for detailed information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.subtract(a=<a_variable>, b=<b_variable>)
 
 **Blur:**
 usage: lynxkite_pillow_example.blur(radius=<radius_value>, image=<image_variable>)

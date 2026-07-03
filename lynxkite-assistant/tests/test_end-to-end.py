@@ -51,24 +51,19 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
     ops.load_user_scripts(og_ws_path)
     og_ws = workspace.Workspace.load(og_ws_path)
     resp = python_workspace_conversion.workspace_to_python(og_ws)
-    if "<lambda>" in resp:
-        pytest.skip(
-            "Skipping test because the workspace contains a lambda function, which the ast cannot parse."
-        )
     workspace_backend.set_workspace_file_content(mod_ws_path, resp)
     mod_ws = workspace.Workspace.load(mod_ws_path)
 
-    def get_idx(nodes, nid):
-        ids = [n.id for n in nodes]
-        return ids.index(nid) if nid in ids else -1
+    def get_idx(node_ids, nid):
+        return node_ids.index(nid) if nid in node_ids else -1
 
+    og_ids = [n.id for n in og_ws.nodes]
+    mod_ids = [n.id for n in mod_ws.nodes]
     s1 = set(
-        (get_idx(og_ws.nodes, e.source), get_idx(og_ws.nodes, e.target))
-        for e in og_ws.edges
+        (get_idx(og_ids, e.source), get_idx(og_ids, e.target)) for e in og_ws.edges
     )
     s2 = set(
-        (get_idx(mod_ws.nodes, e.source), get_idx(mod_ws.nodes, e.target))
-        for e in mod_ws.edges
+        (get_idx(mod_ids, e.source), get_idx(mod_ids, e.target)) for e in mod_ws.edges
     )
     assert s1 == s2, "Edges differ"
     for og_node, mod_node in zip(og_ws.nodes, mod_ws.nodes):

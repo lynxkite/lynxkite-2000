@@ -4,78 +4,78 @@ import inspect
 from lynxkite_core import ops
 
 
+def _render_param(param):
+    return f"{param['name']}=<{param['name']}_{'value' if param['kw'] else 'variable'}>"
+
+
+class BoxSkill:
+    def __init__(self, op_name: str, op: ops.Op):
+        name = op_name.split(">")[-1].strip()
+        docstring = op.doc
+        doc = {d["kind"]: d for d in docstring} if docstring else {}
+        output_docs = doc["returns"]["value"] if "returns" in doc else []
+        output_docs = {p["name"]: p["description"] for p in output_docs}
+        text_doc = doc["text"]["value"] if "text" in doc else ""
+        short_description = ""
+        for line in text_doc.splitlines():
+            if line.strip():
+                short_description = line.strip()
+                break
+        self.id = name.replace(" ", "-").replace("/", "-").replace("–", "-").lower()
+        self.name = name
+        self.short_description = short_description if short_description else name
+        self.long_description = text_doc
+        self.parameters = []
+        self.usage = ""
+        self.returns = [
+            (o.name, o.type, output_docs.get(o.name, "")) for o in op.outputs
+        ]
+        self.package = (
+            ".".join(op.python_function_name.split(".")[:-1])
+            if op.python_function_name
+            else ""
+        )
+        self.function_name = (
+            op.python_function_name.split(".")[-1] if op.python_function_name else ""
+        )
+        self.code = inspect.getsource(op.func) if op.func else ""
+        self.placeholder_function_name = getattr(op, "placeholder_function_name", False)
+        paramdocs = doc["parameters"]["value"] if "parameters" in doc else []
+        paramdocs = {p["name"]: p["description"] for p in paramdocs}
+        for argtype in [op.params, op.inputs]:
+            for i, arg in enumerate(argtype):
+                param = {
+                    "name": arg.name,
+                    "type": arg.type,
+                    "default": arg.default if hasattr(arg, "default") else None,
+                    "kw": argtype == op.params,
+                    "description": paramdocs.get(arg.name, ""),
+                }
+                self.parameters.append(param)
+        self.usage = f"{op.python_function_name}({', '.join([_render_param(param) for param in self.parameters])})"
+
+
 def get_box_skills():
     box_skills = []  # each box is a mini skill
-
-    def _render_param(param):
-        return f"{param['name']}=<{param['name']}_{'value' if param['kw'] else 'variable'}>"
-
     for _env, catalog in ops.CATALOGS.items():
         for op_name, op in catalog.items():
-            name = op_name.split(">")[-1].strip()
-            docstring = op.doc
-            doc = {d["kind"]: d for d in docstring} if docstring else {}
-            output_docs = doc["returns"]["value"] if "returns" in doc else []
-            output_docs = {p["name"]: p["description"] for p in output_docs}
-            text_doc = doc["text"]["value"] if "text" in doc else ""
-            short_description = ""
-            for line in text_doc.splitlines():
-                if line.strip():
-                    short_description = line.strip()
-                    break
-            skill = {
-                "id": name.replace(" ", "-")
-                .replace("/", "-")
-                .replace("–", "-")
-                .lower(),
-                "name": name,
-                "short_description": short_description if short_description else name,
-                "long_description": text_doc,
-                "parameters": [],
-                "usage": "",
-                "returns": [
-                    (o.name, o.type, output_docs.get(o.name, "")) for o in op.outputs
-                ],
-                "package": ".".join(op.python_function_name.split(".")[:-1])
-                if op.python_function_name
-                else "",
-                "function_name": op.python_function_name.split(".")[-1]
-                if op.python_function_name
-                else "",
-                "code": inspect.getsource(op.func) if op.func else "",
-            }
-            paramdocs = doc["parameters"]["value"] if "parameters" in doc else []
-            paramdocs = {p["name"]: p["description"] for p in paramdocs}
-            for argtype in [op.params, op.inputs]:
-                for i, arg in enumerate(argtype):
-                    param = {
-                        "name": arg.name,
-                        "type": arg.type,
-                        "default": arg.default if hasattr(arg, "default") else None,
-                        "kw": argtype == op.params,
-                        "description": paramdocs.get(arg.name, ""),
-                    }
-                    skill["parameters"].append(param)
-            skill["usage"] = (
-                f"{op.python_function_name}({', '.join([_render_param(param) for param in skill['parameters']])})"
-            )
-            box_skills.append(skill)
+            box_skills.append(BoxSkill(op_name, op))
     return box_skills
 
 
 def create_box_description(skill) -> str:
     """For LynxKite boxes, the source code, for exteranal boxes, the parameters and usage are included in the description."""
-    if "lynxkite" in skill["package"]:
+    if "lynxkite" in skill.package:
         desc = [
-            f"**{skill['name']}:**",
-            skill["long_description"],
+            f"**{skill.name}:**",
+            skill.long_description,
             "```python",
-            skill["code"],
+            skill.code,
             "```",
         ]
         custom_types = [
             (p["name"], p["type"])
-            for p in skill["parameters"]
+            for p in skill.parameters
             if "typing" in str(p["type"])
         ]
         if custom_types:
@@ -84,29 +84,31 @@ def create_box_description(skill) -> str:
                 desc.append(f"  - {name}: {typ}")
     else:
         desc = [
-            f"**{skill['name']}:**",
-            skill["long_description"],
+            f"**{skill.name}:**",
+            skill.long_description,
             "parameters:",
             *[
                 f"  - {param['name']}: {param['type'] or '?'} = {param['default'] or '?'} --{param['description'] or '?'}"
-                for param in skill["parameters"]
+                for param in skill.parameters
             ],
             "returns:",
             *[
                 f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}."
-                for ret in skill["returns"]
+                for ret in skill.returns
             ],
             "usage:",
-            f"  output_variable = {skill['usage']}",
+            f"  output_variable = {skill.usage}",
         ]
     return os.linesep.join(desc)
 
 
 def create_short_box_description(skill) -> str:
-    desc = f"""**{skill["name"]}:**
-usage: {skill["usage"]}
-for detailed information, see references/{skill["function_name"] or skill["id"]}.md"""
-    return desc
+    desc = [f"**{skill.name}:**", f"usage: {skill.usage}"]
+    if not skill.placeholder_function_name:
+        desc.append(
+            f"for detailed information, see references/{skill.function_name or skill.id}.md"
+        )
+    return os.linesep.join(desc)
 
 
 def create_skills_from_catalog(
@@ -129,7 +131,7 @@ def create_skills_from_catalog(
     if not os.path.exists(os.path.join(output_path, "references")):
         os.makedirs(os.path.join(output_path, "references"))
     box_skills = get_box_skills()
-    box_skills.sort(key=lambda x: (x["package"], x["id"]))
+    box_skills.sort(key=lambda x: (x.package, x.id))
     main_skill_file = f"""---
 name: use-lynxkite-boxes
 description: Use the boxes already defined in LynxKite.
@@ -153,10 +155,10 @@ Always check the references before using the box, and pay close attention to the
             main_skill_file.strip() + os.linesep
         )  # Add a newline at the end for proper formatting
     for s in box_skills:
+        if s.placeholder_function_name:
+            continue  # skip functions where there's no real function, e.g. for lambdas or no_op
         with open(
-            os.path.join(
-                output_path, "references", f"{s['function_name'] or s['id']}.md"
-            ),
+            os.path.join(output_path, "references", f"{s.function_name or s.id}.md"),
             "w",
         ) as f:
             f.write(

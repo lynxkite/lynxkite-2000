@@ -263,6 +263,7 @@ class Op(BaseConfig):
     id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
     # Automatically set from `func`.
     python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
+    placeholder_function_name: bool = pydantic.Field(default=False)
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
@@ -316,9 +317,16 @@ class Op(BaseConfig):
             assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         if self.func and hasattr(self.func, "__module__") and hasattr(self.func, "__name__"):
-            self.python_function_name = (
-                f"{self.func.__module__.replace('-', '_')}.{self.func.__name__}"
-            )
+            if self.func.__name__ == "<lambda>" or self.func.__name__ == "no_op":
+                self.python_function_name = f"{self.func.__module__}.{
+                    ''.join(c if c.isalnum() else '_' for c in self.id.lower())
+                }"
+                self.placeholder_function_name = True
+            else:
+                self.python_function_name = (
+                    f"{self.func.__module__.replace('-', '_')}.{self.func.__name__}"
+                )
+                self.placeholder_function_name = False
         return self
 
     @staticmethod
