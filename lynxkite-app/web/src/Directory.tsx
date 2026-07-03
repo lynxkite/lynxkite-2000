@@ -329,7 +329,7 @@ export default function Directory() {
                                 const url = URL.createObjectURL(blob);
                                 const a = document.createElement("a");
                                 a.href = url;
-                                a.download = item.name;
+                                a.download = item.name.split("/").pop()!;
                                 a.click();
                                 URL.revokeObjectURL(url);
                               }}
