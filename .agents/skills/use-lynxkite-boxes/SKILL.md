@@ -251,13 +251,13 @@ for usage information, see references/add_rank.md
 Derive property
 for usage information, see references/derive_property.md
 
+**Drop tables:**
+Keeps/removes the selected tables based on the value of drop_selected
+for usage information, see references/drop_tables.md
+
 **Enter table data:**
 Enter table data as CSV. The first row should contain column names.
 for usage information, see references/enter_table_data.md
-
-**Filter tables:**
-Keeps/removes the selected tables based on the value of drop_selected
-for usage information, see references/filter_tables.md
 
 **Filter with formula:**
 Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false
