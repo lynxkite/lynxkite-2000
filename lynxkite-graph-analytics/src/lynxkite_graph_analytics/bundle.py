@@ -82,11 +82,13 @@ class Bundle:
         added_tables = set()
 
         def _collect_nodes(table, key):
-            df = self.dfs[table].copy()
+            df = self.dfs[table]
             if df.index.name != key:
                 df = df.set_index(key)
-            df.index = f"{table}_" + df.index.astype(str)
-            graph.add_nodes_from(df.to_dict("index").items())
+
+            graph.add_nodes_from(
+                map(lambda item: (f"{table}_{item[0]}", item[1]), df.to_dict("index").items())
+            )
             added_tables.add(table)
 
         for relation in self.relations:
@@ -95,23 +97,18 @@ class Bundle:
             if relation.target_table not in added_tables:
                 _collect_nodes(relation.target_table, relation.target_key)
 
-            if relation.df in self.dfs:
-                edges_df = self.dfs[relation.df]
-                src_nodes = f"{relation.source_table}_" + edges_df[relation.source_column].astype(
-                    str
+            edges = self.dfs[relation.df]
+            attrs = edges.columns.difference([relation.source_column, relation.target_column])
+            graph.add_edges_from(
+                map(
+                    lambda row: (
+                        f"{relation.source_table}_{row[relation.source_column]}",
+                        f"{relation.target_table}_{row[relation.target_column]}",
+                        {k: row[k] for k in attrs},
+                    ),
+                    edges.to_dict("records"),
                 )
-                dst_nodes = f"{relation.target_table}_" + edges_df[relation.target_column].astype(
-                    str
-                )
-
-                attr_cols = [
-                    col
-                    for col in edges_df.columns
-                    if col not in [relation.source_column, relation.target_column]
-                ]
-                edge_attrs = edges_df[attr_cols].to_dict("records")
-
-                graph.add_edges_from(zip(src_nodes, dst_nodes, edge_attrs))
+            )
 
         return graph
 
