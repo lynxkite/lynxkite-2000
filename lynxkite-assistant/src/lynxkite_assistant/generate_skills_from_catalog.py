@@ -54,61 +54,51 @@ class BoxSkill:
                 self.parameters.append(param)
         self.usage = f"{op.python_function_name}({', '.join([_render_param(param) for param in self.parameters])})"
 
+    def get_description(self) -> str:
+        """For LynxKite boxes, the source code, for exteranal boxes, the parameters and usage are included in the description."""
+        if "lynxkite" in self.package:
+            desc = [
+                f"**{self.name}:**",
+                self.long_description,
+                "```python",
+                self.code,
+                "```",
+            ]
+            custom_types = [
+                (p["name"], p["type"])
+                for p in self.parameters
+                if "typing" in str(p["type"])
+            ]
+            if custom_types:
+                desc.append("Custom types:")
+                for name, typ in custom_types:
+                    desc.append(f"  - {name}: {typ}")
+        else:
+            desc = [
+                f"**{self.name}:**",
+                self.long_description,
+                "parameters:",
+                *[
+                    f"  - {param['name']}: {param['type'] or '?'} = {param['default'] or '?'} --{param['description'] or '?'}"
+                    for param in self.parameters
+                ],
+                "returns:",
+                *[
+                    f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}."
+                    for ret in self.returns
+                ],
+                "usage:",
+                f"  output_variable = {self.usage}",
+            ]
+        return os.linesep.join(desc)
 
-def get_box_skills():
-    box_skills = []  # each box is a mini skill
-    for _env, catalog in ops.CATALOGS.items():
-        for op_name, op in catalog.items():
-            box_skills.append(BoxSkill(op_name, op))
-    return box_skills
-
-
-def create_box_description(skill) -> str:
-    """For LynxKite boxes, the source code, for exteranal boxes, the parameters and usage are included in the description."""
-    if "lynxkite" in skill.package:
-        desc = [
-            f"**{skill.name}:**",
-            skill.long_description,
-            "```python",
-            skill.code,
-            "```",
-        ]
-        custom_types = [
-            (p["name"], p["type"])
-            for p in skill.parameters
-            if "typing" in str(p["type"])
-        ]
-        if custom_types:
-            desc.append("Custom types:")
-            for name, typ in custom_types:
-                desc.append(f"  - {name}: {typ}")
-    else:
-        desc = [
-            f"**{skill.name}:**",
-            skill.long_description,
-            "parameters:",
-            *[
-                f"  - {param['name']}: {param['type'] or '?'} = {param['default'] or '?'} --{param['description'] or '?'}"
-                for param in skill.parameters
-            ],
-            "returns:",
-            *[
-                f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}."
-                for ret in skill.returns
-            ],
-            "usage:",
-            f"  output_variable = {skill.usage}",
-        ]
-    return os.linesep.join(desc)
-
-
-def create_short_box_description(skill) -> str:
-    desc = [f"**{skill.name}:**", f"usage: {skill.usage}"]
-    if not skill.placeholder_function_name:
-        desc.append(
-            f"for detailed information, see references/{skill.function_name or skill.id}.md"
-        )
-    return os.linesep.join(desc)
+    def get_short_description(self) -> str:
+        desc = [f"**{self.name}:**", f"usage: {self.usage}"]
+        if not self.placeholder_function_name:
+            desc.append(
+                f"for detailed information, see references/{self.function_name or self.id}.md"
+            )
+        return os.linesep.join(desc)
 
 
 def create_skills_from_catalog(
@@ -130,7 +120,10 @@ def create_skills_from_catalog(
         os.makedirs(output_path)
     if not os.path.exists(os.path.join(output_path, "references")):
         os.makedirs(os.path.join(output_path, "references"))
-    box_skills = get_box_skills()
+    box_skills = []
+    for _env, catalog in ops.CATALOGS.items():
+        for op_name, op in catalog.items():
+            box_skills.append(BoxSkill(op_name, op))
     box_skills.sort(key=lambda x: (x.package, x.id))
     main_skill_file = f"""---
 name: use-lynxkite-boxes
@@ -148,7 +141,7 @@ Each box corresponds to a specific operation or function that can be used to bui
 For detailed information on each box, please refer to the individual box documentation in the references folder.
 Always check the references before using the box, and pay close attention to the parameters and their types.
 
-{(os.linesep * 2).join([create_short_box_description(s) for s in box_skills])}
+{(os.linesep * 2).join([s.get_short_description() for s in box_skills])}
 """
     with open(os.path.join(output_path, "SKILL.md"), "w") as f:
         f.write(
@@ -162,7 +155,7 @@ Always check the references before using the box, and pay close attention to the
             "w",
         ) as f:
             f.write(
-                create_box_description(s).strip() + os.linesep
+                s.get_description().strip() + os.linesep
             )  # Add a newline at the end for proper formatting
 
 
