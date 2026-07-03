@@ -180,6 +180,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
+    assistant_messages: Optional[list[dict]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 

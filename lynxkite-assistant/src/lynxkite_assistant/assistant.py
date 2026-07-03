@@ -9,6 +9,12 @@ from fastapi.responses import StreamingResponse
 import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
+from lynxkite_core import workspace
+
+try:
+    from lynxkite_app import crdt
+except ImportError:
+    crdt = None  # type: ignore
 
 router = fastapi.APIRouter()
 
@@ -98,8 +104,16 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
         if not content:
             continue
         request_messages.append({"role": msg.role, "content": content})
+    ws = workspace.Workspace.load(req.workspace)
+    ws.assistant_messages = request_messages.copy()
+    ws.save(req.workspace)
+    if crdt:
+        room = crdt.get_room_or_none(req.workspace)
+        if room is not None:
+            crdt.update_workspace(room.ws, ws)
 
     async def generate():
+        response_message = []
         for chunk in agent.stream(
             {"messages": request_messages},
             stream_mode="messages",
@@ -112,6 +126,17 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
             delta = _extract_token_text(token.content)
             if delta:
                 yield delta
+                response_message.append(delta)
+        if not ws.assistant_messages:
+            ws.assistant_messages = []
+        ws.assistant_messages.append(
+            {"role": "assistant", "content": "".join(response_message)}
+        )
+        ws.save(req.workspace)
+        if crdt:
+            room = crdt.get_room_or_none(req.workspace)
+            if room is not None:
+                crdt.update_workspace(room.ws, ws)
 
     try:
         gen = generate()
