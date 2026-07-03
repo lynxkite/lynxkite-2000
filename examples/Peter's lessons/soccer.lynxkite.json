@@ -93,6 +93,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
@@ -145,6 +146,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
@@ -191,6 +193,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -287,6 +290,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -360,6 +364,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -421,6 +426,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -505,6 +511,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -595,6 +602,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -678,6 +686,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -763,6 +772,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -851,6 +861,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1042,6 +1053,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1233,6 +1245,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1268,7 +1281,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Table operations > Connect nodes on attribute",
+        "op_id": "Graph operations > Connect nodes on attribute",
         "output_metadata": [
           {
             "dataframes": {

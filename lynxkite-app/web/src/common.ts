@@ -153,6 +153,28 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
   return (await response.json()) as T;
 }
 
+function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string): string {
+  const sanitizedWorkspacePath = wsPath
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  const sanitizedNodeId = encodeURIComponent(nodeId);
+  return `/api/node_output?workspace=${sanitizedWorkspacePath}&node_id=${sanitizedNodeId}&version=${displayVersion}`;
+}
+
+export function useDisplay(display_version: number, node_id: string): any {
+  const ws = useContext(LynxKiteState).workspace;
+  const routePath = usePath().replace(/^[/]edit[/]/, "");
+  const wsPath = (ws?.path as string | undefined) || routePath || undefined;
+  const displayVersion = display_version;
+  const displayKey =
+    wsPath && displayVersion != null ? fetchDisplayUrl(node_id, displayVersion, wsPath) : null;
+  const { data } = useSWR(displayKey, (key: string) => apiJson(key), {
+    revalidateOnFocus: false,
+  });
+  return data;
+}
+
 export async function completeLoginCallback(): Promise<string> {
   const manager = getUserManager();
   if (!manager) {
