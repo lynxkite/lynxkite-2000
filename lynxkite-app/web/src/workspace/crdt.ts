@@ -266,8 +266,9 @@ class CRDTConnection {
     }
 
     // Remove items in reverse order to avoid index shifting issues
-    for (let i = removeOperations.length - 1; i >= 0; i--) {
-      const { index } = removeOperations[i];
+    const sortedRemoveOperations = removeOperations.sort((a, b) => b.index - a.index);
+    for (let i = sortedRemoveOperations.length - 1; i >= 0; i--) {
+      const { index } = sortedRemoveOperations[i];
       wnodes.delete(index);
     }
 
@@ -294,8 +295,9 @@ class CRDTConnection {
       }
     }
     // Remove edges in reverse order to avoid index shifting
-    for (let i = removeOperations.length - 1; i >= 0; i--) {
-      const { index } = removeOperations[i];
+    const sortedRemoveOperations = removeOperations.sort((a, b) => b.index - a.index);
+    for (let i = sortedRemoveOperations.length - 1; i >= 0; i--) {
+      const { index } = sortedRemoveOperations[i];
       wedges.delete(index);
     }
     if (wsChanged) {
