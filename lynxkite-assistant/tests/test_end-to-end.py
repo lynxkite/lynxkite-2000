@@ -43,6 +43,8 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
         pytest.skip(
             "Skipping test because Repeat block causes cyclical nodes, whose handling is not implemented."
         )
+    if "sql" in og_ws_path or "Gradio/Example" in og_ws_path:
+        pytest.skip("Skipping test because SQL and Gradio examples have faulty blocks.")
     mod_ws_path = create_temp_file(
         og_ws_path.replace(".lynxkite.json", ".modified.lynxkite.json")
     )
@@ -66,12 +68,19 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
         (get_idx(mod_ids, e.source), get_idx(mod_ids, e.target)) for e in mod_ws.edges
     )
     assert s1 == s2, "Edges differ"
+    og_group_ids = {None: None}
     for og_node, mod_node in zip(og_ws.nodes, mod_ws.nodes):
         assert og_node.width == mod_node.width
         assert og_node.height == mod_node.height
         assert og_node.type == mod_node.type
         assert og_node.data.op_id == mod_node.data.op_id
         assert og_node.data.title == mod_node.data.title
+        og_group = getattr(og_node.data, "parentId", None)
+        mod_group = getattr(mod_node.data, "parentId", None)
+        if og_group in og_group_ids:
+            assert og_group_ids[og_group] == mod_group
+        else:
+            og_group_ids[og_group] = mod_group
         if (
             og_node.type == "comment" and mod_node.type == "comment"
         ):  # for comments, match based on text without whitespace and line breaks

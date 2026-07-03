@@ -54,7 +54,11 @@ def python_to_workspace(
     tree = ast.parse(code)
     ws = workspace.Workspace()
     saved_values = {}
+    comment_by_cleaned_text = {}
     for line, text in _gather_multiline_comments(code):
+        comment_by_cleaned_text[text.replace(" ", "").replace("\n", "")] = (
+            f"comment on line {line}"
+        )
         ws.add_node(
             id=f"comment on line {line}",
             title="Comment",
@@ -65,6 +69,7 @@ def python_to_workspace(
             height=50,
             position=workspace.Position(x=0, y=0),
         )
+    groups = {}
     for s in tree.body:
         src = ast.get_source_segment(code, s)
         error_msg = f"Unexpected statement on line {s.lineno}:\n\n  {src}\n\nThe file must only contain function calls. Keyword arguments must be constants or previous results. Positional arguments are not allowed."
@@ -133,7 +138,25 @@ def python_to_workspace(
                     dict_value[key_node.value] = value_node.value
                 params[arg_name] = dict_value
             elif isinstance(arg_value, ast.List):
-                if all(
+                if func_name == "lynxkite_core.ops.group" and all(
+                    isinstance(item, (ast.Name, ast.Constant))
+                    for item in arg_value.elts
+                ):
+                    boxes = {
+                        saved_values[item.id]
+                        for item in arg_value.elts
+                        if isinstance(item, ast.Name)
+                    }
+                    comments = {
+                        comment_by_cleaned_text[
+                            item.value.replace(" ", "").replace("\n", "")
+                        ]
+                        for item in arg_value.elts
+                        if isinstance(item, ast.Constant)
+                        and isinstance(item.value, str)
+                    }
+                    groups[box_id] = boxes.union(comments)
+                elif all(
                     isinstance(item, (ast.Name, ast.Subscript))
                     for item in arg_value.elts
                 ):
@@ -152,23 +175,33 @@ def python_to_workspace(
                 params[arg_name] = tuple(tuple_value)
         op = catalog.get(func_name)
         if op:
-            func_name = op.name
+            box_title = op.name
             op_id = op.id
+        elif func_name == "lynxkite_core.ops.group":
+            op_id = "Group"
+            box_title = "Group"
         elif error_on_unknown_ops:
             raise AssertionError(
                 f"Unknown operation '{func_name}' on line {s.lineno}. "
                 "Make sure the function is defined in boxes.py or is a pre-defined function."
             )
+        else:
+            box_title = func_name
         ws.add_node(
             id=box_id,
-            title=func_name,
+            title=box_title,
             op_id=op_id,
             params=params,
             width=400,
             height=400,
+            type="node_group" if func_name == "lynxkite_core.ops.group" else "basic",
         )
         if save_as:
             saved_values[save_as] = box_id
+    node_by_id = {node.id: node for node in ws.nodes}
+    for group_id, node_ids in groups.items():
+        for node_id in node_ids:
+            node_by_id[node_id].parentId = group_id
     ws.update_metadata()
     return ws
 
@@ -308,16 +341,22 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         incoming_edges[edge.target].append(edge)
         outgoing_count[edge.source] += 1
         dependencies[edge.target].add(edge.source)
-
+    groups = {}
+    for node in ws.nodes:
+        if hasattr(node, "parentId") and node.parentId:
+            dependencies[node.parentId].add(node.id)
+            groups.setdefault(node.parentId, []).append(node.id)
     sorter = graphlib.TopologicalSorter(dependencies)
     sorted_node_ids = list(sorter.static_order())
     saved_values: dict[str, str] = {}
     next_var_index = 1
-
     for node_id in sorted_node_ids:
         node = node_by_id[node_id]
         if node.type == "comment":
             comment_lines = node.data.params.get("text", "").split("\n")
+            saved_values[node_id] = (
+                f'"{node.data.params.get("text", "").replace("\n", "\\n")}"'  # node.data.params.get("text", "")
+            )
             for line in comment_lines:
                 code.append(f"#! {line}")
             code.append("")
@@ -326,6 +365,10 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
         params = sorted(
             f"{name}={repr(value)}" for name, value in node.data.params.items()
         )
+        if node.type == "node_group":
+            params.append(
+                f"group=[{', '.join(saved_values[n] for n in groups.get(node_id, []))}]"
+            )
         meta = node.data.meta
         short_id = "".join(c if c.isalnum() else "_" for c in node.data.title.lower())
         if meta and meta.python_function_name:
@@ -348,13 +391,10 @@ def workspace_to_python(ws: workspace.Workspace) -> str:
             code.append(f"\n# {function_name} {input_comment}")
         else:
             code.append("")
-        if outgoing_count[node_id] > 0:
-            variable_name = f"res_{short_id}_{next_var_index}"
-            next_var_index += 1
-            saved_values[node_id] = variable_name
-            code.append(f"{variable_name} = {call}")
-            if output_comment:
-                code.append(f"# {function_name} {output_comment}")
-        else:
-            code.append(call)
+        variable_name = f"res_{short_id}_{next_var_index}"
+        next_var_index += 1
+        saved_values[node_id] = variable_name
+        code.append(f"{variable_name} = {call}")
+        if output_comment:
+            code.append(f"# {function_name} {output_comment}")
     return "\n".join(code)
