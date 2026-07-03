@@ -27,13 +27,6 @@ class BundleMergeMode(enum.StrEnum):
     concatenate_non_unique = "concatenate non-unique"
 
 
-class NodeMetaData:
-    def __init__(self, table: str, id_column: str, node_id: str):
-        self.table = table
-        self.id_column = id_column
-        self.node_id = node_id
-
-
 @dataclasses.dataclass
 class Bundle:
     """A collection of DataFrames and other data.
@@ -83,50 +76,41 @@ class Bundle:
     def from_df(cls, df: pd.DataFrame):
         return cls(dfs={"records": df})
 
-    def to_nx_meta(self):
+    def to_nx(self):
+        """Returns a NetworkX DiGraph created from the nodes and edges in the relations of the bundle."""
         graph = nx.DiGraph()
-        meta = {}
         added_tables = set()
 
-        def collect_nodes(table, key):
-            df = self.dfs[table].copy()
+        def _collect_nodes(table, key):
+            df = self.dfs[table]
             if df.index.name != key:
                 df = df.set_index(key)
-            nodes_for_adding = []
-            for node_id, attrs in df.to_dict("index").items():
-                node_key = f"{table}_{node_id}"
-                nodes_for_adding.append((node_key, attrs))
-                meta[node_key] = NodeMetaData(
-                    table=str(table), id_column=str(key), node_id=str(node_id)
-                )
-            graph.add_nodes_from(nodes_for_adding)
+
+            graph.add_nodes_from(
+                map(lambda item: (f"{table}_{item[0]}", item[1]), df.to_dict("index").items())
+            )
             added_tables.add(table)
 
         for relation in self.relations:
             if relation.source_table not in added_tables:
-                collect_nodes(relation.source_table, relation.source_key)
-
+                _collect_nodes(relation.source_table, relation.source_key)
             if relation.target_table not in added_tables:
-                collect_nodes(relation.target_table, relation.target_key)
+                _collect_nodes(relation.target_table, relation.target_key)
 
-            if relation.df in self.dfs:
-                edges = self.dfs[relation.df]
-                graph.add_edges_from(
-                    (
-                        f"{relation.source_table}_{e[relation.source_column]}",
-                        f"{relation.target_table}_{e[relation.target_column]}",
-                        {
-                            k: e[k]
-                            for k in edges.columns
-                            if k not in [relation.source_column, relation.target_column]
-                        },
-                    )
-                    for e in edges.to_records()
+            edges = self.dfs[relation.df]
+            attrs = edges.columns.difference([relation.source_column, relation.target_column])
+            graph.add_edges_from(
+                map(
+                    lambda row: (
+                        f"{relation.source_table}_{row[relation.source_column]}",
+                        f"{relation.target_table}_{row[relation.target_column]}",
+                        {k: row[k] for k in attrs},
+                    ),
+                    edges.to_dict("records"),
                 )
-        return graph, meta
+            )
 
-    def to_nx(self):
-        return self.to_nx_meta()[0]
+        return graph
 
     def copy(self):
         """

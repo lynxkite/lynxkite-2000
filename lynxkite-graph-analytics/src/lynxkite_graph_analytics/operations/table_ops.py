@@ -33,7 +33,7 @@ class OrderType(enum.StrEnum):
     desc = "descending"
 
 
-@op("Vector from attributes", icon="link")
+@op("Vector from attributes", icon="brackets-contain")
 def vector_from_attributes(
     b: core.Bundle,
     *,
@@ -49,7 +49,7 @@ def vector_from_attributes(
     return b
 
 
-@op("Add rank attribute", icon="link")
+@op("Add rank attribute", icon="sort-descending")
 def add_rank(
     b: core.Bundle,
     *,
@@ -84,7 +84,7 @@ def add_rank(
     return b
 
 
-@op("Filter tables", color="orange", icon="table-filled")
+@op("Filter tables", color="orange", icon="table-minus")
 def filter_tables(
     b: core.Bundle, *, drop_selected: bool, tables: core.MultiTableName
 ) -> core.Bundle:
@@ -101,7 +101,7 @@ def filter_tables(
     return b
 
 
-@op("Rename table", color="orange", icon="table-filled")
+@op("Rename table", color="orange", icon="writing")
 def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
     """Assigns a new name to the table"""
     b = b.copy()

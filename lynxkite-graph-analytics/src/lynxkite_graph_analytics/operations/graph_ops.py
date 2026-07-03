@@ -14,7 +14,7 @@ import numpy as np
 op = ops.op_registration(core.ENV, "Graph operations")
 
 
-@op("Merge", icon="link")
+@op("Merge", icon="arrows-join")
 def merge(
     bundles: list[core.Bundle],
     *,
@@ -22,30 +22,6 @@ def merge(
 ):
     """Merge multiple inputs"""
     b = bundle.merge_bundles(bundles, merge_mode=merge_mode)
-    return b
-
-
-@op("Merge two attributes", icon="link")
-def merge_two_attributes(
-    b: core.Bundle,
-    *,
-    table_name: core.TableName,
-    new_attribute: str,
-    primary_attribute: core.ColumnNameByTableName,
-    secondary_attribute: core.ColumnNameByTableName,
-) -> core.Bundle:
-    """
-    An attribute may not be defined everywhere. This operation uses the secondary attribute to fill in the values where the primary attribute is undefined. If both are undefined then the result is undefined too.
-    :param b: the bundle
-    :param table_name: the name of the table
-    :param new_attribute: the name of the new attribute
-    :param primary_attribute: the primary attribute to use
-    :param secondary_attribute: the secondary attribute to use
-    """
-    b = b.copy()
-    df = b.dfs[table_name].copy()
-    df[new_attribute] = df[primary_attribute].combine_first(df[secondary_attribute])
-    b.dfs[table_name] = df
     return b
 
 
@@ -58,7 +34,7 @@ class MergeMode(enum.StrEnum):
     disallow = "Disallow this"
 
 
-@op("Use table as attributes", icon="link")
+@op("Use table as attributes", icon="table-plus")
 def table_as_attributes(
     bundle_graph: core.Bundle,
     bundle_att: core.Bundle,
@@ -117,6 +93,30 @@ def table_as_attributes(
     return bundle_graph
 
 
+@op("Merge two attributes", icon="link")
+def merge_two_attributes(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    new_attribute: str,
+    primary_attribute: core.ColumnNameByTableName,
+    secondary_attribute: core.ColumnNameByTableName,
+) -> core.Bundle:
+    """
+    An attribute may not be defined everywhere. This operation uses the secondary attribute to fill in the values where the primary attribute is undefined. If both are undefined then the result is undefined too.
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param new_attribute: the name of the new attribute
+    :param primary_attribute: the primary attribute to use
+    :param secondary_attribute: the secondary attribute to use
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+    df[new_attribute] = df[primary_attribute].combine_first(df[secondary_attribute])
+    b.dfs[table_name] = df
+    return b
+
+
 @op("Supplement edges with node attributes", icon="link")
 def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
     """
@@ -144,7 +144,39 @@ def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bund
     return b
 
 
-@op("Merge nodes on attribute", icon="link")
+def update_relations(
+    b: core.Bundle,
+    table_name: core.TableName,
+    new_id: str,
+    old_df: pd.DataFrame,
+) -> core.Bundle:
+    """
+    Updates the relations to use the new id column instead of the old ones.
+    :param b: The bundle
+    :param table_name: The name of the node table that was modified.
+    :param new_id: The name of the new attribute.
+    :param old_df: The old dataframe.
+    """
+    b = b.copy()
+
+    def _update_relation(r, suffix, column_attr, key_attr):
+        new_column = new_id + suffix
+        edge_column = getattr(r, column_attr)
+        node_key = getattr(r, key_attr)
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(old_df.set_index(node_key)[new_id])
+        setattr(r, column_attr, new_column)
+        setattr(r, key_attr, new_id)
+
+    for r in b.relations:
+        if table_name == r.source_table:
+            _update_relation(r, "_src", "source_column", "source_key")
+        if table_name == r.target_table:
+            _update_relation(r, "_dst", "target_column", "target_key")
+
+    return b
+
+
+@op("Merge nodes on attribute", icon="affiliate")
 def merge_nodes(
     b: core.Bundle,
     *,
@@ -190,27 +222,11 @@ def merge_nodes(
     grouped_df = old_df.groupby(attribute).agg(agg_dict)
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
-
-    def _update_relation(r, suffix, column_attr, key_attr):
-        new_column = attribute + suffix
-        edge_column = getattr(r, column_attr)
-        node_key = getattr(r, key_attr)
-        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(
-            old_df.set_index(node_key)[attribute]
-        )
-        setattr(r, column_attr, new_column)
-        setattr(r, key_attr, attribute)
-
-    for r in b.relations:
-        if table_name == r.source_table:
-            _update_relation(r, "_src", "source_column", "source_key")
-        if table_name == r.target_table:
-            _update_relation(r, "_dst", "target_column", "target_key")
-
+    update_relations(b, table_name, attribute, old_df)
     return b
 
 
-@op("Merge parallel edges", icon="link")
+@op("Merge parallel edges", icon="arrows-right")
 def merge_parallel_edges(
     b: core.Bundle,
     *,
@@ -332,7 +348,7 @@ def shortest_distance(
     return b
 
 
-@op("Define Edges", view="graph_creation_view", outputs=["output"], icon="link")
+@op("Define edges", view="graph_creation_view", outputs=["output"], icon="route")
 def define_edges(b: core.Bundle, *, relations: str = ""):
     """Define edges between node tables"""
     b = b.copy()
@@ -350,7 +366,7 @@ ColumnNameForTarget = typing.Annotated[
 ]
 
 
-@op("Connect nodes on attribute", icon="link")
+@op("Connect nodes on attribute", icon="share")
 def connect_nodes(
     b: core.Bundle,
     *,
@@ -415,7 +431,7 @@ def discard_loop_edges(graph: nx.Graph):
     return graph
 
 
-@op("Discard loop edges in relation", icon="filter-filled")
+@op("Discard loop edges in relation", icon="circle-off")
 def discard_loop_edges_in_relation(b: core.Bundle, *, relation: core.RelationName):
     """
     Discards loop edges in the specified relation.

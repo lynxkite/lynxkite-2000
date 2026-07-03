@@ -1,8 +1,8 @@
-"""Operations for tables."""
+"""Operations for segmentations."""
 
 import enum
 import networkx as nx
-import pandas
+import pandas as pd
 
 from lynxkite_core import ops
 from .. import core
@@ -15,91 +15,138 @@ class EdgeDirection(enum.StrEnum):
     Both = "Require both directions"
 
 
-@op("Find Connected Components", icon="filter-filled")
-def connected_components(b: core.Bundle, *, edge_direction: EdgeDirection, segmentation_name: str):
+@op("Find connected components", icon="chart-dots-3")
+def connected_components(
+    b: core.Bundle,
+    *,
+    relation_name: core.RelationName,
+    edge_direction: EdgeDirection,
+    segmentation_name: str,
+):
     """
-    Finds the connected components of the graph and put the nodes into a segment accordingly.
+    Finds connected components in the graph of the relation.
     :param b: the bundle
+    :param relation_name: the relation whose graph is segmented
     :param edge_direction: whether to ignore the direction of the edges
     :param segmentation_name: the name of the segmentation.
     """
     b = b.copy()
     for table in b.dfs.keys():
         b.dfs[table] = b.dfs[table].copy()
-    graph, meta = b.to_nx_meta()
 
-    column_names = set()
-    for r in b.relations:
-        column_names.update(b.dfs[r.source_table].columns.values)
-        column_names.update(b.dfs[r.target_table].columns.values)
-    if segmentation_name in column_names:
-        raise ValueError(f"{segmentation_name} already exists")
+    relation = next((r for r in b.relations if r.name == relation_name))
+    if relation.source_table != relation.target_table:
+        raise ValueError("source_table and target_table must be the same")
+
+    node_table = relation.source_table
+    id_column = relation.source_key
+    node_df = b.dfs[node_table]
+    edge_df = b.dfs[relation.df]
+
+    graph = nx.DiGraph()
+    graph.add_nodes_from(node_df[id_column].tolist())
+    graph.add_edges_from(
+        zip(edge_df[relation.source_column].tolist(), edge_df[relation.target_column].tolist())
+    )
 
     if edge_direction == EdgeDirection.Ignore:
         components = nx.connected_components(graph.to_undirected())
     else:
         components = nx.strongly_connected_components(graph)
 
-    mapping = {}
-    table_id_cols = {}
+    node_to_segment: dict[object, int] = {}
+    segment_rows = []
+    for comp_id, comp in enumerate(components):
+        segment_rows.append({"id": comp_id, "value": comp_id})
+        for node_id in comp:
+            node_to_segment[node_id] = comp_id
 
-    for comp_id, comp in enumerate(list(components)):
-        for node in comp:
-            m = meta[node]
-            mapping[m.table] = mapping.get(m.table, {})
-            mapping[m.table][str(m.node_id)] = {comp_id}
-            table_id_cols[m.table] = m.id_column
-
-    for table, id_column in table_id_cols.items():
-        b.dfs[table] = b.dfs[table].copy()
-        b.dfs[table][segmentation_name] = b.dfs[table][id_column].astype(str).map(mapping[table])
+    b.dfs[segmentation_name] = pd.DataFrame(segment_rows)
+    edge_table = f"{segmentation_name}_edges"
+    b.dfs[edge_table] = pd.DataFrame(
+        {
+            "node_id": node_df[id_column],
+            "segment_id": node_df[id_column].map(node_to_segment),
+        }
+    )
+    b.relations.append(
+        core.RelationDefinition(
+            name=f"{segmentation_name}_edges",
+            df=edge_table,
+            source_column="node_id",
+            target_column="segment_id",
+            source_table=node_table,
+            target_table=segmentation_name,
+            source_key=id_column,
+            target_key="id",
+        )
+    )
     return b
 
 
-@op("Segment by attribute", icon="filter-filled")
-def segment_by_attribute(b: core.Bundle, *, attribute: str, segmentation_name: str):
+@op("Segment by attribute", icon="category-2")
+def segment_by_attribute(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute: core.ColumnNameByTableName,
+    segmentation_name: str,
+):
     """
-    Segments the nodes based on the values of the specified attribute.
+    Segments the nodes in a table based on the values of the specified attribute.
+    Creates a new table with segmentation IDs, edge table connecting nodes to segments,
+    and a relation accordingly.
     :param b: the bundle
+    :param table_name: the name of the table to segment
     :param attribute: the attribute to segment by
     :param segmentation_name: the name of the segmentation
     """
     b = b.copy()
 
-    node_tables = set()
+    id_column: str | None = None
     for r in b.relations:
-        node_tables.add(r.target_table)
-        node_tables.add(r.source_table)
+        if r.source_table == table_name:
+            id_column = r.source_key
+            break
+        if r.target_table == table_name:
+            id_column = r.target_key
+            break
 
-    if segmentation_name in set.union(*[set(b.dfs[table].columns) for table in node_tables]):
-        raise ValueError(f"{segmentation_name} already exists")
-    if attribute not in set.intersection(*[set(b.dfs[table].columns) for table in node_tables]):
-        raise ValueError(f"Every node has to have {attribute} attribute")
+    if id_column is None:
+        raise ValueError(f"{table_name} is not used in any relation")
 
-    values = set()
-    for table in node_tables:
-        values.update(b.dfs[table][attribute])
+    node_df = b.dfs[table_name]
+    unique_values = node_df[attribute].unique()
 
-    mapping = {v: {i} for i, v in enumerate(values)}
-    for table in node_tables:
-        b.dfs[table] = b.dfs[table].copy()
-        b.dfs[table][segmentation_name] = b.dfs[table][attribute].map(mapping)
+    b.dfs[segmentation_name] = pd.DataFrame(
+        {
+            "id": range(len(unique_values)),
+            attribute: unique_values,
+        }
+    )
+
+    edge_table_name = f"{segmentation_name}_edges"
+    b.dfs[edge_table_name] = pd.DataFrame(
+        {
+            "node_id": node_df[id_column],
+            "segment_id": node_df[attribute].map({v: i for i, v in enumerate(unique_values)}),
+        }
+    )
+
+    b.relations.append(
+        core.RelationDefinition(
+            name=f"{table_name}_{segmentation_name}",
+            df=edge_table_name,
+            source_column="node_id",
+            target_column="segment_id",
+            source_table=table_name,
+            target_table=segmentation_name,
+            source_key=id_column,
+            target_key="id",
+        )
+    )
+
     return b
-
-
-def _aggregation_prechecks(b, tables, columns, segmentation_name):
-    """
-    Checks whether the segmentation exists, and whether all columns exist in the tables with the segmentation.
-    :param b: the bundle
-    :param tables: the tables
-    :param columns: the columns with the specified segmentation
-    :param segmentation_name: the name of the segmentation
-    """
-    if len(tables) == 0:
-        raise ValueError(f"{segmentation_name} does not exist")
-    for table in tables:
-        if not columns.issubset(b.dfs[table].columns):
-            raise ValueError(f"Not all columns exist in table {table}")
 
 
 def _suffix_check(add_suffixes, funcs_values):
@@ -115,95 +162,61 @@ def _suffix_check(add_suffixes, funcs_values):
             )
 
 
-@op("Aggregate to segmentation", icon="filter-filled")
-def aggregate_to_segmentation(
+class Direction(enum.StrEnum):
+    to_neighbour = "Aggregate to neighbour"
+    from_neighbour = "Aggregate from neighbour"
+
+
+@op("Aggregate between neighbours", icon="topology-star-3")
+def aggregate_between_neighbours(
     b: core.Bundle,
     *,
-    segmentation_name: str,
-    add_suffixes: bool = False,
+    relation_name: core.RelationName,
+    add_suffixes: bool,
+    direction: Direction,
     aggregations: core.DoubleTextAdder,
-):
+) -> core.Bundle:
     """
-    For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
+    Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
     :param b: the bundle to operate on
-    :param segmentation_name: the name of the segmentation
+    :param relation_name: the relation connecting the two tables
     :param add_suffixes: whether to add suffixes or not
-    :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats))
+    :param direction: whether to aggregate "To" or "From" the target table
+    :param aggregations: the aggregations to perform, specified as a list of tuples (column_name, aggregation_function)
     """
     b = b.copy()
-    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
-    columns = {item[0] for item in aggregations}
-    _aggregation_prechecks(b, tables, columns, segmentation_name)
+    relation = next(r for r in b.relations if r.name == relation_name)
 
-    all_tables = []
-    for table in tables:
-        all_tables.append(b.dfs[table][list(columns) + [segmentation_name]])
+    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
+    _suffix_check(add_suffixes, [f for _, funcs in parsed_aggregations for f in funcs])
 
-    combined = pandas.concat(all_tables, ignore_index=True)
-    combined = combined.explode(segmentation_name)
-    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
-    _suffix_check(add_suffixes, agg_dict.values())
+    to_neighbour = direction == Direction.to_neighbour
+    primary_pre = "target" if to_neighbour else "source"
+    secondary_pre = "source" if to_neighbour else "target"
 
-    aggregated = combined.groupby(segmentation_name).agg(agg_dict)
-    aggregated.columns = [f"{col}_{func}" for col, func in aggregated.columns]
-    aggregated = aggregated.reset_index()
-    aggregated[segmentation_name] = aggregated[segmentation_name].apply(lambda x: {x})
-    b.dfs["aggregated"] = aggregated
-    return b
+    primary_table = getattr(relation, f"{primary_pre}_table")
+    primary_key = getattr(relation, f"{primary_pre}_key")
+    primary_col = getattr(relation, f"{primary_pre}_column")
+    secondary_table = getattr(relation, f"{secondary_pre}_table")
+    secondary_key = getattr(relation, f"{secondary_pre}_key")
+    secondary_col = getattr(relation, f"{secondary_pre}_column")
 
+    cols = [col for col, _ in parsed_aggregations]
+    secondary_df = b.dfs[secondary_table][[secondary_key] + cols].copy()
+    merged = b.dfs[relation.df].merge(
+        secondary_df, left_on=secondary_col, right_on=secondary_key, how="inner"
+    )
 
-@op("Aggregate from segmentation", icon="filter-filled", slow=True)
-def aggregate_from_segmentation(
-    b: core.Bundle,
-    *,
-    segmentation_name: str,
-    add_suffixes: bool = False,
-    aggregations: core.DoubleTextAdder,
-):
-    """
-    For every node it aggregates the specified parameters of every node that share a segment with it.
-    :param segmentation_name: the name of the segmentation to check for shared segments
-    :param add_suffixes: whether to add suffixes or not
-    """
-    b = b.copy()
-    tables = [table for table in b.dfs.keys() if segmentation_name in b.dfs[table].columns]
-    columns = {item[0] for item in aggregations}
-    _aggregation_prechecks(b, tables, columns, segmentation_name)
+    aggregated = merged.groupby(primary_col).agg(dict(parsed_aggregations))
+    aggregated.columns = [
+        f"{col}_{func}" if add_suffixes else col for col, func in aggregated.columns
+    ]
+    aggregated = aggregated.reset_index().rename(columns={primary_col: primary_key})
 
-    key_dict = {}
-    for r in b.relations:
-        key_dict[r.source_table] = r.source_key
-        key_dict[r.target_table] = r.target_key
+    primary_df = b.dfs[primary_table].copy()
+    primary_df = primary_df[
+        [col for col in primary_df.columns if col not in aggregated.columns or col == primary_key]
+    ]
 
-    all_tables = []
-    for table in tables:
-        df = b.dfs[table].copy()
-        if table in key_dict.keys():
-            df["_id"] = df[key_dict[table]]
-        else:
-            df["_id"] = df.index
-        df["_table"] = table
-        all_tables.append(df)
-
-    combined = pandas.concat(all_tables, ignore_index=True)
-    exploded = combined.explode(segmentation_name)
-    agg_dict = {col: funcs.split(" ") for col, funcs in aggregations}
-    _suffix_check(add_suffixes, agg_dict.values())
-
-    aggregated = []
-    for table in all_tables:
-        for index, row in table.iterrows():
-            relevant = exploded[exploded[segmentation_name].isin(row[segmentation_name])]
-            row_aggregation = {
-                "table_id": f"{row['_table']}_{row['_id']}",
-                segmentation_name: row[segmentation_name],
-            }
-            unique_nodes = relevant.drop_duplicates(subset=["_id", "_table"])
-            agg_res = unique_nodes.groupby(lambda x: "group").agg(agg_dict)
-            for col, func in agg_res.columns:
-                row_aggregation[f"{col}_{func}"] = agg_res.at["group", (col, func)]
-
-            aggregated.append(row_aggregation)
-
-    b.dfs["aggregated"] = pandas.DataFrame(aggregated)
+    b.dfs[primary_table] = primary_df.merge(aggregated, on=primary_key, how="left")
     return b

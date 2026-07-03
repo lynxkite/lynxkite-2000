@@ -91,7 +91,7 @@ for usage information, see references/aggregate_on_neighbors.md
 Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
 for usage information, see references/connect_nodes.md
 
-**Define Edges:**
+**Define edges:**
 Define edges between node tables
 for usage information, see references/define_edges.md
 
@@ -243,20 +243,16 @@ for usage information, see references/cypher.md
 Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
 for usage information, see references/sql.md
 
-**Aggregate from segmentation:**
-For every node it aggregates the specified parameters of every node that share a segment with it.
-for usage information, see references/aggregate_from_segmentation.md
+**Aggregate between neighbours:**
+Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
+for usage information, see references/aggregate_between_neighbours.md
 
-**Aggregate to segmentation:**
-For every segment in the segmentation it aggregates the specified parameters of the nodes belonging to it.
-for usage information, see references/aggregate_to_segmentation.md
-
-**Find Connected Components:**
-Finds the connected components of the graph and put the nodes into a segment accordingly.
+**Find connected components:**
+Finds connected components in the graph of the relation.
 for usage information, see references/connected_components.md
 
 **Segment by attribute:**
-Segments the nodes based on the values of the specified attribute.
+Segments the nodes in a table based on the values of the specified attribute.
 for usage information, see references/segment_by_attribute.md
 
 **Add rank attribute:**
