@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Sample graph 1 Visualize graph 1",
@@ -29,22 +30,22 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Import GraphML 2 output Betweenness centrality 1 G",
+      "id": "Import GraphML 2 output Betweenness centrality 2 G",
       "source": "Import GraphML 2",
       "sourceHandle": "output",
-      "target": "Betweenness centrality 1",
+      "target": "Betweenness centrality 2",
       "targetHandle": "G"
     },
     {
-      "id": "Betweenness centrality 1 output Sample graph 1 graph",
-      "source": "Betweenness centrality 1",
+      "id": "Betweenness centrality 2 output Sample graph 1 graph",
+      "source": "Betweenness centrality 2",
       "sourceHandle": "output",
       "target": "Sample graph 1",
       "targetHandle": "graph"
     },
     {
-      "id": "Betweenness centrality 1 output SQL 1 bundle",
-      "source": "Betweenness centrality 1",
+      "id": "Betweenness centrality 2 output SQL 1 bundle",
+      "source": "Betweenness centrality 2",
       "sourceHandle": "output",
       "target": "SQL 1",
       "targetHandle": "bundle"
@@ -132,6 +133,7 @@
       "dragHandle": ".bg-primary",
       "height": 272.0,
       "id": "Import GraphML 2",
+      "parentId": null,
       "position": {
         "x": 1364.6405223695278,
         "y": 739.0115677931503
@@ -276,6 +278,7 @@
       "dragHandle": ".bg-primary",
       "height": 71.0,
       "id": "Sample graph 1",
+      "parentId": null,
       "position": {
         "x": 2320.0,
         "y": 400.0
@@ -288,7 +291,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 6,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -365,6 +368,7 @@
       "dragHandle": ".bg-primary",
       "height": 390.0,
       "id": "Visualize graph 1",
+      "parentId": null,
       "position": {
         "x": 2760.0,
         "y": 240.0
@@ -517,6 +521,7 @@
       "dragHandle": ".bg-primary",
       "height": 280.0,
       "id": "SQL 1",
+      "parentId": null,
       "position": {
         "x": 2080.0,
         "y": 680.0
@@ -528,7 +533,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 8,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -615,6 +620,7 @@
       "dragHandle": ".bg-primary",
       "height": 280.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 2680.0,
         "y": 680.0
@@ -766,6 +772,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Cypher 1",
+      "parentId": null,
       "position": {
         "x": 2080.0,
         "y": 1040.0
@@ -777,7 +784,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 6,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -864,6 +871,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 2680.0,
         "y": 1040.0
@@ -998,17 +1006,22 @@
           }
         ],
         "params": {
-          "k": "10"
+          "endpoints": null,
+          "k": "10",
+          "normalized": null,
+          "seed": null,
+          "weight": null
         },
         "status": "done",
         "telemetry": null,
-        "title": "NX \u203a Betweenness Centrality"
+        "title": "Betweenness centrality"
       },
       "height": 71.0,
-      "id": "Betweenness centrality 1",
+      "id": "Betweenness centrality 2",
+      "parentId": null,
       "position": {
-        "x": 1812.8433302960689,
-        "y": 397.9329659533083
+        "x": 1811.3211709715142,
+        "y": 396.273358114571
       },
       "type": "basic",
       "width": 315.0
