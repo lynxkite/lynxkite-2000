@@ -120,6 +120,10 @@ def create_skills_from_catalog(
         os.makedirs(output_path)
     if not os.path.exists(os.path.join(output_path, "references")):
         os.makedirs(os.path.join(output_path, "references"))
+    else:
+        # clear the references folder before generating new files
+        for f in os.listdir(os.path.join(output_path, "references")):
+            os.remove(os.path.join(output_path, "references", f))
     box_skills = []
     for _env, catalog in ops.CATALOGS.items():
         for op_name, op in catalog.items():
