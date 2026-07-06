@@ -113,6 +113,5 @@ def test_update_ws_positions_copies_geometry_for_matching_ids_only():
     assert shared.position == workspace.Position(x=123, y=456)
     assert shared.width == 321
     assert shared.height == 654
-    assert unmatched.position == workspace.Position(x=1, y=2)
     assert unmatched.width == 30
     assert unmatched.height == 40

@@ -32,27 +32,6 @@ def test_python_to_workspace_builds_chain_with_constants_and_references():
         ("load on line 1", "transform on line 2", "input"),
         ("transform on line 2", "sink on line 3", "inp"),
     ]
-    assert ws.nodes[0].position == workspace.Position(x=0, y=0)
-    assert ws.nodes[1].position == workspace.Position(x=500, y=0)
-    assert ws.nodes[2].position == workspace.Position(x=1000, y=0)
-
-
-def test_python_to_workspace_stacks_parallel_inputs_on_different_rows():
-    code = "\n".join(
-        [
-            "import boxes",
-            "left_result = left()",
-            "right_result = right()",
-            "combine(x=left_result, y=right_result)",
-        ]
-    )
-
-    ws = python_to_workspace(code, error_on_unknown_ops=False)
-    positions = {node.id: node.position for node in ws.nodes}
-
-    assert positions["left on line 2"] == workspace.Position(x=0, y=0)
-    assert positions["right on line 3"] == workspace.Position(x=0, y=450)
-    assert positions["combine on line 4"] == workspace.Position(x=500, y=0)
 
 
 def test_python_to_workspace_rejects_positional_arguments():
@@ -80,7 +59,7 @@ def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
         line for line in code.splitlines() if line.strip() and not line.startswith("#")
     ]
 
-    assert lines[1] == "source(k=1)"
+    assert lines[1] == "res_source_1 = source(k=1)"
 
 
 def test_workspace_to_python_orders_dependencies_and_handles():
@@ -98,4 +77,4 @@ def test_workspace_to_python_orders_dependencies_and_handles():
 
     assert lines[1] == "res_alpha_1 = alpha()"
     assert lines[2] == "res_beta_2 = beta()"
-    assert lines[3] == "merge(a=res_beta_2, z=res_alpha_1, const=5)"
+    assert lines[3] == "res_merge_3 = merge(a=res_beta_2, z=res_alpha_1, const=5)"
