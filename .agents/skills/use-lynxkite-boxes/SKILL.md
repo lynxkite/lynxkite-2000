@@ -231,9 +231,9 @@ for usage information, see references/cypher.md
 Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
 for usage information, see references/sql.md
 
-**Aggregate between neighbours:**
-Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
-for usage information, see references/aggregate_between_neighbours.md
+**Aggregate between neighbors:**
+Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other.
+for usage information, see references/aggregate_between_neighbors.md
 
 **Find connected components:**
 Finds connected components in the graph of the relation.

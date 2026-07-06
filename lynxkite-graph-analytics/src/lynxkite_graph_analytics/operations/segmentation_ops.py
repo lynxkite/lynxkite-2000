@@ -163,12 +163,12 @@ def _suffix_check(add_suffixes, funcs_values):
 
 
 class Direction(enum.StrEnum):
-    to_neighbour = "Aggregate to neighbour"
-    from_neighbour = "Aggregate from neighbour"
+    to_neighbor = "Aggregate to neighbor"
+    from_neighbor = "Aggregate from neighbor"
 
 
-@op("Aggregate between neighbours", icon="topology-star-3")
-def aggregate_between_neighbours(
+@op("Aggregate between neighbors", icon="topology-star-3")
+def aggregate_between_neighbors(
     b: core.Bundle,
     *,
     relation_name: core.RelationName,
@@ -177,7 +177,7 @@ def aggregate_between_neighbours(
     aggregations: core.DoubleTextAdder,
 ) -> core.Bundle:
     """
-    Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
+    Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other.
     :param b: the bundle to operate on
     :param relation_name: the relation connecting the two tables
     :param add_suffixes: whether to add suffixes or not
@@ -190,9 +190,9 @@ def aggregate_between_neighbours(
     parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
     _suffix_check(add_suffixes, [f for _, funcs in parsed_aggregations for f in funcs])
 
-    to_neighbour = direction == Direction.to_neighbour
-    primary_pre = "target" if to_neighbour else "source"
-    secondary_pre = "source" if to_neighbour else "target"
+    to_neighbor = direction == Direction.to_neighbor
+    primary_pre = "target" if to_neighbor else "source"
+    secondary_pre = "source" if to_neighbor else "target"
 
     primary_table = getattr(relation, f"{primary_pre}_table")
     primary_key = getattr(relation, f"{primary_pre}_key")
