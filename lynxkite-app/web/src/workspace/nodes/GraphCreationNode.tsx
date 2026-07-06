@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import React, { type FormEventHandler, useState } from "react";
+import React, { type FormEventHandler, useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import Trash from "~icons/tabler/trash";
 import LynxKiteNode from "./LynxKiteNode";
@@ -173,6 +173,9 @@ function NodeWithGraphCreationView(props: any) {
   const tables = display?.dataframes || {};
   const singleTable = tables && Object.keys(tables).length === 1;
   const [relations, setRelations] = useState(relationsToDict(display?.relations) || {});
+  useEffect(() => {
+    setRelations(relationsToDict(display?.relations) || {});
+  }, [display?.relations]);
   const singleRelation = relations && Object.keys(relations).length === 1;
   function setParam(name: string, newValue: any, opts: UpdateOptions) {
     reactFlow.updateNodeData(props.id, {

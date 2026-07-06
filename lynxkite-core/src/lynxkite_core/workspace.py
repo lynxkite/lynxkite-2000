@@ -38,6 +38,7 @@ class WorkspaceNodeData(BaseConfig):
     op_id: str
     params: dict
     display: Optional[Any] = None
+    display_version: Optional[int] = None
     input_metadata: Optional[list[dict]] = None
     output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
@@ -102,6 +103,7 @@ class WorkspaceNode(BaseConfig):
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
+        self.data.display_version = result.display_version
         self.data.input_metadata = result.input_metadata
         self.data.output_metadata = result.output_metadata
         self.data.error = result.error
@@ -112,6 +114,7 @@ class WorkspaceNode(BaseConfig):
                 try:
                     nc["data"]["status"] = NodeStatus.done
                     nc["data"]["display"] = self.data.display
+                    nc["data"]["display_version"] = self.data.display_version
                     nc["data"]["input_metadata"] = self.data.input_metadata
                     nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
@@ -213,12 +216,10 @@ class Workspace(BaseConfig):
 
     def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
-        # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
-        j = self.model_dump()
+        j = self.model_dump(mode="json")
         if "path" in j:
             del j["path"]
-        j = json.dumps(j, indent=2, sort_keys=True) + "\n"
-        return j
+        return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
     def save(self, path: str | pathlib.Path):
         """Persist the workspace to a local file in JSON format."""

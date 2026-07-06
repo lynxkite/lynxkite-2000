@@ -9,15 +9,18 @@ import hashlib
 import json
 import importlib.util
 import inspect
+import os
 import pathlib
 import pkgutil
 import subprocess
 import sys
+import tempfile
 import traceback
 import types
 import typing
 from dataclasses import dataclass
 import pydantic
+from pydantic_core import to_json
 from .matplotlib_to_image import matplotlib_to_image
 from .opcontext import OpContext, CONTEXT_PARAM_NAME
 
@@ -196,6 +199,12 @@ class Output(BaseConfig):
     position: Position
 
 
+def build_output_path(ws_path: str, node_id: str) -> pathlib.Path:
+    """Builds the path to save the display data for a given node output."""
+    ws_path_obj = pathlib.Path(ws_path)
+    return pathlib.Path(f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.name}/{node_id}.json")
+
+
 @dataclass
 class Result:
     """Represents the result of an operation.
@@ -209,9 +218,41 @@ class Result:
 
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
+    display_version: int | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
+
+    def save_display(self, ws_path: str | None, node_id: str, version: int):
+        """Saves the display data to a file. The path is relative to the workspace's data directory."""
+        # If old version had display and new run has None,
+        # frontend keeps previous cached display keyed by unchanged version.
+        # TODO: check if this is an actual problem.
+        #   (e.g. the boxes that use display always return something)
+        if ws_path and self.display is not None:
+            path = build_output_path(ws_path, node_id)
+            path.parent.mkdir(exist_ok=True, parents=True)
+            display_json = to_json(self.display)
+            try:
+                with open(path, "r+b") as f:
+                    old_display = f.read()
+            except Exception:
+                old_display = None
+            if old_display == display_json:
+                self.display = None
+                self.display_version = version
+                return
+            with tempfile.NamedTemporaryFile(
+                "w+b",
+                prefix=f".{path.name}.",
+                dir=path.parent,
+                delete=False,
+            ) as f:
+                temp_name = f.name
+                f.write(display_json)
+            os.replace(temp_name, path)
+            self.display = None
+            self.display_version = version + 1
 
 
 def get_optional_type(type):
@@ -273,19 +314,29 @@ class Op(BaseConfig):
             res = self.func(op_ctx, *inputs, **params)
         else:
             res = self.func(*inputs, **params)
+
+        is_visualization_type = self.type in [
+            "visualization",
+            "table_view",
+            "graph_creation_view",
+            "image",
+            "molecule",
+        ]
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
-            if self.type in [
-                "visualization",
-                "table_view",
-                "graph_creation_view",
-                "image",
-                "molecule",
-            ]:
+            if is_visualization_type:
                 # If the operation is a visualization, we use the returned value for display.
                 res = Result(display=res)
             else:
                 res = Result(output=res)
+
+        # Save display if needed
+        if is_visualization_type and not self.type == "graph_creation_view":
+            if op_ctx.ws and op_ctx.node:
+                res.save_display(
+                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
+                )
+
         return res
 
     def get_input(self, name: str):
