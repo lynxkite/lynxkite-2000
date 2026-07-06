@@ -34,6 +34,7 @@ You can see any errors that occurred in the boxes in `errors.txt`. Before finish
 If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box.
 The module name and usage examples are specified at the beginning of `boxes.py`.
 Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
+If workspace.py is empty, you can still add new boxes by editing boxes.py or using the pre-defined boxes.
 """
 
 
@@ -81,14 +82,16 @@ def _extract_token_text(token_content: object) -> str:
 
 
 @router.post("/api/assistant/stream")
-async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
+async def assistant_stream(
+    req: AssistantCompletionRequest, skill_root="../.agents/skills"
+) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
     workspace_backend = WorkspaceBackend(req.workspace)
     backend = backends.CompositeBackend(
         default=workspace_backend,
         routes={
             "/skills/": backends.FilesystemBackend(
-                root_dir=("../.agents/skills"), virtual_mode=True
+                root_dir=skill_root, virtual_mode=True
             )
         },
     )
