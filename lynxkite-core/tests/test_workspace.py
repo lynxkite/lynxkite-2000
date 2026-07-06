@@ -1,7 +1,10 @@
 import os
+import pathlib
 import pytest
 import tempfile
-from lynxkite_core import workspace
+from lynxkite_core import workspace, ops
+
+ops.user_script_root = pathlib.Path(tempfile.gettempdir())
 
 
 def test_save_load():
