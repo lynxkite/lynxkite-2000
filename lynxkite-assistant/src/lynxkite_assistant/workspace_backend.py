@@ -275,6 +275,39 @@ def _organize_new_nodes(nodes, all_edges, offset):
         )
 
 
+def _get_overlap_percentages(
+    main_box: workspace.WorkspaceNode, box_list: list[workspace.WorkspaceNode]
+) -> dict[str, tuple[float, int, int]]:
+    overlap_dict = {}
+    if not main_box.width or not main_box.height:
+        return {box.id: (0.0, 0, 0) for box in box_list}
+    main_area = main_box.width * main_box.height
+    if main_area == 0:
+        return {box.id: (0.0, 0, 0) for box in box_list}
+    main_x1 = main_box.position.x
+    main_y1 = main_box.position.y
+    main_x2 = main_x1 + main_box.width
+    main_y2 = main_y1 + main_box.height
+    for box in box_list:
+        if not box.width or not box.height:
+            overlap_dict[box.id] = (0.0, 0, 0)
+            continue
+        box_x1 = box.position.x
+        box_y1 = box.position.y
+        box_x2 = box_x1 + box.width
+        box_y2 = box_y1 + box.height
+        inter_x1 = max(main_x1, box_x1)
+        inter_y1 = max(main_y1, box_y1)
+        inter_x2 = min(main_x2, box_x2)
+        inter_y2 = min(main_y2, box_y2)
+        inter_width = max(0, inter_x2 - inter_x1)
+        inter_height = max(0, inter_y2 - inter_y1)
+        inter_area = inter_width * inter_height
+        overlap_percentage = inter_area / main_area
+        overlap_dict[box.id] = (overlap_percentage, inter_width, inter_height)
+    return overlap_dict
+
+
 def _update_ws_positions(
     source: workspace.Workspace, target: workspace.Workspace
 ) -> None:
@@ -300,11 +333,12 @@ def _update_ws_positions(
         n for n in target.nodes if n.id in source_nodes_by_id and n.type != "comment"
     ]
     last_positioned = []
+    neighbor_map = {n.id: _get_node_neighbors(target, n.id) for n in target.nodes}
     while len(newly_positioned) > 0:
         last_positioned = [n.id for n in newly_positioned]
         newly_positioned = []
         for node in unpositioned_nodes:
-            inputs, outputs = _get_node_neighbors(target, node.id)
+            inputs, outputs = neighbor_map[node.id]
             x = 0
             y = 0
             count = 0
@@ -318,6 +352,35 @@ def _update_ws_positions(
                 x /= count
                 y /= count
                 node.position = workspace.Position(x=x, y=y)
+                # try to move the node away from overlapping nodes, give up after 10 iterations
+                neighbours = {x[0] for x in inputs} | {x[0] for x in outputs}
+                for i in range(10):
+                    overlap_percentages = _get_overlap_percentages(node, target.nodes)
+                    overlapped = False
+                    for other_node in target.nodes:
+                        if other_node.id == node.id:
+                            continue
+                        overlap, iwidth, iheight = overlap_percentages.get(
+                            other_node.id, (0.0, 0, 0)
+                        )
+                        if overlap > 0.1:
+                            overlapped = True
+                            xdir = 1 if node.position.x >= other_node.position.x else -1
+                            ydir = 1 if node.position.y >= other_node.position.y else -1
+                            other_inp, other_op = neighbor_map[other_node.id]
+                            if neighbours.intersection(
+                                {x[0] for x in inputs} | {x[0] for x in outputs}
+                            ):
+                                # siblings move vertically
+                                node.position.y += ydir * (iheight + 10)
+                            elif (
+                                iwidth > iheight
+                            ):  # otherwise move in the direction of the smaller overlap
+                                node.position.y += ydir * (iheight + 10)
+                            else:
+                                node.position.x += xdir * (iwidth + 10)
+                    if not overlapped:
+                        break
                 newly_positioned.append(node)
         for newly_positioned_node in newly_positioned:
             unpositioned_nodes.remove(newly_positioned_node)
@@ -370,6 +433,7 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     ops.load_user_scripts(ws_path)
     ws = python_workspace_conversion.python_to_workspace(content)
     ws.env = old_ws.env
+    ws.assistant_messages = old_ws.assistant_messages
     _update_node_ids(source=ws, target=old_ws)
     _update_ws_positions(source=old_ws, target=ws)
     ws.save(ws_path)

@@ -127,6 +127,7 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
             if delta:
                 yield delta
                 response_message.append(delta)
+        ws = workspace.Workspace.load(req.workspace)
         if not ws.assistant_messages:
             ws.assistant_messages = []
         ws.assistant_messages.append(
