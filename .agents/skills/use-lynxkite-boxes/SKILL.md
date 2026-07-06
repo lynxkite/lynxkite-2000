@@ -267,6 +267,10 @@ for usage information, see references/derive_property.md
 Enter table data as CSV. The first row should contain column names.
 for usage information, see references/enter_table_data.md
 
+**Fill attributes with default values:**
+An attribute may not be defined everywhere. This operation sets the provided values for the rows of the specified attributes where they are not defined.
+for usage information, see references/fill_with_default.md
+
 **Filter tables:**
 Keeps/removes the selected tables based on the value of drop_selected
 for usage information, see references/filter_tables.md

@@ -101,6 +101,24 @@ def filter_tables(
     return b
 
 
+@op("Fill attributes with default values", icon="table-column")
+def fill_with_default(
+    b: core.Bundle, *, table_name: core.TableName, adder: core.DropdownTextAdderByTableName
+) -> core.Bundle:
+    """
+    An attribute may not be defined everywhere. This operation sets the provided values for the rows of the specified attributes where they are not defined.
+    :param b: the bundle
+    :param table_name: the table to operate on
+    :param adder: the attributes and the values to set
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+    for column, default_value in adder:
+        df[column] = df[column].fillna(default_value)
+    b.dfs[table_name] = df
+    return b
+
+
 @op("Rename table", color="orange", icon="writing")
 def rename_table(b: core.Bundle, *, old_name: core.TableName, new_name: str) -> core.Bundle:
     """Assigns a new name to the table"""
