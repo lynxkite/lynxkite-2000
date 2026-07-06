@@ -72,6 +72,7 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
+    parentId: Optional[str] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
