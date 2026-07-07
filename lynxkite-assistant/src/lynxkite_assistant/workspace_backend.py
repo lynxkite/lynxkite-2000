@@ -3,6 +3,7 @@
 import json
 import pathlib
 import networkx
+import asyncio
 from typing import Any, Callable
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
@@ -354,6 +355,8 @@ def _update_ws_positions(
                 node.position = workspace.Position(x=x, y=y)
                 # try to move the node away from overlapping nodes, give up after 10 iterations
                 neighbours = {x[0] for x in inputs} | {x[0] for x in outputs}
+                last_x_move = 0
+                last_y_move = 0
                 for i in range(10):
                     overlap_percentages = _get_overlap_percentages(node, target.nodes)
                     overlapped = False
@@ -363,22 +366,36 @@ def _update_ws_positions(
                         overlap, iwidth, iheight = overlap_percentages.get(
                             other_node.id, (0.0, 0, 0)
                         )
-                        if overlap > 0.1:
+                        if overlap > 0:
                             overlapped = True
-                            xdir = 1 if node.position.x >= other_node.position.x else -1
-                            ydir = 1 if node.position.y >= other_node.position.y else -1
+                            xdir = (
+                                (1 if node.position.x >= other_node.position.x else -1)
+                                if last_x_move == 0
+                                else last_x_move
+                            )
+                            ydir = (
+                                (1 if node.position.y >= other_node.position.y else -1)
+                                if last_y_move == 0
+                                else last_y_move
+                            )
                             other_inp, other_op = neighbor_map[other_node.id]
                             if neighbours.intersection(
                                 {x[0] for x in other_inp} | {x[0] for x in other_op}
                             ):
                                 # siblings move vertically
                                 node.position.y += ydir * (iheight + 10)
+                                last_y_move = ydir
+                                last_x_move = 0
                             elif (
                                 iwidth > iheight
                             ):  # otherwise move in the direction of the smaller overlap
                                 node.position.y += ydir * (iheight + 10)
+                                last_y_move = ydir
+                                last_x_move = 0
                             else:
                                 node.position.x += xdir * (iwidth + 10)
+                                last_x_move = xdir
+                                last_y_move = 0
                     if not overlapped:
                         break
                 newly_positioned.append(node)
@@ -436,6 +453,7 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     ws.assistant_messages = old_ws.assistant_messages
     _update_node_ids(source=ws, target=old_ws)
     _update_ws_positions(source=old_ws, target=ws)
+    asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
     ws.save(ws_path)
     if crdt:
         room = crdt.get_room_or_none(ws_path)

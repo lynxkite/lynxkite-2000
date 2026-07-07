@@ -36,14 +36,14 @@ samples = [
         "Blank workspace pipeline build",
     ),
     SampleInput(
-        "examples/Basic examples/Airlines demo.lynxkite.json",
-        "Off the imported graph data, add a new branch that lists all the airports in a table.",
-        "Insert Lynxkite node at the end of a branch",
-    ),
-    SampleInput(
         "examples/Basic examples/Image processing.lynxkite.json",
         "After the grayscale step, flip the result vertically and show it in a new preview.",
         "Insert Lynxkite node in a new branch",
+    ),
+    SampleInput(
+        "examples/Basic examples/Airlines demo.lynxkite.json",
+        "Off the imported graph data, add a new branch that lists all the airports in a table.",
+        "Insert Lynxkite node at the end of a branch",
     ),
     SampleInput(
         "examples/Basic examples/Image processing.lynxkite.json",
