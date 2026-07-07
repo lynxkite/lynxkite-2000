@@ -23,9 +23,7 @@ hashable. So, float values are not recommended. If no attribute is
 specified, then the rows and columns will be the nodes of the graph.
   - normalized: bool | None = ? --If True, then each row is normalized by the summation of its values.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The NetworkX graph used to construct the NumPy matrix.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.attrmatrix.attr_sparse_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)
+  output_variable = networkx.linalg.attrmatrix.attr_sparse_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)

@@ -12,9 +12,7 @@ parameters:
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
   - directed: bool | None = ? --If True return a directed graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.gnm_random_graph(n=<n_value>, m=<m_value>, seed=<seed_value>, directed=<directed_value>)
+  output_variable = networkx.generators.random_graphs.gnm_random_graph(n=<n_value>, m=<m_value>, seed=<seed_value>, directed=<directed_value>)

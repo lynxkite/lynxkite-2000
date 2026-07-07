@@ -7,9 +7,7 @@ parameters:
   - k: <class 'float'> = ? --Size of attribute set to assign to each node.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.intersection.k_random_intersection_graph(n=<n_value>, m=<m_value>, k=<k_value>, seed=<seed_value>)
+  output_variable = networkx.generators.intersection.k_random_intersection_graph(n=<n_value>, m=<m_value>, k=<k_value>, seed=<seed_value>)

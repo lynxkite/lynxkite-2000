@@ -65,9 +65,7 @@ The default size is 16 bytes.
 hash for each node.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be hashed.
 Can have node and/or edge attributes. Can also have no attributes.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_subgraph_hashes(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, include_initial_labels=<include_initial_labels_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_subgraph_hashes(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, include_initial_labels=<include_initial_labels_value>, G=<G_variable>)

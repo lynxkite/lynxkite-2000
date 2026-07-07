@@ -1,10 +1,11 @@
 **Import Parquet:**
 Imports a Parquet file.
-parameters:
-  - filename: typing.Annotated[str, {'format': 'path'}] = ? --?
+```python
+@op("Import Parquet", color="green", icon="file-filled")
+def import_parquet(*, filename: ops.PathStr):
+    """Imports a Parquet file."""
+    return pd.read_parquet(filename)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.file_ops.import_parquet(filename=<filename_value>)
+```
+Custom types:
+  - filename: typing.Annotated[str, {'format': 'path'}]

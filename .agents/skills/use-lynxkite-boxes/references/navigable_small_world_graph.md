@@ -30,9 +30,7 @@ connecting to a node at lattice distance $d$ is $1/d^r$.
   - dim: <class 'int'> = 2 --Dimension of grid
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.geometric.navigable_small_world_graph(n=<n_value>, p=<p_value>, q=<q_value>, r=<r_value>, dim=<dim_value>, seed=<seed_value>)
+  output_variable = networkx.generators.geometric.navigable_small_world_graph(n=<n_value>, p=<p_value>, q=<q_value>, r=<r_value>, dim=<dim_value>, seed=<seed_value>)

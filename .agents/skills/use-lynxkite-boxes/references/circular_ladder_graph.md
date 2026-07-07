@@ -11,9 +11,7 @@ Node labels are the integers 0 to n-1
     >>> nx.draw(nx.circular_ladder_graph(5))
 parameters:
   - n: <class 'int'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.circular_ladder_graph(n=<n_value>)
+  output_variable = networkx.generators.classic.circular_ladder_graph(n=<n_value>)

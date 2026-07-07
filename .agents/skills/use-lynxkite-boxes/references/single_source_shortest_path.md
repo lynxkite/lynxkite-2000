@@ -7,9 +7,7 @@ parameters:
 this node from the source node contains <= ``cutoff + 1`` nodes will be
 included in the returned results.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.unweighted.single_source_shortest_path(source=<source_value>, cutoff=<cutoff_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.unweighted.single_source_shortest_path(source=<source_value>, cutoff=<cutoff_value>, G=<G_variable>)

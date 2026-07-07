@@ -26,9 +26,7 @@ The coordinates provide a lattice with vertical columns of hexagons
 offset to interleave and cover the plane.
 Periodic positions shift the nodes vertically in a nonlinear way so
 the edges don't overlap so much.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.lattice.hexagonal_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)
+  output_variable = networkx.generators.lattice.hexagonal_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)

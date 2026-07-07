@@ -1,10 +1,15 @@
 **View early stopping metric:**
 
-parameters:
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("View early stopping metric", view="visualization", color="blue", icon="chart-line")
+def view_early_stopping(bundle: core.Bundle):
+    metric = bundle.dfs["early_stopper_metric"].early_stopper_metric.tolist()
+    v = {
+        "title": {"text": "Early Stopping Metric"},
+        "xAxis": {"type": "category"},
+        "yAxis": {"type": "value"},
+        "series": [{"data": metric, "type": "line"}],
+    }
+    return v
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.pykeen_ops.view_early_stopping(bundle=<bundle_variable>)
+```

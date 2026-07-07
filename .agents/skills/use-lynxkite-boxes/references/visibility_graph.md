@@ -12,10 +12,7 @@ The resulting graph inherits several properties of the series in its structure.
 Thereby, periodic series convert into regular graphs, random series convert
 into random graphs, and fractal series convert into scale-free networks [1]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.time_series.visibility_graph()
+  output_variable = networkx.generators.time_series.visibility_graph()

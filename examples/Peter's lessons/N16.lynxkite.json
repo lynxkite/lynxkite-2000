@@ -36,34 +36,6 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Graph from edge list 1 output Degree 1 g",
-      "source": "Graph from edge list 1",
-      "sourceHandle": "output",
-      "target": "Degree 1",
-      "targetHandle": "g"
-    },
-    {
-      "id": "Degree 1 output SQL 1 bundle",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "SQL 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Degree 1 output Visualize graph 1 graph",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Visualize graph 1",
-      "targetHandle": "graph"
-    },
-    {
-      "id": "Degree 1 output Aggregate on neighbors 1 g",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Aggregate on neighbors 1",
-      "targetHandle": "g"
-    },
-    {
       "id": "Aggregate on neighbors 1 output Binned graph visualization 1 b",
       "source": "Aggregate on neighbors 1",
       "sourceHandle": "output",
@@ -76,13 +48,6 @@
       "sourceHandle": "output",
       "target": "Scatter plot 1",
       "targetHandle": "b"
-    },
-    {
-      "id": "Degree 1 output Clustering 1 G",
-      "source": "Degree 1",
-      "sourceHandle": "output",
-      "target": "Clustering 1",
-      "targetHandle": "G"
     },
     {
       "id": "Clustering 1 output Binned graph visualization 2 b",
@@ -104,6 +69,41 @@
       "sourceHandle": "output",
       "target": "Visualize graph 2",
       "targetHandle": "graph"
+    },
+    {
+      "id": "Graph from edge list 1 output Degree 2 g",
+      "source": "Graph from edge list 1",
+      "sourceHandle": "output",
+      "target": "Degree 2",
+      "targetHandle": "g"
+    },
+    {
+      "id": "Degree 2 output Visualize graph 1 graph",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Degree 2 output SQL 1 bundle",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "SQL 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Degree 2 output Aggregate on neighbors 1 g",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Aggregate on neighbors 1",
+      "targetHandle": "g"
+    },
+    {
+      "id": "Degree 2 output Clustering 1 G",
+      "source": "Degree 2",
+      "sourceHandle": "output",
+      "target": "Clustering 1",
+      "targetHandle": "G"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -1559,6 +1559,32 @@
       },
       "type": "basic",
       "width": 537.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": true,
+        "display": null,
+        "error": null,
+        "expanded_height": 169.0,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Degree",
+        "output_metadata": null,
+        "params": {},
+        "status": "done",
+        "telemetry": null,
+        "title": "Degree"
+      },
+      "height": 71.0,
+      "id": "Degree 2",
+      "position": {
+        "x": 981.4746400799664,
+        "y": 1121.0649223272528
+      },
+      "type": "basic",
+      "width": 199.0
     }
   ],
   "paused": true

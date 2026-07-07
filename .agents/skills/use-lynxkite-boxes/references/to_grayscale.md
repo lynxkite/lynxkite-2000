@@ -1,10 +1,8 @@
 **To grayscale:**
 
-parameters:
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("To grayscale", icon="filters-filled")
+def to_grayscale(image: Image.Image):
+    return image.convert("L")
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.to_grayscale(image=<image_variable>)
+```

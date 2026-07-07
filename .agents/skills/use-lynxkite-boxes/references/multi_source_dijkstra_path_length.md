@@ -19,9 +19,7 @@ positional arguments: the two endpoints of an edge and the
 dictionary of edge attributes for that edge. The function must
 return a number or None to indicate a hidden edge.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)

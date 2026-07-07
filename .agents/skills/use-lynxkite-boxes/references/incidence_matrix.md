@@ -14,9 +14,7 @@ respectively of each edge.  If False, +1 occurs at both nodes.
 If None, then each edge has weight 1.  Edge weights, if used,
 should be positive so that the orientation can provide the sign.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.graphmatrix.incidence_matrix(oriented=<oriented_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.linalg.graphmatrix.incidence_matrix(oriented=<oriented_value>, weight=<weight_value>, G=<G_variable>)
