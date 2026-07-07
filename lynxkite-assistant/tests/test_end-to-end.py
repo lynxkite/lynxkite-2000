@@ -38,6 +38,8 @@ def create_temp_file():
 def get_example_jsons():
     # we assume that the test are run from the root of the repository
     for root, dirs, files in os.walk("examples"):
+        if "generated_samples" in root:
+            continue
         for file in files:
             if file.endswith(".lynxkite.json"):
                 yield os.path.join(root, file)
