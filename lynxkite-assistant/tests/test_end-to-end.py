@@ -8,8 +8,16 @@ import os
 @pytest.fixture(scope="module", autouse=True)
 def setup_workspace():
     ops.detect_plugins()
+    ops_usr = ops.user_script_root
+    wb_crdt = workspace_backend.crdt
+    ops.user_script_root = Path()
     # Disable CRDT for testing
     workspace_backend.crdt = None  # type: ignore
+
+    yield
+
+    ops.user_script_root = ops_usr
+    workspace_backend.crdt = wb_crdt  # type: ignore
 
 
 @pytest.fixture
@@ -98,7 +106,6 @@ def data_path():
     fp = os.path.realpath(__file__)
     assert cwd in fp, f"Current working directory {cwd} is not in the file path {fp}"
     relative_path = Path(os.path.relpath(fp, cwd))
-    ops.user_script_root = relative_path.parent
     yield relative_path.parent / "files"
 
 
@@ -110,7 +117,7 @@ def test_workspace_changed(data_path, create_temp_file):
 
     resp = open(data_path / "workspace_files/modified.py").read()
     ops.load_user_scripts(
-        "files/modified.lynxkite.json"
+        data_path / "modified.lynxkite.json"
     )  # we pretend that the code is running from the tests folder
     workspace_backend.set_workspace_file_content(mod_ws_path, resp)
     mod_ws = workspace.Workspace.load(mod_ws_path)
