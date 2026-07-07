@@ -300,7 +300,14 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
             ws,
             ws_pyd.model_dump(),
             # We treat some fields as black boxes. They are not edited on the frontend.
-            non_collaborative_fields={"display", "input_metadata", "meta"},
+            non_collaborative_fields={
+                "display",
+                "input_metadata",
+                "meta",
+                "position",  # Edited, but we don't want to track x and y separately.
+                "output_metadata",
+                "telemetry",
+            },
         )
 
 
