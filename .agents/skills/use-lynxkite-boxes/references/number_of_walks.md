@@ -13,9 +13,7 @@ and with a larger walk length.
 parameters:
   - walk_length: <class 'int'> = ? --A nonnegative integer representing the length of a walk.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.walks.number_of_walks(walk_length=<walk_length_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.walks.number_of_walks(walk_length=<walk_length_value>, G=<G_variable>)

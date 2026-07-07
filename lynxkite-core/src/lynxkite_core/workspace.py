@@ -73,6 +73,7 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
+    parentId: Optional[str] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
@@ -183,6 +184,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
+    assistant_messages: Optional[list[dict]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 

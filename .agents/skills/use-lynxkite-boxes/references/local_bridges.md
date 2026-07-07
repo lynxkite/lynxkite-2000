@@ -12,9 +12,7 @@ parameters:
 If string, the edge data attribute used in calculating span.
 If None, all edges have weight 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.bridges.local_bridges(with_span=<with_span_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.bridges.local_bridges(with_span=<with_span_value>, weight=<weight_value>, G=<G_variable>)

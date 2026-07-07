@@ -12,9 +12,7 @@ self-loop only if a cycle exists (a path from v to v with length > 0).
 We also allow an option for no self-loops.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed/undirected graph/multigraph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.transitive_closure(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.transitive_closure(G=<G_variable>)

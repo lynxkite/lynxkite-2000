@@ -18,9 +18,7 @@ parameters:
   - weight: str | None = ? --If None, all edge weights are considered equal.
 Otherwise holds the name of the edge attribute used as weight.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph containing ``v``. This can be either directed or undirected.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.structuralholes.constraint(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.structuralholes.constraint(weight=<weight_value>, G=<G_variable>)

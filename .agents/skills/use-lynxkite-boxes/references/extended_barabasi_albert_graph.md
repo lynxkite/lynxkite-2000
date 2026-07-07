@@ -24,9 +24,7 @@ parameters:
   - q: <class 'float'> = ? --Probability value of rewiring of existing edges. p + q < 1
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.extended_barabasi_albert_graph(n=<n_value>, m=<m_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)
+  output_variable = networkx.generators.random_graphs.extended_barabasi_albert_graph(n=<n_value>, m=<m_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)

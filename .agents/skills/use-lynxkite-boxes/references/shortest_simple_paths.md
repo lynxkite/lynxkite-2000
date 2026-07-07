@@ -56,9 +56,7 @@ References
 parameters:
   - weight: <class 'str'> = ? --?
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.simple_paths.shortest_simple_paths(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.simple_paths.shortest_simple_paths(weight=<weight_value>, G=<G_variable>)

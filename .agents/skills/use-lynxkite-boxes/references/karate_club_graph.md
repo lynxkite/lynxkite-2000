@@ -29,10 +29,7 @@ References
    "An Information Flow Model for Conflict and Fission in Small Groups."
    *Journal of Anthropological Research*, 33, 452--473, (1977).
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.social.karate_club_graph()
+  output_variable = networkx.generators.social.karate_club_graph()

@@ -14,9 +14,7 @@ Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
   - n: <class 'str'> = ? --A node in G
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.connected.node_connected_component(n=<n_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.components.connected.node_connected_component(n=<n_value>, G=<G_variable>)

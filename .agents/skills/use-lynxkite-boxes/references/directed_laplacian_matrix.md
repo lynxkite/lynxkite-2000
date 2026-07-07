@@ -24,9 +24,7 @@ If None, then each edge has weight 1.
 - ``walk_type="pagerank"`` for all other cases.
   - alpha: <class 'float'> = 0.95 --(1 - alpha) is the teleportation probability used with pagerank
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.laplacianmatrix.directed_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
+  output_variable = networkx.linalg.laplacianmatrix.directed_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)

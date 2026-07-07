@@ -11,9 +11,7 @@ connected (or not strongly connected, for directed graphs), this function
 returns False.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph, either directed or undirected.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.euler.is_eulerian(G=<G_variable>)
+  output_variable = networkx.algorithms.euler.is_eulerian(G=<G_variable>)

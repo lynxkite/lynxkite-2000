@@ -304,6 +304,7 @@ class Op(BaseConfig):
     id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
     # Automatically set from `func`.
     python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
+    placeholder_function_name: bool = pydantic.Field(default=False)
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
@@ -367,7 +368,16 @@ class Op(BaseConfig):
             assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         if self.func and hasattr(self.func, "__module__") and hasattr(self.func, "__name__"):
-            self.python_function_name = f"{self.func.__module__}.{self.func.__name__}"
+            if self.func.__name__ == "<lambda>" or self.func.__name__ == "no_op":
+                self.python_function_name = f"{self.func.__module__}.{
+                    ''.join(c if c.isalnum() else '_' for c in self.id.lower())
+                }"
+                self.placeholder_function_name = True
+            else:
+                self.python_function_name = (
+                    f"{self.func.__module__.replace('-', '_')}.{self.func.__name__}"
+                )
+                self.placeholder_function_name = False
         return self
 
     @staticmethod
@@ -664,9 +674,17 @@ def install_requirements(req: pathlib.Path):
     subprocess.check_call(cmd)
 
 
+def to_python_module_name(path: pathlib.Path) -> str:
+    """Converts a path to a Python module name."""
+    return str(path).replace(" ", "_").replace("/", ".").replace("-", "_")
+
+
 def run_user_script(script_path: pathlib.Path):
-    path_hash = hashlib.md5(str(script_path.parent).encode()).hexdigest()[:8]
-    module_name = f"_lynxkite_userscript_{path_hash}_{script_path.stem}"
+    module_name = (
+        f"{to_python_module_name(script_path.parent)}.{script_path.stem}"
+        if str(script_path.parent) != "."
+        else script_path.stem
+    )
     spec = importlib.util.spec_from_file_location(module_name, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)

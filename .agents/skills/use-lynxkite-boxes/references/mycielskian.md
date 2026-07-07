@@ -24,9 +24,7 @@ parameters:
   - iterations: <class 'int'> = 1 --The number of iterations of the Mycielski operation to
 perform on G. Defaults to 1. Must be a non-negative integer.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A simple, undirected NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.mycielski.mycielskian(iterations=<iterations_value>, G=<G_variable>)
+  output_variable = networkx.generators.mycielski.mycielskian(iterations=<iterations_value>, G=<G_variable>)

@@ -52,9 +52,7 @@ and `l(G)` the number of self-loops of `G`:
     \end{cases}
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.polynomials.tutte_polynomial(G=<G_variable>)
+  output_variable = networkx.algorithms.polynomials.tutte_polynomial(G=<G_variable>)

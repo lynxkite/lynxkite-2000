@@ -12,9 +12,7 @@ The iteration will stop after a tolerance of ``len(G) * tol`` is reached.
   - weight: str | None = weight --Edge data key to use as weight.  If None weights are set to 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.  Undirected graphs will be converted to a directed
 graph with two directed edges for each undirected edge.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.link_analysis.pagerank_alg.pagerank(alpha=<alpha_value>, max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.link_analysis.pagerank_alg.pagerank(alpha=<alpha_value>, max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)

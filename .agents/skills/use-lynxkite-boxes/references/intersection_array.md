@@ -10,9 +10,7 @@ A distance regular graph's intersection array is given by,
 [b_0,b_1,.....b_{d-1};c_1,c_2,.....c_d]
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_regular.intersection_array(G=<G_variable>)
+  output_variable = networkx.algorithms.distance_regular.intersection_array(G=<G_variable>)

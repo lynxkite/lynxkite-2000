@@ -7,9 +7,7 @@ Returns the Barbell Graph: two complete graphs connected by a path.
 parameters:
   - m1: <class 'int'> = ? --Size of the left and right barbells, must be greater than 2.
   - m2: <class 'int'> = ? --Length of the path connecting the barbells.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.barbell_graph(m1=<m1_value>, m2=<m2_value>)
+  output_variable = networkx.generators.classic.barbell_graph(m1=<m1_value>, m2=<m2_value>)

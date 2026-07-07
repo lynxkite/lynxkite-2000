@@ -10,9 +10,7 @@ for all $x$ in $x_1, ..., x_m$. Thus $Ci_n(1)$ is a cycle graph.
     >>> nx.draw(nx.circulant_graph(10, [1]))
 parameters:
   - n: <class 'int'> = ? --The number of nodes in the graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.circulant_graph(n=<n_value>)
+  output_variable = networkx.generators.classic.circulant_graph(n=<n_value>)

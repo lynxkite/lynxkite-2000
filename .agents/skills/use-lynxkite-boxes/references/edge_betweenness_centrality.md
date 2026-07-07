@@ -27,9 +27,7 @@ interpreted as distances.
 See :ref:`Randomness<randomness>`.
 Note that this is only used if ``k is not None``.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.betweenness.edge_betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.betweenness.edge_betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)

@@ -30,9 +30,7 @@ to have an Eulerian path. Therefore, if the graph is not connected (or not stron
 connected, for directed graphs), this function returns False.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to find an euler path in.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.euler.has_eulerian_path(G=<G_variable>)
+  output_variable = networkx.algorithms.euler.has_eulerian_path(G=<G_variable>)
