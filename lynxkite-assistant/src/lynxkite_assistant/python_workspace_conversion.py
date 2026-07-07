@@ -299,9 +299,10 @@ def inputs_to_python(
             return f'{saved_values[edge.source]}["{edge.sourceHandle}"]'
         return saved_values[edge.source]
 
+    sorted_incoming = sorted(incoming_edges, key=lambda e: e.targetHandle)
     grouped_by_target_handle_lists = [
         (th, [handle_multi_output(n) for n in gr])
-        for th, gr in groupby(incoming_edges, key=lambda e: e.targetHandle)
+        for th, gr in groupby(sorted_incoming, key=lambda e: e.targetHandle)
     ]
     grouped_by_target_handle = [
         (th, li[0] if len(li) == 1 else f"[{', '.join(li)}]")

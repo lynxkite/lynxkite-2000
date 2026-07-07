@@ -369,7 +369,7 @@ def _update_ws_positions(
                             ydir = 1 if node.position.y >= other_node.position.y else -1
                             other_inp, other_op = neighbor_map[other_node.id]
                             if neighbours.intersection(
-                                {x[0] for x in inputs} | {x[0] for x in outputs}
+                                {x[0] for x in other_inp} | {x[0] for x in other_op}
                             ):
                                 # siblings move vertically
                                 node.position.y += ydir * (iheight + 10)
