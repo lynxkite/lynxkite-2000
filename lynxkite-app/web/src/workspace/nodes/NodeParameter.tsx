@@ -1,6 +1,6 @@
 import jmespath from "jmespath";
 import Tooltip from "../../Tooltip";
-import { DoubleTextAdder, DropdownTextAdder } from "./Adder";
+import { DoubleTextAdder, DropdownMultiDropdownAdder, DropdownTextAdder } from "./Adder";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
 import ParameterInput from "./ParameterInput";
@@ -139,6 +139,16 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         options={getDropDownValues(data, meta?.type?.metadata_query1)}
       />
     </label>
+  ) : meta?.type?.format === "dropdown-multi-dropdown_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropDownValues(data, meta?.type?.metadata_query1)}
+        options2={meta?.type?.options2}
+      />
+    </div>
   ) : meta?.type?.format === "double-textbox_adder" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
