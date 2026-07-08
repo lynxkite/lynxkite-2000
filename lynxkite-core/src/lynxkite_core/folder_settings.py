@@ -1,35 +1,13 @@
-"""Per-folder settings.yaml for configs. It holds LIM box configs, and later can be used for ACL configs."""
+"""Per-folder settings.yaml loading and hierarchical merge helpers."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
 
-import pydantic
 import yaml
 
 SETTINGS_FILENAME = "settings.yaml"
-
-
-class LimBoxConfig(pydantic.BaseModel):
-    model_config = pydantic.ConfigDict(extra="ignore")
-    cpu: str | None = None
-    memory: str | None = None
-    image: str | None = None
-    port: int | None = None
-    namespace: str | None = None
-    env: list[dict[str, Any]] | None = None
-    forward_env: list[str] | None = None
-    storage_size: str | None = None
-    storage_host_path: str | None = None
-    timeout_seconds: int | None = None
-    startup_timeout: int | None = None
-    args: list[str] | None = None
-
-
-class FolderSettings(pydantic.BaseModel):
-    model_config = pydantic.ConfigDict(extra="ignore")
-    lim: dict[str, LimBoxConfig] = pydantic.Field(default_factory=dict)
 
 
 def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
@@ -45,8 +23,10 @@ def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     return dirs
 
 
-def resolve_lim_for_box(data_root: Path, workspace_path: str, op_id: str) -> dict[str, Any] | None:
-    """Load settings.yaml from root → workspace folder; return merged LIM config for op_id."""
+def resolve_settings_section(
+    data_root: Path, workspace_path: str, section: str
+) -> dict[str, dict[str, Any]]:
+    """Load settings.yaml from root→workspace folder; merge requested top-level section."""
     merged: dict[str, dict[str, Any]] = {}
     for directory in _containing_dirs(data_root, workspace_path):
         settings_path = directory / SETTINGS_FILENAME
@@ -54,8 +34,11 @@ def resolve_lim_for_box(data_root: Path, workspace_path: str, op_id: str) -> dic
             continue
         with settings_path.open(encoding="utf-8") as handle:
             raw = yaml.safe_load(handle) or {}
-        settings = FolderSettings.model_validate(raw)
-        for box_id, box in settings.lim.items():
-            merged.setdefault(box_id, {}).update(box.model_dump(exclude_none=True))
-    result = merged.get(op_id)
-    return result or None
+        values = raw.get(section)
+        if not isinstance(values, dict):
+            continue
+        for key, value in values.items():
+            if not isinstance(key, str) or not isinstance(value, dict):
+                continue
+            merged.setdefault(key, {}).update(value)
+    return merged
