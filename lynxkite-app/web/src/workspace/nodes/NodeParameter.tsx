@@ -139,7 +139,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         options={getDropDownValues(data, meta?.type?.metadata_query1)}
       />
     </label>
-  ) : meta?.type?.format === "dropdown-multi-dropdown_adder" ? (
+  ) : meta?.type?.format === "dropdown-multidropdown_adder" ? (
     <div className="param">
       <ParamName name={name} doc={doc} />
       <DropdownMultiDropdownAdder
