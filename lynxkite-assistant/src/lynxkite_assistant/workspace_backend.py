@@ -81,9 +81,11 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     ws = python_workspace_conversion.python_to_workspace(content)
     ws.env = old_ws.env
     ws.assistant_messages = old_ws.assistant_messages
+    ws.paused = old_ws.paused
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
-    asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
+    if not ws.paused:
+        asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
     ws.save(ws_path)
     if crdt:
         room = crdt.get_room_or_none(ws_path)

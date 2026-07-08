@@ -1,5 +1,5 @@
 ---
-name: use-lynxkite-boxes
+name: create-custom-box
 description: Create a new type of box with custom behavior in boxes.py
 ---
 
