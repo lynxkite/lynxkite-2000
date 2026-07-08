@@ -4,18 +4,35 @@ import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import RobotIcon from "~icons/tabler/robot.jsx";
+import type { useCRDTWorkspace } from "./crdt";
 
-export default function Assistant(props: { workspace: string }) {
+export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useCRDTWorkspace> }) {
+  const { crdtWorkspace } = props;
+  const crdtWorkspaceRef = useRef(crdtWorkspace);
+  crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
-  const { messages, sendMessage, status, error, stop } = useChat({
+
+  const workspacePath = crdtWorkspace.ws?.path || "";
+  const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
+  const [messagesLoaded, setMessagesLoaded] = useState(false);
+
+  const { messages, sendMessage, status, error, stop, setMessages } = useChat({
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
-      body: { workspace: props.workspace },
+      body: { workspace: workspacePath },
     }),
   });
+
+  // Initialize with persisted messages on first load
+  useEffect(() => {
+    if (!messagesLoaded && persistedMessages.length > 0 && messages.length === 0) {
+      setMessages(persistedMessages);
+      setMessagesLoaded(true);
+    }
+  }, [messagesLoaded, persistedMessages, messages.length, setMessages]);
   const isGenerating = status === "submitted" || status === "streaming";
 
   useEffect(() => {
@@ -48,12 +65,16 @@ export default function Assistant(props: { workspace: string }) {
             className={`chat ${message.role === "user" ? "chat-end" : "chat-start"}`}
           >
             <div className={` ${message.role === "user" ? "chat-bubble chat-bubble-primary" : ""}`}>
-              {message.parts.map((part, index) =>
-                part.type === "text" ? (
-                  <Markdown remarkPlugins={[remarkGfm]} key={`${message.id}-${index}`}>
-                    {part.text}
-                  </Markdown>
-                ) : null,
+              {message.parts?.some((p) => p.type === "text") ? (
+                message.parts.map((part, index) =>
+                  part.type === "text" ? (
+                    <Markdown remarkPlugins={[remarkGfm]} key={`${message.id}-${index}`}>
+                      {part.text}
+                    </Markdown>
+                  ) : null,
+                )
+              ) : (
+                <Markdown remarkPlugins={[remarkGfm]}>{(message as any).content ?? ""}</Markdown>
               )}
             </div>
           </div>
