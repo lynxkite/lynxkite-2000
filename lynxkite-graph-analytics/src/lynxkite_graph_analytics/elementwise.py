@@ -11,16 +11,16 @@ from lynxkite_core.ops import OpContext
 
 try:
     from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
-    from lynxkite_enterprise.lim import (
+    from lynxkite_enterprise.lim import (  # ty: ignore[unresolved-import]
         LIM_ATTR,
         remote_row_processor,
-    )  # ty: ignore[unresolved-import]
+    )
 
     enterprise_backend = True
 except ImportError:
     enterprise_backend = False
-    execution_parallelism = None  # type: ignore[assignment,misc]
-    remote_row_processor = None  # type: ignore[assignment,misc]
+    execution_parallelism = None
+    remote_row_processor = None
     LIM_ATTR = "__lynxkite_lim__"
 
 from .bundle import Bundle
@@ -157,10 +157,10 @@ async def _elementwise_impl_async(
         return record.get_updates()
 
     lim_cleanup = None
-    if enterprise_backend and getattr(func, LIM_ATTR, False):
+    if enterprise_backend and getattr(func, LIM_ATTR, False) and remote_row_processor is not None:
         remote = await remote_row_processor(func, self, kwargs)
         if remote is not None:
-            process_row_updates = remote  # type: ignore[assignment]
+            process_row_updates = remote
             lim_cleanup = getattr(remote, "lim_cleanup", None)
 
     try:

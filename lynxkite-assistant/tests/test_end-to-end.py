@@ -17,7 +17,7 @@ def setup_workspace():
     yield
 
     ops.user_script_root = ops_usr
-    workspace_backend.crdt = wb_crdt  # type: ignore
+    workspace_backend.crdt = wb_crdt
 
 
 @pytest.fixture
