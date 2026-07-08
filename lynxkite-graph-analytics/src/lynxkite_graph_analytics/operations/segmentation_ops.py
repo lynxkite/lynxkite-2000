@@ -1,5 +1,7 @@
 """Operations for segmentations."""
 
+import typing
+
 import enum
 import networkx as nx
 import pandas as pd
@@ -167,6 +169,20 @@ class Direction(enum.StrEnum):
     from_neighbor = "Aggregate from neighbor"
 
 
+AggregationAdderBetweenNeighbors = typing.Annotated[
+    list[tuple[str, list[str]]],
+    {
+        "format": "dropdown-multidropdown_relation_adder",
+        "directions": list(Direction),
+        "options2": core.pandas_aggregation_options,
+    },
+]
+"""A type annotation to be used for parameters of an operation. AggregationAdderBetweenNeighbors is
+rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-multidropdown rows, where
+the dropdown lists the columns of the source or the target table determined by the selected direction.
+The values are passed to the operation as a list of tuples containing a column name and a list of selected strings."""
+
+
 @op("Aggregate between neighbors", icon="topology-star-3")
 def aggregate_between_neighbors(
     b: core.Bundle,
@@ -174,7 +190,7 @@ def aggregate_between_neighbors(
     relation_name: core.RelationName,
     add_suffixes: bool,
     direction: Direction,
-    aggregations: core.DoubleTextAdder,
+    aggregations: AggregationAdderBetweenNeighbors,
 ) -> core.Bundle:
     """
     Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other.
@@ -186,9 +202,7 @@ def aggregate_between_neighbors(
     """
     b = b.copy()
     relation = next(r for r in b.relations if r.name == relation_name)
-
-    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
-    _suffix_check(add_suffixes, [f for _, funcs in parsed_aggregations for f in funcs])
+    _suffix_check(add_suffixes, [funcs for _, funcs in aggregations])
 
     to_neighbor = direction == Direction.to_neighbor
     primary_pre = "target" if to_neighbor else "source"
@@ -201,13 +215,13 @@ def aggregate_between_neighbors(
     secondary_key = getattr(relation, f"{secondary_pre}_key")
     secondary_col = getattr(relation, f"{secondary_pre}_column")
 
-    cols = [col for col, _ in parsed_aggregations]
+    cols = [col for col, _ in aggregations]
     secondary_df = b.dfs[secondary_table][[secondary_key] + cols].copy()
     merged = b.dfs[relation.df].merge(
         secondary_df, left_on=secondary_col, right_on=secondary_key, how="inner"
     )
 
-    aggregated = merged.groupby(primary_col).agg(dict(parsed_aggregations))
+    aggregated = merged.groupby(primary_col).agg(dict(aggregations))
     aggregated.columns = [
         f"{col}_{func}" if add_suffixes else col for col, func in aggregated.columns
     ]

@@ -149,6 +149,16 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         options2={meta?.type?.options2}
       />
     </div>
+  ) : meta?.type?.format === "dropdown-multidropdown_relation_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropdownValuesByDirection(data, meta?.type?.directions)}
+        options2={meta?.type?.options2}
+      />
+    </div>
   ) : meta?.type?.format === "double-textbox_adder" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
@@ -239,6 +249,19 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParameterInput value={value} onChange={onChange} />
     </label>
   );
+}
+
+function getDropdownValuesByDirection(data: any, directions: any): string[] {
+  const params = data?.params;
+  const metadata = data?.input_metadata?.[0];
+  if (!params || !metadata) return [""];
+  if (!Array.isArray(directions) || directions.length < 2) return [""];
+  const isSourceToTarget = params.direction === directions[0];
+  const tableKey = isSourceToTarget ? "source_table" : "target_table";
+  const relation = metadata.relations?.find((r: any) => r?.name === params.relation_name);
+  const tableName = relation?.[tableKey];
+  const columns = metadata.dataframes?.[tableName]?.columns;
+  return Array.isArray(columns) ? ["", ...columns].sort() : [""];
 }
 
 function getDropDownValues(
