@@ -41,6 +41,12 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
     container.scrollTop = container.scrollHeight;
   }, [messages, isGenerating]);
 
+  function clearChatHistory() {
+    setMessages([]);
+    setMessagesLoaded(true);
+    crdtWorkspaceRef.current.clearAssistantMessages();
+  }
+
   return (
     <aside className="assistant-panel prose">
       <div
@@ -133,6 +139,13 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           }}
         />
         <div className="assistant-actions">
+          <button
+            className="assistant-clear-button btn btn-sm"
+            type="button"
+            onClick={clearChatHistory}
+          >
+            Clear
+          </button>
           {isGenerating && (
             <button className="btn btn-sm" type="button" onClick={stop}>
               Stop

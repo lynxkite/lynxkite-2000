@@ -891,6 +891,10 @@ svg {
   gap: 8px;
 }
 
+.assistant-clear-button {
+  margin-right: auto;
+}
+
 .prose {
   max-width: none;
 }

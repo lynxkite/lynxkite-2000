@@ -49,6 +49,7 @@ type CRDTWorkspace = {
   setEnv: (env: string) => void;
   setExecutionOptions: (options: Record<string, any>) => void;
   setAssistantMessages: (messages: any[]) => void;
+  clearAssistantMessages: () => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
   addEdge: (edge: Partial<WorkspaceEdge>) => void;
@@ -126,6 +127,10 @@ class CRDTConnection {
       },
       setAssistantMessages: (messages: any[]) => {
         this.ws.set("assistant_messages", messages);
+        this.updateState();
+      },
+      clearAssistantMessages: () => {
+        this.ws.set("assistant_messages", []);
         this.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
