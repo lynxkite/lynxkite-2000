@@ -6,7 +6,7 @@ parameters:
   - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = ? --the name of the table
   - attribute: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}] = ? --the name of the attribute to merge on
   - add_suffixes: <class 'bool'> = ? --whether to add suffixes to the aggregated columns
-  - aggregations: typing.Annotated[list[tuple[str, str]], {'format': 'dropdown-textbox_adder', 'metadata_query1': '[].dataframes[].<table_name>.columns[]'}] = ? --the aggregations to perform, specified as a list of tuples
+  - aggregations: typing.Annotated[list[tuple[str, list[str]]], {'format': 'dropdown-multidropdown_adder', 'metadata_query1': '[].dataframes[].<table_name>.columns[]', 'options2': ['sum', 'mean', 'median', 'min', 'max', 'prod', 'std', 'var', 'sem', 'skew', 'count', 'size', 'first', 'last']}] = ? --the aggregations to perform, specified as a list of tuples
   - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --the bundle
 
 returns:

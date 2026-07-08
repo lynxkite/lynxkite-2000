@@ -132,7 +132,7 @@ def merge_nodes(
     table_name: core.TableName,
     attribute: core.ColumnNameByTableName,
     add_suffixes: bool = False,
-    aggregations: core.DropdownTextAdderByTableName,
+    aggregations: core.AggregationAdderByTableName,
 ) -> core.Bundle:
     """Merges the nodes that have the same value for the given attribute.
     The aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies
@@ -159,7 +159,6 @@ def merge_nodes(
     for column, funcs in aggregations:
         if column not in agg_dict:
             agg_dict[column] = []
-        funcs = funcs.split(" ")
         if len(funcs) > 1 and not add_suffixes:
             raise ValueError(
                 "Adding suffixes is required when multiple aggregation functions are specified for a column."
@@ -168,7 +167,7 @@ def merge_nodes(
             if func not in agg_dict[column]:
                 agg_dict[column].append(func)
             name_dict[(column, func)] = f"{column}_{func}" if add_suffixes else column
-    grouped_df = old_df.groupby(attribute).agg(agg_dict)
+    grouped_df = old_df.groupby(attribute).agg(agg_dict).replace({float("nan"): None})
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
     update_relations(b, table_name, attribute, old_df)
@@ -182,7 +181,7 @@ def merge_parallel_edges(
     table_name: core.TableName,
     source_key: core.ColumnNameByTableName,
     target_key: core.ColumnNameByTableName,
-    aggregations: core.DropdownTextAdderByTableName,
+    aggregations: core.AggregationAdderByTableName,
 ) -> core.Bundle:
     """
     Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats).
@@ -198,7 +197,7 @@ def merge_parallel_edges(
     agg_dict = {}
 
     for column, funcs in aggregations:
-        func_list = [f for f in funcs.split(" ") if f]
+        func_list = [f for f in funcs if f]
         if func_list:
             if column not in agg_dict:
                 agg_dict[column] = []
@@ -207,7 +206,7 @@ def merge_parallel_edges(
                     agg_dict[column].append(func)
 
     if agg_dict:
-        merged = edges.groupby(group_cols).agg(agg_dict).reset_index()
+        merged = edges.groupby(group_cols).agg(agg_dict).replace({float("nan"): None}).reset_index()
         new_columns = []
         for col, func in merged.columns:
             if func == "":

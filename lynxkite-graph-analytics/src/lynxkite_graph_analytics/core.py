@@ -115,40 +115,29 @@ rendered as a button in the frontend, that is able to add arbitrary amount of dr
 dropdown lists the columns of the DataFrame named by the "table_name" parameter.
 The column names are passed to the operation as a list of string 2-tuples."""
 
+_pandas_aggregation_options = [
+    "sum",
+    "mean",
+    "median",
+    "min",
+    "max",
+    "prod",
+    "std",
+    "var",
+    "sem",
+    "skew",
+    "count",
+    "size",
+    "first",
+    "last",
+]
+
 AggregationAdderByTableName = typing.Annotated[
     list[tuple[str, list[str]]],
     {
         "format": "dropdown-multidropdown_adder",
         "metadata_query1": "[].dataframes[].<table_name>.columns[]",
-        "options2": [
-            "sum",
-            "mean",
-            "median",
-            "min",
-            "max",
-            "mode",
-            "abs",
-            "std",
-            "var",
-            "sem",
-            "mad",
-            "skew",
-            "kurt",
-            "quantile",
-            "count",
-            "size",
-            "idxmin",
-            "idxmax",
-            "first",
-            "last",
-            "nth",
-            "prod",
-            "product",
-            "cumsum",
-            "cumprod",
-            "cummax",
-            "cummin",
-        ],
+        "options2": _pandas_aggregation_options,
     },
 ]
 """A type annotation to be used for parameters of an operation. AggregationAdderByTableName is
