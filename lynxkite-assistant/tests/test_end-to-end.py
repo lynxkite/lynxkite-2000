@@ -5,17 +5,25 @@ from lynxkite_core import ops, workspace
 import os
 
 
+async def _exec(a, b):
+    return
+
+
 @pytest.fixture(scope="module", autouse=True)
 def setup_workspace():
     ops.detect_plugins()
     ops_usr = ops.user_script_root
     wb_crdt = workspace_backend.crdt
+    executors = ops.EXECUTORS
     ops.user_script_root = Path()
+    ops.EXECUTORS = {  # skip execution during tests
+        env: (lambda x, y: _exec(x, y)) for env in ops.CATALOGS.keys()
+    }
     # Disable CRDT for testing
     workspace_backend.crdt = None  # type: ignore
 
     yield
-
+    ops.EXECUTORS = executors
     ops.user_script_root = ops_usr
     workspace_backend.crdt = wb_crdt  # type: ignore
 
