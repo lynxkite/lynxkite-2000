@@ -100,14 +100,12 @@ class Bundle:
             edges = self.dfs[relation.df]
             attrs = edges.columns.difference([relation.source_column, relation.target_column])
             graph.add_edges_from(
-                map(
-                    lambda row: (
-                        f"{relation.source_table}_{row[relation.source_column]}",
-                        f"{relation.target_table}_{row[relation.target_column]}",
-                        {k: row[k] for k in attrs},
-                    ),
-                    edges.to_dict("records"),
+                (
+                    f"{relation.source_table}_{row[relation.source_column]}",
+                    f"{relation.target_table}_{row[relation.target_column]}",
+                    {k: row[k] for k in attrs},
                 )
+                for row in edges.to_dict("records")
             )
 
         return graph
