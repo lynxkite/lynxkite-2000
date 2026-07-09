@@ -3,6 +3,7 @@
   "edges": [
     {
       "id": "Merge nodes on attribute 1 output Discard loop edges in relation 1 b",
+      "selected": false,
       "source": "Merge nodes on attribute 1",
       "sourceHandle": "output",
       "target": "Discard loop edges in relation 1",
@@ -10,76 +11,82 @@
     },
     {
       "id": "Discard loop edges in relation 1 output Merge parallel edges 1 b",
+      "selected": false,
       "source": "Discard loop edges in relation 1",
       "sourceHandle": "output",
       "target": "Merge parallel edges 1",
       "targetHandle": "b"
     },
     {
-      "id": "PageRank 1 G Merge parallel edges 1 output",
+      "id": "Merge parallel edges 1 output PageRank 1 G",
+      "selected": false,
       "source": "Merge parallel edges 1",
       "sourceHandle": "output",
       "target": "PageRank 1",
       "targetHandle": "G"
     },
     {
-      "id": "PageRank 1 output Vector from attributes 3 b",
+      "id": "PageRank 1 output Vector from attributes 1 b",
+      "selected": false,
       "source": "PageRank 1",
       "sourceHandle": "output",
-      "target": "Vector from attributes 3",
+      "target": "Vector from attributes 1",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 3 output Segment by attribute 1 b",
-      "source": "Vector from attributes 3",
+      "id": "Vector from attributes 1 output Segment by attribute 1 b",
+      "selected": false,
+      "source": "Vector from attributes 1",
       "sourceHandle": "output",
       "target": "Segment by attribute 1",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 3 output View tables 7 bundle",
-      "source": "Vector from attributes 3",
-      "sourceHandle": "output",
-      "target": "View tables 7",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "View tables 8 bundle Segment by attribute 1 output",
-      "source": "Segment by attribute 1",
-      "sourceHandle": "output",
-      "target": "View tables 8",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Filter with formula 3 output View tables 2 bundle",
+      "id": "Vector from attributes 1 output View tables 1 bundle",
       "selected": false,
-      "source": "Filter with formula 3",
+      "source": "Vector from attributes 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Segment by attribute 1 output View tables 2 bundle",
+      "selected": false,
+      "source": "Segment by attribute 1",
       "sourceHandle": "output",
       "target": "View tables 2",
       "targetHandle": "bundle"
     },
     {
-      "id": "Derive property 3 output Use table as attributes 1 bundle_graph",
+      "id": "Filter with formula 1 output View tables 3 bundle",
       "selected": false,
-      "source": "Derive property 3",
+      "source": "Filter with formula 1",
+      "sourceHandle": "output",
+      "target": "View tables 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Derive property 1 output Use table as attributes 1 bundle_graph",
+      "selected": false,
+      "source": "Derive property 1",
       "sourceHandle": "output",
       "target": "Use table as attributes 1",
       "targetHandle": "bundle_graph"
     },
     {
-      "id": "Import CSV 3 output Use table as attributes 1 bundle_att",
+      "id": "Import CSV 1 output Use table as attributes 1 bundle_att",
       "selected": false,
-      "source": "Import CSV 3",
+      "source": "Import CSV 1",
       "sourceHandle": "output",
       "target": "Use table as attributes 1",
       "targetHandle": "bundle_att"
     },
     {
-      "id": "Use table as attributes 1 output Add rank attribute 2 b",
+      "id": "Use table as attributes 1 output Add rank attribute 1 b",
       "selected": false,
       "source": "Use table as attributes 1",
       "sourceHandle": "output",
-      "target": "Add rank attribute 2",
+      "target": "Add rank attribute 1",
       "targetHandle": "b"
     },
     {
@@ -92,57 +99,64 @@
     },
     {
       "id": "Find connected components 1 output Aggregate between neighbors 1 b",
+      "selected": false,
       "source": "Find connected components 1",
       "sourceHandle": "output",
       "target": "Aggregate between neighbors 1",
       "targetHandle": "b"
     },
     {
-      "id": "Aggregate between neighbors 1 output Derive property 3 b",
+      "id": "Aggregate between neighbors 1 output Derive property 1 b",
+      "selected": false,
       "source": "Aggregate between neighbors 1",
       "sourceHandle": "output",
-      "target": "Derive property 3",
+      "target": "Derive property 1",
       "targetHandle": "b"
     },
     {
-      "id": "Add rank attribute 2 output Aggregate between neighbors 2 b",
-      "source": "Add rank attribute 2",
+      "id": "Add rank attribute 1 output Aggregate between neighbors 2 b",
+      "selected": false,
+      "source": "Add rank attribute 1",
       "sourceHandle": "output",
       "target": "Aggregate between neighbors 2",
       "targetHandle": "b"
     },
     {
-      "id": "Aggregate between neighbors 2 output Filter with formula 3 b",
+      "id": "Aggregate between neighbors 2 output Filter with formula 1 b",
+      "selected": false,
       "source": "Aggregate between neighbors 2",
       "sourceHandle": "output",
-      "target": "Filter with formula 3",
+      "target": "Filter with formula 1",
       "targetHandle": "b"
     },
     {
       "id": "Aggregate between neighbors 2 output SQL 2 bundle",
+      "selected": false,
       "source": "Aggregate between neighbors 2",
       "sourceHandle": "output",
       "target": "SQL 2",
       "targetHandle": "bundle"
     },
     {
-      "id": "SQL 2 output View tables 1 bundle",
+      "id": "SQL 2 output View tables 4 bundle",
+      "selected": false,
       "source": "SQL 2",
       "sourceHandle": "output",
-      "target": "View tables 1",
+      "target": "View tables 4",
       "targetHandle": "bundle"
     },
     {
-      "id": "SQL 1 output View tables 3 bundle",
+      "id": "SQL 1 output View tables 5 bundle",
+      "selected": false,
       "source": "SQL 1",
       "sourceHandle": "output",
-      "target": "View tables 3",
+      "target": "View tables 5",
       "targetHandle": "bundle"
     },
     {
-      "id": "Add rank attribute 1 output Derive property 2 b",
+      "id": "Add rank attribute 2 output Derive property 2 b",
       "selected": false,
-      "source": "Add rank attribute 1",
+      "source": "Add rank attribute 2",
       "sourceHandle": "output",
       "target": "Derive property 2",
       "targetHandle": "b"
@@ -156,25 +170,25 @@
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 1 output Filter with formula 2 b",
+      "id": "Filter with formula 2 output Filter with formula 3 b",
       "selected": false,
-      "source": "Filter with formula 1",
+      "source": "Filter with formula 2",
       "sourceHandle": "output",
-      "target": "Filter with formula 2",
+      "target": "Filter with formula 3",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 1 output Vector from attributes 2 b",
+      "id": "Vector from attributes 2 output Vector from attributes 3 b",
       "selected": false,
-      "source": "Vector from attributes 1",
+      "source": "Vector from attributes 2",
       "sourceHandle": "output",
-      "target": "Vector from attributes 2",
+      "target": "Vector from attributes 3",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 1 output Filter with formula 4 b",
+      "id": "Filter with formula 2 output Filter with formula 4 b",
       "selected": false,
-      "source": "Filter with formula 1",
+      "source": "Filter with formula 2",
       "sourceHandle": "output",
       "target": "Filter with formula 4",
       "targetHandle": "b"
@@ -188,9 +202,9 @@
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 1 output Filter with formula 5 b",
+      "id": "Filter with formula 2 output Filter with formula 5 b",
       "selected": false,
-      "source": "Filter with formula 1",
+      "source": "Filter with formula 2",
       "sourceHandle": "output",
       "target": "Filter with formula 5",
       "targetHandle": "b"
@@ -204,11 +218,11 @@
       "targetHandle": "b"
     },
     {
-      "id": "Connect nodes on attribute 1 output Filter with formula 1 b",
+      "id": "Connect nodes on attribute 1 output Filter with formula 2 b",
       "selected": false,
       "source": "Connect nodes on attribute 1",
       "sourceHandle": "output",
-      "target": "Filter with formula 1",
+      "target": "Filter with formula 2",
       "targetHandle": "b"
     },
     {
@@ -220,53 +234,51 @@
       "targetHandle": "bundle_att"
     },
     {
-      "id": "Use table as attributes 2 output Vector from attributes 1 b",
+      "id": "Use table as attributes 2 output Vector from attributes 2 b",
       "selected": false,
       "source": "Use table as attributes 2",
       "sourceHandle": "output",
-      "target": "Vector from attributes 1",
+      "target": "Vector from attributes 2",
       "targetHandle": "b"
     },
     {
-      "id": "Import CSV 1 output Use table as attributes 2 bundle_graph",
-      "source": "Import CSV 1",
+      "id": "Import CSV 3 output Use table as attributes 2 bundle_graph",
+      "selected": false,
+      "source": "Import CSV 3",
       "sourceHandle": "output",
       "target": "Use table as attributes 2",
       "targetHandle": "bundle_graph"
     },
     {
-      "id": "Filter with formula 2 output Find connected components 1 b",
-      "source": "Filter with formula 2",
+      "id": "Filter with formula 3 output Find connected components 1 b",
+      "selected": false,
+      "source": "Filter with formula 3",
       "sourceHandle": "output",
       "target": "Find connected components 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 2 output Merge nodes on attribute 1 b",
-      "source": "Filter with formula 2",
+      "id": "Filter with formula 3 output Merge nodes on attribute 1 b",
+      "selected": false,
+      "source": "Filter with formula 3",
       "sourceHandle": "output",
       "target": "Merge nodes on attribute 1",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 2 output Derive with SQL 1 b",
-      "source": "Vector from attributes 2",
+      "id": "Vector from attributes 3 output Derive with SQL 1 b",
+      "selected": false,
+      "source": "Vector from attributes 3",
       "sourceHandle": "output",
       "target": "Derive with SQL 1",
       "targetHandle": "b"
     },
     {
-      "id": "Derive property 1 output Add rank attribute 1 b",
-      "source": "Derive property 1",
-      "sourceHandle": "output",
-      "target": "Add rank attribute 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Derive with SQL 1 output Add rank attribute 1 b",
+      "id": "Derive with SQL 1 output Add rank attribute 2 b",
+      "selected": false,
       "source": "Derive with SQL 1",
       "sourceHandle": "output",
-      "target": "Add rank attribute 1",
+      "target": "Add rank attribute 2",
       "targetHandle": "b"
     }
   ],
@@ -275,11 +287,10 @@
   "nodes": [
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": null,
+        "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
@@ -295,11 +306,16 @@
       },
       "height": 1434.0,
       "id": "Group 1",
+      "measured": {
+        "height": 1434.0,
+        "width": 4859.0
+      },
       "parentId": null,
       "position": {
-        "x": -320.6122801804895,
-        "y": -210.48185629296222
+        "x": -953.4120631314852,
+        "y": -454.10916140092996
       },
+      "selected": false,
       "type": "node_group",
       "width": 4859.0
     },
@@ -323,12 +339,17 @@
         "title": "Group"
       },
       "height": 1267.0,
-      "id": "Group 3",
+      "id": "Group 2",
+      "measured": {
+        "height": 1267.0,
+        "width": 4256.0
+      },
       "parentId": null,
       "position": {
-        "x": 4807.557759468985,
-        "y": -450.66998916086243
+        "x": 4174.757976517989,
+        "y": -694.2972942688302
       },
+      "selected": false,
       "type": "node_group",
       "width": 4256.0
     },
@@ -352,12 +373,17 @@
         "title": "Group"
       },
       "height": 900.0,
-      "id": "Group 2",
+      "id": "Group 3",
+      "measured": {
+        "height": 900.0,
+        "width": 3582.0
+      },
       "parentId": null,
       "position": {
-        "x": 4902.577262811228,
-        "y": 1153.9792640268963
+        "x": 4269.777479860232,
+        "y": 910.3519589189286
       },
+      "selected": false,
       "type": "node_group",
       "width": 3582.0
     },
@@ -573,14 +599,20 @@
         "telemetry": null,
         "title": "Merge nodes on attribute"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 647.0,
       "id": "Merge nodes on attribute 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 647.0,
+        "width": 475.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 50.0,
         "y": 50.0
       },
+      "selected": false,
       "type": "basic",
       "width": 475.0
     },
@@ -746,14 +778,20 @@
         "telemetry": null,
         "title": "Discard loop edges in relation"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
       "id": "Discard loop edges in relation 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 826.9617311303737,
         "y": 224.1961961097278
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -898,14 +936,20 @@
         "telemetry": null,
         "title": "Merge parallel edges"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 505.0,
       "id": "Merge parallel edges 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 505.0,
+        "width": 446.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 1275.3001104903096,
         "y": 200.87766831050317
       },
+      "selected": false,
       "type": "basic",
       "width": 446.0
     },
@@ -1012,14 +1056,20 @@
         "telemetry": null,
         "title": "PageRank"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
       "id": "PageRank 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 1804.869681325973,
         "y": 285.3108793423264
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -1131,14 +1181,20 @@
         "telemetry": null,
         "title": "Vector from attributes"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 419.0,
-      "id": "Vector from attributes 3",
-      "parentId": "Group 2",
+      "id": "Vector from attributes 1",
+      "measured": {
+        "height": 419.0,
+        "width": 344.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 2269.5691545191085,
         "y": 293.2690488066937
       },
+      "selected": false,
       "type": "basic",
       "width": 344.0
     },
@@ -1274,14 +1330,20 @@
         "telemetry": null,
         "title": "Segment by attribute"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
       "id": "Segment by attribute 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 2821.993455410762,
         "y": 168.1860667504352
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -1289,7 +1351,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 7,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1351,14 +1413,20 @@
         "telemetry": null,
         "title": "View tables"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "View tables 7",
-      "parentId": "Group 2",
+      "id": "View tables 1",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 2841.4205319052535,
         "y": 535.1419560908331
       },
+      "selected": false,
       "type": "table_view",
       "width": 315.0
     },
@@ -1366,7 +1434,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 7,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1455,14 +1523,20 @@
         "telemetry": null,
         "title": "View tables"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 388.0,
-      "id": "View tables 8",
-      "parentId": "Group 2",
+      "id": "View tables 2",
+      "measured": {
+        "height": 388.0,
+        "width": 333.0
+      },
+      "parentId": "Group 3",
       "position": {
         "x": 3249.0,
         "y": 136.84540806373548
       },
+      "selected": false,
       "type": "table_view",
       "width": 333.0
     },
@@ -1511,12 +1585,12 @@
       "dragging": false,
       "extent": "parent",
       "height": 315.0,
-      "id": "Import CSV 3",
+      "id": "Import CSV 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 1212.6706145645376,
         "y": 866.5473709202821
@@ -1807,7 +1881,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 2228.9306479287397,
         "y": 873.6722692574555
@@ -2080,12 +2154,12 @@
       "dragging": false,
       "extent": "parent",
       "height": 303.0,
-      "id": "Add rank attribute 2",
+      "id": "Add rank attribute 1",
       "measured": {
-        "height": 315.0,
+        "height": 303.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 2247.6309698768473,
         "y": 312.2499028730146
@@ -2381,7 +2455,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 3396.888977659901,
         "y": 407.69753395591135
@@ -2653,12 +2727,12 @@
       "dragging": false,
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 3",
+      "id": "Filter with formula 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 3359.3048164833726,
         "y": 50.0
@@ -2671,7 +2745,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 7,
+        "display_version": 9,
         "error": null,
         "expanded_height": 315.0,
         "input_metadata": [
@@ -2816,12 +2890,12 @@
       "dragging": false,
       "extent": "parent",
       "height": 315.0,
-      "id": "View tables 2",
+      "id": "View tables 3",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 3794.762683907963,
         "y": 51.29600555781133
@@ -3048,7 +3122,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 50.0,
         "y": 683.2720217757503
@@ -3304,12 +3378,12 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Derive property 3",
+      "id": "Derive property 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 1139.3105303156608,
         "y": 443.9841457813068
@@ -3600,7 +3674,7 @@
         "height": 410.0,
         "width": 320.0
       },
-      "parentId": "Group 3",
+      "parentId": "Group 2",
       "position": {
         "x": 1707.24359436127,
         "y": 500.9147497443015
@@ -3870,14 +3944,20 @@
         "telemetry": null,
         "title": "Aggregate between neighbors"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 516.0,
       "id": "Aggregate between neighbors 1",
-      "parentId": "Group 3",
+      "measured": {
+        "height": 516.0,
+        "width": 408.0
+      },
+      "parentId": "Group 2",
       "position": {
         "x": 588.6397755250091,
         "y": 396.9156496183049
       },
+      "selected": false,
       "type": "basic",
       "width": 408.0
     },
@@ -4148,14 +4228,20 @@
         "telemetry": null,
         "title": "Aggregate between neighbors"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 359.0,
       "id": "Aggregate between neighbors 2",
-      "parentId": "Group 3",
+      "measured": {
+        "height": 359.0,
+        "width": 319.0
+      },
+      "parentId": "Group 2",
       "position": {
         "x": 2783.014801950326,
         "y": 259.7843852286101
       },
+      "selected": false,
       "type": "basic",
       "width": 319.0
     },
@@ -4163,7 +4249,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 7,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4318,14 +4404,20 @@
         "telemetry": null,
         "title": "View tables"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "View tables 1",
-      "parentId": "Group 3",
+      "id": "View tables 4",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 2",
       "position": {
         "x": 3891.085057151993,
         "y": 411.9479080587006
       },
+      "selected": false,
       "type": "table_view",
       "width": 315.0
     },
@@ -4333,7 +4425,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 7,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4488,14 +4580,20 @@
         "telemetry": null,
         "title": "View tables"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 387.0,
-      "id": "View tables 3",
-      "parentId": "Group 3",
+      "id": "View tables 5",
+      "measured": {
+        "height": 387.0,
+        "width": 343.0
+      },
+      "parentId": "Group 2",
       "position": {
         "x": 2743.4277556425277,
         "y": 830.4030655556461
       },
+      "selected": false,
       "type": "table_view",
       "width": 343.0
     },
@@ -4640,7 +4738,7 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Add rank attribute 1",
+      "id": "Add rank attribute 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
@@ -5090,7 +5188,7 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 1",
+      "id": "Filter with formula 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
@@ -5290,7 +5388,7 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 2",
+      "id": "Filter with formula 3",
       "measured": {
         "height": 315.0,
         "width": 315.0
@@ -5383,7 +5481,7 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 421.0,
-      "id": "Vector from attributes 1",
+      "id": "Vector from attributes 2",
       "measured": {
         "height": 421.0,
         "width": 346.0
@@ -5478,7 +5576,7 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 443.0,
-      "id": "Vector from attributes 2",
+      "id": "Vector from attributes 3",
       "measured": {
         "height": 443.0,
         "width": 349.0
@@ -6288,14 +6386,20 @@
         "telemetry": null,
         "title": "Import CSV"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Import CSV 1",
+      "id": "Import CSV 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
       "parentId": "Group 1",
       "position": {
         "x": 50.0,
         "y": 677.5254430906846
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -6376,14 +6480,20 @@
         "telemetry": null,
         "title": "Derive with SQL"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 422.0,
       "id": "Derive with SQL 1",
+      "measured": {
+        "height": 422.0,
+        "width": 370.0
+      },
       "parentId": "Group 1",
       "position": {
         "x": 2071.5089677130127,
         "y": 952.9585233901671
       },
+      "selected": false,
       "type": "basic",
       "width": 370.0
     }
