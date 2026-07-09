@@ -126,10 +126,6 @@ for detailed information, see references/merge_parallel_edges.md
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
 
-**Use table as attributes:**
-usage: lynxkite_graph_analytics.operations.graph_ops.table_as_attributes(table_id=<table_id_value>, attribute_table_id=<attribute_table_id_value>, merge_mode=<merge_mode_value>, bundle_graph=<bundle_graph_variable>, bundle_att=<bundle_att_variable>)
-for detailed information, see references/table_as_attributes.md
-
 **Define model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/define_model.md
@@ -263,7 +259,7 @@ usage: lynxkite_graph_analytics.operations.table_ops.filter_with_formula(table_n
 for detailed information, see references/filter_with_formula.md
 
 **Join tables:**
-usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table_a=<table_a_value>, table_b=<table_b_value>, join_type=<join_type_value>, on_column=<on_column_value>, left_on=<left_on_value>, right_on=<right_on_value>, suffixes=<suffixes_value>, bundle_a=<bundle_a_variable>, bundle_b=<bundle_b_variable>)
+usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table1_column=<table1_column_value>, table2_column=<table2_column_value>, merge_mode=<merge_mode_value>, b=<b_variable>)
 for detailed information, see references/join_tables.md
 
 **Rename table:**

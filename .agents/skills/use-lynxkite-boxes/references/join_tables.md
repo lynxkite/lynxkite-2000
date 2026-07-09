@@ -1,76 +1,76 @@
 **Join tables:**
-Join/merge dataframes from two bundles.
-
-Parameters:
-- table_a: Table name from bundle A
-- table_b: Table name from bundle B
-- join_type: Type of join - "inner", "outer", "left", "right", "cross"
-- on_column: Column name to join on (same name in both tables)
-- left_on: Column name in left table (when column names differ)
-- right_on: Column name in right table (when column names differ)
-- suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")
+Adds data from the second table to the first table.
 ```python
-@op("Join tables", color="orange", icon="link")
+@op("Join tables", icon="table-plus")
 def join_tables(
-    bundle_a: core.Bundle,
-    bundle_b: core.Bundle,
+    b: core.Bundle,
     *,
-    table_a: core.TableName,
-    table_b: core.TableName,
-    join_type: JoinType = JoinType.inner,
-    on_column: str = "",
-    left_on: str = "",
-    right_on: str = "",
-    suffixes: str = "_a,_b",
-):
+    table1_column: core.TableColumn,
+    table2_column: core.TableColumn,
+    merge_mode: TableMergeMode,
+) -> core.Bundle:
     """
-    Join/merge dataframes from two bundles.
-
-    Parameters:
-    - table_a: Table name from bundle A
-    - table_b: Table name from bundle B
-    - join_type: Type of join - "inner", "outer", "left", "right", "cross"
-    - on_column: Column name to join on (same name in both tables)
-    - left_on: Column name in left table (when column names differ)
-    - right_on: Column name in right table (when column names differ)
-    - suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")
+    Adds data from the second table to the first table.
+    :param b: the bundle
+    :param table1_column: the first table and its column to join on
+    :param table2_column: the second table and its column to join on
+    :param merge_mode: determines what happens if a column is in both tables
+    Merge, prefer the second table’s version: Where the second table defines values, those will be used. Elsewhere, the first table's values are used.
+    Merge, prefer the first table’s version: Where the first table defines values, those will be used. Elsewhere, the second table's values are used.
+    Merge, report error on conflict: An assertion is made to ensure that the values in the two tables are equal. If they are not, an error is raised.
+    Use the first table’s version: The data in the second table is ignored.
+    Use the second table’s version: The data in the first table is ignored.
+    Only keep rows with matching values: Only rows that have matching values in both tables are kept.
+    Keep both values with suffixes: Both values are kept, with suffixes added to the column names to distinguish them.
+    Disallow this: A name conflict is treated as an error.
     """
-    bundle_a = bundle_a.copy()
-    bundle_b = bundle_b.copy()
-    df_a = bundle_a.dfs[table_a].copy()
-    df_b = bundle_b.dfs[table_b].copy()
+    b = b.copy()
+    primary_table = b.dfs[table1_column[0]].copy()
+    secondary_table = b.dfs[table2_column[0]].copy()
 
-    # Parse suffixes
-    suffix_parts = [s.strip() for s in suffixes.split(",")]
-    if len(suffix_parts) != 2:
-        suffix_list: tuple[str, str] = ("_a", "_b")
-    else:
-        suffix_list = (suffix_parts[0], suffix_parts[1])
+    how = "inner" if merge_mode == TableMergeMode.only_matching else "left"
 
-    # Perform the join
-    if on_column:
-        merged_df = pd.merge(df_a, df_b, on=on_column, how=join_type.value, suffixes=suffix_list)
-    elif left_on and right_on:
-        merged_df = pd.merge(
-            df_a,
-            df_b,
-            left_on=left_on,
-            right_on=right_on,
-            how=join_type.value,
-            suffixes=suffix_list,
-        )
-    else:
-        # Join on index if no columns specified
-        merged_df = pd.merge(
-            df_a, df_b, left_index=True, right_index=True, how=join_type.value, suffixes=suffix_list
-        )
-    b = bundle.merge_bundles([bundle_a, bundle_b], merge_mode=bundle.BundleMergeMode.must_be_unique)
-    b.dfs.pop(table_a, None)
-    b.dfs.pop(table_b, None)
-    b.dfs["merged"] = merged_df
+    merged = primary_table.merge(
+        secondary_table,
+        how=how,
+        left_on=table1_column[1],
+        right_on=table2_column[1],
+        suffixes=("_1", "_2"),
+    )
+
+    for column in secondary_table.columns:
+        if (
+            column == table2_column[1]
+            or f"{column}_1" not in merged.columns
+            or merge_mode == TableMergeMode.both
+        ):
+            continue
+
+        if merge_mode == TableMergeMode.merge_second:
+            merged[column] = merged[f"{column}_1"].combine_first(merged[f"{column}_2"])
+        elif merge_mode == TableMergeMode.merge_first:
+            merged[column] = merged[f"{column}_2"].combine_first(merged[f"{column}_1"])
+        elif merge_mode == TableMergeMode.report_conflict:
+            conflict = merged[f"{column}_1"] != merged[f"{column}_2"]
+            if conflict.any():
+                raise ValueError(f"Conflict in column {column}: {merged[conflict]}")
+            merged[column] = merged[f"{column}_1"].combine_first(merged[f"{column}_2"])
+        elif merge_mode == TableMergeMode.use_second:
+            merged[column] = merged[f"{column}_2"]
+        elif merge_mode == TableMergeMode.use_first:
+            merged[column] = merged[f"{column}_1"]
+        elif merge_mode == TableMergeMode.only_matching:
+            merged = merged[merged[f"{column}_1"] == merged[f"{column}_2"]]
+            merged[column] = merged[f"{column}_1"]
+        elif merge_mode == TableMergeMode.disallow:
+            raise ValueError(f"Both tables have '{column}' column.")
+
+        merged.drop(columns=[f"{column}_1", f"{column}_2"], inplace=True)
+
+    b.dfs[table1_column[0]] = merged
     return b
 
 ```
 Custom types:
-  - table_a: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]
-  - table_b: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]
+  - table1_column: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}]
+  - table2_column: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}]
