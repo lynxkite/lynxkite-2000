@@ -251,6 +251,10 @@ for usage information, see references/add_rank.md
 Derive property
 for usage information, see references/derive_property.md
 
+**Derive with SQL:**
+Derives a new column with a SQL expression and stores it in the same table.
+for usage information, see references/derive_with_sql.md
+
 **Drop tables:**
 Keeps/removes the selected tables based on the value of drop_selected
 for usage information, see references/drop_tables.md
