@@ -81,7 +81,7 @@ class Bundle:
         graph = nx.DiGraph()
         added_tables = set()
 
-        def _collect_nodes(table, key):
+        def _add_node_table(table, key):
             df = self.dfs[table]
             if df.index.name != key:
                 df = df.set_index(key)
@@ -93,9 +93,9 @@ class Bundle:
 
         for relation in self.relations:
             if relation.source_table not in added_tables:
-                _collect_nodes(relation.source_table, relation.source_key)
+                _add_node_table(relation.source_table, relation.source_key)
             if relation.target_table not in added_tables:
-                _collect_nodes(relation.target_table, relation.target_key)
+                _add_node_table(relation.target_table, relation.target_key)
 
             edges = self.dfs[relation.df]
             attrs = edges.columns.difference([relation.source_column, relation.target_column])
