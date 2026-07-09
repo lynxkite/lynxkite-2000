@@ -66,14 +66,6 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Import CSV 1 output Use table as attributes 1 bundle_att",
-      "selected": false,
-      "source": "Import CSV 1",
-      "sourceHandle": "output",
-      "target": "Use table as attributes 1",
-      "targetHandle": "bundle_att"
-    },
-    {
       "id": "Aggregate between neighbors 1 output Derive property 1 b",
       "selected": false,
       "source": "Aggregate between neighbors 1",
@@ -90,17 +82,17 @@
       "targetHandle": "b"
     },
     {
-      "id": "Aggregate between neighbors 2 output SQL 2 bundle",
+      "id": "Aggregate between neighbors 2 output SQL 1 bundle",
       "selected": false,
       "source": "Aggregate between neighbors 2",
       "sourceHandle": "output",
-      "target": "SQL 2",
+      "target": "SQL 1",
       "targetHandle": "bundle"
     },
     {
-      "id": "SQL 2 output View tables 4 bundle",
+      "id": "SQL 1 output View tables 4 bundle",
       "selected": false,
-      "source": "SQL 2",
+      "source": "SQL 1",
       "sourceHandle": "output",
       "target": "View tables 4",
       "targetHandle": "bundle"
@@ -178,14 +170,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Use table as attributes 2 output Vector from attributes 2 b",
-      "selected": false,
-      "source": "Use table as attributes 2",
-      "sourceHandle": "output",
-      "target": "Vector from attributes 2",
-      "targetHandle": "b"
-    },
-    {
       "id": "Filter with formula 3 output Find connected components 1 b",
       "selected": false,
       "source": "Filter with formula 3",
@@ -211,6 +195,7 @@
     },
     {
       "id": "Join tables 1 output Vector from attributes 2 b",
+      "selected": false,
       "source": "Join tables 1",
       "sourceHandle": "output",
       "target": "Vector from attributes 2",
@@ -218,6 +203,7 @@
     },
     {
       "id": "Import CSV 3 output Merge 1 bundles",
+      "selected": false,
       "source": "Import CSV 3",
       "sourceHandle": "output",
       "target": "Merge 1",
@@ -225,6 +211,7 @@
     },
     {
       "id": "Import CSV 2 output Merge 1 bundles",
+      "selected": false,
       "source": "Import CSV 2",
       "sourceHandle": "output",
       "target": "Merge 1",
@@ -232,6 +219,7 @@
     },
     {
       "id": "Merge 1 output Join tables 1 b",
+      "selected": false,
       "source": "Merge 1",
       "sourceHandle": "output",
       "target": "Join tables 1",
@@ -247,6 +235,7 @@
     },
     {
       "id": "Find connected components 1 output Aggregate between neighbors 1 b",
+      "selected": false,
       "source": "Find connected components 1",
       "sourceHandle": "output",
       "target": "Aggregate between neighbors 1",
@@ -254,6 +243,7 @@
     },
     {
       "id": "Import CSV 1 output Merge 2 bundles",
+      "selected": false,
       "source": "Import CSV 1",
       "sourceHandle": "output",
       "target": "Merge 2",
@@ -261,6 +251,7 @@
     },
     {
       "id": "Derive property 1 output Merge 2 bundles",
+      "selected": false,
       "source": "Derive property 1",
       "sourceHandle": "output",
       "target": "Merge 2",
@@ -268,6 +259,7 @@
     },
     {
       "id": "Join tables 2 output Add rank attribute 1 b",
+      "selected": false,
       "source": "Join tables 2",
       "sourceHandle": "output",
       "target": "Add rank attribute 1",
@@ -275,6 +267,7 @@
     },
     {
       "id": "Add rank attribute 1 output Aggregate between neighbors 2 b",
+      "selected": false,
       "source": "Add rank attribute 1",
       "sourceHandle": "output",
       "target": "Aggregate between neighbors 2",
@@ -282,24 +275,67 @@
     },
     {
       "id": "Filter with formula 3 output Merge nodes on attribute 1 b",
+      "selected": false,
       "source": "Filter with formula 3",
       "sourceHandle": "output",
       "target": "Merge nodes on attribute 1",
       "targetHandle": "b"
     },
     {
-      "id": "SQL 3 output View tables 5 bundle",
-      "source": "SQL 3",
+      "id": "SQL 2 output View tables 5 bundle",
+      "selected": false,
+      "source": "SQL 2",
       "sourceHandle": "output",
       "target": "View tables 5",
       "targetHandle": "bundle"
     },
     {
-      "id": "Join tables 2 output SQL 3 bundle",
+      "id": "Join tables 2 output SQL 2 bundle",
+      "selected": false,
       "source": "Join tables 2",
       "sourceHandle": "output",
-      "target": "SQL 3",
+      "target": "SQL 2",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Import CSV 2 output Merge 1 bundles",
+      "selected": false,
+      "source": "Import CSV 2",
+      "sourceHandle": "output",
+      "target": "Merge 1",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Import CSV 3 output Merge 1 bundles",
+      "selected": false,
+      "source": "Import CSV 3",
+      "sourceHandle": "output",
+      "target": "Merge 1",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Import CSV 2 output Merge 1 bundles",
+      "selected": false,
+      "source": "Import CSV 2",
+      "sourceHandle": "output",
+      "target": "Merge 1",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Merge 1 output Join tables 1 b",
+      "selected": false,
+      "source": "Merge 1",
+      "sourceHandle": "output",
+      "target": "Join tables 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 2 output Filter with formula 3 b",
+      "selected": false,
+      "source": "Filter with formula 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 3",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -319,21 +355,21 @@
         "op_id": "Group",
         "output_metadata": null,
         "params": {
-          "color": "green"
+          "color": "yellow"
         },
         "status": "done",
         "telemetry": null,
         "title": "Group"
       },
-      "height": 1434.0,
-      "id": "Group 2",
+      "height": 900.0,
+      "id": "Group 3",
       "parentId": null,
       "position": {
-        "x": -1249.7351802286494,
-        "y": -454.10916140092996
+        "x": 1474.7854267367861,
+        "y": 173.61520317936152
       },
       "type": "node_group",
-      "width": 5156.0
+      "width": 3632.0
     },
     {
       "data": {
@@ -356,21 +392,22 @@
         "title": "Group"
       },
       "height": 1362.0,
-      "id": "Group 1",
+      "id": "Group 2",
       "parentId": null,
       "position": {
-        "x": 4174.757976517989,
-        "y": -694.2972942688302
+        "x": 1379.7659233945428,
+        "y": -1431.0340500083973
       },
       "type": "node_group",
       "width": 4256.0
     },
     {
       "data": {
+        "__execution_delay": null,
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": "Unknown operation.",
+        "error": null,
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
@@ -378,26 +415,21 @@
         "op_id": "Group",
         "output_metadata": null,
         "params": {
-          "color": "yellow"
+          "color": "green"
         },
         "status": "done",
         "telemetry": null,
         "title": "Group"
       },
-      "height": 900.0,
-      "id": "Group 3",
-      "measured": {
-        "height": 900.0,
-        "width": 3582.0
-      },
+      "height": 1434.0,
+      "id": "Group 1",
       "parentId": null,
       "position": {
-        "x": 4269.777479860232,
-        "y": 910.3519589189286
+        "x": -4055.957209955771,
+        "y": -1142.7174459818882
       },
-      "selected": false,
       "type": "node_group",
-      "width": 3582.0
+      "width": 5156.0
     },
     {
       "data": {
@@ -837,7 +869,7 @@
       "parentId": "Group 3",
       "position": {
         "x": 826.9617311303737,
-        "y": 224.1961961097278
+        "y": 224.19619610972768
       },
       "selected": false,
       "type": "basic",
@@ -1406,7 +1438,7 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 2821.993455410762,
+        "x": 2821.9934554107617,
         "y": 168.1860667504352
       },
       "selected": false,
@@ -1417,7 +1449,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1489,8 +1521,8 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 2841.4205319052535,
-        "y": 535.1419560908331
+        "x": 2841.420531905254,
+        "y": 535.141956090833
       },
       "selected": false,
       "type": "table_view",
@@ -1500,7 +1532,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1599,7 +1631,7 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 3249.0,
+        "x": 3248.9999999999995,
         "y": 136.84540806373548
       },
       "selected": false,
@@ -1656,7 +1688,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 1082.9416264744896,
         "y": 830.7600638609583
@@ -1974,10 +2006,10 @@
         "height": 303.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 2247.6309698768473,
-        "y": 312.2499028730146
+        "y": 312.24990287301466
       },
       "selected": false,
       "type": "basic",
@@ -2305,14 +2337,14 @@
       "dragging": false,
       "extent": "parent",
       "height": 315.0,
-      "id": "SQL 2",
+      "id": "SQL 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 3396.888977659901,
+        "x": 3396.8889776599012,
         "y": 407.69753395591135
       },
       "selected": false,
@@ -2627,9 +2659,9 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 3359.3048164833726,
+        "x": 3359.304816483373,
         "y": 50.0
       },
       "selected": false,
@@ -2640,7 +2672,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 12,
+        "display_version": 0,
         "error": null,
         "expanded_height": 315.0,
         "input_metadata": [
@@ -2810,10 +2842,10 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 3794.762683907963,
-        "y": 51.29600555781133
+        "x": 3794.7626839079626,
+        "y": 51.29600555781121
       },
       "selected": false,
       "type": "table_view",
@@ -3055,7 +3087,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 50.0,
         "y": 683.2720217757503
@@ -3334,7 +3366,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 1066.6175628514093,
         "y": 466.3512126933841
@@ -3630,10 +3662,10 @@
         "height": 516.0,
         "width": 408.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 588.6397755250091,
-        "y": 396.9156496183049
+        "y": 396.91564961830477
       },
       "selected": false,
       "type": "basic",
@@ -3954,10 +3986,10 @@
         "height": 359.0,
         "width": 319.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 2783.014801950326,
-        "y": 259.7843852286101
+        "x": 2783.0148019503254,
+        "y": 259.78438522861006
       },
       "selected": false,
       "type": "basic",
@@ -3967,7 +3999,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 12,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4150,9 +4182,9 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 3891.085057151993,
+        "x": 3891.0850571519936,
         "y": 411.9479080587006
       },
       "selected": false,
@@ -4161,10 +4193,9 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 12,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4344,12 +4375,12 @@
       "height": 489.0,
       "id": "View tables 5",
       "measured": {
-        "height": 387.0,
+        "height": 489.0,
         "width": 343.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
-        "x": 2863.4848693157483,
+        "x": 2863.484869315748,
         "y": 823.256808789383
       },
       "selected": false,
@@ -4403,7 +4434,7 @@
         "height": 322.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 50.0,
         "y": 1018.5053406494048
@@ -4520,7 +4551,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 2818.4091007091392,
         "y": 992.742908350926
@@ -4635,7 +4666,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 3258.4091007091392,
         "y": 994.742908350926
@@ -4806,7 +4837,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 3705.4091007091392,
         "y": 991.742908350926
@@ -5024,7 +5055,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4174.739059228615,
         "y": 991.3038378340334
@@ -5242,7 +5273,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4679.56685007822,
         "y": 1051.8757383931388
@@ -5353,9 +5384,9 @@
         "height": 421.0,
         "width": 346.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
-        "x": 1401.4867782613444,
+        "x": 1401.4867782613446,
         "y": 897.7972847080846
       },
       "selected": false,
@@ -5466,9 +5497,9 @@
         "height": 443.0,
         "width": 349.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
-        "x": 1900.8699814508107,
+        "x": 1900.8699814508109,
         "y": 940.8280769305547
       },
       "selected": false,
@@ -5684,7 +5715,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4381.166892571787,
         "y": 447.4172584565149
@@ -5698,7 +5729,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5815,7 +5846,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4790.540599349542,
         "y": 443.74255117940265
@@ -6033,7 +6064,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4354.897172434291,
         "y": 55.395563951202575
@@ -6047,7 +6078,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6164,7 +6195,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 4756.10092629029,
         "y": 50.0
@@ -6226,9 +6257,9 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
-        "x": 61.33382082952107,
+        "x": 61.333820829520846,
         "y": 659.131526093018
       },
       "selected": false,
@@ -6338,7 +6369,7 @@
         "height": 422.0,
         "width": 370.0
       },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
         "x": 2367.8320848101766,
         "y": 952.9585233901671
@@ -6440,14 +6471,20 @@
         "telemetry": null,
         "title": "Join tables"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
       "id": "Join tables 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 1",
       "position": {
-        "x": 1029.0325517720069,
+        "x": 1029.0325517720066,
         "y": 933.4687214375326
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -6503,14 +6540,20 @@
         "telemetry": null,
         "title": "Merge"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
       "id": "Merge 1",
-      "parentId": "Group 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 1",
       "position": {
         "x": 547.5310283394201,
         "y": 950.4656320809461
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     },
@@ -6820,7 +6863,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 1884.827149417947,
         "y": 526.2322291816621
@@ -6991,7 +7034,7 @@
         "height": 315.0,
         "width": 315.0
       },
-      "parentId": "Group 1",
+      "parentId": "Group 2",
       "position": {
         "x": 1506.2141337809162,
         "y": 523.0987796042059
@@ -7313,14 +7356,20 @@
         "telemetry": null,
         "title": "SQL"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "SQL 3",
-      "parentId": "Group 1",
+      "id": "SQL 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 2",
       "position": {
         "x": 2367.6865809183573,
         "y": 921.7620128290797
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     }
