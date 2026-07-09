@@ -139,154 +139,163 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Import CSV 4 output Rename table 3 b",
+      "id": "Derive property 1 output Add rank attribute 1 b",
       "selected": false,
-      "source": "Import CSV 4",
+      "source": "Derive property 1",
       "sourceHandle": "output",
-      "target": "Rename table 3",
+      "target": "Add rank attribute 1",
       "targetHandle": "b"
     },
     {
-      "id": "Import CSV 5 output Rename table 4 b",
+      "id": "Add rank attribute 1 output Derive property 2 b",
       "selected": false,
-      "source": "Import CSV 5",
+      "source": "Add rank attribute 1",
       "sourceHandle": "output",
-      "target": "Rename table 4",
+      "target": "Derive property 2",
       "targetHandle": "b"
     },
     {
-      "id": "Derive property 4 output Add rank attribute 3 b",
+      "id": "Derive property 2 output Connect nodes on attribute 1 b",
       "selected": false,
-      "source": "Derive property 4",
+      "source": "Derive property 2",
       "sourceHandle": "output",
-      "target": "Add rank attribute 3",
+      "target": "Connect nodes on attribute 1",
       "targetHandle": "b"
     },
     {
-      "id": "Add rank attribute 3 output Derive property 5 b",
+      "id": "Filter with formula 1 output Filter with formula 2 b",
       "selected": false,
-      "source": "Add rank attribute 3",
+      "source": "Filter with formula 1",
       "sourceHandle": "output",
-      "target": "Derive property 5",
+      "target": "Filter with formula 2",
       "targetHandle": "b"
     },
     {
-      "id": "Derive property 5 output Connect nodes on attribute 2 b",
+      "id": "Vector from attributes 2 output Derive property 1 b",
       "selected": false,
-      "source": "Derive property 5",
+      "source": "Vector from attributes 2",
       "sourceHandle": "output",
-      "target": "Connect nodes on attribute 2",
+      "target": "Derive property 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 6 output Filter with formula 7 b",
+      "id": "Vector from attributes 1 output Vector from attributes 2 b",
       "selected": false,
-      "source": "Filter with formula 6",
+      "source": "Vector from attributes 1",
       "sourceHandle": "output",
-      "target": "Filter with formula 7",
+      "target": "Vector from attributes 2",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 5 output Derive property 4 b",
+      "id": "Filter with formula 1 output Filter with formula 4 b",
       "selected": false,
-      "source": "Vector from attributes 5",
+      "source": "Filter with formula 1",
       "sourceHandle": "output",
-      "target": "Derive property 4",
+      "target": "Filter with formula 4",
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 4 output Vector from attributes 5 b",
+      "id": "Filter with formula 4 output Binned graph visualization 1 b",
       "selected": false,
-      "source": "Vector from attributes 4",
+      "source": "Filter with formula 4",
       "sourceHandle": "output",
-      "target": "Vector from attributes 5",
+      "target": "Binned graph visualization 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 6 output Filter with formula 8 b",
+      "id": "Filter with formula 1 output Filter with formula 5 b",
       "selected": false,
-      "source": "Filter with formula 6",
+      "source": "Filter with formula 1",
       "sourceHandle": "output",
-      "target": "Filter with formula 8",
+      "target": "Filter with formula 5",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 8 output Binned graph visualization 3 b",
+      "id": "Filter with formula 5 output Binned graph visualization 2 b",
       "selected": false,
-      "source": "Filter with formula 8",
+      "source": "Filter with formula 5",
       "sourceHandle": "output",
-      "target": "Binned graph visualization 3",
+      "target": "Binned graph visualization 2",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 6 output Filter with formula 9 b",
+      "id": "Connect nodes on attribute 1 output Filter with formula 1 b",
       "selected": false,
-      "source": "Filter with formula 6",
+      "source": "Connect nodes on attribute 1",
       "sourceHandle": "output",
-      "target": "Filter with formula 9",
+      "target": "Filter with formula 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 9 output Binned graph visualization 4 b",
+      "id": "Import CSV 2 output Use table as attributes 2 bundle_att",
       "selected": false,
-      "source": "Filter with formula 9",
-      "sourceHandle": "output",
-      "target": "Binned graph visualization 4",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Rename table 3 output Use table as attributes 2 bundle_graph",
-      "source": "Rename table 3",
-      "sourceHandle": "output",
-      "target": "Use table as attributes 2",
-      "targetHandle": "bundle_graph"
-    },
-    {
-      "id": "Rename table 4 output Use table as attributes 2 bundle_att",
-      "source": "Rename table 4",
+      "source": "Import CSV 2",
       "sourceHandle": "output",
       "target": "Use table as attributes 2",
       "targetHandle": "bundle_att"
     },
     {
-      "id": "Use table as attributes 2 output Vector from attributes 4 b",
+      "id": "Use table as attributes 2 output Vector from attributes 1 b",
+      "selected": false,
       "source": "Use table as attributes 2",
       "sourceHandle": "output",
-      "target": "Vector from attributes 4",
+      "target": "Vector from attributes 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 7 output Find connected components 1 b",
-      "source": "Filter with formula 7",
+      "id": "Import CSV 1 output Use table as attributes 2 bundle_graph",
+      "source": "Import CSV 1",
+      "sourceHandle": "output",
+      "target": "Use table as attributes 2",
+      "targetHandle": "bundle_graph"
+    },
+    {
+      "id": "Filter with formula 2 output Find connected components 1 b",
+      "source": "Filter with formula 2",
       "sourceHandle": "output",
       "target": "Find connected components 1",
       "targetHandle": "b"
     },
     {
-      "id": "Filter with formula 7 output Merge nodes on attribute 1 b",
-      "source": "Filter with formula 7",
+      "id": "Filter with formula 2 output Merge nodes on attribute 1 b",
+      "source": "Filter with formula 2",
       "sourceHandle": "output",
       "target": "Merge nodes on attribute 1",
       "targetHandle": "b"
-    },
-    {
-      "id": "Connect nodes on attribute 2 output Filter with formula 6 b",
-      "source": "Connect nodes on attribute 2",
-      "sourceHandle": "output",
-      "target": "Filter with formula 6",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Rename table 4 output View tables 4 bundle",
-      "source": "Rename table 4",
-      "sourceHandle": "output",
-      "target": "View tables 4",
-      "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
   "execution_options": {},
   "nodes": [
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Group",
+        "output_metadata": null,
+        "params": {
+          "color": "green"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Group"
+      },
+      "height": 1434.0,
+      "id": "Group 1",
+      "position": {
+        "x": -320.6122801804895,
+        "y": -210.48185629296222
+      },
+      "type": "node_group",
+      "width": 4859.0
+    },
     {
       "data": {
         "collapsed": null,
@@ -314,34 +323,6 @@
       },
       "type": "node_group",
       "width": 4256.0
-    },
-    {
-      "data": {
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": "Unknown operation.",
-        "expanded_height": null,
-        "input_metadata": null,
-        "message": null,
-        "meta": null,
-        "op_id": "Group",
-        "output_metadata": null,
-        "params": {
-          "color": "green"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Group"
-      },
-      "height": 1434.0,
-      "id": "Group 1",
-      "position": {
-        "x": -733.3330860788674,
-        "y": -412.48425352308936
-      },
-      "type": "node_group",
-      "width": 5282.0
     },
     {
       "data": {
@@ -541,27 +522,39 @@
           "aggregations": [
             [
               "name",
-              "first"
+              [
+                "first"
+              ]
             ],
             [
               "team_name",
-              "first"
+              [
+                "first"
+              ]
             ],
             [
               "x_abs",
-              "mean"
+              [
+                "mean"
+              ]
             ],
             [
               "x_rel",
-              "mean"
+              [
+                "mean"
+              ]
             ],
             [
               "y_abs",
-              "mean"
+              [
+                "mean"
+              ]
             ],
             [
               "y_rel",
-              "mean"
+              [
+                "mean"
+              ]
             ]
           ],
           "attribute": "player_id",
@@ -883,7 +876,9 @@
           "aggregations": [
             [
               "name_dst",
-              "count"
+              [
+                "count"
+              ]
             ]
           ],
           "source_key": "player_id_src",
@@ -895,15 +890,15 @@
         "title": "Merge parallel edges"
       },
       "extent": "parent",
-      "height": 407.0,
+      "height": 505.0,
       "id": "Merge parallel edges 1",
       "parentId": "Group 2",
       "position": {
-        "x": 1306.099829796488,
-        "y": 226.86117730432318
+        "x": 1275.3001104903096,
+        "y": 200.87766831050317
       },
       "type": "basic",
-      "width": 337.0
+      "width": 446.0
     },
     {
       "data": {
@@ -1285,7 +1280,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1362,7 +1357,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1477,7 +1472,7 @@
         "output_metadata": [
           {
             "dataframes": {
-              "records": {
+              "matches": {
                 "columns": [
                   "away_score",
                   "away_team",
@@ -1485,7 +1480,7 @@
                   "home_team",
                   "match_id"
                 ],
-                "key": "records",
+                "key": "matches",
                 "length": 64.0
               }
             },
@@ -1496,7 +1491,8 @@
         "params": {
           "columns": "<from file>",
           "filename": "https://storage.googleapis.com/lynxkite_public_data/pzubcsek/Soccer/matches.csv",
-          "separator": "<auto>"
+          "separator": "<auto>",
+          "table_name": "matches"
         },
         "status": "done",
         "telemetry": null,
@@ -2666,7 +2662,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 0,
+        "display_version": 15,
         "error": null,
         "expanded_height": 315.0,
         "input_metadata": [
@@ -3435,7 +3431,7 @@
           },
           {
             "dataframes": {
-              "records": {
+              "matches": {
                 "columns": [
                   "away_score",
                   "away_team",
@@ -3443,7 +3439,7 @@
                   "home_team",
                   "match_id"
                 ],
-                "key": "records",
+                "key": "matches",
                 "length": 64.0
               }
             },
@@ -3574,7 +3570,7 @@
         ],
         "params": {
           "attribute_table_id": [
-            "records",
+            "matches",
             "match_id"
           ],
           "merge_mode": "Merge, prefer the table's version",
@@ -3840,15 +3836,22 @@
           "aggregations": [
             [
               "match_id",
-              "first"
+              [
+                "first"
+              ]
             ],
             [
               "team_name",
-              "first"
+              [
+                "first"
+              ]
             ],
             [
               "ts",
-              "min max"
+              [
+                "min",
+                "max"
+              ]
             ]
           ],
           "direction": "Aggregate to neighbor",
@@ -4124,7 +4127,9 @@
           "aggregations": [
             [
               "poslen_rank",
-              "first"
+              [
+                "first"
+              ]
             ]
           ],
           "direction": "Aggregate from neighbor",
@@ -4149,7 +4154,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4319,7 +4324,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4500,220 +4505,6 @@
         "output_metadata": [
           {
             "dataframes": {
-              "records": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "match_id",
-                  "player_id",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "records",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "columns": "<from file>",
-          "filename": "https://storage.googleapis.com/lynxkite_public_data/pzubcsek/Soccer/events.csv",
-          "separator": "<auto>"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Import CSV"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 316.0,
-      "id": "Import CSV 4",
-      "measured": {
-        "height": 316.0,
-        "width": 372.0
-      },
-      "parentId": "Group 1",
-      "position": {
-        "x": 41.55146456826503,
-        "y": 581.8150392533637
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 372.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [],
-        "message": null,
-        "meta": null,
-        "op_id": "File operations > Import CSV",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "records": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "records",
-                "length": 602.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "columns": "<from file>",
-          "filename": "https://storage.googleapis.com/lynxkite_public_data/pzubcsek/Soccer/players.csv",
-          "separator": "<auto>"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Import CSV"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 315.0,
-      "id": "Import CSV 5",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 1",
-      "position": {
-        "x": 51.5,
-        "y": 988.0930297935904
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "records": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "match_id",
-                  "player_id",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "records",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Table operations > Rename table",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "match_id",
-                  "player_id",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "new_name": "events",
-          "old_name": "records"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Rename table"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 315.0,
-      "id": "Rename table 3",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 1",
-      "position": {
-        "x": 525.5,
-        "y": 688.0930297935904
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "records": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "records",
-                "length": 602.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Table operations > Rename table",
-        "output_metadata": [
-          {
-            "dataframes": {
               "players": {
                 "columns": [
                   "id",
@@ -4729,25 +4520,27 @@
           }
         ],
         "params": {
-          "new_name": "players",
-          "old_name": "records"
+          "columns": "<from file>",
+          "filename": "https://storage.googleapis.com/lynxkite_public_data/pzubcsek/Soccer/players.csv",
+          "separator": "<auto>",
+          "table_name": "players"
         },
         "status": "done",
         "telemetry": null,
-        "title": "Rename table"
+        "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 315.0,
-      "id": "Rename table 4",
+      "height": 322.0,
+      "id": "Import CSV 2",
       "measured": {
-        "height": 315.0,
+        "height": 322.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 529.5,
-        "y": 1028.0930297935904
+        "x": 65.6749686860401,
+        "y": 1011.0546400933882
       },
       "selected": false,
       "type": "basic",
@@ -4832,15 +4625,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Derive property 4",
+      "id": "Derive property 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 2574.2800897888283,
-        "y": 992.7429083509257
+        "x": 2151.885914216167,
+        "y": 992.742908350926
       },
       "selected": false,
       "type": "basic",
@@ -4931,15 +4724,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Add rank attribute 3",
+      "id": "Add rank attribute 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 2944.4801591846367,
-        "y": 992.7429083509257
+        "x": 2522.0859836119753,
+        "y": 992.742908350926
       },
       "selected": false,
       "type": "basic",
@@ -5028,15 +4821,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Derive property 5",
+      "id": "Derive property 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 3384.4801591846367,
-        "y": 994.7429083509257
+        "x": 2962.0859836119753,
+        "y": 994.742908350926
       },
       "selected": false,
       "type": "basic",
@@ -5181,15 +4974,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Connect nodes on attribute 2",
+      "id": "Connect nodes on attribute 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 3831.4801591846367,
-        "y": 991.7429083509257
+        "x": 3409.0859836119753,
+        "y": 991.742908350926
       },
       "selected": false,
       "type": "basic",
@@ -5381,15 +5174,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 6",
+      "id": "Filter with formula 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4300.810117704112,
-        "y": 991.3038378340336
+        "x": 3878.4159421314503,
+        "y": 991.3038378340334
       },
       "selected": false,
       "type": "basic",
@@ -5581,15 +5374,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 7",
+      "id": "Filter with formula 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4805.637908553717,
-        "y": 1051.875738393139
+        "x": 4383.243732981056,
+        "y": 1051.8757383931388
       },
       "selected": false,
       "type": "basic",
@@ -5674,15 +5467,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 421.0,
-      "id": "Vector from attributes 4",
+      "id": "Vector from attributes 1",
       "measured": {
         "height": 421.0,
         "width": 346.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 1527.5578367368419,
-        "y": 897.7972847080848
+        "x": 1105.1636611641802,
+        "y": 897.7972847080846
       },
       "selected": false,
       "type": "basic",
@@ -5769,15 +5562,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 443.0,
-      "id": "Vector from attributes 5",
+      "id": "Vector from attributes 2",
       "measured": {
         "height": 443.0,
         "width": 349.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 2026.941039926308,
-        "y": 940.8280769305545
+        "x": 1604.5468643536465,
+        "y": 940.8280769305547
       },
       "selected": false,
       "type": "basic",
@@ -5969,15 +5762,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 8",
+      "id": "Filter with formula 4",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4507.237951047284,
-        "y": 447.4172584565147
+        "x": 4084.8437754746224,
+        "y": 447.4172584565149
       },
       "selected": false,
       "type": "basic",
@@ -5988,7 +5781,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6091,15 +5884,15 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Binned graph visualization 3",
+      "id": "Binned graph visualization 1",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4916.61165782504,
-        "y": 443.7425511794029
+        "x": 4494.217482252378,
+        "y": 443.74255117940265
       },
       "selected": false,
       "type": "image",
@@ -6291,14 +6084,14 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Filter with formula 9",
+      "id": "Filter with formula 5",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4480.968230909788,
+        "x": 4058.5740553371265,
         "y": 55.395563951202575
       },
       "selected": false,
@@ -6310,7 +6103,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6413,14 +6206,14 @@
       "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 315.0,
-      "id": "Binned graph visualization 4",
+      "id": "Binned graph visualization 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4882.171984765788,
+        "x": 4459.777809193126,
         "y": 50.0
       },
       "selected": false,
@@ -6430,11 +6223,11 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 400.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -6517,14 +6310,20 @@
         "telemetry": null,
         "title": "Use table as attributes"
       },
+      "dragHandle": ".drag-handle",
       "extent": "parent",
       "height": 400.0,
       "id": "Use table as attributes 2",
+      "measured": {
+        "height": 400.0,
+        "width": 329.0
+      },
       "parentId": "Group 1",
       "position": {
-        "x": 1027.7284215374689,
-        "y": 880.4836672000268
+        "x": 605.3342459648075,
+        "y": 880.483667200027
       },
+      "selected": false,
       "type": "basic",
       "width": 329.0
     },
@@ -6534,77 +6333,54 @@
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": "ValueError: Wrong number of arguments for import_file(*, file_path: Annotated[str, {'format': 'path'}], table_name: str, file_format: lynxkite_graph_analytics.operations.file_ops.FileFormat = <FileFormat.csv: 'csv'>, **kwargs) -> lynxkite_graph_analytics.bundle.Bundle:\n     import_file(, file_format_group=csv, table_name=, file_format=csv) was called.",
+        "error": null,
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
         "meta": null,
-        "op_id": "File operations > Import file",
+        "op_id": "File operations > Import CSV",
         "output_metadata": [
-          {}
-        ],
-        "params": {
-          "file_format": "csv",
-          "file_format_group": "csv",
-          "table_name": ""
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Import file"
-      },
-      "height": 535.0,
-      "id": "Import file 1",
-      "position": {
-        "x": -1246.4243422116997,
-        "y": 212.02751021850858
-      },
-      "type": "basic",
-      "width": 352.0
-    },
-    {
-      "data": {
-        "collapsed": null,
-        "display": null,
-        "display_version": 0,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
           {
             "dataframes": {
-              "players": {
+              "events": {
                 "columns": [
-                  "id",
-                  "name",
-                  "team_name"
+                  "event_subtype",
+                  "event_type",
+                  "match_id",
+                  "player_id",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
                 ],
-                "key": "players",
-                "length": 602.0
+                "key": "events",
+                "length": 125463.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "message": null,
-        "meta": null,
-        "op_id": "View tables",
-        "output_metadata": [
-          {}
-        ],
         "params": {
-          "limit": 100.0
+          "columns": "<from file>",
+          "filename": "https://storage.googleapis.com/lynxkite_public_data/pzubcsek/Soccer/events.csv",
+          "separator": "<auto>",
+          "table_name": "events"
         },
         "status": "done",
         "telemetry": null,
-        "title": "View tables"
+        "title": "Import CSV"
       },
+      "extent": "parent",
       "height": 315.0,
-      "id": "View tables 4",
+      "id": "Import CSV 1",
+      "parentId": "Group 1",
       "position": {
-        "x": -363.0571112461303,
-        "y": 1367.3243005915292
+        "x": 50.0,
+        "y": 677.5254430906846
       },
-      "type": "table_view",
+      "type": "basic",
       "width": 315.0
     }
   ],

@@ -93,26 +93,35 @@ def table_as_attributes(
     return bundle_graph
 
 
+def get_id(b: core.Bundle, table_name: str) -> str:
+    """Returns the id column of a table."""
+    for relation in b.relations:
+        if relation.source_table == table_name:
+            return relation.source_key
+        if relation.target_table == table_name:
+            return relation.target_key
+    raise ValueError(f"{table_name} is not used in any relation")
+
+
 def update_relations(
     b: core.Bundle,
     table_name: core.TableName,
     new_id: str,
-    old_df: pd.DataFrame,
+    mapping: pd.Series,
 ) -> core.Bundle:
     """
     Updates the relations to use the new id column instead of the old ones.
     :param b: The bundle
     :param table_name: The name of the node table that was modified.
-    :param new_id: The name of the new attribute.
-    :param old_df: The old dataframe.
+    :param new_id: The name of the new id attribute.
+    :param mapping: Maps the old ids to the new ones.
     """
     b = b.copy()
 
     def _update_relation(r, suffix, column_attr, key_attr):
         new_column = new_id + suffix
         edge_column = getattr(r, column_attr)
-        node_key = getattr(r, key_attr)
-        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(old_df.set_index(node_key)[new_id])
+        b.dfs[r.df][new_column] = b.dfs[r.df][edge_column].map(mapping)
         setattr(r, column_attr, new_column)
         setattr(r, key_attr, new_id)
 
@@ -170,7 +179,7 @@ def merge_nodes(
     grouped_df = old_df.groupby(attribute).agg(agg_dict).replace({float("nan"): None})
     grouped_df.columns = [name_dict.get(col) for col in grouped_df.columns]
     b.dfs[table_name] = grouped_df.reset_index()
-    update_relations(b, table_name, attribute, old_df)
+    update_relations(b, table_name, attribute, old_df.set_index(get_id(b, table_name))[attribute])
     return b
 
 

@@ -7,6 +7,7 @@ import networkx as nx
 import pandas as pd
 
 from lynxkite_core import ops
+from .graph_ops import get_id
 from .. import core
 
 op = ops.op_registration(core.ENV, "Segmentation operations")
@@ -104,18 +105,7 @@ def segment_by_attribute(
     :param segmentation_name: the name of the segmentation
     """
     b = b.copy()
-
-    id_column: str | None = None
-    for r in b.relations:
-        if r.source_table == table_name:
-            id_column = r.source_key
-            break
-        if r.target_table == table_name:
-            id_column = r.target_key
-            break
-
-    if id_column is None:
-        raise ValueError(f"{table_name} is not used in any relation")
+    id_column = get_id(b, table_name)
 
     node_df = b.dfs[table_name]
     unique_values = node_df[attribute].unique()
