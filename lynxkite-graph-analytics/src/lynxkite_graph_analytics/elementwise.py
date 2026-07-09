@@ -12,14 +12,16 @@ from lynxkite_core.ops import OpContext
 try:
     from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
     from lynxkite_enterprise.lim import (  # ty: ignore[unresolved-import]
-        get_remote_row_processor,
-        register_lim_function_if_worker,
+        LIM_ATTR,
+        remote_row_processor,
     )
 
     enterprise_backend = True
 except ImportError:
     enterprise_backend = False
-    execution_parallelism = None  # type: ignore[assignment,misc]
+    execution_parallelism = None
+    remote_row_processor = None
+    LIM_ATTR = "__lynxkite_lim__"
 
 from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
@@ -31,7 +33,6 @@ def elementwise(
     input_table: str,
     desc: str = "",
     concurrency: int = 1,
-    lim_config: typing.Any = None,
 ) -> typing.Callable:
     """Decorator for operations that process each row independently.
 
@@ -49,15 +50,12 @@ def elementwise(
         async def process(record: Record, *, protein_table_column: TableColumn):
             record.result = await api_call(record[protein_table_column])
 
-    If LynxKite 2000:MM Enterprise is installed, you can run elementwise operations on Kubernetes
-    as LIMs. With LIM, pass a small ``lim_config``; storage and k8s defaults are filled in
-    automatically:
+    With LynxKite Enterprise, mark LIM-capable row functions with ``@lim`` and configure
+    resources per folder in ``settings.yaml``:
+
         @op("ESM2", slow=True)
-        @elementwise(
-            input_table="protein_table_column",
-            desc="ESM2",
-            lim_config={"cpu": "4", "memory": "8Gi"},
-        )
+        @elementwise(input_table="protein_table_column", desc="ESM2")
+        @lim
         def query_esm2(record: Record, *, protein_table_column: TableColumn) -> None:
             record.embeddings = my_inference(record[protein_table_column])
     """
@@ -71,11 +69,9 @@ def elementwise(
                 f"@elementwise requires 'record: Record' as first parameter, got: {params[0].name if params else 'none'}"
             )
 
-        service_name = None
-        if lim_config and not enterprise_backend:
-            raise ValueError("@elementwise(lim_config=...) requires LynxKite Enterprise")
-        if enterprise_backend and lim_config:
-            service_name = register_lim_function_if_worker(func, lim_config)
+        is_lim = getattr(func, LIM_ATTR, False)
+        if is_lim and not enterprise_backend:
+            raise ValueError("@lim requires LynxKite Enterprise")
 
         public_signature = sig.replace(
             parameters=[
@@ -85,7 +81,7 @@ def elementwise(
             ]
         )
 
-        if inspect.iscoroutinefunction(func) or lim_config or concurrency > 1:
+        if inspect.iscoroutinefunction(func) or is_lim or concurrency > 1:
 
             async def async_wrapper(
                 self: OpContext,
@@ -101,8 +97,6 @@ def elementwise(
                     kwargs,
                     desc=desc,
                     concurrency=concurrency,
-                    lim_config=lim_config,
-                    service_name=service_name,
                 )
 
             setattr(async_wrapper, "__signature__", public_signature)
@@ -120,8 +114,6 @@ def elementwise(
                         kwargs,
                         desc=desc,
                         concurrency=concurrency,
-                        lim_config=None,
-                        service_name=None,
                     )
                 )
             return _elementwise_impl_sync(
@@ -148,8 +140,6 @@ async def _elementwise_impl_async(
     *,
     desc: str,
     concurrency: int,
-    lim_config: typing.Any | None,
-    service_name: str | None,
 ) -> Bundle:
     bundle, table_name, df = _prepare_elementwise(
         bundle=bundle,
@@ -167,16 +157,11 @@ async def _elementwise_impl_async(
         return record.get_updates()
 
     lim_cleanup = None
-    if service_name and lim_config:
-        remote_processor = await get_remote_row_processor(
-            self,
-            kwargs,
-            service_name=service_name,
-            lim_config=lim_config,
-        )
-        if remote_processor is not None:
-            process_row_updates = remote_processor  # type: ignore[assignment]
-            lim_cleanup = getattr(remote_processor, "lim_cleanup", None)
+    if enterprise_backend and getattr(func, LIM_ATTR, False) and remote_row_processor is not None:
+        remote = await remote_row_processor(func, self, kwargs)
+        if remote is not None:
+            process_row_updates = remote
+            lim_cleanup = getattr(remote, "lim_cleanup", None)
 
     try:
         await _process_rows_concurrently(
