@@ -5,6 +5,7 @@ import fastapi
 import openai
 import pydantic
 from typing import cast
+from pathlib import Path
 from fastapi.responses import StreamingResponse
 import deepagents
 from deepagents import backends
@@ -70,13 +71,19 @@ async def assistant_stream(
 ) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
     workspace_backend = WorkspaceBackend(req.workspace)
+    routes = {
+        "/skills/": backends.FilesystemBackend(root_dir=skill_root, virtual_mode=True)
+    }
+    workspace_files_path = (
+        Path(req.workspace).parent / ".workspace_files" / Path(req.workspace).name
+    )
+    if workspace_files_path.exists():
+        routes["/workspace_files/"] = backends.FilesystemBackend(
+            root_dir=str(workspace_files_path), virtual_mode=True
+        )
     backend = backends.CompositeBackend(
         default=workspace_backend,
-        routes={
-            "/skills/": backends.FilesystemBackend(
-                root_dir=skill_root, virtual_mode=True
-            )
-        },
+        routes=routes,
     )
     agent = deepagents.create_deep_agent(
         model=model,

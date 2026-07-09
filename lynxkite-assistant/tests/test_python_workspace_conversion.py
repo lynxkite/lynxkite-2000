@@ -59,7 +59,7 @@ def test_workspace_to_python_ignores_edges_pointing_to_missing_nodes():
         line for line in code.splitlines() if line.strip() and not line.startswith("#")
     ]
 
-    assert lines[1] == "res_source_1 = source(k=1)"
+    assert lines[1] == "res_source_1 = source(k=1)  # node-a"
 
 
 def test_workspace_to_python_orders_dependencies_and_handles():
@@ -75,6 +75,6 @@ def test_workspace_to_python_orders_dependencies_and_handles():
         line for line in code.splitlines() if line.strip() and not line.startswith("#")
     ]
 
-    assert lines[1] == "res_alpha_1 = alpha()"
-    assert lines[2] == "res_beta_2 = beta()"
-    assert lines[3] == "res_merge_3 = merge(a=res_beta_2, z=res_alpha_1, const=5)"
+    assert lines[1] == "res_alpha_1 = alpha()  # a"
+    assert lines[2] == "res_beta_2 = beta()  # b"
+    assert lines[3] == "res_merge_3 = merge(a=res_beta_2, z=res_alpha_1, const=5)  # c"

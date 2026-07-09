@@ -263,7 +263,7 @@ def _get_fnc_call(node, incoming_edges, saved_values, groups):
         function_name = meta.python_function_name
     else:
         function_name = short_id
-    call = f"{function_name}({', '.join(inputs + params)})"
+    call = f"{function_name}({', '.join(inputs + params)})  # {node.id}"
     return function_name, short_id, call
 
 

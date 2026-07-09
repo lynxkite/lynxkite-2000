@@ -19,6 +19,7 @@ If a custom box returns an 'Unknown operation' error message, check if you are u
 The module name and usage examples are specified at the beginning of `boxes.py`.
 Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
 If workspace.py is empty, you can still add new boxes by editing boxes.py or using the pre-defined boxes.
+Under /workspace_files, you can find the results of the executed boxes such as View tables and View images.
 """
 
 # included at the beginning of the workspace.py file
