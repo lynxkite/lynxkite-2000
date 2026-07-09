@@ -56,4 +56,4 @@ def aggregate_between_neighbors(
 ```
 Custom types:
   - relation_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].relations[].name'}]
-  - aggregations: typing.Annotated[list[tuple[str, list[str]]], {'format': 'dropdown-multidropdown_relation_adder', 'directions': [<Direction.to_neighbor: 'Aggregate to neighbor'>, <Direction.from_neighbor: 'Aggregate from neighbor'>], 'options2': ['sum', 'mean', 'median', 'min', 'max', 'prod', 'std', 'var', 'sem', 'skew', 'count', 'size', 'first', 'last']}]
+  - aggregations: typing.Annotated[list[tuple[str, list[str]]], {'format': 'dropdown-multidropdown_relation_adder', 'direction_map': {'Aggregate to neighbor': 'source_table', 'Aggregate from neighbor': 'target_table'}, 'options2': ['sum', 'mean', 'median', 'min', 'max', 'prod', 'std', 'var', 'sem', 'skew', 'count', 'size', 'first', 'last']}]

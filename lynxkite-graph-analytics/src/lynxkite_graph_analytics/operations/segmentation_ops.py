@@ -163,7 +163,10 @@ AggregationAdderBetweenNeighbors = typing.Annotated[
     list[tuple[str, list[str]]],
     {
         "format": "dropdown-multidropdown_relation_adder",
-        "directions": list(Direction),
+        "direction_map": {
+            Direction.to_neighbor.value: "source_table",
+            Direction.from_neighbor.value: "target_table",
+        },
         "options2": core.pandas_aggregation_options,
     },
 ]

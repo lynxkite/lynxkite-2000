@@ -155,7 +155,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <DropdownMultiDropdownAdder
         value={value ?? []}
         onChange={onChange}
-        options1={getDropdownValuesByDirection(data, meta?.type?.directions)}
+        options1={getDropdownValuesByDirection(data, meta?.type?.direction_map)}
         options2={meta?.type?.options2}
       />
     </div>
@@ -251,13 +251,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   );
 }
 
-function getDropdownValuesByDirection(data: any, directions: any): string[] {
+function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
   const params = data?.params;
   const metadata = data?.input_metadata?.[0];
-  if (!params || !metadata) return [""];
-  if (!Array.isArray(directions) || directions.length < 2) return [""];
-  const isSourceToTarget = params.direction === directions[0];
-  const tableKey = isSourceToTarget ? "source_table" : "target_table";
+  if (!params || !metadata || !direction_map || !params.direction) return [""];
+  const tableKey = direction_map[params.direction];
   const relation = metadata.relations?.find((r: any) => r?.name === params.relation_name);
   const tableName = relation?.[tableKey];
   const columns = metadata.dataframes?.[tableName]?.columns;
