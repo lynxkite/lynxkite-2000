@@ -7,8 +7,8 @@ from typing import Any
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
 from . import python_workspace_conversion
-from .instructions import BOXES_PROMPT
 from . import sync_workspaces
+from . import instructions
 
 try:
     from lynxkite_app import crdt
@@ -102,9 +102,7 @@ def get_boxes_file_content(ws_path: str) -> str:
             if str(p.parent) != "."
             else "boxes"
         )
-        return BOXES_PROMPT.replace("ENV", f'"{ws.env}"').replace(
-            "MODULE_NAME", module_name
-        )
+        return instructions.get_boxes_prompt(ws.env, module_name)
     with open(p) as f:
         return f.read()
 

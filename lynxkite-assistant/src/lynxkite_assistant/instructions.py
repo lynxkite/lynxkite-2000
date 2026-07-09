@@ -42,7 +42,21 @@ BOXES_PROMPT = '''
 To add a custom box, define a function here and decorate it with @op.
 The positional arguments of the function become its inputs, and the keyword-only arguments become its parameters.
 E.g.:
+EXAMPLES
+To use them in the workspace, call them in `workspace.py` with this custom module name: MODULE_NAME
+For example:
+    MODULE_NAME.FNC1(...)
+    MODULE_NAME.FNC2(...)
+"""
+from lynxkite_core import ops
+op = ops.op_registration(ENV) # DO NOT CHANGE THIS LINE!
 
+# Add new box definitions here.
+'''.strip()
+
+env_examples = {}
+env_examples["Pillow"] = (
+    """
     @op("Blur")
     def blur(image: Image.Image, *, radius = 5):
         return image.filter(ImageFilter.GaussianBlur(radius))
@@ -50,14 +64,33 @@ E.g.:
     @op("Read CSV")
     def read_csv(*, path: str):
         return pd.read_csv(path)
+""",
+    "blur",
+    "read_csv",
+)
 
-To use them in the workspace, call them in `workspace.py` with this custom module name: MODULE_NAME
-For example:
-    MODULE_NAME.blur(...)
-    MODULE_NAME.read_csv(...)
-"""
-from lynxkite_core import ops
-op = ops.op_registration(ENV) # DO NOT CHANGE THIS LINE!
+env_examples["LynxKite Graph Analytics"] = (
+    """
+    @op("Take first element of list")
+    def take_first_element(df: pd.DataFrame, *, column: str):
+        df = df.copy()
+        df[f"{column}_first_element"] = df[column].apply(lambda x: x[0])
+        return df
+    @op("Drop NA")
+    def drop_na(df: pd.DataFrame):
+        return df.replace("", np.nan).dropna()
+""",
+    "take_first_element",
+    "drop_na",
+)
 
-# Add new box definitions here.
-'''.strip()
+
+def get_boxes_prompt(env, module_name):
+    env_ex, fnc1, fnc2 = env_examples.get(env, None) or env_examples["Pillow"]
+    return (
+        BOXES_PROMPT.replace("ENV", f'"{env}"')
+        .replace("MODULE_NAME", module_name)
+        .replace("EXAMPLES", env_ex)
+        .replace("FNC1", fnc1)
+        .replace("FNC2", fnc2)
+    )
