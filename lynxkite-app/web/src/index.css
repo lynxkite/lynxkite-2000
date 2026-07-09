@@ -256,7 +256,7 @@ svg {
     display: flex;
     flex-direction: column;
 
-    > :not(.title, .react-flow__handle) {
+    &:not(.lynxkite-node-iconized) > :not(.title, .react-flow__handle) {
       user-select: text;
       cursor: default;
     }
@@ -402,6 +402,7 @@ svg {
   }
 
   .lynxkite-node.lynxkite-node-iconized {
+    border-radius: 40px;
     --status-color-1: #0000;
     --status-color-2: #0000;
     --status-color-3: #0000;
