@@ -254,8 +254,8 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
 function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
   const params = data?.params;
   const metadata = data?.input_metadata?.[0];
-  if (!params || !metadata || !direction_map || !params.direction) return [""];
-  const tableKey = direction_map[params.direction];
+  const tableKey = direction_map?.[params?.direction];
+  if (!tableKey) return [""];
   const relation = metadata.relations?.find((r: any) => r?.name === params.relation_name);
   const tableName = relation?.[tableKey];
   const columns = metadata.dataframes?.[tableName]?.columns;
