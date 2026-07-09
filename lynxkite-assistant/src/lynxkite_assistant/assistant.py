@@ -24,6 +24,7 @@ class AssistantMessage(pydantic.BaseModel):
     role: str
     content: str | None = None
     parts: list[dict] | None = None
+    metadata: dict | None = None
 
 
 class AssistantCompletionRequest(pydantic.BaseModel):
@@ -89,6 +90,18 @@ async def assistant_stream(
         if not content:
             continue
         request_messages.append({"role": msg.role, "content": content})
+
+    if (
+        req.messages
+        and req.messages[-1].metadata
+        and req.messages[-1].metadata.get("selected_node_ids", "")
+    ):
+        request_messages.append(
+            {
+                "role": "system",
+                "content": f"Referencing nodes: {req.messages[-1].metadata.get('selected_node_ids')}",
+            }
+        )
     ws = workspace.Workspace.load(req.workspace)
     ws.assistant_messages = request_messages.copy()
     ws.save(req.workspace)

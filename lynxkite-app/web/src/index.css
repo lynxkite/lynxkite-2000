@@ -851,6 +851,14 @@ svg {
   }
 }
 
+.chat-system-message {
+  margin: auto;
+  text-align: center;
+  color: rgb(119, 119, 119);
+  font-style: italic;
+  font-size: 90%;
+}
+
 .assistant-empty {
   text-align: center;
   color: oklch(90% 0 0);

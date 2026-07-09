@@ -11,9 +11,13 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
   const crdtWorkspaceRef = useRef(crdtWorkspace);
   crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
+  const [includeSelectedNodes, setIncludeSelectedNodes] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
+  const selectedNodeIds = crdtWorkspace.feNodes
+    .filter((node) => node.selected)
+    .map((node) => node.id);
 
   const workspacePath = crdtWorkspace.ws?.path || "";
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
@@ -68,9 +72,17 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
         {messages.map((message, idx) => (
           <div
             key={`${message.role}-${idx}`}
-            className={`chat ${message.role === "user" ? "chat-end" : "chat-start"}`}
+            className={`chat ${message.role === "assistant" ? "chat-start" : "chat-end"}`}
           >
-            <div className={` ${message.role === "user" ? "chat-bubble chat-bubble-primary" : ""}`}>
+            <div
+              className={` ${
+                message.role === "user"
+                  ? "chat-bubble chat-bubble-primary"
+                  : message.role === "system"
+                    ? "chat-system-message"
+                    : ""
+              }`}
+            >
               {message.parts?.some((p) => p.type === "text") ? (
                 message.parts.map((part, index) =>
                   part.type === "text" ? (
@@ -114,7 +126,10 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           event.preventDefault();
           const prompt = input.trim();
           if (!prompt || status !== "ready") return;
-          sendMessage({ text: prompt });
+          sendMessage({
+            text: prompt,
+            metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
+          });
           setInput("");
           if (editorRef.current) {
             editorRef.current.textContent = "";
@@ -139,6 +154,13 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           }}
         />
         <div className="assistant-actions">
+          <button
+            className={`btn btn-sm ${includeSelectedNodes ? "btn-primary" : ""}`}
+            type="button"
+            onClick={() => setIncludeSelectedNodes((value) => !value)}
+          >
+            Reference selected nodes
+          </button>
           <button
             className="assistant-clear-button btn btn-sm"
             type="button"
