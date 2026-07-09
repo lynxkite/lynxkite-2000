@@ -35,9 +35,10 @@ def join_tables(
     - right_on: Column name in right table (when column names differ)
     - suffixes: Suffixes for overlapping columns (comma-separated, e.g., "_a,_b")
     """
-
-    df_a = bundle_a.dfs[table_a]
-    df_b = bundle_b.dfs[table_b]
+    bundle_a = bundle_a.copy()
+    bundle_b = bundle_b.copy()
+    df_a = bundle_a.dfs[table_a].copy()
+    df_b = bundle_b.dfs[table_b].copy()
 
     # Parse suffixes
     suffix_parts = [s.strip() for s in suffixes.split(",")]
@@ -63,8 +64,11 @@ def join_tables(
         merged_df = pd.merge(
             df_a, df_b, left_index=True, right_index=True, how=join_type.value, suffixes=suffix_list
         )
-
-    return core.Bundle(dfs={"merged": merged_df})
+    b = bundle.merge_bundles([bundle_a, bundle_b], merge_mode=bundle.BundleMergeMode.must_be_unique)
+    b.dfs.pop(table_a, None)
+    b.dfs.pop(table_b, None)
+    b.dfs["merged"] = merged_df
+    return b
 
 ```
 Custom types:

@@ -1,7 +1,7 @@
 **Merge:**
 Merge multiple inputs
 ```python
-@op("Merge", icon="link")
+@op("Merge", icon="arrows-join")
 def merge(
     bundles: list[core.Bundle],
     *,

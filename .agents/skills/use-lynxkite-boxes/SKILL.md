@@ -63,7 +63,7 @@ usage: lynxkite_graph_analytics.operations.file_ops.import_osm(location=<locatio
 for detailed information, see references/import_osm.md
 
 **Import CSV:**
-usage: lynxkite_graph_analytics.operations.file_ops.import_csv(filename=<filename_value>, columns=<columns_value>, separator=<separator_value>)
+usage: lynxkite_graph_analytics.operations.file_ops.import_csv(filename=<filename_value>, columns=<columns_value>, separator=<separator_value>, table_name=<table_name_value>)
 for detailed information, see references/import_csv.md
 
 **Import file:**
@@ -86,7 +86,7 @@ for detailed information, see references/aggregate_on_neighbors.md
 usage: lynxkite_graph_analytics.operations.graph_ops.connect_nodes(source_table=<source_table_value>, source_id=<source_id_value>, source_attribute=<source_attribute_value>, target_table=<target_table_value>, target_id=<target_id_value>, target_attribute=<target_attribute_value>, b=<b_variable>)
 for detailed information, see references/connect_nodes.md
 
-**Define Edges:**
+**Define edges:**
 usage: lynxkite_graph_analytics.operations.graph_ops.define_edges(relations=<relations_value>, b=<b_variable>)
 for detailed information, see references/define_edges.md
 
@@ -97,6 +97,10 @@ for detailed information, see references/degree.md
 **Discard loop edges:**
 usage: lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges(graph=<graph_variable>)
 for detailed information, see references/discard_loop_edges.md
+
+**Discard loop edges in relation:**
+usage: lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges_in_relation(relation=<relation_value>, b=<b_variable>)
+for detailed information, see references/discard_loop_edges_in_relation.md
 
 **Discard parallel edges:**
 usage: lynxkite_graph_analytics.operations.graph_ops.discard_parallel_edges(graph=<graph_variable>)
@@ -110,9 +114,21 @@ for detailed information, see references/graph_from_edge_list.md
 usage: lynxkite_graph_analytics.operations.graph_ops.merge(merge_mode=<merge_mode_value>, bundles=<bundles_variable>)
 for detailed information, see references/merge.md
 
+**Merge nodes on attribute:**
+usage: lynxkite_graph_analytics.operations.graph_ops.merge_nodes(table_name=<table_name_value>, attribute=<attribute_value>, add_suffixes=<add_suffixes_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/merge_nodes.md
+
+**Merge parallel edges:**
+usage: lynxkite_graph_analytics.operations.graph_ops.merge_parallel_edges(table_name=<table_name_value>, source_key=<source_key_value>, target_key=<target_key_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/merge_parallel_edges.md
+
 **Sample graph:**
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
+
+**Use table as attributes:**
+usage: lynxkite_graph_analytics.operations.graph_ops.table_as_attributes(table_id=<table_id_value>, attribute_table_id=<attribute_table_id_value>, merge_mode=<merge_mode_value>, bundle_graph=<bundle_graph_variable>, bundle_att=<bundle_att_variable>)
+for detailed information, see references/table_as_attributes.md
 
 **Define model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
@@ -210,6 +226,18 @@ for detailed information, see references/cypher.md
 usage: lynxkite_graph_analytics.operations.query_ops.sql(query=<query_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/sql.md
 
+**Aggregate between neighbors:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors(relation_name=<relation_name_value>, add_suffixes=<add_suffixes_value>, direction=<direction_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/aggregate_between_neighbors.md
+
+**Find connected components:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.connected_components(relation_name=<relation_name_value>, edge_direction=<edge_direction_value>, segmentation_name=<segmentation_name_value>, b=<b_variable>)
+for detailed information, see references/connected_components.md
+
+**Segment by attribute:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.segment_by_attribute(table_name=<table_name_value>, attribute=<attribute_value>, segmentation_name=<segmentation_name_value>, b=<b_variable>)
+for detailed information, see references/segment_by_attribute.md
+
 **Add rank attribute:**
 usage: lynxkite_graph_analytics.operations.table_ops.add_rank(table_column=<table_column_value>, rank_name=<rank_name_value>, order=<order_value>, b=<b_variable>)
 for detailed information, see references/add_rank.md
@@ -217,6 +245,14 @@ for detailed information, see references/add_rank.md
 **Derive property:**
 usage: lynxkite_graph_analytics.operations.table_ops.derive_property(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
 for detailed information, see references/derive_property.md
+
+**Derive with SQL:**
+usage: lynxkite_graph_analytics.operations.table_ops.derive_with_sql(table_name=<table_name_value>, formula=<formula_value>, name=<name_value>, b=<b_variable>)
+for detailed information, see references/derive_with_sql.md
+
+**Drop tables:**
+usage: lynxkite_graph_analytics.operations.table_ops.drop_tables(keep_selected=<keep_selected_value>, tables=<tables_value>, b=<b_variable>)
+for detailed information, see references/drop_tables.md
 
 **Enter table data:**
 usage: lynxkite_graph_analytics.operations.table_ops.enter_table_data(table_name=<table_name_value>, data=<data_value>)
@@ -238,13 +274,9 @@ for detailed information, see references/rename_table.md
 usage: lynxkite_graph_analytics.operations.table_ops.sample_table(table_name=<table_name_value>, fraction=<fraction_value>, b=<b_variable>)
 for detailed information, see references/sample_table.md
 
-**Select Table:**
-usage: lynxkite_graph_analytics.operations.table_ops.select_table(table_name=<table_name_value>, b=<b_variable>)
-for detailed information, see references/select_table.md
-
-**Vector from attribute pair:**
-usage: lynxkite_graph_analytics.operations.table_ops.vector_from_attribute_pair(table_name=<table_name_value>, attribute1=<attribute1_value>, attribute2=<attribute2_value>, new_name=<new_name_value>, b=<b_variable>)
-for detailed information, see references/vector_from_attribute_pair.md
+**Vector from attributes:**
+usage: lynxkite_graph_analytics.operations.table_ops.vector_from_attributes(table_name=<table_name_value>, attributes=<attributes_value>, vector_name=<vector_name_value>, b=<b_variable>)
+for detailed information, see references/vector_from_attributes.md
 
 **Bar chart:**
 usage: lynxkite_graph_analytics.operations.visualization_ops.bar_chart(x=<x_value>, y=<y_value>, b=<b_variable>)

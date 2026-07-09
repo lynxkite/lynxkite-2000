@@ -1,7 +1,7 @@
 **Define edges:**
 Define edges between node tables
 ```python
-@op("Define Edges", view="graph_creation_view", outputs=["output"], icon="link")
+@op("Define edges", view="graph_creation_view", outputs=["output"], icon="route")
 def define_edges(b: core.Bundle, *, relations: str = ""):
     """Define edges between node tables"""
     b = b.copy()
