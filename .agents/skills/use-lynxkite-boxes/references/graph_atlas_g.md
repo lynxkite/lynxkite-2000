@@ -14,10 +14,7 @@ section below. This causes the list to correspond with the index of
 the graphs in the Graph Atlas [atlas]_, with the first graph,
 ``G[0]``, being the null graph.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.atlas.graph_atlas_g()
+  output_variable = networkx.generators.atlas.graph_atlas_g()

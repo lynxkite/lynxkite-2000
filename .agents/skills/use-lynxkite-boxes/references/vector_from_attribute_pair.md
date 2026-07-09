@@ -1,14 +1,23 @@
 **Vector from attribute pair:**
 Creates a new column with vectors that contain the two attributes
-parameters:
-  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = ? --?
-  - attribute1: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}] = ? --?
-  - attribute2: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}] = ? --?
-  - new_name: <class 'str'> = ? --?
-  - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Vector from attribute pair", icon="link")
+def vector_from_attribute_pair(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    attribute1: core.ColumnNameByTableName,
+    attribute2: core.ColumnNameByTableName,
+    new_name: str,
+) -> core.Bundle:
+    """Creates a new column with vectors that contain the two attributes"""
+    b = b.copy()
+    df = b.dfs[table_name]
+    df[new_name] = list(zip(df[attribute1], df[attribute2]))
+    return b
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.table_ops.vector_from_attribute_pair(table_name=<table_name_value>, attribute1=<attribute1_value>, attribute2=<attribute2_value>, new_name=<new_name_value>, b=<b_variable>)
+```
+Custom types:
+  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]
+  - attribute1: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}]
+  - attribute2: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].<table_name>.columns[]'}]

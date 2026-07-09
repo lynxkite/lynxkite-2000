@@ -25,9 +25,7 @@ Refer to the :doc:`example gallery </auto_examples/graph/plot_triad_types>`
 for visual examples of the triad types.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DiGraph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.triads.triads_by_type(G=<G_variable>)
+  output_variable = networkx.algorithms.triads.triads_by_type(G=<G_variable>)

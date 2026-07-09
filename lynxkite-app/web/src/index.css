@@ -256,7 +256,7 @@ svg {
     display: flex;
     flex-direction: column;
 
-    > :not(.title, .react-flow__handle) {
+    &:not(.lynxkite-node-iconized) > :not(.title, .react-flow__handle) {
       user-select: text;
       cursor: default;
     }
@@ -402,6 +402,23 @@ svg {
   }
 
   .lynxkite-node.lynxkite-node-iconized {
+    border-radius: 40px;
+    --status-color-1: #0000;
+    --status-color-2: #0000;
+    --status-color-3: #0000;
+    transition:
+      --status-color-1 0.3s,
+      --status-color-2 0.3s,
+      --status-color-3 0.3s;
+    background-image: linear-gradient(
+      to right,
+      var(--status-color-1),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
+      var(--status-color-3)
+    );
+    background-blend-mode: luminosity;
+
     .node-content {
       display: none;
     }
@@ -425,6 +442,19 @@ svg {
         width: 0;
       }
     }
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.active {
+    --status-color-1: #0000;
+    --status-color-2: #fff4;
+    --status-color-3: #888f;
+    animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.planned {
+    --status-color-1: #888f;
+    --status-color-2: #888f;
+    --status-color-3: #888f;
   }
 
   .handle-name {

@@ -9,9 +9,7 @@ useful, e.g. when deriving equations for electric circuits
 using Kirchhoff's Laws.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cycles.cycle_basis(G=<G_variable>)
+  output_variable = networkx.algorithms.cycles.cycle_basis(G=<G_variable>)

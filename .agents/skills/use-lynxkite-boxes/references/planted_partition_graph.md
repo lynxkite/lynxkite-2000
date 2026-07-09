@@ -12,9 +12,7 @@ parameters:
   - p_out: <class 'float'> = ? --probability of connected vertices between groups
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.planted_partition_graph(l=<l_value>, k=<k_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+  output_variable = networkx.generators.community.planted_partition_graph(l=<l_value>, k=<k_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)

@@ -19,9 +19,7 @@ parameters:
   - weight: str | None = ? --The edge data key used to compute the Kemeny constant.
 If None, then each edge has weight 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_measures.kemeny_constant(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.distance_measures.kemeny_constant(weight=<weight_value>, G=<G_variable>)

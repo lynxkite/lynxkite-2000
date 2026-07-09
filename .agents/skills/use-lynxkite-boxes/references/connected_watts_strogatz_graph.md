@@ -12,9 +12,7 @@ topology.
   - tries: <class 'int'> = 100 --Number of attempts to generate a connected graph.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.connected_watts_strogatz_graph(n=<n_value>, k=<k_value>, p=<p_value>, tries=<tries_value>, seed=<seed_value>)
+  output_variable = networkx.generators.random_graphs.connected_watts_strogatz_graph(n=<n_value>, k=<k_value>, p=<p_value>, tries=<tries_value>, seed=<seed_value>)

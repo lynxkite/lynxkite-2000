@@ -1,11 +1,8 @@
 **Constant vector:**
 
-parameters:
-  - value: <class 'int'> = ? --?
-  - size: <class 'int'> = 1 --?
+```python
+@op("Constant vector")
+def constant_vector(*, value=0, size=1):
+    return lambda _: torch.full((size,), value)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.constant_vector(value=<value_value>, size=<size_value>)
+```

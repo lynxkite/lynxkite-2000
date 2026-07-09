@@ -10,9 +10,7 @@ inclusive.
 node. Must be a number in the between zero and one, inclusive.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.duplication.partial_duplication_graph(N=<N_value>, n=<n_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)
+  output_variable = networkx.generators.duplication.partial_duplication_graph(N=<N_value>, n=<n_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)

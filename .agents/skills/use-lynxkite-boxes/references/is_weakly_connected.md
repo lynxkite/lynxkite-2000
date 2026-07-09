@@ -9,9 +9,7 @@ even when we account for directionality), it is by definition weakly
 connected as well.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.weakly_connected.is_weakly_connected(G=<G_variable>)
+  output_variable = networkx.algorithms.components.weakly_connected.is_weakly_connected(G=<G_variable>)

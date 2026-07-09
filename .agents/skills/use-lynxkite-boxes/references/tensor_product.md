@@ -11,9 +11,7 @@ direct product, cardinal product or conjunction.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --Networkx graphs.
   - H: <class 'networkx.classes.graph.Graph'> = ? --Networkx graphs.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.product.tensor_product(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.product.tensor_product(G=<G_variable>, H=<H_variable>)

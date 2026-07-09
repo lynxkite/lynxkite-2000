@@ -37,9 +37,7 @@ dictionary must have an value for every node.
 Otherwise holds the name of the edge attribute used as weight.
 In this measure the weight is interpreted as the connection strength.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.katz.katz_centrality_numpy(alpha=<alpha_value>, beta=<beta_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.katz.katz_centrality_numpy(alpha=<alpha_value>, beta=<beta_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)

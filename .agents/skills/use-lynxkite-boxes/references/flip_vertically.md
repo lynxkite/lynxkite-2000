@@ -1,10 +1,8 @@
 **Flip vertically:**
 
-parameters:
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Flip vertically", icon="flip-vertical")
+def flip_vertically(image: Image.Image):
+    return image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.flip_vertically(image=<image_variable>)
+```

@@ -17,9 +17,7 @@ parameters:
   - weight: str | None = ? --Passed through to
 :func:`~networkx.algorithms.shortest_paths.generic.shortest_path_length`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The connected graph :math:`G`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_measures.barycenter(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.distance_measures.barycenter(weight=<weight_value>, G=<G_variable>)

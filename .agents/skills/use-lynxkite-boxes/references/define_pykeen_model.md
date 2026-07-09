@@ -1,16 +1,44 @@
 **Define PyKEEN model:**
 Defines a PyKEEN model based on the selected model type.
-parameters:
-  - model: <enum 'PyKEENModelMoreD'> = MuRE --?
-  - edge_data_table: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = edges --?
-  - embedding_dim: <class 'int'> = 50 --?
-  - loss_function: <enum 'PyKEENSupportedLosses'> = NSSALoss --?
-  - seed: <class 'int'> = 42 --?
-  - save_as: <class 'str'> = PyKEENmodel --?
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Define PyKEEN model", color="green", icon="file-3d")
+def define_pykeen_model(
+    bundle: core.Bundle,
+    *,
+    model: PyKEENModelMoreD = PyKEENModelMoreD.MuRE,
+    edge_data_table: core.TableName = "edges",
+    embedding_dim: int = 50,
+    loss_function: PyKEENSupportedLosses = PyKEENSupportedLosses.NSSALoss,
+    seed: int = 42,
+    save_as: str = "PyKEENmodel",
+):
+    """Defines a PyKEEN model based on the selected model type."""
+    bundle = bundle.copy()
+    edges_data = bundle.dfs[edge_data_table][["head", "relation", "tail"]]
+    triples_factory = prepare_triples(
+        edges_data,
+        inv_triples=req_inverse_triples(model),
+    )
 
-returns:
-  - output: ? - ?.
+    model_class = model.to_class(
+        triples_factory=triples_factory,
+        loss_func=loss_function,
+        embedding_dim=embedding_dim,
+        seed=seed,
+    )
+    model_wrapper = PyKEENModelWrapper(
+        model_class,
+        loss=loss_function,
+        model_type=model,
+        embedding_dim=embedding_dim,
+        entity_to_id=triples_factory.entity_to_id,
+        relation_to_id=triples_factory.relation_to_id,
+        edges_data=edges_data,
+        seed=seed,
+    )
+    bundle.other[save_as] = model_wrapper
+    return bundle
 
-usage:
-output_variable = lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model(model=<model_value>, edge_data_table=<edge_data_table_value>, embedding_dim=<embedding_dim_value>, loss_function=<loss_function_value>, seed=<seed_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+```
+Custom types:
+  - edge_data_table: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]
