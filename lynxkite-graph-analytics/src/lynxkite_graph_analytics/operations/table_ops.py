@@ -127,7 +127,7 @@ def derive_property(
     return b
 
 
-@op("Derive with SQL", icon="brackets-contain")
+@op("Derive with SQL", icon="database-plus")
 def derive_with_sql(
     b: core.Bundle,
     *,
