@@ -272,9 +272,8 @@ def _get_fnc_call(node, incoming_edges, saved_values, groups):
 
 def _add_comment(node, code, saved_values):
     comment_lines = node.data.params.get("text", "").split("\n")
-    saved_values[node.id] = (
-        f'"{node.data.params.get("text", "").replace("\n", "\\n")}"'  # node.data.params.get("text", "")
-    )
+    saved_values[node.id] = f'"{node.data.params.get("text", "").replace("\n", "\\n")}"'
+    code.append(f"# {node.id}")
     for line in comment_lines:
         code.append(f"#! {line}")
     code.append("")

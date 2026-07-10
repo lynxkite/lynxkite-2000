@@ -123,6 +123,13 @@ def get_errors_file_content(ws_path: str) -> str:
 
 def get_workspace_layout(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
+    overlaps = []  # help assistant see which nodes overlap
+    for i, node in enumerate(ws.nodes):
+        ols = sync_workspaces.get_overlap(node, ws.nodes[i + 1 :])
+        for other_id, ol_info in ols.items():
+            perc, _, _ = ol_info
+            if perc > 0:
+                overlaps.append((node.id, other_id))
     layout = {
         "nodes": [
             {
@@ -133,7 +140,9 @@ def get_workspace_layout(ws_path: str) -> str:
                 "collapsed": node.data.collapsed,
             }
             for node in ws.nodes
-        ]
+        ],
+        "_comment": {"overlaps": overlaps},
+        "automatic_layout": False,
     }
     return json.dumps(layout)
 
@@ -141,20 +150,24 @@ def get_workspace_layout(ws_path: str) -> str:
 def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
     ws = workspace.Workspace.load(ws_path)
     node_by_id = {node.id: node for node in ws.nodes}
-    for node_layout in layout.get("nodes", []):
-        node_id = node_layout.get("id")
-        if not node_id or node_id not in node_by_id:
-            continue
-        node = node_by_id[node_id]
-        position = node_layout.get("position", {})
-        if "x" in position and "y" in position:
-            node.position = workspace.Position(x=position["x"], y=position["y"])
-        if "width" in node_layout:
-            node.width = node_layout["width"]
-        if "height" in node_layout:
-            node.height = node_layout["height"]
-        if "collapsed" in node_layout:
-            node.data.collapsed = bool(node_layout["collapsed"])
+    if layout.get("automatic_layout", ""):
+        non_comment = [n for n in ws.nodes if not n.type == "comment"]
+        sync_workspaces.organize_new_nodes(non_comment, ws.edges, offset=(0, 0))
+    else:
+        for node_layout in layout.get("nodes", []):
+            node_id = node_layout.get("id")
+            if not node_id or node_id not in node_by_id:
+                continue
+            node = node_by_id[node_id]
+            position = node_layout.get("position", {})
+            if "x" in position and "y" in position:
+                node.position = workspace.Position(x=position["x"], y=position["y"])
+            if "width" in node_layout:
+                node.width = node_layout["width"]
+            if "height" in node_layout:
+                node.height = node_layout["height"]
+            if "collapsed" in node_layout:
+                node.data.collapsed = bool(node_layout["collapsed"])
     ws.save(ws_path)
     if crdt:
         room = crdt.get_room_or_none(ws_path)

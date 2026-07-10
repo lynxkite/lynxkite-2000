@@ -138,7 +138,7 @@ def update_node_ids(source: workspace.Workspace, target: workspace.Workspace) ->
     source.nodes.sort(key=lambda n: new_id_old_order.get(n.id, len(source.nodes)))
 
 
-def _organize_new_nodes(nodes, all_edges, offset):
+def organize_new_nodes(nodes, all_edges, offset):
     node_ids = {n.id for n in nodes}
     edges = [
         (e.source, e.target)
@@ -170,16 +170,15 @@ def _organize_new_nodes(nodes, all_edges, offset):
         * max_height
     )
     offset = (offset[0] - leftmost_point, offset[1] - highest_point)
+    dx = pos[layers[1][0]][0] - pos[layers[0][0]][0] if len(layers) > 1 else 1
+    multi_layer = next((lay for lay in layers.values() if len(lay) > 1), None)
+    dy = abs(pos[multi_layer[0]][1] - pos[multi_layer[1]][1]) if multi_layer else 1
     for node in nodes:
-        node.position.x = (
-            float(pos[node.id][0]) * (len(layers) - 1) * max_width + offset[0]
-        )
-        node.position.y = (
-            float(pos[node.id][1]) * (len(layers) - 1) * max_height + offset[1]
-        )
+        node.position.x = float(pos[node.id][0]) * max_width / dx + offset[0]
+        node.position.y = float(pos[node.id][1]) * max_height / dy + offset[1]
 
 
-def _get_overlap_percentages(
+def get_overlap(
     main_box: workspace.WorkspaceNode, box_list: list[workspace.WorkspaceNode]
 ) -> dict[str, tuple[float, int, int]]:
     overlap_dict = {}
@@ -208,51 +207,73 @@ def _get_overlap_percentages(
         inter_height = max(0, inter_y2 - inter_y1)
         inter_area = inter_width * inter_height
         overlap_percentage = inter_area / main_area
-        overlap_dict[box.id] = (overlap_percentage, inter_width, inter_height)
+        overlap_dict[box.id] = (
+            overlap_percentage,
+            (inter_x1, inter_y1),
+            (inter_x2, inter_y2),
+        )
     return overlap_dict
+
+
+def _get_move(c1, c2, size1, size2, last_move):
+    if c1 > c2:
+        if last_move < 0:
+            # we moved in the negative direction last time, so don't move back to the positive direction
+            move = c2 - c1 - size1 - 10
+        else:
+            move = (c2 + size2) - c1 + 10
+    else:
+        if last_move > 0:
+            # we moved in the positive direction last time, so don't move back to the neg direction
+            move = (c2 + size2) - c1 + 10
+        else:
+            move = c2 - (c1 + size1) - 10
+    return move
 
 
 def _try_resolve_overlap(node, target, neighbor_map, neighbours, tries=10):
     last_x_move = 0
     last_y_move = 0
     for _ in range(tries):
-        overlap_percentages = _get_overlap_percentages(node, target.nodes)
+        overlaps = get_overlap(node, target.nodes)
         overlapped = False
         for other_node in target.nodes:
             if other_node.id == node.id:
                 continue
-            overlap, iwidth, iheight = overlap_percentages.get(
-                other_node.id, (0.0, 0, 0)
-            )
-            if overlap > 0:
+            overlap_percentage, _, _ = overlaps.get(other_node.id, (0.0, 0, 0))
+            if overlap_percentage > 0:
                 overlapped = True
-                xdir = (
-                    (1 if node.position.x >= other_node.position.x else -1)
-                    if last_x_move == 0
-                    else last_x_move
+                x_move = _get_move(
+                    node.position.x,
+                    other_node.position.x,
+                    node.width,
+                    other_node.width,
+                    last_x_move,
                 )
-                ydir = (
-                    (1 if node.position.y >= other_node.position.y else -1)
-                    if last_y_move == 0
-                    else last_y_move
+                y_move = _get_move(
+                    node.position.y,
+                    other_node.position.y,
+                    node.height,
+                    other_node.height,
+                    last_y_move,
                 )
                 other_inp, other_op = neighbor_map[other_node.id]
                 if neighbours.intersection(
                     {x[0] for x in other_inp} | {x[0] for x in other_op}
                 ):
                     # siblings move vertically
-                    node.position.y += ydir * (iheight + 10)
-                    last_y_move = ydir
+                    node.position.y += y_move
+                    last_y_move = y_move
                     last_x_move = 0
-                elif (
-                    iwidth > iheight
+                elif abs(x_move) > abs(
+                    y_move
                 ):  # otherwise move in the direction of the smaller overlap
-                    node.position.y += ydir * (iheight + 10)
-                    last_y_move = ydir
+                    node.position.y += y_move
+                    last_y_move = y_move
                     last_x_move = 0
                 else:
-                    node.position.x += xdir * (iwidth + 10)
-                    last_x_move = xdir
+                    node.position.x += x_move
+                    last_x_move = x_move
                     last_y_move = 0
         if not overlapped:
             return
@@ -320,7 +341,7 @@ def update_ws_positions(
             ),
             default=0,
         )
-        _organize_new_nodes(unpositioned_nodes, target.edges, offset=(min_x, max_y))
+        organize_new_nodes(unpositioned_nodes, target.edges, offset=(min_x, max_y))
     # For new comments, place them above the box defined in the next available line.
     # We assume that the comment's ID is of the form "comment on line N" where N is an integer.
     node_by_line_id: dict[int, workspace.WorkspaceNode] = {}
