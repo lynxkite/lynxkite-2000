@@ -126,6 +126,15 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           event.preventDefault();
           const prompt = input.trim();
           if (!prompt || status !== "ready") return;
+          if (includeSelectedNodes && selectedNodeIds.length > 0) {
+            setMessages([
+              ...persistedMessages,
+              {
+                role: "system",
+                content: `Referencing·box(es):·${selectedNodeIds.join(",·")}`,
+              },
+            ]);
+          }
           sendMessage({
             text: prompt,
             metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
@@ -159,7 +168,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
             type="button"
             onClick={() => setIncludeSelectedNodes((value) => !value)}
           >
-            Reference selected nodes
+            Reference selected boxes
           </button>
           <button
             className="assistant-clear-button btn btn-sm"
