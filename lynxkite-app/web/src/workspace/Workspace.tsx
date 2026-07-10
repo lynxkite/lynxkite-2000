@@ -40,6 +40,7 @@ import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
@@ -505,7 +506,9 @@ function LynxKiteFlow() {
       for (const node of wnodes) {
         const g = groups[node.get("parentId") as string];
         if (!g) continue;
-        const pos = node.get("position") as XYPosition;
+        const posValue = node.get("position");
+        // Yjs position values can be either a plain object or a Y.Map with a toJSON method.
+        const pos = (posValue.toJSON ? posValue.toJSON() : posValue) as XYPosition;
         node.set("position", {
           x: pos.x + g.position.x,
           y: pos.y + g.position.y,
@@ -638,6 +641,7 @@ function LynxKiteFlow() {
               <CloseIcon />
             </Link>
           </Tooltip>
+          <UserMenu />
         </div>
       </div>
       <div className="workspace-body">

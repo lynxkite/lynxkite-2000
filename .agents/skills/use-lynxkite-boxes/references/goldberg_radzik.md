@@ -20,9 +20,7 @@ dictionary of edge attributes for that edge. The function must
 return a number.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The algorithm works for all types of graphs, including directed
 graphs and multigraphs.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.weighted.goldberg_radzik(source=<source_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.weighted.goldberg_radzik(source=<source_value>, weight=<weight_value>, G=<G_variable>)

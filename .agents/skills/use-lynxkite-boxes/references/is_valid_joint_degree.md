@@ -15,10 +15,7 @@ if the following conditions are satisfied.
 - each diagonal entry ``joint_degrees[k][k]`` must be even (this is
   a convention assumed by the :func:`joint_degree_graph` function).
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.joint_degree_seq.is_valid_joint_degree()
+  output_variable = networkx.generators.joint_degree_seq.is_valid_joint_degree()

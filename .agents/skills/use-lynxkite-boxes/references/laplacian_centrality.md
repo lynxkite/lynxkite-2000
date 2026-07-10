@@ -34,9 +34,7 @@ One of ``"random"``, ``"lazy"``, or ``"pagerank"``. If ``walk_type=None``
 :func:`directed_laplacian_matrix <networkx.directed_laplacian_matrix>`.
 (1 - alpha) is the teleportation probability used with pagerank.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.laplacian.laplacian_centrality(normalized=<normalized_value>, weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.laplacian.laplacian_centrality(normalized=<normalized_value>, weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)

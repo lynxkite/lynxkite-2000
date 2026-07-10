@@ -12,9 +12,7 @@ parameters:
   - n: <class 'int'> = ? --The order of the cograph.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.cographs.random_cograph(n=<n_value>, seed=<seed_value>)
+  output_variable = networkx.generators.cographs.random_cograph(n=<n_value>, seed=<seed_value>)

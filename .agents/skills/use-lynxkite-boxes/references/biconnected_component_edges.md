@@ -11,9 +11,7 @@ However, each edge belongs to one, and only one, biconnected component.
 Notice that by convention a dyad is considered a biconnected component.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.biconnected.biconnected_component_edges(G=<G_variable>)
+  output_variable = networkx.algorithms.components.biconnected.biconnected_component_edges(G=<G_variable>)

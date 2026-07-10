@@ -6,9 +6,7 @@ Sets node attributes from a given value or dictionary of values.
 parameters:
   - name: <class 'str'> = ? --Name of the node attribute to set if values is a scalar.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.classes.function.set_node_attributes(name=<name_value>, G=<G_variable>)
+  output_variable = networkx.classes.function.set_node_attributes(name=<name_value>, G=<G_variable>)

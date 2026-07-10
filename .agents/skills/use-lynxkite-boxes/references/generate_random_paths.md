@@ -10,9 +10,7 @@ used as a weight. If None then each edge has weight 1.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.similarity.generate_random_paths(sample_size=<sample_size_value>, path_length=<path_length_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.similarity.generate_random_paths(sample_size=<sample_size_value>, path_length=<path_length_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)

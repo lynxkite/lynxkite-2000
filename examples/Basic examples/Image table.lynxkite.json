@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Example image table 1 View tables 1",
@@ -23,43 +24,44 @@
     }
   ],
   "env": "LynxKite Graph Analytics",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
-        "meta": {
-          "categories": [],
-          "color": "green",
-          "doc": null,
-          "icon": "photo",
-          "id": "Example image table",
-          "inputs": [],
-          "name": "Example image table",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [],
-          "type": "basic"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "Example image table",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "images",
+                  "names"
+                ],
+                "key": "records",
+                "length": 3.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Example image table"
       },
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Example image table 1",
+      "parentId": null,
       "position": {
         "x": 80.0,
         "y": 40.0
@@ -70,87 +72,43 @@
     {
       "data": {
         "collapsed": null,
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "names",
-                "images"
-              ],
-              "data": [
-                [
-                  "svg",
-                  "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" enable-background=\"new 0 0 64 64\"><path d=\"M56 2 18.8 42.909 8 34.729 2 34.729 18.8 62 62 2z\"/></svg>"
-                ],
-                [
-                  "data",
-                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjQgNjQiPjxwYXRoIGQ9Ik01NiAyIDE4LjggNDIuOTA5IDggMzQuNzI5IDIgMzQuNzI5IDE4LjggNjIgNjIgMnoiLz48L3N2Zz4="
-                ],
-                [
-                  "http",
-                  "https://upload.wikimedia.org/wikipedia/commons/2/2e/Emojione_BW_2714.svg"
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "display": null,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "images",
                   "names"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 3.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "table_view"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": 40.0
@@ -163,68 +121,43 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
-        "meta": {
-          "categories": [],
-          "color": "green",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Imports a CSV file."
-            }
-          ],
-          "icon": "file-filled",
-          "id": "Import CSV",
-          "inputs": [],
-          "name": "Import CSV",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "filename",
-              "type": {
-                "format": "path"
-              }
-            },
-            {
-              "default": "<from file>",
-              "name": "columns",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": "<auto>",
-              "name": "separator",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "name",
+                  "smiles"
+                ],
+                "key": "records",
+                "length": 3.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "columns": "<from file>",
           "filename": "uploads/molecules2.csv",
-          "separator": "<auto>"
+          "separator": "<auto>",
+          "table_name": "records"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Import CSV"
       },
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Import CSV 1",
+      "parentId": null,
       "position": {
         "x": 80.0,
         "y": -320.0
@@ -235,92 +168,44 @@
     {
       "data": {
         "collapsed": null,
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "name",
-                "smiles",
-                "image"
-              ],
-              "data": [
-                [
-                  "ciprofloxacin",
-                  "C1CNCCN1c(c2)c(F)cc3c2N(C4CC4)C=C(C3=O)C(=O)O",
-                  "https://cactus.nci.nih.gov/chemical/structure/ciprofloxacin/image"
-                ],
-                [
-                  "caffeine",
-                  "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-                  "https://cactus.nci.nih.gov/chemical/structure/caffeine/image"
-                ],
-                [
-                  "\u03b1-d-glucopyranose",
-                  "C([C@@H]1[C@H]([C@@H]([C@H]([C@H](O1)O)O)O)O)O",
-                  "https://cactus.nci.nih.gov/chemical/structure/\u03b1-d-glucopyranose/image"
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "display": null,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "image",
                   "name",
                   "smiles"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 3.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "type": "table_view"
-        },
+        "message": null,
+        "meta": null,
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".bg-primary",
       "height": 520.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 920.0,
         "y": -320.0
@@ -333,86 +218,59 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "name",
                   "smiles"
                 ],
-                "key": "df"
+                "key": "records",
+                "length": 3.0
               }
             },
             "other": {},
             "relations": []
           }
         ],
-        "meta": {
-          "categories": [],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Adds molecule images in a table."
-            }
-          ],
-          "icon": "microscope-filled",
-          "id": "Fetch molecule images",
-          "inputs": [
-            {
-              "name": "b",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
-              }
-            }
-          ],
-          "name": "Fetch molecule images",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "table_column",
-              "type": {
-                "format": "double-dropdown",
-                "metadata_query1": "[].dataframes[].keys(@)[]",
-                "metadata_query2": "[].dataframes[].<first>.columns[]"
+        "message": null,
+        "meta": null,
+        "op_id": "Fetch molecule images",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "image",
+                  "name",
+                  "smiles"
+                ],
+                "key": "records",
+                "length": 3.0
               }
             },
-            {
-              "default": "image",
-              "name": "save_as",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "type": "basic"
-        },
-        "op_id": "Fetch molecule images",
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "save_as": "image",
           "table_column": [
-            "df",
+            "records",
             "name"
           ]
         },
         "status": "done",
+        "telemetry": null,
         "title": "Fetch molecule images"
       },
       "height": 320.0,
       "id": "Fetch molecule images 1",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": -320.0

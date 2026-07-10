@@ -14,9 +14,7 @@ This is different from the parameter ``t = n - 1`` in [1]_.
     >>> nx.draw(nx.dorogovtsev_goltsev_mendes_graph(3))
 parameters:
   - n: <class 'int'> = ? --The generation number.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.dorogovtsev_goltsev_mendes_graph(n=<n_value>)
+  output_variable = networkx.generators.classic.dorogovtsev_goltsev_mendes_graph(n=<n_value>)

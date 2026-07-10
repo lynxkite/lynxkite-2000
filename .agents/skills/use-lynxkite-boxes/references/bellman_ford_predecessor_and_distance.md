@@ -28,9 +28,7 @@ return a number.
 cycles at a hopefully negligible cost.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The algorithm works for all types of graphs, including directed
 graphs and multigraphs.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.weighted.bellman_ford_predecessor_and_distance(source=<source_value>, target=<target_value>, weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.weighted.bellman_ford_predecessor_and_distance(source=<source_value>, target=<target_value>, weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)

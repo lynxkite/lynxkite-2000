@@ -1,6 +1,6 @@
 import jmespath from "jmespath";
 import Tooltip from "../../Tooltip";
-import { DoubleTextAdder, DropdownTextAdder } from "./Adder";
+import { DoubleTextAdder, DropdownMultiDropdownAdder, DropdownTextAdder } from "./Adder";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
 import ParameterInput from "./ParameterInput";
@@ -139,6 +139,26 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         options={getDropDownValues(data, meta?.type?.metadata_query1)}
       />
     </label>
+  ) : meta?.type?.format === "dropdown-multidropdown_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropDownValues(data, meta?.type?.metadata_query1)}
+        options2={meta?.type?.options2}
+      />
+    </div>
+  ) : meta?.type?.format === "dropdown-multidropdown_relation_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropdownValuesByDirection(data, meta?.type?.direction_map)}
+        options2={meta?.type?.options2}
+      />
+    </div>
   ) : meta?.type?.format === "double-textbox_adder" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
@@ -229,6 +249,17 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParameterInput value={value} onChange={onChange} />
     </label>
   );
+}
+
+function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
+  const params = data?.params;
+  const metadata = data?.input_metadata?.[0];
+  const tableKey = direction_map?.[params?.direction];
+  if (!tableKey) return [""];
+  const relation = metadata.relations?.find((r: any) => r?.name === params.relation_name);
+  const tableName = relation?.[tableKey];
+  const columns = metadata.dataframes?.[tableName]?.columns;
+  return Array.isArray(columns) ? ["", ...columns].sort() : [""];
 }
 
 function getDropDownValues(

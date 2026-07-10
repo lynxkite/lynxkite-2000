@@ -16,9 +16,7 @@ do not work with interchange. Furthermore, if you use
 interchange with your own strategy function, you cannot rely
 on the values in the ``colors`` argument.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.coloring.greedy_coloring.greedy_color(interchange=<interchange_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.coloring.greedy_coloring.greedy_color(interchange=<interchange_value>, G=<G_variable>)

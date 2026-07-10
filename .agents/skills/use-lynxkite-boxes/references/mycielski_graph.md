@@ -10,9 +10,7 @@ More information can be found at
 http://mathworld.wolfram.com/MycielskiGraph.html
 parameters:
   - n: <class 'int'> = ? --The desired Mycielski Graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.mycielski.mycielski_graph(n=<n_value>)
+  output_variable = networkx.generators.mycielski.mycielski_graph(n=<n_value>)

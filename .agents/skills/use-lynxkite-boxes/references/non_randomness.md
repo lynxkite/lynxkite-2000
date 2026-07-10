@@ -19,9 +19,7 @@ to set it.
 as a weight. If `None`, then each edge has weight 1, i.e., the graph is
 binary.
   - G: <class 'networkx.classes.graph.Graph'> = ? --Graph must be undirected, connected, and without self-loops.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.non_randomness.non_randomness(k=<k_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.non_randomness.non_randomness(k=<k_value>, weight=<weight_value>, G=<G_variable>)

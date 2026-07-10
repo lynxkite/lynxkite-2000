@@ -9,9 +9,7 @@ This function returns the minimum broadcast time of `node`.
 If `node` is `None`, the broadcast time for the graph is returned.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph should be an undirected tree.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.broadcasting.tree_broadcast_time(G=<G_variable>)
+  output_variable = networkx.algorithms.broadcasting.tree_broadcast_time(G=<G_variable>)

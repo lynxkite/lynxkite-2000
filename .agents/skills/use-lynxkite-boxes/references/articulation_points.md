@@ -10,9 +10,7 @@ component of a graph.
 Notice that by convention a dyad is considered a biconnected component.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.biconnected.articulation_points(G=<G_variable>)
+  output_variable = networkx.algorithms.components.biconnected.articulation_points(G=<G_variable>)

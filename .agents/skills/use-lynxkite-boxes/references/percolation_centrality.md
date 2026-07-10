@@ -26,9 +26,7 @@ If all nodes do not have the attribute all nodes will be set to
 Otherwise holds the name of the edge attribute used as weight.
 The weight of an edge is treated as the length or distance between the two sides.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.percolation.percolation_centrality(attribute=<attribute_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.percolation.percolation_centrality(attribute=<attribute_value>, weight=<weight_value>, G=<G_variable>)

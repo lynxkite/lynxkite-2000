@@ -12,9 +12,7 @@ connectivity requirement.
   - low_memory: <class 'bool'> = ? --If this is True, this function uses an algorithm that uses slightly
 more time but less memory.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to test for local `(k, l)`-connectedness.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.hybrid.is_kl_connected(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.hybrid.is_kl_connected(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, G=<G_variable>)

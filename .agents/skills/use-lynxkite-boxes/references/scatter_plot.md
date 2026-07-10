@@ -1,12 +1,20 @@
 **Scatter plot:**
 
-parameters:
-  - x: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}] = ? --?
-  - y: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}] = ? --?
-  - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Scatter plot", icon="chart-dots", color="blue", view="matplotlib")
+def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
+    table_x, column_x = x
+    table_y, column_y = y
+    dx = b.dfs[table_x][column_x]
+    dy = b.dfs[table_y][column_y]
+    correlation = dx.corr(dy)
+    plt.figure(figsize=(6, 6))
+    sns.regplot(x=dx, y=dy)
+    plt.title(f"Correlation: {correlation:.2f}")
+    plt.xlabel(column_x)
+    plt.ylabel(column_y)
 
-returns:
-
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.visualization_ops.scatter_plot(x=<x_value>, y=<y_value>, b=<b_variable>)
+```
+Custom types:
+  - x: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}]
+  - y: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}]

@@ -14,9 +14,7 @@ setting the new weight.  If no attribute with this key is found
 for an edge, then the edge weight is assumed to be 1. If an edge
 has a weight, it must be a positive number.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A :class:`~networkx.DiGraph` or :class:`~networkx.MultiDiGraph`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.stochastic.stochastic_graph(copy=<copy_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.generators.stochastic.stochastic_graph(copy=<copy_value>, weight=<weight_value>, G=<G_variable>)

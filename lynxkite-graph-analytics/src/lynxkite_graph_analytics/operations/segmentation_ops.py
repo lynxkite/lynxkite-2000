@@ -1,10 +1,13 @@
 """Operations for segmentations."""
 
+import typing
+
 import enum
 import networkx as nx
 import pandas as pd
 
 from lynxkite_core import ops
+from .graph_ops import get_id
 from .. import core
 
 op = ops.op_registration(core.ENV, "Segmentation operations")
@@ -102,18 +105,7 @@ def segment_by_attribute(
     :param segmentation_name: the name of the segmentation
     """
     b = b.copy()
-
-    id_column: str | None = None
-    for r in b.relations:
-        if r.source_table == table_name:
-            id_column = r.source_key
-            break
-        if r.target_table == table_name:
-            id_column = r.target_key
-            break
-
-    if id_column is None:
-        raise ValueError(f"{table_name} is not used in any relation")
+    id_column = get_id(b, table_name)
 
     node_df = b.dfs[table_name]
     unique_values = node_df[attribute].unique()
@@ -163,21 +155,38 @@ def _suffix_check(add_suffixes, funcs_values):
 
 
 class Direction(enum.StrEnum):
-    to_neighbour = "Aggregate to neighbour"
-    from_neighbour = "Aggregate from neighbour"
+    to_neighbor = "Aggregate to neighbor"
+    from_neighbor = "Aggregate from neighbor"
 
 
-@op("Aggregate between neighbours", icon="topology-star-3")
-def aggregate_between_neighbours(
+AggregationAdderBetweenNeighbors = typing.Annotated[
+    list[tuple[str, list[str]]],
+    {
+        "format": "dropdown-multidropdown_relation_adder",
+        "direction_map": {
+            Direction.to_neighbor.value: "source_table",
+            Direction.from_neighbor.value: "target_table",
+        },
+        "options2": core.pandas_aggregation_options,
+    },
+]
+"""A type annotation to be used for parameters of an operation. AggregationAdderBetweenNeighbors is
+rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-multidropdown rows, where
+the dropdown lists the columns of the source or the target table determined by the selected direction.
+The values are passed to the operation as a list of tuples containing a column name and a list of selected strings."""
+
+
+@op("Aggregate between neighbors", icon="topology-star-3")
+def aggregate_between_neighbors(
     b: core.Bundle,
     *,
     relation_name: core.RelationName,
     add_suffixes: bool,
     direction: Direction,
-    aggregations: core.DoubleTextAdder,
+    aggregations: AggregationAdderBetweenNeighbors,
 ) -> core.Bundle:
     """
-    Depending on the direction, aggregates the specified columns nodes in one table to their neighbours in the other.
+    Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other.
     :param b: the bundle to operate on
     :param relation_name: the relation connecting the two tables
     :param add_suffixes: whether to add suffixes or not
@@ -186,13 +195,11 @@ def aggregate_between_neighbours(
     """
     b = b.copy()
     relation = next(r for r in b.relations if r.name == relation_name)
+    _suffix_check(add_suffixes, [funcs for _, funcs in aggregations])
 
-    parsed_aggregations = [(col, funcs.split(" ")) for col, funcs in aggregations]
-    _suffix_check(add_suffixes, [funcs for _, funcs in parsed_aggregations])
-
-    to_neighbour = direction == Direction.to_neighbour
-    primary_pre = "target" if to_neighbour else "source"
-    secondary_pre = "source" if to_neighbour else "target"
+    to_neighbor = direction == Direction.to_neighbor
+    primary_pre = "target" if to_neighbor else "source"
+    secondary_pre = "source" if to_neighbor else "target"
 
     primary_table = getattr(relation, f"{primary_pre}_table")
     primary_key = getattr(relation, f"{primary_pre}_key")
@@ -201,13 +208,13 @@ def aggregate_between_neighbours(
     secondary_key = getattr(relation, f"{secondary_pre}_key")
     secondary_col = getattr(relation, f"{secondary_pre}_column")
 
-    cols = [col for col, _ in parsed_aggregations]
+    cols = [col for col, _ in aggregations]
     secondary_df = b.dfs[secondary_table][[secondary_key] + cols].copy()
     merged = b.dfs[relation.df].merge(
         secondary_df, left_on=secondary_col, right_on=secondary_key, how="inner"
     )
 
-    aggregated = merged.groupby(primary_col).agg(dict(parsed_aggregations))
+    aggregated = merged.groupby(primary_col).agg(dict(aggregations))
     aggregated.columns = [
         f"{col}_{func}" if add_suffixes else col for col, func in aggregated.columns
     ]

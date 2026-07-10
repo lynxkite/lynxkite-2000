@@ -15,9 +15,7 @@ Other inputs produce a ValueError.
 If `weight` is None, unweighted graph methods are used, and this
 suggestion is ignored.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.generic.shortest_path(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.generic.shortest_path(weight=<weight_value>, method=<method_value>, G=<G_variable>)

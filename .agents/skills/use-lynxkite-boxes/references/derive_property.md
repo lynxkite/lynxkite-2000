@@ -1,12 +1,16 @@
 **Derive property:**
 
-parameters:
-  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = ? --?
-  - formula: typing.Annotated[str, {'format': 'textarea'}] = ? --?
-  - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Derive property", icon="arrow-big-right-lines")
+def derive_property(
+    b: core.Bundle, *, table_name: core.TableName, formula: ops.LongStr
+) -> core.Bundle:
+    b = b.copy()
+    df = b.dfs[table_name]
+    b.dfs[table_name] = df.eval(formula)
+    return b
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.table_ops.derive_property(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
+```
+Custom types:
+  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]
+  - formula: typing.Annotated[str, {'format': 'textarea'}]

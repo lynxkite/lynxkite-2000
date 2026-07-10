@@ -6,9 +6,7 @@ parameters:
 from this node to the target node contains <= ``cutoff + 1`` nodes will
 be included in the returned results.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.unweighted.single_target_shortest_path(target=<target_value>, cutoff=<cutoff_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.unweighted.single_target_shortest_path(target=<target_value>, cutoff=<cutoff_value>, G=<G_variable>)

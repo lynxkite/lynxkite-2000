@@ -1,10 +1,15 @@
 **View loss:**
 
-parameters:
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("View loss", view="visualization", icon="trending-down-3")
+def view_loss(bundle: core.Bundle):
+    loss = bundle.dfs["training"].training_loss.tolist()
+    v = {
+        "title": {"text": "Training loss"},
+        "xAxis": {"type": "category"},
+        "yAxis": {"type": "value"},
+        "series": [{"data": loss, "type": "line"}],
+    }
+    return v
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.ml_ops.view_loss(bundle=<bundle_variable>)
+```

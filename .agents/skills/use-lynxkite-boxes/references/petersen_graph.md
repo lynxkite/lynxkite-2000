@@ -6,10 +6,7 @@ Julius Petersen constructed the graph as the smallest counterexample
 against the claim that a connected bridgeless cubic graph
 has an edge colouring with three colours [2]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.petersen_graph()
+  output_variable = networkx.generators.small.petersen_graph()

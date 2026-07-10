@@ -42,9 +42,7 @@ the number of vertices of `G`, and `e(G)` the number of edges of `G` [3]_:
 This formulation is also known as the Fundamental Reduction Theorem [4]_.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.polynomials.chromatic_polynomial(G=<G_variable>)
+  output_variable = networkx.algorithms.polynomials.chromatic_polynomial(G=<G_variable>)

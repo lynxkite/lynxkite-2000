@@ -24,9 +24,7 @@ the dispersion value is normalized by::
 
 as long as the denominator is nonzero.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.dispersion.dispersion(normalized=<normalized_value>, alpha=<alpha_value>, b=<b_value>, c=<c_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.dispersion.dispersion(normalized=<normalized_value>, alpha=<alpha_value>, b=<b_value>, c=<c_value>, G=<G_variable>)

@@ -30,10 +30,7 @@ The root is the only node with in-degree zero.
 The nil node is always `-1` and has "source" attribute `"NIL"`.
 The nil node is the only node with out-degree zero.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.trees.prefix_tree()
+  output_variable = networkx.generators.trees.prefix_tree()
