@@ -115,7 +115,10 @@ def set_boxes_file_content(ws_path: str, content: str) -> None:
 
 def get_errors_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
-    errors = ((n.id, n.data.error) for n in ws.nodes if n.data.error)
+    # comments always show "Unknown operation" error, so we ignore them in the error report
+    errors = (
+        (n.id, n.data.error) for n in ws.nodes if n.data.error and n.type != "comment"
+    )
     return "\n---\n".join(
         f"An error occured in {node_id}:\n {error}" for node_id, error in errors
     )
