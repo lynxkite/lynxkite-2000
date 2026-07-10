@@ -1,7 +1,7 @@
 **Add rank attribute:**
 Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
 ```python
-@op("Add rank attribute", icon="link")
+@op("Add rank attribute", icon="sort-descending")
 def add_rank(
     b: core.Bundle,
     *,

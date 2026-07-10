@@ -9,7 +9,7 @@ Parameters:
 - target_id: ID column in the second table
 - target_attribute: Attribute column in the second table used for matching
 ```python
-@op("Connect nodes on attribute", icon="link")
+@op("Connect nodes on attribute", icon="share")
 def connect_nodes(
     b: core.Bundle,
     *,
@@ -32,6 +32,8 @@ def connect_nodes(
     - target_attribute: Attribute column in the second table used for matching
     """
     b = b.copy()
+    for table in b.dfs.keys():
+        b.dfs[table] = b.dfs[table].copy()
 
     df1 = (b.dfs[source_table]).add_suffix("_src")
     df2 = (b.dfs[target_table]).add_suffix("_dst")
@@ -46,8 +48,9 @@ def connect_nodes(
 
     if source_table == target_table:
         edges[[source_id, target_id]] = np.sort(edges[[source_id, target_id]], axis=1)
-        edges = edges[edges[source_id] != edges[target_id]].drop_duplicates()
-
+        edges = edges[edges[source_id] != edges[target_id]].drop_duplicates(
+            subset=[source_id, target_id]
+        )
     b.dfs["edges"] = edges
 
     b.relations.append(

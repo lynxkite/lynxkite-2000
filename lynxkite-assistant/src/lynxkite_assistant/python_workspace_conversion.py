@@ -26,6 +26,17 @@ def _get_catalog():
     return catalog
 
 
+def _rec_convert(arg_value: ast.expr, error_msg: str):
+    """Recursively converts the arg_value"""
+    if isinstance(arg_value, ast.Constant):
+        return arg_value.value
+    if isinstance(arg_value, ast.List):
+        return [_rec_convert(item, error_msg) for item in arg_value.elts]
+    if isinstance(arg_value, ast.Tuple):
+        return tuple(_rec_convert(item, error_msg) for item in arg_value.elts)
+    raise AssertionError(error_msg)
+
+
 def _gather_multiline_comments(code: str) -> list[tuple[int, str]]:
     comments = []
     comment_lines = []
@@ -162,17 +173,9 @@ def python_to_workspace(
                 ):
                     add_edge(arg_name, arg_value.elts)
                 else:
-                    list_value = []
-                    for item in arg_value.elts:
-                        assert isinstance(item, ast.Constant), error_msg
-                        list_value.append(item.value)
-                    params[arg_name] = list_value
+                    params[arg_name] = _rec_convert(arg_value, error_msg)
             elif isinstance(arg_value, ast.Tuple):
-                tuple_value = []
-                for item in arg_value.elts:
-                    assert isinstance(item, ast.Constant), error_msg
-                    tuple_value.append(item.value)
-                params[arg_name] = tuple(tuple_value)
+                params[arg_name] = _rec_convert(arg_value, error_msg)
         op = catalog.get(func_name)
         if op:
             box_title = op.name
