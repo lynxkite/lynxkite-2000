@@ -1,8 +1,9 @@
-"""Open-source progress CRDT for workspace-level progress."""
+"""Shared progress CRDT for workspace-level status."""
 
 from __future__ import annotations
 
 import asyncio
+import builtins
 import contextlib
 import json
 import time
@@ -21,14 +22,14 @@ _progress_server: ProgressWebsocketServer | None = None
 
 
 def ws_exception_handler(exception, log):
-    for ex in exception.exceptions if isinstance(exception, ExceptionGroup) else [exception]:
+    for ex in (
+        exception.exceptions if isinstance(exception, builtins.ExceptionGroup) else [exception]
+    ):
         log.exception(ex)
     return True
 
 
 class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
-    """WebSocket server for the singleton progress CRDT room."""
-
     async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
         global _progress_ydoc
         ydoc = pycrdt.Doc()
@@ -51,10 +52,6 @@ def get_progress_server() -> ProgressWebsocketServer | None:
 
 def reset_run_timer(room_name: str) -> None:
     _run_started_at[room_name] = time.monotonic()
-
-
-def clear_run_timer(room_name: str) -> None:
-    _run_started_at.pop(room_name, None)
 
 
 def _elapsed_seconds(room_name: str) -> float | None:
@@ -80,43 +77,35 @@ def _update_workspace_ws_connection(room_name: str, delta: int) -> None:
         _active_workspace_ws_connections[room_name] = count
 
 
-def _build_workspace_entry(
-    room_name: str,
-    room,
-    *,
-    workspace_gpus: dict[str, int] | None = None,
-) -> str:
-    ws = workspace.Workspace.model_validate(room.ws.to_py())
-    gpus = None
-    if workspace_gpus is not None:
-        gpus = workspace_gpus.get(workspace_display_name(room_name), 0)
-    payload = compute_workspace_progress(
-        ws,
-        room_name=room_name,
-        elapsed_seconds=_elapsed_seconds(room_name),
-        gpus=gpus,
-    )
-    return json.dumps(payload)
+def on_workspace_connection_open(room_name: str, ws_server) -> None:
+    _update_workspace_ws_connection(room_name, +1)
+    update_progress_workspaces(ws_server)
 
 
-def update_progress_workspaces(ws_websocket_server, workspace_gpus: dict | None = None):
-    """Recompute workspace status entries and push them into the progress CRDT doc."""
-    if _progress_ydoc is None or not hasattr(ws_websocket_server, "rooms"):
+def on_workspace_connection_close(room_name: str, ws_server) -> None:
+    _update_workspace_ws_connection(room_name, -1)
+    update_progress_workspaces(ws_server)
+
+
+def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None) -> None:
+    if _progress_ydoc is None or not hasattr(ws_server, "rooms"):
         return
-    workspace_gpus = workspace_gpus or {}
+    k8s_workspace_gpus = k8s_workspace_gpus or {}
     ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
-    connected_rooms = _connected_workspace_rooms(ws_websocket_server)
     entries_by_room: dict[str, str] = {}
-    for room_name, room in connected_rooms:
+    for room_name, room in _connected_workspace_rooms(ws_server):
         try:
-            entries_by_room[room_name] = _build_workspace_entry(
-                room_name,
-                room,
-                workspace_gpus=workspace_gpus,
+            ws = workspace.Workspace.model_validate(room.ws.to_py())
+            gpus = k8s_workspace_gpus.get(workspace_display_name(room_name))
+            payload = compute_workspace_progress(
+                ws,
+                room_name=room_name,
+                elapsed_seconds=_elapsed_seconds(room_name),
+                gpus=gpus,
             )
+            entries_by_room[room_name] = json.dumps(payload)
         except Exception as e:
             print(f"Error updating progress for workspace {room_name}: {e}")
-
     with _progress_ydoc.transaction():
         for room_name, entry in entries_by_room.items():
             ws_map[room_name] = entry
@@ -125,8 +114,7 @@ def update_progress_workspaces(ws_websocket_server, workspace_gpus: dict | None 
                 del ws_map[name]
 
 
-def update_progress_gpu_services(gpu_services_data: list):
-    """Update the GPU services entry in the progress CRDT doc."""
+def update_progress_gpu_services(gpu_services_data: list) -> None:
     if _progress_ydoc is None:
         return
     gpu_services_text: pycrdt.Text = _progress_ydoc["gpu_services"]
@@ -141,7 +129,7 @@ def update_progress_gpu_services(gpu_services_data: list):
 
 def delete_workspace_entry(name: str) -> None:
     _active_workspace_ws_connections.pop(name, None)
-    clear_run_timer(name)
+    _run_started_at.pop(name, None)
     if _progress_ydoc is None:
         return
     ws_map: pycrdt.Map = _progress_ydoc["workspaces"]
@@ -150,17 +138,7 @@ def delete_workspace_entry(name: str) -> None:
             del ws_map[name]
 
 
-def on_workspace_connection_open(room_name: str, ws_websocket_server) -> None:
-    _update_workspace_ws_connection(room_name, +1)
-    update_progress_workspaces(ws_websocket_server)
-
-
-def on_workspace_connection_close(room_name: str, ws_websocket_server) -> None:
-    _update_workspace_ws_connection(room_name, -1)
-    update_progress_workspaces(ws_websocket_server)
-
-
-async def _progress_refresh_loop(ws_server, interval_seconds: float = 1.0):
+async def _progress_refresh_loop(ws_server, interval_seconds: float = 1.0) -> None:
     while True:
         update_progress_workspaces(ws_server)
         await asyncio.sleep(interval_seconds)
@@ -168,14 +146,12 @@ async def _progress_refresh_loop(ws_server, interval_seconds: float = 1.0):
 
 @contextlib.asynccontextmanager
 async def lifespan_context(ws_server):
-    """Start the OSS progress websocket server and periodic refresh loop."""
     global _progress_server
     server = ProgressWebsocketServer(auto_clean_rooms=False)
     _progress_server = server
     async with server:
         await server.get_room("progress")
         update_progress_workspaces(ws_server)
-        update_progress_gpu_services([])
         refresh_task = asyncio.create_task(_progress_refresh_loop(ws_server))
         try:
             yield
@@ -187,8 +163,6 @@ async def lifespan_context(ws_server):
 
 
 def register_routes(router, sanitize_path) -> None:
-    """Register the progress CRDT websocket route."""
-
     @router.websocket("/ws/progress/crdt/{room_name:path}")
     async def progress_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
         room_name = sanitize_path(room_name)
