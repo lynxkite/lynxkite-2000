@@ -350,7 +350,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     raw = ws_crdt.to_py()
     ws_fingerprint = _workspace_fingerprint_from_dict(raw)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_changed(ws_websocket_server)
+        enterprise_backend.on_workspace_changed(ws_websocket_server, progress_crdt)
     ws_pyd = workspace.Workspace.model_validate(raw)
     ws_pyd.save(pathlib.Path() / name)
     # Do not trigger execution for superficial changes.
@@ -440,7 +440,9 @@ async def lifespan(app):
         async with code_websocket_server:
             async with progress_crdt.lifespan_context(ws_websocket_server):
                 if enterprise_backend is not None:
-                    async with enterprise_backend.lifespan_context(ws_websocket_server):
+                    async with enterprise_backend.lifespan_context(
+                        ws_websocket_server, progress_crdt
+                    ):
                         yield
                 else:
                     yield
@@ -456,7 +458,7 @@ def delete_room(name: str):
         state_entry.destroy()
     progress_crdt.delete_workspace_entry(name)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_deleted(name)
+        enterprise_backend.on_workspace_deleted(name, progress_crdt)
 
 
 def sanitize_path(path):
@@ -475,14 +477,18 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
     progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_connection_open(room_name, ws_websocket_server)
+        enterprise_backend.on_workspace_connection_open(
+            room_name, ws_websocket_server, progress_crdt
+        )
     server = pycrdt.websocket.ASGIServer(ws_websocket_server)
     try:
         await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
     finally:
         progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
         if enterprise_backend is not None:
-            enterprise_backend.on_workspace_connection_close(room_name, ws_websocket_server)
+            enterprise_backend.on_workspace_connection_close(
+                room_name, ws_websocket_server, progress_crdt
+            )
 
 
 progress_crdt.register_routes(router, sanitize_path)
