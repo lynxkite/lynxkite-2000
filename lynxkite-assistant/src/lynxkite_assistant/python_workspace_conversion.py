@@ -45,6 +45,17 @@ def add_edge(arg_name, arg_value_list, saved_values, ws, box_id, error_msg):
         ws.add_edge(src, sourceHandle, box_id, arg_name)
 
 
+def _rec_convert(arg_value: ast.expr, error_msg: str):
+    """Recursively converts the arg_value"""
+    if isinstance(arg_value, ast.Constant):
+        return arg_value.value
+    if isinstance(arg_value, ast.List):
+        return [_rec_convert(item, error_msg) for item in arg_value.elts]
+    if isinstance(arg_value, ast.Tuple):
+        return tuple(_rec_convert(item, error_msg) for item in arg_value.elts)
+    raise AssertionError(error_msg)
+
+
 def parse_args(
     box_id,
     kwargs,
@@ -96,17 +107,9 @@ def parse_args(
             ):
                 add_edge(arg_name, arg_value.elts, saved_values, ws, box_id, error_msg)
             else:
-                list_value = []
-                for item in arg_value.elts:
-                    assert isinstance(item, ast.Constant), error_msg
-                    list_value.append(item.value)
-                params[arg_name] = list_value
+                params[arg_name] = _rec_convert(arg_value, error_msg)
         elif isinstance(arg_value, ast.Tuple):
-            tuple_value = []
-            for item in arg_value.elts:
-                assert isinstance(item, ast.Constant), error_msg
-                tuple_value.append(item.value)
-            params[arg_name] = tuple(tuple_value)
+            params[arg_name] = _rec_convert(arg_value, error_msg)
     return params
 
 
