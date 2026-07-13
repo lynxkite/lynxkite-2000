@@ -106,7 +106,7 @@ async def assistant_stream(
 
     async def generate():
         response_message = []
-        for chunk in agent.stream(
+        async for chunk in agent.astream(
             {"messages": request_messages},
             stream_mode="messages",
             subgraphs=False,

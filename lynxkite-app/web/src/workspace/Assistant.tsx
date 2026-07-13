@@ -128,10 +128,13 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           if (!prompt || status !== "ready") return;
           if (includeSelectedNodes && selectedNodeIds.length > 0) {
             setMessages([
-              ...persistedMessages,
+              ...messages,
               {
+                id: `system-${Date.now()}`,
                 role: "system",
-                content: `Referencing·box(es):·${selectedNodeIds.join(",·")}`,
+                parts: [
+                  { type: "text", text: `Referencing·box(es):·${selectedNodeIds.join(",·")}` },
+                ],
               },
             ]);
           }
