@@ -59,6 +59,7 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+import { WorkspaceProgress } from "./WorkspaceProgress.tsx";
 
 const Assistant = lazy(() => import("./Assistant.tsx"));
 
@@ -534,114 +535,119 @@ function LynxKiteFlow() {
   return (
     <div className="workspace">
       <div className="top-bar bg-neutral">
-        <Link className="logo" to="/">
-          <img alt="" src={favicon} />
-        </Link>
-        <div className="ws-name">{shortPath}</div>
+        <div className="top-bar-leading">
+          <Link className="logo" to="/">
+            <img alt="" src={favicon} />
+          </Link>
+          <div className="ws-name">{shortPath}</div>
+        </div>
         <title>{shortPath}</title>
-        {crdt?.ws && (
-          <>
-            <ExecutionOptions
-              env={crdt.ws.env || ""}
-              value={crdt.ws.execution_options}
-              onChange={crdt.setExecutionOptions}
-            />
-            <EnvironmentSelector
-              options={Object.keys(catalog.data || {})}
-              value={crdt.ws.env || ""}
-              onChange={crdt.setEnv}
-            />
-          </>
-        )}
-        <div className="tools text-secondary">
+        <div className="top-bar-trailing">
+          <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws)} />
           {crdt?.ws && (
-            <>
-              <Tooltip doc="Group selected nodes">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length < 2}
-                  onClick={groupSelection}
-                  name="groupBtn"
-                >
-                  <GroupIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Ungroup selected nodes">
-                <button
-                  className="btn btn-link"
-                  disabled={!isAnyGroupSelected}
-                  onClick={ungroupSelection}
-                  name="ungroupBtn"
-                >
-                  <UngroupIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Delete selected nodes and edges">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length === 0}
-                  onClick={deleteSelection}
-                >
-                  <DeleteIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Change selected box to a different box">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length !== 1}
-                  onClick={changeBox}
-                >
-                  <ChangeTypeIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc={gridSnapEnabled ? "Disable grid snapping" : "Enable grid snapping"}>
-                <button
-                  className="btn btn-link"
-                  onClick={() => setGridSnapEnabled(!gridSnapEnabled)}
-                >
-                  {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
-                </button>
-              </Tooltip>
-              {config.assistant_available && (
-                <Tooltip doc={"Toggle assistant"}>
+            <div className="top-bar-controls">
+              <ExecutionOptions
+                env={crdt.ws.env || ""}
+                value={crdt.ws.execution_options}
+                onChange={crdt.setExecutionOptions}
+              />
+              <EnvironmentSelector
+                options={Object.keys(catalog.data || {})}
+                value={crdt.ws.env || ""}
+                onChange={crdt.setEnv}
+              />
+            </div>
+          )}
+          <div className="tools text-secondary">
+            {crdt?.ws && (
+              <>
+                <Tooltip doc="Group selected nodes">
                   <button
                     className="btn btn-link"
-                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                    disabled={selected.length < 2}
+                    onClick={groupSelection}
+                    name="groupBtn"
                   >
-                    <RobotIcon />
+                    <GroupIcon />
                   </button>
                 </Tooltip>
-              )}
-              <Tooltip
-                doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
-              >
-                <button
-                  className="btn btn-link"
-                  onClick={() => crdt.setPausedState(!crdt.ws?.paused)}
+                <Tooltip doc="Ungroup selected nodes">
+                  <button
+                    className="btn btn-link"
+                    disabled={!isAnyGroupSelected}
+                    onClick={ungroupSelection}
+                    name="ungroupBtn"
+                  >
+                    <UngroupIcon />
+                  </button>
+                </Tooltip>
+                <Tooltip doc="Delete selected nodes and edges">
+                  <button
+                    className="btn btn-link"
+                    disabled={selected.length === 0}
+                    onClick={deleteSelection}
+                  >
+                    <DeleteIcon />
+                  </button>
+                </Tooltip>
+                <Tooltip doc="Change selected box to a different box">
+                  <button
+                    className="btn btn-link"
+                    disabled={selected.length !== 1}
+                    onClick={changeBox}
+                  >
+                    <ChangeTypeIcon />
+                  </button>
+                </Tooltip>
+                <Tooltip doc={gridSnapEnabled ? "Disable grid snapping" : "Enable grid snapping"}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setGridSnapEnabled(!gridSnapEnabled)}
+                  >
+                    {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
+                  </button>
+                </Tooltip>
+                {config.assistant_available && (
+                  <Tooltip doc={"Toggle assistant"}>
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                    >
+                      <RobotIcon />
+                    </button>
+                  </Tooltip>
+                )}
+                <Tooltip
+                  doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
                 >
-                  {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
-                </button>
-              </Tooltip>
-              <Tooltip doc="Re-run the workspace">
-                <button className="btn btn-link" onClick={executeWorkspace}>
-                  <RestartIcon />
-                </button>
-              </Tooltip>
-            </>
-          )}
-          <Tooltip doc="Close workspace">
-            <Link
-              className="btn btn-link"
-              to={`/dir/${parentDir
-                .split("/")
-                .map((segment) => encodeURIComponent(segment))
-                .join("/")}`}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </Link>
-          </Tooltip>
-          <UserMenu />
+                  <button
+                    className="btn btn-link"
+                    onClick={() => crdt.setPausedState(!crdt.ws?.paused)}
+                  >
+                    {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
+                  </button>
+                </Tooltip>
+                <Tooltip doc="Re-run the workspace">
+                  <button className="btn btn-link" onClick={executeWorkspace}>
+                    <RestartIcon />
+                  </button>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip doc="Close workspace">
+              <Link
+                className="btn btn-link"
+                to={`/dir/${parentDir
+                  .split("/")
+                  .map((segment) => encodeURIComponent(segment))
+                  .join("/")}`}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </Link>
+            </Tooltip>
+            <UserMenu />
+          </div>
         </div>
       </div>
       <div className="workspace-body">

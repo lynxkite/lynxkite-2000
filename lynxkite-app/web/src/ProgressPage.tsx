@@ -14,6 +14,7 @@ import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
+import { parseProgressWorkspace } from "./progress";
 
 const echarts = await import("echarts");
 
@@ -96,7 +97,6 @@ export default function ProgressPage() {
     if (!enterpriseAvailable) {
       return;
     }
-
     const doc = new Y.Doc();
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const provider = new WebsocketProvider(
@@ -108,23 +108,12 @@ export default function ProgressPage() {
     const wsMap = doc.getMap("workspaces");
     const gpuServicesText = doc.getText("gpu_services");
 
-    function parseWorkspace(value: unknown) {
-      if (typeof value === "string") {
-        return JSON.parse(value);
-      }
-      return value as any;
-    }
-
     function syncWorkspaces() {
       const workspaces: any[] = [];
       for (const value of (wsMap as Y.Map<unknown>).values()) {
-        try {
-          const ws = parseWorkspace(value);
-          if (ws && typeof ws === "object") {
-            workspaces.push({ ...ws, user: "Test User" });
-          }
-        } catch (e) {
-          console.warn("failed to parse workspace entry from CRDT", e);
+        const ws = parseProgressWorkspace(value);
+        if (ws && typeof ws === "object") {
+          workspaces.push({ ...ws, user: ws.user || "—" });
         }
       }
       setData((prev) => ({ ...prev, workspaces }));
@@ -147,7 +136,6 @@ export default function ProgressPage() {
 
     wsMap.observe(syncWorkspaces);
     gpuServicesText.observe(syncGpuServices);
-    // Sync once the provider has connected and received initial state.
     provider.on("sync", () => {
       syncWorkspaces();
       syncGpuServices();
@@ -239,11 +227,13 @@ function Workspaces(props: {
           const roomName = ws.room_name || ws.name;
           const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
           const tqdm = ws.active_node?.tqdm;
-          // Combined progress: box fraction covers full bar, tqdm refines the current box's slice
           const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
-          // Each box is 1/total wide. The active box contributes its tqdm progress within that slice.
           const combinedProgress =
-            tqdmFraction != null ? (ws.boxes_done + tqdmFraction) / ws.boxes_total : boxFraction;
+            typeof ws.progress_fraction === "number"
+              ? ws.progress_fraction
+              : tqdmFraction != null
+                ? (ws.boxes_done + tqdmFraction) / ws.boxes_total
+                : boxFraction;
           return (
             <tr key={ws.name}>
               <td className="workspace-name">{ws.name}</td>
