@@ -59,7 +59,6 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
-import { useWorkspaceProgress } from "./useWorkspaceProgress.ts";
 import { WorkspaceProgress } from "./WorkspaceProgress.tsx";
 
 const Assistant = lazy(() => import("./Assistant.tsx"));
@@ -106,7 +105,6 @@ function LynxKiteFlow() {
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
   const crdt = useCRDTWorkspace(path);
-  const workspaceProgress = useWorkspaceProgress(path, Boolean(crdt?.ws));
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
@@ -545,7 +543,7 @@ function LynxKiteFlow() {
         </div>
         <title>{shortPath}</title>
         <div className="top-bar-trailing">
-          <WorkspaceProgress workspace={workspaceProgress} />
+          <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws)} />
           {crdt?.ws && (
             <div className="top-bar-controls">
               <ExecutionOptions

@@ -1,6 +1,14 @@
 import { formatWorkspaceEta, getWorkspaceProgress } from "../progress";
+import { useWorkspaceProgress } from "./useWorkspaceProgress.ts";
 
-export function WorkspaceProgress({ workspace }: { workspace: any | null }) {
+export function WorkspaceProgress({
+  path,
+  enabled,
+}: {
+  path: string | undefined;
+  enabled?: boolean;
+}) {
+  const workspace = useWorkspaceProgress(path, enabled);
   if (!workspace) {
     return null;
   }
