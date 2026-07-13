@@ -76,7 +76,7 @@ samples = [
     ),
     SampleInput(
         "lynxkite-assistant/tests/files/disorganized.lynxkite.json",
-        "Clean up orphan boxes that are not connected.",
+        "Clean up all orphan boxes that are not connected.",
     ),
     SampleInput(
         "lynxkite-assistant/tests/files/N16_no_comments.lynxkite.json",
