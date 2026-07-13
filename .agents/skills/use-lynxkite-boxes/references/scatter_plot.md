@@ -2,7 +2,7 @@
 
 ```python
 @op("Scatter plot", icon="chart-dots", color="blue", view="matplotlib")
-def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
+def scatter_plot(self, b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
     table_x, column_x = x
     table_y, column_y = y
     dx = b.dfs[table_x][column_x]
