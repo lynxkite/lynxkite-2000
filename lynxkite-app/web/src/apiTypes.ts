@@ -78,6 +78,7 @@ export interface Workspace {
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;
+  assistant_messages?: any[] | null;
   path?: string | null;
   [k: string]: unknown;
 }
