@@ -52,7 +52,7 @@ def matplotlib_to_image(func):
             if self.node:
                 w, h = self.node.width, self.node.height - 100  # Subtract 100 pixels for the header
             else:
-                w, h = 500, 450
+                w, h = 500, 450  # Default size if no node is available
             px = 1 / plt.rcParams["figure.dpi"]  # pixel in inches
             plt.gcf().set_size_inches(w * px, h * px)
         buf = io.BytesIO()
