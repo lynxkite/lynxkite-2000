@@ -85,7 +85,13 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
-        asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
+        try:
+            asyncio.get_event_loop().run_until_complete(
+                ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
+            )
+        except RuntimeError as _:
+            # if there is no running event loop, create a new one
+            asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
     ws.save(ws_path)
     if crdt:
         room = crdt.get_room_or_none(ws_path)

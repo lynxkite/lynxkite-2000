@@ -425,6 +425,9 @@ async def get_room(name):
 
 
 def get_room_or_none(name):
+    if "ws_websocket_server" not in globals():
+        # This can happen if the server is not running, e.g. when running tests.
+        return None
     return ws_websocket_server.rooms.get(name)
 
 

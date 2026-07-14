@@ -3,6 +3,7 @@
 ```python
 @op("Bar chart", icon="chart-bar", color="blue", view="matplotlib")
 def bar_chart(
+    self,
     b: core.Bundle,
     *,
     x: core.TableColumn,
