@@ -1,49 +1,377 @@
+import * as echarts from "echarts";
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDisplay } from "../../common.ts";
-import LynxKiteNode from "./LynxKiteNode";
+import LynxKiteNode from "./LynxKiteNode.tsx";
 
-const echarts = await import("echarts");
-// Fast, stable hash function to map varying row text strings into vibrant individual HSL colors
+interface ColorChip {
+  type: "color";
+  attribute: string;
+  disabled?: boolean;
+}
 
-const getColor = (s: string) => {
+interface PositionChip {
+  type: "position";
+  xAttr: string;
+  yAttr: string;
+  disabled?: boolean;
+}
+
+type Chip = ColorChip | PositionChip;
+
+const BORDER_RADIUS_MAIN = 10;
+const BORDER_RADIUS_BUTTON = 20;
+
+const PASTEL_THEME = {
+  colorChip: { bg: "#e0f2fe", text: "#0369a1" },
+  positionChip: { bg: "#e2ffac", text: "rgb(18 93 53 / 0.78)" },
+  button: { bg: "rgb(33 168 96 / 0.78)", text: "#ffffff" },
+  border: "#e2e8f0",
+  deleteBtn: {
+    bg: "#fee2e2",
+    text: "#ef4444",
+    hoverBg: "#fecaca",
+  },
+  disableBtn: {
+    bg: "#ffffff",
+    text: "#1f2937",
+    hoverBg: "#f3f4f6",
+    activeBg: "#1f2937",
+    activeText: "#ffffff",
+    activeHoverBg: "#111827",
+    border: "#e5e7eb",
+  },
+};
+
+const USER_SELECT_NONE_STYLE: React.CSSProperties = {
+  WebkitUserSelect: "none",
+  MozUserSelect: "none",
+  msUserSelect: "none",
+  userSelect: "none",
+};
+
+const getPastelColor = (s: string): string => {
   let h = 0,
     t = String(s ?? "");
   for (let i = 0; i < t.length; i++) h = t.charCodeAt(i) + ((h << 5) - h);
-  return `hsl(${Math.abs(h * 131) % 360}, 90%, 50%)`;
+  return `hsl(${Math.abs(h * 131) % 360}, 80%, 60%)`;
 };
 
-export function NodeWithVisualization({ data, id }: any) {
-  const ref = useRef<HTMLDivElement>(null);
-  const opts = useDisplay(data?.display_version, id);
-  const [chips, setChips] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
-  const [attr, setAttr] = useState("");
-  const [attrs, setAttrs] = useState<string[]>([]);
+const extractUniqueAttributes = (opts: any): string[] => {
+  const nodes = opts?.series?.[0]?.data || [];
+  if (!nodes.length) return [];
+  const keysSet = new Set<string>();
+  for (const node of nodes) {
+    if (node?.attributes) {
+      for (const key of Object.keys(node.attributes)) {
+        keysSet.add(key);
+      }
+    }
+  }
+  return Array.from(keysSet);
+};
+
+interface ChipFormProps {
+  attrs: string[];
+  initialChip: Chip | null;
+  onSubmit: (newChip: Chip) => void;
+}
+
+function ChipForm({ attrs, initialChip, onSubmit }: ChipFormProps) {
+  const [formType, setFormType] = useState<Chip["type"]>(initialChip?.type || "color");
+
+  const [selColorAttr, setSelColorAttr] = useState(() => {
+    if (initialChip?.type === "color") return initialChip.attribute;
+    return attrs[0] || "";
+  });
+
+  const [selXAttr, setSelXAttr] = useState(() => {
+    if (initialChip?.type === "position") return initialChip.xAttr;
+    return attrs[0] || "";
+  });
+
+  const [selYAttr, setSelYAttr] = useState(() => {
+    if (initialChip?.type === "position") return initialChip.yAttr;
+    return attrs[1] || attrs[0] || "";
+  });
 
   useEffect(() => {
-    const nodes = opts?.series?.[0]?.data || [];
-    if (!nodes.length) return;
-    const keys = Array.from(
-      new Set<string>(nodes.flatMap((n: any) => Object.keys(n.attributes || {}))),
-    );
+    if (!initialChip) {
+      setFormType("color");
+      setSelColorAttr(attrs[0] || "");
+      setSelXAttr(attrs[0] || "");
+      setSelYAttr(attrs[1] || attrs[0] || "");
+    } else {
+      setFormType(initialChip.type);
+      if (initialChip.type === "color") {
+        setSelColorAttr(initialChip.attribute);
+      } else if (initialChip.type === "position") {
+        setSelXAttr(initialChip.xAttr);
+        setSelYAttr(initialChip.yAttr);
+      }
+    }
+  }, [initialChip, attrs]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newChip: Chip =
+      formType === "color"
+        ? { type: "color", attribute: selColorAttr, disabled: initialChip?.disabled }
+        : { type: "position", xAttr: selXAttr, yAttr: selYAttr, disabled: initialChip?.disabled };
+    onSubmit(newChip);
+  };
+
+  const selectStyle = {
+    padding: "4px 8px",
+    borderRadius: 6,
+    border: `1px solid ${PASTEL_THEME.border}`,
+    outline: "none",
+    backgroundColor: "#fff",
+    fontSize: 12,
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        background: "#fff",
+        padding: "6px 12px",
+        borderRadius: BORDER_RADIUS_MAIN,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        border: `1px solid ${PASTEL_THEME.border}`,
+      }}
+    >
+      <select
+        value={formType}
+        onChange={(e) => setFormType(e.target.value as Chip["type"])}
+        style={{ ...selectStyle }}
+      >
+        <option value="color">Color Setting</option>
+        <option value="position">Position Setting</option>
+      </select>
+
+      {formType === "color" ? (
+        <select
+          value={selColorAttr}
+          onChange={(e) => setSelColorAttr(e.target.value)}
+          style={selectStyle}
+        >
+          {attrs.map((a) => (
+            <option key={a} value={a}>
+              {a}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>X:</span>
+          <select
+            value={selXAttr}
+            onChange={(e) => setSelXAttr(e.target.value)}
+            style={selectStyle}
+          >
+            {attrs.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+          <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>Y:</span>
+          <select
+            value={selYAttr}
+            onChange={(e) => setSelYAttr(e.target.value)}
+            style={selectStyle}
+          >
+            {attrs.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        style={{
+          padding: "4px 12px",
+          fontSize: 12,
+          background: PASTEL_THEME.button.bg,
+          color: PASTEL_THEME.button.text,
+          border: "none",
+          borderRadius: 6,
+          cursor: "pointer",
+          fontWeight: "bold",
+        }}
+      >
+        {initialChip ? "Save" : "Apply"}
+      </button>
+    </form>
+  );
+}
+
+interface VisualChipProps {
+  chip: Chip;
+  index: number;
+  onEdit: (e: React.MouseEvent, index: number) => void;
+  onToggleDisable: (e: React.MouseEvent, index: number) => void;
+  onDelete: (index: number) => void;
+}
+
+function VisualChip({ chip, index, onEdit, onToggleDisable, onDelete }: VisualChipProps) {
+  const isColor = chip.type === "color";
+  const theme = isColor ? PASTEL_THEME.colorChip : PASTEL_THEME.positionChip;
+  const [deleteHovered, setDeleteHovered] = useState(false);
+  const [disableHovered, setDisableHovered] = useState(false);
+
+  const getDisableBg = () => {
+    if (chip.disabled) {
+      return disableHovered
+        ? PASTEL_THEME.disableBtn.activeHoverBg
+        : PASTEL_THEME.disableBtn.activeBg;
+    }
+    return disableHovered ? PASTEL_THEME.disableBtn.hoverBg : PASTEL_THEME.disableBtn.bg;
+  };
+
+  return (
+    <div
+      onClick={(e) => onEdit(e, index)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        background: theme.bg,
+        color: theme.text,
+        padding: "5px 8px 5px 12px",
+        borderRadius: BORDER_RADIUS_MAIN,
+        gap: 10,
+        fontSize: 12,
+        fontWeight: 600,
+        cursor: "pointer",
+        border: `1px solid ${theme.text}20`,
+        opacity: chip.disabled ? 0.5 : 1,
+        transition: "opacity 0.15s ease",
+        ...USER_SELECT_NONE_STYLE,
+      }}
+    >
+      <span style={{ textDecoration: chip.disabled ? "line-through" : "none" }}>
+        {isColor ? `Color by: ${chip.attribute}` : `Position: X(${chip.xAttr}) Y(${chip.yAttr})`}
+      </span>
+
+      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+        <span
+          onClick={(e) => onToggleDisable(e, index)}
+          onMouseEnter={() => setDisableHovered(true)}
+          onMouseLeave={() => setDisableHovered(false)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+            border: `1px solid ${PASTEL_THEME.disableBtn.border}`,
+            background: getDisableBg(),
+            color: chip.disabled
+              ? PASTEL_THEME.disableBtn.activeText
+              : PASTEL_THEME.disableBtn.text,
+            fontWeight: "bold",
+            fontSize: 12,
+            transition: "background-color 0.15s ease, color 0.15s ease",
+            lineHeight: 1,
+          }}
+          title={chip.disabled ? "Enable setting" : "Disable setting"}
+        />
+
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(index);
+          }}
+          onMouseEnter={() => setDeleteHovered(true)}
+          onMouseLeave={() => setDeleteHovered(false)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+            background: deleteHovered ? PASTEL_THEME.deleteBtn.hoverBg : PASTEL_THEME.deleteBtn.bg,
+            color: PASTEL_THEME.deleteBtn.text,
+            fontWeight: "bold",
+            fontSize: 14,
+            transition: "background-color 0.15s ease",
+            lineHeight: 1,
+          }}
+        >
+          ×
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const opts = useDisplay(data?.display_version, id);
+
+  const [chips, setChips] = useState<Chip[]>([]);
+  const [open, setOpen] = useState(false);
+  const [attrs, setAttrs] = useState<string[]>([]);
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [mainBtnHover, setMainBtnHover] = useState(false);
+
+  useEffect(() => {
+    const keys = extractUniqueAttributes(opts);
     setAttrs(keys);
-    setAttr((p) => (keys.includes(p) ? p : keys[0] || ""));
   }, [opts]);
 
   useEffect(() => {
     if (!opts || !ref.current) return;
-    const chartOpts = JSON.parse(JSON.stringify(opts));
-    const active = chips[chips.length - 1];
 
-    if (chartOpts.series?.[0]?.data && active) {
-      chartOpts.series[0].data = chartOpts.series[0].data.map((n: any) => {
-        const v = n.attributes?.[active];
-        if (v === undefined || v === null || v === "") return n;
-        return { ...n, itemStyle: { ...n.itemStyle, color: getColor(String(v)) } };
+    const chartOpts = JSON.parse(JSON.stringify(opts));
+    const series = chartOpts.series?.[0];
+
+    if (series?.data) {
+      const activeColor = [...chips]
+        .reverse()
+        .find((c): c is ColorChip => c.type === "color" && !c.disabled);
+      const activePos = [...chips]
+        .reverse()
+        .find((c): c is PositionChip => c.type === "position" && !c.disabled);
+
+      if (activePos && series.layout) {
+        series.layout = "none";
+      }
+
+      series.data = series.data.map((n: any) => {
+        const nodeCopy = { ...n, itemStyle: { ...n.itemStyle } };
+        const attrsObj = nodeCopy.attributes || {};
+
+        if (activePos) {
+          const xVal = Number(attrsObj[activePos.xAttr]);
+          const yVal = Number(attrsObj[activePos.yAttr]);
+          if (!isNaN(xVal) && !isNaN(yVal)) {
+            nodeCopy.x = xVal;
+            nodeCopy.y = yVal;
+          }
+        }
+
+        if (activeColor) {
+          const cVal = attrsObj[activeColor.attribute];
+          if (cVal !== undefined && cVal !== null && cVal !== "") {
+            nodeCopy.itemStyle.color = getPastelColor(String(cVal));
+          }
+        }
+
+        return nodeCopy;
       });
     }
 
-    const inst = echarts.init(ref.current, null, {
+    const inst = echarts.init(ref.current, undefined, {
       renderer: "canvas",
       width: "auto",
       height: "auto",
@@ -59,6 +387,48 @@ export function NodeWithVisualization({ data, id }: any) {
     };
   }, [opts, chips]);
 
+  const handleFormSubmit = (newChip: Chip) => {
+    if (editingIdx !== null) {
+      const updated = [...chips];
+      updated[editingIdx] = newChip;
+      setChips(updated);
+      setEditingIdx(null);
+    } else {
+      setChips([...chips, newChip]);
+    }
+    setOpen(false);
+  };
+
+  const startEdit = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setEditingIdx(index);
+    setOpen(true);
+  };
+
+  const handleToggleDisable = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    const updated = [...chips];
+    updated[index] = {
+      ...updated[index],
+      disabled: !updated[index].disabled,
+    };
+    setChips(updated);
+  };
+
+  const handleToggleForm = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(!open);
+    setEditingIdx(null);
+  };
+
+  const handleDeleteChip = (index: number) => {
+    setChips(chips.filter((_, idx) => idx !== index));
+    if (editingIdx === index) {
+      setEditingIdx(null);
+      setOpen(false);
+    }
+  };
+
   return (
     <div
       style={{ flex: 1, position: "relative", width: "100%", height: "100%", minHeight: "350px" }}
@@ -73,22 +443,36 @@ export function NodeWithVisualization({ data, id }: any) {
           gap: 8,
           flexWrap: "wrap",
           alignItems: "center",
+          ...USER_SELECT_NONE_STYLE,
         }}
       >
         {attrs.length > 0 && (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpen(!open);
-            }}
+            onClick={handleToggleForm}
+            onMouseEnter={() => setMainBtnHover(true)}
+            onMouseLeave={() => setMainBtnHover(false)}
             style={{
               width: 28,
               height: 28,
-              borderRadius: 6,
-              border: "1px solid #ccc",
-              background: "#fff",
+              borderRadius: BORDER_RADIUS_BUTTON,
+              border: `1px solid ${open ? PASTEL_THEME.deleteBtn.text + "40" : PASTEL_THEME.border}`,
+              background: open
+                ? mainBtnHover
+                  ? PASTEL_THEME.deleteBtn.hoverBg
+                  : PASTEL_THEME.deleteBtn.bg
+                : "#fff",
+              color: open ? PASTEL_THEME.deleteBtn.text : "#555",
               cursor: "pointer",
               fontWeight: "bold",
+              fontSize: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 0,
+              outline: "none",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+              transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
+              ...USER_SELECT_NONE_STYLE,
             }}
           >
             {open ? "×" : "+"}
@@ -96,83 +480,36 @@ export function NodeWithVisualization({ data, id }: any) {
         )}
 
         {open && attrs.length > 0 && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (attr) {
-                setChips([...chips, attr]);
-                setOpen(false);
-              }
-            }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              background: "#fff",
-              padding: "6px 10px",
-              borderRadius: 6,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              border: "1px solid #ddd",
-            }}
-          >
-            <select
-              value={attr}
-              onChange={(e) => setAttr(e.target.value)}
-              style={{ padding: "4px 6px", borderRadius: 4, border: "1px solid #ccc" }}
-            >
-              {attrs.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              style={{
-                padding: "4px 10px",
-                fontSize: 12,
-                background: "#3498db",
-                color: "#fff",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              Hash Color
-            </button>
-          </form>
+          <ChipForm
+            attrs={attrs}
+            initialChip={editingIdx !== null ? chips[editingIdx] : null}
+            onSubmit={handleFormSubmit}
+          />
         )}
 
-        {chips.map((c, i) => (
-          <div
-            key={i}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              background: "#2c3e50",
-              padding: "4px 10px",
-              borderRadius: 6,
-              gap: 8,
-              color: "#fff",
-              fontSize: 12,
-              fontWeight: 600,
-            }}
-          >
-            <span>Hashed Field: {c}</span>
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                setChips(chips.filter((_, idx) => idx !== i));
-              }}
-              style={{ cursor: "pointer", color: "#e74c3c", fontWeight: "bold", fontSize: 14 }}
-            >
-              ×
-            </span>
-          </div>
-        ))}
+        {chips.map((c, i) => {
+          if (editingIdx === i) return null;
+          return (
+            <VisualChip
+              key={i}
+              chip={c}
+              index={i}
+              onEdit={startEdit}
+              onToggleDisable={handleToggleDisable}
+              onDelete={handleDeleteChip}
+            />
+          );
+        })}
       </div>
-      <div style={{ width: "100%", height: "100%", minHeight: "350px" }} ref={ref} />
+      <div
+        ref={ref}
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "350px",
+          ...USER_SELECT_NONE_STYLE,
+        }}
+      />
     </div>
   );
 }
