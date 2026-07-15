@@ -38,9 +38,9 @@ def edit_layout(ws_path, content: str) -> None:
 
 
 @mcp.tool(description=instructions.WORKSPACE_INFO)
-def edit_workspace(ws_path, content: str) -> None:
+async def edit_workspace(ws_path, content: str) -> None:
     """Edit the content of the workspace.py file"""
-    workspace_backend.set_workspace_file_content(ws_path, content)
+    await workspace_backend.set_workspace_file_content(ws_path, content)
 
 
 @mcp.tool()

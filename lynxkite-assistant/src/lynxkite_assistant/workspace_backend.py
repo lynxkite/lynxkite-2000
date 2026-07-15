@@ -45,8 +45,10 @@ class WorkspaceBackend(state.StateBackend):
         if "/boxes.py" in update:
             set_boxes_file_content(self._workspace, update["/boxes.py"]["content"])
         if "/workspace.py" in update:
-            set_workspace_file_content(
-                self._workspace, update["/workspace.py"]["content"]
+            asyncio.run(
+                set_workspace_file_content(
+                    self._workspace, update["/workspace.py"]["content"]
+                )
             )
         if "/layout.json" in update:
             set_layout_file_content(
@@ -75,7 +77,7 @@ def get_workspace_file_content(ws_path: str) -> str:
     return python_workspace_conversion.workspace_to_python(ws)
 
 
-def set_workspace_file_content(ws_path: str, content: str) -> None:
+async def set_workspace_file_content(ws_path: str, content: str) -> None:
     old_ws = workspace.Workspace.load(ws_path)
     ops.load_user_scripts(ws_path)
     ws = python_workspace_conversion.python_to_workspace(content)
@@ -85,13 +87,7 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
-        try:
-            asyncio.get_event_loop().run_until_complete(
-                ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
-            )
-        except RuntimeError as _:
-            # if there is no running event loop, create a new one
-            asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
+        await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
     ws.save(ws_path)
     if crdt:
         room = crdt.get_room_or_none(ws_path)
