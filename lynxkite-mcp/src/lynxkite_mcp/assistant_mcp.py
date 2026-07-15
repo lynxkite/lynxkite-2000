@@ -31,6 +31,12 @@ def get_lynxkite_workspace_errors(ws_path) -> str:
     return workspace_backend.get_errors_file_content(ws_path)
 
 
+@mcp.tool()
+def get_lynxkite_workspace_requirements(ws_path) -> str:
+    """Get the content of the requirements.txt file"""
+    return workspace_backend.get_req_content(ws_path)
+
+
 @mcp.tool(description=instructions.LAYOUT_INFO)
 def edit_layout(ws_path, content: str) -> None:
     """Edit the layout of the workspace"""
@@ -47,6 +53,12 @@ async def edit_workspace(ws_path, content: str) -> None:
 def edit_boxes(ws_path, content: str) -> None:
     """Edit the content of the boxes.py file to define custom boxes"""
     workspace_backend.set_boxes_file_content(ws_path, content)
+
+
+@mcp.tool()
+def edit_requirements(ws_path, content: str) -> None:
+    """Edit the content of the requirements.txt file to define additional dependencies"""
+    workspace_backend.set_req_file_content(ws_path, content)
 
 
 def main():

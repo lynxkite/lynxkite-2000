@@ -39,6 +39,10 @@ class WorkspaceBackend(state.StateBackend):
                 "content": get_workspace_layout(self._workspace),
                 "modified_at": "",
             },
+            "requirements.txt": {
+                "content": get_req_content(self._workspace),
+                "modified_at": "",
+            },
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
@@ -54,6 +58,8 @@ class WorkspaceBackend(state.StateBackend):
             set_layout_file_content(
                 self._workspace, json.loads(update["/layout.json"]["content"])
             )
+        if "requirements.txt" in update:
+            set_req_file_content(self._workspace, update["requirements.txt"]["content"])
 
     def edit(
         self,
@@ -111,6 +117,20 @@ def get_boxes_file_content(ws_path: str) -> str:
 
 def set_boxes_file_content(ws_path: str, content: str) -> None:
     p = pathlib.Path(ws_path).parent / "boxes.py"
+    with open(p, "w") as f:
+        f.write(content)
+
+
+def get_req_content(ws_path: str) -> str:
+    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    if not p.exists():
+        return instructions.REQ_INFO
+    with open(p) as f:
+        return f.read()
+
+
+def set_req_file_content(ws_path: str, content: str) -> None:
+    p = pathlib.Path(ws_path).parent / "requirements.txt"
     with open(p, "w") as f:
         f.write(content)
 

@@ -36,6 +36,7 @@ You have access to the following files, none of which are visible to the user:
 - /layout.json: The layout of the boxes in the visual representation.
 - /errors.txt: The errors that occurred in the boxes during execution.
 - /workspace_files/: The results of the executed boxes, such as View tables and View images.
+- /requirements.txt: dependencies for the custom boxes in the workflow.
 
 ## Editing the workflow
 {WORKSPACE_INFO}
@@ -117,3 +118,11 @@ def get_boxes_prompt(env, module_name):
         .replace("FNC1", fnc1)
         .replace("FNC2", fnc2)
     )
+
+
+REQ_INFO = """# Add any additional requirements for the workspace here.
+# For example, if you want to use the `requests` library in your custom boxes,
+# you can add it here as follows:
+# requests==2.31.0
+# The requirements will be installed in the environment before executing the workspace.
+# If you don't need any additional requirements, you can leave this file empty."""
