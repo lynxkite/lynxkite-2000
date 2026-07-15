@@ -56,9 +56,10 @@ def edit_boxes(ws_path, content: str) -> None:
 
 
 @mcp.tool()
-def edit_requirements(ws_path, content: str) -> None:
+async def edit_requirements(ws_path, content: str) -> None:
     """Edit the content of the requirements.txt file to define additional dependencies"""
     workspace_backend.set_req_file_content(ws_path, content)
+    await workspace_backend.execute_workspace(ws_path)
 
 
 def main():

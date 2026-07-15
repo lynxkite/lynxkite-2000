@@ -10,11 +10,6 @@ from . import python_workspace_conversion
 from . import sync_workspaces
 from . import instructions
 
-try:
-    from lynxkite_app import crdt
-except ImportError:
-    crdt = None  # type: ignore
-
 
 class WorkspaceBackend(state.StateBackend):
     def __init__(self, workspace: str) -> None:
@@ -95,10 +90,13 @@ async def set_workspace_file_content(ws_path: str, content: str) -> None:
     if not ws.paused:
         await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
     ws.save(ws_path)
-    if crdt:
-        room = crdt.get_room_or_none(ws_path)
-        if room is not None:
-            crdt.update_workspace(room.ws, ws)
+
+
+async def execute_workspace(ws_path: str) -> None:
+    ws = workspace.Workspace.load(ws_path)
+    if not ws.paused:
+        await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
+    ws.save(ws_path)
 
 
 def get_boxes_file_content(ws_path: str) -> str:
@@ -194,7 +192,3 @@ def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
             if "collapsed" in node_layout:
                 node.data.collapsed = bool(node_layout["collapsed"])
     ws.save(ws_path)
-    if crdt:
-        room = crdt.get_room_or_none(ws_path)
-        if room is not None:
-            crdt.update_workspace(room.ws, ws)

@@ -125,4 +125,6 @@ REQ_INFO = """# Add any additional requirements for the workspace here.
 # you can add it here as follows:
 # requests==2.31.0
 # The requirements will be installed in the environment before executing the workspace.
-# If you don't need any additional requirements, you can leave this file empty."""
+# If you don't need any additional requirements, you can leave this file empty.
+# Use the EXACT name of the Python package you want to import, if you have `import package_name` in your custom box, you need to add `package_name` in this file.
+# """

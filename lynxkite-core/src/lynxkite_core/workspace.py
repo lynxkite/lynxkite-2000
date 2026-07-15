@@ -225,6 +225,11 @@ class Workspace(BaseConfig):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
         j = self.model_dump_json_sorted()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                existing_content = f.read()
+                if existing_content == j:
+                    return  # No changes, skip writing to avoid unnecessary file operations.
         dirname, basename = os.path.split(path)
         if dirname:
             os.makedirs(dirname, exist_ok=True)
