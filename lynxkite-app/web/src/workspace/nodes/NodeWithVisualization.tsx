@@ -24,6 +24,7 @@ export abstract class BaseChip {
 
   static type: string;
   static displayName: string;
+  static target: string;
   static formFields: FormFieldConfig[];
 
   constructor(disabled: boolean = false) {
@@ -35,10 +36,11 @@ export abstract class BaseChip {
   abstract apply(series: any): void;
 }
 
-export class ColorChip extends BaseChip {
-  static type = "color";
-  type = ColorChip.type;
-  static displayName = "Color Setting";
+export class NodeColorChip extends BaseChip {
+  static type = "node_color";
+  type = NodeColorChip.type;
+  static displayName = "Color Setting (Nodes)";
+  static target = "node";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
@@ -51,7 +53,7 @@ export class ColorChip extends BaseChip {
   }
 
   getLabel(): string {
-    return `Color by: ${this.attribute}`;
+    return `Node Color by: ${this.attribute}`;
   }
 
   getFormData() {
@@ -70,10 +72,49 @@ export class ColorChip extends BaseChip {
   }
 }
 
+export class EdgeColorChip extends BaseChip {
+  static type = "edgeColor";
+  type = EdgeColorChip.type;
+  static displayName = "Color Setting (Edges)";
+  static target = "edge";
+  static formFields: FormFieldConfig[] = [{ key: "attribute" }];
+
+  attribute: string;
+
+  constructor(data: Record<string, string>, disabled?: boolean) {
+    super(disabled);
+    this.attribute = data.attribute || "";
+    this.bg = "#fae8ff";
+    this.text = "#86198f";
+  }
+
+  getLabel(): string {
+    return `Edge Color by: ${this.attribute}`;
+  }
+
+  getFormData() {
+    return { attribute: this.attribute };
+  }
+
+  apply(series: any): void {
+    const edges = series?.links || series?.edges;
+    if (!edges) return;
+
+    edges.forEach((edge: any) => {
+      const val = edge.attributes?.[this.attribute];
+      if (val !== undefined && val !== null && val !== "") {
+        edge.lineStyle = edge.lineStyle || {};
+        edge.lineStyle.color = getPastelColor(String(val));
+      }
+    });
+  }
+}
+
 export class PositionChip extends BaseChip {
   static type = "position";
   type = PositionChip.type;
   static displayName = "Position Setting";
+  static target = "node";
   static formFields: FormFieldConfig[] = [
     { key: "xAttr", label: "X:" },
     { key: "yAttr", label: "Y:" },
@@ -116,6 +157,7 @@ export class LabelChip extends BaseChip {
   static type = "label";
   type = LabelChip.type;
   static displayName = "Label Setting";
+  static target: "node" | "edge" = "node";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
@@ -149,7 +191,7 @@ export class LabelChip extends BaseChip {
   }
 }
 
-const CHIP_REGISTRY = [ColorChip, PositionChip, LabelChip];
+const CHIP_REGISTRY = [NodeColorChip, EdgeColorChip, PositionChip, LabelChip];
 
 const BORDER_RADIUS_MAIN = 10;
 const BORDER_RADIUS_BUTTON = 20;
@@ -176,9 +218,9 @@ const USER_SELECT_NONE_STYLE: React.CSSProperties = {
   userSelect: "none",
 };
 
-const extractUniqueAttributes = (opts: any): string[] => {
+// Extends and separates node and edge parameters explicitly
+const extractNodeAttributes = (opts: any): string[] => {
   const nodes = opts?.series?.[0]?.data || [];
-  if (!nodes.length) return [];
   const keysSet = new Set<string>();
   for (const node of nodes) {
     if (node?.attributes) {
@@ -190,17 +232,32 @@ const extractUniqueAttributes = (opts: any): string[] => {
   return Array.from(keysSet);
 };
 
+const extractEdgeAttributes = (opts: any): string[] => {
+  const edges = opts?.series?.[0]?.links || opts?.series?.[0]?.edges || [];
+  const keysSet = new Set<string>();
+  for (const edge of edges) {
+    if (edge?.attributes) {
+      for (const key of Object.keys(edge.attributes)) {
+        keysSet.add(key);
+      }
+    }
+  }
+  return Array.from(keysSet);
+};
+
 interface ChipFormProps {
-  attrs: string[];
+  nodeAttrs: string[];
+  edgeAttrs: string[];
   initialChip: BaseChip | null;
   onSubmit: (newChip: BaseChip) => void;
 }
 
-function ChipForm({ attrs, initialChip, onSubmit }: ChipFormProps) {
+function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit }: ChipFormProps) {
   const [formType, setFormType] = useState<string>(initialChip?.type || CHIP_REGISTRY[0].type);
   const [formData, setFormData] = useState<Record<string, string>>({});
 
   const ActiveClass = CHIP_REGISTRY.find((c) => c.type === formType) || CHIP_REGISTRY[0];
+  const targetAttrs = ActiveClass.target === "edge" ? edgeAttrs : nodeAttrs;
 
   useEffect(() => {
     const defaultData: Record<string, string> = {};
@@ -208,11 +265,11 @@ function ChipForm({ attrs, initialChip, onSubmit }: ChipFormProps) {
 
     ActiveClass.formFields.forEach((fieldConfig, index) => {
       const fieldKey = fieldConfig.key;
-      defaultData[fieldKey] = initialData[fieldKey] || attrs[index] || attrs[0] || "";
+      defaultData[fieldKey] = initialData[fieldKey] || targetAttrs[index] || targetAttrs[0] || "";
     });
 
     setFormData(defaultData);
-  }, [formType, initialChip, attrs, ActiveClass]);
+  }, [formType, initialChip, targetAttrs, ActiveClass]);
 
   const handleFieldChange = (fieldKey: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldKey]: value }));
@@ -267,7 +324,7 @@ function ChipForm({ attrs, initialChip, onSubmit }: ChipFormProps) {
             onChange={(e) => handleFieldChange(fieldConfig.key, e.target.value)}
             style={selectStyle}
           >
-            {attrs.map((a) => (
+            {targetAttrs.map((a) => (
               <option key={a} value={a}>
                 {a}
               </option>
@@ -396,12 +453,14 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
 
   const [chips, setChips] = useState<BaseChip[]>([]);
   const [open, setOpen] = useState(false);
-  const [attrs, setAttrs] = useState<string[]>([]);
+  const [nodeAttrs, setNodeAttrs] = useState<string[]>([]);
+  const [edgeAttrs, setEdgeAttrs] = useState<string[]>([]);
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [mainBtnHover, setMainBtnHover] = useState(false);
 
   useEffect(() => {
-    setAttrs(extractUniqueAttributes(opts));
+    setNodeAttrs(extractNodeAttributes(opts));
+    setEdgeAttrs(extractEdgeAttributes(opts));
   }, [opts]);
 
   useEffect(() => {
@@ -410,11 +469,21 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     const chartOpts = JSON.parse(JSON.stringify(opts));
     const series = chartOpts.series?.[0];
 
-    if (series?.data) {
-      series.data = series.data.map((n: any) => ({
-        ...n,
-        itemStyle: { ...n.itemStyle },
-      }));
+    if (series) {
+      if (series.data) {
+        series.data = series.data.map((n: any) => ({
+          ...n,
+          itemStyle: { ...n.itemStyle },
+        }));
+      }
+
+      const edgeKey = series.links ? "links" : "edges";
+      if (series[edgeKey]) {
+        series[edgeKey] = series[edgeKey].map((e: any) => ({
+          ...e,
+          lineStyle: { ...e.lineStyle },
+        }));
+      }
 
       chips
         .filter((c) => !c.disabled)
@@ -482,6 +551,8 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     }
   };
 
+  const hasAttributes = nodeAttrs.length > 0 || edgeAttrs.length > 0;
+
   return (
     <div
       style={{ flex: 1, position: "relative", width: "100%", height: "100%", minHeight: "350px" }}
@@ -499,7 +570,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           ...USER_SELECT_NONE_STYLE,
         }}
       >
-        {attrs.length > 0 && (
+        {hasAttributes && (
           <button
             onClick={handleToggleForm}
             onMouseEnter={() => setMainBtnHover(true)}
@@ -532,9 +603,10 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           </button>
         )}
 
-        {open && attrs.length > 0 && (
+        {open && hasAttributes && (
           <ChipForm
-            attrs={attrs}
+            nodeAttrs={nodeAttrs}
+            edgeAttrs={edgeAttrs}
             initialChip={editingIdx !== null ? chips[editingIdx] : null}
             onSubmit={handleFormSubmit}
           />
