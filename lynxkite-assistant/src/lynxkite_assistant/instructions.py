@@ -20,11 +20,13 @@ For further instructions, see the comments in `/workspace.py`.
 LAYOUT_INFO = """
 You may change the layout of the boxes in the visual representation by editing `/layout.json`. The user does not see this file, but they will see the updated layout in the visual representation.
 When editing the layout, keep in mind that boxes that are connected should be placed closer to each other, as these boxes are connected by arrows in the visual representation.
+All arrows should point from the left to the right, try to organize the boxes in a way that the flow of the boxes is from left to right.
 In the `layout.json` file, all the overlapping boxes are listed in the "_comment" field. Eliminate all such overlaps in the layout, including the ones involving comment boxes.
 You may collapse regular boxes to make more space, but you cannot collapse comment boxes.
 When writing `layout.json` you do not need to include the "_comment" field, as it is only used for debugging purposes and will be ignored by the system.
 You may set the "automatic_layout" field in `layout.json` to true to let the system automatically layout the boxes.
 But you will still need to move the comments manually to make sure they are placed above the relevant boxes, as the automatic layout will not move the comments.
+Only edit the layout of the boxes, do not add or remove any boxes in this file. All boxes must be added or removed in `/workspace.py`.
 """.strip()
 
 SYSTEM_PROMPT = f"""
@@ -126,5 +128,5 @@ REQ_INFO = """# Add any additional requirements for the workspace here.
 # requests==2.31.0
 # The requirements will be installed in the environment before executing the workspace.
 # If you don't need any additional requirements, you can leave this file empty.
-# Use the EXACT name of the Python package you want to import, if you have `import package_name` in your custom box, you need to add `package_name` in this file.
+# Dependencies will be installed with the `uv pip install` command, use the appropriate names and versions for the packages you want to install.
 # """

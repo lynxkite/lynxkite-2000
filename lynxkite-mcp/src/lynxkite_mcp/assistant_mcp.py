@@ -20,7 +20,7 @@ def get_lynxkite_workspace_file_content(ws_path) -> str:
 
 
 @mcp.tool()
-def get_lynxkite_custom_lynxkite_boxes(ws_path) -> str:
+def get_custom_lynxkite_boxes(ws_path) -> str:
     """Get the source code of the custom LynxKite boxes"""
     return workspace_backend.get_boxes_file_content(ws_path)
 
@@ -32,8 +32,8 @@ def get_lynxkite_workspace_errors(ws_path) -> str:
 
 
 @mcp.tool()
-def get_lynxkite_workspace_requirements(ws_path) -> str:
-    """Get the content of the requirements.txt file"""
+def get_lynxkite_custom_box_requirements(ws_path) -> str:
+    """Get the content of the requirements.txt file that lists the additional dependencies for the custom boxes"""
     return workspace_backend.get_req_content(ws_path)
 
 
