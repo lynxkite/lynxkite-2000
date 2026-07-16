@@ -14,6 +14,7 @@ const getPastelColor = (s: string): string => {
 export interface FormFieldConfig {
   key: string;
   label?: string;
+  type?: "select" | "number";
 }
 
 export abstract class BaseChip {
@@ -27,46 +28,65 @@ export abstract class BaseChip {
   static target: string;
   static formFields: FormFieldConfig[];
 
-  constructor(disabled: boolean = false) {
+  constructor(_data: Record<string, string>, disabled = false) {
     this.disabled = disabled;
+  }
+
+  static getInitialData(
+    attribute: string,
+    _rawItems: any[],
+    previousData?: Record<string, string>,
+  ): Record<string, string> {
+    const data: Record<string, string> = {};
+    BaseChip.formFields?.forEach((fieldConfig) => {
+      const key = fieldConfig.key;
+      if (key === "attribute") {
+        data[key] = attribute;
+      } else {
+        data[key] = previousData?.[key] || "";
+      }
+    });
+    return data;
   }
 
   abstract getLabel(): string;
   abstract getFormData(): Record<string, string>;
   abstract apply(series: any): void;
+
+  render(_onChange?: () => void): React.ReactNode {
+    return null;
+  }
 }
 
 export class NodeColorChip extends BaseChip {
   static type = "node_color";
   type = NodeColorChip.type;
-  static displayName = "Color Setting (Nodes)";
+  static displayName = "Node color by";
   static target = "node";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
 
   constructor(data: Record<string, string>, disabled?: boolean) {
-    super(disabled);
+    super(data, disabled);
     this.attribute = data.attribute || "";
     this.bg = "#e0f2fe";
     this.text = "#0369a1";
   }
 
-  getLabel(): string {
-    return `Node Color by: ${this.attribute}`;
+  getLabel() {
+    return `Node color by: ${this.attribute}`;
   }
 
   getFormData() {
     return { attribute: this.attribute };
   }
 
-  apply(series: any): void {
-    if (!series?.data) return;
-    series.data.forEach((node: any) => {
+  apply(series: any) {
+    series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
       if (val !== undefined && val !== null && val !== "") {
-        node.itemStyle = node.itemStyle || {};
-        node.itemStyle.color = getPastelColor(String(val));
+        node.itemStyle = { ...node.itemStyle, color: getPastelColor(String(val)) };
       }
     });
   }
@@ -75,36 +95,33 @@ export class NodeColorChip extends BaseChip {
 export class EdgeColorChip extends BaseChip {
   static type = "edgeColor";
   type = EdgeColorChip.type;
-  static displayName = "Color Setting (Edges)";
+  static displayName = "Edge color by";
   static target = "edge";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
 
   constructor(data: Record<string, string>, disabled?: boolean) {
-    super(disabled);
+    super(data, disabled);
     this.attribute = data.attribute || "";
     this.bg = "#fae8ff";
     this.text = "#86198f";
   }
 
-  getLabel(): string {
-    return `Edge Color by: ${this.attribute}`;
+  getLabel() {
+    return `Edge color by: ${this.attribute}`;
   }
 
   getFormData() {
     return { attribute: this.attribute };
   }
 
-  apply(series: any): void {
-    const edges = series?.links || series?.edges;
-    if (!edges) return;
-
-    edges.forEach((edge: any) => {
+  apply(series: any) {
+    const edges = series?.links;
+    edges?.forEach((edge: any) => {
       const val = edge.attributes?.[this.attribute];
       if (val !== undefined && val !== null && val !== "") {
-        edge.lineStyle = edge.lineStyle || {};
-        edge.lineStyle.color = getPastelColor(String(val));
+        edge.lineStyle = { ...edge.lineStyle, color: getPastelColor(String(val)) };
       }
     });
   }
@@ -113,7 +130,7 @@ export class EdgeColorChip extends BaseChip {
 export class PositionChip extends BaseChip {
   static type = "position";
   type = PositionChip.type;
-  static displayName = "Position Setting";
+  static displayName = "Position";
   static target = "node";
   static formFields: FormFieldConfig[] = [
     { key: "xAttr", label: "X:" },
@@ -124,14 +141,14 @@ export class PositionChip extends BaseChip {
   yAttr: string;
 
   constructor(data: Record<string, string>, disabled?: boolean) {
-    super(disabled);
+    super(data, disabled);
     this.xAttr = data.xAttr || "";
     this.yAttr = data.yAttr || "";
     this.bg = "#e2ffac";
     this.text = "rgb(18 93 53 / 0.78)";
   }
 
-  getLabel(): string {
+  getLabel() {
     return `Position: X(${this.xAttr}) Y(${this.yAttr})`;
   }
 
@@ -139,7 +156,7 @@ export class PositionChip extends BaseChip {
     return { xAttr: this.xAttr, yAttr: this.yAttr };
   }
 
-  apply(series: any): void {
+  apply(series: any) {
     if (!series?.data) return;
     series.layout = "none";
     series.data.forEach((node: any) => {
@@ -156,20 +173,20 @@ export class PositionChip extends BaseChip {
 export class LabelChip extends BaseChip {
   static type = "label";
   type = LabelChip.type;
-  static displayName = "Label Setting";
-  static target: "node" | "edge" = "node";
+  static displayName = "Label by";
+  static target = "node";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
 
   constructor(data: Record<string, string>, disabled?: boolean) {
-    super(disabled);
+    super(data, disabled);
     this.attribute = data.attribute || "";
     this.bg = "#fef08a";
     this.text = "#a16207";
   }
 
-  getLabel(): string {
+  getLabel() {
     return `Label by: ${this.attribute}`;
   }
 
@@ -177,9 +194,8 @@ export class LabelChip extends BaseChip {
     return { attribute: this.attribute };
   }
 
-  apply(series: any): void {
-    if (!series?.data) return;
-    series.data.forEach((node: any) => {
+  apply(series: any) {
+    series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
       node.label = {
         ...node.label,
@@ -191,10 +207,235 @@ export class LabelChip extends BaseChip {
   }
 }
 
-const CHIP_REGISTRY = [NodeColorChip, EdgeColorChip, PositionChip, LabelChip];
+export class SliderChip extends BaseChip {
+  static type = "slider";
+  type = SliderChip.type;
+  static displayName = "Slider";
+  static target = "node";
+  static formFields: FormFieldConfig[] = [{ key: "attribute" }];
+
+  attribute: string;
+  limitMin: number;
+  limitMax: number;
+  currentMin: number;
+  currentMax: number;
+
+  constructor(data: Record<string, string>, disabled?: boolean) {
+    super(data, disabled);
+    this.attribute = data.attribute || "";
+    this.limitMin = Number(data.min) || 0;
+    this.limitMax = Number(data.max) || 100;
+
+    this.currentMin = data.currentMin !== undefined ? Number(data.currentMin) : this.limitMin;
+    this.currentMax = data.currentMax !== undefined ? Number(data.currentMax) : this.limitMax;
+
+    this.bg = "#fee2e2";
+    this.text = "#dc2626";
+  }
+
+  static override getInitialData(
+    attribute: string,
+    rawItems: any[],
+    previousData?: Record<string, string>,
+  ): Record<string, string> {
+    const bounds = calculateAttributeBounds(rawItems, attribute);
+    const isSameAttribute = previousData?.attribute === attribute;
+
+    return {
+      attribute,
+      min: String(bounds.min),
+      max: String(bounds.max),
+      currentMin:
+        isSameAttribute && previousData?.currentMin !== undefined
+          ? previousData.currentMin
+          : String(bounds.min),
+      currentMax:
+        isSameAttribute && previousData?.currentMax !== undefined
+          ? previousData.currentMax
+          : String(bounds.max),
+    };
+  }
+
+  getLabel() {
+    return `Filter: ${this.attribute}`;
+  }
+
+  getFormData() {
+    return {
+      attribute: this.attribute,
+      min: String(this.limitMin),
+      max: String(this.limitMax),
+      currentMin: String(this.currentMin),
+      currentMax: String(this.currentMax),
+    };
+  }
+
+  apply(series: any) {
+    if (!series?.data) return;
+    const keptNodeIds = new Set<string>();
+
+    series.data = series.data.filter((node: any) => {
+      const val = Number(node.attributes?.[this.attribute]);
+      if (Number.isNaN(val)) return true;
+      const keep = val >= this.currentMin && val <= this.currentMax;
+      if (keep) keptNodeIds.add(node.id);
+      return keep;
+    });
+
+    const edgeKey = series.links ? "links" : "edges";
+    if (series[edgeKey]) {
+      series[edgeKey] = series[edgeKey].filter(
+        (edge: any) => keptNodeIds.has(edge.source) && keptNodeIds.has(edge.target),
+      );
+    }
+  }
+
+  override render(onChange?: () => void) {
+    const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = Math.min(Number(e.target.value), this.currentMax);
+      this.currentMin = val;
+      if (onChange) onChange();
+    };
+
+    const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = Math.max(Number(e.target.value), this.currentMin);
+      this.currentMax = val;
+      if (onChange) onChange();
+    };
+
+    const rangeDiff = this.limitMax - this.limitMin || 1;
+    const leftPercent = ((this.currentMin - this.limitMin) / rangeDiff) * 100;
+    const rightPercent = ((this.currentMax - this.limitMin) / rangeDiff) * 100;
+
+    const rangeInputStyle = (isMin: boolean): React.CSSProperties => ({
+      position: "absolute",
+      width: "100%",
+      height: 2,
+      pointerEvents: "none",
+      appearance: "none",
+      WebkitAppearance: "none",
+      background: "none",
+      outline: "none",
+      margin: 0,
+      zIndex: isMin ? 3 : 2,
+    });
+
+    return (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          marginLeft: 4,
+          background: "rgba(255,255,255,0.45)",
+          padding: "2px 8px",
+          borderRadius: 6,
+        }}
+      >
+        <span style={{ fontSize: 9, fontFamily: "monospace", opacity: 0.8 }}>
+          {this.currentMin}
+        </span>
+
+        <div
+          style={{
+            position: "relative",
+            width: 60,
+            height: 16,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: 2,
+              borderRadius: 1,
+              background: `linear-gradient(to right, #fca5a5 ${leftPercent}%, ${this.text} ${leftPercent}%, ${this.text} ${rightPercent}%, #fca5a5 ${rightPercent}%)`,
+            }}
+          />
+
+          <style>{`
+            input[type="range"] {
+              pointer-events: none !important;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+              pointer-events: auto !important;
+              appearance: none !important;
+              width: 8px !important;
+              height: 8px !important;
+              border-radius: 50% !important;
+              background-color: ${this.text} !important;
+              cursor: pointer !important;
+              transition: transform 0.1s ease !important;
+            }
+            input[type="range"]::-webkit-slider-thumb:hover {
+              transform: scale(1.25) !important;
+            }
+            input[type="range"]::-moz-range-thumb {
+              pointer-events: auto !important;
+              width: 8px !important;
+              height: 8px !important;
+              border: none !important;
+              border-radius: 50% !important;
+              background-color: ${this.text} !important;
+              cursor: pointer !important;
+              transition: transform 0.1s ease !important;
+            }
+            input[type="range"]::-moz-range-thumb:hover {
+              transform: scale(1.25) !important;
+            }
+          `}</style>
+
+          <input
+            type="range"
+            min={this.limitMin}
+            max={this.limitMax}
+            value={this.currentMin}
+            onChange={handleMinChange}
+            style={rangeInputStyle(true)}
+          />
+          <input
+            type="range"
+            min={this.limitMin}
+            max={this.limitMax}
+            value={this.currentMax}
+            onChange={handleMaxChange}
+            style={rangeInputStyle(false)}
+          />
+        </div>
+
+        <span style={{ fontSize: 9, fontFamily: "monospace", opacity: 0.8 }}>
+          {this.currentMax}
+        </span>
+      </div>
+    );
+  }
+}
+
+interface ChipConstructor {
+  type: string;
+  displayName: string;
+  target: string;
+  formFields: FormFieldConfig[];
+  new (data: Record<string, string>, disabled?: boolean): BaseChip;
+  getInitialData(
+    attribute: string,
+    rawItems: any[],
+    previousData?: Record<string, string>,
+  ): Record<string, string>;
+}
+
+const CHIP_REGISTRY: ChipConstructor[] = [
+  NodeColorChip,
+  EdgeColorChip,
+  PositionChip,
+  LabelChip,
+  SliderChip,
+];
 
 const BORDER_RADIUS_MAIN = 10;
-const BORDER_RADIUS_BUTTON = 20;
 
 const THEME = {
   button: { bg: "rgb(33 168 96 / 0.78)", text: "#ffffff" },
@@ -212,37 +453,38 @@ const THEME = {
 };
 
 const USER_SELECT_NONE_STYLE: React.CSSProperties = {
-  WebkitUserSelect: "none",
-  MozUserSelect: "none",
-  msUserSelect: "none",
   userSelect: "none",
+  WebkitUserSelect: "none",
 };
 
-// Extends and separates node and edge parameters explicitly
-const extractNodeAttributes = (opts: any): string[] => {
-  const nodes = opts?.series?.[0]?.data || [];
+const extractAttributes = (items: any[]): string[] => {
   const keysSet = new Set<string>();
-  for (const node of nodes) {
-    if (node?.attributes) {
-      for (const key of Object.keys(node.attributes)) {
-        keysSet.add(key);
-      }
+  items.forEach((item) => {
+    if (item?.attributes) {
+      Object.keys(item.attributes).forEach((k) => {
+        keysSet.add(k);
+      });
     }
-  }
+  });
   return Array.from(keysSet);
 };
 
-const extractEdgeAttributes = (opts: any): string[] => {
-  const edges = opts?.series?.[0]?.links || opts?.series?.[0]?.edges || [];
-  const keysSet = new Set<string>();
-  for (const edge of edges) {
-    if (edge?.attributes) {
-      for (const key of Object.keys(edge.attributes)) {
-        keysSet.add(key);
-      }
+const calculateAttributeBounds = (
+  items: any[],
+  attribute: string,
+): { min: number; max: number } => {
+  let min = Infinity;
+  let max = -Infinity;
+
+  items?.forEach((item) => {
+    const val = Number(item?.attributes?.[attribute]);
+    if (!Number.isNaN(val)) {
+      if (val < min) min = val;
+      if (val > max) max = val;
     }
-  }
-  return Array.from(keysSet);
+  });
+
+  return min === Infinity ? { min: 0, max: 100 } : { min, max };
 };
 
 interface ChipFormProps {
@@ -250,35 +492,45 @@ interface ChipFormProps {
   edgeAttrs: string[];
   initialChip: BaseChip | null;
   onSubmit: (newChip: BaseChip) => void;
+  rawElements: { nodes: any[]; edges: any[] };
 }
 
-function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit }: ChipFormProps) {
-  const [formType, setFormType] = useState<string>(initialChip?.type || CHIP_REGISTRY[0].type);
+function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: ChipFormProps) {
+  const [formType, setFormType] = useState(initialChip?.type || CHIP_REGISTRY[0].type);
+  const [selectedAttr, setSelectedAttr] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
 
   const ActiveClass = CHIP_REGISTRY.find((c) => c.type === formType) || CHIP_REGISTRY[0];
   const targetAttrs = ActiveClass.target === "edge" ? edgeAttrs : nodeAttrs;
 
+  const initialChipType = initialChip?.type;
+  const initialChipAttr = initialChip ? initialChip.getFormData().attribute || "" : "";
+
   useEffect(() => {
-    const defaultData: Record<string, string> = {};
+    const initialData = initialChip?.type === formType ? initialChip.getFormData() : {};
+    setSelectedAttr(initialData.attribute || targetAttrs[0] || "");
+  }, [formType, initialChipType, initialChipAttr, targetAttrs]);
+
+  useEffect(() => {
+    const activeRawItems = ActiveClass.target === "edge" ? rawElements.edges : rawElements.nodes;
     const initialData = initialChip?.type === formType ? initialChip.getFormData() : {};
 
-    ActiveClass.formFields.forEach((fieldConfig, index) => {
-      const fieldKey = fieldConfig.key;
-      defaultData[fieldKey] = initialData[fieldKey] || targetAttrs[index] || targetAttrs[0] || "";
-    });
+    const defaultData = ActiveClass.getInitialData(selectedAttr, activeRawItems, initialData);
 
     setFormData(defaultData);
-  }, [formType, initialChip, targetAttrs, ActiveClass]);
+  }, [formType, selectedAttr, initialChipType, initialChipAttr, ActiveClass, rawElements]);
 
-  const handleFieldChange = (fieldKey: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [fieldKey]: value }));
+  const handleAttrChange = (key: string, value: string) => {
+    if (key === "attribute") {
+      setSelectedAttr(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [key]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newChip = new (ActiveClass as any)(formData, initialChip?.disabled);
-    onSubmit(newChip);
+    onSubmit(new ActiveClass(formData, initialChip?.disabled));
   };
 
   const selectStyle = {
@@ -312,24 +564,31 @@ function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit }: ChipFormProps
         ))}
       </select>
 
-      {ActiveClass.formFields.map((fieldConfig) => (
-        <div key={fieldConfig.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {fieldConfig.label && (
-            <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>
-              {fieldConfig.label}
-            </span>
+      {ActiveClass.formFields.map((field) => (
+        <div key={field.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {field.label && (
+            <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>{field.label}</span>
           )}
-          <select
-            value={formData[fieldConfig.key] || ""}
-            onChange={(e) => handleFieldChange(fieldConfig.key, e.target.value)}
-            style={selectStyle}
-          >
-            {targetAttrs.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
+          {field.type === "number" ? (
+            <input
+              type="number"
+              value={formData[field.key] ?? ""}
+              onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+              style={{ ...selectStyle, width: 60 }}
+            />
+          ) : (
+            <select
+              value={formData[field.key] || selectedAttr}
+              onChange={(e) => handleAttrChange(field.key, e.target.value)}
+              style={selectStyle}
+            >
+              {targetAttrs.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       ))}
 
@@ -358,9 +617,17 @@ interface VisualChipProps {
   onEdit: (e: React.MouseEvent, index: number) => void;
   onToggleDisable: (e: React.MouseEvent, index: number) => void;
   onDelete: (index: number) => void;
+  onInteractiveChange: () => void;
 }
 
-function VisualChip({ chip, index, onEdit, onToggleDisable, onDelete }: VisualChipProps) {
+function VisualChip({
+  chip,
+  index,
+  onEdit,
+  onToggleDisable,
+  onDelete,
+  onInteractiveChange,
+}: VisualChipProps) {
   const [deleteHovered, setDeleteHovered] = useState(false);
   const [disableHovered, setDisableHovered] = useState(false);
 
@@ -394,6 +661,8 @@ function VisualChip({ chip, index, onEdit, onToggleDisable, onDelete }: VisualCh
       <span style={{ textDecoration: chip.disabled ? "line-through" : "none" }}>
         {chip.getLabel()}
       </span>
+
+      {!chip.disabled && chip.render(onInteractiveChange)}
 
       <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
         <span
@@ -458,9 +727,11 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [mainBtnHover, setMainBtnHover] = useState(false);
 
+  const [interactiveTick, setInteractiveTick] = useState(0);
+
   useEffect(() => {
-    setNodeAttrs(extractNodeAttributes(opts));
-    setEdgeAttrs(extractEdgeAttributes(opts));
+    setNodeAttrs(extractAttributes(opts?.series?.[0]?.data || []));
+    setEdgeAttrs(extractAttributes(opts?.series?.[0]?.links || opts?.series?.[0]?.edges || []));
   }, [opts]);
 
   useEffect(() => {
@@ -471,12 +742,8 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
 
     if (series) {
       if (series.data) {
-        series.data = series.data.map((n: any) => ({
-          ...n,
-          itemStyle: { ...n.itemStyle },
-        }));
+        series.data = series.data.map((n: any) => ({ ...n, itemStyle: { ...n.itemStyle } }));
       }
-
       const edgeKey = series.links ? "links" : "edges";
       if (series[edgeKey]) {
         series[edgeKey] = series[edgeKey].map((e: any) => ({
@@ -484,7 +751,6 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           lineStyle: { ...e.lineStyle },
         }));
       }
-
       chips
         .filter((c) => !c.disabled)
         .forEach((c) => {
@@ -492,11 +758,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
         });
     }
 
-    const inst = echarts.init(ref.current, undefined, {
-      renderer: "canvas",
-      width: "auto",
-      height: "auto",
-    });
+    const inst = echarts.init(ref.current);
     inst.setOption(chartOpts, true);
 
     const obs = new ResizeObserver(() => inst.resize());
@@ -506,7 +768,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
       obs.disconnect();
       inst.dispose();
     };
-  }, [opts, chips]);
+  }, [opts, chips, interactiveTick]);
 
   const handleFormSubmit = (newChip: BaseChip) => {
     if (editingIdx !== null) {
@@ -520,38 +782,19 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     setOpen(false);
   };
 
-  const startEdit = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation();
-    setEditingIdx(index);
-    setOpen(true);
-  };
-
   const handleToggleDisable = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     const updated = [...chips];
     const current = updated[index];
-
     const TargetClass = CHIP_REGISTRY.find((c) => c.type === current.type) || CHIP_REGISTRY[0];
-    updated[index] = new (TargetClass as any)(current.getFormData(), !current.disabled);
-
+    updated[index] = new TargetClass(current.getFormData(), !current.disabled);
     setChips(updated);
   };
 
-  const handleToggleForm = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setOpen(!open);
-    setEditingIdx(null);
-  };
-
-  const handleDeleteChip = (index: number) => {
-    setChips(chips.filter((_, idx) => idx !== index));
-    if (editingIdx === index) {
-      setEditingIdx(null);
-      setOpen(false);
-    }
-  };
-
   const hasAttributes = nodeAttrs.length > 0 || edgeAttrs.length > 0;
+
+  const rawNodes = opts?.series?.[0]?.data || [];
+  const rawEdges = opts?.series?.[0]?.links || opts?.series?.[0]?.edges || [];
 
   return (
     <div
@@ -572,13 +815,17 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
       >
         {hasAttributes && (
           <button
-            onClick={handleToggleForm}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(!open);
+              setEditingIdx(null);
+            }}
             onMouseEnter={() => setMainBtnHover(true)}
             onMouseLeave={() => setMainBtnHover(false)}
             style={{
               width: 28,
               height: 28,
-              borderRadius: BORDER_RADIUS_BUTTON,
+              borderRadius: 20,
               border: `1px solid ${open ? `${THEME.deleteBtn.text}40` : THEME.border}`,
               background: open
                 ? mainBtnHover
@@ -596,7 +843,6 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
               outline: "none",
               boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
               transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
-              ...USER_SELECT_NONE_STYLE,
             }}
           >
             {open ? "×" : "+"}
@@ -609,6 +855,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
             edgeAttrs={edgeAttrs}
             initialChip={editingIdx !== null ? chips[editingIdx] : null}
             onSubmit={handleFormSubmit}
+            rawElements={{ nodes: rawNodes, edges: rawEdges }}
           />
         )}
 
@@ -619,9 +866,20 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
               key={i}
               chip={c}
               index={i}
-              onEdit={startEdit}
+              onEdit={(e) => {
+                e.stopPropagation();
+                setEditingIdx(i);
+                setOpen(true);
+              }}
               onToggleDisable={handleToggleDisable}
-              onDelete={handleDeleteChip}
+              onInteractiveChange={() => setInteractiveTick((prev) => prev + 1)}
+              onDelete={(idx) => {
+                setChips(chips.filter((_, ci) => ci !== idx));
+                if (editingIdx === idx) {
+                  setEditingIdx(null);
+                  setOpen(false);
+                }
+              }}
             />
           );
         })}
