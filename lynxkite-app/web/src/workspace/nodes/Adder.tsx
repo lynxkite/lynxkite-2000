@@ -79,10 +79,12 @@ export function DropdownTextAdder({
   value,
   onChange,
   options,
+  defaultValues,
 }: {
   value: [string, string][];
   onChange: (v: [string, string][], opts?: UpdateOptions) => void;
   options: string[];
+  defaultValues?: Record<string, string>;
 }) {
   const safeValue: [string, string][] = Array.isArray(value) ? value : [];
 
@@ -91,8 +93,15 @@ export function DropdownTextAdder({
   };
 
   const updateFirst = (index: number, v: string, opts?: UpdateOptions) => {
+    const defaultValue = defaultValues?.[v] ?? "";
     onChange(
-      safeValue.map((row, i) => (i === index ? [v, row[1]] : row)),
+      safeValue.map((row, i) => {
+        if (i !== index) return row;
+        const currentValue = row[1] ?? "";
+        // If the user has not entered a value yet, prefill from defaults for this option.
+        const nextValue = currentValue === "" ? defaultValue : currentValue;
+        return [v, nextValue];
+      }),
       opts,
     );
   };
