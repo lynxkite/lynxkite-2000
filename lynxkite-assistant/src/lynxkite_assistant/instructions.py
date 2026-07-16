@@ -11,7 +11,7 @@ You must use existing boxes directly in `/workspace.py` without adding them to `
 If `/workspace.py` is empty, you can still add new boxes by editing `/boxes.py` or using the pre-defined boxes.
 
 You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you MUST FIX ALL ERRORS in the new boxes.
-If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box.
+If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box and you have every necessary dependency installed.
 Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
 
 For further instructions, see the comments in `/workspace.py`.
@@ -65,6 +65,7 @@ WORKSPACE_PROMPT = """\"\"\"The Python representation of the workspace.\"\"\"
 BOXES_PROMPT = '''
 """Custom box definitions for the workspace.
 
+DO NOT REMOVE this starting comment, as it contains crucial information for referencing the boxes in the workspace. You may add new comments, but do not remove or edit any existing comments.
 To add a custom box, define a function here and decorate it with @op.
 The positional arguments of the function become its inputs, and the keyword-only arguments become its parameters.
 E.g.:
@@ -129,4 +130,5 @@ REQ_INFO = """# Add any additional requirements for the workspace here.
 # The requirements will be installed in the environment before executing the workspace.
 # If you don't need any additional requirements, you can leave this file empty.
 # Dependencies will be installed with the `uv pip install` command, use the appropriate names and versions for the packages you want to install.
+# Do note remove any comments in this file. You can add new comments, but do not remove or edit any existing comments.
 # """
