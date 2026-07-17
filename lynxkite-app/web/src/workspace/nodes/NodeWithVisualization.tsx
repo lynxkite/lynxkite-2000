@@ -83,6 +83,7 @@ export class NodeColorChip extends BaseChip {
   }
 
   apply(series: any) {
+    if (!this.attribute) return;
     series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
       if (val !== undefined && val !== null && val !== "") {
@@ -117,7 +118,9 @@ export class EdgeColorChip extends BaseChip {
   }
 
   apply(series: any) {
-    const edges = series?.links;
+    if (!this.attribute) return;
+    const edgeKey = series.links ? "links" : "edges";
+    const edges = series?.[edgeKey];
     edges?.forEach((edge: any) => {
       const val = edge.attributes?.[this.attribute];
       if (val !== undefined && val !== null && val !== "") {
@@ -157,7 +160,7 @@ export class PositionChip extends BaseChip {
   }
 
   apply(series: any) {
-    if (!series?.data) return;
+    if (!series?.data || !this.xAttr || !this.yAttr) return;
     series.layout = "none";
     series.data.forEach((node: any) => {
       const xVal = Number(node.attributes?.[this.xAttr]);
@@ -195,12 +198,14 @@ export class LabelChip extends BaseChip {
   }
 
   apply(series: any) {
+    if (!this.attribute) return;
     series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
+      const hasValue = val !== undefined && val !== null && val !== "";
       node.label = {
         ...node.label,
-        show: val !== undefined && val !== null && val !== "",
-        formatter: String(val ?? ""),
+        show: hasValue,
+        formatter: hasValue ? String(val) : "",
         position: "top",
       };
     });
@@ -271,7 +276,7 @@ export class SliderChip extends BaseChip {
   }
 
   apply(series: any) {
-    if (!series?.data) return;
+    if (!series?.data || !this.attribute) return;
     const keptNodeIds = new Set<string>();
 
     series.data = series.data.filter((node: any) => {
@@ -438,7 +443,7 @@ const CHIP_REGISTRY: ChipConstructor[] = [
 const BORDER_RADIUS_MAIN = 10;
 
 const THEME = {
-  button: { bg: "rgb(33 168 96 / 0.78)", text: "#ffffff" },
+  button: { bg: "rgb(33 168 96 / 0.78)", text: "#ffffff", disabledBg: "#cbd5e1" },
   border: "#e2e8f0",
   deleteBtn: { bg: "#fee2e2", text: "#ef4444", hoverBg: "#fecaca" },
   disableBtn: {
@@ -497,41 +502,49 @@ interface ChipFormProps {
 
 function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: ChipFormProps) {
   const [formType, setFormType] = useState(initialChip?.type || CHIP_REGISTRY[0].type);
-  const [selectedAttr, setSelectedAttr] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
 
   const ActiveClass = CHIP_REGISTRY.find((c) => c.type === formType) || CHIP_REGISTRY[0];
   const targetAttrs = ActiveClass.target === "edge" ? edgeAttrs : nodeAttrs;
 
-  const initialChipType = initialChip?.type;
-  const initialChipAttr = initialChip ? initialChip.getFormData().attribute || "" : "";
-
+  // Initialize form state once when form type or initial chip changes
   useEffect(() => {
-    const initialData = initialChip?.type === formType ? initialChip.getFormData() : {};
-    setSelectedAttr(initialData.attribute || targetAttrs[0] || "");
-  }, [formType, initialChipType, initialChipAttr, targetAttrs]);
+    const initialData: Record<string, string> = {};
+    ActiveClass.formFields.forEach((field) => {
+      if (initialChip && initialChip.type === formType) {
+        initialData[field.key] = initialChip.getFormData()[field.key] || "";
+      } else {
+        initialData[field.key] = ""; // Keep fields clear/unselected by default
+      }
+    });
+    setFormData(initialData);
+  }, [formType, initialChip]);
 
-  useEffect(() => {
+  const handleFieldChange = (key: string, value: string) => {
     const activeRawItems = ActiveClass.target === "edge" ? rawElements.edges : rawElements.nodes;
-    const initialData = initialChip?.type === formType ? initialChip.getFormData() : {};
 
-    const defaultData = ActiveClass.getInitialData(selectedAttr, activeRawItems, initialData);
+    setFormData((prev) => {
+      const nextData = { ...prev, [key]: value };
 
-    setFormData(defaultData);
-  }, [formType, selectedAttr, initialChipType, initialChipAttr, ActiveClass, rawElements]);
+      // If updating the primary "attribute" field, generate the initial bounds automatically if subclass supports it
+      if (key === "attribute" || ActiveClass.formFields.length === 1) {
+        const defaultData = ActiveClass.getInitialData(value, activeRawItems);
+        return { ...nextData, ...defaultData };
+      }
 
-  const handleAttrChange = (key: string, value: string) => {
-    if (key === "attribute") {
-      setSelectedAttr(value);
-    } else {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    }
+      return nextData;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(new ActiveClass(formData, initialChip?.disabled));
   };
+
+  const isFormInvalid = ActiveClass.formFields.some((field) => {
+    const val = formData[field.key];
+    return !val || val === "";
+  });
 
   const selectStyle = {
     padding: "4px 8px",
@@ -578,10 +591,11 @@ function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: 
             />
           ) : (
             <select
-              value={formData[field.key] || selectedAttr}
-              onChange={(e) => handleAttrChange(field.key, e.target.value)}
+              value={formData[field.key] || ""}
+              onChange={(e) => handleFieldChange(field.key, e.target.value)}
               style={selectStyle}
             >
+              <option value=""></option>
               {targetAttrs.map((a) => (
                 <option key={a} value={a}>
                   {a}
@@ -594,14 +608,15 @@ function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: 
 
       <button
         type="submit"
+        disabled={isFormInvalid}
         style={{
           padding: "4px 12px",
           fontSize: 12,
-          background: THEME.button.bg,
+          background: isFormInvalid ? THEME.button.disabledBg : THEME.button.bg,
           color: THEME.button.text,
           border: "none",
           borderRadius: 6,
-          cursor: "pointer",
+          cursor: isFormInvalid ? "not-allowed" : "pointer",
           fontWeight: "bold",
         }}
       >
@@ -742,7 +757,11 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
 
     if (series) {
       if (series.data) {
-        series.data = series.data.map((n: any) => ({ ...n, itemStyle: { ...n.itemStyle } }));
+        series.data = series.data.map((n: any) => ({
+          ...n,
+          label: { ...n.label },
+          itemStyle: { ...n.itemStyle },
+        }));
       }
       const edgeKey = series.links ? "links" : "edges";
       if (series[edgeKey]) {
