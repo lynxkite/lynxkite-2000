@@ -507,18 +507,28 @@ function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: 
   const ActiveClass = CHIP_REGISTRY.find((c) => c.type === formType) || CHIP_REGISTRY[0];
   const targetAttrs = ActiveClass.target === "edge" ? edgeAttrs : nodeAttrs;
 
-  // Initialize form state once when form type or initial chip changes
   useEffect(() => {
     const initialData: Record<string, string> = {};
+    const isEditingCurrentType = initialChip && initialChip.type === formType;
+
     ActiveClass.formFields.forEach((field) => {
-      if (initialChip && initialChip.type === formType) {
+      if (isEditingCurrentType) {
         initialData[field.key] = initialChip.getFormData()[field.key] || "";
       } else {
-        initialData[field.key] = ""; // Keep fields clear/unselected by default
+        initialData[field.key] = "";
       }
     });
+
+    if (isEditingCurrentType) {
+      const savedData = initialChip.getFormData();
+      if (savedData.min !== undefined) initialData.min = savedData.min;
+      if (savedData.max !== undefined) initialData.max = savedData.max;
+      if (savedData.currentMin !== undefined) initialData.currentMin = savedData.currentMin;
+      if (savedData.currentMax !== undefined) initialData.currentMax = savedData.currentMax;
+    }
+
     setFormData(initialData);
-  }, [formType, initialChip]);
+  }, [formType, initialChip, ActiveClass]);
 
   const handleFieldChange = (key: string, value: string) => {
     const activeRawItems = ActiveClass.target === "edge" ? rawElements.edges : rawElements.nodes;
@@ -526,7 +536,7 @@ function ChipForm({ nodeAttrs, edgeAttrs, initialChip, onSubmit, rawElements }: 
     setFormData((prev) => {
       const nextData = { ...prev, [key]: value };
 
-      // If updating the primary "attribute" field, generate the initial bounds automatically if subclass supports it
+      // If updating the primary "attribute" field, generate the initial bounds dynamically (e.g. for sliders)
       if (key === "attribute" || ActiveClass.formFields.length === 1) {
         const defaultData = ActiveClass.getInitialData(value, activeRawItems);
         return { ...nextData, ...defaultData };
