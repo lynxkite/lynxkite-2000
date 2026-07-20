@@ -10,11 +10,11 @@ if [ "$DIR" != "." ]; then
     cd "$DIR" || exit 1
 fi
 
-cp "${PAR}lynxkite-2000/lynxkite-assistant/agent_env_setup/AGENTS.md" AGENTS.md
+cp "${PAR}lynxkite-2000/lynxkite-mcp/agent_env_setup/AGENTS.md" AGENTS.md
 
 npx skills add NVIDIA-BioNeMo/bionemo-agent-toolkit --all -y > /dev/null
 cp -R "${PAR}lynxkite-2000/.agents/skills/." .agents/skills/
 
 mkdir -p .vscode
 
-cat "${PAR}lynxkite-2000/lynxkite-assistant/agent_env_setup/mcp.json" | sed "s|DIR_|$PAR|g" > .vscode/mcp.json
+cat "${PAR}lynxkite-2000/lynxkite-mcp/agent_env_setup/mcp.json" | sed "s|DIR_|$PAR|g" > .vscode/mcp.json
