@@ -1,7 +1,9 @@
+import pathlib
+
 from mcp.server.fastmcp import FastMCP
 import json
 
-from lynxkite_core import ops
+from lynxkite_core import ops, workspace
 from lynxkite_assistant import workspace_backend, instructions
 
 mcp = FastMCP("LynxKite Assistant", instructions=instructions.SYSTEM_PROMPT)
@@ -60,6 +62,23 @@ async def edit_requirements(ws_path, content: str) -> None:
     """Edit the content of the requirements.txt file to define additional dependencies"""
     workspace_backend.set_req_file_content(ws_path, content)
     await workspace_backend.execute_workspace(ws_path)
+
+
+@mcp.tool()
+def create_new_lynxkite_workspace(ws_path, env_name="LynxKite Graph Analytics") -> None:
+    """Create a new LynxKite workspace. Worksapces should be created under the `examples` folder.
+    The extension should always be .lynxkite.json.
+    The env_name should be one of the available environments: "LynxKite Graph Analytics", "Pillow", "PyTorch model".
+    """
+    if not ws_path.endswith(".lynxkite.json"):
+        raise ValueError("The workspace file name should end with .lynxkite.json")
+    if not ws_path.startswith("examples/"):
+        raise ValueError("The workspace file should be created under the examples folder")
+    ws = workspace.Workspace()
+    ws.env = env_name
+    p = pathlib.Path(ws_path).parent
+    p.mkdir(parents=True, exist_ok=True)
+    ws.save(ws_path)
 
 
 def main():
