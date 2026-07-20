@@ -1,6 +1,7 @@
 """Defines the OpContext class, which is passed to operations when they are executed.
 This context can be used to send messages to the frontend, capture stdout/stderr, and more."""
 
+import inspect
 import typing
 import contextlib
 import asyncio
@@ -73,6 +74,44 @@ class DummyTqdm:
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
+
+
+def find_ctx_param_name(func: typing.Callable) -> str | None:
+    """Returns the name of the OpContext parameter.
+
+    Detects two forms:
+    - Legacy: a parameter named ``CONTEXT_PARAM_NAME`` (``"self"``)
+    - New:    a parameter annotated as ``OpContext``
+    """
+    try:
+        hints = typing.get_type_hints(func)
+    except Exception:
+        hints = {}
+
+    sig = inspect.signature(func)
+    legacy = CONTEXT_PARAM_NAME in sig.parameters
+    annotated = [
+        name
+        for name, _param in sig.parameters.items()
+        if name != CONTEXT_PARAM_NAME and hints.get(name) is OpContext
+    ]
+    if len(annotated) > 1:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func.__name__}' has multiple OpContext-annotated "
+            f"parameters: {annotated}. Use only one."
+        )
+
+    if legacy and annotated:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func.__name__}' has both the legacy "
+            f"'{CONTEXT_PARAM_NAME}' parameter and OpContext-annotated parameter(s) "
+            f"{annotated}. Use only one form."
+        )
+    if legacy:
+        return CONTEXT_PARAM_NAME
+    return annotated[0] if annotated else None
+
+
 PROGRESS_REPORTER: ProgressReporterFactory = DummyTqdm
 TQDM_CAPTURER: typing.Optional[typing.Callable[["OpContext"], typing.Callable[..., typing.Any]]] = (
     None

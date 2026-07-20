@@ -27,6 +27,18 @@ from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
 
 
+def _opctx_param_name(func: typing.Callable) -> str | None:
+    """Returns the name of the `OpContext`-annotated parameter."""
+    try:
+        hints = typing.get_type_hints(func)
+    except Exception:
+        hints = {}
+    for name, hint in hints.items():
+        if name != "record" and hint is OpContext:
+            return name
+    return None
+
+
 def elementwise(
     func: typing.Callable | None = None,
     *,
@@ -73,11 +85,16 @@ def elementwise(
         if is_lim and not enterprise_backend:
             raise ValueError("@lim requires LynxKite Enterprise")
 
+        ctx_param = _opctx_param_name(func)
+        # Static mode: input_table is a literal table name, not a parameter name.
+        # Dynamic mode: input_table names a parameter whose runtime value is the table name.
+        _static_table = input_table if input_table not in sig.parameters else None
+
         public_signature = sig.replace(
             parameters=[
                 inspect.Parameter("self", inspect.Parameter.POSITIONAL_OR_KEYWORD),
                 inspect.Parameter("bundle", inspect.Parameter.POSITIONAL_OR_KEYWORD),
-                *[p for p in params[1:] if p.name != "bundle"],
+                *[p for p in params[1:] if p.name != "bundle" and p.name != ctx_param],
             ]
         )
 
@@ -88,7 +105,9 @@ def elementwise(
                 bundle: Bundle,
                 **kwargs,
             ) -> Bundle:
-                selected_input_table = kwargs[input_table]
+                selected_input_table = (
+                    _static_table if _static_table is not None else kwargs[input_table]
+                )
                 return await _elementwise_impl_async(
                     self,
                     bundle,
@@ -103,7 +122,9 @@ def elementwise(
             return async_wrapper
 
         def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
-            selected_input_table = kwargs[input_table]
+            selected_input_table = (
+                _static_table if _static_table is not None else kwargs[input_table]
+            )
             if max(concurrency, execution_parallelism(self) if execution_parallelism else 1) > 1:
                 return asyncio.run(
                     _elementwise_impl_async(
@@ -146,14 +167,17 @@ async def _elementwise_impl_async(
         input_table_selection=input_table_selection,
     )
 
+    ctx_param = _opctx_param_name(func)
+    ctx_dict = {ctx_param: self} if ctx_param else {}
+
     async def process_row_updates(idx: RowIndex, row: pd.Series) -> dict[ColumnKey, typing.Any]:
         record = Record(row, idx)
         if inspect.iscoroutinefunction(func):
-            result = func(record, **kwargs)
+            result = func(record, **{**kwargs, **ctx_dict})
             if inspect.isawaitable(result):
                 await result
         else:
-            await asyncio.to_thread(func, record, **kwargs)
+            await asyncio.to_thread(func, record, **{**kwargs, **ctx_dict})
         return record.get_updates()
 
     lim_cleanup = None
@@ -231,9 +255,11 @@ def _elementwise_impl_sync(
         input_table_selection=input_table_selection,
     )
 
+    ctx_param = _opctx_param_name(func)
+    ctx_dict = {ctx_param: self} if ctx_param else {}
     for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
         record = Record(row, idx)
-        func(record, **kwargs)
+        func(record, **{**kwargs, **ctx_dict})
         _apply_updates(df, row_pos, record.get_updates())
 
     bundle.dfs[table_name] = df

@@ -22,7 +22,7 @@ from dataclasses import dataclass
 import pydantic
 from pydantic_core import to_json
 from .matplotlib_to_image import matplotlib_to_image
-from .opcontext import OpContext, CONTEXT_PARAM_NAME
+from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -310,7 +310,9 @@ class Op(BaseConfig):
         assert isinstance(op_ctx, OpContext)
         # Convert parameters.
         params = self.convert_params(params)
-        if inspect.signature(self.func).parameters.get(CONTEXT_PARAM_NAME, None):
+        ctx_name = find_ctx_param_name(self.func)
+        if ctx_name is not None:
+            # Inject OpContext by keyword; parameter name is flexible.
             res = self.func(op_ctx, *inputs, **params)
         else:
             res = self.func(*inputs, **params)
@@ -444,17 +446,23 @@ def op(
         if slow:
             func = make_async(func)
             if cache is not False:
-                if sig.parameters.get(CONTEXT_PARAM_NAME, None) is None:
+                ctx_name = find_ctx_param_name(func)
+                if ctx_name is None:
                     func = cached(func)
                 else:
                     func = _cached_with_ctx(func)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
+        try:
+            _hints = typing.get_type_hints(func)
+        except Exception:
+            _hints = {}
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
-            and (name != CONTEXT_PARAM_NAME)
+            and name != CONTEXT_PARAM_NAME
+            and _hints.get(name) is not OpContext
         ]
         _params = []
         for n, param in sig.parameters.items():
