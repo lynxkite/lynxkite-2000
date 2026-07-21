@@ -221,7 +221,7 @@ class Workspace(BaseConfig):
             del j["path"]
         return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
-    def save(self, path: str | pathlib.Path):
+    def save(self, path: str | pathlib.Path, from_frontend=False):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
         j = self.model_dump_json_sorted()
@@ -240,6 +240,10 @@ class Workspace(BaseConfig):
             temp_name = f.name
             f.write(j)
         os.replace(temp_name, path)
+        if not from_frontend:
+            pathlib.Path(
+                path
+            ).touch()  # trigger the on_modified event to reload the workspace in the frontend
 
     @staticmethod
     def load(path: str | pathlib.Path) -> "Workspace":

@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from lynxkite_core import ops, workspace
 import os
+import asyncio
 
 
 async def _exec(a, b):
@@ -67,7 +68,7 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
     ops.load_user_scripts(og_ws_path)
     og_ws = workspace.Workspace.load(og_ws_path)
     resp = python_workspace_conversion.workspace_to_python(og_ws)
-    workspace_backend.set_workspace_file_content(mod_ws_path, resp)
+    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
 
     def get_idx(node_ids, nid):
@@ -125,7 +126,7 @@ def test_workspace_changed(data_path, create_temp_file):
     ops.load_user_scripts(
         data_path / "modified.lynxkite.json"
     )  # we pretend that the code is running from the tests folder
-    workspace_backend.set_workspace_file_content(mod_ws_path, resp)
+    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
     expected_ws = workspace.Workspace.load(expected_ws_path)
 

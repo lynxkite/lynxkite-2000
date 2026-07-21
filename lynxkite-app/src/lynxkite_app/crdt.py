@@ -198,11 +198,6 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
             self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
 
-    def on_moved(self, event):
-        if pathlib.Path(event.dest_path) == pathlib.Path(self.file_path):
-            print(f"Detected changes through move in {event.dest_path}. Updating workspace...")
-            self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
-
     def on_deleted(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
@@ -357,7 +352,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
     ws_pyd = workspace.Workspace.model_validate(raw)
-    ws_pyd.save(pathlib.Path() / name)
+    ws_pyd.save(pathlib.Path() / name, from_frontend=True)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
     if ws_fingerprint == state[name].last_known_version:
@@ -411,7 +406,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
             nc["data"]["status"] = "planned"
             nc["data"]["message"] = None
     await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    ws_pyd.save(path)
+    ws_pyd.save(path, from_frontend=True)
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 
