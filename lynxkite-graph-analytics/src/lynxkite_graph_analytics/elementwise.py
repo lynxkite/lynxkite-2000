@@ -7,7 +7,7 @@ import inspect
 import typing
 import pandas as pd
 
-from lynxkite_core.ops import OpContext
+from lynxkite_core.ops import OpContext, find_ctx_param_name
 
 try:
     from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
@@ -27,18 +27,6 @@ from .bundle import Bundle
 from .record import ColumnKey, Record, RowIndex
 
 
-def _opctx_param_name(func: typing.Callable) -> str | None:
-    """Returns the name of the `OpContext`-annotated parameter."""
-    try:
-        hints = typing.get_type_hints(func)
-    except Exception:
-        hints = {}
-    for name, hint in hints.items():
-        if name != "record" and hint is OpContext:
-            return name
-    return None
-
-
 def elementwise(
     func: typing.Callable | None = None,
     *,
@@ -50,6 +38,8 @@ def elementwise(
 
     The wrapped function receives a Record and can update output fields directly.
     Iteration, progress display, and DataFrame writes are handled by the decorator.
+    If the provided input_table matches a parameter name, its runtime value is used
+    as the table name; otherwise it is treated as a literal table name.
 
     Set ``concurrency`` above 1 to process multiple rows in parallel. With LynxKite Enterprise,
     effective parallelism is ``max(concurrency, ws.execution_options['gpus'])``; otherwise only
@@ -85,9 +75,7 @@ def elementwise(
         if is_lim and not enterprise_backend:
             raise ValueError("@lim requires LynxKite Enterprise")
 
-        ctx_param = _opctx_param_name(func)
-        # Static mode: input_table is a literal table name, not a parameter name.
-        # Dynamic mode: input_table names a parameter whose runtime value is the table name.
+        ctx_param, _ctx_idx = find_ctx_param_name(func)
         _static_table = input_table if input_table not in sig.parameters else None
 
         public_signature = sig.replace(
@@ -167,7 +155,7 @@ async def _elementwise_impl_async(
         input_table_selection=input_table_selection,
     )
 
-    ctx_param = _opctx_param_name(func)
+    ctx_param, _ctx_idx = find_ctx_param_name(func)
     ctx_dict = {ctx_param: self} if ctx_param else {}
 
     async def process_row_updates(idx: RowIndex, row: pd.Series) -> dict[ColumnKey, typing.Any]:
@@ -255,7 +243,7 @@ def _elementwise_impl_sync(
         input_table_selection=input_table_selection,
     )
 
-    ctx_param = _opctx_param_name(func)
+    ctx_param, _ctx_idx = find_ctx_param_name(func)
     ctx_dict = {ctx_param: self} if ctx_param else {}
     for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
         record = Record(row, idx)

@@ -61,7 +61,7 @@ def cached(func):
     return CACHE_WRAPPER(func)
 
 
-def _cached_with_ctx(func):
+def _cached_with_ctx(func, ctx_idx: int):
     """
     This function is used with operations that have a context parameter.
     For caching to work the context parameter needs to be ignored (as it is not serializable),
@@ -72,7 +72,9 @@ def _cached_with_ctx(func):
         return func
 
     def _cache_with_message(op_ctx: "OpContext", *args, **kwargs):
-        result = asyncio.run(func(op_ctx, *args, **kwargs))
+        args_list = list(args)
+        args_list.insert(ctx_idx, op_ctx)
+        result = asyncio.run(func(*args_list, **kwargs))
         # Save the function result and the messages it sent.
         return _CachedCall(result=result, message=op_ctx.message or "")
 
@@ -310,10 +312,11 @@ class Op(BaseConfig):
         assert isinstance(op_ctx, OpContext)
         # Convert parameters.
         params = self.convert_params(params)
-        ctx_name = find_ctx_param_name(self.func)
-        if ctx_name is not None:
-            # Inject OpContext by keyword; parameter name is flexible.
-            res = self.func(op_ctx, *inputs, **params)
+        ctx_name, ctx_idx = find_ctx_param_name(self.func)
+        if ctx_name is not None and ctx_idx is not None:
+            inputs_list = list(inputs)
+            inputs_list.insert(ctx_idx, op_ctx)
+            res = self.func(*inputs_list, **params)
         else:
             res = self.func(*inputs, **params)
 
@@ -442,15 +445,14 @@ def op(
         if view == "matplotlib":
             _view = "image"
             func = matplotlib_to_image(func)
-
+        ctx_name, ctx_idx = find_ctx_param_name(func)
         if slow:
             func = make_async(func)
             if cache is not False:
-                ctx_name = find_ctx_param_name(func)
-                if ctx_name is None:
+                if ctx_name is None or ctx_idx is None:
                     func = cached(func)
                 else:
-                    func = _cached_with_ctx(func)
+                    func = _cached_with_ctx(func, ctx_idx)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
         try:
