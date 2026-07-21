@@ -86,6 +86,231 @@ def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bund
     return b
 
 
+class UnionFind:
+    items: dict
+
+    def __init__(self, items):
+        self.items = {i: i for i in items}
+
+    def find(self, i):
+        path = []
+        while self.items[i] != i:
+            path.append(i)
+            i = self.items[i]
+        for node in path:
+            self.items[node] = i
+        return self.items[i]
+
+    def union(self, a, b):
+        self.items[b] = a
+
+
+def _dual_growth(all_nodes, edges, prizes, super_root):
+    uf = UnionFind(all_nodes)
+    active = {c: (prizes[c] > 0 and c != super_root) for c in prizes}
+    edge_slack = dict(edges)
+    added_edges = []
+    epsilon = 1e-12
+
+    while any(active.values()):
+        min_eps, event_edge, event_comp = float("inf"), None, None
+
+        for (u, v), slack in edge_slack.items():
+            cu, cv = uf.find(u), uf.find(v)
+            if cu != cv:
+                rate = active[cu] + active[cv]
+                if rate > 0 and (slack / rate) < min_eps:
+                    min_eps, event_edge, event_comp = slack / rate, (u, v), None
+
+        for c, is_act in active.items():
+            if is_act and prizes[c] < min_eps:
+                min_eps, event_edge, event_comp = prizes[c], None, c
+
+        if min_eps == float("inf") or (min_eps <= epsilon and not event_edge and not event_comp):
+            break
+
+        for c, is_act in active.items():
+            if is_act:
+                prizes[c] -= min_eps
+
+        for u, v in list(edge_slack.keys()):
+            cu, cv = uf.find(u), uf.find(v)
+            if cu != cv:
+                rate = active[cu] + active[cv]
+                if rate > 0:
+                    edge_slack[(u, v)] -= rate * min_eps
+
+        if event_comp:
+            active[event_comp] = False
+        elif event_edge:
+            u, v = event_edge
+            cu, cv = uf.find(u), uf.find(v)
+            added_edges.append((u, v))
+
+            if cu == super_root or cv == super_root:
+                old_c = cv if cu == super_root else cu
+                uf.union(super_root, old_c)
+                active[old_c] = False
+            else:
+                new_c, old_c = (cv, cu) if prizes[cv] >= prizes[cu] else (cu, cv)
+                uf.union(new_c, old_c)
+                prizes[new_c] += prizes[old_c]
+                active[new_c] = prizes[new_c] > 0
+                active[old_c] = False
+
+    return added_edges
+
+
+def _prune_tree(added_edges, edges, prizes, super_root):
+    T = nx.Graph()
+    for u, v in added_edges:
+        T.add_edge(u, v, weight=edges[(u, v) if u < v else (v, u)])
+
+    if super_root not in T:
+        return T
+
+    leaves = [n for n, d in T.degree() if n != super_root and d == 1]
+    while leaves:
+        node = leaves.pop()
+        if node in T and T.degree(node) == 1 and node != super_root:
+            nbr = next(T.neighbors(node))
+            if prizes.get(node, 0.0) <= T[node][nbr]["weight"]:
+                T.remove_node(node)
+                if nbr != super_root and T.degree(nbr) == 1:
+                    leaves.append(nbr)
+    return T
+
+
+def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root_nodes):
+    if not nodes:
+        return 0.0, set(), set(), set()
+
+    super_root = "-1"
+    edges = {e: float(edge_costs[e]) for e in und_list}
+    for r in eligible_root_nodes:
+        if r in nodes:
+            edges[(super_root, r) if super_root < r else (r, super_root)] = float(
+                root_costs.get(r, 0.0)
+            )
+
+    initial_prizes = {n: float(node_prices.get(n, 0.0)) for n in nodes}
+    growth_prizes = dict(initial_prizes)
+    growth_prizes[super_root] = float("inf")
+
+    all_nodes = list(nodes) + [super_root]
+    added_edges = _dual_growth(all_nodes, edges, growth_prizes, super_root)
+    T = _prune_tree(added_edges, edges, initial_prizes, super_root)
+
+    if super_root not in T or len(T) <= 1:
+        return 0.0, set(), set(), set()
+
+    sel_nodes = set(T.nodes) - {super_root}
+    sel_roots = {r for r in eligible_root_nodes if T.has_edge(super_root, r)}
+    sel_edges = {
+        (u, v) if u < v else (v, u) for u, v in T.edges if u != super_root and v != super_root
+    }
+
+    profit = (
+        sum(initial_prizes[n] for n in sel_nodes)
+        - sum(edges[e] for e in sel_edges)
+        - sum(float(root_costs.get(r, 0.0)) for r in sel_roots)
+    )
+
+    return max(0.0, float(profit)), sel_nodes, sel_roots, sel_edges
+
+
+@op("Steiner forest", icon="eye", color="blue")
+def pcsf(
+    b: core.Bundle,
+    *,
+    relation: core.RelationName,
+    price_column: str,
+    weight_column: str,
+    root_cost_column: str,
+    output_edge: str,
+    output_node: str,
+    output_root_nodes: str,
+    output_profit: str,
+):
+    """
+    Creates a new dataframe that defines a Steiner Forest of the graph defined by the relation
+    :param b: the bundle
+    :param relation: the relation
+    :param price_column: the column with the node prices
+    :param weight_column: the column with the edge weights
+    :param root_cost_column: the column with the root costs
+    :param output_edge: the output column, 1.0 if the edge is part of the forest, None otherwise
+    :param output_node: the output column, 1.0 if the node is part of the forest, None otherwise
+    :param output_root_nodes: the output column, 1.0 if the node is a root node, None otherwise
+    :param output_profit: a table with a single record: the profit
+
+    """
+    b = b.copy()
+    rel = next((r for r in b.relations if r.name == relation))
+    if rel.source_table != rel.target_table:
+        raise ValueError("Source and target tables must be the same.")
+
+    node_df, edge_df = b.dfs[rel.source_table].copy(), b.dfs[rel.df].copy()
+    nid, src, dst = rel.source_key, rel.source_column, rel.target_column
+
+    node_df[nid] = node_df[nid].astype(str)
+    edge_df[[src, dst]] = edge_df[[src, dst]].astype(str)
+
+    node_df[price_column] = pd.to_numeric(node_df[price_column]).fillna(0.0).clip(lower=0.0)
+    edge_df[weight_column] = pd.to_numeric(edge_df[weight_column]).fillna(0.0).clip(lower=0.0)
+
+    raw_root_costs = pd.to_numeric(node_df[root_cost_column])
+    eligible_root_mask = raw_root_costs.notna() & (raw_root_costs >= 0)
+    eligible_root_nodes = set(node_df.loc[eligible_root_mask, nid])
+    node_df["root_cost_sanitized"] = raw_root_costs.fillna(0.0).clip(lower=0.0)
+
+    nodes = list(node_df[nid].unique())
+    node_prices = dict(zip(node_df[nid], node_df[price_column]))
+    root_costs = dict(zip(node_df[nid], node_df["root_cost_sanitized"]))
+
+    undirected_edges = {}
+    edge_costs = {}
+
+    for idx, row in edge_df.iterrows():
+        u, v, w = row[src], row[dst], row[weight_column]
+        if u == v or u not in node_prices or v not in node_prices:
+            continue
+
+        key = tuple(sorted([u, v]))
+        if key not in edge_costs or w < edge_costs[key]:
+            undirected_edges[key] = idx
+            edge_costs[key] = w
+
+    edges = list(undirected_edges.keys())
+
+    net_profit, selected_nodes, selected_roots, selected_edges = _gw_pcsf(
+        nodes=nodes,
+        und_list=edges,
+        node_prices=node_prices,
+        edge_costs=edge_costs,
+        root_costs=root_costs,
+        eligible_root_nodes=eligible_root_nodes,
+    )
+
+    selected_edge_indices = {undirected_edges[e] for e in selected_edges if e in undirected_edges}
+
+    node_df[output_node] = [1.0 if x in selected_nodes else None for x in node_df[nid]]
+    node_df[output_root_nodes] = [1.0 if x in selected_roots else None for x in node_df[nid]]
+    edge_df[output_edge] = [1.0 if idx in selected_edge_indices else None for idx in edge_df.index]
+
+    results_df = pd.DataFrame(
+        {output_profit: [float(net_profit) if net_profit is not None else None]}
+    )
+    b.dfs[output_profit] = results_df
+
+    if "root_cost_sanitized" in node_df.columns:
+        node_df.drop(columns=["root_cost_sanitized"], inplace=True)
+
+    b.dfs[rel.source_table] = node_df.astype(object).where(node_df.notnull(), None)
+    b.dfs[rel.df] = edge_df.astype(object).where(edge_df.notnull(), None)
+    return b
+
+
 def update_relations(
     b: core.Bundle,
     table_name: core.TableName,

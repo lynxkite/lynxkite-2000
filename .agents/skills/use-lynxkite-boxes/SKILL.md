@@ -134,6 +134,10 @@ for detailed information, see references/merge_two_attributes.md
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
 
+**Steiner forest:**
+usage: lynxkite_graph_analytics.operations.graph_ops.pcsf(relation=<relation_value>, price_column=<price_column_value>, weight_column=<weight_column_value>, root_cost_column=<root_cost_column_value>, output_edge=<output_edge_value>, output_node=<output_node_value>, output_root_nodes=<output_root_nodes_value>, output_profit=<output_profit_value>, b=<b_variable>)
+for detailed information, see references/pcsf.md
+
 **Supplement edges with node attributes:**
 usage: lynxkite_graph_analytics.operations.graph_ops.supplement_edges(table_name=<table_name_value>, b=<b_variable>)
 for detailed information, see references/supplement_edges.md
