@@ -105,8 +105,7 @@ export class Workspace {
   async selectBoxes(boxIds: string[]) {
     // Unselect any previously selected boxes by pressing Escape first,
     // then select the boxes one by one while holding Control.
-    await this.page.keyboard.down("Escape");
-    await this.page.keyboard.up("Escape");
+    await this.page.keyboard.press("Escape");
     for (const boxId of boxIds) {
       await this.getBox(boxId)
         .locator(".react-flow__resize-control.handle")
