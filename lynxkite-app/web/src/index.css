@@ -949,6 +949,24 @@ svg {
   gap: 8px;
 }
 
+.assistant-mic-wrapper {
+  display: inline-flex;
+}
+
+.assistant-mic-button.is-recording {
+  color: #ffffff;
+  border-color: #0284c7;
+  background: #0ea5e9;
+}
+
+.assistant-mic-button.is-disabled {
+  color: #9ca3af;
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
 .assistant-clear-button {
   margin-right: auto;
 }

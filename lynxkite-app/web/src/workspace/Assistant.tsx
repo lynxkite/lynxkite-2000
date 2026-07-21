@@ -1,8 +1,10 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
+import useSpeechToText from "react-hook-speech-to-text";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
 import type { useCRDTWorkspace } from "./crdt";
 
@@ -22,6 +24,43 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
   const workspacePath = crdtWorkspace.ws?.path || "";
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
   const [messagesLoaded, setMessagesLoaded] = useState(false);
+  const dictationBaseRef = useRef("");
+
+  const {
+    error: speechError,
+    interimResult,
+    isRecording,
+    results,
+    setResults,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    continuous: true,
+    useLegacyResults: false,
+    speechRecognitionProperties: {
+      interimResults: true,
+      lang: "en-US",
+    },
+  });
+
+  const hasSpeechRecognitionApi =
+    typeof window !== "undefined" &&
+    ("SpeechRecognition" in window || "webkitSpeechRecognition" in (window as any));
+  const isSpeechToTextUnsupported =
+    !hasSpeechRecognitionApi ||
+    speechError === "SpeechRecognition API is not available in this browser";
+  const microphoneTitle = isSpeechToTextUnsupported
+    ? "Voice input is unavailable: this browser does not support the Web Speech API."
+    : speechError
+      ? speechError
+      : isRecording
+        ? "Stop voice input"
+        : "Start voice input";
+
+  const transcriptText = results
+    .map((result) => (typeof result === "string" ? result : result.transcript))
+    .join(" ")
+    .trim();
 
   const { messages, sendMessage, status, error, stop, setMessages } = useChat({
     transport: new TextStreamChatTransport({
@@ -45,10 +84,35 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
     container.scrollTop = container.scrollHeight;
   }, [messages, isGenerating]);
 
+  useEffect(() => {
+    const textFromSpeech = `${transcriptText}${interimResult ? ` ${interimResult}` : ""}`.trim();
+    if (!textFromSpeech) return;
+    const nextInput = `${dictationBaseRef.current}${textFromSpeech}`.trim();
+    setInput(nextInput);
+  }, [interimResult, transcriptText]);
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+    if (editorRef.current.textContent !== input) {
+      editorRef.current.textContent = input;
+    }
+  }, [input]);
+
   function clearChatHistory() {
     setMessages([]);
     setMessagesLoaded(true);
     crdtWorkspaceRef.current.clearAssistantMessages();
+  }
+
+  function toggleVoiceInput() {
+    if (isSpeechToTextUnsupported) return;
+    if (isRecording) {
+      stopSpeechToText();
+      return;
+    }
+    dictationBaseRef.current = input ? `${input.trim()} ` : "";
+    setResults([]);
+    void startSpeechToText();
   }
 
   return (
@@ -142,6 +206,11 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
             text: prompt,
             metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
           });
+          if (isRecording) {
+            stopSpeechToText();
+          }
+          dictationBaseRef.current = "";
+          setResults([]);
           setInput("");
           if (editorRef.current) {
             editorRef.current.textContent = "";
@@ -166,6 +235,19 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           }}
         />
         <div className="assistant-actions">
+          <span className="assistant-mic-wrapper" title={microphoneTitle}>
+            <button
+              className={`btn btn-sm btn-square assistant-mic-button ${
+                isRecording ? "is-recording" : ""
+              } ${isSpeechToTextUnsupported ? "is-disabled" : ""}`}
+              type="button"
+              aria-label={isRecording ? "Stop voice input" : "Start voice input"}
+              aria-disabled={isSpeechToTextUnsupported}
+              onClick={toggleVoiceInput}
+            >
+              <MicrophoneIcon />
+            </button>
+          </span>
           <button
             className={`btn btn-sm ${includeSelectedNodes ? "btn-primary" : ""}`}
             type="button"
@@ -190,6 +272,57 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           </button>
         </div>
       </form>
+
+      <SpeechToTextDemo />
     </aside>
+  );
+}
+
+function SpeechToTextDemo() {
+  const { error, interimResult, isRecording, results, startSpeechToText, stopSpeechToText } =
+    useSpeechToText({
+      continuous: true,
+      useLegacyResults: false,
+      speechRecognitionProperties: {
+        lang: "en-US", // 👈 Explicitly define your language
+        interimResults: true,
+      },
+    });
+
+  useEffect(() => {
+    console.log("🟢 [DEBUG] Component Mounted");
+    return () => {
+      console.log("🔴 [DEBUG] Component Unmounted!");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (error) console.log("Speech-to-text error details:", error);
+  }, [error]);
+
+  if (error)
+    return (
+      <p style={{ padding: "8px", color: "red" }}>
+        Web Speech API is not available in this browser 🤷
+      </p>
+    );
+
+  return (
+    <div style={{ padding: "8px", borderTop: "1px solid #d8dde3", fontSize: "12px" }}>
+      <p>Demo — Recording: {isRecording.toString()}</p>
+      <button
+        className="btn btn-sm"
+        type="button"
+        onClick={isRecording ? stopSpeechToText : startSpeechToText}
+      >
+        {isRecording ? "Stop Recording" : "Start Recording"}
+      </button>
+      <ul>
+        {(results as { timestamp: number; transcript: string }[]).map((result) => (
+          <li key={result.timestamp}>{result.transcript}</li>
+        ))}
+        {interimResult && <li>{interimResult}</li>}
+      </ul>
+    </div>
   );
 }
