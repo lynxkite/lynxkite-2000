@@ -38,8 +38,6 @@ def elementwise(
 
     The wrapped function receives a Record and can update output fields directly.
     Iteration, progress display, and DataFrame writes are handled by the decorator.
-    If the provided input_table matches a parameter name, its runtime value is used
-    as the table name; otherwise it is treated as a literal table name.
 
     Set ``concurrency`` above 1 to process multiple rows in parallel. With LynxKite Enterprise,
     effective parallelism is ``max(concurrency, ws.execution_options['gpus'])``; otherwise only
@@ -76,8 +74,6 @@ def elementwise(
             raise ValueError("@lim requires LynxKite Enterprise")
 
         ctx_param, _ctx_idx = find_ctx_param_name(func)
-        _static_table = input_table if input_table not in sig.parameters else None
-
         public_signature = sig.replace(
             parameters=[
                 inspect.Parameter("self", inspect.Parameter.POSITIONAL_OR_KEYWORD),
@@ -93,9 +89,7 @@ def elementwise(
                 bundle: Bundle,
                 **kwargs,
             ) -> Bundle:
-                selected_input_table = (
-                    _static_table if _static_table is not None else kwargs[input_table]
-                )
+                selected_input_table = kwargs[input_table]
                 return await _elementwise_impl_async(
                     self,
                     bundle,
@@ -110,9 +104,7 @@ def elementwise(
             return async_wrapper
 
         def sync_wrapper(self: OpContext, bundle: Bundle, **kwargs) -> Bundle:
-            selected_input_table = (
-                _static_table if _static_table is not None else kwargs[input_table]
-            )
+            selected_input_table = kwargs[input_table]
             if max(concurrency, execution_parallelism(self) if execution_parallelism else 1) > 1:
                 return asyncio.run(
                     _elementwise_impl_async(

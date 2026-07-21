@@ -29,7 +29,7 @@ def test_records_not_first_is_rejected():
 
 
 def test_dynamic_input_table_sync_reads_correct_df():
-    """Sync elementwise with a dynamic table name reads from that DataFrame."""
+    """Sync elementwise with table name reads from that DataFrame."""
 
     @op(ENV, "Dynamic sync")
     @elementwise(input_table="table")
@@ -61,36 +61,5 @@ async def test_dynamic_input_table_async_reads_correct_df():
     result: Bundle = await tag_dyn_async.__op__(
         DummyContext, bundle, table="proteins", suffix="_w"
     ).output
-
-    assert list(result.dfs["proteins"]["label"]) == ["x_w", "y_w"]
-
-
-def test_static_input_table_sync_reads_correct_df():
-    """Sync elementwise with a static table name reads from that DataFrame."""
-
-    @op(ENV, "Static sync")
-    @elementwise(input_table="proteins")
-    def tag_static(record: Record, *, suffix: str = "_x") -> None:
-        record["label"] = record["label"] + suffix
-
-    df = pd.DataFrame({"label": ["a", "b"]})
-    bundle = Bundle(dfs={"proteins": df})
-    result: Bundle = tag_static.__op__(DummyContext, bundle, suffix="_z").output
-
-    assert list(result.dfs["proteins"]["label"]) == ["a_z", "b_z"]
-
-
-@pytest.mark.asyncio
-async def test_static_input_table_async_reads_correct_df():
-    """Async elementwise with a static table name reads from that DataFrame."""
-
-    @op(ENV, "Static async")
-    @elementwise(input_table="proteins")
-    async def tag_static_async(record: Record, *, suffix: str = "_x") -> None:
-        record["label"] = record["label"] + suffix
-
-    df = pd.DataFrame({"label": ["x", "y"]})
-    bundle = Bundle(dfs={"proteins": df})
-    result: Bundle = await tag_static_async.__op__(DummyContext, bundle, suffix="_w").output
 
     assert list(result.dfs["proteins"]["label"]) == ["x_w", "y_w"]
