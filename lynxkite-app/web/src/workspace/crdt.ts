@@ -195,12 +195,7 @@ class CRDTConnection {
     // ...and to the CRDT state.
     const wnodes = this.ws.get("nodes") as Y.Array<any>;
     let wsChanged = false;
-
-    // Process changes more efficiently by batching operations
-    const changesToProcess = [...changes];
-    const removeOperations: { index: number }[] = [];
-
-    for (const ch of changesToProcess) {
+    for (const ch of changes) {
       const nodeIndex = wnodes.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
       if (nodeIndex === -1) continue;
       const node = wnodes.get(nodeIndex) as Y.Map<any>;
@@ -231,7 +226,7 @@ class CRDTConnection {
         // Update edge positions when node size changes.
         this.updateNodeInternals(ch.id);
       } else if (ch.type === "remove") {
-        removeOperations.push({ index: nodeIndex });
+        wnodes.delete(nodeIndex);
         wsChanged = true;
       } else if (ch.type === "replace") {
         this.doc.transact(() => {
@@ -274,14 +269,6 @@ class CRDTConnection {
         console.log("Unknown node change", ch);
       }
     }
-
-    // Remove items in reverse order to avoid index shifting issues
-    const sortedRemoveOperations = removeOperations.sort((a, b) => b.index - a.index);
-    for (let i = sortedRemoveOperations.length - 1; i >= 0; i--) {
-      const { index } = sortedRemoveOperations[i];
-      wnodes.delete(index);
-    }
-
     if (wsChanged) {
       this.updateState();
     } else {
@@ -293,22 +280,15 @@ class CRDTConnection {
     const wedges = this.ws.get("edges") as Y.Array<any>;
     if (!wedges) return;
     let wsChanged = false;
-    const removeOperations: { index: number }[] = [];
     for (const ch of changes) {
       if (ch.type === "remove") {
         const edgeIndex = wedges.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
-        removeOperations.push({ index: edgeIndex });
+        wedges.delete(edgeIndex);
         wsChanged = true;
       } else if (ch.type === "select") {
       } else {
         console.log("Unknown edge change", ch);
       }
-    }
-    // Remove edges in reverse order to avoid index shifting
-    const sortedRemoveOperations = removeOperations.sort((a, b) => b.index - a.index);
-    for (let i = sortedRemoveOperations.length - 1; i >= 0; i--) {
-      const { index } = sortedRemoveOperations[i];
-      wedges.delete(index);
     }
     if (wsChanged) {
       this.updateState();
