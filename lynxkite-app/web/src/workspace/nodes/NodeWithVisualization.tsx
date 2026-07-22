@@ -3,7 +3,12 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDisplay } from "../../common.ts";
 import ChipForm from "./chips/ChipForm";
-import { type BaseChip, CHIP_REGISTRY } from "./chips/Chips.tsx";
+import {
+  type BaseChip,
+  type ChipApplyContext,
+  getActiveRenderer,
+  getChipClass,
+} from "./chips/Chips.tsx";
 import VisualChip from "./chips/VisualChip";
 import LynxKiteNode from "./LynxKiteNode.tsx";
 
@@ -29,8 +34,28 @@ const extractAttributes = (items: any[]): string[] => {
   return Array.from(keysSet);
 };
 
+const getSeriesLinks = (series: any): any[] => series?.links || [];
+
+const cloneSeries = (series: any) => {
+  if (!series) return null;
+  return {
+    ...series,
+    data: (series.data || []).map((node: any) => ({
+      ...node,
+      label: { ...node.label },
+      itemStyle: { ...node.itemStyle },
+    })),
+    links: getSeriesLinks(series).map((edge: any) => ({
+      ...edge,
+      lineStyle: { ...edge.lineStyle },
+    })),
+  };
+};
+
 export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const echartsRef = useRef<HTMLDivElement>(null);
+  const mapDivRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<echarts.ECharts | null>(null);
   const opts = useDisplay(data?.display_version, id);
 
   const [chips, setChips] = useState<BaseChip[]>([]);
@@ -39,57 +64,63 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
   const [edgeAttrs, setEdgeAttrs] = useState<string[]>([]);
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [mainBtnHover, setMainBtnHover] = useState(false);
-
   const [interactiveTick, setInteractiveTick] = useState(0);
+  const chipsRef = useRef<BaseChip[]>([]);
+
+  const activeRenderer = getActiveRenderer(chips);
+  const useLeaflet = activeRenderer === "leaflet";
+
+  useEffect(() => {
+    chipsRef.current = chips;
+  }, [chips]);
 
   useEffect(() => {
     setNodeAttrs(extractAttributes(opts?.series?.[0]?.data || []));
-    setEdgeAttrs(extractAttributes(opts?.series?.[0]?.links || opts?.series?.[0]?.edges || []));
+    setEdgeAttrs(extractAttributes(getSeriesLinks(opts?.series?.[0])));
   }, [opts]);
 
   useEffect(() => {
-    if (!opts || !ref.current) return;
+    if (!opts) return;
 
+    const onUpdate = () => setInteractiveTick((t) => t + 1);
     const chartOpts = JSON.parse(JSON.stringify(opts));
-    const series = chartOpts.series?.[0];
+    const series = cloneSeries(chartOpts.series?.[0]);
+    if (series) chartOpts.series[0] = series;
 
-    if (series) {
-      if (series.data) {
-        series.data = series.data.map((n: any) => ({
-          ...n,
-          label: { ...n.label },
-          itemStyle: { ...n.itemStyle },
-        }));
+    const context: ChipApplyContext = { renderer: activeRenderer, mapDiv: mapDivRef.current };
+
+    chips
+      .filter((c) => !c.disabled)
+      .forEach((c) => {
+        c.apply(series, context, onUpdate);
+      });
+
+    if (!useLeaflet && echartsRef.current) {
+      if (!chartRef.current) {
+        chartRef.current = echarts.init(echartsRef.current, null, { renderer: "canvas" });
       }
-      const edgeKey = series.links ? "links" : "edges";
-      if (series[edgeKey]) {
-        series[edgeKey] = series[edgeKey].map((e: any) => ({
-          ...e,
-          lineStyle: { ...e.lineStyle },
-        }));
-      }
-      chips
-        .filter((c) => !c.disabled)
-        .forEach((c) => {
-          c.apply(series);
-        });
+      chartRef.current.setOption(chartOpts, true);
+
+      const obs = new ResizeObserver(() => chartRef.current?.resize());
+      obs.observe(echartsRef.current);
+      return () => obs.disconnect();
     }
+  }, [opts, chips, useLeaflet, activeRenderer, interactiveTick]);
 
-    const inst = echarts.init(ref.current, null, { renderer: "canvas" });
-    inst.setOption(chartOpts, true);
-
-    const obs = new ResizeObserver(() => inst.resize());
-    obs.observe(ref.current);
-
+  useEffect(() => {
     return () => {
-      obs.disconnect();
-      inst.dispose();
+      chartRef.current?.dispose();
+      chartRef.current = null;
+      chipsRef.current.forEach((chip) => {
+        chip.cleanup();
+      });
     };
-  }, [opts, chips, interactiveTick]);
+  }, []);
 
   const handleFormSubmit = (newChip: BaseChip) => {
     if (editingIdx !== null) {
       const updated = [...chips];
+      updated[editingIdx]?.cleanup();
       updated[editingIdx] = newChip;
       setChips(updated);
       setEditingIdx(null);
@@ -103,15 +134,15 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     e.stopPropagation();
     const updated = [...chips];
     const current = updated[index];
-    const TargetClass = CHIP_REGISTRY.find((c) => c.type === current.type) || CHIP_REGISTRY[0];
+    updated[index]?.cleanup();
+    const TargetClass = getChipClass(current.type);
     updated[index] = new TargetClass(current.getFormData(), !current.disabled);
     setChips(updated);
   };
 
   const hasAttributes = nodeAttrs.length > 0 || edgeAttrs.length > 0;
-
   const rawNodes = opts?.series?.[0]?.data || [];
-  const rawEdges = opts?.series?.[0]?.links || opts?.series?.[0]?.edges || [];
+  const rawEdges = getSeriesLinks(opts?.series?.[0]);
 
   return (
     <div
@@ -122,7 +153,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           position: "absolute",
           top: 12,
           left: 12,
-          zIndex: 99,
+          zIndex: 999,
           display: "flex",
           gap: 8,
           flexWrap: "wrap",
@@ -191,6 +222,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
               onToggleDisable={handleToggleDisable}
               onInteractiveChange={() => setInteractiveTick((prev) => prev + 1)}
               onDelete={(idx) => {
+                chips[idx]?.cleanup();
                 setChips(chips.filter((_, ci) => ci !== idx));
                 if (editingIdx === idx) {
                   setEditingIdx(null);
@@ -201,9 +233,28 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           );
         })}
       </div>
+
+      {/* ECharts canvas — hidden when Leaflet is active */}
       <div
-        ref={ref}
-        style={{ width: "100%", height: "100%", minHeight: "350px", ...USER_SELECT_NONE_STYLE }}
+        ref={echartsRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "350px",
+          display: useLeaflet ? "none" : "block",
+          ...USER_SELECT_NONE_STYLE,
+        }}
+      />
+
+      {/* Leaflet map container — shown only when a chip requires it */}
+      <div
+        ref={mapDivRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "350px",
+          display: useLeaflet ? "block" : "none",
+        }}
       />
     </div>
   );

@@ -1,4 +1,6 @@
+import L from "leaflet";
 import type React from "react";
+import "leaflet/dist/leaflet.css";
 
 export interface FormFieldConfig {
   key: string;
@@ -6,10 +8,36 @@ export interface FormFieldConfig {
   type?: "select" | "number";
 }
 
+export type ChipTarget = "node" | "edge";
+export type ChipRenderer = "echarts" | "leaflet";
+
+export interface ChipApplyContext {
+  renderer: ChipRenderer;
+  mapDiv: HTMLDivElement | null;
+}
+
+export type ChipData = Record<string, string>;
+
+export interface ChipClass {
+  new (data: ChipData, disabled?: boolean): BaseChip;
+  type: string;
+  displayName: string;
+  target: ChipTarget;
+  formFields: FormFieldConfig[];
+  getInitialData(attribute: string, rawItems: any[], previousData?: ChipData): ChipData;
+}
+
+const ATTRIBUTE_FORM_FIELDS: FormFieldConfig[] = [{ key: "attribute" }];
+
+const hasAttributeValue = (value: unknown): boolean =>
+  value !== undefined && value !== null && value !== "";
+
 const getColor = (s: string): string => {
-  let h = 0,
-    t = String(s ?? "");
-  for (let i = 0; i < t.length; i++) h = t.charCodeAt(i) + ((h << 5) - h);
+  let h = 0;
+  const t = String(s ?? "");
+  for (let i = 0; i < t.length; i++) {
+    h = t.charCodeAt(i) + ((h << 5) - h);
+  }
   return `hsl(${Math.abs(h * 131) % 360}, 80%, 60%)`;
 };
 
@@ -39,19 +67,15 @@ export abstract class BaseChip {
 
   static type: string;
   static displayName: string;
-  static target: string;
+  static target: ChipTarget;
   static formFields: FormFieldConfig[];
 
-  constructor(_data: Record<string, string>, disabled = false) {
+  constructor(_data: ChipData, disabled = false) {
     this.disabled = disabled;
   }
 
-  static getInitialData(
-    attribute: string,
-    _rawItems: any[],
-    previousData?: Record<string, string>,
-  ): Record<string, string> {
-    const data: Record<string, string> = {};
+  static getInitialData(attribute: string, _rawItems: any[], previousData?: ChipData): ChipData {
+    const data: ChipData = {};
     BaseChip.formFields?.forEach((fieldConfig) => {
       const key = fieldConfig.key;
       if (key === "attribute") {
@@ -64,80 +88,203 @@ export abstract class BaseChip {
   }
 
   abstract getLabel(): string;
-  abstract getFormData(): Record<string, string>;
-  abstract apply(series: any): void;
+  abstract getFormData(): ChipData;
+  abstract apply(series: any, context: ChipApplyContext, onUpdate?: () => void): void;
+
+  getRenderer(): ChipRenderer {
+    return "echarts";
+  }
+
+  cleanup(): void {}
 
   render(_onChange?: () => void): React.ReactNode {
     return null;
   }
 }
 
-export class NodeColorChip extends BaseChip {
+abstract class SingleAttributeChip extends BaseChip {
+  attribute: string;
+
+  constructor(data: ChipData, disabled: boolean | undefined, bg: string, text: string) {
+    super(data, disabled);
+    this.attribute = data.attribute || "";
+    this.bg = bg;
+    this.text = text;
+  }
+
+  getFormData() {
+    return { attribute: this.attribute };
+  }
+}
+
+export class MapChip extends BaseChip {
+  static type = "map";
+  type = MapChip.type;
+  static displayName = "Map Position";
+  static target: ChipTarget = "node";
+  static formFields: FormFieldConfig[] = [
+    { key: "latAttr", label: "Latitude:" },
+    { key: "lngAttr", label: "Longitude:" },
+  ];
+
+  latAttr: string;
+  lngAttr: string;
+
+  private _map: L.Map | null = null;
+  private _mapDiv: HTMLDivElement | null = null;
+  private _resizeObserver: ResizeObserver | null = null;
+
+  constructor(data: ChipData, disabled?: boolean) {
+    super(data, disabled);
+    this.latAttr = data.latAttr || "";
+    this.lngAttr = data.lngAttr || "";
+    this.bg = "#ccfbf1";
+    this.text = "#0f766e";
+  }
+
+  getLabel() {
+    return `Map: Lat(${this.latAttr}) Lng(${this.lngAttr})`;
+  }
+
+  getFormData() {
+    return { latAttr: this.latAttr, lngAttr: this.lngAttr };
+  }
+
+  override getRenderer(): ChipRenderer {
+    return "leaflet";
+  }
+
+  override cleanup(): void {
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
+    this._map?.remove();
+    this._map = null;
+    this._mapDiv = null;
+  }
+
+  apply(series: any, context: ChipApplyContext, _onUpdate?: () => void) {
+    const mapDiv = context.mapDiv;
+    if (!mapDiv || !series?.data || !this.latAttr || !this.lngAttr) return;
+
+    if (!this._map || this._mapDiv !== mapDiv) {
+      this._map?.remove();
+      this._map = L.map(mapDiv, { zoomControl: true });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this._map);
+      this._mapDiv = mapDiv;
+    }
+
+    const map = this._map;
+
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = new ResizeObserver(() => map.invalidateSize());
+    this._resizeObserver.observe(mapDiv);
+
+    map.eachLayer((layer) => {
+      if (!(layer instanceof L.TileLayer)) map.removeLayer(layer);
+    });
+
+    const edges: any[] = series.links || [];
+
+    const nodePositions = new Map<string, L.LatLng>();
+    series.data.forEach((node: any) => {
+      const lat = Number(node.attributes?.[this.latAttr]);
+      const lng = Number(node.attributes?.[this.lngAttr]);
+      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        nodePositions.set(String(node.id ?? node.name), L.latLng(lat, lng));
+      }
+    });
+    edges.forEach((edge: any) => {
+      const src = nodePositions.get(String(edge.source));
+      const tgt = nodePositions.get(String(edge.target));
+      if (!src || !tgt) return;
+      L.polyline([src, tgt], {
+        color: edge.lineStyle?.color || "#94a3b8",
+        weight: 1.5,
+        opacity: 0.7,
+      }).addTo(map);
+    });
+    const validPoints: L.LatLng[] = [];
+    series.data.forEach((node: any) => {
+      const pt = nodePositions.get(String(node.id ?? node.name));
+      if (!pt) return;
+      validPoints.push(pt);
+
+      const labelText = node.label?.show
+        ? String(node.label.formatter ?? "")
+        : node.name || node.id || "";
+
+      const circle = L.circleMarker(pt, {
+        radius: 7,
+        fillColor: node.itemStyle?.color || "#4f46e5",
+        color: "#fff",
+        weight: 1.5,
+        opacity: 1,
+        fillOpacity: 0.85,
+      });
+      if (labelText) {
+        circle.bindTooltip(String(labelText), { permanent: false, direction: "top" });
+      }
+      circle.addTo(map);
+    });
+    if (validPoints.length > 0) {
+      try {
+        map.fitBounds(L.latLngBounds(validPoints), { padding: [30, 30], maxZoom: 12 });
+      } catch (_) {}
+    }
+  }
+}
+
+export class NodeColorChip extends SingleAttributeChip {
   static type = "node_color";
   type = NodeColorChip.type;
   static displayName = "Node color by";
-  static target = "node";
-  static formFields: FormFieldConfig[] = [{ key: "attribute" }];
+  static target: ChipTarget = "node";
+  static formFields: FormFieldConfig[] = ATTRIBUTE_FORM_FIELDS;
 
-  attribute: string;
-
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled);
-    this.attribute = data.attribute || "";
-    this.bg = "#e0f2fe";
-    this.text = "#0369a1";
+  constructor(data: ChipData, disabled?: boolean) {
+    super(data, disabled, "#e0f2fe", "#0369a1");
   }
 
   getLabel() {
     return `Node color by: ${this.attribute}`;
   }
 
-  getFormData() {
-    return { attribute: this.attribute };
-  }
-
-  apply(series: any) {
+  apply(series: any, _context: ChipApplyContext) {
     if (!this.attribute) return;
     series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
-      if (val !== undefined && val !== null && val !== "") {
+      if (hasAttributeValue(val)) {
         node.itemStyle = { ...node.itemStyle, color: getColor(String(val)) };
       }
     });
   }
 }
 
-export class EdgeColorChip extends BaseChip {
+export class EdgeColorChip extends SingleAttributeChip {
   static type = "edgeColor";
   type = EdgeColorChip.type;
   static displayName = "Edge color by";
-  static target = "edge";
-  static formFields: FormFieldConfig[] = [{ key: "attribute" }];
+  static target: ChipTarget = "edge";
+  static formFields: FormFieldConfig[] = ATTRIBUTE_FORM_FIELDS;
 
-  attribute: string;
-
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled);
-    this.attribute = data.attribute || "";
-    this.bg = "#fae8ff";
-    this.text = "#86198f";
+  constructor(data: ChipData, disabled?: boolean) {
+    super(data, disabled, "#fae8ff", "#86198f");
   }
 
   getLabel() {
     return `Edge color by: ${this.attribute}`;
   }
 
-  getFormData() {
-    return { attribute: this.attribute };
-  }
-
-  apply(series: any) {
+  apply(series: any, _context: ChipApplyContext) {
     if (!this.attribute) return;
-    const edgeKey = series.links ? "links" : "edges";
-    const edges = series?.[edgeKey];
+    const edges = series?.links;
     edges?.forEach((edge: any) => {
       const val = edge.attributes?.[this.attribute];
-      if (val !== undefined && val !== null && val !== "") {
+      if (hasAttributeValue(val)) {
         edge.lineStyle = { ...edge.lineStyle, color: getColor(String(val)) };
       }
     });
@@ -148,7 +295,7 @@ export class PositionChip extends BaseChip {
   static type = "position";
   type = PositionChip.type;
   static displayName = "Position";
-  static target = "node";
+  static target: ChipTarget = "node";
   static formFields: FormFieldConfig[] = [
     { key: "xAttr", label: "X:" },
     { key: "yAttr", label: "Y:" },
@@ -157,7 +304,7 @@ export class PositionChip extends BaseChip {
   xAttr: string;
   yAttr: string;
 
-  constructor(data: Record<string, string>, disabled?: boolean) {
+  constructor(data: ChipData, disabled?: boolean) {
     super(data, disabled);
     this.xAttr = data.xAttr || "";
     this.yAttr = data.yAttr || "";
@@ -173,9 +320,12 @@ export class PositionChip extends BaseChip {
     return { xAttr: this.xAttr, yAttr: this.yAttr };
   }
 
-  apply(series: any) {
+  apply(series: any, _context: ChipApplyContext) {
     if (!series?.data || !this.xAttr || !this.yAttr) return;
+
+    series.coordinateSystem = undefined;
     series.layout = "none";
+
     series.data.forEach((node: any) => {
       const xVal = Number(node.attributes?.[this.xAttr]);
       const yVal = Number(node.attributes?.[this.yAttr]);
@@ -187,35 +337,26 @@ export class PositionChip extends BaseChip {
   }
 }
 
-export class LabelChip extends BaseChip {
+export class LabelChip extends SingleAttributeChip {
   static type = "label";
   type = LabelChip.type;
   static displayName = "Label by";
-  static target = "node";
-  static formFields: FormFieldConfig[] = [{ key: "attribute" }];
+  static target: ChipTarget = "node";
+  static formFields: FormFieldConfig[] = ATTRIBUTE_FORM_FIELDS;
 
-  attribute: string;
-
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled);
-    this.attribute = data.attribute || "";
-    this.bg = "#fef08a";
-    this.text = "#a16207";
+  constructor(data: ChipData, disabled?: boolean) {
+    super(data, disabled, "#fef08a", "#a16207");
   }
 
   getLabel() {
     return `Label by: ${this.attribute}`;
   }
 
-  getFormData() {
-    return { attribute: this.attribute };
-  }
-
-  apply(series: any) {
+  apply(series: any, _context: ChipApplyContext) {
     if (!this.attribute) return;
     series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
-      const hasValue = val !== undefined && val !== null && val !== "";
+      const hasValue = hasAttributeValue(val);
       node.label = {
         ...node.label,
         show: hasValue,
@@ -230,7 +371,7 @@ export class SliderChip extends BaseChip {
   static type = "slider";
   type = SliderChip.type;
   static displayName = "Slider";
-  static target = "node";
+  static target: ChipTarget = "node";
   static formFields: FormFieldConfig[] = [{ key: "attribute" }];
 
   attribute: string;
@@ -239,7 +380,7 @@ export class SliderChip extends BaseChip {
   currentMin: number;
   currentMax: number;
 
-  constructor(data: Record<string, string>, disabled?: boolean) {
+  constructor(data: ChipData, disabled?: boolean) {
     super(data, disabled);
     this.attribute = data.attribute || "";
     this.limitMin = Number(data.min) || 0;
@@ -255,8 +396,8 @@ export class SliderChip extends BaseChip {
   static override getInitialData(
     attribute: string,
     rawItems: any[],
-    previousData?: Record<string, string>,
-  ): Record<string, string> {
+    previousData?: ChipData,
+  ): ChipData {
     const bounds = calculateAttributeBounds(rawItems, attribute);
     const isSameAttribute = previousData?.attribute === attribute;
 
@@ -289,7 +430,7 @@ export class SliderChip extends BaseChip {
     };
   }
 
-  apply(series: any) {
+  apply(series: any, _context: ChipApplyContext) {
     if (!series?.data || !this.attribute) return;
     const keptNodeIds = new Set<string>();
 
@@ -301,9 +442,8 @@ export class SliderChip extends BaseChip {
       return keep;
     });
 
-    const edgeKey = series.links ? "links" : "edges";
-    if (series[edgeKey]) {
-      series[edgeKey] = series[edgeKey].filter(
+    if (series.links) {
+      series.links = series.links.filter(
         (edge: any) => keptNodeIds.has(edge.source) && keptNodeIds.has(edge.target),
       );
     }
@@ -311,14 +451,12 @@ export class SliderChip extends BaseChip {
 
   override render(onChange?: () => void) {
     const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = Math.min(Number(e.target.value), this.currentMax);
-      this.currentMin = val;
+      this.currentMin = Math.min(Number(e.target.value), this.currentMax);
       if (onChange) onChange();
     };
 
     const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = Math.max(Number(e.target.value), this.currentMin);
-      this.currentMax = val;
+      this.currentMax = Math.max(Number(e.target.value), this.currentMin);
       if (onChange) onChange();
     };
 
@@ -433,4 +571,21 @@ export class SliderChip extends BaseChip {
   }
 }
 
-export const CHIP_REGISTRY = [NodeColorChip, EdgeColorChip, PositionChip, LabelChip, SliderChip];
+export const CHIP_REGISTRY: ChipClass[] = [
+  NodeColorChip,
+  EdgeColorChip,
+  PositionChip,
+  LabelChip,
+  SliderChip,
+  MapChip,
+];
+
+export const CHIP_CLASS_BY_TYPE = new Map(
+  CHIP_REGISTRY.map((chipClass) => [chipClass.type, chipClass]),
+);
+
+export const getChipClass = (type: string): ChipClass =>
+  CHIP_CLASS_BY_TYPE.get(type) || CHIP_REGISTRY[0];
+
+export const getActiveRenderer = (chips: BaseChip[]): ChipRenderer =>
+  chips.some((chip) => !chip.disabled && chip.getRenderer() === "leaflet") ? "leaflet" : "echarts";

@@ -13,11 +13,11 @@ interface VisualChipProps {
 
 const THEME = {
   border: "#e2e8f0",
-  deleteBtn: { bg: "#fee2e2", text: "#ef4444", hoverBg: "#fecaca" },
+  deleteBtn: { bg: "#ffffffff", text: "#ef4444", hoverBg: "#fecaca" },
   disableBtn: {
-    bg: "#ffffff",
+    bg: "#33bb55",
     text: "#1f2937",
-    hoverBg: "#f3f4f6",
+    hoverBg: "#8a8a8b",
     activeBg: "#1f2937",
     activeText: "#ffffff",
     activeHoverBg: "#111827",
@@ -41,11 +41,15 @@ export default function VisualChip({
   const [deleteHovered, setDeleteHovered] = useState(false);
   const [disableHovered, setDisableHovered] = useState(false);
 
-  const getDisableBg = () => {
-    if (chip.disabled) {
-      return disableHovered ? THEME.disableBtn.activeHoverBg : THEME.disableBtn.activeBg;
-    }
-    return disableHovered ? THEME.disableBtn.hoverBg : THEME.disableBtn.bg;
+  const iconButtonStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 20,
+    height: 20,
+    borderRadius: "50%",
+    lineHeight: 1,
+    cursor: "pointer",
   };
 
   return (
@@ -75,29 +79,26 @@ export default function VisualChip({
       {!chip.disabled && chip.render(onInteractiveChange)}
 
       <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-        <span
+        <button
+          type="button"
           onClick={(e) => onToggleDisable(e, index)}
           onMouseEnter={() => setDisableHovered(true)}
           onMouseLeave={() => setDisableHovered(false)}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 20,
-            height: 20,
-            borderRadius: "50%",
-            border: `1px solid ${THEME.disableBtn.border}`,
-            background: getDisableBg(),
-            color: chip.disabled ? THEME.disableBtn.activeText : THEME.disableBtn.text,
+            ...iconButtonStyle,
+            border: "none",
+            background: disableHovered ? THEME.disableBtn.hoverBg : chip.bg,
+            color: THEME.disableBtn.text,
             fontWeight: "bold",
             fontSize: 12,
             transition: "background-color 0.15s ease, color 0.15s ease",
-            lineHeight: 1,
           }}
-          title={chip.disabled ? "Enable setting" : "Disable setting"}
-        />
+        >
+          ⭘
+        </button>
 
-        <span
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(index);
@@ -105,22 +106,17 @@ export default function VisualChip({
           onMouseEnter={() => setDeleteHovered(true)}
           onMouseLeave={() => setDeleteHovered(false)}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 20,
-            height: 20,
-            borderRadius: "50%",
-            background: deleteHovered ? THEME.deleteBtn.hoverBg : THEME.deleteBtn.bg,
+            ...iconButtonStyle,
+            border: "none",
+            background: deleteHovered ? THEME.deleteBtn.hoverBg : chip.bg,
             color: THEME.deleteBtn.text,
             fontWeight: "bold",
             fontSize: 14,
             transition: "background-color 0.15s ease",
-            lineHeight: 1,
           }}
         >
-          ×
-        </span>
+          ✕
+        </button>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import { type BaseChip, CHIP_REGISTRY } from "./Chips.tsx";
+import { type BaseChip, CHIP_REGISTRY, getChipClass } from "./Chips.tsx";
 
 interface ChipFormProps {
   nodeAttrs: string[];
@@ -25,40 +25,32 @@ export default function ChipForm({
   const [formType, setFormType] = useState(initialChip?.type || CHIP_REGISTRY[0].type);
   const [formData, setFormData] = useState<Record<string, string>>({});
 
-  const ActiveClass = CHIP_REGISTRY.find((c) => c.type === formType) || CHIP_REGISTRY[0];
+  const ActiveClass = getChipClass(formType);
   const targetAttrs = ActiveClass.target === "edge" ? edgeAttrs : nodeAttrs;
+  const activeRawItems = ActiveClass.target === "edge" ? rawElements.edges : rawElements.nodes;
 
   useEffect(() => {
-    const initialData: Record<string, string> = {};
     const isEditingCurrentType = initialChip && initialChip.type === formType;
-
-    ActiveClass.formFields.forEach((field) => {
-      if (isEditingCurrentType) {
-        initialData[field.key] = initialChip.getFormData()[field.key] || "";
-      } else {
-        initialData[field.key] = "";
-      }
-    });
-
     if (isEditingCurrentType) {
-      const savedData = initialChip.getFormData();
-      if (savedData.min !== undefined) initialData.min = savedData.min;
-      if (savedData.max !== undefined) initialData.max = savedData.max;
-      if (savedData.currentMin !== undefined) initialData.currentMin = savedData.currentMin;
-      if (savedData.currentMax !== undefined) initialData.currentMax = savedData.currentMax;
+      setFormData(initialChip.getFormData());
+      return;
     }
 
-    setFormData(initialData);
+    const emptyData: Record<string, string> = {};
+    ActiveClass.formFields.forEach((field) => {
+      emptyData[field.key] = "";
+    });
+    setFormData(emptyData);
   }, [formType, initialChip, ActiveClass]);
 
   const handleFieldChange = (key: string, value: string) => {
-    const activeRawItems = ActiveClass.target === "edge" ? rawElements.edges : rawElements.nodes;
+    const shouldSeedDefaults = key === "attribute" || ActiveClass.formFields.length === 1;
 
     setFormData((prev) => {
       const nextData = { ...prev, [key]: value };
 
-      if (key === "attribute" || ActiveClass.formFields.length === 1) {
-        const defaultData = ActiveClass.getInitialData(value, activeRawItems);
+      if (shouldSeedDefaults) {
+        const defaultData = ActiveClass.getInitialData(value, activeRawItems, nextData);
         return { ...nextData, ...defaultData };
       }
 
