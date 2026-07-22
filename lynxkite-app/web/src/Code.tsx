@@ -11,7 +11,7 @@ import Backspace from "~icons/tabler/backspace.jsx";
 import Close from "~icons/tabler/x.jsx";
 import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
-import { usePath } from "./common.ts";
+import { getWebSocketParams, usePath } from "./common.ts";
 
 export default function Code() {
   const path = usePath().replace(/^[/]code[/]/, "");
@@ -51,18 +51,22 @@ export default function Code() {
       .split("/")
       .map((segment) => encodeURIComponent(segment))
       .join("/");
-    wsProviderRef.current = new WebsocketProvider(
-      `${proto}//${location.host}/ws/code/crdt`,
-      encodedPath!,
-      yDocRef.current,
-    );
-    editorRef.current.getModel()!.setEOL(0); // https://github.com/yjs/y-monaco/issues/6
-    monacoBindingRef.current = new yMonacoRef.current.MonacoBinding(
-      text,
-      editorRef.current.getModel()!,
-      new Set([editorRef.current]),
-      wsProviderRef.current.awareness,
-    );
+    getWebSocketParams().then((params) => {
+      if (!editorRef.current || !yDocRef.current || wsProviderRef.current) return;
+      wsProviderRef.current = new WebsocketProvider(
+        `${proto}//${location.host}/ws/code/crdt`,
+        encodedPath!,
+        yDocRef.current,
+        { params },
+      );
+      editorRef.current.getModel()!.setEOL(0); // https://github.com/yjs/y-monaco/issues/6
+      monacoBindingRef.current = new yMonacoRef.current.MonacoBinding(
+        text,
+        editorRef.current.getModel()!,
+        new Set([editorRef.current]),
+        wsProviderRef.current.awareness,
+      );
+    });
   }
   useEffect(() => {
     return () => {

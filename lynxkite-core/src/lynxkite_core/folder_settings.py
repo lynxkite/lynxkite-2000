@@ -23,11 +23,8 @@ def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     return dirs
 
 
-def resolve_settings_section(
-    data_root: Path, workspace_path: str, section: str
-) -> dict[str, dict[str, Any]]:
-    """Load settings.yaml from root→workspace folder; merge requested top-level section."""
-    merged: dict[str, dict[str, Any]] = {}
+def _iter_section_dicts(data_root: Path, workspace_path: str, section: str):
+    """Yield each non-empty section dict from root→workspace settings.yaml files."""
     for directory in _containing_dirs(data_root, workspace_path):
         settings_path = directory / SETTINGS_FILENAME
         if not settings_path.is_file():
@@ -35,10 +32,28 @@ def resolve_settings_section(
         with settings_path.open(encoding="utf-8") as handle:
             raw = yaml.safe_load(handle) or {}
         values = raw.get(section)
-        if not isinstance(values, dict):
-            continue
+        if isinstance(values, dict):
+            yield values
+
+
+def resolve_settings_section(
+    data_root: Path, workspace_path: str, section: str
+) -> dict[str, dict[str, Any]]:
+    """Load settings.yaml from root→workspace folder; merge requested top-level section."""
+    merged: dict[str, dict[str, Any]] = {}
+    for values in _iter_section_dicts(data_root, workspace_path, section):
         for key, value in values.items():
             if not isinstance(key, str) or not isinstance(value, dict):
                 continue
             merged.setdefault(key, {}).update(value)
+    return merged
+
+
+def resolve_flat_section(data_root: Path, workspace_path: str, section: str) -> dict[str, Any]:
+    """Load settings.yaml from root→leaf; merge section as flat dict (child keys override)."""
+    merged: dict[str, Any] = {}
+    for values in _iter_section_dicts(data_root, workspace_path, section):
+        for key, value in values.items():
+            if isinstance(key, str):
+                merged[key] = value
     return merged

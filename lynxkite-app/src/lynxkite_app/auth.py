@@ -8,6 +8,8 @@ from jose.exceptions import JWTError
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from . import acl
+
 security = HTTPBearer(auto_error=False)
 issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")
 audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")
@@ -20,7 +22,7 @@ class OIDCProvider:
         self.config = httpx.get(f"{issuer}/.well-known/openid-configuration").json()
         self.jwks = httpx.get(self.config["jwks_uri"]).json()
 
-    def verify(self, token: str):
+    def verify(self, token: str) -> dict:
         payload = jwt.decode(
             token,
             self.jwks,
@@ -32,12 +34,10 @@ class OIDCProvider:
         for field in ["aud", "azp"]:
             value = payload.get(field)
             if value == self.audience:
-                break
+                return payload
             if isinstance(value, list) and self.audience in value:
-                break
-        else:
-            raise HTTPException(status_code=401, headers={"WWW-Authenticate": "Bearer"})
-        return payload
+                return payload
+        raise JWTError("Invalid audience")
 
 
 @lru_cache
@@ -46,12 +46,12 @@ def get_provider():
     return OIDCProvider(issuer, audience)
 
 
-def _is_auth_enabled() -> bool:
+def is_auth_enabled() -> bool:
     return bool(issuer and audience)
 
 
 async def get_current_user(request: Request):
-    if not _is_auth_enabled():
+    if not is_auth_enabled():
         return {"sub": "user", "email": ""}
     credentials: HTTPAuthorizationCredentials | None = await security(request)
     if credentials is None:
@@ -59,11 +59,8 @@ async def get_current_user(request: Request):
             status_code=401,
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token = credentials.credentials
     try:
-        payload = get_provider().verify(token)
-        print("Authenticated user:", payload.get("email"))
-        return payload
+        return get_provider().verify(credentials.credentials)
     except JWTError:
         raise HTTPException(
             status_code=401,
@@ -71,14 +68,14 @@ async def get_current_user(request: Request):
         )
 
 
-def _has_permission(user, action: str, requested_path: str | None) -> bool:
-    print(
-        f"Checking permissions for action '{action}' on path '{requested_path}' for user '{user.get('email')}'"
-    )
-    return True
-
-
-async def check_permission(request: Request, action: str, requested_path: str | None = None):
+async def check_permission(request: Request, action: acl.Action, requested_path: str | None = None):
     user = await get_current_user(request)
-    if not _has_permission(user, action, requested_path):
+    if is_auth_enabled() and not acl.has_permission(user, action, requested_path):
         raise HTTPException(status_code=403, detail="Forbidden")
+
+
+async def effective_permissions(request: Request, path: str | None = None) -> dict[str, bool]:
+    if not is_auth_enabled():
+        return {"read": True, "write": True}
+    user = await get_current_user(request)
+    return acl.effective_permissions(user, path)

@@ -13,6 +13,11 @@ export type GlobalConfig = {
   enterprise_available: boolean;
 };
 
+export type FolderPermissions = {
+  read: boolean;
+  write: boolean;
+};
+
 let cachedConfig: GlobalConfig | undefined;
 let userManager: UserManager | null = null;
 let userManagerKey: string | undefined;
@@ -42,6 +47,12 @@ async function getAccessToken(): Promise<string | null> {
     return null;
   }
   return user.access_token;
+}
+
+/** Query params for y-websocket when auth is on. Empty when auth off. */
+export async function getWebSocketParams(): Promise<Record<string, string>> {
+  const token = await getAccessToken();
+  return token ? { access_token: token } : {};
 }
 
 function getUserManager() {
@@ -232,6 +243,26 @@ export function useCategoryHierarchy() {
 }
 
 export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
+
+/** Effective folder permissions. Auth off → full access. */
+export function useFolderPermissions(path: string | undefined) {
+  const config = getConfig();
+  const authOff = !config.authentication_issuer;
+  const key =
+    authOff || path === undefined ? null : `/api/permissions?path=${encodeURIComponent(path)}`;
+  const { data, error, isLoading } = useSWR(key, pathFetcher<FolderPermissions>, {
+    revalidateOnFocus: false,
+  });
+  if (authOff) {
+    return { read: true, write: true, isLoading: false, error: undefined };
+  }
+  return {
+    read: data?.read ?? false,
+    write: data?.write ?? false,
+    isLoading: Boolean(key) && isLoading,
+    error,
+  };
+}
 
 export function parentPath(path: string): string {
   const parts = path.split("/").filter(Boolean);
