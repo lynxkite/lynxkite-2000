@@ -69,11 +69,6 @@ async def get_current_user(request: Request):
 
 
 async def check_permission(request: Request, action: acl.Action, requested_path: str | None = None):
-    if action not in acl.VALID_ACTIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid action {action!r}. Must be 'read' or 'write'.",
-        )
     user = await get_current_user(request)
     if is_auth_enabled() and not acl.has_permission(user, action, requested_path):
         raise HTTPException(status_code=403, detail="Forbidden")
