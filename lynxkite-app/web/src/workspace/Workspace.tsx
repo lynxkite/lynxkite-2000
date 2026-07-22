@@ -189,6 +189,22 @@ function LynxKiteFlow() {
     [],
   );
 
+  function clearSelection() {
+    if (!crdt) return;
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
+    if (selectedNodes.length > 0) {
+      crdt.onFENodesChange?.(
+        selectedNodes.map((n) => ({ id: n.id, type: "select" as const, selected: false })),
+      );
+    }
+    if (selectedEdges.length > 0) {
+      crdt.onFEEdgesChange?.(
+        selectedEdges.map((e) => ({ id: e.id, type: "select" as const, selected: false })),
+      );
+    }
+  }
+
   // Global keyboard shortcuts.
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -200,6 +216,9 @@ function LynxKiteFlow() {
         setNodeSearchSettings({
           pos: getBestPosition(),
         });
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        clearSelection();
       } else if (event.key === "r" && canWrite) {
         event.preventDefault();
         executeWorkspace();
