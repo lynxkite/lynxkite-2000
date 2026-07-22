@@ -8,6 +8,8 @@ from jose.exceptions import JWTError
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from . import acl
+
 security = HTTPBearer(auto_error=False)
 issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")
 audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")
@@ -46,12 +48,12 @@ def get_provider():
     return OIDCProvider(issuer, audience)
 
 
-def _is_auth_enabled() -> bool:
+def is_auth_enabled() -> bool:
     return bool(issuer and audience)
 
 
 async def get_current_user(request: Request):
-    if not _is_auth_enabled():
+    if not is_auth_enabled():
         return {"sub": "user", "email": ""}
     credentials: HTTPAuthorizationCredentials | None = await security(request)
     if credentials is None:
@@ -62,7 +64,6 @@ async def get_current_user(request: Request):
     token = credentials.credentials
     try:
         payload = get_provider().verify(token)
-        print("Authenticated user:", payload.get("email"))
         return payload
     except JWTError:
         raise HTTPException(
@@ -71,14 +72,17 @@ async def get_current_user(request: Request):
         )
 
 
-def _has_permission(user, action: str, requested_path: str | None) -> bool:
-    print(
-        f"Checking permissions for action '{action}' on path '{requested_path}' for user '{user.get('email')}'"
-    )
-    return True
-
-
 async def check_permission(request: Request, action: str, requested_path: str | None = None):
+    if action not in acl.VALID_ACTIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid action {action!r}. Must be 'read' or 'write'.",
+        )
     user = await get_current_user(request)
-    if not _has_permission(user, action, requested_path):
+    if not acl.has_permission(
+        user,
+        action,
+        requested_path,
+        auth_enabled=is_auth_enabled(),  # type: ignore[arg-type]
+    ):
         raise HTTPException(status_code=403, detail="Forbidden")
