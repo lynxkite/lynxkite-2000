@@ -22,7 +22,7 @@ class OIDCProvider:
         self.config = httpx.get(f"{issuer}/.well-known/openid-configuration").json()
         self.jwks = httpx.get(self.config["jwks_uri"]).json()
 
-    def verify(self, token: str):
+    def verify(self, token: str) -> dict:
         payload = jwt.decode(
             token,
             self.jwks,
@@ -34,12 +34,10 @@ class OIDCProvider:
         for field in ["aud", "azp"]:
             value = payload.get(field)
             if value == self.audience:
-                break
+                return payload
             if isinstance(value, list) and self.audience in value:
-                break
-        else:
-            raise HTTPException(status_code=401, headers={"WWW-Authenticate": "Bearer"})
-        return payload
+                return payload
+        raise JWTError("Invalid audience")
 
 
 @lru_cache
@@ -61,10 +59,8 @@ async def get_current_user(request: Request):
             status_code=401,
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token = credentials.credentials
     try:
-        payload = get_provider().verify(token)
-        return payload
+        return get_provider().verify(credentials.credentials)
     except JWTError:
         raise HTTPException(
             status_code=401,
@@ -72,17 +68,19 @@ async def get_current_user(request: Request):
         )
 
 
-async def check_permission(request: Request, action: str, requested_path: str | None = None):
+async def check_permission(request: Request, action: acl.Action, requested_path: str | None = None):
     if action not in acl.VALID_ACTIONS:
         raise HTTPException(
             status_code=400,
             detail=f"Invalid action {action!r}. Must be 'read' or 'write'.",
         )
     user = await get_current_user(request)
-    if not acl.has_permission(
-        user,
-        action,
-        requested_path,
-        auth_enabled=is_auth_enabled(),  # type: ignore[arg-type]
-    ):
+    if is_auth_enabled() and not acl.has_permission(user, action, requested_path):
         raise HTTPException(status_code=403, detail="Forbidden")
+
+
+async def effective_permissions(request: Request, path: str | None = None) -> dict[str, bool]:
+    if not is_auth_enabled():
+        return {"read": True, "write": True}
+    user = await get_current_user(request)
+    return acl.effective_permissions(user, path)

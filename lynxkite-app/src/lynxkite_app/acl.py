@@ -19,10 +19,6 @@ def set_data_root(path: Path) -> None:
     _data_root = path
 
 
-def get_data_root() -> Path:
-    return _data_root
-
-
 def resolve_folder(path: str | None) -> str:
     """Map a file or directory path to its containing folder for ACL lookup."""
     if not path:
@@ -52,66 +48,44 @@ def user_principals(user: dict[str, Any]) -> set[str]:
     return principals
 
 
-def _as_principal_list(value: Any) -> list[str]:
-    if value is None:
-        return []
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, list):
-        return [str(item) for item in value]
-    return []
-
-
 def resolve_acl(path: str | None) -> dict[str, list[str]]:
     """Effective acl.read / acl.write lists from settings.yaml root→folder merge."""
-    lookup_path = path or ""
-    section = resolve_flat_section(_data_root, lookup_path, "acl")
-    return {
-        "read": _as_principal_list(section.get("read")),
-        "write": _as_principal_list(section.get("write")),
-    }
+    section = resolve_flat_section(_data_root, path or "", "acl")
+
+    def as_list(value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, list):
+            return [str(item) for item in value]
+        return []
+
+    return {"read": as_list(section.get("read")), "write": as_list(section.get("write"))}
 
 
-def _principal_matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
+def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
     if "*" in allowed:
         return authenticated
     return bool(principals & set(allowed))
 
 
-def _allowed_for_action(user: dict[str, Any], action: Action, path: str | None) -> bool:
-    allowed = resolve_acl(path)[action]
-    authenticated = bool(user.get("sub"))
-    return _principal_matches(allowed, user_principals(user), authenticated=authenticated)
-
-
-def has_permission(
-    user: dict[str, Any],
-    action: Action,
-    path: str | None,
-    *,
-    auth_enabled: bool,
-) -> bool:
+def has_permission(user: dict[str, Any], action: Action, path: str | None) -> bool:
     if action not in VALID_ACTIONS:
         raise ValueError(f"Invalid action {action!r}. Must be 'read' or 'write'.")
-    if not auth_enabled:
-        return True
-    folder = resolve_folder(path)
-    if action == "read":
-        return _allowed_for_action(user, "read", folder) or _allowed_for_action(
-            user, "write", folder
-        )
-    return _allowed_for_action(user, "write", folder)
+    grants = resolve_acl(resolve_folder(path))
+    principals = user_principals(user)
+    authenticated = bool(user.get("sub"))
+    if action == "write":
+        return _matches(grants["write"], principals, authenticated=authenticated)
+    # write implies read
+    return _matches(grants["read"], principals, authenticated=authenticated) or _matches(
+        grants["write"], principals, authenticated=authenticated
+    )
 
 
-def effective_permissions(
-    user: dict[str, Any],
-    path: str | None,
-    *,
-    auth_enabled: bool,
-) -> dict[str, bool]:
-    if not auth_enabled:
-        return {"read": True, "write": True}
+def effective_permissions(user: dict[str, Any], path: str | None) -> dict[str, bool]:
     return {
-        "read": has_permission(user, "read", path, auth_enabled=True),
-        "write": has_permission(user, "write", path, auth_enabled=True),
+        "read": has_permission(user, "read", path),
+        "write": has_permission(user, "write", path),
     }

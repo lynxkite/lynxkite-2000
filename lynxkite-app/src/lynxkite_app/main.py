@@ -92,14 +92,12 @@ acl.set_data_root(data_path)
 
 @app.get("/api/permissions")
 async def get_permissions(path: str, request: fastapi.Request) -> dict[str, bool]:
-    user = await auth.get_current_user(request)
-    return acl.effective_permissions(user, path, auth_enabled=auth.is_auth_enabled())
+    return await auth.effective_permissions(request, path)
 
 
 @app.get("/api/permissions/me")
 async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
-    user = await auth.get_current_user(request)
-    return acl.effective_permissions(user, "", auth_enabled=auth.is_auth_enabled())
+    return await auth.effective_permissions(request, "")
 
 
 @app.post("/api/delete")
@@ -157,7 +155,7 @@ async def list_dir(path: str, request: fastapi.Request):
         if p.name.startswith("."):
             continue
         rel = p.relative_to(data_path).as_posix()
-        if not acl.has_permission(user, "read", rel, auth_enabled=auth_on):
+        if auth_on and not acl.has_permission(user, "read", rel):
             continue
         entries.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
     return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))

@@ -478,13 +478,10 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
     scope = {**websocket.scope, "path": room_name, "type": "websocket"}
-
-    def on_connect(_msg, connect_scope):
-        return ws_auth.authenticate_websocket_scope(connect_scope, room_name)
-
-    server = ws_auth.LynxKiteASGIServer(ws_websocket_server, on_connect=on_connect)
     try:
-        await server(scope, websocket._receive, websocket._send)
+        await ws_auth.serve(
+            ws_websocket_server, scope, websocket._receive, websocket._send, room_name
+        )
     finally:
         progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
         if enterprise_backend is not None:
@@ -498,9 +495,6 @@ progress_crdt.register_routes(router, sanitize_path)
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
     scope = {**websocket.scope, "path": room_name, "type": "websocket"}
-
-    def on_connect(_msg, connect_scope):
-        return ws_auth.authenticate_websocket_scope(connect_scope, room_name)
-
-    server = ws_auth.LynxKiteASGIServer(code_websocket_server, on_connect=on_connect)
-    await server(scope, websocket._receive, websocket._send)
+    await ws_auth.serve(
+        code_websocket_server, scope, websocket._receive, websocket._send, room_name
+    )
