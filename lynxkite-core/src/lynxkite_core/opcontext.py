@@ -1,6 +1,7 @@
 """Defines the OpContext class, which is passed to operations when they are executed.
 This context can be used to send messages to the frontend, capture stdout/stderr, and more."""
 
+import inspect
 import typing
 import contextlib
 import asyncio
@@ -73,6 +74,62 @@ class DummyTqdm:
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
+
+
+def find_ctx_param_name(func: typing.Callable) -> tuple[str, int] | tuple[None, None]:
+    """Returns the name of the OpContext parameter.
+
+    Detects two forms:
+    - Legacy: a parameter named ``CONTEXT_PARAM_NAME`` (``"self"``)
+    - New:    a non-keyword-only parameter annotated as ``OpContext``
+    """
+    try:
+        hints = typing.get_type_hints(func)
+    except Exception:
+        hints = {}
+
+    sig = inspect.signature(func)
+    func_name = getattr(func, "__name__", repr(func))
+    params = list(sig.parameters.items())
+    legacy_idx = next(
+        (idx for idx, (name, _) in enumerate(params) if name == CONTEXT_PARAM_NAME), None
+    )
+
+    kw_only_annotated = [
+        name
+        for name, param in params
+        if name != CONTEXT_PARAM_NAME
+        and hints.get(name) is OpContext
+        and param.kind is inspect.Parameter.KEYWORD_ONLY
+    ]
+    if kw_only_annotated:
+        raise ValueError(
+            f"Invalid context declaration: '{func_name}' has keyword-only "
+            f"OpContext-annotated parameter(s) {kw_only_annotated}. Declare OpContext as positional "
+            f"(e.g. 'def func(input1, op_ctx: OpContext, input2, *, param=...)')."
+        )
+
+    annotated = [
+        (name, idx)
+        for idx, (name, _) in enumerate(params)
+        if name != CONTEXT_PARAM_NAME and hints.get(name) is OpContext
+    ]
+    if len(annotated) > 1:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func_name}' has multiple OpContext-annotated "
+            f"parameters: {annotated}. Use only one."
+        )
+    if legacy_idx is not None and annotated:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func_name}' has both the legacy "
+            f"'{CONTEXT_PARAM_NAME}' parameter and OpContext-annotated parameter(s) "
+            f"{annotated}. Use only one form."
+        )
+    if legacy_idx is not None:
+        return CONTEXT_PARAM_NAME, legacy_idx
+    return annotated[0] if annotated else (None, None)
+
+
 PROGRESS_REPORTER: ProgressReporterFactory = DummyTqdm
 TQDM_CAPTURER: typing.Optional[typing.Callable[["OpContext"], typing.Callable[..., typing.Any]]] = (
     None
