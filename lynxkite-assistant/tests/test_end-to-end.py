@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from lynxkite_core import ops, workspace
 import os
+import asyncio
 
 
 async def _exec(a, b):
@@ -13,19 +14,15 @@ async def _exec(a, b):
 def setup_workspace():
     ops.detect_plugins()
     ops_usr = ops.user_script_root
-    wb_crdt = workspace_backend.crdt
     executors = ops.EXECUTORS
     ops.user_script_root = Path()
     ops.EXECUTORS = {  # skip execution during tests
         env: (lambda x, y: _exec(x, y)) for env in ops.CATALOGS.keys()
     }
-    # Disable CRDT for testing
-    workspace_backend.crdt = None  # type: ignore
 
     yield
     ops.EXECUTORS = executors
     ops.user_script_root = ops_usr
-    workspace_backend.crdt = wb_crdt
 
 
 @pytest.fixture
@@ -71,7 +68,7 @@ def test_workspace_unchanged(og_ws_path, create_temp_file):
     ops.load_user_scripts(og_ws_path)
     og_ws = workspace.Workspace.load(og_ws_path)
     resp = python_workspace_conversion.workspace_to_python(og_ws)
-    workspace_backend.set_workspace_file_content(mod_ws_path, resp)
+    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
 
     def get_idx(node_ids, nid):
@@ -129,7 +126,7 @@ def test_workspace_changed(data_path, create_temp_file):
     ops.load_user_scripts(
         data_path / "modified.lynxkite.json"
     )  # we pretend that the code is running from the tests folder
-    workspace_backend.set_workspace_file_content(mod_ws_path, resp)
+    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
     expected_ws = workspace.Workspace.load(expected_ws_path)
 

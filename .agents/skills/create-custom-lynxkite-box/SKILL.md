@@ -1,6 +1,6 @@
 ---
-name: create-custom-box
-description: Create a new type of box with custom behavior in boxes.py
+name: create-custom-lynxkite-box
+description: Create a new type of box with custom behavior in boxes.py to create opearations not yet defined in LynxKite.
 ---
 
 ## Adding new operations

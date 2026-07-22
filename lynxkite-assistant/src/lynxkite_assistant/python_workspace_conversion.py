@@ -114,7 +114,7 @@ def parse_args(
 
 
 def python_to_workspace(
-    code: str, error_on_unknown_ops: bool = True
+    code: str, error_on_unknown_ops: bool = False
 ) -> workspace.Workspace:
     catalog = _get_catalog()
     tree = ast.parse(code)

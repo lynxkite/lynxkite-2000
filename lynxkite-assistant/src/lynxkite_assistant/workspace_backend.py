@@ -10,11 +10,6 @@ from . import python_workspace_conversion
 from . import sync_workspaces
 from . import instructions
 
-try:
-    from lynxkite_app import crdt
-except ImportError:
-    crdt = None  # type: ignore
-
 
 class WorkspaceBackend(state.StateBackend):
     def __init__(self, workspace: str) -> None:
@@ -39,19 +34,27 @@ class WorkspaceBackend(state.StateBackend):
                 "content": get_workspace_layout(self._workspace),
                 "modified_at": "",
             },
+            "requirements.txt": {
+                "content": get_req_content(self._workspace),
+                "modified_at": "",
+            },
         }
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
         if "/boxes.py" in update:
             set_boxes_file_content(self._workspace, update["/boxes.py"]["content"])
         if "/workspace.py" in update:
-            set_workspace_file_content(
-                self._workspace, update["/workspace.py"]["content"]
+            asyncio.run(
+                set_workspace_file_content(
+                    self._workspace, update["/workspace.py"]["content"]
+                )
             )
         if "/layout.json" in update:
             set_layout_file_content(
                 self._workspace, json.loads(update["/layout.json"]["content"])
             )
+        if "requirements.txt" in update:
+            set_req_file_content(self._workspace, update["requirements.txt"]["content"])
 
     def edit(
         self,
@@ -75,7 +78,7 @@ def get_workspace_file_content(ws_path: str) -> str:
     return python_workspace_conversion.workspace_to_python(ws)
 
 
-def set_workspace_file_content(ws_path: str, content: str) -> None:
+async def set_workspace_file_content(ws_path: str, content: str) -> None:
     old_ws = workspace.Workspace.load(ws_path)
     ops.load_user_scripts(ws_path)
     ws = python_workspace_conversion.python_to_workspace(content)
@@ -85,12 +88,15 @@ def set_workspace_file_content(ws_path: str, content: str) -> None:
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
-        asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
+        await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
     ws.save(ws_path)
-    if crdt:
-        room = crdt.get_room_or_none(ws_path)
-        if room is not None:
-            crdt.update_workspace(room.ws, ws)
+
+
+async def execute_workspace(ws_path: str) -> None:
+    ws = workspace.Workspace.load(ws_path)
+    if not ws.paused:
+        await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
+    ws.save(ws_path)
 
 
 def get_boxes_file_content(ws_path: str) -> str:
@@ -109,6 +115,20 @@ def get_boxes_file_content(ws_path: str) -> str:
 
 def set_boxes_file_content(ws_path: str, content: str) -> None:
     p = pathlib.Path(ws_path).parent / "boxes.py"
+    with open(p, "w") as f:
+        f.write(content)
+
+
+def get_req_content(ws_path: str) -> str:
+    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    if not p.exists():
+        return instructions.REQ_INFO
+    with open(p) as f:
+        return f.read()
+
+
+def set_req_file_content(ws_path: str, content: str) -> None:
+    p = pathlib.Path(ws_path).parent / "requirements.txt"
     with open(p, "w") as f:
         f.write(content)
 
@@ -172,7 +192,3 @@ def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
             if "collapsed" in node_layout:
                 node.data.collapsed = bool(node_layout["collapsed"])
     ws.save(ws_path)
-    if crdt:
-        room = crdt.get_room_or_none(ws_path)
-        if room is not None:
-            crdt.update_workspace(room.ws, ws)
