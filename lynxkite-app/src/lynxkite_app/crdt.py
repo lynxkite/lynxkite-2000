@@ -16,6 +16,7 @@ from lynxkite_core import workspace, ops
 from watchdog import events, observers
 from .crdt_update import crdt_update
 from . import progress_crdt
+from . import ws_auth
 
 try:
     import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
@@ -476,9 +477,14 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
-    server = pycrdt.websocket.ASGIServer(ws_websocket_server)
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+
+    def on_connect(_msg, connect_scope):
+        return ws_auth.authenticate_websocket_scope(connect_scope, room_name)
+
+    server = ws_auth.LynxKiteASGIServer(ws_websocket_server, on_connect=on_connect)
     try:
-        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+        await server(scope, websocket._receive, websocket._send)
     finally:
         progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
         if enterprise_backend is not None:
@@ -491,5 +497,10 @@ progress_crdt.register_routes(router, sanitize_path)
 @router.websocket("/ws/code/crdt/{room_name:path}")
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt.websocket.ASGIServer(code_websocket_server)
-    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+
+    def on_connect(_msg, connect_scope):
+        return ws_auth.authenticate_websocket_scope(connect_scope, room_name)
+
+    server = ws_auth.LynxKiteASGIServer(code_websocket_server, on_connect=on_connect)
+    await server(scope, websocket._receive, websocket._send)

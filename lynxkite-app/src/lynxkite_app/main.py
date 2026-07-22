@@ -14,9 +14,10 @@ import starlette.exceptions
 from lynxkite_core import ops
 from lynxkite_core import opcontext
 from lynxkite_core import workspace
+from . import acl
+from . import auth
 from . import crdt
 from . import icons
-from . import auth
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import capture_tqdm, ProgressReporter
 
@@ -86,6 +87,19 @@ def get_config() -> dict[str, bool | str | None]:
 
 
 data_path = pathlib.Path()
+acl.set_data_root(data_path)
+
+
+@app.get("/api/permissions")
+async def get_permissions(path: str, request: fastapi.Request) -> dict[str, bool]:
+    user = await auth.get_current_user(request)
+    return acl.effective_permissions(user, path, auth_enabled=auth.is_auth_enabled())
+
+
+@app.get("/api/permissions/me")
+async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
+    user = await auth.get_current_user(request)
+    return acl.effective_permissions(user, "", auth_enabled=auth.is_auth_enabled())
 
 
 @app.post("/api/delete")
@@ -134,19 +148,19 @@ def _get_path_type(path: pathlib.Path) -> str:
 @app.get("/api/dir/list")
 async def list_dir(path: str, request: fastapi.Request):
     await auth.check_permission(request, "read", path)
+    user = await auth.get_current_user(request)
     dir_path = data_path / path
     assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
-    return sorted(
-        [
-            DirectoryEntry(
-                name=p.relative_to(data_path).as_posix(),
-                type=_get_path_type(p),
-            )
-            for p in dir_path.iterdir()
-            if not p.name.startswith(".")
-        ],
-        key=lambda x: (x.type != "directory", x.name.lower()),
-    )
+    auth_on = auth.is_auth_enabled()
+    entries: list[DirectoryEntry] = []
+    for p in dir_path.iterdir():
+        if p.name.startswith("."):
+            continue
+        rel = p.relative_to(data_path).as_posix()
+        if not acl.has_permission(user, "read", rel, auth_enabled=auth_on):
+            continue
+        entries.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
+    return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))
 
 
 @app.post("/api/dir/mkdir")
@@ -218,8 +232,9 @@ async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
 
 
 @app.post("/api/download")
-async def download(req: dict):
+async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
+    await auth.check_permission(request, "read", req["path"])
     file_path = data_path / req["path"]
     assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
     if not file_path.exists() or not file_path.is_file():
@@ -230,7 +245,7 @@ async def download(req: dict):
 @app.post("/api/execute_workspace")
 async def execute_workspace(name: str, req: fastapi.Request):
     """Trigger and await the execution of a workspace."""
-    await auth.check_permission(req, "execute", name)
+    await auth.check_permission(req, "write", name)
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
