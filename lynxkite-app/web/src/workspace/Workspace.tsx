@@ -38,7 +38,14 @@ import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { apiJson, getConfig, parentPath, uploadFile, usePath } from "../common.ts";
+import {
+  apiJson,
+  getConfig,
+  parentPath,
+  uploadFile,
+  useFolderPermissions,
+  usePath,
+} from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
 import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
@@ -104,7 +111,9 @@ function LynxKiteFlow() {
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const crdt = useCRDTWorkspace(path);
+  const permissions = useFolderPermissions(path);
+  const canWrite = permissions.write;
+  const crdt = useCRDTWorkspace(path, canWrite);
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
@@ -186,26 +195,26 @@ function LynxKiteFlow() {
       const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
-      if (event.key === "/" && categoryHierarchy) {
+      if (event.key === "/" && categoryHierarchy && canWrite) {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
         });
-      } else if (event.key === "r") {
+      } else if (event.key === "r" && canWrite) {
         event.preventDefault();
         executeWorkspace();
       } else if (isPrimaryModifierPressed) {
-        if (event.key === "z") {
+        if (event.key === "z" && canWrite) {
           crdt?.undo();
-        } else if (event.key === "y") {
+        } else if (event.key === "y" && canWrite) {
           crdt?.redo();
         } else if (!(nodeSearchSettings || isTypingInFormElement())) {
           const key = event.key.toLowerCase();
           if (key === "c") {
             copySelection(nodes, edges, crdt?.ws ?? {});
-          } else if (key === "v") {
+          } else if (key === "v" && canWrite) {
             pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
-          } else if (key === "x") {
+          } else if (key === "x" && canWrite) {
             cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
           } else if (key === "a") {
             event.preventDefault();
@@ -218,7 +227,7 @@ function LynxKiteFlow() {
     return () => {
       document.removeEventListener("keyup", handleKey);
     };
-  }, [categoryHierarchy, nodeSearchSettings]);
+  }, [categoryHierarchy, nodeSearchSettings, canWrite, crdt, nodes, edges]);
 
   function getBestPosition() {
     const W = reactFlowContainer.current!.clientWidth;
@@ -269,6 +278,7 @@ function LynxKiteFlow() {
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
+      if (!canWrite) return;
       if (!categoryHierarchy) return;
       if (suppressSearchUntil > Date.now()) return;
       if (nodeSearchSettings) {
@@ -280,7 +290,7 @@ function LynxKiteFlow() {
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [categoryHierarchy, crdt.ws, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [categoryHierarchy, canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
@@ -349,6 +359,7 @@ function LynxKiteFlow() {
   async function onDrop(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
+    if (!canWrite) return;
     const file = e.dataTransfer.files[0];
     if (!catalog.data || !crdt?.ws?.env) {
       return;
@@ -532,19 +543,43 @@ function LynxKiteFlow() {
   }
   const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
+
+  if (!permissions.isLoading && !permissions.read) {
+    return (
+      <div className="workspace">
+        <div className="hero min-h-screen">
+          <div className="card bg-base-100 shadow-sm">
+            <div className="card-body">
+              <h2 className="card-title">No access</h2>
+              <p>You do not have permission to view this workspace.</p>
+              <div className="card-actions justify-end">
+                <Link to="/" className="btn btn-primary">
+                  Back
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="workspace">
+    <div className={`workspace${canWrite ? "" : " read-only"}`}>
       <div className="top-bar bg-neutral">
         <div className="top-bar-leading">
           <Link className="logo" to="/">
             <img alt="" src={favicon} />
           </Link>
           <div className="ws-name">{shortPath}</div>
+          {!canWrite && !permissions.isLoading && (
+            <span className="badge badge-ghost ml-2">Read-only</span>
+          )}
         </div>
         <title>{shortPath}</title>
         <div className="top-bar-trailing">
           <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws)} />
-          {crdt?.ws && (
+          {crdt?.ws && canWrite && (
             <div className="top-bar-controls">
               <ExecutionOptions
                 env={crdt.ws.env || ""}
@@ -559,7 +594,7 @@ function LynxKiteFlow() {
             </div>
           )}
           <div className="tools text-secondary">
-            {crdt?.ws && (
+            {crdt?.ws && canWrite && (
               <>
                 <Tooltip doc="Group selected nodes">
                   <button
@@ -653,19 +688,23 @@ function LynxKiteFlow() {
       <div className="workspace-body">
         <div
           className="reactflow-container"
-          onDragOver={onDragOver}
+          onDragOver={canWrite ? onDragOver : undefined}
           onMouseMove={onMouseMove}
-          onDrop={onDrop}
+          onDrop={canWrite ? onDrop : undefined}
           ref={reactFlowContainer}
         >
           {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized }}>
+            <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized, canWrite }}>
               <ReactFlow
                 nodes={nodes}
                 edges={autoConnect.renderedEdges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
                 fitView
+                nodesDraggable={canWrite}
+                nodesConnectable={canWrite}
+                elementsSelectable={true}
+                deleteKeyCode={canWrite ? ["Backspace", "Delete"] : null}
                 onNodesChange={(changes) => {
                   changes = snapChangesToGrid(
                     changes,
@@ -675,10 +714,10 @@ function LynxKiteFlow() {
                   crdt?.onFENodesChange?.(changes);
                 }}
                 onEdgesChange={crdt?.onFEEdgesChange}
-                onPaneClick={toggleNodeSearch}
-                onConnect={onConnect}
-                onNodeDrag={autoConnect.onNodeDrag}
-                onNodeDragStop={autoConnect.onNodeDragStop}
+                onPaneClick={canWrite ? toggleNodeSearch : undefined}
+                onConnect={canWrite ? onConnect : undefined}
+                onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
+                onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
                 onMove={() => {
                   const zoom = reactFlow.getZoom();
                   setIconized(zoom < ICONIZE_THRESHOLD);
@@ -709,7 +748,7 @@ function LynxKiteFlow() {
                   bgColor="#fafafa"
                   offset={3}
                 />
-                {nodeSearchSettings && categoryHierarchy && (
+                {nodeSearchSettings && categoryHierarchy && canWrite && (
                   <NodeSearch
                     pos={nodeSearchSettings.pos}
                     categoryHierarchy={categoryHierarchy}
@@ -731,7 +770,7 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        {isAssistantOpen && (
+        {isAssistantOpen && canWrite && (
           <Suspense fallback={<aside className="assistant-panel" />}>
             <Assistant crdtWorkspace={crdt} />
           </Suspense>
