@@ -94,6 +94,10 @@ export abstract class SingleAttributeChip extends BaseChip {
     this.text = text;
   }
 
+  static getInitialData(attribute: string, _rawItems: any[], _previousData?: ChipData): ChipData {
+    return { attribute };
+  }
+
   getFormData() {
     return { attribute: this.attribute };
   }

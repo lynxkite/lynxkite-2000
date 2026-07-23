@@ -162,11 +162,7 @@ export class PositionChip extends BaseChip {
     });
 
     if (points.length > 0) {
-      try {
-        map.fitBounds(L.latLngBounds(points), { padding: [30, 30], maxZoom: 12 });
-      } catch {
-        // Ignore invalid bounds updates from transient data.
-      }
+      map.fitBounds(L.latLngBounds(points), { padding: [30, 30], maxZoom: 12 });
     }
   }
 
