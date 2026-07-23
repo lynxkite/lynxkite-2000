@@ -219,7 +219,7 @@ def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root
     return max(0.0, float(profit)), sel_nodes, sel_roots, sel_edges
 
 
-@op("Steiner forest", icon="eye", color="blue")
+@op("Steiner forest", icon="eye", color="blue", slow=True)
 def pcsf(
     b: core.Bundle,
     *,
