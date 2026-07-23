@@ -26,7 +26,7 @@ export class SliderChip extends BaseChip {
       }
     });
 
-    return min === Infinity ? { min: 0, max: 100 } : { min, max };
+    return min === Infinity ? { min: 0, max: 0 } : { min, max };
   }
 
   constructor(data: ChipData, disabled?: boolean) {
