@@ -28,11 +28,10 @@ export class PositionChip extends BaseChip {
   }
 
   constructor(data: ChipData, disabled?: boolean) {
-    super(data, disabled);
+    super(data, disabled, "#b4fbb6", "#045b15");
     this.mode = PositionChip.getMode(data);
     this.xAttr = data.xAttr || data.lngAttr || "";
     this.yAttr = data.yAttr || data.latAttr || "";
-    this.setColors();
   }
 
   getLabel() {
@@ -63,20 +62,9 @@ export class PositionChip extends BaseChip {
     this._mapDiv = null;
   }
 
-  private setColors() {
-    if (this.mode === "map") {
-      this.bg = "#ccfbf1";
-      this.text = "#0f766e";
-      return;
-    }
-    this.bg = "#e2ffac";
-    this.text = "rgb(18 93 53 / 0.78)";
-  }
-
   private toggleMode() {
     const wasMap = this.mode === "map";
     this.mode = wasMap ? "xy" : "map";
-    this.setColors();
     if (wasMap) this.cleanup();
   }
 
@@ -215,7 +203,7 @@ export class PositionChip extends BaseChip {
           letterSpacing: 0.3,
         }}
       >
-        {this.mode === "map" ? "Switch to X/Y" : "Switch to Lon/Lat"}
+        {this.mode === "map" ? "Map" : "X/Y"}
       </button>
     );
   }
