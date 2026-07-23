@@ -38,10 +38,10 @@ export default function VisualChip({
   onDelete,
   onInteractiveChange,
 }: VisualChipProps) {
-  const [deleteHovered, setDeleteHovered] = useState(false);
-  const [disableHovered, setDisableHovered] = useState(false);
+  const [isDeleteHover, setIsDeleteHover] = useState(false);
+  const [isDisableHover, setIsDisableHover] = useState(false);
 
-  const iconButtonStyle: React.CSSProperties = {
+  const iconBtnStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
@@ -82,12 +82,12 @@ export default function VisualChip({
         <button
           type="button"
           onClick={(e) => onToggleDisable(e, index)}
-          onMouseEnter={() => setDisableHovered(true)}
-          onMouseLeave={() => setDisableHovered(false)}
+          onMouseEnter={() => setIsDisableHover(true)}
+          onMouseLeave={() => setIsDisableHover(false)}
           style={{
-            ...iconButtonStyle,
+            ...iconBtnStyle,
             border: "none",
-            background: disableHovered ? THEME.disableBtn.hoverBg : chip.bg,
+            background: isDisableHover ? THEME.disableBtn.hoverBg : chip.bg,
             color: THEME.disableBtn.text,
             fontWeight: "bold",
             fontSize: 12,
@@ -103,12 +103,12 @@ export default function VisualChip({
             e.stopPropagation();
             onDelete(index);
           }}
-          onMouseEnter={() => setDeleteHovered(true)}
-          onMouseLeave={() => setDeleteHovered(false)}
+          onMouseEnter={() => setIsDeleteHover(true)}
+          onMouseLeave={() => setIsDeleteHover(false)}
           style={{
-            ...iconButtonStyle,
+            ...iconBtnStyle,
             border: "none",
-            background: deleteHovered ? THEME.deleteBtn.hoverBg : chip.bg,
+            background: isDeleteHover ? THEME.deleteBtn.hoverBg : chip.bg,
             color: THEME.deleteBtn.text,
             fontWeight: "bold",
             fontSize: 14,

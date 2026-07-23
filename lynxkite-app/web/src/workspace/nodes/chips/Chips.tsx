@@ -8,15 +8,22 @@ export interface FormFieldConfig {
   type?: "select" | "number";
 }
 
+export interface ChipFormRenderContext {
+  formData: ChipData;
+  setFormData: React.Dispatch<React.SetStateAction<ChipData>>;
+}
+
 export type ChipTarget = "node" | "edge";
-export type ChipRenderer = "echarts" | "leaflet";
+export type ChipRenderer = "echarts" | string;
 
 export interface ChipApplyContext {
   renderer: ChipRenderer;
-  mapDiv: HTMLDivElement | null;
+  series: any;
+  surfaceDiv: HTMLDivElement | null;
 }
 
 export type ChipData = Record<string, string>;
+export type PositionMode = "xy" | "map";
 
 export interface ChipClass {
   new (data: ChipData, disabled?: boolean): BaseChip;
@@ -25,6 +32,9 @@ export interface ChipClass {
   target: ChipTarget;
   formFields: FormFieldConfig[];
   getInitialData(attribute: string, rawItems: any[], previousData?: ChipData): ChipData;
+  initFormData?: (formData: ChipData) => ChipData;
+  getFormFieldLabel?: (field: FormFieldConfig, formData: ChipData) => string | undefined;
+  renderFormExtra?: (context: ChipFormRenderContext) => React.ReactNode;
 }
 
 const ATTRIBUTE_FORM_FIELDS: FormFieldConfig[] = [{ key: "attribute" }];
@@ -40,6 +50,9 @@ const getColor = (s: string): string => {
   }
   return `hsl(${Math.abs(h * 131) % 360}, 80%, 60%)`;
 };
+
+const getPositionMode = (data: ChipData): PositionMode =>
+  data.mode === "map" || (data.latAttr !== undefined && data.lngAttr !== undefined) ? "map" : "xy";
 
 const calculateAttributeBounds = (
   items: any[],
@@ -65,9 +78,6 @@ export abstract class BaseChip {
   bg!: string;
   text!: string;
 
-  static type: string;
-  static displayName: string;
-  static target: ChipTarget;
   static formFields: FormFieldConfig[];
 
   constructor(_data: ChipData, disabled = false) {
@@ -76,7 +86,7 @@ export abstract class BaseChip {
 
   static getInitialData(attribute: string, _rawItems: any[], previousData?: ChipData): ChipData {
     const data: ChipData = {};
-    BaseChip.formFields?.forEach((fieldConfig) => {
+    BaseChip.formFields.forEach((fieldConfig) => {
       const key = fieldConfig.key;
       if (key === "attribute") {
         data[key] = attribute;
@@ -89,7 +99,11 @@ export abstract class BaseChip {
 
   abstract getLabel(): string;
   abstract getFormData(): ChipData;
-  abstract apply(series: any, context: ChipApplyContext, onUpdate?: () => void): void;
+  abstract apply(context: ChipApplyContext): void;
+
+  getApplyOrder(): number {
+    return 0;
+  }
 
   getRenderer(): ChipRenderer {
     return "echarts";
@@ -117,127 +131,6 @@ abstract class SingleAttributeChip extends BaseChip {
   }
 }
 
-export class MapChip extends BaseChip {
-  static type = "map";
-  type = MapChip.type;
-  static displayName = "Map Position";
-  static target: ChipTarget = "node";
-  static formFields: FormFieldConfig[] = [
-    { key: "latAttr", label: "Latitude:" },
-    { key: "lngAttr", label: "Longitude:" },
-  ];
-
-  latAttr: string;
-  lngAttr: string;
-
-  private _map: L.Map | null = null;
-  private _mapDiv: HTMLDivElement | null = null;
-  private _resizeObserver: ResizeObserver | null = null;
-
-  constructor(data: ChipData, disabled?: boolean) {
-    super(data, disabled);
-    this.latAttr = data.latAttr || "";
-    this.lngAttr = data.lngAttr || "";
-    this.bg = "#ccfbf1";
-    this.text = "#0f766e";
-  }
-
-  getLabel() {
-    return `Map: Lat(${this.latAttr}) Lng(${this.lngAttr})`;
-  }
-
-  getFormData() {
-    return { latAttr: this.latAttr, lngAttr: this.lngAttr };
-  }
-
-  override getRenderer(): ChipRenderer {
-    return "leaflet";
-  }
-
-  override cleanup(): void {
-    this._resizeObserver?.disconnect();
-    this._resizeObserver = null;
-    this._map?.remove();
-    this._map = null;
-    this._mapDiv = null;
-  }
-
-  apply(series: any, context: ChipApplyContext, _onUpdate?: () => void) {
-    const mapDiv = context.mapDiv;
-    if (!mapDiv || !series?.data || !this.latAttr || !this.lngAttr) return;
-
-    if (!this._map || this._mapDiv !== mapDiv) {
-      this._map?.remove();
-      this._map = L.map(mapDiv, { zoomControl: true });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(this._map);
-      this._mapDiv = mapDiv;
-    }
-
-    const map = this._map;
-
-    this._resizeObserver?.disconnect();
-    this._resizeObserver = new ResizeObserver(() => map.invalidateSize());
-    this._resizeObserver.observe(mapDiv);
-
-    map.eachLayer((layer) => {
-      if (!(layer instanceof L.TileLayer)) map.removeLayer(layer);
-    });
-
-    const edges: any[] = series.links || [];
-
-    const nodePositions = new Map<string, L.LatLng>();
-    series.data.forEach((node: any) => {
-      const lat = Number(node.attributes?.[this.latAttr]);
-      const lng = Number(node.attributes?.[this.lngAttr]);
-      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-        nodePositions.set(String(node.id ?? node.name), L.latLng(lat, lng));
-      }
-    });
-    edges.forEach((edge: any) => {
-      const src = nodePositions.get(String(edge.source));
-      const tgt = nodePositions.get(String(edge.target));
-      if (!src || !tgt) return;
-      L.polyline([src, tgt], {
-        color: edge.lineStyle?.color || "#94a3b8",
-        weight: 1.5,
-        opacity: 0.7,
-      }).addTo(map);
-    });
-    const validPoints: L.LatLng[] = [];
-    series.data.forEach((node: any) => {
-      const pt = nodePositions.get(String(node.id ?? node.name));
-      if (!pt) return;
-      validPoints.push(pt);
-
-      const labelText = node.label?.show
-        ? String(node.label.formatter ?? "")
-        : node.name || node.id || "";
-
-      const circle = L.circleMarker(pt, {
-        radius: 7,
-        fillColor: node.itemStyle?.color || "#4f46e5",
-        color: "#fff",
-        weight: 1.5,
-        opacity: 1,
-        fillOpacity: 0.85,
-      });
-      if (labelText) {
-        circle.bindTooltip(String(labelText), { permanent: false, direction: "top" });
-      }
-      circle.addTo(map);
-    });
-    if (validPoints.length > 0) {
-      try {
-        map.fitBounds(L.latLngBounds(validPoints), { padding: [30, 30], maxZoom: 12 });
-      } catch (_) {}
-    }
-  }
-}
-
 export class NodeColorChip extends SingleAttributeChip {
   static type = "node_color";
   type = NodeColorChip.type;
@@ -253,9 +146,9 @@ export class NodeColorChip extends SingleAttributeChip {
     return `Node color by: ${this.attribute}`;
   }
 
-  apply(series: any, _context: ChipApplyContext) {
+  apply(context: ChipApplyContext) {
     if (!this.attribute) return;
-    series?.data?.forEach((node: any) => {
+    context.series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
       if (hasAttributeValue(val)) {
         node.itemStyle = { ...node.itemStyle, color: getColor(String(val)) };
@@ -279,10 +172,9 @@ export class EdgeColorChip extends SingleAttributeChip {
     return `Edge color by: ${this.attribute}`;
   }
 
-  apply(series: any, _context: ChipApplyContext) {
+  apply(context: ChipApplyContext) {
     if (!this.attribute) return;
-    const edges = series?.links;
-    edges?.forEach((edge: any) => {
+    context.series?.links?.forEach((edge: any) => {
       const val = edge.attributes?.[this.attribute];
       if (hasAttributeValue(val)) {
         edge.lineStyle = { ...edge.lineStyle, color: getColor(String(val)) };
@@ -301,26 +193,159 @@ export class PositionChip extends BaseChip {
     { key: "yAttr", label: "Y:" },
   ];
 
+  mode: PositionMode;
   xAttr: string;
   yAttr: string;
 
+  private _map: L.Map | null = null;
+  private _mapDiv: HTMLDivElement | null = null;
+  private _resizeObserver: ResizeObserver | null = null;
+
   constructor(data: ChipData, disabled?: boolean) {
     super(data, disabled);
-    this.xAttr = data.xAttr || "";
-    this.yAttr = data.yAttr || "";
+    this.mode = getPositionMode(data);
+    this.xAttr = data.xAttr || data.lngAttr || "";
+    this.yAttr = data.yAttr || data.latAttr || "";
+    this.setColors();
+  }
+
+  getLabel() {
+    return this.mode === "map"
+      ? `Position: Lon(${this.xAttr}) Lat(${this.yAttr})`
+      : `Position: X(${this.xAttr}) Y(${this.yAttr})`;
+  }
+
+  getFormData() {
+    return {
+      mode: this.mode,
+      xAttr: this.xAttr,
+      yAttr: this.yAttr,
+      lngAttr: this.xAttr,
+      latAttr: this.yAttr,
+    };
+  }
+
+  override getRenderer(): ChipRenderer {
+    return this.mode === "map" ? "leaflet" : "echarts";
+  }
+
+  override cleanup(): void {
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
+    this._map?.remove();
+    this._map = null;
+    this._mapDiv = null;
+  }
+
+  private setColors() {
+    if (this.mode === "map") {
+      this.bg = "#ccfbf1";
+      this.text = "#0f766e";
+      return;
+    }
     this.bg = "#e2ffac";
     this.text = "rgb(18 93 53 / 0.78)";
   }
 
-  getLabel() {
-    return `Position: X(${this.xAttr}) Y(${this.yAttr})`;
+  private toggleMode() {
+    const wasMap = this.mode === "map";
+    this.mode = wasMap ? "xy" : "map";
+    this.setColors();
+    if (wasMap) this.cleanup();
   }
 
-  getFormData() {
-    return { xAttr: this.xAttr, yAttr: this.yAttr };
+  private applyMap(context: ChipApplyContext) {
+    const surfaceDiv = context.surfaceDiv;
+    const series = context.series;
+    if (
+      context.renderer !== this.getRenderer() ||
+      !surfaceDiv ||
+      !series?.data ||
+      !this.xAttr ||
+      !this.yAttr
+    )
+      return;
+
+    if (!this._map || this._mapDiv !== surfaceDiv) {
+      this._map?.remove();
+      this._map = L.map(surfaceDiv, { zoomControl: false });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this._map);
+      this._mapDiv = surfaceDiv;
+    }
+
+    const map = this._map;
+
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = new ResizeObserver(() => map.invalidateSize());
+    this._resizeObserver.observe(surfaceDiv);
+
+    map.eachLayer((layer) => {
+      if (!(layer instanceof L.TileLayer)) map.removeLayer(layer);
+    });
+
+    const edges: any[] = series.links || [];
+
+    const nodePositions = new Map<string, L.LatLng>();
+    series.data.forEach((node: any) => {
+      const lng = Number(node.attributes?.[this.xAttr]);
+      const lat = Number(node.attributes?.[this.yAttr]);
+      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        nodePositions.set(String(node.id ?? node.name), L.latLng(lat, lng));
+      }
+    });
+
+    edges.forEach((edge: any) => {
+      const src = nodePositions.get(String(edge.source));
+      const tgt = nodePositions.get(String(edge.target));
+      if (!src || !tgt) return;
+      L.polyline([src, tgt], {
+        color: edge.lineStyle?.color || "#94a3b8",
+        weight: 1.5,
+        opacity: 0.7,
+      }).addTo(map);
+    });
+
+    const validPoints: L.LatLng[] = [];
+    series.data.forEach((node: any) => {
+      const pt = nodePositions.get(String(node.id ?? node.name));
+      if (!pt) return;
+      validPoints.push(pt);
+
+      const labelText = node.label?.show ? String(node.label?.formatter ?? node.name ?? "") : "";
+
+      const circle = L.circleMarker(pt, {
+        radius: 7,
+        fillColor: node.itemStyle?.color || "#4f46e5",
+        color: "#fff",
+        weight: 1.5,
+        opacity: 1,
+        fillOpacity: 0.85,
+      });
+
+      if (labelText) {
+        circle.bindTooltip(labelText, {
+          permanent: true,
+          direction: "top",
+          offset: [0, -8],
+          className: "lk-map-node-label",
+        });
+      }
+
+      circle.addTo(map);
+    });
+
+    if (validPoints.length > 0) {
+      try {
+        map.fitBounds(L.latLngBounds(validPoints), { padding: [30, 30], maxZoom: 12 });
+      } catch (_) {}
+    }
   }
 
-  apply(series: any, _context: ChipApplyContext) {
+  private applyXY(series: any) {
     if (!series?.data || !this.xAttr || !this.yAttr) return;
 
     series.coordinateSystem = undefined;
@@ -334,6 +359,45 @@ export class PositionChip extends BaseChip {
         node.y = yVal;
       }
     });
+  }
+
+  apply(context: ChipApplyContext) {
+    if (this.mode === "map") {
+      this.applyMap(context);
+      return;
+    }
+    this.applyXY(context.series);
+  }
+
+  override getApplyOrder(): number {
+    return this.mode === "map" ? 100 : 0;
+  }
+
+  override render(onChange?: () => void): React.ReactNode {
+    return (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          this.toggleMode();
+          onChange?.();
+        }}
+        style={{
+          border: "none",
+          borderRadius: 999,
+          padding: "2px 8px",
+          fontSize: 10,
+          fontWeight: 700,
+          cursor: "pointer",
+          background: "rgba(255,255,255,0.55)",
+          color: this.text,
+          textTransform: "uppercase",
+          letterSpacing: 0.3,
+        }}
+      >
+        {this.mode === "map" ? "Switch to X/Y" : "Switch to Lon/Lat"}
+      </button>
+    );
   }
 }
 
@@ -352,9 +416,9 @@ export class LabelChip extends SingleAttributeChip {
     return `Label by: ${this.attribute}`;
   }
 
-  apply(series: any, _context: ChipApplyContext) {
+  apply(context: ChipApplyContext) {
     if (!this.attribute) return;
-    series?.data?.forEach((node: any) => {
+    context.series?.data?.forEach((node: any) => {
       const val = node.attributes?.[this.attribute];
       const hasValue = hasAttributeValue(val);
       node.label = {
@@ -430,7 +494,8 @@ export class SliderChip extends BaseChip {
     };
   }
 
-  apply(series: any, _context: ChipApplyContext) {
+  apply(context: ChipApplyContext) {
+    const series = context.series;
     if (!series?.data || !this.attribute) return;
     const keptNodeIds = new Set<string>();
 
@@ -577,15 +642,19 @@ export const CHIP_REGISTRY: ChipClass[] = [
   PositionChip,
   LabelChip,
   SliderChip,
-  MapChip,
 ];
 
-export const CHIP_CLASS_BY_TYPE = new Map(
-  CHIP_REGISTRY.map((chipClass) => [chipClass.type, chipClass]),
-);
+export const CHIP_CLASS_BY_TYPE = new Map<string, ChipClass>([
+  ...CHIP_REGISTRY.map((chipClass) => [chipClass.type, chipClass] as [string, ChipClass]),
+  ["map", PositionChip],
+]);
+
+export const normalizeChipType = (type?: string): string | undefined =>
+  type === "map" ? PositionChip.type : type;
 
 export const getChipClass = (type: string): ChipClass =>
   CHIP_CLASS_BY_TYPE.get(type) || CHIP_REGISTRY[0];
 
 export const getActiveRenderer = (chips: BaseChip[]): ChipRenderer =>
-  chips.some((chip) => !chip.disabled && chip.getRenderer() === "leaflet") ? "leaflet" : "echarts";
+  chips.find((chip) => !chip.disabled && chip.getRenderer() !== "echarts")?.getRenderer() ||
+  "echarts";
