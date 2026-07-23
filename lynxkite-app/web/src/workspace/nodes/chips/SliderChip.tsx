@@ -1,5 +1,11 @@
 import type React from "react";
-import { BaseChip, type ChipApplyContext, type ChipData, type FormFieldConfig } from "./ChipCore";
+import {
+  BaseChip,
+  type ChipApplyContext,
+  type ChipData,
+  type FormFieldConfig,
+  getBounds,
+} from "./ChipCore";
 
 export class SliderChip extends BaseChip {
   static type = "slider";
@@ -13,21 +19,6 @@ export class SliderChip extends BaseChip {
   limitMax: number;
   currentMin: number;
   currentMax: number;
-
-  private static getBounds(items: any[], attribute: string): { min: number; max: number } {
-    let min = Infinity;
-    let max = -Infinity;
-
-    items?.forEach((item) => {
-      const value = Number(item?.attributes?.[attribute]);
-      if (!Number.isNaN(value)) {
-        if (value < min) min = value;
-        if (value > max) max = value;
-      }
-    });
-
-    return min === Infinity ? { min: 0, max: 0 } : { min, max };
-  }
 
   constructor(data: ChipData, disabled?: boolean) {
     super(data, disabled);
@@ -45,7 +36,7 @@ export class SliderChip extends BaseChip {
     rawItems: any[],
     previousData?: ChipData,
   ): ChipData {
-    const bounds = SliderChip.getBounds(rawItems, attribute);
+    const bounds = getBounds(rawItems, attribute);
     const sameAttr = previousData?.attribute === attribute;
 
     return {

@@ -33,16 +33,51 @@ export interface ChipClass {
 
 export const ATTRIBUTE_FIELD: FormFieldConfig[] = [{ key: "attribute" }];
 
-export const hasValue = (value: unknown): boolean =>
-  value !== undefined && value !== null && value !== "";
+export function hasValue(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== "";
+}
 
-export const colorFromText = (text: string): string => {
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = text.charCodeAt(i) + ((hash << 5) - hash);
+export function getBounds(items: any[], attribute: string): { min: number; max: number } {
+  let min = Infinity;
+  let max = -Infinity;
+
+  items?.forEach((item) => {
+    const value = Number(item?.attributes?.[attribute]);
+    if (!Number.isNaN(value)) {
+      if (value < min) min = value;
+      if (value > max) max = value;
+    }
+  });
+
+  return min === Infinity ? { min: 0, max: 0 } : { min, max };
+}
+
+export class ColorMap {
+  private readonly min: number;
+  private readonly max: number;
+  private readonly attribute: string;
+
+  constructor(items: any, attribute: string) {
+    const bounds = getBounds(items, attribute);
+    this.min = bounds.min;
+    this.max = bounds.max;
+    this.attribute = attribute;
   }
-  return `hsl(${Math.abs(hash * 131) % 360}, 80%, 60%)`;
-};
+  getContinuous(item: any) {
+    const value = Number(item?.attributes?.[this.attribute]);
+    if (Number.isNaN(value)) return "#000000";
+    const t = (value - this.min) / (this.max - this.min);
+    return `hsl(${(1 - t) * 240}, 90%, 60%)`;
+  }
+  getCategories(item: any) {
+    let hash = 0;
+    const text = String(item?.attributes?.[this.attribute]);
+    for (let i = 0; i < text.length; i++) {
+      hash = text.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${Math.abs(hash * 131) % 360}, 90%, 60%)`;
+  }
+}
 
 export abstract class BaseChip {
   abstract type: string;
@@ -52,8 +87,10 @@ export abstract class BaseChip {
 
   static formFields: FormFieldConfig[];
 
-  constructor(_data: ChipData, disabled = false) {
+  constructor(_data: ChipData, disabled = false, bg: string, text: string) {
     this.disabled = disabled;
+    this.bg = bg;
+    this.text = text;
   }
 
   static getInitialData(attribute: string, _rawItems: any[], previousData?: ChipData): ChipData {
@@ -88,10 +125,8 @@ export abstract class SingleAttributeChip extends BaseChip {
   attribute: string;
 
   constructor(data: ChipData, disabled: boolean | undefined, bg: string, text: string) {
-    super(data, disabled);
+    super(data, disabled, bg, text);
     this.attribute = data.attribute || "";
-    this.bg = bg;
-    this.text = text;
   }
 
   static getInitialData(attribute: string, _rawItems: any[], _previousData?: ChipData): ChipData {
