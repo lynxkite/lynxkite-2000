@@ -22,16 +22,14 @@ export class PositionChip extends BaseChip {
   private _resizeObserver: ResizeObserver | null = null;
 
   private static getMode(data: ChipData): string {
-    return data.mode === "map" || (data.latAttr !== undefined && data.lngAttr !== undefined)
-      ? "map"
-      : "xy";
+    return data.mode === "map" ? "map" : "xy";
   }
 
   constructor(data: ChipData, disabled?: boolean) {
     super(data, disabled, "#b4fbb6", "#045b15");
     this.mode = PositionChip.getMode(data);
-    this.xAttr = data.xAttr || data.lngAttr || "";
-    this.yAttr = data.yAttr || data.latAttr || "";
+    this.xAttr = data.xAttr || "";
+    this.yAttr = data.yAttr || "";
   }
 
   getLabel() {
@@ -45,8 +43,8 @@ export class PositionChip extends BaseChip {
       mode: this.mode,
       xAttr: this.xAttr,
       yAttr: this.yAttr,
-      lngAttr: this.xAttr,
-      latAttr: this.yAttr,
+      type: this.type,
+      disabled: String(this.disabled),
     };
   }
 

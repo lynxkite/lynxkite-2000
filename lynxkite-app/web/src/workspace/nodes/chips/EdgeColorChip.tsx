@@ -18,10 +18,20 @@ export class EdgeColorChip extends SingleAttributeChip {
 
   constructor(data: Record<string, string>, disabled?: boolean) {
     super(data, disabled, "#fae8ff", "#86198f");
+    this.continuous = data.continuous === "true";
   }
 
   getLabel() {
     return `Edge color by: ${this.attribute}`;
+  }
+
+  override getFormData() {
+    return {
+      attribute: this.attribute,
+      continuous: String(this.continuous),
+      type: this.type,
+      disabled: String(this.disabled),
+    };
   }
 
   apply(context: ChipApplyContext) {

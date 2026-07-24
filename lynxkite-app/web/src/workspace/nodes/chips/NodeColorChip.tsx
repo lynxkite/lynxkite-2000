@@ -17,10 +17,20 @@ export class NodeColorChip extends SingleAttributeChip {
   continuous = false;
   constructor(data: Record<string, string>, disabled?: boolean) {
     super(data, disabled, "#e0f2fe", "#0369a1");
+    this.continuous = data.continuous === "true";
   }
 
   getLabel() {
     return `Node color by: ${this.attribute}`;
+  }
+
+  override getFormData() {
+    return {
+      attribute: this.attribute,
+      continuous: String(this.continuous),
+      type: this.type,
+      disabled: String(this.disabled),
+    };
   }
 
   apply(context: ChipApplyContext) {

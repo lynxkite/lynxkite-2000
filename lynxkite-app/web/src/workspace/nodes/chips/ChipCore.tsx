@@ -134,6 +134,10 @@ export abstract class SingleAttributeChip extends BaseChip {
   }
 
   getFormData() {
-    return { attribute: this.attribute };
+    return {
+      attribute: this.attribute,
+      type: this.type,
+      disabled: String(this.disabled),
+    };
   }
 }

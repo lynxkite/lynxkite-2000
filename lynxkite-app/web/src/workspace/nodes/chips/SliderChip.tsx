@@ -21,14 +21,12 @@ export class SliderChip extends BaseChip {
   currentMax: number;
 
   constructor(data: ChipData, disabled?: boolean) {
-    super(data, disabled);
+    super(data, disabled, "#fee2e2", "#dc2626");
     this.attribute = data.attribute || "";
     this.limitMin = Number(data.min) || 0;
     this.limitMax = Number(data.max) || 100;
     this.currentMin = data.currentMin !== undefined ? Number(data.currentMin) : this.limitMin;
     this.currentMax = data.currentMax !== undefined ? Number(data.currentMax) : this.limitMax;
-    this.bg = "#fee2e2";
-    this.text = "#dc2626";
   }
 
   static override getInitialData(
@@ -65,6 +63,8 @@ export class SliderChip extends BaseChip {
       max: String(this.limitMax),
       currentMin: String(this.currentMin),
       currentMax: String(this.currentMax),
+      type: this.type,
+      disabled: String(this.disabled),
     };
   }
 

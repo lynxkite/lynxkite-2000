@@ -1,7 +1,9 @@
+import { useReactFlow } from "@xyflow/react";
 import * as echarts from "echarts";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDisplay } from "../../common.ts";
+import type { ChipData } from "./chips/ChipCore";
 import ChipForm from "./chips/ChipForm";
 import {
   type BaseChip,
@@ -36,6 +38,23 @@ const collectAttrs = (items: any[]): string[] => {
 
 const getLinks = (series: any): any[] => series?.links || [];
 
+function serializeChips(chips: BaseChip[]): ChipData[] {
+  return chips.map((chip) => chip.getFormData());
+}
+
+function deserializeChips(raw: unknown): BaseChip[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (data): data is ChipData =>
+        !!data && typeof data === "object" && typeof data.type === "string",
+    )
+    .map((data) => {
+      const ChipClass = getChipClass(data.type);
+      return new ChipClass(data, data.disabled === "true");
+    });
+}
+
 const copySeries = (series: any) => {
   if (!series) return null;
   return {
@@ -53,12 +72,13 @@ const copySeries = (series: any) => {
 };
 
 export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
+  const reactFlow = useReactFlow();
   const echartsRef = useRef<HTMLDivElement>(null);
   const surfaceDivRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<echarts.ECharts | null>(null);
   const viewOpts = useDisplay(data?.display_version, id);
 
-  const [chips, setChips] = useState<BaseChip[]>([]);
+  const [chips, setChips] = useState<BaseChip[]>(() => deserializeChips(data?.chips));
   const [open, setOpen] = useState(false);
   const [nodeAttrs, setNodeAttrs] = useState<string[]>([]);
   const [edgeAttrs, setEdgeAttrs] = useState<string[]>([]);
@@ -73,6 +93,16 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
   useEffect(() => {
     chipRef.current = chips;
   }, [chips]);
+
+  useEffect(() => {
+    const serialized = serializeChips(chips);
+    const prevSerialized = Array.isArray(data?.chips) ? data.chips : [];
+    if (JSON.stringify(prevSerialized) === JSON.stringify(serialized)) return;
+    reactFlow.updateNodeData(id, (prevData: any) => ({
+      ...prevData,
+      chips: serialized,
+    }));
+  }, [chips, data?.chips, id, reactFlow]);
 
   useEffect(() => {
     setNodeAttrs(collectAttrs(viewOpts?.series?.[0]?.data || []));
@@ -122,7 +152,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     };
   }, []);
 
-  const saveChip = (newChip: BaseChip) => {
+  function saveChip(newChip: BaseChip): void {
     if (editingIdx !== null) {
       const updated = [...chips];
       updated[editingIdx]?.cleanup();
@@ -133,9 +163,9 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
       setChips([...chips, newChip]);
     }
     setOpen(false);
-  };
+  }
 
-  const toggleChip = (e: React.MouseEvent, index: number) => {
+  function toggleChip(e: React.MouseEvent, index: number): void {
     e.stopPropagation();
     const updated = [...chips];
     const current = updated[index];
@@ -143,9 +173,8 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
     const TargetClass = getChipClass(current.type);
     updated[index] = new TargetClass(current.getFormData(), !current.disabled);
     setChips(updated);
-  };
+  }
 
-  const hasAttrs = nodeAttrs.length > 0 || edgeAttrs.length > 0;
   const rawNodes = viewOpts?.series?.[0]?.data || [];
   const rawEdges = getLinks(viewOpts?.series?.[0]);
 
@@ -166,7 +195,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           ...USER_SELECT_NONE_STYLE,
         }}
       >
-        {hasAttrs && (
+        {
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -200,9 +229,9 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
           >
             {open ? "×" : "+"}
           </button>
-        )}
+        }
 
-        {open && hasAttrs && (
+        {open && (
           <ChipForm
             nodeAttrs={nodeAttrs}
             edgeAttrs={edgeAttrs}
@@ -225,7 +254,10 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
                 setOpen(true);
               }}
               onToggleDisable={toggleChip}
-              onInteractiveChange={() => setInteractiveTick((prev) => prev + 1)}
+              onInteractiveChange={() => {
+                setChips((prev) => [...prev]);
+                setInteractiveTick((prev) => prev + 1);
+              }}
               onDelete={(idx) => {
                 chips[idx]?.cleanup();
                 setChips(chips.filter((_, ci) => ci !== idx));
