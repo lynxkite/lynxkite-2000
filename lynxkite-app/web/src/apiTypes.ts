@@ -117,6 +117,11 @@ export interface WorkspaceNodeData {
   telemetry?: {
     [k: string]: unknown;
   } | null;
+  chips?:
+    | {
+        [k: string]: string;
+      }[]
+    | null;
   meta?: Op | null;
   [k: string]: unknown;
 }

@@ -291,7 +291,7 @@ usage: lynxkite_graph_analytics.operations.visualization_ops.scatter_plot(x=<x_v
 for detailed information, see references/scatter_plot.md
 
 **Visualize graph:**
-usage: lynxkite_graph_analytics.operations.visualization_ops.visualize_graph(color_nodes_by=<color_nodes_by_value>, label_by=<label_by_value>, color_edges_by=<color_edges_by_value>, graph=<graph_variable>)
+usage: lynxkite_graph_analytics.operations.visualization_ops.visualize_graph(b=<b_variable>)
 for detailed information, see references/visualize_graph.md
 
 **Activation:**

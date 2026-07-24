@@ -252,6 +252,9 @@ class CRDTConnection {
           if (wdata.get("expanded_height") !== data.expanded_height) {
             wdata.set("expanded_height", data.expanded_height);
           }
+          if (JSON.stringify(wdata.get("chips")) !== JSON.stringify(data.chips)) {
+            wdata.set("chips", data.chips);
+          }
           wdata.set("__execution_delay", data.__execution_delay);
           let wparams = wdata.get("params") as Y.Map<any>;
           if (!wparams) {
