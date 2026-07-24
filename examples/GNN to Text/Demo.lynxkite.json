@@ -1,0 +1,2445 @@
+{
+  "edges": [
+    {
+      "id": "Load GAT model 1 output Predict with attribution 1 b",
+      "source": "Load GAT model 1",
+      "sourceHandle": "output",
+      "target": "Predict with attribution 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Predict with attribution 1 output Visualize attribution 1 b",
+      "source": "Predict with attribution 1",
+      "sourceHandle": "output",
+      "target": "Visualize attribution 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Predict with attribution 1 output Attribution to text 1 b",
+      "source": "Predict with attribution 1",
+      "sourceHandle": "output",
+      "target": "Attribution to text 1",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Load GAT model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df",
+                "length": 53138.0
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease",
+                "length": 1006.0
+              },
+              "drug_gene": {
+                "columns": [
+                  "Gene",
+                  "Treatment"
+                ],
+                "key": "drug_gene",
+                "length": 1242.0
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2",
+                "length": 15327.0
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx",
+                "length": 14914.0
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta",
+                "length": 1649.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "model_path": "GNN to Text/gat_model.pt",
+          "root_path": "uploads/ode-gnn"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Load GAT model"
+      },
+      "height": 245.0,
+      "id": "Load GAT model 1",
+      "position": {
+        "x": 105.0,
+        "y": 70.0
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df",
+                "length": 53138.0
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease",
+                "length": 1006.0
+              },
+              "drug_gene": {
+                "columns": [
+                  "Gene",
+                  "Treatment"
+                ],
+                "key": "drug_gene",
+                "length": 1242.0
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2",
+                "length": 15327.0
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx",
+                "length": 14914.0
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta",
+                "length": 1649.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Predict with attribution",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "attribution": {
+                "columns": [
+                  "attention_score",
+                  "node"
+                ],
+                "key": "attribution",
+                "length": 14914.0
+              },
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df",
+                "length": 53138.0
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease",
+                "length": 1006.0
+              },
+              "drug_gene": {
+                "columns": [
+                  "Gene",
+                  "Treatment"
+                ],
+                "key": "drug_gene",
+                "length": 1242.0
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2",
+                "length": 15327.0
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx",
+                "length": 14914.0
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta",
+                "length": 1649.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model"
+              },
+              "prediction": {
+                "key": "prediction"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "disease": "BRCA",
+          "drug": "BYL719 + LEE011"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Predict with attribution"
+      },
+      "height": 245.0,
+      "id": "Predict with attribution 1",
+      "position": {
+        "x": 525.0,
+        "y": 70.0
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "animationDuration": 500.0,
+          "animationEasingUpdate": "quinticInOut",
+          "series": [
+            {
+              "data": [
+                {
+                  "id": "HRH3",
+                  "itemStyle": {
+                    "color": "#460b5e"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "HRH3",
+                  "symbolSize": 10.0,
+                  "value": "0.1648",
+                  "x": -42.114532231471266,
+                  "y": 19.016162859354633
+                },
+                {
+                  "id": "LMNB1",
+                  "itemStyle": {
+                    "color": "#3f4587"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "LMNB1",
+                  "symbolSize": 10.0,
+                  "value": "0.4341",
+                  "x": 20.159568589234453,
+                  "y": -64.54071764462424
+                },
+                {
+                  "id": "PLCD4",
+                  "itemStyle": {
+                    "color": "#453681"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PLCD4",
+                  "symbolSize": 10.0,
+                  "value": "0.3587",
+                  "x": -20.76340808907775,
+                  "y": 59.958137340819505
+                },
+                {
+                  "id": "TPR",
+                  "itemStyle": {
+                    "color": "#472575"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TPR",
+                  "symbolSize": 10.0,
+                  "value": "0.2711",
+                  "x": -21.279922413686695,
+                  "y": -29.046591161859887
+                },
+                {
+                  "id": "CCND3",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CCND3",
+                  "symbolSize": 20.0,
+                  "value": "1.0791",
+                  "x": 18.94243777549406,
+                  "y": 6.0855874668416945
+                },
+                {
+                  "id": "CCDC88C",
+                  "itemStyle": {
+                    "color": "#45065a"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CCDC88C",
+                  "symbolSize": 10.0,
+                  "value": "0.1443",
+                  "x": -78.96923093457843,
+                  "y": -36.80943694895421
+                },
+                {
+                  "id": "CDK4",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CDK4",
+                  "symbolSize": 20.0,
+                  "value": "1.0791",
+                  "x": 17.943632241442277,
+                  "y": -13.002935698049518
+                },
+                {
+                  "id": "LSP1",
+                  "itemStyle": {
+                    "color": "#3f4587"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "LSP1",
+                  "symbolSize": 10.0,
+                  "value": "0.4305",
+                  "x": 32.49452388348112,
+                  "y": -31.684649179047646
+                },
+                {
+                  "id": "NASP",
+                  "itemStyle": {
+                    "color": "#481c6e"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "NASP",
+                  "symbolSize": 10.0,
+                  "value": "0.2310",
+                  "x": 2.633540479000509,
+                  "y": -75.05465133384679
+                },
+                {
+                  "id": "SLC9A4",
+                  "itemStyle": {
+                    "color": "#3e4888"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SLC9A4",
+                  "symbolSize": 10.0,
+                  "value": "0.4416",
+                  "x": -90.66948559555615,
+                  "y": 10.686516605050972
+                },
+                {
+                  "id": "TEX12",
+                  "itemStyle": {
+                    "color": "#472b7a"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TEX12",
+                  "symbolSize": 10.0,
+                  "value": "0.3026",
+                  "x": 71.67058411214538,
+                  "y": -13.058063739701224
+                },
+                {
+                  "id": "GOLIM4",
+                  "itemStyle": {
+                    "color": "#462f7c"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GOLIM4",
+                  "symbolSize": 10.0,
+                  "value": "0.3230",
+                  "x": -28.11131638190456,
+                  "y": -63.29348537182658
+                },
+                {
+                  "id": "PCLO",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PCLO",
+                  "symbolSize": 10.0,
+                  "value": "0.2454",
+                  "x": 59.20118125899844,
+                  "y": 1.9025220687380102
+                },
+                {
+                  "id": "CDKN2A",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CDKN2A",
+                  "symbolSize": 10.0,
+                  "value": "1.0791",
+                  "x": 7.877914812433614,
+                  "y": 5.346250720543321
+                },
+                {
+                  "id": "PIK3R1",
+                  "itemStyle": {
+                    "color": "#2cb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PIK3R1",
+                  "symbolSize": 20.0,
+                  "value": "1.0828",
+                  "x": 8.946298533114687,
+                  "y": -14.595036527957145
+                },
+                {
+                  "id": "SPN",
+                  "itemStyle": {
+                    "color": "#481a6c"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SPN",
+                  "symbolSize": 10.0,
+                  "value": "0.2270",
+                  "x": 41.32065982230999,
+                  "y": -13.523444550971872
+                },
+                {
+                  "id": "CUX1",
+                  "itemStyle": {
+                    "color": "#433b83"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CUX1",
+                  "symbolSize": 10.0,
+                  "value": "0.3820",
+                  "x": -56.685683360046,
+                  "y": -21.15526389841588
+                },
+                {
+                  "id": "CEND1",
+                  "itemStyle": {
+                    "color": "#482374"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CEND1",
+                  "symbolSize": 10.0,
+                  "value": "0.2687",
+                  "x": 22.36753319830443,
+                  "y": 74.5044968317997
+                },
+                {
+                  "id": "RUNX1T1",
+                  "itemStyle": {
+                    "color": "#440255"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "RUNX1T1",
+                  "symbolSize": 10.0,
+                  "value": "0.1270",
+                  "x": -31.681437327489853,
+                  "y": -4.040423791870598
+                },
+                {
+                  "id": "MAD1L1",
+                  "itemStyle": {
+                    "color": "#481e70"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MAD1L1",
+                  "symbolSize": 10.0,
+                  "value": "0.2420",
+                  "x": 16.899397235442656,
+                  "y": -2.1467770542208697
+                },
+                {
+                  "id": "HMGA2",
+                  "itemStyle": {
+                    "color": "#32638d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "HMGA2",
+                  "symbolSize": 10.0,
+                  "value": "0.5973",
+                  "x": -8.821256787143822,
+                  "y": 39.93880488317984
+                },
+                {
+                  "id": "NANOS3",
+                  "itemStyle": {
+                    "color": "#47186a"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "NANOS3",
+                  "symbolSize": 10.0,
+                  "value": "0.2172",
+                  "x": -23.679585315077638,
+                  "y": 25.728624397149456
+                },
+                {
+                  "id": "PIK3CG",
+                  "itemStyle": {
+                    "color": "#450558"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PIK3CG",
+                  "symbolSize": 10.0,
+                  "value": "0.1376",
+                  "x": 5.436249747265965,
+                  "y": -3.528640205821021
+                },
+                {
+                  "id": "PIK3CB",
+                  "itemStyle": {
+                    "color": "#2cb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PIK3CB",
+                  "symbolSize": 20.0,
+                  "value": "1.0809",
+                  "x": 3.4650868837961606,
+                  "y": -16.026863205299126
+                },
+                {
+                  "id": "AKAP12",
+                  "itemStyle": {
+                    "color": "#30688d"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "AKAP12",
+                  "symbolSize": 10.0,
+                  "value": "0.6250",
+                  "x": 46.255660903484184,
+                  "y": -74.32161552271201
+                },
+                {
+                  "id": "APOA1",
+                  "itemStyle": {
+                    "color": "#2b738e"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "APOA1",
+                  "symbolSize": 10.0,
+                  "value": "0.6877",
+                  "x": 28.839296558686385,
+                  "y": 34.56615630169769
+                },
+                {
+                  "id": "MTOR",
+                  "itemStyle": {
+                    "color": "#fde724"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "MTOR",
+                  "symbolSize": 20.0,
+                  "value": "1.6204",
+                  "x": 5.556274207795857,
+                  "y": 25.418998797593396
+                },
+                {
+                  "id": "MARCKS",
+                  "itemStyle": {
+                    "color": "#218e8c"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MARCKS",
+                  "symbolSize": 10.0,
+                  "value": "0.8601",
+                  "x": 27.054008355639326,
+                  "y": -45.69478480128722
+                },
+                {
+                  "id": "CCND1",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CCND1",
+                  "symbolSize": 20.0,
+                  "value": "1.0797",
+                  "x": -7.651228945322769,
+                  "y": -9.53396673413151
+                },
+                {
+                  "id": "NUDCD3",
+                  "itemStyle": {
+                    "color": "#481a6c"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "NUDCD3",
+                  "symbolSize": 10.0,
+                  "value": "0.2242",
+                  "x": 1.3121401320227777,
+                  "y": 71.94018752854477
+                },
+                {
+                  "id": "MSL2",
+                  "itemStyle": {
+                    "color": "#423e85"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MSL2",
+                  "symbolSize": 10.0,
+                  "value": "0.3962",
+                  "x": 58.92854578211971,
+                  "y": 82.23372286325795
+                },
+                {
+                  "id": "BRMS1L",
+                  "itemStyle": {
+                    "color": "#423e85"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "BRMS1L",
+                  "symbolSize": 10.0,
+                  "value": "0.3954",
+                  "x": 77.10703291853257,
+                  "y": -0.8943429989618368
+                },
+                {
+                  "id": "TMX2",
+                  "itemStyle": {
+                    "color": "#423d84"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TMX2",
+                  "symbolSize": 10.0,
+                  "value": "0.3937",
+                  "x": 31.432581073008826,
+                  "y": 100.0
+                },
+                {
+                  "id": "CDK6",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "CDK6",
+                  "symbolSize": 20.0,
+                  "value": "1.0791",
+                  "x": -15.420225604299704,
+                  "y": -12.046057340541818
+                },
+                {
+                  "id": "SDC1",
+                  "itemStyle": {
+                    "color": "#471163"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SDC1",
+                  "symbolSize": 10.0,
+                  "value": "0.1871",
+                  "x": 34.675070212486645,
+                  "y": 15.262663868947207
+                },
+                {
+                  "id": "GFOD2",
+                  "itemStyle": {
+                    "color": "#482273"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "GFOD2",
+                  "symbolSize": 10.0,
+                  "value": "0.2629",
+                  "x": -61.48551297822703,
+                  "y": -49.501784247834145
+                },
+                {
+                  "id": "BRAF",
+                  "itemStyle": {
+                    "color": "#74d054"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "BRAF",
+                  "symbolSize": 20.0,
+                  "value": "1.3047",
+                  "x": -12.029042197172926,
+                  "y": 7.595206318834142
+                },
+                {
+                  "id": "PTEN",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PTEN",
+                  "symbolSize": 20.0,
+                  "value": "1.0797",
+                  "x": 9.27832989340974,
+                  "y": 18.61127162906784
+                },
+                {
+                  "id": "PTTG1",
+                  "itemStyle": {
+                    "color": "#45327f"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PTTG1",
+                  "symbolSize": 10.0,
+                  "value": "0.3373",
+                  "x": -4.404679755335731,
+                  "y": -31.973495202096903
+                },
+                {
+                  "id": "HRAS",
+                  "itemStyle": {
+                    "color": "#481a6c"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "HRAS",
+                  "symbolSize": 10.0,
+                  "value": "0.2278",
+                  "x": -10.695032346132507,
+                  "y": 1.486757498134642
+                },
+                {
+                  "id": "APOE",
+                  "itemStyle": {
+                    "color": "#472575"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "APOE",
+                  "symbolSize": 10.0,
+                  "value": "0.2717",
+                  "x": 41.3060872830095,
+                  "y": 5.9287171483450285
+                },
+                {
+                  "id": "TPM2",
+                  "itemStyle": {
+                    "color": "#47186a"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TPM2",
+                  "symbolSize": 10.0,
+                  "value": "0.2128",
+                  "x": -39.913726320890625,
+                  "y": -33.53558640019326
+                },
+                {
+                  "id": "MARCKSL1",
+                  "itemStyle": {
+                    "color": "#20a585"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MARCKSL1",
+                  "symbolSize": 10.0,
+                  "value": "1.0000",
+                  "x": 8.662833048086558,
+                  "y": -57.04373379360027
+                },
+                {
+                  "id": "ZNF205",
+                  "itemStyle": {
+                    "color": "#471265"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ZNF205",
+                  "symbolSize": 10.0,
+                  "value": "0.1905",
+                  "x": -64.9805192231467,
+                  "y": 35.02230645089584
+                },
+                {
+                  "id": "TSC1",
+                  "itemStyle": {
+                    "color": "#48196b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TSC1",
+                  "symbolSize": 10.0,
+                  "value": "0.2200",
+                  "x": 1.7497618659248055,
+                  "y": 11.224013318512686
+                },
+                {
+                  "id": "CCDC88A",
+                  "itemStyle": {
+                    "color": "#48196b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CCDC88A",
+                  "symbolSize": 10.0,
+                  "value": "0.2196",
+                  "x": 20.08636536424615,
+                  "y": -25.003342669446344
+                },
+                {
+                  "id": "SLC13A2",
+                  "itemStyle": {
+                    "color": "#48196b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "SLC13A2",
+                  "symbolSize": 10.0,
+                  "value": "0.2233",
+                  "x": -50.45631994824322,
+                  "y": 53.96912694034355
+                },
+                {
+                  "id": "CCND2",
+                  "itemStyle": {
+                    "color": "#440154"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "CCND2",
+                  "symbolSize": 10.0,
+                  "value": "0.1183",
+                  "x": 22.340640597960125,
+                  "y": -8.182577218699642
+                },
+                {
+                  "id": "ERC1",
+                  "itemStyle": {
+                    "color": "#460c5f"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "ERC1",
+                  "symbolSize": 10.0,
+                  "value": "0.1696",
+                  "x": 30.060440453378362,
+                  "y": 58.25111916381683
+                },
+                {
+                  "id": "PIK3CA",
+                  "itemStyle": {
+                    "color": "#2bb17d"
+                  },
+                  "label": {
+                    "show": true
+                  },
+                  "name": "PIK3CA",
+                  "symbolSize": 20.0,
+                  "value": "1.0792",
+                  "x": -9.142628056866197,
+                  "y": -20.28674097482653
+                },
+                {
+                  "id": "RASGRP1",
+                  "itemStyle": {
+                    "color": "#471669"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "RASGRP1",
+                  "symbolSize": 10.0,
+                  "value": "0.2072",
+                  "x": -25.616652117729878,
+                  "y": 7.153003722337334
+                },
+                {
+                  "id": "PIK3C2B",
+                  "itemStyle": {
+                    "color": "#48196b"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "PIK3C2B",
+                  "symbolSize": 10.0,
+                  "value": "0.2226",
+                  "x": -31.06668451369645,
+                  "y": -50.815960322253396
+                },
+                {
+                  "id": "TPM3",
+                  "itemStyle": {
+                    "color": "#3d4b89"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "TPM3",
+                  "symbolSize": 10.0,
+                  "value": "0.4620",
+                  "x": 7.3109282134123665,
+                  "y": -27.478838327007075
+                },
+                {
+                  "id": "MRPS21",
+                  "itemStyle": {
+                    "color": "#481d6f"
+                  },
+                  "label": {
+                    "show": false
+                  },
+                  "name": "MRPS21",
+                  "symbolSize": 10.0,
+                  "value": "0.2361",
+                  "x": -45.67649499257339,
+                  "y": 75.98945214225293
+                }
+              ],
+              "emphasis": {
+                "focus": "adjacency",
+                "lineStyle": {
+                  "width": 3.0
+                }
+              },
+              "label": {
+                "formatter": "{b}",
+                "position": "top"
+              },
+              "layout": "none",
+              "lineStyle": {
+                "color": "#cccccc",
+                "curveness": 0.1
+              },
+              "links": [
+                {
+                  "source": "HRH3",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "HRH3",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "HRH3",
+                  "target": "RUNX1T1"
+                },
+                {
+                  "source": "HRH3",
+                  "target": "HMGA2"
+                },
+                {
+                  "source": "HRH3",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "LSP1"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "NASP"
+                },
+                {
+                  "source": "LMNB1",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "PLCD4",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "PLCD4",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "PLCD4",
+                  "target": "MRPS21"
+                },
+                {
+                  "source": "TPR",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "TPR",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "TPR",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "TPR",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "TPR",
+                  "target": "TPM2"
+                },
+                {
+                  "source": "TPR",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "TPR",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "APOE"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CDK4"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "APOA1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "LSP1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CEND1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PIK3C2B"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "MARCKS"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "PIK3R1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "ERC1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "HMGA2"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "MAD1L1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "CCND3",
+                  "target": "BRMS1L"
+                },
+                {
+                  "source": "CCDC88C",
+                  "target": "CUX1"
+                },
+                {
+                  "source": "CCDC88C",
+                  "target": "TPM2"
+                },
+                {
+                  "source": "CCDC88C",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "CDKN2A"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "TEX12"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "NANOS3"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "MAD1L1"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PIK3R1"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "AKAP12"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "CDK4",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "LSP1",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "LSP1",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "LSP1",
+                  "target": "SPN"
+                },
+                {
+                  "source": "LSP1",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "LSP1",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "NASP",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "NASP",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "NASP",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "SLC9A4",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "TEX12",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "GOLIM4",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "GOLIM4",
+                  "target": "CUX1"
+                },
+                {
+                  "source": "GOLIM4",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "GOLIM4",
+                  "target": "PIK3R1"
+                },
+                {
+                  "source": "PCLO",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "PCLO",
+                  "target": "APOE"
+                },
+                {
+                  "source": "PCLO",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "PCLO",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "APOA1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "APOE"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PIK3R1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "MAD1L1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "SPN"
+                },
+                {
+                  "source": "CDKN2A",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "APOE"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "RUNX1T1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "BRMS1L"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "MAD1L1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "TPM2"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "MARCKS"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "PIK3R1",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "SPN",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "SPN",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "SPN",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "SPN",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "SPN",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "SPN",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "CUX1",
+                  "target": "ZNF205"
+                },
+                {
+                  "source": "CUX1",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "CUX1",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "CUX1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CEND1",
+                  "target": "HMGA2"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "GFOD2"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "HMGA2"
+                },
+                {
+                  "source": "RUNX1T1",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "PIK3CG"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "MAD1L1",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "HMGA2",
+                  "target": "NANOS3"
+                },
+                {
+                  "source": "HMGA2",
+                  "target": "ERC1"
+                },
+                {
+                  "source": "HMGA2",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "HMGA2",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "NANOS3",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "NANOS3",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "NANOS3",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "MARCKS"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "PIK3CB"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "PIK3CG",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "MARCKS"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "PIK3CB",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "AKAP12",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "AKAP12",
+                  "target": "MARCKS"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "MTOR"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "APOE"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "APOA1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "TMX2"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "SDC1"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "MSL2"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "ZNF205"
+                },
+                {
+                  "source": "MTOR",
+                  "target": "CCND1"
+                },
+                {
+                  "source": "MARCKS",
+                  "target": "MARCKSL1"
+                },
+                {
+                  "source": "MARCKS",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "APOE"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "GFOD2"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "CDK6"
+                },
+                {
+                  "source": "CCND1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "NUDCD3",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "NUDCD3",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "TPM2"
+                },
+                {
+                  "source": "CDK6",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "SDC1",
+                  "target": "APOE"
+                },
+                {
+                  "source": "SDC1",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "SDC1",
+                  "target": "BRAF"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "PTEN"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "SLC13A2"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "PTTG1"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "BRAF",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "APOE"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "ERC1"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "HRAS"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "MRPS21"
+                },
+                {
+                  "source": "PTEN",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "PTTG1",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "PTTG1",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "HRAS",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "HRAS",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "HRAS",
+                  "target": "TPM2"
+                },
+                {
+                  "source": "HRAS",
+                  "target": "TSC1"
+                },
+                {
+                  "source": "HRAS",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "APOE",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "APOE",
+                  "target": "CCND2"
+                },
+                {
+                  "source": "TPM2",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "MARCKSL1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "TSC1",
+                  "target": "TPM3"
+                },
+                {
+                  "source": "TSC1",
+                  "target": "CCDC88A"
+                },
+                {
+                  "source": "TSC1",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "TSC1",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "SLC13A2",
+                  "target": "RASGRP1"
+                },
+                {
+                  "source": "CCND2",
+                  "target": "PIK3CA"
+                },
+                {
+                  "source": "PIK3CA",
+                  "target": "PIK3C2B"
+                },
+                {
+                  "source": "PIK3CA",
+                  "target": "RASGRP1"
+                }
+              ],
+              "roam": true,
+              "type": "graph"
+            }
+          ],
+          "tooltip": {
+            "formatter": "{b}: {c}",
+            "show": true
+          },
+          "visualMap": {
+            "calculable": true,
+            "inRange": {
+              "color": [
+                "#440154",
+                "#21918c",
+                "#fde725"
+              ]
+            },
+            "max": 1.6204125881195068,
+            "min": 0.11828085780143738,
+            "realtime": false,
+            "text": [
+              "High",
+              "Low"
+            ]
+          }
+        },
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "attribution": {
+                "columns": [
+                  "attention_score",
+                  "node"
+                ],
+                "key": "attribution",
+                "length": 14914.0
+              },
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df",
+                "length": 53138.0
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease",
+                "length": 1006.0
+              },
+              "drug_gene": {
+                "columns": [
+                  "Gene",
+                  "Treatment"
+                ],
+                "key": "drug_gene",
+                "length": 1242.0
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2",
+                "length": 15327.0
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx",
+                "length": 14914.0
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta",
+                "length": 1649.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model"
+              },
+              "prediction": {
+                "key": "prediction"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Visualize attribution",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "neighbors_per_node": "20",
+          "top_n": 10.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize attribution"
+      },
+      "height": 735.0,
+      "id": "Visualize attribution 1",
+      "position": {
+        "x": 105.0,
+        "y": 350.0
+      },
+      "type": "visualization",
+      "width": 735.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "explanation": {
+              "columns": [
+                "text"
+              ],
+              "data": [
+                [
+                  "## Prediction\n\n**BYL719 + LEE011 is effective against breast cancer** (99% probability)\n\nTop 3 genes by attribution: MTOR, BRAF, PIK3R1\n\n## Explanation\n\nThe likely underlying biological explanation is that the combination of BYL719 and LEE011 acts as a **dual inhibitor** targeting fundamental pro-survival or proliferation pathways within breast cancer cells.\n\nThe genes listed (MTOR, BRAF, PIK3R1) are central regulators in key oncogenic signaling cascades, such as the PI3K/Akt/mTOR pathway and the MAPK pathway. Breast cancers frequently rely on these pathways to drive unchecked cell growth and survival.\n\nBy targeting these specific molecular drivers, the drug combination likely achieves efficacy by simultaneously disrupting the cancer cell's growth signals, leading to reduced proliferation, inhibited survival, or programmed cell death in the tumor cells."
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": []
+        },
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "attribution": {
+                "columns": [
+                  "attention_score",
+                  "node"
+                ],
+                "key": "attribution",
+                "length": 14914.0
+              },
+              "clin_df": {
+                "columns": [
+                  "% BW Difference",
+                  "% TVol Difference",
+                  "Days Post T0",
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "Volume (mm3)",
+                  "body weight (g)"
+                ],
+                "key": "clin_df",
+                "length": 53138.0
+              },
+              "disease": {
+                "columns": [
+                  "disease",
+                  "globalScore",
+                  "symbol"
+                ],
+                "key": "disease",
+                "length": 1006.0
+              },
+              "drug_gene": {
+                "columns": [
+                  "Gene",
+                  "Treatment"
+                ],
+                "key": "drug_gene",
+                "length": 1242.0
+              },
+              "gene2esm2": {
+                "columns": [
+                  "embedding"
+                ],
+                "key": "gene2esm2",
+                "length": 15327.0
+              },
+              "gene_to_idx": {
+                "columns": [
+                  "idx"
+                ],
+                "key": "gene_to_idx",
+                "length": 14914.0
+              },
+              "meta": {
+                "columns": [
+                  "Model",
+                  "Treatment",
+                  "Tumor Type",
+                  "future_timestamps",
+                  "future_volumes",
+                  "mrecist_class",
+                  "past_volumes"
+                ],
+                "key": "meta",
+                "length": 1649.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model"
+              },
+              "prediction": {
+                "key": "prediction"
+              },
+              "root_path": {
+                "key": "root_path"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Attribution > Attribution to text",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "top_n": 3.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Attribution to text"
+      },
+      "height": 1295.0,
+      "id": "Attribution to text 1",
+      "position": {
+        "x": 945.0,
+        "y": 70.0
+      },
+      "type": "table_view",
+      "width": 735.0
+    }
+  ],
+  "paused": true
+}
