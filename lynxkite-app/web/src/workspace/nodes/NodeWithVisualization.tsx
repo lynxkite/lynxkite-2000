@@ -36,8 +36,6 @@ const collectAttrs = (items: any[]): string[] => {
   return Array.from(keys);
 };
 
-const getLinks = (series: any): any[] => series?.links || [];
-
 function serializeChips(chips: BaseChip[]): ChipData[] {
   return chips.map((chip) => chip.getFormData());
 }
@@ -64,7 +62,7 @@ const copySeries = (series: any) => {
       label: { ...node.label },
       itemStyle: { ...node.itemStyle },
     })),
-    links: getLinks(series).map((edge: any) => ({
+    links: (series.links || []).map((edge: any) => ({
       ...edge,
       lineStyle: { ...edge.lineStyle },
     })),
@@ -106,7 +104,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
 
   useEffect(() => {
     setNodeAttrs(collectAttrs(viewOpts?.series?.[0]?.data || []));
-    setEdgeAttrs(collectAttrs(getLinks(viewOpts?.series?.[0])));
+    setEdgeAttrs(collectAttrs(viewOpts?.series?.[0]?.links || []));
   }, [viewOpts]);
 
   useEffect(() => {
@@ -176,7 +174,7 @@ export function NodeWithVisualization({ data, id }: { data: any; id: string }) {
   }
 
   const rawNodes = viewOpts?.series?.[0]?.data || [];
-  const rawEdges = getLinks(viewOpts?.series?.[0]);
+  const rawEdges = viewOpts?.series?.[0]?.links || [];
 
   return (
     <div

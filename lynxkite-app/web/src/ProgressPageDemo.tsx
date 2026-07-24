@@ -1,5 +1,6 @@
 // A demo of ProgressPage with mock data.
 
+import * as echarts from "echarts";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import ScaleDown from "~icons/tabler/arrow-down";
@@ -11,8 +12,6 @@ import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
 import ManagementPage from "./ManagementPage";
-
-const echarts = await import("echarts");
 
 // Generate fake per-day GPU-hours for a user over the last 30 days.
 function generateDailyUsage(avgHours: number): number[] {
