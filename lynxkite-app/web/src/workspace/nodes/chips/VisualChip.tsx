@@ -25,11 +25,6 @@ const THEME = {
   },
 };
 
-const USER_SELECT_NONE_STYLE: React.CSSProperties = {
-  userSelect: "none",
-  WebkitUserSelect: "none",
-};
-
 export default function VisualChip({
   chip,
   index,
@@ -69,7 +64,6 @@ export default function VisualChip({
         border: `1px solid color-mix(in srgb, ${chip.text} 25%, transparent)`,
         opacity: chip.disabled ? 0.5 : 1,
         transition: "opacity 0.15s ease",
-        ...USER_SELECT_NONE_STYLE,
       }}
     >
       <span style={{ textDecoration: chip.disabled ? "line-through" : "none" }}>

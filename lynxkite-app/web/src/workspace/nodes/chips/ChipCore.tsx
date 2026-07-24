@@ -141,3 +141,53 @@ export abstract class SingleAttributeChip extends BaseChip {
     };
   }
 }
+
+export abstract class ToggleChip extends BaseChip {
+  attribute: string;
+
+  constructor(data: ChipData, disabled: boolean | undefined, bg: string, text: string) {
+    super(data, disabled, bg, text);
+    this.attribute = data.attribute || "";
+  }
+
+  static getInitialData(attribute: string, _rawItems: any[], _previousData?: ChipData): ChipData {
+    return { attribute };
+  }
+
+  getFormData() {
+    return {
+      attribute: this.attribute,
+      type: this.type,
+      disabled: String(this.disabled),
+    };
+  }
+
+  abstract toggleMode(): void;
+  abstract toggleText(): string;
+  override render(onChange?: () => void): React.ReactNode {
+    return (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          this.toggleMode();
+          onChange?.();
+        }}
+        style={{
+          border: "none",
+          borderRadius: 999,
+          padding: "2px 8px",
+          fontSize: 10,
+          fontWeight: 700,
+          cursor: "pointer",
+          background: "rgba(255,255,255,0.55)",
+          color: this.text,
+          textTransform: "uppercase",
+          letterSpacing: 0.3,
+        }}
+      >
+        {this.toggleText()}
+      </button>
+    );
+  }
+}

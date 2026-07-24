@@ -1,14 +1,13 @@
-import type React from "react";
 import {
   ATTRIBUTE_FIELD,
   type ChipApplyContext,
   ColorMap,
   type FormFieldConfig,
   hasValue,
-  SingleAttributeChip,
+  ToggleChip,
 } from "./ChipCore";
 
-export class NodeColorChip extends SingleAttributeChip {
+export class NodeColorChip extends ToggleChip {
   static type = "node_color";
   static displayName = "Node color by";
   static target = "node";
@@ -47,34 +46,11 @@ export class NodeColorChip extends SingleAttributeChip {
     });
   }
 
-  private toggleMode() {
+  override toggleMode(): void {
     this.continuous = !this.continuous;
   }
 
-  override render(onChange?: () => void): React.ReactNode {
-    return (
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          this.toggleMode();
-          onChange?.();
-        }}
-        style={{
-          border: "none",
-          borderRadius: 999,
-          padding: "2px 8px",
-          fontSize: 10,
-          fontWeight: 700,
-          cursor: "pointer",
-          background: "rgba(255,255,255,0.55)",
-          color: this.text,
-          textTransform: "uppercase",
-          letterSpacing: 0.3,
-        }}
-      >
-        {this.continuous ? "Continuous" : "Categorical"}
-      </button>
-    );
+  override toggleText(): string {
+    return this.continuous ? "Continuous" : "Categorical";
   }
 }
