@@ -38,9 +38,7 @@ power iteration.
 name of the edge attribute used as weight. In this measure the
 weight is interpreted as the connection strength.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality(max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality(max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)

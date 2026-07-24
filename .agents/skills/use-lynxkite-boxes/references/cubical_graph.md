@@ -7,10 +7,7 @@ It is one of 5 Platonic graphs, each a skeleton of its
 Platonic solid [1]_.
 Such graphs arise in parallel processing in computers.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.cubical_graph()
+  output_variable = networkx.generators.small.cubical_graph()

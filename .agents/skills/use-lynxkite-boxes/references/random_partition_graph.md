@@ -10,9 +10,7 @@ parameters:
   - p_out: <class 'float'> = ? --probability of edges between groups
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.random_partition_graph(p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+  output_variable = networkx.generators.community.random_partition_graph(p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)

@@ -1,10 +1,8 @@
 **Discard parallel edges:**
 
-parameters:
-  - graph: <class 'networkx.classes.graph.Graph'> = ? --?
+```python
+@op("Discard parallel edges", icon="filter-filled")
+def discard_parallel_edges(graph: nx.Graph):
+    return nx.DiGraph(graph)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.graph_ops.discard_parallel_edges(graph=<graph_variable>)
+```

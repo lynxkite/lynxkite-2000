@@ -15,9 +15,7 @@ A Ramanujan graph has spectral gap almost as large as possible, which makes them
 excellent expanders.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.expanders.is_regular_expander(G=<G_variable>)
+  output_variable = networkx.generators.expanders.is_regular_expander(G=<G_variable>)

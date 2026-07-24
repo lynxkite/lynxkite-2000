@@ -8,10 +8,7 @@ in LCF notation as ``[5,-5]^7`` [2]_.
 It is the unique (3,6)-cage: the regular cubic graph of girth 6 with
 minimal number of vertices [3]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.heawood_graph()
+  output_variable = networkx.generators.small.heawood_graph()

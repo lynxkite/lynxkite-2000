@@ -6,9 +6,7 @@ to be a dict-of-dict-of-dict-of-dict structure keyed by
 node to neighbor to edge keys to edge data for multi-edges.
 Otherwise this routine assumes dict-of-dict-of-dict keyed by
 node to neighbor to edge data.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.convert.from_dict_of_dicts(multigraph_input=<multigraph_input_value>)
+  output_variable = networkx.convert.from_dict_of_dicts(multigraph_input=<multigraph_input_value>)

@@ -30,9 +30,7 @@ parameters:
   - length_bound: int | None = ? --If `length_bound` is an int, generate all simple cycles of `G` with length at
 most `length_bound`.  Otherwise, generate all simple cycles of `G`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph. Undirected, directed, and multigraphs are all supported.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cycles.simple_cycles(length_bound=<length_bound_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.cycles.simple_cycles(length_bound=<length_bound_value>, G=<G_variable>)

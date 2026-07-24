@@ -2,9 +2,7 @@
 Generate nodes in strongly connected components of graph.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.strongly_connected.kosaraju_strongly_connected_components(G=<G_variable>)
+  output_variable = networkx.algorithms.components.strongly_connected.kosaraju_strongly_connected_components(G=<G_variable>)

@@ -10,9 +10,7 @@ generalized degree of node :math:`i` can be written as a vector
 participate in :math:`j` triangles.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cluster.generalized_degree(G=<G_variable>)
+  output_variable = networkx.algorithms.cluster.generalized_degree(G=<G_variable>)

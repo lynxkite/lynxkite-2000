@@ -169,7 +169,7 @@ def visualize_graph(b: core.Bundle):
 
 
 @op("Scatter plot", icon="chart-dots", color="blue", view="matplotlib")
-def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
+def scatter_plot(self, b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
     table_x, column_x = x
     table_y, column_y = y
     dx = b.dfs[table_x][column_x]
@@ -205,7 +205,7 @@ def bar_chart(
 
 
 @op("Histogram", icon="chart-histogram", color="blue", view="matplotlib")
-def histogram(b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
+def histogram(self, b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
     table, col = column
     data = b.dfs[table][col]
     plt.figure(figsize=(6, 6))
@@ -216,6 +216,7 @@ def histogram(b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
 
 @op("Binned graph visualization", view="matplotlib", color="blue", icon="table")
 def binned_graph_visualization(
+    self,
     b: core.Bundle,
     *,
     x_property: str,

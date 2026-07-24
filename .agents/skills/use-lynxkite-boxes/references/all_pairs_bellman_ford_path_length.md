@@ -13,9 +13,7 @@ positional arguments: the two endpoints of an edge and the
 dictionary of edge attributes for that edge. The function must
 return a number.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path_length(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path_length(weight=<weight_value>, G=<G_variable>)

@@ -1,13 +1,40 @@
 **Add rank attribute:**
 Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
-parameters:
-  - table_column: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}] = ? --The table and column to rank
-  - rank_name: <class 'str'> = ? --The name of the new rank column
-  - order: <enum 'OrderType'> = ? --The order in which to rank the rows either 'ascending' or 'descending'
-  - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Add rank attribute", icon="sort-descending")
+def add_rank(
+    b: core.Bundle,
+    *,
+    table_column: core.TableColumn,
+    rank_name: str,
+    order: OrderType,
+):
+    """Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
 
-returns:
-  - output: ? - The updated bundle with the new rank column.
+    Parameters
+    ----------
+    table_column : core.TableColumn
+        The table and column to rank
+    rank_name : str
+        The name of the new rank column
+    order : OrderType
+        The order in which to rank the rows either 'ascending' or 'descending'
 
-usage:
-output_variable = lynxkite_graph_analytics.operations.table_ops.add_rank(table_column=<table_column_value>, rank_name=<rank_name_value>, order=<order_value>, b=<b_variable>)
+    Returns
+    -------
+    output : core.Bundle
+        The updated bundle with the new rank column
+    """
+    table, column = table_column
+    b = b.copy()
+    df = b.dfs[table]
+
+    df = df.sort_values(by=column, ascending=(order == OrderType.asc))
+    df[rank_name] = range(len(df))
+
+    b.dfs[table] = df
+    return b
+
+```
+Custom types:
+  - table_column: typing.Annotated[tuple[str, str], {'format': 'double-dropdown', 'metadata_query1': '[].dataframes[].keys(@)[]', 'metadata_query2': '[].dataframes[].<first>.columns[]'}]

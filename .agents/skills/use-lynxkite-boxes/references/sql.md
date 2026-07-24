@@ -1,12 +1,21 @@
 **SQL:**
 Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
-parameters:
-  - query: typing.Annotated[str, {'format': 'textarea'}] = ? --?
-  - save_as: <class 'str'> = results --?
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("SQL", icon="database")
+def sql(bundle: core.Bundle, *, query: ops.LongStr, save_as: str = "results"):
+    """Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."""
+    bundle = bundle.copy()
+    if os.environ.get("NX_CUGRAPH_AUTOCONFIG", "").strip().lower() == "true":
+        with pl.Config() as cfg:
+            cfg.set_verbose(True)
+            res = pl.SQLContext(bundle.dfs).execute(query).collect(engine="gpu").to_pandas()
+            # TODO: Currently `collect()` moves the data from cuDF to Polars. Then we convert it to Pandas,
+            # which (hopefully) puts it back into cuDF. Hopefully we will be able to keep it in cuDF.
+    else:
+        res = pl.SQLContext(bundle.dfs).execute(query).collect().to_pandas()
+    bundle.dfs[save_as] = res
+    return bundle
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.query_ops.sql(query=<query_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+```
+Custom types:
+  - query: typing.Annotated[str, {'format': 'textarea'}]

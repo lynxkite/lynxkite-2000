@@ -9,9 +9,7 @@ Note that connected dominating sets are not unique in general and that there
 may be other connected dominating sets.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --Undirected connected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dominating.connected_dominating_set(G=<G_variable>)
+  output_variable = networkx.algorithms.dominating.connected_dominating_set(G=<G_variable>)

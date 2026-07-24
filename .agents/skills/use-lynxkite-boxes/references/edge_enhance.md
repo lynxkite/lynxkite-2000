@@ -1,10 +1,8 @@
 **Edge enhance:**
 
-parameters:
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Edge enhance", icon="filters-filled")
+def edge_enhance(image: Image.Image):
+    return image.filter(ImageFilter.EDGE_ENHANCE)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.edge_enhance(image=<image_variable>)
+```

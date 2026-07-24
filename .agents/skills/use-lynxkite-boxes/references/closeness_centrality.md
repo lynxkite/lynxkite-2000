@@ -31,9 +31,7 @@ parameters:
 Wasserman and Faust improved formula. For single component graphs
 it is the same as the original formula.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.closeness.closeness_centrality(wf_improved=<wf_improved_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.closeness.closeness_centrality(wf_improved=<wf_improved_value>, G=<G_variable>)

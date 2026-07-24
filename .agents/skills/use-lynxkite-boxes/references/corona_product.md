@@ -10,9 +10,7 @@ parameters:
 `G` is the center graph and `H` is the outer graph
   - H: <class 'networkx.classes.graph.Graph'> = ? --The graphs to take the carona product of.
 `G` is the center graph and `H` is the outer graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.product.corona_product(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.product.corona_product(G=<G_variable>, H=<H_variable>)

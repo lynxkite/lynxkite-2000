@@ -15,9 +15,7 @@ connection between nodes and a *shorter* path length.
   - normalized: bool | None = ? --Whether to normalize the edge weights by the total sum of edge
 weights.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx DiGraph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.reaching.global_reaching_centrality(weight=<weight_value>, normalized=<normalized_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.reaching.global_reaching_centrality(weight=<weight_value>, normalized=<normalized_value>, G=<G_variable>)

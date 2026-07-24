@@ -153,7 +153,7 @@ def permute_and_corrupt_data(
 
 
 @op("Plot results", view="matplotlib", color="blue", icon="chart-bar")
-def plot_results(bundle: core.Bundle):
+def plot_results(self, bundle: core.Bundle):
     # all tables in bundle.dfs will contain two columns metric and score, this function will plot the scores side-by-side for all metrics in a bar-graph
     # for example i have a metric with accuracy in 3 tables then i want one label 'accuracy' and 3 bars for the 3 different tables
     import matplotlib.pyplot as plt

@@ -10,9 +10,7 @@ If it is False, then the entries in the array are interpreted as
 the weight of a single edge joining the vertices.
   - edge_attr: str | None = weight --The attribute to which the array values are assigned on each edge. If
 it is None, edge attributes will not be assigned.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.convert_matrix.from_numpy_array(parallel_edges=<parallel_edges_value>, edge_attr=<edge_attr_value>)
+  output_variable = networkx.convert_matrix.from_numpy_array(parallel_edges=<parallel_edges_value>, edge_attr=<edge_attr_value>)

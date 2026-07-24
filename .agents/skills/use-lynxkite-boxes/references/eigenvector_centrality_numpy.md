@@ -43,9 +43,7 @@ weight is interpreted as the connection strength.
   - tol: float | None = 0 --Relative accuracy for eigenvalues (stopping criterion).
 The default value of 0 implies machine precision.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A connected NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality_numpy(weight=<weight_value>, max_iter=<max_iter_value>, tol=<tol_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.eigenvector.eigenvector_centrality_numpy(weight=<weight_value>, max_iter=<max_iter_value>, tol=<tol_value>, G=<G_variable>)

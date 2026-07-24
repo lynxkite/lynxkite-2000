@@ -1,11 +1,10 @@
 **Linear:**
 
-parameters:
-  - output_dim: <class 'int'> = 1024 --?
-  - x: <class 'inspect._empty'> = ? --?
+```python
+@op("Linear", weights=True)
+def linear(x, *, output_dim=1024):
+    import torch_geometric.nn as pyg_nn
 
-returns:
-  - output: ? - ?.
+    return pyg_nn.Linear(-1, output_dim)
 
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.linear(output_dim=<output_dim_value>, x=<x_variable>)
+```

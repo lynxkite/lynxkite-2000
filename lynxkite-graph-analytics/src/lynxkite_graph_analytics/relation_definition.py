@@ -25,3 +25,6 @@ class RelationDefinition:
     source_key: str
     target_key: str
     name: str
+
+    def copy(self, /, **changes):
+        return dataclasses.replace(self, **changes)

@@ -11,9 +11,7 @@ parameters:
 If not present, the edge is assumed to have weight 1.
 Used for finding the max-weighted perfect matching.
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.regular.k_factor(k=<k_value>, matching_weight=<matching_weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.regular.k_factor(k=<k_value>, matching_weight=<matching_weight_value>, G=<G_variable>)

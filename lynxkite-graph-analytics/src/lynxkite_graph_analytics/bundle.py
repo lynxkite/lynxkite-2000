@@ -77,43 +77,37 @@ class Bundle:
         return cls(dfs={"records": df})
 
     def to_nx(self):
+        """Returns a NetworkX DiGraph created from the nodes and edges in the relations of the bundle."""
         graph = nx.DiGraph()
         added_tables = set()
+
+        def _add_node_table(table, key):
+            if table in added_tables:
+                return
+            df = self.dfs[table]
+            if df.index.name != key:
+                df = df.set_index(key)
+
+            graph.add_nodes_from(
+                map(lambda item: (f"{table}_{item[0]}", item[1]), df.to_dict("index").items())
+            )
+            added_tables.add(table)
+
         for relation in self.relations:
-            if relation.source_table not in added_tables:
-                source_df = self.dfs[relation.source_table].copy()
-                if source_df.index.name != relation.source_key:
-                    source_df = source_df.set_index(relation.source_key)
-                graph.add_nodes_from(
-                    (f"{relation.source_table}_{node_id}", attrs)
-                    for node_id, attrs in source_df.to_dict("index").items()
-                )
-                added_tables.add(relation.source_table)
+            _add_node_table(relation.source_table, relation.source_key)
+            _add_node_table(relation.target_table, relation.target_key)
 
-            if relation.target_table not in added_tables:
-                target_df = self.dfs[relation.target_table].copy()
-                if target_df.index.name != relation.target_key:
-                    target_df = target_df.set_index(relation.target_key)
-                graph.add_nodes_from(
-                    (f"{relation.target_table}_{node_id}", attrs)
-                    for node_id, attrs in target_df.to_dict("index").items()
+            edges = self.dfs[relation.df]
+            attrs = edges.columns.difference([relation.source_column, relation.target_column])
+            graph.add_edges_from(
+                (
+                    f"{relation.source_table}_{row[relation.source_column]}",
+                    f"{relation.target_table}_{row[relation.target_column]}",
+                    {k: row[k] for k in attrs},
                 )
-                added_tables.add(relation.target_table)
+                for row in edges.to_dict("records")
+            )
 
-            if relation.df in self.dfs:
-                edges = self.dfs[relation.df]
-                graph.add_edges_from(
-                    (
-                        f"{relation.source_table}_{e[relation.source_column]}",
-                        f"{relation.target_table}_{e[relation.target_column]}",
-                        {
-                            k: e[k]
-                            for k in edges.columns
-                            if k not in [relation.source_column, relation.target_column]
-                        },
-                    )
-                    for e in edges.to_records()
-                )
         return graph
 
     def copy(self):

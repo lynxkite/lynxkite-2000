@@ -2,2251 +2,2267 @@
 name: use-lynxkite-boxes
 description: Use the boxes already defined in LynxKite.
 ---
+## Inserting boxes into the workspace:
+1. inspect the available boxes and choose the one that fits your needs
+2. check their detailed documentation in the references folder
+3. insert the box into your workspace by calling the corresponding function in `workspace.py` with the appropriate parameters
+4. double-check the parameters and their types with the box's documentation in the references folder
+
 ## Available boxes
 The following boxes are available for use in your workflows.
 Each box corresponds to a specific operation or function that can be used to build your workflow.
 For detailed information on each box, please refer to the individual box documentation in the references folder.
+Always check the references before using the box, and pay close attention to the parameters and their types.
 
 **Cross-entropy loss:**
-Cross-entropy loss
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.cross_entropy_loss(x=<x_variable>, y=<y_variable>)
 
 **Drop first n:**
-Drop first n
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.drop_first_n(n=<n_value>, x=<x_variable>)
 
 **Graph conv:**
-Graph conv
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.graph_conv(type=<type_value>, x=<x_variable>, edges=<edges_variable>)
 
 **Heterogeneous graph conv:**
-Heterogeneous graph conv
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.heterogeneous_graph_conv(node_embeddings_order=<node_embeddings_order_value>, edge_modules_order=<edge_modules_order_value>, node_embeddings=<node_embeddings_variable>, edge_modules=<edge_modules_variable>)
 
 **Optimizer:**
-Optimizer
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.optimizer(type=<type_value>, lr=<lr_value>, loss=<loss_variable>)
 
 **Output:**
-Output
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.output(name=<name_value>, x=<x_variable>)
 
 **Pick element by constant:**
-Pick element by constant
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.pick_element_by_constant(index=<index_value>, x=<x_variable>)
 
 **Pick element by index:**
-Pick element by index
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.pick_element_by_index(x=<x_variable>, index=<index_variable>)
 
 **Recurrent chain:**
-Recurrent chain
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.recurrent_chain(input=<input_variable>)
 
 **Repeat:**
-Repeat
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.repeat(times=<times_value>, same_weights=<same_weights_value>, input=<input_variable>)
 
 **Take first n:**
-Take first n
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.take_first_n(n=<n_value>, x=<x_variable>)
 
 **Triplet margin loss:**
-Triplet margin loss
-for usage information, see references/no_op.md
+usage: lynxkite_core.ops.triplet_margin_loss(x=<x_variable>, x_pos=<x_pos_variable>, x_neg=<x_neg_variable>)
 
 **View tables:**
-View tables
-for usage information, see references/view_tables.md
+usage: lynxkite_graph_analytics.operations.basic_ops.view_tables(limit=<limit_value>, bundle=<bundle_variable>)
+for detailed information, see references/view_tables.md
 
 **Export to file:**
-Exports a DataFrame to a file.
-for usage information, see references/export_to_file.md
+usage: lynxkite_graph_analytics.operations.file_ops.export_to_file(table_name=<table_name_value>, filename=<filename_value>, file_format=<file_format_value>, bundle=<bundle_variable>)
+for detailed information, see references/export_to_file.md
 
 **Graph from OSM:**
-Graph from OSM
-for usage information, see references/import_osm.md
+usage: lynxkite_graph_analytics.operations.file_ops.import_osm(location=<location_value>)
+for detailed information, see references/import_osm.md
 
 **Import CSV:**
-Imports a CSV file.
-for usage information, see references/import_csv.md
+usage: lynxkite_graph_analytics.operations.file_ops.import_csv(filename=<filename_value>, columns=<columns_value>, separator=<separator_value>, table_name=<table_name_value>)
+for detailed information, see references/import_csv.md
 
 **Import file:**
-Read the contents of the a file into a `Bundle`.
-for usage information, see references/import_file.md
+usage: lynxkite_graph_analytics.operations.file_ops.import_file(file_path=<file_path_value>, table_name=<table_name_value>, file_format=<file_format_value>, file_format_group=<file_format_group_value>)
+for detailed information, see references/import_file.md
 
 **Import GraphML:**
-Imports a GraphML file.
-for usage information, see references/import_graphml.md
+usage: lynxkite_graph_analytics.operations.file_ops.import_graphml(filename=<filename_value>)
+for detailed information, see references/import_graphml.md
 
 **Import Parquet:**
-Imports a Parquet file.
-for usage information, see references/import_parquet.md
+usage: lynxkite_graph_analytics.operations.file_ops.import_parquet(filename=<filename_value>)
+for detailed information, see references/import_parquet.md
 
 **Aggregate on neighbors:**
-Aggregate on neighbors
-for usage information, see references/aggregate_on_neighbors.md
+usage: lynxkite_graph_analytics.operations.graph_ops.aggregate_on_neighbors(property=<property_value>, aggregation=<aggregation_value>, g=<g_variable>)
+for detailed information, see references/aggregate_on_neighbors.md
 
 **Connect nodes on attribute:**
-Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.
-for usage information, see references/connect_nodes.md
+usage: lynxkite_graph_analytics.operations.graph_ops.connect_nodes(source_table=<source_table_value>, source_id=<source_id_value>, source_attribute=<source_attribute_value>, target_table=<target_table_value>, target_id=<target_id_value>, target_attribute=<target_attribute_value>, b=<b_variable>)
+for detailed information, see references/connect_nodes.md
 
-**Define Edges:**
-Define edges between node tables
-for usage information, see references/define_edges.md
+**Define edges:**
+usage: lynxkite_graph_analytics.operations.graph_ops.define_edges(relations=<relations_value>, b=<b_variable>)
+for detailed information, see references/define_edges.md
 
 **Degree:**
-Degree
-for usage information, see references/degree.md
+usage: lynxkite_graph_analytics.operations.graph_ops.degree(g=<g_variable>)
+for detailed information, see references/degree.md
 
 **Discard loop edges:**
-Discard loop edges
-for usage information, see references/discard_loop_edges.md
+usage: lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges(graph=<graph_variable>)
+for detailed information, see references/discard_loop_edges.md
+
+**Discard loop edges in relation:**
+usage: lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges_in_relation(relation=<relation_value>, b=<b_variable>)
+for detailed information, see references/discard_loop_edges_in_relation.md
 
 **Discard parallel edges:**
-Discard parallel edges
-for usage information, see references/discard_parallel_edges.md
+usage: lynxkite_graph_analytics.operations.graph_ops.discard_parallel_edges(graph=<graph_variable>)
+for detailed information, see references/discard_parallel_edges.md
 
 **Graph from edge list:**
-Graph from edge list
-for usage information, see references/graph_from_edge_list.md
+usage: lynxkite_graph_analytics.operations.graph_ops.graph_from_edge_list(source=<source_value>, target=<target_value>, df=<df_variable>)
+for detailed information, see references/graph_from_edge_list.md
 
 **Merge:**
-Merge multiple inputs
-for usage information, see references/merge.md
+usage: lynxkite_graph_analytics.operations.graph_ops.merge(merge_mode=<merge_mode_value>, bundles=<bundles_variable>)
+for detailed information, see references/merge.md
+
+**Merge nodes on attribute:**
+usage: lynxkite_graph_analytics.operations.graph_ops.merge_nodes(table_name=<table_name_value>, attribute=<attribute_value>, add_suffixes=<add_suffixes_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/merge_nodes.md
+
+**Merge parallel edges:**
+usage: lynxkite_graph_analytics.operations.graph_ops.merge_parallel_edges(table_name=<table_name_value>, source_key=<source_key_value>, target_key=<target_key_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/merge_parallel_edges.md
 
 **Sample graph:**
-Takes a (preferably connected) subgraph.
-for usage information, see references/sample_graph.md
+usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
+for detailed information, see references/sample_graph.md
 
 **Define model:**
-Trains the selected model on the selected dataset. Most training parameters are set in the model definition.
-for usage information, see references/define_model.md
+usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+for detailed information, see references/define_model.md
 
 **Model inference:**
-Executes a trained model.
-for usage information, see references/model_inference.md
+usage: lynxkite_graph_analytics.operations.ml_ops.model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
+for detailed information, see references/model_inference.md
 
 **Train model:**
-Trains the selected model on the selected dataset.
-for usage information, see references/train_model.md
+usage: lynxkite_graph_analytics.operations.ml_ops.train_model(model_name=<model_name_value>, input_mapping=<input_mapping_value>, epochs=<epochs_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_model.md
 
 **Train/test split:**
-Splits a dataframe in the bundle into separate "_train" and "_test" dataframes.
-for usage information, see references/train_test_split.md
+usage: lynxkite_graph_analytics.operations.ml_ops.train_test_split(table_name=<table_name_value>, test_ratio=<test_ratio_value>, seed=<seed_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_test_split.md
 
 **Train/test/validation split:**
-Splits a dataframe in the bundle into separate "_train", "_test" and "_val" dataframes.
-for usage information, see references/train_test_val_split.md
+usage: lynxkite_graph_analytics.operations.ml_ops.train_test_val_split(table_name=<table_name_value>, test_ratio=<test_ratio_value>, val_ratio=<val_ratio_value>, seed=<seed_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_test_val_split.md
 
 **View loss:**
-View loss
-for usage information, see references/view_loss.md
+usage: lynxkite_graph_analytics.operations.ml_ops.view_loss(bundle=<bundle_variable>)
+for detailed information, see references/view_loss.md
 
 **View vectors:**
-View vectors
-for usage information, see references/view_vectors.md
+usage: lynxkite_graph_analytics.operations.ml_ops.view_vectors(table_name=<table_name_value>, vector_column=<vector_column_value>, label_column=<label_column_value>, n_neighbors=<n_neighbors_value>, min_dist=<min_dist_value>, metric=<metric_value>, bundle=<bundle_variable>)
+for detailed information, see references/view_vectors.md
 
 **Define inductive PyKEEN model:**
-Defines an InductiveNodePiece model (with an optional GNN message passing layer) for inductive link prediction tasks.
-for usage information, see references/get_inductive_model.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.get_inductive_model(triples_table=<triples_table_value>, inference_table=<inference_table_value>, interaction=<interaction_value>, embedding_dim=<embedding_dim_value>, loss_function=<loss_function_value>, num_tokens=<num_tokens_value>, aggregation=<aggregation_value>, use_GNN=<use_GNN_value>, seed=<seed_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+for detailed information, see references/get_inductive_model.md
 
 **Define PyKEEN model:**
-Defines a PyKEEN model based on the selected model type.
-for usage information, see references/define_pykeen_model.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.define_pykeen_model(model=<model_value>, edge_data_table=<edge_data_table_value>, embedding_dim=<embedding_dim_value>, loss_function=<loss_function_value>, seed=<seed_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+for detailed information, see references/define_pykeen_model.md
 
 **Define PyKEEN model with node attributes:**
-Defines a PyKEEN model capable of using numeric literals as node attributes.
-for usage information, see references/def_pykeen_with_attributes.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.def_pykeen_with_attributes(interaction_name=<interaction_name_value>, combination_name=<combination_name_value>, embedding_dim=<embedding_dim_value>, loss_function=<loss_function_value>, random_seed=<random_seed_value>, save_as=<save_as_value>, combination_group=<combination_group_value>, dataset=<dataset_variable>)
+for detailed information, see references/def_pykeen_with_attributes.md
 
 **Evaluate inductive model:**
-Evaluate inductive model
-for usage information, see references/eval_inductive_model.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.eval_inductive_model(model_name=<model_name_value>, inductive_testing_table=<inductive_testing_table_value>, inductive_inference_table=<inductive_inference_table_value>, inductive_validation_table=<inductive_validation_table_value>, metrics_str=<metrics_str_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
+for detailed information, see references/eval_inductive_model.md
 
 **Evaluate model:**
-Evaluates the given model on the test set using the specified evaluator type.
-for usage information, see references/evaluate.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.evaluate(model_name=<model_name_value>, evaluator_type=<evaluator_type_value>, eval_table=<eval_table_value>, additional_true_triples_table=<additional_true_triples_table_value>, metrics_str=<metrics_str_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
+for detailed information, see references/evaluate.md
 
 **Extract embeddings from PyKEEN model:**
-Extract embeddings from PyKEEN model
-for usage information, see references/extract_from_pykeen.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.extract_from_pykeen(model_name=<model_name_value>, bundle=<bundle_variable>)
+for detailed information, see references/extract_from_pykeen.md
 
 **Full prediction:**
-Warning: This prediction can be a very expensive operation!
-for usage information, see references/full_predict.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.full_predict(model_name=<model_name_value>, k=<k_value>, inductive_setting=<inductive_setting_value>, bundle=<bundle_variable>)
+for detailed information, see references/full_predict.md
 
 **Import inductive dataset:**
-Imports an inductive dataset from the PyKEEN library.
-for usage information, see references/import_inductive_dataset.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.import_inductive_dataset(dataset=<dataset_value>)
+for detailed information, see references/import_inductive_dataset.md
 
 **Import PyKEEN dataset:**
-Imports a dataset from the PyKEEN library.
-for usage information, see references/import_pykeen_dataset_path.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.import_pykeen_dataset_path(dataset=<dataset_value>)
+for detailed information, see references/import_pykeen_dataset_path.md
 
 **Split inductive dataset:**
-Splits incoming data into 4 subsets. Transductive training on which training should be run, inductive inference on which during training inference is done.
-for usage information, see references/inductively_split_dataset.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.inductively_split_dataset(dataset_table=<dataset_table_value>, entity_ratio=<entity_ratio_value>, training_ratio=<training_ratio_value>, testing_ratio=<testing_ratio_value>, validation_ratio=<validation_ratio_value>, seed=<seed_value>, bundle=<bundle_variable>)
+for detailed information, see references/inductively_split_dataset.md
 
 **Target prediction:**
-Leave the target prediction field empty
-for usage information, see references/target_predict.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.target_predict(model_name=<model_name_value>, head=<head_value>, relation=<relation_value>, tail=<tail_value>, inductive_setting=<inductive_setting_value>, bundle=<bundle_variable>)
+for detailed information, see references/target_predict.md
 
 **Train embedding model:**
-Train embedding model
-for usage information, see references/train_embedding_model.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.train_embedding_model(model=<model_value>, training_table=<training_table_value>, testing_table=<testing_table_value>, validation_table=<validation_table_value>, optimizer_type=<optimizer_type_value>, learning_rate=<learning_rate_value>, epochs=<epochs_value>, training_approach=<training_approach_value>, number_of_negative_samples_per_positive=<number_of_negative_samples_per_positive_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_embedding_model.md
 
 **Train inductive model:**
-Train inductive model
-for usage information, see references/train_inductive_pykeen_model.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.train_inductive_pykeen_model(model_name=<model_name_value>, transductive_table_name=<transductive_table_name_value>, inductive_inference_table=<inductive_inference_table_value>, inductive_validation_table=<inductive_validation_table_value>, optimizer_type=<optimizer_type_value>, epochs=<epochs_value>, training_approach=<training_approach_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_inductive_pykeen_model.md
 
 **Triples prediction:**
-Triples prediction
-for usage information, see references/triple_predict.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.triple_predict(model_name=<model_name_value>, table_name=<table_name_value>, inductive_setting=<inductive_setting_value>, bundle=<bundle_variable>)
+for detailed information, see references/triple_predict.md
 
 **View early stopping metric:**
-View early stopping metric
-for usage information, see references/view_early_stopping.md
+usage: lynxkite_graph_analytics.operations.pykeen_ops.view_early_stopping(bundle=<bundle_variable>)
+for detailed information, see references/view_early_stopping.md
 
 **Cypher:**
-Run a Cypher query on the graph in the bundle. Save the results as a new DataFrame.
-for usage information, see references/cypher.md
+usage: lynxkite_graph_analytics.operations.query_ops.cypher(query=<query_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+for detailed information, see references/cypher.md
 
 **SQL:**
-Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame.
-for usage information, see references/sql.md
+usage: lynxkite_graph_analytics.operations.query_ops.sql(query=<query_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+for detailed information, see references/sql.md
+
+**Aggregate between neighbors:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors(relation_name=<relation_name_value>, add_suffixes=<add_suffixes_value>, direction=<direction_value>, aggregations=<aggregations_value>, b=<b_variable>)
+for detailed information, see references/aggregate_between_neighbors.md
+
+**Find connected components:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.connected_components(relation_name=<relation_name_value>, edge_direction=<edge_direction_value>, segmentation_name=<segmentation_name_value>, b=<b_variable>)
+for detailed information, see references/connected_components.md
+
+**Segment by attribute:**
+usage: lynxkite_graph_analytics.operations.segmentation_ops.segment_by_attribute(table_name=<table_name_value>, attribute=<attribute_value>, segmentation_name=<segmentation_name_value>, b=<b_variable>)
+for detailed information, see references/segment_by_attribute.md
 
 **Add rank attribute:**
-Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row
-for usage information, see references/add_rank.md
+usage: lynxkite_graph_analytics.operations.table_ops.add_rank(table_column=<table_column_value>, rank_name=<rank_name_value>, order=<order_value>, b=<b_variable>)
+for detailed information, see references/add_rank.md
 
 **Derive property:**
-Derive property
-for usage information, see references/derive_property.md
+usage: lynxkite_graph_analytics.operations.table_ops.derive_property(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
+for detailed information, see references/derive_property.md
+
+**Derive with SQL:**
+usage: lynxkite_graph_analytics.operations.table_ops.derive_with_sql(table_name=<table_name_value>, formula=<formula_value>, name=<name_value>, b=<b_variable>)
+for detailed information, see references/derive_with_sql.md
+
+**Drop tables:**
+usage: lynxkite_graph_analytics.operations.table_ops.drop_tables(keep_selected=<keep_selected_value>, tables=<tables_value>, b=<b_variable>)
+for detailed information, see references/drop_tables.md
 
 **Enter table data:**
-Enter table data as CSV. The first row should contain column names.
-for usage information, see references/enter_table_data.md
+usage: lynxkite_graph_analytics.operations.table_ops.enter_table_data(table_name=<table_name_value>, data=<data_value>)
+for detailed information, see references/enter_table_data.md
 
 **Filter with formula:**
-Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false
-for usage information, see references/filter_with_formula.md
+usage: lynxkite_graph_analytics.operations.table_ops.filter_with_formula(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
+for detailed information, see references/filter_with_formula.md
 
 **Join tables:**
-Join/merge dataframes from two bundles.
-for usage information, see references/join_tables.md
+usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table1_column=<table1_column_value>, table2_column=<table2_column_value>, merge_mode=<merge_mode_value>, b=<b_variable>)
+for detailed information, see references/join_tables.md
 
 **Rename table:**
-Assigns a new name to the table
-for usage information, see references/rename_table.md
+usage: lynxkite_graph_analytics.operations.table_ops.rename_table(old_name=<old_name_value>, new_name=<new_name_value>, b=<b_variable>)
+for detailed information, see references/rename_table.md
 
 **Sample table:**
-Sample table
-for usage information, see references/sample_table.md
+usage: lynxkite_graph_analytics.operations.table_ops.sample_table(table_name=<table_name_value>, fraction=<fraction_value>, b=<b_variable>)
+for detailed information, see references/sample_table.md
 
-**Select Table:**
-Select Table
-for usage information, see references/select_table.md
-
-**Vector from attribute pair:**
-Creates a new column with vectors that contain the two attributes
-for usage information, see references/vector_from_attribute_pair.md
+**Vector from attributes:**
+usage: lynxkite_graph_analytics.operations.table_ops.vector_from_attributes(table_name=<table_name_value>, attributes=<attributes_value>, vector_name=<vector_name_value>, b=<b_variable>)
+for detailed information, see references/vector_from_attributes.md
 
 **Bar chart:**
-Bar chart
-for usage information, see references/bar_chart.md
+usage: lynxkite_graph_analytics.operations.visualization_ops.bar_chart(x=<x_value>, y=<y_value>, b=<b_variable>)
+for detailed information, see references/bar_chart.md
 
 **Binned graph visualization:**
-Nodes binned together by x and y are aggregated into one node.
-for usage information, see references/binned_graph_visualization.md
+usage: lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization(x_property=<x_property_value>, y_property=<y_property_value>, x_bins=<x_bins_value>, y_bins=<y_bins_value>, show_loops=<show_loops_value>, b=<b_variable>)
+for detailed information, see references/binned_graph_visualization.md
 
 **Histogram:**
-Histogram
-for usage information, see references/histogram.md
+usage: lynxkite_graph_analytics.operations.visualization_ops.histogram(column=<column_value>, bins=<bins_value>, b=<b_variable>)
+for detailed information, see references/histogram.md
 
 **Scatter plot:**
-Scatter plot
-for usage information, see references/scatter_plot.md
+usage: lynxkite_graph_analytics.operations.visualization_ops.scatter_plot(x=<x_value>, y=<y_value>, b=<b_variable>)
+for detailed information, see references/scatter_plot.md
 
 **Visualize graph:**
-Visualize graph
-for usage information, see references/visualize_graph.md
+usage: lynxkite_graph_analytics.operations.visualization_ops.visualize_graph(b=<b_variable>)
+for detailed information, see references/visualize_graph.md
 
 **Activation:**
-Activation
-for usage information, see references/activation.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.activation(type=<type_value>, x=<x_variable>)
+for detailed information, see references/activation.md
 
 **Add:**
-Add
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.add(a=<a_variable>, b=<b_variable>)
 
 **Attention:**
-Attention
-for usage information, see references/attention.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.attention(embed_dim=<embed_dim_value>, num_heads=<num_heads_value>, dropout=<dropout_value>, query=<query_variable>, key=<key_variable>, value=<value_variable>)
+for detailed information, see references/attention.md
 
 **Binary cross-entropy with logits loss:**
-Binary cross-entropy with logits loss
-for usage information, see references/binary_cross_entropy_loss.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.binary_cross_entropy_loss(x=<x_variable>, y=<y_variable>)
+for detailed information, see references/binary_cross_entropy_loss.md
 
 **Concatenate:**
-Concatenate
-for usage information, see references/concatenate.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate(a=<a_variable>, b=<b_variable>)
+for detailed information, see references/concatenate.md
 
 **Constant vector:**
-Constant vector
-for usage information, see references/constant_vector.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.constant_vector(value=<value_value>, size=<size_value>)
+for detailed information, see references/constant_vector.md
 
 **Cos:**
-Cos
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.cos(input=<input_variable>)
 
 **Dropout:**
-Dropout
-for usage information, see references/dropout.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.dropout(p=<p_value>, x=<x_variable>)
+for detailed information, see references/dropout.md
 
 **Embedding:**
-Embedding
-for usage information, see references/embedding.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.embedding(num_embeddings=<num_embeddings_value>, embedding_dim=<embedding_dim_value>, x=<x_variable>)
+for detailed information, see references/embedding.md
 
 **Exp:**
-Exp
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.exp(input=<input_variable>)
 
 **Input: graph edges:**
-The edges of a graph as input. A 2xE tensor of src/dst indices. Not batched.
-for usage information, see references/graph_edges_input.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_edges_input(_input_name=<_input_name_value>)
+for detailed information, see references/graph_edges_input.md
 
 **Input: sequential:**
-An input tensor with a sequence for each sample.
-for usage information, see references/sequential_input.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.sequential_input(_input_name=<_input_name_value>, type=<type_value>, per_sample=<per_sample_value>)
+for detailed information, see references/sequential_input.md
 
 **Input: tensor:**
-An input tensor.
-for usage information, see references/tensor_input.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input(_input_name=<_input_name_value>, type=<type_value>, per_sample=<per_sample_value>)
+for detailed information, see references/tensor_input.md
 
 **LayerNorm:**
-LayerNorm
-for usage information, see references/layernorm.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.layernorm(normalized_shape=<normalized_shape_value>, x=<x_variable>)
+for detailed information, see references/layernorm.md
 
 **Linear:**
-Linear
-for usage information, see references/linear.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.linear(output_dim=<output_dim_value>, x=<x_variable>)
+for detailed information, see references/linear.md
 
 **Log:**
-Log
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.log(input=<input_variable>)
 
 **LSTM:**
-LSTM
-for usage information, see references/lstm.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.lstm(input_size=<input_size_value>, hidden_size=<hidden_size_value>, dropout=<dropout_value>, x=<x_variable>)
+for detailed information, see references/lstm.md
 
 **Mean pool:**
-Mean pool
-for usage information, see references/mean_pool.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.mean_pool(x=<x_variable>)
+for detailed information, see references/mean_pool.md
 
 **MSE loss:**
-MSE loss
-for usage information, see references/mse_loss.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.mse_loss(x=<x_variable>, y=<y_variable>)
+for detailed information, see references/mse_loss.md
 
 **Multiply:**
-Multiply
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.multiply(a=<a_variable>, b=<b_variable>)
 
 **Neural ODE with MLP:**
-A neural ODE for predicting a 1-dimensional value over time, using an MLP to model the derivative.
-for usage information, see references/neural_ode_mlp.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.neural_ode_mlp(method=<method_value>, relative_tolerance=<relative_tolerance_value>, absolute_tolerance=<absolute_tolerance_value>, state_dimensions=<state_dimensions_value>, mlp_layers=<mlp_layers_value>, mlp_hidden_size=<mlp_hidden_size_value>, mlp_activation=<mlp_activation_value>, state_0=<state_0_variable>, timestamps=<timestamps_variable>)
+for detailed information, see references/neural_ode_mlp.md
 
 **Sin:**
-Sin
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.sin(input=<input_variable>)
 
 **Softmax:**
-Softmax
-for usage information, see references/softmax.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.softmax(dim=<dim_value>, x=<x_variable>)
+for detailed information, see references/softmax.md
 
 **Subtract:**
-Subtract
-for usage information, see references/<lambda>.md
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.subtract(a=<a_variable>, b=<b_variable>)
 
 **Blur:**
-Blur
-for usage information, see references/blur.md
+usage: lynxkite_pillow_example.blur(radius=<radius_value>, image=<image_variable>)
+for detailed information, see references/blur.md
 
 **Crop:**
-Crop
-for usage information, see references/crop.md
+usage: lynxkite_pillow_example.crop(top=<top_value>, left=<left_value>, bottom=<bottom_value>, right=<right_value>, image=<image_variable>)
+for detailed information, see references/crop.md
 
 **Detail:**
-Detail
-for usage information, see references/detail.md
+usage: lynxkite_pillow_example.detail(image=<image_variable>)
+for detailed information, see references/detail.md
 
 **Edge enhance:**
-Edge enhance
-for usage information, see references/edge_enhance.md
+usage: lynxkite_pillow_example.edge_enhance(image=<image_variable>)
+for detailed information, see references/edge_enhance.md
 
 **Flip horizontally:**
-Flip horizontally
-for usage information, see references/flip_horizontally.md
+usage: lynxkite_pillow_example.flip_horizontally(image=<image_variable>)
+for detailed information, see references/flip_horizontally.md
 
 **Flip vertically:**
-Flip vertically
-for usage information, see references/flip_vertically.md
+usage: lynxkite_pillow_example.flip_vertically(image=<image_variable>)
+for detailed information, see references/flip_vertically.md
 
 **Open image:**
-Open image
-for usage information, see references/open_image.md
+usage: lynxkite_pillow_example.open_image(filename=<filename_value>)
+for detailed information, see references/open_image.md
 
 **Save image:**
-Save image
-for usage information, see references/save_image.md
+usage: lynxkite_pillow_example.save_image(filename=<filename_value>, image=<image_variable>)
+for detailed information, see references/save_image.md
 
 **To grayscale:**
-To grayscale
-for usage information, see references/to_grayscale.md
+usage: lynxkite_pillow_example.to_grayscale(image=<image_variable>)
+for detailed information, see references/to_grayscale.md
 
 **View image:**
-View image
-for usage information, see references/view_image.md
+usage: lynxkite_pillow_example.view_image(image=<image_variable>)
+for detailed information, see references/view_image.md
 
 **Average neighbor degree:**
-Returns the average degree of the neighborhood of each node.
-for usage information, see references/average_neighbor_degree.md
+usage: networkx.algorithms.assortativity.neighbor_degree.average_neighbor_degree(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/average_neighbor_degree.md
 
 **Find asteroidal triple:**
-Find an asteroidal triple in the given graph.
-for usage information, see references/find_asteroidal_triple.md
+usage: networkx.algorithms.asteroidal.find_asteroidal_triple(G=<G_variable>)
+for detailed information, see references/find_asteroidal_triple.md
 
 **Is AT-free:**
-Check if a graph is AT-free.
-for usage information, see references/is_at_free.md
+usage: networkx.algorithms.asteroidal.is_at_free(G=<G_variable>)
+for detailed information, see references/is_at_free.md
 
 **Is bipartite:**
-Returns True if graph G is bipartite, False if not.
-for usage information, see references/is_bipartite.md
+usage: networkx.algorithms.bipartite.basic.is_bipartite(G=<G_variable>)
+for detailed information, see references/is_bipartite.md
 
 **Complete bipartite graph:**
-Returns the complete bipartite graph `K_{n_1,n_2}`.
-for usage information, see references/complete_bipartite_graph.md
+usage: networkx.algorithms.bipartite.generators.complete_bipartite_graph()
+for detailed information, see references/complete_bipartite_graph.md
 
 **Local bridges:**
-Iterate over local bridges of `G` optionally computing the span
-for usage information, see references/local_bridges.md
+usage: networkx.algorithms.bridges.local_bridges(with_span=<with_span_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/local_bridges.md
 
 **Tree broadcast center:**
-Return the broadcast center of a tree.
-for usage information, see references/tree_broadcast_center.md
+usage: networkx.algorithms.broadcasting.tree_broadcast_center(G=<G_variable>)
+for detailed information, see references/tree_broadcast_center.md
 
 **Tree broadcast time:**
-Return the minimum broadcast time of a (node in a) tree.
-for usage information, see references/tree_broadcast_time.md
+usage: networkx.algorithms.broadcasting.tree_broadcast_time(G=<G_variable>)
+for detailed information, see references/tree_broadcast_time.md
 
 **Betweenness centrality:**
-Compute the shortest-path betweenness centrality for nodes.
-for usage information, see references/betweenness_centrality.md
+usage: networkx.algorithms.centrality.betweenness.betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, endpoints=<endpoints_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/betweenness_centrality.md
 
 **Edge betweenness centrality:**
-Compute betweenness centrality for edges.
-for usage information, see references/edge_betweenness_centrality.md
+usage: networkx.algorithms.centrality.betweenness.edge_betweenness_centrality(k=<k_value>, normalized=<normalized_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/edge_betweenness_centrality.md
 
 **Closeness centrality:**
-Compute closeness centrality for nodes.
-for usage information, see references/closeness_centrality.md
+usage: networkx.algorithms.centrality.closeness.closeness_centrality(wf_improved=<wf_improved_value>, G=<G_variable>)
+for detailed information, see references/closeness_centrality.md
 
 **Degree centrality:**
-Compute the degree centrality for nodes.
-for usage information, see references/degree_centrality.md
+usage: networkx.algorithms.centrality.degree_alg.degree_centrality(G=<G_variable>)
+for detailed information, see references/degree_centrality.md
 
 **In degree centrality:**
-Compute the in-degree centrality for nodes.
-for usage information, see references/in_degree_centrality.md
+usage: networkx.algorithms.centrality.degree_alg.in_degree_centrality(G=<G_variable>)
+for detailed information, see references/in_degree_centrality.md
 
 **Out degree centrality:**
-Compute the out-degree centrality for nodes.
-for usage information, see references/out_degree_centrality.md
+usage: networkx.algorithms.centrality.degree_alg.out_degree_centrality(G=<G_variable>)
+for detailed information, see references/out_degree_centrality.md
 
 **Dispersion:**
-Calculate dispersion between `u` and `v` in `G`.
-for usage information, see references/dispersion.md
+usage: networkx.algorithms.centrality.dispersion.dispersion(normalized=<normalized_value>, alpha=<alpha_value>, b=<b_value>, c=<c_value>, G=<G_variable>)
+for detailed information, see references/dispersion.md
 
 **Eigenvector centrality:**
-Compute the eigenvector centrality for the graph G.
-for usage information, see references/eigenvector_centrality.md
+usage: networkx.algorithms.centrality.eigenvector.eigenvector_centrality(max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/eigenvector_centrality.md
 
 **Eigenvector centrality NumPy:**
-Compute the eigenvector centrality for the graph `G`.
-for usage information, see references/eigenvector_centrality_numpy.md
+usage: networkx.algorithms.centrality.eigenvector.eigenvector_centrality_numpy(weight=<weight_value>, max_iter=<max_iter_value>, tol=<tol_value>, G=<G_variable>)
+for detailed information, see references/eigenvector_centrality_numpy.md
 
 **Group betweenness centrality:**
-Compute the group betweenness centrality for a group of nodes.
-for usage information, see references/group_betweenness_centrality.md
+usage: networkx.algorithms.centrality.group.group_betweenness_centrality(normalized=<normalized_value>, weight=<weight_value>, endpoints=<endpoints_value>, G=<G_variable>)
+for detailed information, see references/group_betweenness_centrality.md
 
 **Prominent group:**
-Find the prominent group of size $k$ in graph $G$. The prominence of the
-for usage information, see references/prominent_group.md
+usage: networkx.algorithms.centrality.group.prominent_group(k=<k_value>, weight=<weight_value>, endpoints=<endpoints_value>, normalized=<normalized_value>, greedy=<greedy_value>, G=<G_variable>)
+for detailed information, see references/prominent_group.md
 
 **Katz centrality:**
-Compute the Katz centrality for the nodes of the graph G.
-for usage information, see references/katz_centrality.md
+usage: networkx.algorithms.centrality.katz.katz_centrality(alpha=<alpha_value>, beta=<beta_value>, max_iter=<max_iter_value>, tol=<tol_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/katz_centrality.md
 
 **Katz centrality NumPy:**
-Compute the Katz centrality for the graph G.
-for usage information, see references/katz_centrality_numpy.md
+usage: networkx.algorithms.centrality.katz.katz_centrality_numpy(alpha=<alpha_value>, beta=<beta_value>, normalized=<normalized_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/katz_centrality_numpy.md
 
 **Laplacian centrality:**
-Compute the Laplacian centrality for nodes in the graph `G`.
-for usage information, see references/laplacian_centrality.md
+usage: networkx.algorithms.centrality.laplacian.laplacian_centrality(normalized=<normalized_value>, weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
+for detailed information, see references/laplacian_centrality.md
 
 **Edge load centrality:**
-Compute edge load.
-for usage information, see references/edge_load_centrality.md
+usage: networkx.algorithms.centrality.load.edge_load_centrality(cutoff=<cutoff_value>, G=<G_variable>)
+for detailed information, see references/edge_load_centrality.md
 
 **Percolation centrality:**
-Compute the percolation centrality for nodes.
-for usage information, see references/percolation_centrality.md
+usage: networkx.algorithms.centrality.percolation.percolation_centrality(attribute=<attribute_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/percolation_centrality.md
 
 **Global reaching centrality:**
-Returns the global reaching centrality of a directed graph.
-for usage information, see references/global_reaching_centrality.md
+usage: networkx.algorithms.centrality.reaching.global_reaching_centrality(weight=<weight_value>, normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/global_reaching_centrality.md
 
 **Second order centrality:**
-Compute the second order centrality for nodes of G.
-for usage information, see references/second_order_centrality.md
+usage: networkx.algorithms.centrality.second_order.second_order_centrality(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/second_order_centrality.md
 
 **Communicability betweenness centrality:**
-Returns subgraph communicability for all pairs of nodes in G.
-for usage information, see references/communicability_betweenness_centrality.md
+usage: networkx.algorithms.centrality.subgraph_alg.communicability_betweenness_centrality(G=<G_variable>)
+for detailed information, see references/communicability_betweenness_centrality.md
 
 **Estrada index:**
-Returns the Estrada index of a the graph G.
-for usage information, see references/estrada_index.md
+usage: networkx.algorithms.centrality.subgraph_alg.estrada_index(G=<G_variable>)
+for detailed information, see references/estrada_index.md
 
 **Subgraph centrality:**
-Returns subgraph centrality for each node in G.
-for usage information, see references/subgraph_centrality.md
+usage: networkx.algorithms.centrality.subgraph_alg.subgraph_centrality(normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/subgraph_centrality.md
 
 **Subgraph centrality exp:**
-Returns the subgraph centrality for each node of G.
-for usage information, see references/subgraph_centrality_exp.md
+usage: networkx.algorithms.centrality.subgraph_alg.subgraph_centrality_exp(normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/subgraph_centrality_exp.md
 
 **Voterank:**
-Select a list of influential nodes in a graph using VoteRank algorithm
-for usage information, see references/voterank.md
+usage: networkx.algorithms.centrality.voterank_alg.voterank(number_of_nodes=<number_of_nodes_value>, G=<G_variable>)
+for detailed information, see references/voterank.md
 
 **Chordal graph cliques:**
-Returns all maximal cliques of a chordal graph.
-for usage information, see references/chordal_graph_cliques.md
+usage: networkx.algorithms.chordal.chordal_graph_cliques(G=<G_variable>)
+for detailed information, see references/chordal_graph_cliques.md
 
 **Chordal graph treewidth:**
-Returns the treewidth of the chordal graph G.
-for usage information, see references/chordal_graph_treewidth.md
+usage: networkx.algorithms.chordal.chordal_graph_treewidth(G=<G_variable>)
+for detailed information, see references/chordal_graph_treewidth.md
 
 **Complete to chordal graph:**
-Return a copy of G completed to a chordal graph
-for usage information, see references/complete_to_chordal_graph.md
+usage: networkx.algorithms.chordal.complete_to_chordal_graph(G=<G_variable>)
+for detailed information, see references/complete_to_chordal_graph.md
 
 **Is chordal:**
-Checks whether G is a chordal graph.
-for usage information, see references/is_chordal.md
+usage: networkx.algorithms.chordal.is_chordal(G=<G_variable>)
+for detailed information, see references/is_chordal.md
 
 **Enumerate all cliques:**
-Returns all cliques in an undirected graph.
-for usage information, see references/enumerate_all_cliques.md
+usage: networkx.algorithms.clique.enumerate_all_cliques(G=<G_variable>)
+for detailed information, see references/enumerate_all_cliques.md
 
 **Find cliques:**
-Returns all maximal cliques in an undirected graph.
-for usage information, see references/find_cliques.md
+usage: networkx.algorithms.clique.find_cliques(G=<G_variable>)
+for detailed information, see references/find_cliques.md
 
 **Find cliques recursive:**
-Returns all maximal cliques in a graph.
-for usage information, see references/find_cliques_recursive.md
+usage: networkx.algorithms.clique.find_cliques_recursive(G=<G_variable>)
+for detailed information, see references/find_cliques_recursive.md
 
 **Make max clique graph:**
-Returns the maximal clique graph of the given graph.
-for usage information, see references/make_max_clique_graph.md
+usage: networkx.algorithms.clique.make_max_clique_graph(G=<G_variable>)
+for detailed information, see references/make_max_clique_graph.md
 
 **Max weight clique:**
-Find a maximum weight clique in G.
-for usage information, see references/max_weight_clique.md
+usage: networkx.algorithms.clique.max_weight_clique(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/max_weight_clique.md
 
 **All triangles:**
-Yields all unique triangles in an undirected graph.
-for usage information, see references/all_triangles.md
+usage: networkx.algorithms.cluster.all_triangles(G=<G_variable>)
+for detailed information, see references/all_triangles.md
 
 **Average clustering:**
-Compute the average clustering coefficient for the graph G.
-for usage information, see references/average_clustering.md
+usage: networkx.algorithms.cluster.average_clustering(weight=<weight_value>, count_zeros=<count_zeros_value>, G=<G_variable>)
+for detailed information, see references/average_clustering.md
 
 **Clustering:**
-Compute the clustering coefficient for nodes.
-for usage information, see references/clustering.md
+usage: networkx.algorithms.cluster.clustering(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/clustering.md
 
 **Generalized degree:**
-Compute the generalized degree for nodes.
-for usage information, see references/generalized_degree.md
+usage: networkx.algorithms.cluster.generalized_degree(G=<G_variable>)
+for detailed information, see references/generalized_degree.md
 
 **Square clustering:**
-Compute the squares clustering coefficient for nodes.
-for usage information, see references/square_clustering.md
+usage: networkx.algorithms.cluster.square_clustering(G=<G_variable>)
+for detailed information, see references/square_clustering.md
 
 **Transitivity:**
-Compute graph transitivity, the fraction of all possible triangles
-for usage information, see references/transitivity.md
+usage: networkx.algorithms.cluster.transitivity(G=<G_variable>)
+for detailed information, see references/transitivity.md
 
 **Triangles:**
-Compute the number of triangles.
-for usage information, see references/triangles.md
+usage: networkx.algorithms.cluster.triangles(G=<G_variable>)
+for detailed information, see references/triangles.md
 
 **Equitable color:**
-Provides an equitable coloring for nodes of `G`.
-for usage information, see references/equitable_color.md
+usage: networkx.algorithms.coloring.equitable_coloring.equitable_color(G=<G_variable>)
+for detailed information, see references/equitable_color.md
 
 **Greedy color:**
-Color a graph using various strategies of greedy graph coloring.
-for usage information, see references/greedy_color.md
+usage: networkx.algorithms.coloring.greedy_coloring.greedy_color(interchange=<interchange_value>, G=<G_variable>)
+for detailed information, see references/greedy_color.md
 
 **Communicability:**
-Returns communicability between all pairs of nodes in G.
-for usage information, see references/communicability.md
+usage: networkx.algorithms.communicability_alg.communicability(G=<G_variable>)
+for detailed information, see references/communicability.md
 
 **Communicability exp:**
-Returns communicability between all pairs of nodes in G.
-for usage information, see references/communicability_exp.md
+usage: networkx.algorithms.communicability_alg.communicability_exp(G=<G_variable>)
+for detailed information, see references/communicability_exp.md
 
 **Attracting components:**
-Generates the attracting components in `G`.
-for usage information, see references/attracting_components.md
+usage: networkx.algorithms.components.attracting.attracting_components(G=<G_variable>)
+for detailed information, see references/attracting_components.md
 
 **Is attracting component:**
-Returns True if `G` consists of a single attracting component.
-for usage information, see references/is_attracting_component.md
+usage: networkx.algorithms.components.attracting.is_attracting_component(G=<G_variable>)
+for detailed information, see references/is_attracting_component.md
 
 **Number attracting components:**
-Returns the number of attracting components in `G`.
-for usage information, see references/number_attracting_components.md
+usage: networkx.algorithms.components.attracting.number_attracting_components(G=<G_variable>)
+for detailed information, see references/number_attracting_components.md
 
 **Articulation points:**
-Yield the articulation points, or cut vertices, of a graph.
-for usage information, see references/articulation_points.md
+usage: networkx.algorithms.components.biconnected.articulation_points(G=<G_variable>)
+for detailed information, see references/articulation_points.md
 
 **Biconnected component edges:**
-Returns a generator of lists of edges, one list for each biconnected
-for usage information, see references/biconnected_component_edges.md
+usage: networkx.algorithms.components.biconnected.biconnected_component_edges(G=<G_variable>)
+for detailed information, see references/biconnected_component_edges.md
 
 **Biconnected components:**
-Returns a generator of sets of nodes, one set for each biconnected
-for usage information, see references/biconnected_components.md
+usage: networkx.algorithms.components.biconnected.biconnected_components(G=<G_variable>)
+for detailed information, see references/biconnected_components.md
 
 **Is biconnected:**
-Returns True if the graph is biconnected, False otherwise.
-for usage information, see references/is_biconnected.md
+usage: networkx.algorithms.components.biconnected.is_biconnected(G=<G_variable>)
+for detailed information, see references/is_biconnected.md
 
 **Connected components:**
-Generate connected components.
-for usage information, see references/connected_components.md
+usage: networkx.algorithms.components.connected.connected_components(G=<G_variable>)
+for detailed information, see references/connected_components.md
 
 **Is connected:**
-Returns True if the graph is connected, False otherwise.
-for usage information, see references/is_connected.md
+usage: networkx.algorithms.components.connected.is_connected(G=<G_variable>)
+for detailed information, see references/is_connected.md
 
 **Node connected component:**
-Returns the set of nodes in the component of graph containing node n.
-for usage information, see references/node_connected_component.md
+usage: networkx.algorithms.components.connected.node_connected_component(n=<n_value>, G=<G_variable>)
+for detailed information, see references/node_connected_component.md
 
 **Number connected components:**
-Returns the number of connected components.
-for usage information, see references/number_connected_components.md
+usage: networkx.algorithms.components.connected.number_connected_components(G=<G_variable>)
+for detailed information, see references/number_connected_components.md
 
 **Is semiconnected:**
-Returns True if the graph is semiconnected, False otherwise.
-for usage information, see references/is_semiconnected.md
+usage: networkx.algorithms.components.semiconnected.is_semiconnected(G=<G_variable>)
+for detailed information, see references/is_semiconnected.md
 
 **Condensation:**
-Returns the condensation of G.
-for usage information, see references/condensation.md
+usage: networkx.algorithms.components.strongly_connected.condensation(G=<G_variable>)
+for detailed information, see references/condensation.md
 
 **Is strongly connected:**
-Test directed graph for strong connectivity.
-for usage information, see references/is_strongly_connected.md
+usage: networkx.algorithms.components.strongly_connected.is_strongly_connected(G=<G_variable>)
+for detailed information, see references/is_strongly_connected.md
 
 **Kosaraju strongly connected components:**
-Generate nodes in strongly connected components of graph.
-for usage information, see references/kosaraju_strongly_connected_components.md
+usage: networkx.algorithms.components.strongly_connected.kosaraju_strongly_connected_components(G=<G_variable>)
+for detailed information, see references/kosaraju_strongly_connected_components.md
 
 **Number strongly connected components:**
-Returns number of strongly connected components in graph.
-for usage information, see references/number_strongly_connected_components.md
+usage: networkx.algorithms.components.strongly_connected.number_strongly_connected_components(G=<G_variable>)
+for detailed information, see references/number_strongly_connected_components.md
 
 **Strongly connected components:**
-Generate nodes in strongly connected components of graph.
-for usage information, see references/strongly_connected_components.md
+usage: networkx.algorithms.components.strongly_connected.strongly_connected_components(G=<G_variable>)
+for detailed information, see references/strongly_connected_components.md
 
 **Is weakly connected:**
-Test directed graph for weak connectivity.
-for usage information, see references/is_weakly_connected.md
+usage: networkx.algorithms.components.weakly_connected.is_weakly_connected(G=<G_variable>)
+for detailed information, see references/is_weakly_connected.md
 
 **Number weakly connected components:**
-Returns the number of weakly connected components in G.
-for usage information, see references/number_weakly_connected_components.md
+usage: networkx.algorithms.components.weakly_connected.number_weakly_connected_components(G=<G_variable>)
+for detailed information, see references/number_weakly_connected_components.md
 
 **Weakly connected components:**
-Generate weakly connected components of G.
-for usage information, see references/weakly_connected_components.md
+usage: networkx.algorithms.components.weakly_connected.weakly_connected_components(G=<G_variable>)
+for detailed information, see references/weakly_connected_components.md
 
 **Is k edge connected:**
-Tests to see if a graph is k-edge-connected.
-for usage information, see references/is_k_edge_connected.md
+usage: networkx.algorithms.connectivity.edge_augmentation.is_k_edge_connected(k=<k_value>, G=<G_variable>)
+for detailed information, see references/is_k_edge_connected.md
 
 **K edge components:**
-Generates nodes in each maximal k-edge-connected component in G.
-for usage information, see references/k_edge_components.md
+usage: networkx.algorithms.connectivity.edge_kcomponents.k_edge_components(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_edge_components.md
 
 **K edge subgraphs:**
-Generates nodes in each maximal k-edge-connected subgraph in G.
-for usage information, see references/k_edge_subgraphs.md
+usage: networkx.algorithms.connectivity.edge_kcomponents.k_edge_subgraphs(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_edge_subgraphs.md
 
 **Core number:**
-Returns the core number for each node.
-for usage information, see references/core_number.md
+usage: networkx.algorithms.core.core_number(G=<G_variable>)
+for detailed information, see references/core_number.md
 
 **k-core:**
-Returns the k-core of G.
-for usage information, see references/k_core.md
+usage: networkx.algorithms.core.k_core(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_core.md
 
 **k-corona:**
-Returns the k-corona of G.
-for usage information, see references/k_corona.md
+usage: networkx.algorithms.core.k_corona(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_corona.md
 
 **k-crust:**
-Returns the k-crust of G.
-for usage information, see references/k_crust.md
+usage: networkx.algorithms.core.k_crust(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_crust.md
 
 **k-shell:**
-Returns the k-shell of G.
-for usage information, see references/k_shell.md
+usage: networkx.algorithms.core.k_shell(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_shell.md
 
 **k-truss:**
-Returns the k-truss of `G`.
-for usage information, see references/k_truss.md
+usage: networkx.algorithms.core.k_truss(k=<k_value>, G=<G_variable>)
+for detailed information, see references/k_truss.md
 
 **Onion layers:**
-Returns the layer of each vertex in an onion decomposition of the graph.
-for usage information, see references/onion_layers.md
+usage: networkx.algorithms.core.onion_layers(G=<G_variable>)
+for detailed information, see references/onion_layers.md
 
 **Chordless cycles:**
-Find simple chordless cycles of a graph.
-for usage information, see references/chordless_cycles.md
+usage: networkx.algorithms.cycles.chordless_cycles(length_bound=<length_bound_value>, G=<G_variable>)
+for detailed information, see references/chordless_cycles.md
 
 **Cycle basis:**
-Returns a list of cycles which form a basis for cycles of G.
-for usage information, see references/cycle_basis.md
+usage: networkx.algorithms.cycles.cycle_basis(G=<G_variable>)
+for detailed information, see references/cycle_basis.md
 
 **Find cycle:**
-Returns a cycle found via depth-first traversal.
-for usage information, see references/find_cycle.md
+usage: networkx.algorithms.cycles.find_cycle(G=<G_variable>)
+for detailed information, see references/find_cycle.md
 
 **Girth:**
-Returns the girth of the graph.
-for usage information, see references/girth.md
+usage: networkx.algorithms.cycles.girth(G=<G_variable>)
+for detailed information, see references/girth.md
 
 **Minimum cycle basis:**
-Returns a minimum weight cycle basis for G
-for usage information, see references/minimum_cycle_basis.md
+usage: networkx.algorithms.cycles.minimum_cycle_basis(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/minimum_cycle_basis.md
 
 **Recursive simple cycles:**
-Find simple cycles (elementary circuits) of a directed graph.
-for usage information, see references/recursive_simple_cycles.md
+usage: networkx.algorithms.cycles.recursive_simple_cycles(G=<G_variable>)
+for detailed information, see references/recursive_simple_cycles.md
 
 **Simple cycles:**
-Find simple cycles (elementary circuits) of a graph.
-for usage information, see references/simple_cycles.md
+usage: networkx.algorithms.cycles.simple_cycles(length_bound=<length_bound_value>, G=<G_variable>)
+for detailed information, see references/simple_cycles.md
 
 **Find minimal d-separator:**
-Returns a minimal d-separating set between `x` and `y` if possible
-for usage information, see references/find_minimal_d_separator.md
+usage: networkx.algorithms.d_separation.find_minimal_d_separator(G=<G_variable>)
+for detailed information, see references/find_minimal_d_separator.md
 
 **Is d-separator:**
-Return whether node sets `x` and `y` are d-separated by `z`.
-for usage information, see references/is_d_separator.md
+usage: networkx.algorithms.d_separation.is_d_separator(G=<G_variable>)
+for detailed information, see references/is_d_separator.md
 
 **Is minimal d-separator:**
-Determine if `z` is a minimal d-separator for `x` and `y`.
-for usage information, see references/is_minimal_d_separator.md
+usage: networkx.algorithms.d_separation.is_minimal_d_separator(G=<G_variable>)
+for detailed information, see references/is_minimal_d_separator.md
 
 **All topological sorts:**
-Returns a generator of _all_ topological sorts of the directed graph G.
-for usage information, see references/all_topological_sorts.md
+usage: networkx.algorithms.dag.all_topological_sorts(G=<G_variable>)
+for detailed information, see references/all_topological_sorts.md
 
 **Ancestors:**
-Returns all nodes having a path to `source` in `G`.
-for usage information, see references/ancestors.md
+usage: networkx.algorithms.dag.ancestors(G=<G_variable>)
+for detailed information, see references/ancestors.md
 
 **Antichains:**
-Generates antichains from a directed acyclic graph (DAG).
-for usage information, see references/antichains.md
+usage: networkx.algorithms.dag.antichains(G=<G_variable>)
+for detailed information, see references/antichains.md
 
 **DAG longest path:**
-Returns the longest path in a directed acyclic graph (DAG).
-for usage information, see references/dag_longest_path.md
+usage: networkx.algorithms.dag.dag_longest_path(weight=<weight_value>, default_weight=<default_weight_value>, G=<G_variable>)
+for detailed information, see references/dag_longest_path.md
 
 **DAG longest path length:**
-Returns the longest path length in a DAG
-for usage information, see references/dag_longest_path_length.md
+usage: networkx.algorithms.dag.dag_longest_path_length(weight=<weight_value>, default_weight=<default_weight_value>, G=<G_variable>)
+for detailed information, see references/dag_longest_path_length.md
 
 **DAG to branching:**
-Returns a branching representing all (overlapping) paths from
-for usage information, see references/dag_to_branching.md
+usage: networkx.algorithms.dag.dag_to_branching(G=<G_variable>)
+for detailed information, see references/dag_to_branching.md
 
 **Descendants:**
-Returns all nodes reachable from `source` in `G`.
-for usage information, see references/descendants.md
+usage: networkx.algorithms.dag.descendants(G=<G_variable>)
+for detailed information, see references/descendants.md
 
 **Is aperiodic:**
-Returns True if `G` is aperiodic.
-for usage information, see references/is_aperiodic.md
+usage: networkx.algorithms.dag.is_aperiodic(G=<G_variable>)
+for detailed information, see references/is_aperiodic.md
 
 **Is directed acyclic graph:**
-Returns True if the graph `G` is a directed acyclic graph (DAG) or
-for usage information, see references/is_directed_acyclic_graph.md
+usage: networkx.algorithms.dag.is_directed_acyclic_graph(G=<G_variable>)
+for detailed information, see references/is_directed_acyclic_graph.md
 
 **Lexicographical topological sort:**
-Generate the nodes in the unique lexicographical topological sort order.
-for usage information, see references/lexicographical_topological_sort.md
+usage: networkx.algorithms.dag.lexicographical_topological_sort(G=<G_variable>)
+for detailed information, see references/lexicographical_topological_sort.md
 
 **Topological generations:**
-Stratifies a DAG into generations.
-for usage information, see references/topological_generations.md
+usage: networkx.algorithms.dag.topological_generations(G=<G_variable>)
+for detailed information, see references/topological_generations.md
 
 **Topological sort:**
-Returns a generator of nodes in topologically sorted order.
-for usage information, see references/topological_sort.md
+usage: networkx.algorithms.dag.topological_sort(G=<G_variable>)
+for detailed information, see references/topological_sort.md
 
 **Transitive closure:**
-Returns transitive closure of a graph
-for usage information, see references/transitive_closure.md
+usage: networkx.algorithms.dag.transitive_closure(G=<G_variable>)
+for detailed information, see references/transitive_closure.md
 
 **Transitive closure DAG:**
-Returns the transitive closure of a directed acyclic graph.
-for usage information, see references/transitive_closure_dag.md
+usage: networkx.algorithms.dag.transitive_closure_dag(G=<G_variable>)
+for detailed information, see references/transitive_closure_dag.md
 
 **Transitive reduction:**
-Returns transitive reduction of a directed graph
-for usage information, see references/transitive_reduction.md
+usage: networkx.algorithms.dag.transitive_reduction(G=<G_variable>)
+for detailed information, see references/transitive_reduction.md
 
 **Barycenter:**
-Calculate barycenter of a connected graph, optionally with edge weights.
-for usage information, see references/barycenter.md
+usage: networkx.algorithms.distance_measures.barycenter(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/barycenter.md
 
 **Center:**
-Returns the center of the graph G.
-for usage information, see references/center.md
+usage: networkx.algorithms.distance_measures.center(usebounds=<usebounds_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/center.md
 
 **Diameter:**
-Returns the diameter of the graph G.
-for usage information, see references/diameter.md
+usage: networkx.algorithms.distance_measures.diameter(usebounds=<usebounds_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/diameter.md
 
 **Eccentricity:**
-Returns the eccentricity of nodes in G.
-for usage information, see references/eccentricity.md
+usage: networkx.algorithms.distance_measures.eccentricity(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/eccentricity.md
 
 **Effective graph resistance:**
-Returns the Effective graph resistance of G.
-for usage information, see references/effective_graph_resistance.md
+usage: networkx.algorithms.distance_measures.effective_graph_resistance(weight=<weight_value>, invert_weight=<invert_weight_value>, G=<G_variable>)
+for detailed information, see references/effective_graph_resistance.md
 
 **Harmonic diameter:**
-Returns the harmonic diameter of the graph G.
-for usage information, see references/harmonic_diameter.md
+usage: networkx.algorithms.distance_measures.harmonic_diameter(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/harmonic_diameter.md
 
 **Kemeny constant:**
-Returns the Kemeny constant of the given graph.
-for usage information, see references/kemeny_constant.md
+usage: networkx.algorithms.distance_measures.kemeny_constant(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/kemeny_constant.md
 
 **Periphery:**
-Returns the periphery of the graph G.
-for usage information, see references/periphery.md
+usage: networkx.algorithms.distance_measures.periphery(usebounds=<usebounds_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/periphery.md
 
 **Radius:**
-Returns the radius of the graph G.
-for usage information, see references/radius.md
+usage: networkx.algorithms.distance_measures.radius(usebounds=<usebounds_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/radius.md
 
 **Resistance distance:**
-Returns the resistance distance between pairs of nodes in graph G.
-for usage information, see references/resistance_distance.md
+usage: networkx.algorithms.distance_measures.resistance_distance(weight=<weight_value>, invert_weight=<invert_weight_value>, G=<G_variable>)
+for detailed information, see references/resistance_distance.md
 
 **Intersection array:**
-Returns the intersection array of a distance-regular graph.
-for usage information, see references/intersection_array.md
+usage: networkx.algorithms.distance_regular.intersection_array(G=<G_variable>)
+for detailed information, see references/intersection_array.md
 
 **Is distance regular:**
-Returns True if the graph is distance regular, False otherwise.
-for usage information, see references/is_distance_regular.md
+usage: networkx.algorithms.distance_regular.is_distance_regular(G=<G_variable>)
+for detailed information, see references/is_distance_regular.md
 
 **Is strongly regular:**
-Returns True if and only if the given graph is strongly
-for usage information, see references/is_strongly_regular.md
+usage: networkx.algorithms.distance_regular.is_strongly_regular(G=<G_variable>)
+for detailed information, see references/is_strongly_regular.md
 
 **Connected dominating set:**
-Returns a connected dominating set.
-for usage information, see references/connected_dominating_set.md
+usage: networkx.algorithms.dominating.connected_dominating_set(G=<G_variable>)
+for detailed information, see references/connected_dominating_set.md
 
 **Global efficiency:**
-Returns the average global efficiency of the graph.
-for usage information, see references/global_efficiency.md
+usage: networkx.algorithms.efficiency_measures.global_efficiency(G=<G_variable>)
+for detailed information, see references/global_efficiency.md
 
 **Local efficiency:**
-Returns the average local efficiency of the graph.
-for usage information, see references/local_efficiency.md
+usage: networkx.algorithms.efficiency_measures.local_efficiency(G=<G_variable>)
+for detailed information, see references/local_efficiency.md
 
 **Eulerian circuit:**
-Returns an iterator over the edges of an Eulerian circuit in `G`.
-for usage information, see references/eulerian_circuit.md
+usage: networkx.algorithms.euler.eulerian_circuit(keys=<keys_value>, G=<G_variable>)
+for detailed information, see references/eulerian_circuit.md
 
 **Eulerian path:**
-Return an iterator over the edges of an Eulerian path in `G`.
-for usage information, see references/eulerian_path.md
+usage: networkx.algorithms.euler.eulerian_path(keys=<keys_value>, G=<G_variable>)
+for detailed information, see references/eulerian_path.md
 
 **Eulerize:**
-Transforms a graph into an Eulerian graph.
-for usage information, see references/eulerize.md
+usage: networkx.algorithms.euler.eulerize(G=<G_variable>)
+for detailed information, see references/eulerize.md
 
 **Has Eulerian path:**
-Return True iff `G` has an Eulerian path.
-for usage information, see references/has_eulerian_path.md
+usage: networkx.algorithms.euler.has_eulerian_path(G=<G_variable>)
+for detailed information, see references/has_eulerian_path.md
 
 **Is Eulerian:**
-Returns True if and only if `G` is Eulerian.
-for usage information, see references/is_eulerian.md
+usage: networkx.algorithms.euler.is_eulerian(G=<G_variable>)
+for detailed information, see references/is_eulerian.md
 
 **Max flow min cost:**
-Returns a maximum (s, t)-flow of minimum cost.
-for usage information, see references/max_flow_min_cost.md
+usage: networkx.algorithms.flow.mincost.max_flow_min_cost(s=<s_value>, t=<t_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/max_flow_min_cost.md
 
 **Min cost flow:**
-Returns a minimum cost flow satisfying all demands in digraph G.
-for usage information, see references/min_cost_flow.md
+usage: networkx.algorithms.flow.mincost.min_cost_flow(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/min_cost_flow.md
 
 **Min cost flow cost:**
-Find the cost of a minimum cost flow satisfying all demands in digraph G.
-for usage information, see references/min_cost_flow_cost.md
+usage: networkx.algorithms.flow.mincost.min_cost_flow_cost(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/min_cost_flow_cost.md
 
 **Network simplex:**
-Find a minimum cost flow satisfying all demands in digraph G.
-for usage information, see references/network_simplex.md
+usage: networkx.algorithms.flow.networksimplex.network_simplex(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/network_simplex.md
 
 **Weisfeiler–Lehman graph hash:**
-Return Weisfeiler Lehman (WL) graph hash.
-for usage information, see references/weisfeiler_lehman_graph_hash.md
+usage: networkx.algorithms.graph_hashing.weisfeiler_lehman_graph_hash(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, G=<G_variable>)
+for detailed information, see references/weisfeiler_lehman_graph_hash.md
 
 **Weisfeiler–Lehman subgraph hashes:**
-Return a dictionary of subgraph hashes by node.
-for usage information, see references/weisfeiler_lehman_subgraph_hashes.md
+usage: networkx.algorithms.graph_hashing.weisfeiler_lehman_subgraph_hashes(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, include_initial_labels=<include_initial_labels_value>, G=<G_variable>)
+for detailed information, see references/weisfeiler_lehman_subgraph_hashes.md
 
 **Flow hierarchy:**
-Returns the flow hierarchy of a directed network.
-for usage information, see references/flow_hierarchy.md
+usage: networkx.algorithms.hierarchy.flow_hierarchy(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/flow_hierarchy.md
 
 **Is KL connected:**
-Returns True if and only if `G` is locally `(k, l)`-connected.
-for usage information, see references/is_kl_connected.md
+usage: networkx.algorithms.hybrid.is_kl_connected(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, G=<G_variable>)
+for detailed information, see references/is_kl_connected.md
 
 **KL connected subgraph:**
-Returns the maximum locally `(k, l)`-connected subgraph of `G`.
-for usage information, see references/kl_connected_subgraph.md
+usage: networkx.algorithms.hybrid.kl_connected_subgraph(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, same_as_graph=<same_as_graph_value>, G=<G_variable>)
+for detailed information, see references/kl_connected_subgraph.md
 
 **Isolates:**
-Iterator over isolates in the graph.
-for usage information, see references/isolates.md
+usage: networkx.algorithms.isolate.isolates(G=<G_variable>)
+for detailed information, see references/isolates.md
 
 **Number of isolates:**
-Returns the number of isolates in the graph.
-for usage information, see references/number_of_isolates.md
+usage: networkx.algorithms.isolate.number_of_isolates(G=<G_variable>)
+for detailed information, see references/number_of_isolates.md
 
 **Could be isomorphic:**
-Returns False if graphs are definitely not isomorphic.
-for usage information, see references/could_be_isomorphic.md
+usage: networkx.algorithms.isomorphism.isomorph.could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/could_be_isomorphic.md
 
 **Fast could be isomorphic:**
-Returns False if graphs are definitely not isomorphic.
-for usage information, see references/fast_could_be_isomorphic.md
+usage: networkx.algorithms.isomorphism.isomorph.fast_could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/fast_could_be_isomorphic.md
 
 **Faster could be isomorphic:**
-Returns False if graphs are definitely not isomorphic.
-for usage information, see references/faster_could_be_isomorphic.md
+usage: networkx.algorithms.isomorphism.isomorph.faster_could_be_isomorphic(G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/faster_could_be_isomorphic.md
 
 **VF2++ all isomorphisms:**
-Yields all the possible mappings between G1 and G2.
-for usage information, see references/vf2pp_all_isomorphisms.md
+usage: networkx.algorithms.isomorphism.vf2pp.vf2pp_all_isomorphisms(node_label=<node_label_value>, default_label=<default_label_value>, G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/vf2pp_all_isomorphisms.md
 
 **VF2++ is isomorphic:**
-Examines whether G1 and G2 are isomorphic.
-for usage information, see references/vf2pp_is_isomorphic.md
+usage: networkx.algorithms.isomorphism.vf2pp.vf2pp_is_isomorphic(node_label=<node_label_value>, default_label=<default_label_value>, G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/vf2pp_is_isomorphic.md
 
 **VF2++ isomorphism:**
-Return an isomorphic mapping between `G1` and `G2` if it exists.
-for usage information, see references/vf2pp_isomorphism.md
+usage: networkx.algorithms.isomorphism.vf2pp.vf2pp_isomorphism(node_label=<node_label_value>, default_label=<default_label_value>, G1=<G1_variable>, G2=<G2_variable>)
+for detailed information, see references/vf2pp_isomorphism.md
 
 **Hits:**
-Returns HITS hubs and authorities values for nodes.
-for usage information, see references/hits.md
+usage: networkx.algorithms.link_analysis.hits_alg.hits(max_iter=<max_iter_value>, tol=<tol_value>, normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/hits.md
 
 **Google matrix:**
-Returns the Google matrix of the graph.
-for usage information, see references/google_matrix.md
+usage: networkx.algorithms.link_analysis.pagerank_alg.google_matrix(alpha=<alpha_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/google_matrix.md
 
 **PageRank:**
-Returns the PageRank of the nodes in the graph.
-for usage information, see references/pagerank.md
+usage: networkx.algorithms.link_analysis.pagerank_alg.pagerank(alpha=<alpha_value>, max_iter=<max_iter_value>, tol=<tol_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/pagerank.md
 
 **Adamic–Adar index:**
-Compute the Adamic-Adar index of all node pairs in ebunch.
-for usage information, see references/adamic_adar_index.md
+usage: networkx.algorithms.link_prediction.adamic_adar_index(G=<G_variable>)
+for detailed information, see references/adamic_adar_index.md
 
 **Cn Soundarajan–Hopcroft:**
-Count the number of common neighbors of all node pairs in ebunch
-for usage information, see references/cn_soundarajan_hopcroft.md
+usage: networkx.algorithms.link_prediction.cn_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)
+for detailed information, see references/cn_soundarajan_hopcroft.md
 
 **Common neighbor centrality:**
-Return the CCPA score for each pair of nodes.
-for usage information, see references/common_neighbor_centrality.md
+usage: networkx.algorithms.link_prediction.common_neighbor_centrality(G=<G_variable>)
+for detailed information, see references/common_neighbor_centrality.md
 
 **Jaccard coefficient:**
-Compute the Jaccard coefficient of all node pairs in ebunch.
-for usage information, see references/jaccard_coefficient.md
+usage: networkx.algorithms.link_prediction.jaccard_coefficient(G=<G_variable>)
+for detailed information, see references/jaccard_coefficient.md
 
 **Preferential attachment:**
-Compute the preferential attachment score of all node pairs in ebunch.
-for usage information, see references/preferential_attachment.md
+usage: networkx.algorithms.link_prediction.preferential_attachment(G=<G_variable>)
+for detailed information, see references/preferential_attachment.md
 
 **Ra index Soundarajan–Hopcroft:**
-Compute the resource allocation index of all node pairs in
-for usage information, see references/ra_index_soundarajan_hopcroft.md
+usage: networkx.algorithms.link_prediction.ra_index_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)
+for detailed information, see references/ra_index_soundarajan_hopcroft.md
 
 **Resource allocation index:**
-Compute the resource allocation index of all node pairs in ebunch.
-for usage information, see references/resource_allocation_index.md
+usage: networkx.algorithms.link_prediction.resource_allocation_index(G=<G_variable>)
+for detailed information, see references/resource_allocation_index.md
 
 **Within inter cluster:**
-Compute the ratio of within- and inter-cluster common neighbors
-for usage information, see references/within_inter_cluster.md
+usage: networkx.algorithms.link_prediction.within_inter_cluster(delta=<delta_value>, community=<community_value>, G=<G_variable>)
+for detailed information, see references/within_inter_cluster.md
 
 **All pairs lowest common ancestor:**
-Return the lowest common ancestor of all pairs or the provided pairs
-for usage information, see references/all_pairs_lowest_common_ancestor.md
+usage: networkx.algorithms.lowest_common_ancestors.all_pairs_lowest_common_ancestor(G=<G_variable>)
+for detailed information, see references/all_pairs_lowest_common_ancestor.md
 
 **Tree all pairs lowest common ancestor:**
-Yield the lowest common ancestor for sets of pairs in a tree.
-for usage information, see references/tree_all_pairs_lowest_common_ancestor.md
+usage: networkx.algorithms.lowest_common_ancestors.tree_all_pairs_lowest_common_ancestor(G=<G_variable>)
+for detailed information, see references/tree_all_pairs_lowest_common_ancestor.md
 
 **Is matching:**
-Return True if ``matching`` is a valid matching of ``G``
-for usage information, see references/is_matching.md
+usage: networkx.algorithms.matching.is_matching(G=<G_variable>)
+for detailed information, see references/is_matching.md
 
 **Is maximal matching:**
-Return True if ``matching`` is a maximal matching of ``G``
-for usage information, see references/is_maximal_matching.md
+usage: networkx.algorithms.matching.is_maximal_matching(G=<G_variable>)
+for detailed information, see references/is_maximal_matching.md
 
 **Is perfect matching:**
-Return True if ``matching`` is a perfect matching for ``G``
-for usage information, see references/is_perfect_matching.md
+usage: networkx.algorithms.matching.is_perfect_matching(G=<G_variable>)
+for detailed information, see references/is_perfect_matching.md
 
 **Max weight matching:**
-Compute a maximum-weighted matching of G.
-for usage information, see references/max_weight_matching.md
+usage: networkx.algorithms.matching.max_weight_matching(maxcardinality=<maxcardinality_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/max_weight_matching.md
 
 **Maximal matching:**
-Find a maximal matching in the graph.
-for usage information, see references/maximal_matching.md
+usage: networkx.algorithms.matching.maximal_matching(G=<G_variable>)
+for detailed information, see references/maximal_matching.md
 
 **Min weight matching:**
-Compute a minimum-weight maximum-cardinality matching of `G`.
-for usage information, see references/min_weight_matching.md
+usage: networkx.algorithms.matching.min_weight_matching(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/min_weight_matching.md
 
 **Contracted nodes:**
-Returns the graph that results from contracting `u` and `v`.
-for usage information, see references/contracted_nodes.md
+usage: networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)
+for detailed information, see references/contracted_nodes.md
 
 **Identified nodes:**
-Returns the graph that results from contracting `u` and `v`.
-for usage information, see references/contracted_nodes.md
+usage: networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)
+for detailed information, see references/contracted_nodes.md
 
 **Moral graph:**
-Return the Moral Graph
-for usage information, see references/moral_graph.md
+usage: networkx.algorithms.moral.moral_graph(G=<G_variable>)
+for detailed information, see references/moral_graph.md
 
 **Non randomness:**
-Compute the non-randomness of a graph.
-for usage information, see references/non_randomness.md
+usage: networkx.algorithms.non_randomness.non_randomness(k=<k_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/non_randomness.md
 
 **Compose:**
-Compose graph G with H by combining nodes and edges into a single graph.
-for usage information, see references/compose.md
+usage: networkx.algorithms.operators.binary.compose(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/compose.md
 
 **Difference:**
-Returns a new graph that contains the edges that exist in G but not in H.
-for usage information, see references/difference.md
+usage: networkx.algorithms.operators.binary.difference(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/difference.md
 
 **Disjoint union:**
-Combine graphs G and H. The nodes are assumed to be unique (disjoint).
-for usage information, see references/disjoint_union.md
+usage: networkx.algorithms.operators.binary.disjoint_union(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/disjoint_union.md
 
 **Full join:**
-Returns the full join of graphs G and H.
-for usage information, see references/full_join.md
+usage: networkx.algorithms.operators.binary.full_join(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/full_join.md
 
 **Intersection:**
-Returns a new graph that contains only the nodes and the edges that exist in
-for usage information, see references/intersection.md
+usage: networkx.algorithms.operators.binary.intersection(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/intersection.md
 
 **Symmetric difference:**
-Returns new graph with edges that exist in either G or H but not both.
-for usage information, see references/symmetric_difference.md
+usage: networkx.algorithms.operators.binary.symmetric_difference(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/symmetric_difference.md
 
 **Union:**
-Combine graphs G and H. The names of nodes must be unique.
-for usage information, see references/union.md
+usage: networkx.algorithms.operators.binary.union(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/union.md
 
 **Cartesian product:**
-Returns the Cartesian product of G and H.
-for usage information, see references/cartesian_product.md
+usage: networkx.algorithms.operators.product.cartesian_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/cartesian_product.md
 
 **Corona product:**
-Returns the Corona product of G and H.
-for usage information, see references/corona_product.md
+usage: networkx.algorithms.operators.product.corona_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/corona_product.md
 
 **Lexicographic product:**
-Returns the lexicographic product of G and H.
-for usage information, see references/lexicographic_product.md
+usage: networkx.algorithms.operators.product.lexicographic_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/lexicographic_product.md
 
 **Modular product:**
-Returns the Modular product of G and H.
-for usage information, see references/modular_product.md
+usage: networkx.algorithms.operators.product.modular_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/modular_product.md
 
 **Power:**
-Returns the specified power of a graph.
-for usage information, see references/power.md
+usage: networkx.algorithms.operators.product.power(G=<G_variable>)
+for detailed information, see references/power.md
 
 **Strong product:**
-Returns the strong product of G and H.
-for usage information, see references/strong_product.md
+usage: networkx.algorithms.operators.product.strong_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/strong_product.md
 
 **Tensor product:**
-Returns the tensor product of G and H.
-for usage information, see references/tensor_product.md
+usage: networkx.algorithms.operators.product.tensor_product(G=<G_variable>, H=<H_variable>)
+for detailed information, see references/tensor_product.md
 
 **Complement:**
-Returns the graph complement of G.
-for usage information, see references/complement.md
+usage: networkx.algorithms.operators.unary.complement(G=<G_variable>)
+for detailed information, see references/complement.md
 
 **Reverse:**
-Returns the reverse directed graph of G.
-for usage information, see references/reverse.md
+usage: networkx.algorithms.operators.unary.reverse(copy=<copy_value>, G=<G_variable>)
+for detailed information, see references/reverse.md
 
 **Is perfect graph:**
-Return True if G is a perfect graph, else False.
-for usage information, see references/is_perfect_graph.md
+usage: networkx.algorithms.perfect_graph.is_perfect_graph(G=<G_variable>)
+for detailed information, see references/is_perfect_graph.md
 
 **Check planarity:**
-Check if a graph is planar and return a counterexample or an embedding.
-for usage information, see references/check_planarity.md
+usage: networkx.algorithms.planarity.check_planarity(counterexample=<counterexample_value>, G=<G_variable>)
+for detailed information, see references/check_planarity.md
 
 **Is planar:**
-Returns True if and only if `G` is planar.
-for usage information, see references/is_planar.md
+usage: networkx.algorithms.planarity.is_planar(G=<G_variable>)
+for detailed information, see references/is_planar.md
 
 **Chromatic polynomial:**
-Returns the chromatic polynomial of `G`
-for usage information, see references/chromatic_polynomial.md
+usage: networkx.algorithms.polynomials.chromatic_polynomial(G=<G_variable>)
+for detailed information, see references/chromatic_polynomial.md
 
 **Tutte polynomial:**
-Returns the Tutte polynomial of `G`
-for usage information, see references/tutte_polynomial.md
+usage: networkx.algorithms.polynomials.tutte_polynomial(G=<G_variable>)
+for detailed information, see references/tutte_polynomial.md
 
 **Overall reciprocity:**
-Compute the reciprocity for the whole graph.
-for usage information, see references/overall_reciprocity.md
+usage: networkx.algorithms.reciprocity.overall_reciprocity(G=<G_variable>)
+for detailed information, see references/overall_reciprocity.md
 
 **Reciprocity:**
-Compute the reciprocity in a directed graph.
-for usage information, see references/reciprocity.md
+usage: networkx.algorithms.reciprocity.reciprocity(G=<G_variable>)
+for detailed information, see references/reciprocity.md
 
 **Is regular:**
-Determines whether a graph is regular.
-for usage information, see references/is_regular.md
+usage: networkx.algorithms.regular.is_regular(G=<G_variable>)
+for detailed information, see references/is_regular.md
 
 **K factor:**
-Compute a `k`-factor of a graph.
-for usage information, see references/k_factor.md
+usage: networkx.algorithms.regular.k_factor(k=<k_value>, matching_weight=<matching_weight_value>, G=<G_variable>)
+for detailed information, see references/k_factor.md
 
 **Rich club coefficient:**
-Returns the rich-club coefficient of the graph `G`.
-for usage information, see references/rich_club_coefficient.md
+usage: networkx.algorithms.richclub.rich_club_coefficient(normalized=<normalized_value>, Q=<Q_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/rich_club_coefficient.md
 
 **Floyd–Warshall:**
-Find all-pairs shortest path lengths using Floyd's algorithm.
-for usage information, see references/floyd_warshall.md
+usage: networkx.algorithms.shortest_paths.dense.floyd_warshall(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/floyd_warshall.md
 
 **Floyd–Warshall NumPy:**
-Find all-pairs shortest path lengths using Floyd's algorithm.
-for usage information, see references/floyd_warshall_numpy.md
+usage: networkx.algorithms.shortest_paths.dense.floyd_warshall_numpy(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/floyd_warshall_numpy.md
 
 **Floyd–Warshall predecessor and distance:**
-Find all-pairs shortest path lengths using Floyd's algorithm.
-for usage information, see references/floyd_warshall_predecessor_and_distance.md
+usage: networkx.algorithms.shortest_paths.dense.floyd_warshall_predecessor_and_distance(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/floyd_warshall_predecessor_and_distance.md
 
 **All pairs all shortest paths:**
-Compute all shortest paths between all nodes.
-for usage information, see references/all_pairs_all_shortest_paths.md
+usage: networkx.algorithms.shortest_paths.generic.all_pairs_all_shortest_paths(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_all_shortest_paths.md
 
 **Average shortest path length:**
-Returns the average shortest path length.
-for usage information, see references/average_shortest_path_length.md
+usage: networkx.algorithms.shortest_paths.generic.average_shortest_path_length(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+for detailed information, see references/average_shortest_path_length.md
 
 **Shortest path:**
-Compute shortest paths in the graph.
-for usage information, see references/shortest_path.md
+usage: networkx.algorithms.shortest_paths.generic.shortest_path(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+for detailed information, see references/shortest_path.md
 
 **Shortest path length:**
-Compute shortest path lengths in the graph.
-for usage information, see references/shortest_path_length.md
+usage: networkx.algorithms.shortest_paths.generic.shortest_path_length(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+for detailed information, see references/shortest_path_length.md
 
 **All pairs shortest path:**
-Compute shortest paths between all nodes.
-for usage information, see references/all_pairs_shortest_path.md
+usage: networkx.algorithms.shortest_paths.unweighted.all_pairs_shortest_path(cutoff=<cutoff_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_shortest_path.md
 
 **All pairs shortest path length:**
-Computes the shortest path lengths between all nodes in `G`.
-for usage information, see references/all_pairs_shortest_path_length.md
+usage: networkx.algorithms.shortest_paths.unweighted.all_pairs_shortest_path_length(cutoff=<cutoff_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_shortest_path_length.md
 
 **Bidirectional shortest path:**
-Returns a list of nodes in a shortest path between source and target.
-for usage information, see references/bidirectional_shortest_path.md
+usage: networkx.algorithms.shortest_paths.unweighted.bidirectional_shortest_path(source=<source_value>, target=<target_value>, G=<G_variable>)
+for detailed information, see references/bidirectional_shortest_path.md
 
 **Predecessor:**
-Returns dict of predecessors for the path from source to all nodes in G.
-for usage information, see references/predecessor.md
+usage: networkx.algorithms.shortest_paths.unweighted.predecessor(source=<source_value>, target=<target_value>, cutoff=<cutoff_value>, return_seen=<return_seen_value>, G=<G_variable>)
+for detailed information, see references/predecessor.md
 
 **Single source shortest path:**
-Compute shortest path between source
-for usage information, see references/single_source_shortest_path.md
+usage: networkx.algorithms.shortest_paths.unweighted.single_source_shortest_path(source=<source_value>, cutoff=<cutoff_value>, G=<G_variable>)
+for detailed information, see references/single_source_shortest_path.md
 
 **Single target shortest path:**
-Compute shortest path to target from all nodes that reach target.
-for usage information, see references/single_target_shortest_path.md
+usage: networkx.algorithms.shortest_paths.unweighted.single_target_shortest_path(target=<target_value>, cutoff=<cutoff_value>, G=<G_variable>)
+for detailed information, see references/single_target_shortest_path.md
 
 **All pairs Bellman–Ford path:**
-Compute shortest paths between all nodes in a weighted graph.
-for usage information, see references/all_pairs_bellman_ford_path.md
+usage: networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_bellman_ford_path.md
 
 **All pairs Bellman–Ford path length:**
-Compute shortest path lengths between all nodes in a weighted graph.
-for usage information, see references/all_pairs_bellman_ford_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.all_pairs_bellman_ford_path_length(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_bellman_ford_path_length.md
 
 **All pairs Dijkstra:**
-Find shortest weighted paths and lengths between all nodes.
-for usage information, see references/all_pairs_dijkstra.md
+usage: networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_dijkstra.md
 
 **All pairs Dijkstra path:**
-Compute shortest paths between all nodes in a weighted graph.
-for usage information, see references/all_pairs_dijkstra_path.md
+usage: networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra_path(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_dijkstra_path.md
 
 **All pairs Dijkstra path length:**
-Compute shortest path lengths between all nodes in a weighted graph.
-for usage information, see references/all_pairs_dijkstra_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.all_pairs_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/all_pairs_dijkstra_path_length.md
 
 **Bellman–Ford path length:**
-Returns the shortest path length from source to target
-for usage information, see references/bellman_ford_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.bellman_ford_path_length(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/bellman_ford_path_length.md
 
 **Bellman–Ford predecessor and distance:**
-Compute shortest path lengths and predecessors on shortest paths
-for usage information, see references/bellman_ford_predecessor_and_distance.md
+usage: networkx.algorithms.shortest_paths.weighted.bellman_ford_predecessor_and_distance(source=<source_value>, target=<target_value>, weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
+for detailed information, see references/bellman_ford_predecessor_and_distance.md
 
 **Dijkstra path length:**
-Returns the shortest weighted path length in G from source to target.
-for usage information, see references/dijkstra_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.dijkstra_path_length(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/dijkstra_path_length.md
 
 **Dijkstra predecessor and distance:**
-Compute weighted shortest path length and predecessors.
-for usage information, see references/dijkstra_predecessor_and_distance.md
+usage: networkx.algorithms.shortest_paths.weighted.dijkstra_predecessor_and_distance(source=<source_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/dijkstra_predecessor_and_distance.md
 
 **Find negative cycle:**
-Returns a cycle with negative total weight if it exists.
-for usage information, see references/find_negative_cycle.md
+usage: networkx.algorithms.shortest_paths.weighted.find_negative_cycle(source=<source_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/find_negative_cycle.md
 
 **Goldberg Radzik:**
-Compute shortest path lengths and predecessors on shortest paths
-for usage information, see references/goldberg_radzik.md
+usage: networkx.algorithms.shortest_paths.weighted.goldberg_radzik(source=<source_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/goldberg_radzik.md
 
 **Johnson:**
-Uses Johnson's Algorithm to compute shortest paths.
-for usage information, see references/johnson.md
+usage: networkx.algorithms.shortest_paths.weighted.johnson(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/johnson.md
 
 **Multi source Dijkstra:**
-Find shortest weighted paths and lengths from a given set of
-for usage information, see references/multi_source_dijkstra.md
+usage: networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra(target=<target_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/multi_source_dijkstra.md
 
 **Multi source Dijkstra path:**
-Find shortest weighted paths in G from a given set of source
-for usage information, see references/multi_source_dijkstra_path.md
+usage: networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/multi_source_dijkstra_path.md
 
 **Multi source Dijkstra path length:**
-Find shortest weighted path lengths in G from a given set of
-for usage information, see references/multi_source_dijkstra_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.multi_source_dijkstra_path_length(cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/multi_source_dijkstra_path_length.md
 
 **Negative edge cycle:**
-Returns True if there exists a negative edge cycle anywhere in G.
-for usage information, see references/negative_edge_cycle.md
+usage: networkx.algorithms.shortest_paths.weighted.negative_edge_cycle(weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
+for detailed information, see references/negative_edge_cycle.md
 
 **Single source Bellman–Ford:**
-Compute shortest paths and lengths in a weighted graph G.
-for usage information, see references/single_source_bellman_ford.md
+usage: networkx.algorithms.shortest_paths.weighted.single_source_bellman_ford(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/single_source_bellman_ford.md
 
 **Single source Bellman–Ford path length:**
-Compute the shortest path length between source and all other
-for usage information, see references/single_source_bellman_ford_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.single_source_bellman_ford_path_length(source=<source_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/single_source_bellman_ford_path_length.md
 
 **Single source Dijkstra:**
-Find shortest weighted paths and lengths from a source node.
-for usage information, see references/single_source_dijkstra.md
+usage: networkx.algorithms.shortest_paths.weighted.single_source_dijkstra(source=<source_value>, target=<target_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/single_source_dijkstra.md
 
 **Single source Dijkstra path length:**
-Find shortest weighted path lengths in G from a source node.
-for usage information, see references/single_source_dijkstra_path_length.md
+usage: networkx.algorithms.shortest_paths.weighted.single_source_dijkstra_path_length(source=<source_value>, cutoff=<cutoff_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/single_source_dijkstra_path_length.md
 
 **Generate random paths:**
-Randomly generate `sample_size` paths of length `path_length`.
-for usage information, see references/generate_random_paths.md
+usage: networkx.algorithms.similarity.generate_random_paths(sample_size=<sample_size_value>, path_length=<path_length_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/generate_random_paths.md
 
 **Shortest simple paths:**
-Returns
-for usage information, see references/shortest_simple_paths.md
+usage: networkx.algorithms.simple_paths.shortest_simple_paths(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/shortest_simple_paths.md
 
 **Lattice reference:**
-Latticize the given graph by swapping edges.
-for usage information, see references/lattice_reference.md
+usage: networkx.algorithms.smallworld.lattice_reference(niter=<niter_value>, connectivity=<connectivity_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/lattice_reference.md
 
 **Omega:**
-Returns the small-world coefficient (omega) of a graph
-for usage information, see references/omega.md
+usage: networkx.algorithms.smallworld.omega(niter=<niter_value>, nrand=<nrand_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/omega.md
 
 **Random reference:**
-Compute a random graph by swapping edges of a given graph.
-for usage information, see references/random_reference.md
+usage: networkx.algorithms.smallworld.random_reference(niter=<niter_value>, connectivity=<connectivity_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/random_reference.md
 
 **Sigma:**
-Returns the small-world coefficient (sigma) of the given graph.
-for usage information, see references/sigma.md
+usage: networkx.algorithms.smallworld.sigma(niter=<niter_value>, nrand=<nrand_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/sigma.md
 
 **s-metric:**
-Returns the s-metric [1]_ of graph.
-for usage information, see references/s_metric.md
+usage: networkx.algorithms.smetric.s_metric(G=<G_variable>)
+for detailed information, see references/s_metric.md
 
 **Spanner:**
-Returns a spanner of the given graph with the given stretch.
-for usage information, see references/spanner.md
+usage: networkx.algorithms.sparsifiers.spanner(stretch=<stretch_value>, weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/spanner.md
 
 **Constraint:**
-Returns the constraint on all nodes in the graph ``G``.
-for usage information, see references/constraint.md
+usage: networkx.algorithms.structuralholes.constraint(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/constraint.md
 
 **Effective size:**
-Returns the effective size of all nodes in the graph ``G``.
-for usage information, see references/effective_size.md
+usage: networkx.algorithms.structuralholes.effective_size(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/effective_size.md
 
 **Dedensify:**
-Compresses neighborhoods around high-degree nodes
-for usage information, see references/dedensify.md
+usage: networkx.algorithms.summarization.dedensify(threshold=<threshold_value>, copy=<copy_value>, G=<G_variable>)
+for detailed information, see references/dedensify.md
 
 **Snap aggregation:**
-Creates a summary graph based on attributes and connectivity.
-for usage information, see references/snap_aggregation.md
+usage: networkx.algorithms.summarization.snap_aggregation(prefix=<prefix_value>, supernode_attribute=<supernode_attribute_value>, superedge_attribute=<superedge_attribute_value>, G=<G_variable>)
+for detailed information, see references/snap_aggregation.md
 
 **Connected double edge swap:**
-Attempts the specified number of double-edge swaps in the graph `G`.
-for usage information, see references/connected_double_edge_swap.md
+usage: networkx.algorithms.swap.connected_double_edge_swap(nswap=<nswap_value>, _window_threshold=<_window_threshold_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/connected_double_edge_swap.md
 
 **Directed edge swap:**
-Swap three edges in a directed graph while keeping the node degrees fixed.
-for usage information, see references/directed_edge_swap.md
+usage: networkx.algorithms.swap.directed_edge_swap(nswap=<nswap_value>, max_tries=<max_tries_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/directed_edge_swap.md
 
 **Double edge swap:**
-Swap two edges in the graph while keeping the node degrees fixed.
-for usage information, see references/double_edge_swap.md
+usage: networkx.algorithms.swap.double_edge_swap(nswap=<nswap_value>, max_tries=<max_tries_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/double_edge_swap.md
 
 **Is tournament:**
-Returns True if and only if `G` is a tournament.
-for usage information, see references/is_tournament.md
+usage: networkx.algorithms.tournament.is_tournament(G=<G_variable>)
+for detailed information, see references/is_tournament.md
 
 **BFS labeled edges:**
-Iterate over edges in a breadth-first search (BFS) labeled by type.
-for usage information, see references/bfs_labeled_edges.md
+usage: networkx.algorithms.traversal.breadth_first_search.bfs_labeled_edges(G=<G_variable>)
+for detailed information, see references/bfs_labeled_edges.md
 
 **BFS layers:**
-Returns an iterator of all the layers in breadth-first search traversal.
-for usage information, see references/bfs_layers.md
+usage: networkx.algorithms.traversal.breadth_first_search.bfs_layers(G=<G_variable>)
+for detailed information, see references/bfs_layers.md
 
 **Descendants at distance:**
-Returns all nodes at a fixed `distance` from `source` in `G`.
-for usage information, see references/descendants_at_distance.md
+usage: networkx.algorithms.traversal.breadth_first_search.descendants_at_distance(G=<G_variable>)
+for detailed information, see references/descendants_at_distance.md
 
 **Edge BFS:**
-A directed, breadth-first-search of edges in `G`, beginning at `source`.
-for usage information, see references/edge_bfs.md
+usage: networkx.algorithms.traversal.edgebfs.edge_bfs(G=<G_variable>)
+for detailed information, see references/edge_bfs.md
 
 **Edge DFS:**
-A directed, depth-first-search of edges in `G`, beginning at `source`.
-for usage information, see references/edge_dfs.md
+usage: networkx.algorithms.traversal.edgedfs.edge_dfs(G=<G_variable>)
+for detailed information, see references/edge_dfs.md
 
 **Maximum branching:**
-Returns a maximum branching from G.
-for usage information, see references/maximum_branching.md
+usage: networkx.algorithms.tree.branchings.maximum_branching(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)
+for detailed information, see references/maximum_branching.md
 
 **Maximum spanning arborescence:**
-Returns a maximum spanning arborescence from G.
-for usage information, see references/maximum_spanning_arborescence.md
+usage: networkx.algorithms.tree.branchings.maximum_spanning_arborescence(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)
+for detailed information, see references/maximum_spanning_arborescence.md
 
 **Minimum branching:**
-Returns a minimum branching from G.
-for usage information, see references/minimum_branching.md
+usage: networkx.algorithms.tree.branchings.minimum_branching(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)
+for detailed information, see references/minimum_branching.md
 
 **Minimum spanning arborescence:**
-Returns a minimum spanning arborescence from G.
-for usage information, see references/minimum_spanning_arborescence.md
+usage: networkx.algorithms.tree.branchings.minimum_spanning_arborescence(attr=<attr_value>, default=<default_value>, preserve_attrs=<preserve_attrs_value>, partition=<partition_value>, G=<G_variable>)
+for detailed information, see references/minimum_spanning_arborescence.md
 
 **To Prüfer sequence:**
-Returns the Prüfer sequence of the given tree.
-for usage information, see references/to_prufer_sequence.md
+usage: networkx.algorithms.tree.coding.to_prufer_sequence(T=<T_variable>)
+for detailed information, see references/to_prufer_sequence.md
 
 **Junction tree:**
-Returns a junction tree of a given graph.
-for usage information, see references/junction_tree.md
+usage: networkx.algorithms.tree.decomposition.junction_tree(G=<G_variable>)
+for detailed information, see references/junction_tree.md
 
 **Maximum spanning edges:**
-Generate edges in a maximum spanning forest of an undirected
-for usage information, see references/maximum_spanning_edges.md
+usage: networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+for detailed information, see references/maximum_spanning_edges.md
 
 **Maximum spanning tree:**
-Returns a maximum spanning tree or forest on an undirected graph `G`.
-for usage information, see references/maximum_spanning_tree.md
+usage: networkx.algorithms.tree.mst.maximum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+for detailed information, see references/maximum_spanning_tree.md
 
 **Minimum spanning edges:**
-Generate edges in a minimum spanning forest of an undirected
-for usage information, see references/minimum_spanning_edges.md
+usage: networkx.algorithms.tree.mst.minimum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+for detailed information, see references/minimum_spanning_edges.md
 
 **Minimum spanning tree:**
-Returns a minimum spanning tree or forest on an undirected graph `G`.
-for usage information, see references/minimum_spanning_tree.md
+usage: networkx.algorithms.tree.mst.minimum_spanning_tree(weight=<weight_value>, algorithm=<algorithm_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+for detailed information, see references/minimum_spanning_tree.md
 
 **Partition spanning tree:**
-Find a spanning tree while respecting a partition of edges.
-for usage information, see references/partition_spanning_tree.md
+usage: networkx.algorithms.tree.mst.partition_spanning_tree(minimum=<minimum_value>, weight=<weight_value>, partition=<partition_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+for detailed information, see references/partition_spanning_tree.md
 
 **Random spanning tree:**
-Sample a random spanning tree using the edges weights of `G`.
-for usage information, see references/random_spanning_tree.md
+usage: networkx.algorithms.tree.mst.random_spanning_tree(weight=<weight_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/random_spanning_tree.md
 
 **Is arborescence:**
-Returns True if `G` is an arborescence.
-for usage information, see references/is_arborescence.md
+usage: networkx.algorithms.tree.recognition.is_arborescence(G=<G_variable>)
+for detailed information, see references/is_arborescence.md
 
 **Is branching:**
-Returns True if `G` is a branching.
-for usage information, see references/is_branching.md
+usage: networkx.algorithms.tree.recognition.is_branching(G=<G_variable>)
+for detailed information, see references/is_branching.md
 
 **Is forest:**
-Returns True if `G` is a forest.
-for usage information, see references/is_forest.md
+usage: networkx.algorithms.tree.recognition.is_forest(G=<G_variable>)
+for detailed information, see references/is_forest.md
 
 **Is tree:**
-Returns True if `G` is a tree.
-for usage information, see references/is_tree.md
+usage: networkx.algorithms.tree.recognition.is_tree(G=<G_variable>)
+for detailed information, see references/is_tree.md
 
 **All triads:**
-A generator of all possible triads in G.
-for usage information, see references/all_triads.md
+usage: networkx.algorithms.triads.all_triads(G=<G_variable>)
+for detailed information, see references/all_triads.md
 
 **Is triad:**
-Returns True if the graph G is a triad, else False.
-for usage information, see references/is_triad.md
+usage: networkx.algorithms.triads.is_triad(G=<G_variable>)
+for detailed information, see references/is_triad.md
 
 **Triad type:**
-Returns the sociological triad type for a triad.
-for usage information, see references/triad_type.md
+usage: networkx.algorithms.triads.triad_type(G=<G_variable>)
+for detailed information, see references/triad_type.md
 
 **Triads by type:**
-Returns a list of all triads for each triad type in a directed graph.
-for usage information, see references/triads_by_type.md
+usage: networkx.algorithms.triads.triads_by_type(G=<G_variable>)
+for detailed information, see references/triads_by_type.md
 
 **Number of walks:**
-Returns the number of walks connecting each pair of nodes in `G`
-for usage information, see references/number_of_walks.md
+usage: networkx.algorithms.walks.number_of_walks(walk_length=<walk_length_value>, G=<G_variable>)
+for detailed information, see references/number_of_walks.md
 
 **Gutman index:**
-Returns the Gutman Index for the graph `G`.
-for usage information, see references/gutman_index.md
+usage: networkx.algorithms.wiener.gutman_index(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/gutman_index.md
 
 **Hyper wiener index:**
-Returns the Hyper-Wiener index of the graph `G`.
-for usage information, see references/hyper_wiener_index.md
+usage: networkx.algorithms.wiener.hyper_wiener_index(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/hyper_wiener_index.md
 
 **Schultz index:**
-Returns the Schultz Index (of the first kind) of `G`
-for usage information, see references/schultz_index.md
+usage: networkx.algorithms.wiener.schultz_index(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/schultz_index.md
 
 **Wiener index:**
-Returns the Wiener index of the given graph.
-for usage information, see references/wiener_index.md
+usage: networkx.algorithms.wiener.wiener_index(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/wiener_index.md
 
 **Is empty:**
-Returns True if `G` has no edges.
-for usage information, see references/is_empty.md
+usage: networkx.classes.function.is_empty(G=<G_variable>)
+for detailed information, see references/is_empty.md
 
 **Is negatively weighted:**
-Returns True if `G` has negatively weighted edges.
-for usage information, see references/is_negatively_weighted.md
+usage: networkx.classes.function.is_negatively_weighted(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/is_negatively_weighted.md
 
 **Is weighted:**
-Returns True if `G` has weighted edges.
-for usage information, see references/is_weighted.md
+usage: networkx.classes.function.is_weighted(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/is_weighted.md
 
 **Set edge attributes:**
-Sets edge attributes from a given value or dictionary of values.
-for usage information, see references/set_edge_attributes.md
+usage: networkx.classes.function.set_edge_attributes(name=<name_value>, G=<G_variable>)
+for detailed information, see references/set_edge_attributes.md
 
 **Set node attributes:**
-Sets node attributes from a given value or dictionary of values.
-for usage information, see references/set_node_attributes.md
+usage: networkx.classes.function.set_node_attributes(name=<name_value>, G=<G_variable>)
+for detailed information, see references/set_node_attributes.md
 
 **From dict of dicts:**
-Returns a graph from a dictionary of dictionaries.
-for usage information, see references/from_dict_of_dicts.md
+usage: networkx.convert.from_dict_of_dicts(multigraph_input=<multigraph_input_value>)
+for detailed information, see references/from_dict_of_dicts.md
 
 **From dict of lists:**
-Returns a graph from a dictionary of lists.
-for usage information, see references/from_dict_of_lists.md
+usage: networkx.convert.from_dict_of_lists()
+for detailed information, see references/from_dict_of_lists.md
 
 **From edgelist:**
-Returns a graph from a list of edges.
-for usage information, see references/from_edgelist.md
+usage: networkx.convert.from_edgelist()
+for detailed information, see references/from_edgelist.md
 
 **From NumPy array:**
-Returns a graph from a 2D NumPy array.
-for usage information, see references/from_numpy_array.md
+usage: networkx.convert_matrix.from_numpy_array(parallel_edges=<parallel_edges_value>, edge_attr=<edge_attr_value>)
+for detailed information, see references/from_numpy_array.md
 
 **From Pandas adjacency:**
-Returns a graph from Pandas DataFrame.
-for usage information, see references/from_pandas_adjacency.md
+usage: networkx.convert_matrix.from_pandas_adjacency()
+for detailed information, see references/from_pandas_adjacency.md
 
 **From Pandas edgelist:**
-Returns a graph from Pandas DataFrame containing an edge list.
-for usage information, see references/from_pandas_edgelist.md
+usage: networkx.convert_matrix.from_pandas_edgelist()
+for detailed information, see references/from_pandas_edgelist.md
 
 **From SciPy sparse array:**
-Creates a new graph from an adjacency matrix given as a SciPy sparse
-for usage information, see references/from_scipy_sparse_array.md
+usage: networkx.convert_matrix.from_scipy_sparse_array(parallel_edges=<parallel_edges_value>, edge_attribute=<edge_attribute_value>)
+for detailed information, see references/from_scipy_sparse_array.md
 
 **To NumPy array:**
-Returns the graph adjacency matrix as a NumPy array.
-for usage information, see references/to_numpy_array.md
+usage: networkx.convert_matrix.to_numpy_array(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/to_numpy_array.md
 
 **To Pandas edgelist:**
-Returns the graph edge list as a Pandas DataFrame.
-for usage information, see references/to_pandas_edgelist.md
+usage: networkx.convert_matrix.to_pandas_edgelist(G=<G_variable>)
+for detailed information, see references/to_pandas_edgelist.md
 
 **To SciPy sparse array:**
-Returns the graph adjacency matrix as a SciPy sparse array.
-for usage information, see references/to_scipy_sparse_array.md
+usage: networkx.convert_matrix.to_scipy_sparse_array(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/to_scipy_sparse_array.md
 
 **ForceAtlas2 layout:**
-Position nodes using the ForceAtlas2 force-directed layout algorithm.
-for usage information, see references/forceatlas2_layout.md
+usage: networkx.drawing.layout.forceatlas2_layout(max_iter=<max_iter_value>, jitter_tolerance=<jitter_tolerance_value>, scaling_ratio=<scaling_ratio_value>, gravity=<gravity_value>, distributed_action=<distributed_action_value>, strong_gravity=<strong_gravity_value>, weight=<weight_value>, linlog=<linlog_value>, seed=<seed_value>, dim=<dim_value>, G=<G_variable>)
+for detailed information, see references/forceatlas2_layout.md
 
 **Graph atlas:**
-Returns graph number `i` from the Graph Atlas.
-for usage information, see references/graph_atlas.md
+usage: networkx.generators.atlas.graph_atlas(i=<i_value>)
+for detailed information, see references/graph_atlas.md
 
 **Graph atlas g:**
-Returns the list of all graphs with up to seven nodes named in the
-for usage information, see references/graph_atlas_g.md
+usage: networkx.generators.atlas.graph_atlas_g()
+for detailed information, see references/graph_atlas_g.md
 
 **Balanced tree:**
-Returns the perfectly balanced `r`-ary tree of height `h`.
-for usage information, see references/balanced_tree.md
+usage: networkx.generators.classic.balanced_tree(r=<r_value>, h=<h_value>)
+for detailed information, see references/balanced_tree.md
 
 **Barbell graph:**
-Returns the Barbell Graph: two complete graphs connected by a path.
-for usage information, see references/barbell_graph.md
+usage: networkx.generators.classic.barbell_graph(m1=<m1_value>, m2=<m2_value>)
+for detailed information, see references/barbell_graph.md
 
 **Binomial tree:**
-Returns the Binomial Tree of order n.
-for usage information, see references/binomial_tree.md
+usage: networkx.generators.classic.binomial_tree(n=<n_value>)
+for detailed information, see references/binomial_tree.md
 
 **Circulant graph:**
-Returns the circulant graph $Ci_n(x_1, x_2, ..., x_m)$ with $n$ nodes.
-for usage information, see references/circulant_graph.md
+usage: networkx.generators.classic.circulant_graph(n=<n_value>)
+for detailed information, see references/circulant_graph.md
 
 **Circular ladder graph:**
-Returns the circular ladder graph $CL_n$ of length n.
-for usage information, see references/circular_ladder_graph.md
+usage: networkx.generators.classic.circular_ladder_graph(n=<n_value>)
+for detailed information, see references/circular_ladder_graph.md
 
 **Complete graph:**
-Return the complete graph `K_n` with n nodes.
-for usage information, see references/complete_graph.md
+usage: networkx.generators.classic.complete_graph()
+for detailed information, see references/complete_graph.md
 
 **Complete multipartite graph:**
-Returns the complete multipartite graph with the specified subset sizes.
-for usage information, see references/complete_multipartite_graph.md
+usage: networkx.generators.classic.complete_multipartite_graph()
+for detailed information, see references/complete_multipartite_graph.md
 
 **Cycle graph:**
-Returns the cycle graph $C_n$ of cyclically connected nodes.
-for usage information, see references/cycle_graph.md
+usage: networkx.generators.classic.cycle_graph()
+for detailed information, see references/cycle_graph.md
 
 **Dorogovtsev–Goltsev–Mendes graph:**
-Returns the hierarchically constructed Dorogovtsev--Goltsev--Mendes graph.
-for usage information, see references/dorogovtsev_goltsev_mendes_graph.md
+usage: networkx.generators.classic.dorogovtsev_goltsev_mendes_graph(n=<n_value>)
+for detailed information, see references/dorogovtsev_goltsev_mendes_graph.md
 
 **Empty graph:**
-Returns the empty graph with n nodes and zero edges.
-for usage information, see references/empty_graph.md
+usage: networkx.generators.classic.empty_graph()
+for detailed information, see references/empty_graph.md
 
 **Full r-ary tree:**
-Creates a full r-ary tree of `n` nodes.
-for usage information, see references/full_rary_tree.md
+usage: networkx.generators.classic.full_rary_tree(r=<r_value>, n=<n_value>)
+for detailed information, see references/full_rary_tree.md
 
 **Kneser graph:**
-Returns the Kneser Graph with parameters `n` and `k`.
-for usage information, see references/kneser_graph.md
+usage: networkx.generators.classic.kneser_graph(n=<n_value>, k=<k_value>)
+for detailed information, see references/kneser_graph.md
 
 **Ladder graph:**
-Returns the Ladder graph of length n.
-for usage information, see references/ladder_graph.md
+usage: networkx.generators.classic.ladder_graph(n=<n_value>)
+for detailed information, see references/ladder_graph.md
 
 **Lollipop graph:**
-Returns the Lollipop Graph; ``K_m`` connected to ``P_n``.
-for usage information, see references/lollipop_graph.md
+usage: networkx.generators.classic.lollipop_graph()
+for detailed information, see references/lollipop_graph.md
 
 **Null graph:**
-Returns the Null graph with no nodes or edges.
-for usage information, see references/null_graph.md
+usage: networkx.generators.classic.null_graph()
+for detailed information, see references/null_graph.md
 
 **Path graph:**
-Returns the Path graph `P_n` of linearly connected nodes.
-for usage information, see references/path_graph.md
+usage: networkx.generators.classic.path_graph()
+for detailed information, see references/path_graph.md
 
 **Star graph:**
-Return a star graph.
-for usage information, see references/star_graph.md
+usage: networkx.generators.classic.star_graph()
+for detailed information, see references/star_graph.md
 
 **Tadpole graph:**
-Returns the (m,n)-tadpole graph; ``C_m`` connected to ``P_n``.
-for usage information, see references/tadpole_graph.md
+usage: networkx.generators.classic.tadpole_graph()
+for detailed information, see references/tadpole_graph.md
 
 **Trivial graph:**
-Return the Trivial graph with one node (with label 0) and no edges.
-for usage information, see references/trivial_graph.md
+usage: networkx.generators.classic.trivial_graph()
+for detailed information, see references/trivial_graph.md
 
 **Turan graph:**
-Return the Turan Graph
-for usage information, see references/turan_graph.md
+usage: networkx.generators.classic.turan_graph(n=<n_value>, r=<r_value>)
+for detailed information, see references/turan_graph.md
 
 **Wheel graph:**
-Return the wheel graph
-for usage information, see references/wheel_graph.md
+usage: networkx.generators.classic.wheel_graph()
+for detailed information, see references/wheel_graph.md
 
 **Random cograph:**
-Returns a random cograph with $2 ^ n$ nodes.
-for usage information, see references/random_cograph.md
+usage: networkx.generators.cographs.random_cograph(n=<n_value>, seed=<seed_value>)
+for detailed information, see references/random_cograph.md
 
 **Caveman graph:**
-Returns a caveman graph of `l` cliques of size `k`.
-for usage information, see references/caveman_graph.md
+usage: networkx.generators.community.caveman_graph(l=<l_value>, k=<k_value>)
+for detailed information, see references/caveman_graph.md
 
 **Connected caveman graph:**
-Returns a connected caveman graph of `l` cliques of size `k`.
-for usage information, see references/connected_caveman_graph.md
+usage: networkx.generators.community.connected_caveman_graph(l=<l_value>, k=<k_value>)
+for detailed information, see references/connected_caveman_graph.md
 
 **Gaussian random partition graph:**
-Generate a Gaussian random partition graph.
-for usage information, see references/gaussian_random_partition_graph.md
+usage: networkx.generators.community.gaussian_random_partition_graph(n=<n_value>, s=<s_value>, v=<v_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+for detailed information, see references/gaussian_random_partition_graph.md
 
 **LFR benchmark graph:**
-Returns the LFR benchmark graph.
-for usage information, see references/LFR_benchmark_graph.md
+usage: networkx.generators.community.LFR_benchmark_graph(n=<n_value>, tau1=<tau1_value>, tau2=<tau2_value>, mu=<mu_value>, average_degree=<average_degree_value>, min_degree=<min_degree_value>, max_degree=<max_degree_value>, min_community=<min_community_value>, max_community=<max_community_value>, tol=<tol_value>, max_iters=<max_iters_value>, seed=<seed_value>)
+for detailed information, see references/LFR_benchmark_graph.md
 
 **Planted partition graph:**
-Returns the planted l-partition graph.
-for usage information, see references/planted_partition_graph.md
+usage: networkx.generators.community.planted_partition_graph(l=<l_value>, k=<k_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+for detailed information, see references/planted_partition_graph.md
 
 **Random partition graph:**
-Returns the random partition graph with a partition of sizes.
-for usage information, see references/random_partition_graph.md
+usage: networkx.generators.community.random_partition_graph(p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+for detailed information, see references/random_partition_graph.md
 
 **Relaxed caveman graph:**
-Returns a relaxed caveman graph.
-for usage information, see references/relaxed_caveman_graph.md
+usage: networkx.generators.community.relaxed_caveman_graph(l=<l_value>, k=<k_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/relaxed_caveman_graph.md
 
 **Ring of cliques:**
-Defines a "ring of cliques" graph.
-for usage information, see references/ring_of_cliques.md
+usage: networkx.generators.community.ring_of_cliques(num_cliques=<num_cliques_value>, clique_size=<clique_size_value>)
+for detailed information, see references/ring_of_cliques.md
 
 **Stochastic block model:**
-Returns a stochastic block model graph.
-for usage information, see references/stochastic_block_model.md
+usage: networkx.generators.community.stochastic_block_model(seed=<seed_value>)
+for detailed information, see references/stochastic_block_model.md
 
 **Windmill graph:**
-Generate a windmill graph.
-for usage information, see references/windmill_graph.md
+usage: networkx.generators.community.windmill_graph(n=<n_value>, k=<k_value>)
+for detailed information, see references/windmill_graph.md
 
 **Configuration model:**
-Returns a random graph with the given degree sequence.
-for usage information, see references/configuration_model.md
+usage: networkx.generators.degree_seq.configuration_model(seed=<seed_value>)
+for detailed information, see references/configuration_model.md
 
 **Directed configuration model:**
-Returns a directed_random graph with the given degree sequences.
-for usage information, see references/directed_configuration_model.md
+usage: networkx.generators.degree_seq.directed_configuration_model(seed=<seed_value>)
+for detailed information, see references/directed_configuration_model.md
 
 **Directed Havel–Hakimi graph:**
-Returns a directed graph with the given degree sequences.
-for usage information, see references/directed_havel_hakimi_graph.md
+usage: networkx.generators.degree_seq.directed_havel_hakimi_graph()
+for detailed information, see references/directed_havel_hakimi_graph.md
 
 **Havel–Hakimi graph:**
-Returns a simple graph with given degree sequence constructed
-for usage information, see references/havel_hakimi_graph.md
+usage: networkx.generators.degree_seq.havel_hakimi_graph()
+for detailed information, see references/havel_hakimi_graph.md
 
 **Random degree sequence graph:**
-Returns a simple random graph with the given degree sequence.
-for usage information, see references/random_degree_sequence_graph.md
+usage: networkx.generators.degree_seq.random_degree_sequence_graph(seed=<seed_value>, tries=<tries_value>)
+for detailed information, see references/random_degree_sequence_graph.md
 
 **G(n,c) graph:**
-Returns the growing network with copying (GNC) digraph with `n` nodes.
-for usage information, see references/gnc_graph.md
+usage: networkx.generators.directed.gnc_graph(n=<n_value>, seed=<seed_value>)
+for detailed information, see references/gnc_graph.md
 
 **G(n,r) graph:**
-Returns the growing network with redirection (GNR) digraph with `n`
-for usage information, see references/gnr_graph.md
+usage: networkx.generators.directed.gnr_graph(n=<n_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/gnr_graph.md
 
 **Random k-out graph:**
-Returns a random `k`-out graph with preferential attachment.
-for usage information, see references/random_k_out_graph.md
+usage: networkx.generators.directed.random_k_out_graph(n=<n_value>, k=<k_value>, alpha=<alpha_value>, self_loops=<self_loops_value>, seed=<seed_value>)
+for detailed information, see references/random_k_out_graph.md
 
 **Scale-free graph:**
-Returns a scale-free directed graph.
-for usage information, see references/scale_free_graph.md
+usage: networkx.generators.directed.scale_free_graph(n=<n_value>, alpha=<alpha_value>, beta=<beta_value>, gamma=<gamma_value>, delta_in=<delta_in_value>, delta_out=<delta_out_value>, seed=<seed_value>)
+for detailed information, see references/scale_free_graph.md
 
 **Duplication divergence graph:**
-Returns an undirected graph using the duplication-divergence model.
-for usage information, see references/duplication_divergence_graph.md
+usage: networkx.generators.duplication.duplication_divergence_graph(n=<n_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/duplication_divergence_graph.md
 
 **Partial duplication graph:**
-Returns a random graph using the partial duplication model.
-for usage information, see references/partial_duplication_graph.md
+usage: networkx.generators.duplication.partial_duplication_graph(N=<N_value>, n=<n_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)
+for detailed information, see references/partial_duplication_graph.md
 
 **Chordal cycle graph:**
-Returns the chordal cycle graph on `p` nodes.
-for usage information, see references/chordal_cycle_graph.md
+usage: networkx.generators.expanders.chordal_cycle_graph()
+for detailed information, see references/chordal_cycle_graph.md
 
 **Is regular expander:**
-Determines whether the graph G is a regular expander. [1]_
-for usage information, see references/is_regular_expander.md
+usage: networkx.generators.expanders.is_regular_expander(G=<G_variable>)
+for detailed information, see references/is_regular_expander.md
 
 **Margulis–Gabber–Galil graph:**
-Returns the Margulis-Gabber-Galil undirected MultiGraph on `n^2` nodes.
-for usage information, see references/margulis_gabber_galil_graph.md
+usage: networkx.generators.expanders.margulis_gabber_galil_graph(n=<n_value>)
+for detailed information, see references/margulis_gabber_galil_graph.md
 
 **Maybe regular expander graph:**
-Utility for creating a random regular expander.
-for usage information, see references/maybe_regular_expander_graph.md
+usage: networkx.generators.expanders.maybe_regular_expander_graph(n=<n_value>, d=<d_value>, max_tries=<max_tries_value>, seed=<seed_value>)
+for detailed information, see references/maybe_regular_expander_graph.md
 
 **Paley graph:**
-Returns the Paley $\frac{(p-1)}{2}$ -regular graph on $p$ nodes.
-for usage information, see references/paley_graph.md
+usage: networkx.generators.expanders.paley_graph()
+for detailed information, see references/paley_graph.md
 
 **Random regular expander graph:**
-Returns a random regular expander graph on $n$ nodes with degree $d$.
-for usage information, see references/random_regular_expander_graph.md
+usage: networkx.generators.expanders.random_regular_expander_graph(n=<n_value>, d=<d_value>, seed=<seed_value>)
+for detailed information, see references/random_regular_expander_graph.md
 
 **Geometric edges:**
-Returns edge list of node pairs within `radius` of each other.
-for usage information, see references/geometric_edges.md
+usage: networkx.generators.geometric.geometric_edges(radius=<radius_value>, G=<G_variable>)
+for detailed information, see references/geometric_edges.md
 
 **Navigable small-world graph:**
-Returns a navigable small-world graph.
-for usage information, see references/navigable_small_world_graph.md
+usage: networkx.generators.geometric.navigable_small_world_graph(n=<n_value>, p=<p_value>, q=<q_value>, r=<r_value>, dim=<dim_value>, seed=<seed_value>)
+for detailed information, see references/navigable_small_world_graph.md
 
 **Random geometric graph:**
-Returns a random geometric graph in the unit cube of dimensions `dim`.
-for usage information, see references/random_geometric_graph.md
+usage: networkx.generators.geometric.random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/random_geometric_graph.md
 
 **Soft random geometric graph:**
-Returns a soft random geometric graph in the unit cube.
-for usage information, see references/soft_random_geometric_graph.md
+usage: networkx.generators.geometric.soft_random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/soft_random_geometric_graph.md
 
 **Thresholded random geometric graph:**
-Returns a thresholded random geometric graph in the unit cube.
-for usage information, see references/thresholded_random_geometric_graph.md
+usage: networkx.generators.geometric.thresholded_random_geometric_graph(radius=<radius_value>, theta=<theta_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/thresholded_random_geometric_graph.md
 
 **H(k,n) Harary graph:**
-Return the Harary graph with given node connectivity and node number.
-for usage information, see references/hkn_harary_graph.md
+usage: networkx.generators.harary_graph.hkn_harary_graph(k=<k_value>, n=<n_value>)
+for detailed information, see references/hkn_harary_graph.md
 
 **H(n,m) Harary graph:**
-Return the Harary graph with given numbers of nodes and edges.
-for usage information, see references/hnm_harary_graph.md
+usage: networkx.generators.harary_graph.hnm_harary_graph(n=<n_value>, m=<m_value>)
+for detailed information, see references/hnm_harary_graph.md
 
 **Random Internet as graph:**
-Generates a random undirected graph resembling the Internet AS network
-for usage information, see references/random_internet_as_graph.md
+usage: networkx.generators.internet_as_graphs.random_internet_as_graph(seed=<seed_value>)
+for detailed information, see references/random_internet_as_graph.md
 
 **General random intersection graph:**
-Returns a random intersection graph with independent probabilities
-for usage information, see references/general_random_intersection_graph.md
+usage: networkx.generators.intersection.general_random_intersection_graph(n=<n_value>, m=<m_value>, seed=<seed_value>)
+for detailed information, see references/general_random_intersection_graph.md
 
 **K random intersection graph:**
-Returns a intersection graph with randomly chosen attribute sets for
-for usage information, see references/k_random_intersection_graph.md
+usage: networkx.generators.intersection.k_random_intersection_graph(n=<n_value>, m=<m_value>, k=<k_value>, seed=<seed_value>)
+for detailed information, see references/k_random_intersection_graph.md
 
 **Uniform random intersection graph:**
-Returns a uniform random intersection graph.
-for usage information, see references/uniform_random_intersection_graph.md
+usage: networkx.generators.intersection.uniform_random_intersection_graph(n=<n_value>, m=<m_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/uniform_random_intersection_graph.md
 
 **Interval graph:**
-Generates an interval graph for a list of intervals given.
-for usage information, see references/interval_graph.md
+usage: networkx.generators.interval_graph.interval_graph()
+for detailed information, see references/interval_graph.md
 
 **Is valid directed joint degree:**
-Checks whether the given directed joint degree input is realizable
-for usage information, see references/is_valid_directed_joint_degree.md
+usage: networkx.generators.joint_degree_seq.is_valid_directed_joint_degree()
+for detailed information, see references/is_valid_directed_joint_degree.md
 
 **Is valid joint degree:**
-Checks whether the given joint degree dictionary is realizable.
-for usage information, see references/is_valid_joint_degree.md
+usage: networkx.generators.joint_degree_seq.is_valid_joint_degree()
+for detailed information, see references/is_valid_joint_degree.md
 
 **Joint degree graph:**
-Generates a random simple graph with the given joint degree dictionary.
-for usage information, see references/joint_degree_graph.md
+usage: networkx.generators.joint_degree_seq.joint_degree_graph(seed=<seed_value>)
+for detailed information, see references/joint_degree_graph.md
 
 **Grid 2D graph:**
-Returns the two-dimensional grid graph.
-for usage information, see references/grid_2d_graph.md
+usage: networkx.generators.lattice.grid_2d_graph()
+for detailed information, see references/grid_2d_graph.md
 
 **Grid graph:**
-Returns the *n*-dimensional grid graph.
-for usage information, see references/grid_graph.md
+usage: networkx.generators.lattice.grid_graph()
+for detailed information, see references/grid_graph.md
 
 **Hexagonal lattice graph:**
-Returns an `m` by `n` hexagonal lattice graph.
-for usage information, see references/hexagonal_lattice_graph.md
+usage: networkx.generators.lattice.hexagonal_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)
+for detailed information, see references/hexagonal_lattice_graph.md
 
 **Hypercube graph:**
-Returns the *n*-dimensional hypercube graph.
-for usage information, see references/hypercube_graph.md
+usage: networkx.generators.lattice.hypercube_graph(n=<n_value>)
+for detailed information, see references/hypercube_graph.md
 
 **Triangular lattice graph:**
-Returns the $m$ by $n$ triangular lattice graph.
-for usage information, see references/triangular_lattice_graph.md
+usage: networkx.generators.lattice.triangular_lattice_graph(m=<m_value>, n=<n_value>, periodic=<periodic_value>, with_positions=<with_positions_value>)
+for detailed information, see references/triangular_lattice_graph.md
 
 **Inverse line graph:**
-Returns the inverse line graph of graph G.
-for usage information, see references/inverse_line_graph.md
+usage: networkx.generators.line.inverse_line_graph(G=<G_variable>)
+for detailed information, see references/inverse_line_graph.md
 
 **Line graph:**
-Returns the line graph of the graph or digraph `G`.
-for usage information, see references/line_graph.md
+usage: networkx.generators.line.line_graph(G=<G_variable>)
+for detailed information, see references/line_graph.md
 
 **Mycielski graph:**
-Generator for the n_th Mycielski Graph.
-for usage information, see references/mycielski_graph.md
+usage: networkx.generators.mycielski.mycielski_graph(n=<n_value>)
+for detailed information, see references/mycielski_graph.md
 
 **Mycielskian:**
-Returns the Mycielskian of a simple, undirected graph G
-for usage information, see references/mycielskian.md
+usage: networkx.generators.mycielski.mycielskian(iterations=<iterations_value>, G=<G_variable>)
+for detailed information, see references/mycielskian.md
 
 **Nonisomorphic trees:**
-Generate nonisomorphic trees of specified `order`.
-for usage information, see references/nonisomorphic_trees.md
+usage: networkx.generators.nonisomorphic_trees.nonisomorphic_trees(order=<order_value>)
+for detailed information, see references/nonisomorphic_trees.md
 
 **Number of nonisomorphic trees:**
-Returns the number of nonisomorphic trees of the specified `order`.
-for usage information, see references/number_of_nonisomorphic_trees.md
+usage: networkx.generators.nonisomorphic_trees.number_of_nonisomorphic_trees(order=<order_value>)
+for detailed information, see references/number_of_nonisomorphic_trees.md
 
 **Random clustered graph:**
-Generate a random graph with the given joint independent edge degree and
-for usage information, see references/random_clustered_graph.md
+usage: networkx.generators.random_clustered.random_clustered_graph(seed=<seed_value>)
+for detailed information, see references/random_clustered_graph.md
 
 **Barabasi–Albert graph:**
-Returns a random graph using Barabási–Albert preferential attachment
-for usage information, see references/barabasi_albert_graph.md
+usage: networkx.generators.random_graphs.barabasi_albert_graph(n=<n_value>, m=<m_value>, seed=<seed_value>)
+for detailed information, see references/barabasi_albert_graph.md
 
 **Binomial graph:**
-Returns a $G_{n,p}$ random graph, also known as an Erdős-Rényi graph
-for usage information, see references/gnp_random_graph.md
+usage: networkx.generators.random_graphs.gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)
+for detailed information, see references/gnp_random_graph.md
 
 **Connected Watts–Strogatz graph:**
-Returns a connected Watts–Strogatz small-world graph.
-for usage information, see references/connected_watts_strogatz_graph.md
+usage: networkx.generators.random_graphs.connected_watts_strogatz_graph(n=<n_value>, k=<k_value>, p=<p_value>, tries=<tries_value>, seed=<seed_value>)
+for detailed information, see references/connected_watts_strogatz_graph.md
 
 **Dense G(n,m) random graph:**
-Returns a $G_{n,m}$ random graph.
-for usage information, see references/dense_gnm_random_graph.md
+usage: networkx.generators.random_graphs.dense_gnm_random_graph(n=<n_value>, m=<m_value>, seed=<seed_value>)
+for detailed information, see references/dense_gnm_random_graph.md
 
 **Dual Barabasi–Albert graph:**
-Returns a random graph using dual Barabási–Albert preferential attachment
-for usage information, see references/dual_barabasi_albert_graph.md
+usage: networkx.generators.random_graphs.dual_barabasi_albert_graph(n=<n_value>, m1=<m1_value>, m2=<m2_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/dual_barabasi_albert_graph.md
 
 **Erdos–Renyi graph:**
-Returns a $G_{n,p}$ random graph, also known as an Erdős-Rényi graph
-for usage information, see references/gnp_random_graph.md
+usage: networkx.generators.random_graphs.gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)
+for detailed information, see references/gnp_random_graph.md
 
 **Extended Barabasi–Albert graph:**
-Returns an extended Barabási–Albert model graph.
-for usage information, see references/extended_barabasi_albert_graph.md
+usage: networkx.generators.random_graphs.extended_barabasi_albert_graph(n=<n_value>, m=<m_value>, p=<p_value>, q=<q_value>, seed=<seed_value>)
+for detailed information, see references/extended_barabasi_albert_graph.md
 
 **Fast G(n,p) random graph:**
-Returns a $G_{n,p}$ random graph, also known as an Erdős-Rényi graph or
-for usage information, see references/fast_gnp_random_graph.md
+usage: networkx.generators.random_graphs.fast_gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)
+for detailed information, see references/fast_gnp_random_graph.md
 
 **G(n,m) random graph:**
-Returns a $G_{n,m}$ random graph.
-for usage information, see references/gnm_random_graph.md
+usage: networkx.generators.random_graphs.gnm_random_graph(n=<n_value>, m=<m_value>, seed=<seed_value>, directed=<directed_value>)
+for detailed information, see references/gnm_random_graph.md
 
 **G(n,p) random graph:**
-Returns a $G_{n,p}$ random graph, also known as an Erdős-Rényi graph
-for usage information, see references/gnp_random_graph.md
+usage: networkx.generators.random_graphs.gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)
+for detailed information, see references/gnp_random_graph.md
 
 **Newman–Watts–Strogatz graph:**
-Returns a Newman–Watts–Strogatz small-world graph.
-for usage information, see references/newman_watts_strogatz_graph.md
+usage: networkx.generators.random_graphs.newman_watts_strogatz_graph(n=<n_value>, k=<k_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/newman_watts_strogatz_graph.md
 
 **Power-law cluster graph:**
-Holme and Kim algorithm for growing graphs with powerlaw
-for usage information, see references/powerlaw_cluster_graph.md
+usage: networkx.generators.random_graphs.powerlaw_cluster_graph(n=<n_value>, m=<m_value>, seed=<seed_value>)
+for detailed information, see references/powerlaw_cluster_graph.md
 
 **Random lobster graph:**
-Returns a random lobster graph.
-for usage information, see references/random_lobster_graph.md
+usage: networkx.generators.random_graphs.random_lobster_graph(n=<n_value>, p1=<p1_value>, p2=<p2_value>, seed=<seed_value>)
+for detailed information, see references/random_lobster_graph.md
 
 **Random power-law tree:**
-Returns a tree with a power law degree distribution.
-for usage information, see references/random_powerlaw_tree.md
+usage: networkx.generators.random_graphs.random_powerlaw_tree(n=<n_value>, gamma=<gamma_value>, seed=<seed_value>, tries=<tries_value>)
+for detailed information, see references/random_powerlaw_tree.md
 
 **Random power-law tree sequence:**
-Returns a degree sequence for a tree with a power law distribution.
-for usage information, see references/random_powerlaw_tree_sequence.md
+usage: networkx.generators.random_graphs.random_powerlaw_tree_sequence(gamma=<gamma_value>, seed=<seed_value>, tries=<tries_value>)
+for detailed information, see references/random_powerlaw_tree_sequence.md
 
 **Random regular graph:**
-Returns a random $d$-regular graph on $n$ nodes.
-for usage information, see references/random_regular_graph.md
+usage: networkx.generators.random_graphs.random_regular_graph(d=<d_value>, n=<n_value>, seed=<seed_value>)
+for detailed information, see references/random_regular_graph.md
 
 **Random shell graph:**
-Returns a random shell graph for the constructor given.
-for usage information, see references/random_shell_graph.md
+usage: networkx.generators.random_graphs.random_shell_graph(seed=<seed_value>)
+for detailed information, see references/random_shell_graph.md
 
 **Watts–Strogatz graph:**
-Returns a Watts–Strogatz small-world graph.
-for usage information, see references/watts_strogatz_graph.md
+usage: networkx.generators.random_graphs.watts_strogatz_graph(n=<n_value>, k=<k_value>, p=<p_value>, seed=<seed_value>)
+for detailed information, see references/watts_strogatz_graph.md
 
 **Bull graph:**
-Returns the Bull Graph
-for usage information, see references/bull_graph.md
+usage: networkx.generators.small.bull_graph()
+for detailed information, see references/bull_graph.md
 
 **Chvatal graph:**
-Returns the Chvátal Graph
-for usage information, see references/chvatal_graph.md
+usage: networkx.generators.small.chvatal_graph()
+for detailed information, see references/chvatal_graph.md
 
 **Cubical graph:**
-Returns the 3-regular Platonic Cubical Graph
-for usage information, see references/cubical_graph.md
+usage: networkx.generators.small.cubical_graph()
+for detailed information, see references/cubical_graph.md
 
 **Desargues graph:**
-Returns the Desargues Graph
-for usage information, see references/desargues_graph.md
+usage: networkx.generators.small.desargues_graph()
+for detailed information, see references/desargues_graph.md
 
 **Diamond graph:**
-Returns the Diamond graph
-for usage information, see references/diamond_graph.md
+usage: networkx.generators.small.diamond_graph()
+for detailed information, see references/diamond_graph.md
 
 **Dodecahedral graph:**
-Returns the Platonic Dodecahedral graph.
-for usage information, see references/dodecahedral_graph.md
+usage: networkx.generators.small.dodecahedral_graph()
+for detailed information, see references/dodecahedral_graph.md
 
 **Frucht graph:**
-Returns the Frucht Graph.
-for usage information, see references/frucht_graph.md
+usage: networkx.generators.small.frucht_graph()
+for detailed information, see references/frucht_graph.md
 
 **Generalized petersen graph:**
-Returns the Generalized Petersen Graph GP(n,k).
-for usage information, see references/generalized_petersen_graph.md
+usage: networkx.generators.small.generalized_petersen_graph(n=<n_value>, k=<k_value>)
+for detailed information, see references/generalized_petersen_graph.md
 
 **Heawood graph:**
-Returns the Heawood Graph, a (3,6) cage.
-for usage information, see references/heawood_graph.md
+usage: networkx.generators.small.heawood_graph()
+for detailed information, see references/heawood_graph.md
 
 **Hoffman singleton graph:**
-Returns the Hoffman-Singleton Graph.
-for usage information, see references/hoffman_singleton_graph.md
+usage: networkx.generators.small.hoffman_singleton_graph()
+for detailed information, see references/hoffman_singleton_graph.md
 
 **House graph:**
-Returns the House graph (square with triangle on top)
-for usage information, see references/house_graph.md
+usage: networkx.generators.small.house_graph()
+for detailed information, see references/house_graph.md
 
 **House x graph:**
-Returns the House graph with a cross inside the house square.
-for usage information, see references/house_x_graph.md
+usage: networkx.generators.small.house_x_graph()
+for detailed information, see references/house_x_graph.md
 
 **Icosahedral graph:**
-Returns the Platonic Icosahedral graph.
-for usage information, see references/icosahedral_graph.md
+usage: networkx.generators.small.icosahedral_graph()
+for detailed information, see references/icosahedral_graph.md
 
 **Krackhardt kite graph:**
-Returns the Krackhardt Kite Social Network.
-for usage information, see references/krackhardt_kite_graph.md
+usage: networkx.generators.small.krackhardt_kite_graph()
+for detailed information, see references/krackhardt_kite_graph.md
 
 **Moebius–Kantor graph:**
-Returns the Moebius-Kantor graph.
-for usage information, see references/moebius_kantor_graph.md
+usage: networkx.generators.small.moebius_kantor_graph()
+for detailed information, see references/moebius_kantor_graph.md
 
 **Octahedral graph:**
-Returns the Platonic Octahedral graph.
-for usage information, see references/octahedral_graph.md
+usage: networkx.generators.small.octahedral_graph()
+for detailed information, see references/octahedral_graph.md
 
 **Pappus graph:**
-Returns the Pappus graph.
-for usage information, see references/pappus_graph.md
+usage: networkx.generators.small.pappus_graph()
+for detailed information, see references/pappus_graph.md
 
 **Petersen graph:**
-Returns the Petersen Graph.
-for usage information, see references/petersen_graph.md
+usage: networkx.generators.small.petersen_graph()
+for detailed information, see references/petersen_graph.md
 
 **Sedgewick maze graph:**
-Return a small maze with a cycle.
-for usage information, see references/sedgewick_maze_graph.md
+usage: networkx.generators.small.sedgewick_maze_graph()
+for detailed information, see references/sedgewick_maze_graph.md
 
 **Tetrahedral graph:**
-Returns the 3-regular Platonic Tetrahedral graph.
-for usage information, see references/tetrahedral_graph.md
+usage: networkx.generators.small.tetrahedral_graph()
+for detailed information, see references/tetrahedral_graph.md
 
 **Truncated cube graph:**
-Returns the skeleton of the truncated cube.
-for usage information, see references/truncated_cube_graph.md
+usage: networkx.generators.small.truncated_cube_graph()
+for detailed information, see references/truncated_cube_graph.md
 
 **Truncated tetrahedron graph:**
-Returns the skeleton of the truncated Platonic tetrahedron.
-for usage information, see references/truncated_tetrahedron_graph.md
+usage: networkx.generators.small.truncated_tetrahedron_graph()
+for detailed information, see references/truncated_tetrahedron_graph.md
 
 **Tutte graph:**
-Returns the Tutte graph.
-for usage information, see references/tutte_graph.md
+usage: networkx.generators.small.tutte_graph()
+for detailed information, see references/tutte_graph.md
 
 **Davis Southern women graph:**
-Returns Davis Southern women social network.
-for usage information, see references/davis_southern_women_graph.md
+usage: networkx.generators.social.davis_southern_women_graph()
+for detailed information, see references/davis_southern_women_graph.md
 
 **Florentine families graph:**
-Returns Florentine families graph.
-for usage information, see references/florentine_families_graph.md
+usage: networkx.generators.social.florentine_families_graph()
+for detailed information, see references/florentine_families_graph.md
 
 **Karate club graph:**
-Returns Zachary's Karate Club graph.
-for usage information, see references/karate_club_graph.md
+usage: networkx.generators.social.karate_club_graph()
+for detailed information, see references/karate_club_graph.md
 
 **Les miserables graph:**
-Returns coappearance network of characters in the novel Les Miserables.
-for usage information, see references/les_miserables_graph.md
+usage: networkx.generators.social.les_miserables_graph()
+for detailed information, see references/les_miserables_graph.md
 
 **Spectral graph forge:**
-Returns a random simple graph with spectrum resembling that of `G`
-for usage information, see references/spectral_graph_forge.md
+usage: networkx.generators.spectral_graph_forge.spectral_graph_forge(alpha=<alpha_value>, transformation=<transformation_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/spectral_graph_forge.md
 
 **Stochastic graph:**
-Returns a right-stochastic representation of directed graph `G`.
-for usage information, see references/stochastic_graph.md
+usage: networkx.generators.stochastic.stochastic_graph(copy=<copy_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/stochastic_graph.md
 
 **Sudoku graph:**
-Returns the n-Sudoku graph. The default value of n is 3.
-for usage information, see references/sudoku_graph.md
+usage: networkx.generators.sudoku.sudoku_graph(n=<n_value>)
+for detailed information, see references/sudoku_graph.md
 
 **Visibility graph:**
-Return a Visibility Graph of an input Time Series.
-for usage information, see references/visibility_graph.md
+usage: networkx.generators.time_series.visibility_graph()
+for detailed information, see references/visibility_graph.md
 
 **Prefix tree:**
-Creates a directed prefix tree from a list of paths.
-for usage information, see references/prefix_tree.md
+usage: networkx.generators.trees.prefix_tree()
+for detailed information, see references/prefix_tree.md
 
 **Prefix tree recursive:**
-Recursively creates a directed prefix tree from a list of paths.
-for usage information, see references/prefix_tree_recursive.md
+usage: networkx.generators.trees.prefix_tree_recursive()
+for detailed information, see references/prefix_tree_recursive.md
 
 **Random labeled rooted forest:**
-Returns a labeled rooted forest with `n` nodes.
-for usage information, see references/random_labeled_rooted_forest.md
+usage: networkx.generators.trees.random_labeled_rooted_forest(n=<n_value>, seed=<seed_value>)
+for detailed information, see references/random_labeled_rooted_forest.md
 
 **Random labeled rooted tree:**
-Returns a labeled rooted tree with `n` nodes.
-for usage information, see references/random_labeled_rooted_tree.md
+usage: networkx.generators.trees.random_labeled_rooted_tree(n=<n_value>, seed=<seed_value>)
+for detailed information, see references/random_labeled_rooted_tree.md
 
 **Random labeled tree:**
-Returns a labeled tree on `n` nodes chosen uniformly at random.
-for usage information, see references/random_labeled_tree.md
+usage: networkx.generators.trees.random_labeled_tree(n=<n_value>, seed=<seed_value>)
+for detailed information, see references/random_labeled_tree.md
 
 **Random unlabeled rooted forest:**
-Returns a forest or list of forests selected at random.
-for usage information, see references/random_unlabeled_rooted_forest.md
+usage: networkx.generators.trees.random_unlabeled_rooted_forest(n=<n_value>, q=<q_value>, number_of_forests=<number_of_forests_value>, seed=<seed_value>)
+for detailed information, see references/random_unlabeled_rooted_forest.md
 
 **Random unlabeled rooted tree:**
-Returns a number of unlabeled rooted trees uniformly at random
-for usage information, see references/random_unlabeled_rooted_tree.md
+usage: networkx.generators.trees.random_unlabeled_rooted_tree(n=<n_value>, number_of_trees=<number_of_trees_value>, seed=<seed_value>)
+for detailed information, see references/random_unlabeled_rooted_tree.md
 
 **Random unlabeled tree:**
-Returns a tree or list of trees chosen randomly.
-for usage information, see references/random_unlabeled_tree.md
+usage: networkx.generators.trees.random_unlabeled_tree(n=<n_value>, number_of_trees=<number_of_trees_value>, seed=<seed_value>)
+for detailed information, see references/random_unlabeled_tree.md
 
 **Triad graph:**
-Returns the triad graph with the given name.
-for usage information, see references/triad_graph.md
+usage: networkx.generators.triads.triad_graph(triad_name=<triad_name_value>)
+for detailed information, see references/triad_graph.md
 
 **Algebraic connectivity:**
-Returns the algebraic connectivity of an undirected graph.
-for usage information, see references/algebraic_connectivity.md
+usage: networkx.linalg.algebraicconnectivity.algebraic_connectivity(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/algebraic_connectivity.md
 
 **Fiedler vector:**
-Returns the Fiedler vector of a connected undirected graph.
-for usage information, see references/fiedler_vector.md
+usage: networkx.linalg.algebraicconnectivity.fiedler_vector(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/fiedler_vector.md
 
 **Spectral bisection:**
-Bisect the graph using the Fiedler vector.
-for usage information, see references/spectral_bisection.md
+usage: networkx.linalg.algebraicconnectivity.spectral_bisection(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/spectral_bisection.md
 
 **Spectral ordering:**
-Compute the spectral_ordering of a graph.
-for usage information, see references/spectral_ordering.md
+usage: networkx.linalg.algebraicconnectivity.spectral_ordering(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)
+for detailed information, see references/spectral_ordering.md
 
 **Attr matrix:**
-Returns the attribute matrix using attributes from `G` as a numpy array.
-for usage information, see references/attr_matrix.md
+usage: networkx.linalg.attrmatrix.attr_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/attr_matrix.md
 
 **Attr sparse matrix:**
-Returns a SciPy sparse array using attributes from G.
-for usage information, see references/attr_sparse_matrix.md
+usage: networkx.linalg.attrmatrix.attr_sparse_matrix(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, normalized=<normalized_value>, G=<G_variable>)
+for detailed information, see references/attr_sparse_matrix.md
 
 **Bethe–Hessian matrix:**
-Returns the Bethe Hessian matrix of G.
-for usage information, see references/bethe_hessian_matrix.md
+usage: networkx.linalg.bethehessianmatrix.bethe_hessian_matrix(r=<r_value>, G=<G_variable>)
+for detailed information, see references/bethe_hessian_matrix.md
 
 **Adjacency matrix:**
-Returns adjacency matrix of `G`.
-for usage information, see references/adjacency_matrix.md
+usage: networkx.linalg.graphmatrix.adjacency_matrix(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/adjacency_matrix.md
 
 **Incidence matrix:**
-Returns incidence matrix of G.
-for usage information, see references/incidence_matrix.md
+usage: networkx.linalg.graphmatrix.incidence_matrix(oriented=<oriented_value>, weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/incidence_matrix.md
 
 **Directed combinatorial Laplacian matrix:**
-Return the directed combinatorial Laplacian matrix of G.
-for usage information, see references/directed_combinatorial_laplacian_matrix.md
+usage: networkx.linalg.laplacianmatrix.directed_combinatorial_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
+for detailed information, see references/directed_combinatorial_laplacian_matrix.md
 
 **Directed Laplacian matrix:**
-Returns the directed Laplacian matrix of G.
-for usage information, see references/directed_laplacian_matrix.md
+usage: networkx.linalg.laplacianmatrix.directed_laplacian_matrix(weight=<weight_value>, walk_type=<walk_type_value>, alpha=<alpha_value>, G=<G_variable>)
+for detailed information, see references/directed_laplacian_matrix.md
 
 **Laplacian matrix:**
-Returns the Laplacian matrix of G.
-for usage information, see references/laplacian_matrix.md
+usage: networkx.linalg.laplacianmatrix.laplacian_matrix(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/laplacian_matrix.md
 
 **Normalized Laplacian matrix:**
-Returns the normalized Laplacian matrix of G.
-for usage information, see references/normalized_laplacian_matrix.md
+usage: networkx.linalg.laplacianmatrix.normalized_laplacian_matrix(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/normalized_laplacian_matrix.md
 
 **Directed modularity matrix:**
-Returns the directed modularity matrix of G.
-for usage information, see references/directed_modularity_matrix.md
+usage: networkx.linalg.modularitymatrix.directed_modularity_matrix(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/directed_modularity_matrix.md
 
 **Modularity matrix:**
-Returns the modularity matrix of G.
-for usage information, see references/modularity_matrix.md
+usage: networkx.linalg.modularitymatrix.modularity_matrix(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/modularity_matrix.md
 
 **Adjacency spectrum:**
-Returns eigenvalues of the adjacency matrix of G.
-for usage information, see references/adjacency_spectrum.md
+usage: networkx.linalg.spectrum.adjacency_spectrum(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/adjacency_spectrum.md
 
 **Bethe–Hessian spectrum:**
-Returns eigenvalues of the Bethe Hessian matrix of G.
-for usage information, see references/bethe_hessian_spectrum.md
+usage: networkx.linalg.spectrum.bethe_hessian_spectrum(r=<r_value>, G=<G_variable>)
+for detailed information, see references/bethe_hessian_spectrum.md
 
 **Laplacian spectrum:**
-Returns eigenvalues of the Laplacian of G
-for usage information, see references/laplacian_spectrum.md
+usage: networkx.linalg.spectrum.laplacian_spectrum(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/laplacian_spectrum.md
 
 **Modularity spectrum:**
-Returns eigenvalues of the modularity matrix of G.
-for usage information, see references/modularity_spectrum.md
+usage: networkx.linalg.spectrum.modularity_spectrum(G=<G_variable>)
+for detailed information, see references/modularity_spectrum.md
 
 **Normalized Laplacian spectrum:**
-Return eigenvalues of the normalized Laplacian of G
-for usage information, see references/normalized_laplacian_spectrum.md
+usage: networkx.linalg.spectrum.normalized_laplacian_spectrum(weight=<weight_value>, G=<G_variable>)
+for detailed information, see references/normalized_laplacian_spectrum.md
 
 **Parse adjlist:**
-Parse lines of a graph adjacency list representation.
-for usage information, see references/parse_adjlist.md
+usage: networkx.readwrite.adjlist.parse_adjlist(comments=<comments_value>, delimiter=<delimiter_value>)
+for detailed information, see references/parse_adjlist.md
 
 **Parse edgelist:**
-Parse lines of an edge list representation of a graph.
-for usage information, see references/parse_edgelist.md
+usage: networkx.readwrite.edgelist.parse_edgelist(comments=<comments_value>, delimiter=<delimiter_value>)
+for detailed information, see references/parse_edgelist.md
 
 **Read edgelist:**
-Read a graph from a list of edges.
-for usage information, see references/read_edgelist.md
+usage: networkx.readwrite.edgelist.read_edgelist(comments=<comments_value>, delimiter=<delimiter_value>, encoding=<encoding_value>)
+for detailed information, see references/read_edgelist.md
 
 **Read weighted edgelist:**
-Read a graph as list of edges with numeric weights.
-for usage information, see references/read_weighted_edgelist.md
+usage: networkx.readwrite.edgelist.read_weighted_edgelist(comments=<comments_value>, delimiter=<delimiter_value>, encoding=<encoding_value>)
+for detailed information, see references/read_weighted_edgelist.md
 
 **Read gexf:**
-Read graph in GEXF format from path.
-for usage information, see references/read_gexf.md
+usage: networkx.readwrite.gexf.read_gexf(relabel=<relabel_value>, version=<version_value>)
+for detailed information, see references/read_gexf.md
 
 **Parse GML:**
-Parse GML graph from a string or iterable.
-for usage information, see references/parse_gml.md
+usage: networkx.readwrite.gml.parse_gml(label=<label_value>)
+for detailed information, see references/parse_gml.md
 
 **Read GML:**
-Read graph in GML format from `path`.
-for usage information, see references/read_gml.md
+usage: networkx.readwrite.gml.read_gml(label=<label_value>)
+for detailed information, see references/read_gml.md
 
 **From graph6 bytes:**
-Read a simple undirected graph in graph6 format from bytes.
-for usage information, see references/from_graph6_bytes.md
+usage: networkx.readwrite.graph6.from_graph6_bytes()
+for detailed information, see references/from_graph6_bytes.md
 
 **Read graph6:**
-Read simple undirected graphs in graph6 format from path.
-for usage information, see references/read_graph6.md
+usage: networkx.readwrite.graph6.read_graph6()
+for detailed information, see references/read_graph6.md
 
 **Parse GraphML:**
-Read graph in GraphML format from string.
-for usage information, see references/parse_graphml.md
+usage: networkx.readwrite.graphml.parse_graphml(graphml_string=<graphml_string_value>, force_multigraph=<force_multigraph_value>)
+for detailed information, see references/parse_graphml.md
 
 **Read GraphML:**
-Read graph in GraphML format from path.
-for usage information, see references/read_graphml.md
+usage: networkx.readwrite.graphml.read_graphml(force_multigraph=<force_multigraph_value>)
+for detailed information, see references/read_graphml.md
 
 **Parse LEDA:**
-Read graph in LEDA format from string or iterable.
-for usage information, see references/parse_leda.md
+usage: networkx.readwrite.leda.parse_leda()
+for detailed information, see references/parse_leda.md
 
 **Parse multiline adjlist:**
-Parse lines of a multiline adjacency list representation of a graph.
-for usage information, see references/parse_multiline_adjlist.md
+usage: networkx.readwrite.multiline_adjlist.parse_multiline_adjlist(comments=<comments_value>, delimiter=<delimiter_value>)
+for detailed information, see references/parse_multiline_adjlist.md
 
 **Parse Pajek:**
-Parse Pajek format graph from string or iterable.
-for usage information, see references/parse_pajek.md
+usage: networkx.readwrite.pajek.parse_pajek()
+for detailed information, see references/parse_pajek.md
 
 **From sparse6 bytes:**
-Read an undirected graph in sparse6 format from string.
-for usage information, see references/from_sparse6_bytes.md
+usage: networkx.readwrite.sparse6.from_sparse6_bytes(string=<string_value>)
+for detailed information, see references/from_sparse6_bytes.md
 
 **Read sparse6:**
-Read an undirected graph in sparse6 format from path.
-for usage information, see references/read_sparse6.md
+usage: networkx.readwrite.sparse6.read_sparse6()
+for detailed information, see references/read_sparse6.md
 
 **Convert node labels to integers:**
-Returns a copy of the graph G with the nodes relabeled using
-for usage information, see references/convert_node_labels_to_integers.md
+usage: networkx.relabel.convert_node_labels_to_integers(first_label=<first_label_value>, ordering=<ordering_value>, label_attribute=<label_attribute_value>, G=<G_variable>)
+for detailed information, see references/convert_node_labels_to_integers.md

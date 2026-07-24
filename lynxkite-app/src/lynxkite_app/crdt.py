@@ -15,6 +15,7 @@ import builtins
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
 from .crdt_update import crdt_update
+from . import progress_crdt
 
 try:
     import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
@@ -300,7 +301,14 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
             ws,
             ws_pyd.model_dump(),
             # We treat some fields as black boxes. They are not edited on the frontend.
-            non_collaborative_fields={"display", "input_metadata", "meta"},
+            non_collaborative_fields={
+                "display",
+                "input_metadata",
+                "meta",
+                "position",  # Edited, but we don't want to track x and y separately.
+                "output_metadata",
+                "telemetry",
+            },
         )
 
 
@@ -342,7 +350,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     raw = ws_crdt.to_py()
     ws_fingerprint = _workspace_fingerprint_from_dict(raw)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_changed(ws_websocket_server)
+        enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
     ws_pyd = workspace.Workspace.model_validate(raw)
     ws_pyd.save(pathlib.Path() / name)
     # Do not trigger execution for superficial changes.
@@ -381,6 +389,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     """
     if delay:
         await asyncio.sleep(delay)
+    progress_crdt.reset_run_timer(name)
     print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
@@ -429,11 +438,14 @@ async def lifespan(app):
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:
         async with code_websocket_server:
-            if enterprise_backend is not None:
-                async with enterprise_backend.lifespan_context(ws_websocket_server):
+            async with progress_crdt.lifespan_context(ws_websocket_server):
+                if enterprise_backend is not None:
+                    async with enterprise_backend.lifespan_context(
+                        ws_websocket_server, progress_crdt
+                    ):
+                        yield
+                else:
                     yield
-            else:
-                yield
     print("closing websocket server")
 
 
@@ -444,8 +456,7 @@ def delete_room(name: str):
     if name in state:
         state_entry = state.pop(name)
         state_entry.destroy()
-    if enterprise_backend is not None:
-        enterprise_backend.on_workspace_deleted(name)
+    progress_crdt.delete_workspace_entry(name)
 
 
 def sanitize_path(path):
@@ -462,14 +473,19 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
+    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_connection_open(room_name, ws_websocket_server)
+        enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
     server = pycrdt.websocket.ASGIServer(ws_websocket_server)
     try:
         await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
     finally:
+        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
         if enterprise_backend is not None:
-            enterprise_backend.on_workspace_connection_close(room_name, ws_websocket_server)
+            enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
+
+
+progress_crdt.register_routes(router, sanitize_path)
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")

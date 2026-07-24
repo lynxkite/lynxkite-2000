@@ -7,10 +7,7 @@ References
    The Stanford GraphBase: a platform for combinatorial computing,
    pp. 74-87. New York: AcM Press.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.social.les_miserables_graph()
+  output_variable = networkx.generators.social.les_miserables_graph()

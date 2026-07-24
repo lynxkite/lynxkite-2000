@@ -7,10 +7,7 @@ The star graph consists of one center node connected to `n` outer nodes.
 
     >>> nx.draw(nx.star_graph(6))
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.star_graph()
+  output_variable = networkx.generators.classic.star_graph()
