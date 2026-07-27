@@ -54,6 +54,7 @@ import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
 import NodeWithGradio from "./nodes/NodeWithGradio.tsx";
+import NodeWithGraphVisualization from "./nodes/NodeWithGraphVisualization.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
@@ -162,6 +163,7 @@ function LynxKiteFlow() {
     () => ({
       basic: NodeWithParams,
       visualization: NodeWithVisualization,
+      graph_visualization: NodeWithGraphVisualization,
       image: NodeWithImage,
       table_view: NodeWithTableView,
       service: NodeWithTableView,
