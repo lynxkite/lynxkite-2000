@@ -44,16 +44,29 @@ def authenticate_websocket(scope: dict[str, Any], room_path: str) -> bool:
     return False
 
 
-def _is_client_document_update(message: bytes) -> bool:
-    return (
-        len(message) >= 2
-        and message[0] == YMessageType.SYNC
-        and message[1] == YSyncMessageType.SYNC_UPDATE
-    )
+def _is_allowed_readonly_client_message(message: bytes) -> bool:
+    """Return whether a read-only client is allowed to send this message.
+
+    Yjs has no built-in read-only mode, so we filter the wire protocol as
+    described in y-protocols PROTOCOL.md section 6 and yjs#549. Read-only
+    clients may send SyncStep1 (a state vector) and Awareness updates.
+    SyncStep2 and Update both carry document changes and are dropped.
+    Each WebSocket frame is a single message; for type IDs 0 and 1 the
+    varUint encoding is one byte, so checking the first two bytes is enough.
+    Anything else is rejected.
+    """
+    if not message:
+        return False
+    msg_type = message[0]
+    if msg_type == YMessageType.AWARENESS:
+        return True
+    if msg_type == YMessageType.SYNC:
+        return len(message) >= 2 and message[1] == YSyncMessageType.SYNC_STEP1
+    return False
 
 
 class WriteFilteringChannel:
-    """Drop client-originated Yjs document updates when write access is denied."""
+    """Drop client messages that can mutate the Y.Doc when write access is denied."""
 
     def __init__(self, inner: Channel, *, can_write: bool):
         self._inner = inner
@@ -75,7 +88,7 @@ class WriteFilteringChannel:
     async def recv(self) -> bytes:
         while True:
             message = await self._inner.recv()
-            if self.can_write or not _is_client_document_update(message):
+            if self.can_write or _is_allowed_readonly_client_message(message):
                 return message
 
 
