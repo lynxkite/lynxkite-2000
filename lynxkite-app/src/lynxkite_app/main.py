@@ -14,6 +14,7 @@ import starlette.exceptions
 from lynxkite_core import ops
 from lynxkite_core import opcontext
 from lynxkite_core import workspace
+from lynxkite_core.folder_settings import SETTINGS_FILENAME
 from . import acl
 from . import auth
 from . import crdt
@@ -152,7 +153,7 @@ async def list_dir(path: str, request: fastapi.Request):
     auth_on = auth.is_auth_enabled()
     entries: list[DirectoryEntry] = []
     for p in dir_path.iterdir():
-        if p.name.startswith("."):
+        if p.name.startswith(".") or p.name == SETTINGS_FILENAME:
             continue
         rel = p.relative_to(data_path).as_posix()
         if auth_on and not acl.has_permission(user, "read", rel):
