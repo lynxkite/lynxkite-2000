@@ -114,6 +114,7 @@ function LynxKiteFlow() {
   const permissions = useFolderPermissions(path);
   const canWrite = permissions.write;
   const crdt = useCRDTWorkspace(path, canWrite);
+  const workspaceReady = Boolean(crdt?.ws) && !permissions.isLoading;
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
@@ -712,7 +713,7 @@ function LynxKiteFlow() {
           onDrop={canWrite ? onDrop : undefined}
           ref={reactFlowContainer}
         >
-          {crdt?.ws ? (
+          {workspaceReady ? (
             <LynxKiteState.Provider value={{ workspace: crdt.ws, iconized, canWrite }}>
               <ReactFlow
                 nodes={nodes}

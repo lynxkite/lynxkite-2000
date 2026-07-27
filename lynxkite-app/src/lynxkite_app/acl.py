@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 from lynxkite_core.folder_settings import resolve_flat_section
 
@@ -23,18 +23,23 @@ def resolve_folder(path: str | None) -> str:
     """Map a file or directory path to its containing folder for ACL lookup."""
     if not path:
         return ""
-    path = path.replace("\\", "/").strip("/")
-    if not path:
+    p = Path(path.replace("\\", "/").strip("/"))
+    if not p.parts:
         return ""
-    leaf = path.rsplit("/", 1)[-1]
-    if leaf.endswith(".lynxkite.json") or ("." in leaf and not leaf.endswith(".")):
-        if "/" in path:
-            return path.rsplit("/", 1)[0] + "/"
-        return ""
-    return path + "/"
+    if p.suffix:
+        parent = p.parent
+        if not parent.parts:
+            return ""
+        return parent.as_posix() + "/"
+    return p.as_posix() + "/"
 
 
-def user_principals(user: dict[str, Any]) -> set[str]:
+def user_principals(user: dict[str, str | list[str]]) -> set[str]:
+    """Build ACL principal IDs from JWT claims.
+
+    Returns ``sub:<subject>`` for the user ID and ``group:<name>`` for each group
+    claim. These match entries in ``settings.yaml`` ``acl.read`` / ``acl.write``.
+    """
     principals: set[str] = set()
     sub = user.get("sub")
     if sub:
@@ -51,17 +56,7 @@ def user_principals(user: dict[str, Any]) -> set[str]:
 def resolve_acl(path: str | None) -> dict[str, list[str]]:
     """Effective acl.read / acl.write lists from settings.yaml root→folder merge."""
     section = resolve_flat_section(_data_root, path or "", "acl")
-
-    def as_list(value: Any) -> list[str]:
-        if value is None:
-            return []
-        if isinstance(value, str):
-            return [value]
-        if isinstance(value, list):
-            return [str(item) for item in value]
-        return []
-
-    return {"read": as_list(section.get("read")), "write": as_list(section.get("write"))}
+    return {"read": section.get("read", []), "write": section.get("write", [])}
 
 
 def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
@@ -70,7 +65,7 @@ def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -
     return bool(principals & set(allowed))
 
 
-def has_permission(user: dict[str, Any], action: Action, path: str | None) -> bool:
+def has_permission(user: dict[str, str | list[str]], action: Action, path: str | None) -> bool:
     if action not in VALID_ACTIONS:
         raise ValueError(f"Invalid action {action!r}. Must be 'read' or 'write'.")
     grants = resolve_acl(resolve_folder(path))
@@ -84,7 +79,7 @@ def has_permission(user: dict[str, Any], action: Action, path: str | None) -> bo
     )
 
 
-def effective_permissions(user: dict[str, Any], path: str | None) -> dict[str, bool]:
+def effective_permissions(user: dict[str, str | list[str]], path: str | None) -> dict[str, bool]:
     return {
         "read": has_permission(user, "read", path),
         "write": has_permission(user, "write", path),

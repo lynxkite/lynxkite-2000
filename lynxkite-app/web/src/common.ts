@@ -248,19 +248,17 @@ export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
 export function useFolderPermissions(path: string | undefined) {
   const config = getConfig();
   const authOff = !config.authentication_issuer;
+  // Hooks must run unconditionally; null key tells SWR not to fetch.
   const key =
     authOff || path === undefined ? null : `/api/permissions?path=${encodeURIComponent(path)}`;
   const { data, error, isLoading } = useSWR(key, pathFetcher<FolderPermissions>, {
     revalidateOnFocus: false,
   });
-  if (authOff) {
-    return { read: true, write: true, isLoading: false, error: undefined };
-  }
   return {
-    read: data?.read ?? false,
-    write: data?.write ?? false,
-    isLoading: Boolean(key) && isLoading,
-    error,
+    read: authOff ? true : (data?.read ?? false),
+    write: authOff ? true : (data?.write ?? false),
+    isLoading: authOff ? false : Boolean(key) && isLoading,
+    error: authOff ? undefined : error,
   };
 }
 
