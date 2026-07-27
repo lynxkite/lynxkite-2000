@@ -6,27 +6,7 @@ def visualize_graph(b: core.Bundle):
     b = b.copy()
     (nodes, node_id), (edges_df, source_id, target_id) = _nodes_and_edges(b)
 
-    for cols in ["x y", "long lat"]:
-        x, y = cols.split()
-        if (
-            x in nodes.columns
-            and nodes[x].dtype == "float64"
-            and y in nodes.columns
-            and nodes[y].dtype == "float64"
-        ):
-            cx, cy = nodes[x].mean(), nodes[y].mean()
-            dx, dy = nodes[x].std(), nodes[y].std()
-            scale_x = 100 / max(dx, dy)
-            scale_y = -scale_x
-            pos = {
-                node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
-                for node_id, row in nodes.iterrows()
-            }
-            curveness = 0
-            break
-    else:
-        pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / len(nodes))))
-        curveness = 0.3
+    pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / len(nodes))))
 
     node_columns = [col for col in nodes.columns]
     edge_columns = [col for col in edges_df.columns]
@@ -43,7 +23,7 @@ def visualize_graph(b: core.Bundle):
                 "type": "graph",
                 "lineStyle": {
                     "color": "gray",
-                    "curveness": curveness,
+                    "curveness": 0.3,
                 },
                 "emphasis": {
                     "focus": "adjacency",
