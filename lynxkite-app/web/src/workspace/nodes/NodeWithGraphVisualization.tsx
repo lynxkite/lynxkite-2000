@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import * as echarts from "echarts";
+import type { ECharts } from "echarts";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDisplay } from "../../common.ts";
@@ -13,6 +13,8 @@ import {
 } from "./chips/Chips.tsx";
 import VisualChip from "./chips/VisualChip";
 import LynxKiteNode from "./LynxKiteNode.tsx";
+
+const echarts = await import("echarts");
 
 const USER_SELECT_NONE_STYLE: React.CSSProperties = {
   userSelect: "none",
@@ -73,7 +75,7 @@ function NodeWithGraphVisualization(props: any) {
   const reactFlow = useReactFlow();
   const echartsRef = useRef<HTMLDivElement>(null);
   const surfaceDivRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<echarts.ECharts | null>(null);
+  const chartRef = useRef<ECharts | null>(null);
   const viewOpts = useDisplay(props.data?.display_version, props.id);
 
   const [chips, setChips] = useState<BaseChip[]>(() => deserializeChips(props.data?.chips));

@@ -1,6 +1,6 @@
 // A system-wide progress page, that gives an overview of workspaces running, resources used, etc.
 
-import * as echarts from "echarts";
+import type { ECharts } from "echarts";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { WebsocketProvider } from "y-websocket";
@@ -16,6 +16,8 @@ import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
 import { parseProgressWorkspace } from "./progress";
+
+const echarts = await import("echarts");
 
 function timeLeft(ws: any): string {
   if (ws.eta_seconds == null) return "";
@@ -372,7 +374,7 @@ function GpuServices(props: {
 
 function UserUsageChart(props: { dailyUsage: number[]; gpuQuota: number }) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartInstance = useRef<echarts.ECharts>(null);
+  const chartInstance = useRef<ECharts>(null);
   useEffect(() => {
     if (!chartRef.current) return;
     chartInstance.current = echarts.init(chartRef.current, null, { renderer: "canvas" });
