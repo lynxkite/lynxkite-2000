@@ -39,6 +39,7 @@ function serializeChips(chips: BaseChip[]): ChipData[] {
 }
 
 function deserializeChips(chipDataList: ChipData[]): BaseChip[] {
+  if (!Array.isArray(chipDataList)) return [];
   return chipDataList.map((chipData) => {
     const ChipClass = getChipClass(chipData.type);
     return new ChipClass(chipData);

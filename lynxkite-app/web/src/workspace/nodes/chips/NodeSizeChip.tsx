@@ -11,7 +11,6 @@ export class NodeSizeChip extends BaseChip {
 
   constructor(data: ChipData) {
     super(data, "#e0f2fe", "#0369a1");
-    console.log(data.id);
     this.nodeSize = Number(data.symbolSize);
   }
 
