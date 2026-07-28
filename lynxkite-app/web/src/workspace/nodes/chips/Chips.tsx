@@ -3,6 +3,7 @@ import type { BaseChip, ChipClass } from "./ChipCore";
 import { EdgeColorChip } from "./EdgeColorChip";
 import { LabelChip } from "./LabelChip";
 import { NodeColorChip } from "./NodeColorChip";
+import { NodeSizeChip } from "./NodeSizeChip.tsx";
 import { PositionChip } from "./PositionChip";
 import { SliderChip } from "./SliderChip";
 
@@ -12,6 +13,7 @@ export const CHIP_REGISTRY: ChipClass[] = [
   PositionChip,
   LabelChip,
   SliderChip,
+  NodeSizeChip,
 ];
 
 export const CHIP_CLASS_BY_TYPE = new Map<string, ChipClass>([

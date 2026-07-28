@@ -24,9 +24,9 @@ export interface ChipClass {
   new (data: ChipData): BaseChip;
   type: string;
   displayName: string;
-  target: string;
   formFields: FormFieldConfig[];
   getInitialData(attribute: string, rawItems: any[], previousData?: ChipData): ChipData;
+  target?: string;
   initFormData?: (formData: ChipData) => ChipData;
   getFormFieldLabel?: (field: FormFieldConfig, formData: ChipData) => string | undefined;
   renderFormExtra?: (context: ChipFormRenderContext) => React.ReactNode;
