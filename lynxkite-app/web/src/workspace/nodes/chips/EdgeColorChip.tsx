@@ -1,9 +1,9 @@
+// A chip for coloring graph edges based on the value of an attribute using continuous or categorical palettes.
 import {
   ATTRIBUTE_FIELD,
   type ChipApplyContext,
   ColorMap,
   type FormFieldConfig,
-  hasValue,
   ToggleChip,
 } from "./ChipCore";
 
@@ -38,7 +38,7 @@ export class EdgeColorChip extends ToggleChip {
     const colormap = new ColorMap(context.series?.links, this.attribute);
     context.series?.links?.forEach((edge: any) => {
       const value = edge.attributes?.[this.attribute];
-      if (hasValue(value)) {
+      if (value) {
         edge.lineStyle = {
           ...edge.lineStyle,
           color: this.continuous ? colormap.getContinuous(edge) : colormap.getCategories(edge),

@@ -1,8 +1,8 @@
+// A chip for labeling graph nodes with the value of an attribute.
 import {
   ATTRIBUTE_FIELD,
   type ChipApplyContext,
   type FormFieldConfig,
-  hasValue,
   SingleAttributeChip,
 } from "./ChipCore";
 
@@ -25,11 +25,10 @@ export class LabelChip extends SingleAttributeChip {
     if (!this.attribute) return;
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
-      const show = hasValue(value);
       node.label = {
         ...node.label,
-        show,
-        formatter: show ? String(value) : "",
+        show: true,
+        formatter: String(value),
         position: "top",
       };
     });

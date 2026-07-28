@@ -1,8 +1,14 @@
 **Visualize graph:**
-
+Visualizes the graph using ECharts and allows the user to customize the visualization through "chips".
 ```python
 @op("Visualize graph", view="graph_visualization", icon="eye", color="blue")
 def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
+    """
+    Visualizes the graph using ECharts and allows the user to customize the visualization through "chips".
+    :param b: the bundle
+    :param chip_data: the frontend uses this parameter to store relevant data of the chips
+    """
+
     b = b.copy()
     (nodes, node_id), (edges_df, source_id, target_id) = _nodes_and_edges(b)
 

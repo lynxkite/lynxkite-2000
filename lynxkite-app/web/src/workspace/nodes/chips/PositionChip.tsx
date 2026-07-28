@@ -1,3 +1,4 @@
+// A chip that allows using attributes as coordinates on either a map or a 2D Cartesian layout.
 import L from "leaflet";
 import type React from "react";
 import "leaflet/dist/leaflet.css";
@@ -124,7 +125,7 @@ export class PositionChip extends BaseChip {
       if (!point) return;
       points.push(point);
 
-      const labelText = node.label?.show ? String(node.label?.formatter ?? node.name ?? "") : "";
+      const labelText = node.label?.formatter;
 
       const circle = L.circleMarker(point, {
         radius: 7,

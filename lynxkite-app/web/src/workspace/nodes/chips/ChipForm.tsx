@@ -1,6 +1,8 @@
+// responsible for the appearance of the chip edition
 import type React from "react";
 import { useEffect, useState } from "react";
-import { type BaseChip, CHIP_REGISTRY, getChipClass, normalizeChipType } from "./Chips.tsx";
+import type { BaseChip } from "./ChipCore.tsx";
+import { CHIP_REGISTRY, getChipClass, normalizeChipType } from "./Chips.tsx";
 
 interface ChipFormProps {
   nodeAttrs: string[];

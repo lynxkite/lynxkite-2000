@@ -1,3 +1,4 @@
+// Abstract chip classes and interfaces
 import type React from "react";
 
 export interface FormFieldConfig {
@@ -32,10 +33,6 @@ export interface ChipClass {
 }
 
 export const ATTRIBUTE_FIELD: FormFieldConfig[] = [{ key: "attribute" }];
-
-export function hasValue(value: unknown): boolean {
-  return value !== undefined && value !== null && value !== "";
-}
 
 export function getBounds(items: any[], attribute: string): { min: number; max: number } {
   let min = Infinity;

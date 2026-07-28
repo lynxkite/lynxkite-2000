@@ -1,3 +1,4 @@
+// A chip that filters graph nodes based on a min/max attribute range slider.
 import type React from "react";
 import {
   BaseChip,

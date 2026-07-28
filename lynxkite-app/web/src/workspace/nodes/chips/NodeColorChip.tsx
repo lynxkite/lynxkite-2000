@@ -1,9 +1,9 @@
+// A chip for colors graph nodes based on the value of an attribute using continuous or categorical palettes.
 import {
   ATTRIBUTE_FIELD,
   type ChipApplyContext,
   ColorMap,
   type FormFieldConfig,
-  hasValue,
   ToggleChip,
 } from "./ChipCore";
 
@@ -37,7 +37,7 @@ export class NodeColorChip extends ToggleChip {
     const colormap = new ColorMap(context.series?.data, this.attribute);
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
-      if (hasValue(value)) {
+      if (value) {
         node.itemStyle = {
           ...node.itemStyle,
           color: this.continuous ? colormap.getContinuous(node) : colormap.getCategories(node),

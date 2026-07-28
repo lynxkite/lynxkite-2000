@@ -1,16 +1,12 @@
+// graph visualizations with custom chip-based controls
 import { useReactFlow } from "@xyflow/react";
 import type { ECharts } from "echarts";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDisplay } from "../../common.ts";
-import type { ChipData } from "./chips/ChipCore";
+import type { BaseChip, ChipApplyContext, ChipData } from "./chips/ChipCore";
 import ChipForm from "./chips/ChipForm";
-import {
-  type BaseChip,
-  type ChipApplyContext,
-  getActiveRenderer,
-  getChipClass,
-} from "./chips/Chips.tsx";
+import { getActiveRenderer, getChipClass } from "./chips/Chips.tsx";
 import VisualChip from "./chips/VisualChip";
 import LynxKiteNode from "./LynxKiteNode.tsx";
 

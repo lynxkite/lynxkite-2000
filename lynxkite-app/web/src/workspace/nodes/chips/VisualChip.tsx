@@ -1,6 +1,6 @@
-import type React from "react";
+// responsible for the appearance of the chips
 import { useState } from "react";
-import type { BaseChip } from "./Chips.tsx";
+import type { BaseChip } from "./ChipCore.tsx";
 
 interface VisualChipProps {
   chip: BaseChip;

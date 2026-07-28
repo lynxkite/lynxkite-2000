@@ -1,16 +1,4 @@
-export type {
-  ChipApplyContext,
-  ChipData,
-  ChipFormRenderContext,
-  FormFieldConfig,
-} from "./ChipCore";
-export { BaseChip, type ChipClass } from "./ChipCore";
-export { EdgeColorChip } from "./EdgeColorChip";
-export { LabelChip } from "./LabelChip";
-export { NodeColorChip } from "./NodeColorChip";
-export { PositionChip } from "./PositionChip";
-export { SliderChip } from "./SliderChip";
-
+// Central chip registry, and helper functions
 import type { BaseChip, ChipClass } from "./ChipCore";
 import { EdgeColorChip } from "./EdgeColorChip";
 import { LabelChip } from "./LabelChip";
