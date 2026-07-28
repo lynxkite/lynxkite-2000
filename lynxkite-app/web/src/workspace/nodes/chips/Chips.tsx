@@ -1,6 +1,7 @@
 // Central chip registry, and helper functions
 import type { BaseChip, ChipClass } from "./ChipCore";
 import { EdgeColorChip } from "./EdgeColorChip";
+import { EdgeWidthChip } from "./EdgeWidthChip.tsx";
 import { LabelChip } from "./LabelChip";
 import { NodeColorChip } from "./NodeColorChip";
 import { NodeSizeChip } from "./NodeSizeChip.tsx";
@@ -14,6 +15,7 @@ export const CHIP_REGISTRY: ChipClass[] = [
   LabelChip,
   SliderChip,
   NodeSizeChip,
+  EdgeWidthChip,
 ];
 
 export const CHIP_CLASS_BY_TYPE = new Map<string, ChipClass>([
