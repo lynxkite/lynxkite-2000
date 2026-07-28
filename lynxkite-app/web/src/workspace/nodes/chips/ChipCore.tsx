@@ -20,7 +20,7 @@ export interface ChipApplyContext {
 export type ChipData = Record<string, string>;
 
 export interface ChipClass {
-  new (data: ChipData, disabled?: boolean): BaseChip;
+  new (data: ChipData): BaseChip;
   type: string;
   displayName: string;
   target: string;
@@ -87,8 +87,8 @@ export abstract class BaseChip {
 
   static formFields: FormFieldConfig[];
 
-  constructor(_data: ChipData, disabled = false, bg: string, text: string) {
-    this.disabled = disabled;
+  constructor(data: ChipData, bg: string, text: string) {
+    this.disabled = data.disabled === "true";
     this.bg = bg;
     this.text = text;
   }
@@ -124,8 +124,8 @@ export abstract class BaseChip {
 export abstract class SingleAttributeChip extends BaseChip {
   attribute: string;
 
-  constructor(data: ChipData, disabled: boolean | undefined, bg: string, text: string) {
-    super(data, disabled, bg, text);
+  constructor(data: ChipData, bg: string, text: string) {
+    super(data, bg, text);
     this.attribute = data.attribute || "";
   }
 
@@ -145,9 +145,9 @@ export abstract class SingleAttributeChip extends BaseChip {
 export abstract class ToggleChip extends BaseChip {
   attribute: string;
 
-  constructor(data: ChipData, disabled: boolean | undefined, bg: string, text: string) {
-    super(data, disabled, bg, text);
-    this.attribute = data.attribute || "";
+  constructor(data: ChipData, bg: string, text: string) {
+    super(data, bg, text);
+    this.attribute = data.attribute;
   }
 
   static getInitialData(attribute: string, _rawItems: any[], _previousData?: ChipData): ChipData {

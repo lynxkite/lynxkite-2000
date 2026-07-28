@@ -20,8 +20,8 @@ export class SliderChip extends BaseChip {
   currentMin: number;
   currentMax: number;
 
-  constructor(data: ChipData, disabled?: boolean) {
-    super(data, disabled, "#fee2e2", "#dc2626");
+  constructor(data: ChipData) {
+    super(data, "#fee2e2", "#dc2626");
     this.attribute = data.attribute || "";
     this.limitMin = Number(data.min) || 0;
     this.limitMax = Number(data.max) || 100;

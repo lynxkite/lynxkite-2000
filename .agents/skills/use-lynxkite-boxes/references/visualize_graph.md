@@ -2,7 +2,7 @@
 
 ```python
 @op("Visualize graph", view="graph_visualization", icon="eye", color="blue")
-def visualize_graph(b: core.Bundle):
+def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
     b = b.copy()
     (nodes, node_id), (edges_df, source_id, target_id) = _nodes_and_edges(b)
 

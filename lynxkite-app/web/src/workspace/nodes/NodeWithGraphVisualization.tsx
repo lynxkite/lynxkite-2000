@@ -42,17 +42,11 @@ function serializeChips(chips: BaseChip[]): ChipData[] {
   return chips.map((chip) => chip.getFormData());
 }
 
-function deserializeChips(raw: unknown): BaseChip[] {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .filter(
-      (data): data is ChipData =>
-        !!data && typeof data === "object" && typeof data.type === "string",
-    )
-    .map((data) => {
-      const ChipClass = getChipClass(data.type);
-      return new ChipClass(data, data.disabled === "true");
-    });
+function deserializeChips(chipDataList: ChipData[]): BaseChip[] {
+  return chipDataList.map((chipData) => {
+    const ChipClass = getChipClass(chipData.type);
+    return new ChipClass(chipData);
+  });
 }
 
 const copySeries = (series: any) => {
@@ -78,7 +72,9 @@ function NodeWithGraphVisualization(props: any) {
   const chartRef = useRef<ECharts | null>(null);
   const viewOpts = useDisplay(props.data?.display_version, props.id);
 
-  const [chips, setChips] = useState<BaseChip[]>(() => deserializeChips(props.data?.chips));
+  const [chips, setChips] = useState<BaseChip[]>(() =>
+    deserializeChips(props.data?.params?.chip_data),
+  );
   const [open, setOpen] = useState(false);
   const [nodeAttrs, setNodeAttrs] = useState<string[]>([]);
   const [edgeAttrs, setEdgeAttrs] = useState<string[]>([]);
@@ -90,19 +86,24 @@ function NodeWithGraphVisualization(props: any) {
   const activeRenderer = getActiveRenderer(chips);
   const usesCustomRenderer = activeRenderer !== "echarts";
 
+  function setParam(name: string, newValue: any) {
+    reactFlow.updateNodeData(props.id, (prevData: any) => ({
+      ...prevData,
+      params: { ...prevData.params, [name]: newValue },
+    }));
+  }
+
   useEffect(() => {
     chipRef.current = chips;
   }, [chips]);
 
   useEffect(() => {
     const serialized = serializeChips(chips);
-    const prevSerialized = Array.isArray(props.data?.chips) ? props.data.chips : [];
+    const prevSerialized = props.data?.params?.chip_data;
+
     if (JSON.stringify(prevSerialized) === JSON.stringify(serialized)) return;
-    reactFlow.updateNodeData(props.id, (prevData: any) => ({
-      ...prevData,
-      chips: serialized,
-    }));
-  }, [chips, props.data?.chips, props.id, reactFlow]);
+    setParam("chip_data", serialized);
+  }, [chips, props.data?.params?.chip_data]);
 
   useEffect(() => {
     setNodeAttrs(collectAttrs(viewOpts?.series?.[0]?.data || []));
@@ -132,7 +133,9 @@ function NodeWithGraphVisualization(props: any) {
 
     if (!usesCustomRenderer && echartsRef.current) {
       if (!chartRef.current) {
-        chartRef.current = echarts.init(echartsRef.current, null, { renderer: "canvas" });
+        chartRef.current = echarts.init(echartsRef.current, null, {
+          renderer: "canvas",
+        });
       }
       chartRef.current.setOption(chartOpts, true);
 
@@ -170,8 +173,10 @@ function NodeWithGraphVisualization(props: any) {
     const updated = [...chips];
     const current = updated[index];
     updated[index]?.cleanup();
+
     const TargetClass = getChipClass(current.type);
-    updated[index] = new TargetClass(current.getFormData(), !current.disabled);
+    updated[index] = new TargetClass(current.getFormData());
+    updated[index].disabled = !current.disabled;
     setChips(updated);
   }
 
@@ -180,7 +185,13 @@ function NodeWithGraphVisualization(props: any) {
 
   return (
     <div
-      style={{ flex: 1, position: "relative", width: "100%", height: "100%", minHeight: "350px" }}
+      style={{
+        flex: 1,
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        minHeight: "350px",
+      }}
     >
       <div
         style={{
@@ -195,41 +206,39 @@ function NodeWithGraphVisualization(props: any) {
           ...USER_SELECT_NONE_STYLE,
         }}
       >
-        {
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpen(!open);
-              setEditingIdx(null);
-            }}
-            onMouseEnter={() => setMainBtnHover(true)}
-            onMouseLeave={() => setMainBtnHover(false)}
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 20,
-              border: `1px solid ${open ? `${THEME.deleteBtn.text}40` : THEME.border}`,
-              background: open
-                ? mainBtnHover
-                  ? THEME.deleteBtn.hoverBg
-                  : THEME.deleteBtn.bg
-                : "#fff",
-              color: open ? THEME.deleteBtn.text : "#555",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 0,
-              outline: "none",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-              transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
-            }}
-          >
-            {open ? "×" : "+"}
-          </button>
-        }
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(!open);
+            setEditingIdx(null);
+          }}
+          onMouseEnter={() => setMainBtnHover(true)}
+          onMouseLeave={() => setMainBtnHover(false)}
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 20,
+            border: `1px solid ${open ? `${THEME.deleteBtn.text}40` : THEME.border}`,
+            background: open
+              ? mainBtnHover
+                ? THEME.deleteBtn.hoverBg
+                : THEME.deleteBtn.bg
+              : "#fff",
+            color: open ? THEME.deleteBtn.text : "#555",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: 16,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 0,
+            outline: "none",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+            transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease",
+          }}
+        >
+          {open ? "×" : "+"}
+        </button>
 
         {open && (
           <ChipForm

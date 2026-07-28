@@ -41,7 +41,7 @@ export default function ChipForm({
     }
 
     const emptyData: Record<string, string> = {};
-    ChipType.formFields.forEach((field) => {
+    ChipType.formFields.forEach((field: any) => {
       emptyData[field.key] = "";
     });
     setFormData(ChipType.initFormData?.(emptyData) ?? emptyData);
@@ -64,10 +64,10 @@ export default function ChipForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(new ChipType(formData, initialChip?.disabled));
+    onSubmit(new ChipType(formData));
   };
 
-  const isFormInvalid = ChipType.formFields.some((field) => {
+  const isFormInvalid = ChipType.formFields.some((field: any) => {
     const val = formData[field.key];
     return !val || val === "";
   });
@@ -105,7 +105,7 @@ export default function ChipForm({
 
       {ChipType.renderFormExtra?.({ formData, setFormData })}
 
-      {ChipType.formFields.map((field) => {
+      {ChipType.formFields.map((field: any) => {
         const fieldLabel = ChipType.getFormFieldLabel?.(field, formData) ?? field.label;
         return (
           <div key={field.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>

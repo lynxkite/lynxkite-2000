@@ -291,7 +291,7 @@ usage: lynxkite_graph_analytics.operations.visualization_ops.scatter_plot(x=<x_v
 for detailed information, see references/scatter_plot.md
 
 **Visualize graph:**
-usage: lynxkite_graph_analytics.operations.visualization_ops.visualize_graph(b=<b_variable>)
+usage: lynxkite_graph_analytics.operations.visualization_ops.visualize_graph(chip_data=<chip_data_value>, b=<b_variable>)
 for detailed information, see references/visualize_graph.md
 
 **Activation:**

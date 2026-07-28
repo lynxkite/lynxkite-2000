@@ -15,8 +15,8 @@ export class EdgeColorChip extends ToggleChip {
   static formFields: FormFieldConfig[] = ATTRIBUTE_FIELD;
   private continuous: boolean = false;
 
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled, "#fae8ff", "#86198f");
+  constructor(data: Record<string, string>) {
+    super(data, "#fae8ff", "#86198f");
     this.continuous = data.continuous === "true";
   }
 

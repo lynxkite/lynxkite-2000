@@ -25,8 +25,8 @@ export class PositionChip extends BaseChip {
     return data.mode === "map" ? "map" : "xy";
   }
 
-  constructor(data: ChipData, disabled?: boolean) {
-    super(data, disabled, "#b4fbb6", "#045b15");
+  constructor(data: ChipData) {
+    super(data, "#b4fbb6", "#045b15");
     this.mode = PositionChip.getMode(data);
     this.xAttr = data.xAttr || "";
     this.yAttr = data.yAttr || "";

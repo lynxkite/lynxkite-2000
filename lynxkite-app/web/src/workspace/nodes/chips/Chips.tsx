@@ -34,8 +34,13 @@ export const CHIP_CLASS_BY_TYPE = new Map<string, ChipClass>([
 export const normalizeChipType = (type?: string): string | undefined =>
   type === "map" ? PositionChip.type : type;
 
-export const getChipClass = (type: string): ChipClass =>
-  CHIP_CLASS_BY_TYPE.get(type) || CHIP_REGISTRY[0];
+export const getChipClass = (type: string): ChipClass => {
+  const ChipClass = CHIP_CLASS_BY_TYPE.get(type);
+  if (!ChipClass) {
+    throw new Error(`Unknown chip type: ${type}`);
+  }
+  return ChipClass;
+};
 
 export const getActiveRenderer = (chips: BaseChip[]): string =>
   chips.find((chip) => !chip.disabled && chip.getRenderer() !== "echarts")?.getRenderer() ||

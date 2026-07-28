@@ -1,12 +1,14 @@
-import * as echarts from "echarts";
+import type { ECharts } from "echarts";
 import React, { useEffect } from "react";
 import { useDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
+const echarts = await import("echarts");
+
 function NodeWithVisualization(props: any) {
   const chartsRef = React.useRef<HTMLDivElement>(null);
-  const chartsInstanceRef = React.useRef<echarts.ECharts>(null);
+  const chartsInstanceRef = React.useRef<ECharts>(null);
   const opts = useDisplay(props.data?.display_version, props.id);
   useEffect(() => {
     if (!opts || !chartsRef.current) return;

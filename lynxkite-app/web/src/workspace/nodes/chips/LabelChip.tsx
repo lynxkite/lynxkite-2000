@@ -13,8 +13,8 @@ export class LabelChip extends SingleAttributeChip {
   static target = "node";
   static formFields: FormFieldConfig[] = ATTRIBUTE_FIELD;
 
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled, "#fef08a", "#a16207");
+  constructor(data: Record<string, string>) {
+    super(data, "#fef08a", "#a16207");
   }
 
   getLabel() {

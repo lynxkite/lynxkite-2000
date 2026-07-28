@@ -14,8 +14,8 @@ export class NodeColorChip extends ToggleChip {
   static formFields: FormFieldConfig[] = ATTRIBUTE_FIELD;
   type = NodeColorChip.type;
   continuous = false;
-  constructor(data: Record<string, string>, disabled?: boolean) {
-    super(data, disabled, "#e0f2fe", "#0369a1");
+  constructor(data: Record<string, string>) {
+    super(data, "#e0f2fe", "#0369a1");
     this.continuous = data.continuous === "true";
   }
 
