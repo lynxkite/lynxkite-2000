@@ -88,7 +88,19 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
     const textFromSpeech = `${transcriptText}${interimResult ? ` ${interimResult}` : ""}`.trim();
     if (!textFromSpeech) return;
     const nextInput = `${dictationBaseRef.current}${textFromSpeech}`.trim();
-    setInput(nextInput);
+    const withoutLastThreeWords = nextInput.split(" ").slice(0, -3).join(" ");
+    const rawInput = transcriptText.toLowerCase().replace(/[.!?]/g, "");
+    if (rawInput.endsWith("clear input field") && !interimResult) {
+      setInput("");
+      dictationBaseRef.current = "";
+      setResults([]);
+      return;
+    }
+    if (withoutLastThreeWords && rawInput.endsWith("do it now")) {
+      submitInput(withoutLastThreeWords, false);
+    } else {
+      setInput(nextInput);
+    }
   }, [interimResult, transcriptText]);
 
   useEffect(() => {
@@ -113,6 +125,34 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
     dictationBaseRef.current = input ? `${input.trim()} ` : "";
     setResults([]);
     void startSpeechToText();
+  }
+
+  function submitInput(prompt: string, stopRecording = true) {
+    if (!prompt || status !== "ready") return;
+    if (includeSelectedNodes && selectedNodeIds.length > 0) {
+      setMessages([
+        ...messages,
+        {
+          id: `system-${Date.now()}`,
+          role: "system",
+          parts: [{ type: "text", text: `Referencing·box(es):·${selectedNodeIds.join(",·")}` }],
+        },
+      ]);
+    }
+    sendMessage({
+      text: prompt,
+      metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
+    });
+    if (isRecording && stopRecording) {
+      stopSpeechToText();
+    }
+    dictationBaseRef.current = "";
+    setResults([]);
+    setInput("");
+    if (editorRef.current) {
+      editorRef.current.textContent = "";
+      editorRef.current.focus();
+    }
   }
 
   return (
@@ -189,33 +229,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
         onSubmit={async (event) => {
           event.preventDefault();
           const prompt = input.trim();
-          if (!prompt || status !== "ready") return;
-          if (includeSelectedNodes && selectedNodeIds.length > 0) {
-            setMessages([
-              ...messages,
-              {
-                id: `system-${Date.now()}`,
-                role: "system",
-                parts: [
-                  { type: "text", text: `Referencing·box(es):·${selectedNodeIds.join(",·")}` },
-                ],
-              },
-            ]);
-          }
-          sendMessage({
-            text: prompt,
-            metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
-          });
-          if (isRecording) {
-            stopSpeechToText();
-          }
-          dictationBaseRef.current = "";
-          setResults([]);
-          setInput("");
-          if (editorRef.current) {
-            editorRef.current.textContent = "";
-            editorRef.current.focus();
-          }
+          submitInput(prompt);
         }}
       >
         <div
