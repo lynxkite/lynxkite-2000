@@ -12,7 +12,7 @@ import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, getConfig, usePath } from "./common.ts";
+import { apiFetch, apiJson, getConfig, useFolderPermissions, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 
@@ -78,6 +78,8 @@ export default function Directory() {
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
   const config = getConfig();
+  const permissions = useFolderPermissions(path || "");
+  const canWrite = permissions.write;
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
@@ -205,66 +207,90 @@ export default function Directory() {
 
       {list.data && (
         <>
-          <div className="actions">
-            <EntryCreator
-              onCreate={(name) => {
-                newWorkspaceIn(path || "", name);
-              }}
-              icon={<LayoutGridAdd />}
-              label="New workspace"
-            />
-            {config.enterprise_available && (
+          {canWrite && (
+            <div className="actions">
+              <EntryCreator
+                onCreate={(name) => {
+                  newWorkspaceIn(path || "", name);
+                }}
+                icon={<LayoutGridAdd />}
+                label="New workspace"
+              />
+              {config.enterprise_available && (
+                <Link to="/progress">
+                  <LayoutGrid /> Enterprise progress
+                </Link>
+              )}
+              <EntryCreator
+                onCreate={(name) => {
+                  newCodeFile(path || "", name);
+                }}
+                icon={<FilePlus />}
+                label="New code file"
+              />
+              <EntryCreator
+                onCreate={(name: string) => {
+                  newFolderIn(path || "", name);
+                }}
+                icon={<FolderPlus />}
+                label="New folder"
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                multiple
+                onChange={(e) => {
+                  if (e.target.files?.length) uploadFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+              <button type="button" onClick={() => fileInputRef.current?.click()}>
+                <Upload /> Upload file
+              </button>
+            </div>
+          )}
+          {!canWrite && !permissions.isLoading && config.authentication_issuer && (
+            <p className="text-sm opacity-70 px-2">This folder is read-only.</p>
+          )}
+          {!canWrite && config.enterprise_available && (
+            <div className="actions">
               <Link to="/progress">
                 <LayoutGrid /> Enterprise progress
               </Link>
-            )}
-            <EntryCreator
-              onCreate={(name) => {
-                newCodeFile(path || "", name);
-              }}
-              icon={<FilePlus />}
-              label="New code file"
-            />
-            <EntryCreator
-              onCreate={(name: string) => {
-                newFolderIn(path || "", name);
-              }}
-              icon={<FolderPlus />}
-              label="New folder"
-            />
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              multiple
-              onChange={(e) => {
-                if (e.target.files?.length) uploadFiles(e.target.files);
-                e.target.value = "";
-              }}
-            />
-            <button type="button" onClick={() => fileInputRef.current?.click()}>
-              <Upload /> Upload file
-            </button>
-          </div>
+            </div>
+          )}
 
           <Breadcrumbs path={path} />
 
           <div
-            className={`entry-drop-zone${isDragOver ? " drag-over" : ""}`}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragOver(true);
-            }}
-            onDragLeave={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                setIsDragOver(false);
-              }
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsDragOver(false);
-              if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
-            }}
+            className={`entry-drop-zone${isDragOver && canWrite ? " drag-over" : ""}`}
+            onDragOver={
+              canWrite
+                ? (e) => {
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }
+                : undefined
+            }
+            onDragLeave={
+              canWrite
+                ? (e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setIsDragOver(false);
+                    }
+                  }
+                : undefined
+            }
+            onDrop={
+              canWrite
+                ? (e) => {
+                    e.preventDefault();
+                    setIsDragOver(false);
+                    if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+                  }
+                : undefined
+            }
           >
             {list.data.map(
               (item: DirectoryEntry) =>
@@ -290,33 +316,37 @@ export default function Directory() {
                         <DotsVertical />
                       </button>
                       <ul tabIndex={0} className="dropdown-content menu">
-                        <li>
-                          <button
-                            className="delete-button"
-                            type="button"
-                            onClick={() => {
-                              deleteItem(item);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              openRenameModal(item);
-                            }}
-                          >
-                            Rename
-                          </button>
-                        </li>
+                        {canWrite && (
+                          <>
+                            <li>
+                              <button
+                                className="delete-button"
+                                type="button"
+                                onClick={() => {
+                                  deleteItem(item);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  openRenameModal(item);
+                                }}
+                              >
+                                Rename
+                              </button>
+                            </li>
+                          </>
+                        )}
                         {item.type !== "directory" && (
                           <li>
                             <button
                               type="button"
                               onClick={async () => {
-                                const res = await fetch("/api/download", {
+                                const res = await apiFetch("/api/download", {
                                   method: "POST",
                                   headers: { "Content-Type": "application/json" },
                                   body: JSON.stringify({ path: item.name }),
@@ -347,14 +377,16 @@ export default function Directory() {
           </div>
         </>
       )}
-      <Modal
-        ref={renameModalRef}
-        title="Rename item"
-        description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
-        inputLabel="New name"
-        submitLabel="Rename"
-        onSubmit={submitRename}
-      />
+      {canWrite && (
+        <Modal
+          ref={renameModalRef}
+          title="Rename item"
+          description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
+          inputLabel="New name"
+          submitLabel="Rename"
+          onSubmit={submitRename}
+        />
+      )}
     </ManagementPage>
   );
 }

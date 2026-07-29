@@ -15,6 +15,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
+import { getWebSocketParams } from "../common.ts";
 
 function endpointSignature(endpoints: any[] | undefined) {
   return (endpoints || []).map((x) => `${x?.name ?? ""}:${x?.position ?? ""}`).join("|");
@@ -89,13 +90,16 @@ class CRDTConnection {
   updateNodeInternals: (id: string) => void;
   state: CRDTWorkspace;
   observers: Set<() => void> = new Set();
+  canWrite = true;
   constructor(
     reactFlow: ReturnType<typeof useReactFlow>,
     updateNodeInternals: (id: string) => void,
     path: string,
+    canWrite = true,
   ) {
     this.reactFlow = reactFlow;
     this.updateNodeInternals = updateNodeInternals;
+    this.canWrite = canWrite;
     this.doc = new Y.Doc();
     this.undoManager = new Y.UndoManager(this.doc, { captureTimeout: 600 });
     this.ws = this.doc.getMap("workspace");
@@ -108,32 +112,43 @@ class CRDTConnection {
       `${proto}//${location.host}/ws/crdt`,
       encodedPath,
       this.doc,
+      { connect: false },
     );
+    getWebSocketParams().then((params) => {
+      this.wsProvider.params = params;
+      this.wsProvider.connect();
+    });
     this.doc.on("update", this.onBackendChange);
     this.state = {
       feNodes: [],
       feEdges: [],
       setPausedState: (paused: boolean) => {
+        if (!this.canWrite) return;
         this.ws.set("paused", paused);
         this.updateState();
       },
       setEnv: (env: string) => {
+        if (!this.canWrite) return;
         this.ws.set("env", env);
         this.updateState();
       },
       setExecutionOptions: (options: Record<string, any>) => {
+        if (!this.canWrite) return;
         this.ws.set("execution_options", options);
         this.updateState();
       },
       setAssistantMessages: (messages: any[]) => {
+        if (!this.canWrite) return;
         this.ws.set("assistant_messages", messages);
         this.updateState();
       },
       clearAssistantMessages: () => {
+        if (!this.canWrite) return;
         this.ws.set("assistant_messages", []);
         this.updateState();
       },
       addNode: (node: Partial<WorkspaceNode>) => {
+        if (!this.canWrite) return;
         const ynode = nodeToYMap(node);
         this.doc.transact(() => {
           const wnodes = this.ws.get("nodes") as Y.Array<any>;
@@ -142,6 +157,7 @@ class CRDTConnection {
         this.updateState();
       },
       addEdge: (edge: Partial<WorkspaceEdge>) => {
+        if (!this.canWrite) return;
         const yedge = new Y.Map<any>();
         for (const [key, value] of Object.entries(edge)) {
           yedge.set(key, value);
@@ -155,16 +171,19 @@ class CRDTConnection {
       onFENodesChange: this.onFENodesChange,
       onFEEdgesChange: this.onFEEdgesChange,
       applyChange: (fn: (conn: CRDTConnection) => void) => {
+        if (!this.canWrite) return;
         this.doc.transact(() => {
           fn(this);
         });
         this.updateState();
       },
       undo: () => {
+        if (!this.canWrite) return;
         this.undoManager.undo();
         this.updateState();
       },
       redo: () => {
+        if (!this.canWrite) return;
         this.undoManager.redo();
         this.updateState();
       },
@@ -173,6 +192,9 @@ class CRDTConnection {
   onDestroy = () => {
     this.doc.destroy();
     this.wsProvider.destroy();
+  };
+  setCanWrite = (canWrite: boolean) => {
+    this.canWrite = canWrite;
   };
   onBackendChange = (_update: any, origin: any, _doc: any, _tr: any) => {
     if (origin === this.wsProvider) {
@@ -190,12 +212,15 @@ class CRDTConnection {
   };
   onFENodesChange = (changes: any[]) => {
     // An update from the UI.
+    // Selection is always allowed; other mutations need write access.
+    const allowed = this.canWrite ? changes : changes.filter((ch) => ch.type === "select");
+    if (allowed.length === 0) return;
     // Apply it to the local state...
-    this.state.feNodes = applyNodeChanges(changes, this.state.feNodes);
+    this.state.feNodes = applyNodeChanges(allowed, this.state.feNodes);
     // ...and to the CRDT state.
     const wnodes = this.ws.get("nodes") as Y.Array<any>;
     let wsChanged = false;
-    for (const ch of changes) {
+    for (const ch of allowed) {
       const nodeIndex = wnodes.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
       if (nodeIndex === -1) continue;
       const node = wnodes.get(nodeIndex) as Y.Map<any>;
@@ -276,11 +301,13 @@ class CRDTConnection {
     }
   };
   onFEEdgesChange = (changes: any[]) => {
-    this.state.feEdges = applyEdgeChanges(changes, this.state.feEdges);
+    const allowed = this.canWrite ? changes : changes.filter((ch) => ch.type === "select");
+    if (allowed.length === 0) return;
+    this.state.feEdges = applyEdgeChanges(allowed, this.state.feEdges);
     const wedges = this.ws.get("edges") as Y.Array<any>;
     if (!wedges) return;
     let wsChanged = false;
-    for (const ch of changes) {
+    for (const ch of allowed) {
       if (ch.type === "remove") {
         const edgeIndex = wedges.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
         wedges.delete(edgeIndex);
@@ -363,13 +390,16 @@ class CRDTConnection {
   };
 }
 
-export function useCRDTWorkspace(path: string): CRDTWorkspace {
+export function useCRDTWorkspace(path: string, canWrite = true): CRDTWorkspace {
   const reactFlow = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const connection = useRef<CRDTConnection | null>(null);
   if (!connection.current) {
-    connection.current = new CRDTConnection(reactFlow, updateNodeInternals, path);
+    connection.current = new CRDTConnection(reactFlow, updateNodeInternals, path, canWrite);
   }
+  useEffect(() => {
+    connection.current?.setCanWrite(canWrite);
+  }, [canWrite]);
   useEffect(() => {
     return () => {
       connection.current!.onDestroy();
