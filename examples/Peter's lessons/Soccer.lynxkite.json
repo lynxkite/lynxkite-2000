@@ -66,11 +66,27 @@
       "targetHandle": "bundle"
     },
     {
+      "id": "Find connected components 1 output Aggregate between neighbors 1 b",
+      "selected": false,
+      "source": "Find connected components 1",
+      "sourceHandle": "output",
+      "target": "Aggregate between neighbors 1",
+      "targetHandle": "b"
+    },
+    {
       "id": "Aggregate between neighbors 1 output Derive property 1 b",
       "selected": false,
       "source": "Aggregate between neighbors 1",
       "sourceHandle": "output",
       "target": "Derive property 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add rank attribute 1 output Aggregate between neighbors 2 b",
+      "selected": false,
+      "source": "Add rank attribute 1",
+      "sourceHandle": "output",
+      "target": "Aggregate between neighbors 2",
       "targetHandle": "b"
     },
     {
@@ -82,19 +98,27 @@
       "targetHandle": "b"
     },
     {
-      "id": "Aggregate between neighbors 2 output SQL 1 bundle",
+      "id": "Aggregate between neighbors 2 output SQL 2 bundle",
       "selected": false,
       "source": "Aggregate between neighbors 2",
       "sourceHandle": "output",
-      "target": "SQL 1",
+      "target": "SQL 2",
       "targetHandle": "bundle"
     },
     {
-      "id": "SQL 1 output View tables 4 bundle",
+      "id": "SQL 2 output View tables 4 bundle",
+      "selected": false,
+      "source": "SQL 2",
+      "sourceHandle": "output",
+      "target": "View tables 4",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "SQL 1 output View tables 5 bundle",
       "selected": false,
       "source": "SQL 1",
       "sourceHandle": "output",
-      "target": "View tables 4",
+      "target": "View tables 5",
       "targetHandle": "bundle"
     },
     {
@@ -178,6 +202,14 @@
       "targetHandle": "b"
     },
     {
+      "id": "Filter with formula 3 output Merge nodes on attribute 1 b",
+      "selected": false,
+      "source": "Filter with formula 3",
+      "sourceHandle": "output",
+      "target": "Merge nodes on attribute 1",
+      "targetHandle": "b"
+    },
+    {
       "id": "Vector from attributes 3 output Derive with SQL 1 b",
       "selected": false,
       "source": "Vector from attributes 3",
@@ -194,112 +226,56 @@
       "targetHandle": "b"
     },
     {
-      "id": "Join tables 1 output Vector from attributes 2 b",
-      "selected": false,
+      "id": "Join tables 1 output Add rank attribute 1 b",
       "source": "Join tables 1",
+      "sourceHandle": "output",
+      "target": "Add rank attribute 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Join tables 1 output SQL 1 bundle",
+      "source": "Join tables 1",
+      "sourceHandle": "output",
+      "target": "SQL 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Join tables 2 output Vector from attributes 2 b",
+      "source": "Join tables 2",
       "sourceHandle": "output",
       "target": "Vector from attributes 2",
       "targetHandle": "b"
     },
     {
-      "id": "Import CSV 3 output Merge 1 bundles",
-      "selected": false,
-      "source": "Import CSV 3",
-      "sourceHandle": "output",
-      "target": "Merge 1",
-      "targetHandle": "bundles"
-    },
-    {
-      "id": "Import CSV 2 output Merge 1 bundles",
-      "selected": false,
-      "source": "Import CSV 2",
-      "sourceHandle": "output",
-      "target": "Merge 1",
-      "targetHandle": "bundles"
-    },
-    {
-      "id": "Merge 1 output Join tables 1 b",
-      "selected": false,
+      "id": "Merge 1 output Join tables 2 b",
       "source": "Merge 1",
-      "sourceHandle": "output",
-      "target": "Join tables 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Merge 2 output Join tables 2 b",
-      "selected": false,
-      "source": "Merge 2",
       "sourceHandle": "output",
       "target": "Join tables 2",
       "targetHandle": "b"
     },
     {
-      "id": "Find connected components 1 output Aggregate between neighbors 1 b",
-      "selected": false,
-      "source": "Find connected components 1",
-      "sourceHandle": "output",
-      "target": "Aggregate between neighbors 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Import CSV 1 output Merge 2 bundles",
-      "selected": false,
-      "source": "Import CSV 1",
-      "sourceHandle": "output",
-      "target": "Merge 2",
-      "targetHandle": "bundles"
-    },
-    {
       "id": "Derive property 1 output Merge 2 bundles",
-      "selected": false,
       "source": "Derive property 1",
       "sourceHandle": "output",
       "target": "Merge 2",
       "targetHandle": "bundles"
     },
     {
-      "id": "Join tables 2 output Add rank attribute 1 b",
-      "selected": false,
-      "source": "Join tables 2",
+      "id": "Import CSV 1 output Merge 2 bundles",
+      "source": "Import CSV 1",
       "sourceHandle": "output",
-      "target": "Add rank attribute 1",
+      "target": "Merge 2",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Merge 2 output Join tables 1 b",
+      "source": "Merge 2",
+      "sourceHandle": "output",
+      "target": "Join tables 1",
       "targetHandle": "b"
-    },
-    {
-      "id": "Add rank attribute 1 output Aggregate between neighbors 2 b",
-      "selected": false,
-      "source": "Add rank attribute 1",
-      "sourceHandle": "output",
-      "target": "Aggregate between neighbors 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Filter with formula 3 output Merge nodes on attribute 1 b",
-      "selected": false,
-      "source": "Filter with formula 3",
-      "sourceHandle": "output",
-      "target": "Merge nodes on attribute 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "SQL 2 output View tables 5 bundle",
-      "selected": false,
-      "source": "SQL 2",
-      "sourceHandle": "output",
-      "target": "View tables 5",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Join tables 2 output SQL 2 bundle",
-      "selected": false,
-      "source": "Join tables 2",
-      "sourceHandle": "output",
-      "target": "SQL 2",
-      "targetHandle": "bundle"
     },
     {
       "id": "Import CSV 2 output Merge 1 bundles",
-      "selected": false,
       "source": "Import CSV 2",
       "sourceHandle": "output",
       "target": "Merge 1",
@@ -307,35 +283,10 @@
     },
     {
       "id": "Import CSV 3 output Merge 1 bundles",
-      "selected": false,
       "source": "Import CSV 3",
       "sourceHandle": "output",
       "target": "Merge 1",
       "targetHandle": "bundles"
-    },
-    {
-      "id": "Import CSV 2 output Merge 1 bundles",
-      "selected": false,
-      "source": "Import CSV 2",
-      "sourceHandle": "output",
-      "target": "Merge 1",
-      "targetHandle": "bundles"
-    },
-    {
-      "id": "Merge 1 output Join tables 1 b",
-      "selected": false,
-      "source": "Merge 1",
-      "sourceHandle": "output",
-      "target": "Join tables 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Filter with formula 2 output Filter with formula 3 b",
-      "selected": false,
-      "source": "Filter with formula 2",
-      "sourceHandle": "output",
-      "target": "Filter with formula 3",
-      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -355,21 +306,21 @@
         "op_id": "Group",
         "output_metadata": null,
         "params": {
-          "color": "yellow"
+          "color": "green"
         },
         "status": "done",
         "telemetry": null,
         "title": "Group"
       },
-      "height": 900.0,
-      "id": "Group 3",
+      "height": 1295.0,
+      "id": "Group 2",
       "parentId": null,
       "position": {
-        "x": 1474.7854267367861,
-        "y": 173.61520317936152
+        "x": 4174.757976517989,
+        "y": -694.2972942688302
       },
       "type": "node_group",
-      "width": 3632.0
+      "width": 4256.0
     },
     {
       "data": {
@@ -391,23 +342,22 @@
         "telemetry": null,
         "title": "Group"
       },
-      "height": 1362.0,
-      "id": "Group 2",
+      "height": 1429.0,
+      "id": "Group 1",
       "parentId": null,
       "position": {
-        "x": 1379.7659233945428,
-        "y": -1431.0340500083973
+        "x": -1466.2883712427306,
+        "y": -448.87466582739944
       },
       "type": "node_group",
-      "width": 4256.0
+      "width": 5394.0
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": null,
+        "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
@@ -415,21 +365,26 @@
         "op_id": "Group",
         "output_metadata": null,
         "params": {
-          "color": "green"
+          "color": "yellow"
         },
         "status": "done",
         "telemetry": null,
         "title": "Group"
       },
-      "height": 1434.0,
-      "id": "Group 1",
+      "height": 900.0,
+      "id": "Group 3",
+      "measured": {
+        "height": 900.0,
+        "width": 3582.0
+      },
       "parentId": null,
       "position": {
-        "x": -4055.957209955771,
-        "y": -1142.7174459818882
+        "x": 4269.777479860232,
+        "y": 910.3519589189286
       },
+      "selected": false,
       "type": "node_group",
-      "width": 5156.0
+      "width": 3582.0
     },
     {
       "data": {
@@ -869,7 +824,7 @@
       "parentId": "Group 3",
       "position": {
         "x": 826.9617311303737,
-        "y": 224.19619610972768
+        "y": 224.1961961097278
       },
       "selected": false,
       "type": "basic",
@@ -1438,7 +1393,7 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 2821.9934554107617,
+        "x": 2821.993455410762,
         "y": 168.1860667504352
       },
       "selected": false,
@@ -1449,7 +1404,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 16,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1521,8 +1476,8 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 2841.420531905254,
-        "y": 535.141956090833
+        "x": 2841.4205319052535,
+        "y": 535.1419560908331
       },
       "selected": false,
       "type": "table_view",
@@ -1532,7 +1487,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 16,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1631,7 +1586,7 @@
       },
       "parentId": "Group 3",
       "position": {
-        "x": 3248.9999999999995,
+        "x": 3249.0,
         "y": 136.84540806373548
       },
       "selected": false,
@@ -1690,8 +1645,339 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 1082.9416264744896,
-        "y": 830.7600638609583
+        "x": 1125.290737045354,
+        "y": 929.6550602396926
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "event_subtype_dst",
+                  "event_subtype_src",
+                  "event_type_dst",
+                  "event_type_src",
+                  "field_pos_abs_dst",
+                  "field_pos_abs_src",
+                  "field_pos_rel_dst",
+                  "field_pos_rel_src",
+                  "id_dst",
+                  "id_src",
+                  "match_event_dst",
+                  "match_event_src",
+                  "match_id_dst",
+                  "match_id_src",
+                  "matchevent_next_dst",
+                  "matchevent_next_src",
+                  "matchevent_seq_dst",
+                  "matchevent_seq_src",
+                  "name_dst",
+                  "name_src",
+                  "player_id_dst",
+                  "player_id_src",
+                  "team_name_dst",
+                  "team_name_src",
+                  "ts_dst",
+                  "ts_src",
+                  "x_abs_dst",
+                  "x_abs_src",
+                  "x_rel_dst",
+                  "x_rel_src",
+                  "y_abs_dst",
+                  "y_abs_src",
+                  "y_rel_dst",
+                  "y_rel_src"
+                ],
+                "key": "edges",
+                "length": 98648.0
+              },
+              "events": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "field_pos_abs",
+                  "field_pos_rel",
+                  "id",
+                  "match_event",
+                  "match_id",
+                  "matchevent_next",
+                  "matchevent_seq",
+                  "name",
+                  "player_id",
+                  "team_name",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "events",
+                "length": 125463.0
+              },
+              "matches": {
+                "columns": [
+                  "away_score",
+                  "away_team",
+                  "home_score",
+                  "home_team",
+                  "match_id"
+                ],
+                "key": "matches",
+                "length": 64.0
+              },
+              "players": {
+                "columns": [
+                  "id",
+                  "name",
+                  "team_name"
+                ],
+                "key": "players",
+                "length": 602.0
+              },
+              "seg1": {
+                "columns": [
+                  "away_score",
+                  "away_team",
+                  "home_score",
+                  "home_team",
+                  "id",
+                  "match_id",
+                  "match_id_first",
+                  "possession_length",
+                  "team_name_first",
+                  "ts_max",
+                  "ts_min",
+                  "value"
+                ],
+                "key": "seg1",
+                "length": 26815.0
+              },
+              "seg1_edges": {
+                "columns": [
+                  "node_id",
+                  "segment_id"
+                ],
+                "key": "seg1_edges",
+                "length": 125463.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "graph",
+                "source_column": "matchevent_seq_src",
+                "source_key": "matchevent_seq",
+                "source_table": "events",
+                "target_column": "matchevent_seq_dst",
+                "target_key": "matchevent_seq",
+                "target_table": "events"
+              },
+              {
+                "df": "seg1_edges",
+                "name": "seg1_edges",
+                "source_column": "node_id",
+                "source_key": "matchevent_seq",
+                "source_table": "events",
+                "target_column": "segment_id",
+                "target_key": "id",
+                "target_table": "seg1"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "event_subtype_dst",
+                  "event_subtype_src",
+                  "event_type_dst",
+                  "event_type_src",
+                  "field_pos_abs_dst",
+                  "field_pos_abs_src",
+                  "field_pos_rel_dst",
+                  "field_pos_rel_src",
+                  "id_dst",
+                  "id_src",
+                  "match_event_dst",
+                  "match_event_src",
+                  "match_id_dst",
+                  "match_id_src",
+                  "matchevent_next_dst",
+                  "matchevent_next_src",
+                  "matchevent_seq_dst",
+                  "matchevent_seq_src",
+                  "name_dst",
+                  "name_src",
+                  "player_id_dst",
+                  "player_id_src",
+                  "team_name_dst",
+                  "team_name_src",
+                  "ts_dst",
+                  "ts_src",
+                  "x_abs_dst",
+                  "x_abs_src",
+                  "x_rel_dst",
+                  "x_rel_src",
+                  "y_abs_dst",
+                  "y_abs_src",
+                  "y_rel_dst",
+                  "y_rel_src"
+                ],
+                "key": "edges",
+                "length": 98648.0
+              },
+              "events": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "field_pos_abs",
+                  "field_pos_rel",
+                  "id",
+                  "match_event",
+                  "match_id",
+                  "matchevent_next",
+                  "matchevent_seq",
+                  "name",
+                  "player_id",
+                  "team_name",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "events",
+                "length": 125463.0
+              },
+              "matches": {
+                "columns": [
+                  "away_score",
+                  "away_team",
+                  "home_score",
+                  "home_team",
+                  "match_id"
+                ],
+                "key": "matches",
+                "length": 64.0
+              },
+              "players": {
+                "columns": [
+                  "id",
+                  "name",
+                  "team_name"
+                ],
+                "key": "players",
+                "length": 602.0
+              },
+              "results": {
+                "columns": [
+                  "away_score",
+                  "away_team",
+                  "home_score",
+                  "home_team",
+                  "id",
+                  "match_id",
+                  "match_id_first",
+                  "possession_length",
+                  "team_name_first",
+                  "ts_max",
+                  "ts_min",
+                  "value"
+                ],
+                "key": "results",
+                "length": 26815.0
+              },
+              "seg1": {
+                "columns": [
+                  "away_score",
+                  "away_team",
+                  "home_score",
+                  "home_team",
+                  "id",
+                  "match_id",
+                  "match_id_first",
+                  "possession_length",
+                  "team_name_first",
+                  "ts_max",
+                  "ts_min",
+                  "value"
+                ],
+                "key": "seg1",
+                "length": 26815.0
+              },
+              "seg1_edges": {
+                "columns": [
+                  "node_id",
+                  "segment_id"
+                ],
+                "key": "seg1_edges",
+                "length": 125463.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "graph",
+                "source_column": "matchevent_seq_src",
+                "source_key": "matchevent_seq",
+                "source_table": "events",
+                "target_column": "matchevent_seq_dst",
+                "target_key": "matchevent_seq",
+                "target_table": "events"
+              },
+              {
+                "df": "seg1_edges",
+                "name": "seg1_edges",
+                "source_column": "node_id",
+                "source_key": "matchevent_seq",
+                "source_table": "events",
+                "target_column": "segment_id",
+                "target_key": "id",
+                "target_table": "seg1"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "query": "select * from `seg1`\norder by possession_length desc",
+          "save_as": "results"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "SQL"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "extent": "parent",
+      "height": 315.0,
+      "id": "SQL 1",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": "Group 2",
+      "position": {
+        "x": 2228.9306479287397,
+        "y": 873.6722692574555
       },
       "selected": false,
       "type": "basic",
@@ -2009,7 +2295,7 @@
       "parentId": "Group 2",
       "position": {
         "x": 2247.6309698768473,
-        "y": 312.24990287301466
+        "y": 312.2499028730146
       },
       "selected": false,
       "type": "basic",
@@ -2337,14 +2623,14 @@
       "dragging": false,
       "extent": "parent",
       "height": 315.0,
-      "id": "SQL 1",
+      "id": "SQL 2",
       "measured": {
         "height": 315.0,
         "width": 315.0
       },
       "parentId": "Group 2",
       "position": {
-        "x": 3396.8889776599012,
+        "x": 3396.888977659901,
         "y": 407.69753395591135
       },
       "selected": false,
@@ -2661,7 +2947,7 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 3359.304816483373,
+        "x": 3359.3048164833726,
         "y": 50.0
       },
       "selected": false,
@@ -2672,7 +2958,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 0,
+        "display_version": 14,
         "error": null,
         "expanded_height": 315.0,
         "input_metadata": [
@@ -2844,8 +3130,8 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 3794.7626839079626,
-        "y": 51.29600555781121
+        "x": 3794.762683907963,
+        "y": 51.29600555781133
       },
       "selected": false,
       "type": "table_view",
@@ -3368,8 +3654,8 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 1066.6175628514093,
-        "y": 466.3512126933841
+        "x": 1139.3105303156608,
+        "y": 443.9841457813068
       },
       "selected": false,
       "type": "basic",
@@ -3665,7 +3951,7 @@
       "parentId": "Group 2",
       "position": {
         "x": 588.6397755250091,
-        "y": 396.91564961830477
+        "y": 396.9156496183049
       },
       "selected": false,
       "type": "basic",
@@ -3988,8 +4274,8 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 2783.0148019503254,
-        "y": 259.78438522861006
+        "x": 2783.014801950326,
+        "y": 259.7843852286101
       },
       "selected": false,
       "type": "basic",
@@ -3997,9 +4283,10 @@
     },
     {
       "data": {
+        "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 14,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4168,6 +4455,9 @@
           {}
         ],
         "params": {
+          "_tables_open": {
+            "results": true
+          },
           "limit": 100.0
         },
         "status": "done",
@@ -4176,7 +4466,7 @@
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 315.0,
+      "height": 438.0,
       "id": "View tables 4",
       "measured": {
         "height": 315.0,
@@ -4184,7 +4474,7 @@
       },
       "parentId": "Group 2",
       "position": {
-        "x": 3891.0850571519936,
+        "x": 3891.085057151993,
         "y": 411.9479080587006
       },
       "selected": false,
@@ -4195,7 +4485,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 14,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4372,16 +4662,16 @@
       },
       "dragHandle": ".drag-handle",
       "extent": "parent",
-      "height": 489.0,
+      "height": 387.0,
       "id": "View tables 5",
       "measured": {
-        "height": 489.0,
+        "height": 387.0,
         "width": 343.0
       },
       "parentId": "Group 2",
       "position": {
-        "x": 2863.484869315748,
-        "y": 823.256808789383
+        "x": 2743.4277556425277,
+        "y": 830.4030655556461
       },
       "selected": false,
       "type": "table_view",
@@ -4436,8 +4726,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 50.0,
-        "y": 1018.5053406494048
+        "x": 62.89246443201819,
+        "y": 1037.460018706205
       },
       "selected": false,
       "type": "basic",
@@ -4553,8 +4843,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 2818.4091007091392,
-        "y": 992.742908350926
+        "x": 3034.962291723221,
+        "y": 987.5084127773955
       },
       "selected": false,
       "type": "basic",
@@ -4668,8 +4958,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 3258.4091007091392,
-        "y": 994.742908350926
+        "x": 3474.962291723221,
+        "y": 989.5084127773955
       },
       "selected": false,
       "type": "basic",
@@ -4839,8 +5129,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 3705.4091007091392,
-        "y": 991.742908350926
+        "x": 3921.9622917232205,
+        "y": 986.5084127773955
       },
       "selected": false,
       "type": "basic",
@@ -5057,8 +5347,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4174.739059228615,
-        "y": 991.3038378340334
+        "x": 4391.292250242695,
+        "y": 986.0693422605029
       },
       "selected": false,
       "type": "basic",
@@ -5275,8 +5565,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4679.56685007822,
-        "y": 1051.8757383931388
+        "x": 4896.120041092301,
+        "y": 1046.6412428196084
       },
       "selected": false,
       "type": "basic",
@@ -5386,8 +5676,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 1401.4867782613446,
-        "y": 897.7972847080846
+        "x": 1618.0399692754256,
+        "y": 892.5627891345541
       },
       "selected": false,
       "type": "basic",
@@ -5499,8 +5789,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 1900.8699814508109,
-        "y": 940.8280769305547
+        "x": 2117.4231724648916,
+        "y": 935.5935813570243
       },
       "selected": false,
       "type": "basic",
@@ -5717,8 +6007,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4381.166892571787,
-        "y": 447.4172584565149
+        "x": 4597.7200835858675,
+        "y": 442.1827628829844
       },
       "selected": false,
       "type": "basic",
@@ -5848,8 +6138,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4790.540599349542,
-        "y": 443.74255117940265
+        "x": 5007.093790363624,
+        "y": 438.50805560587213
       },
       "selected": false,
       "type": "image",
@@ -6066,8 +6356,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4354.897172434291,
-        "y": 55.395563951202575
+        "x": 4571.450363448372,
+        "y": 50.16106837767205
       },
       "selected": false,
       "type": "basic",
@@ -6197,7 +6487,7 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 4756.10092629029,
+        "x": 5028.94476996446,
         "y": 50.0
       },
       "selected": false,
@@ -6259,8 +6549,8 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 61.333820829520846,
-        "y": 659.131526093018
+        "x": 50.0,
+        "y": 676.0695508609462
       },
       "selected": false,
       "type": "basic",
@@ -6371,191 +6661,12 @@
       },
       "parentId": "Group 1",
       "position": {
-        "x": 2367.8320848101766,
-        "y": 952.9585233901671
+        "x": 2584.3852758242583,
+        "y": 947.7240278166366
       },
       "selected": false,
       "type": "basic",
       "width": 370.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "match_id",
-                  "player_id",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              },
-              "players": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "players",
-                "length": 602.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Table operations > Join tables",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "id",
-                  "match_id",
-                  "name",
-                  "player_id",
-                  "team_name",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              },
-              "players": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "players",
-                "length": 602.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "merge_mode": "Merge, prefer the second table's version",
-          "table1_column": [
-            "events",
-            "player_id"
-          ],
-          "table2_column": [
-            "players",
-            "id"
-          ]
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Join tables"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 315.0,
-      "id": "Join tables 1",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 1",
-      "position": {
-        "x": 1029.0325517720066,
-        "y": 933.4687214375326
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {}
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Graph operations > Merge",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "match_id",
-                  "player_id",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              },
-              "players": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "players",
-                "length": 602.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "merge_mode": "must be unique"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Merge"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 315.0,
-      "id": "Merge 1",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 1",
-      "position": {
-        "x": 547.5310283394201,
-        "y": 950.4656320809461
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
     },
     {
       "data": {
@@ -6854,21 +6965,181 @@
         "telemetry": null,
         "title": "Join tables"
       },
-      "dragHandle": ".drag-handle",
-      "dragging": false,
+      "extent": "parent",
+      "height": 315.0,
+      "id": "Join tables 1",
+      "parentId": "Group 2",
+      "position": {
+        "x": 1896.1501880968044,
+        "y": 587.9141043374416
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "events": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "match_id",
+                  "player_id",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "events",
+                "length": 125463.0
+              },
+              "players": {
+                "columns": [
+                  "id",
+                  "name",
+                  "team_name"
+                ],
+                "key": "players",
+                "length": 602.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Join tables",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "events": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "id",
+                  "match_id",
+                  "name",
+                  "player_id",
+                  "team_name",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "events",
+                "length": 125463.0
+              },
+              "players": {
+                "columns": [
+                  "id",
+                  "name",
+                  "team_name"
+                ],
+                "key": "players",
+                "length": 602.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "merge_mode": "Merge, prefer the second table's version",
+          "table1_column": [
+            "events",
+            "player_id"
+          ],
+          "table2_column": [
+            "players",
+            "id"
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Join tables"
+      },
       "extent": "parent",
       "height": 315.0,
       "id": "Join tables 2",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 2",
+      "parentId": "Group 1",
       "position": {
-        "x": 1884.827149417947,
-        "y": 526.2322291816621
+        "x": 1154.1220206356766,
+        "y": 949.3598178346858
       },
-      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "events": {
+                "columns": [
+                  "event_subtype",
+                  "event_type",
+                  "match_id",
+                  "player_id",
+                  "ts",
+                  "x_abs",
+                  "x_rel",
+                  "y_abs",
+                  "y_rel"
+                ],
+                "key": "events",
+                "length": 125463.0
+              },
+              "players": {
+                "columns": [
+                  "id",
+                  "name",
+                  "team_name"
+                ],
+                "key": "players",
+                "length": 602.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "merge_mode": "must be unique"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Merge"
+      },
+      "extent": "parent",
+      "height": 315.0,
+      "id": "Merge 1",
+      "parentId": "Group 1",
+      "position": {
+        "x": 729.9929069493171,
+        "y": 951.8793507340163
+      },
       "type": "basic",
       "width": 315.0
     },
@@ -7025,351 +7296,14 @@
         "telemetry": null,
         "title": "Merge"
       },
-      "dragHandle": ".drag-handle",
-      "dragging": false,
       "extent": "parent",
       "height": 315.0,
       "id": "Merge 2",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
       "parentId": "Group 2",
       "position": {
-        "x": 1506.2141337809162,
-        "y": 523.0987796042059
+        "x": 1529.2273171317138,
+        "y": 587.5921423009918
       },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "event_subtype_dst",
-                  "event_subtype_src",
-                  "event_type_dst",
-                  "event_type_src",
-                  "field_pos_abs_dst",
-                  "field_pos_abs_src",
-                  "field_pos_rel_dst",
-                  "field_pos_rel_src",
-                  "id_dst",
-                  "id_src",
-                  "match_event_dst",
-                  "match_event_src",
-                  "match_id_dst",
-                  "match_id_src",
-                  "matchevent_next_dst",
-                  "matchevent_next_src",
-                  "matchevent_seq_dst",
-                  "matchevent_seq_src",
-                  "name_dst",
-                  "name_src",
-                  "player_id_dst",
-                  "player_id_src",
-                  "team_name_dst",
-                  "team_name_src",
-                  "ts_dst",
-                  "ts_src",
-                  "x_abs_dst",
-                  "x_abs_src",
-                  "x_rel_dst",
-                  "x_rel_src",
-                  "y_abs_dst",
-                  "y_abs_src",
-                  "y_rel_dst",
-                  "y_rel_src"
-                ],
-                "key": "edges",
-                "length": 98648.0
-              },
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "field_pos_abs",
-                  "field_pos_rel",
-                  "id",
-                  "match_event",
-                  "match_id",
-                  "matchevent_next",
-                  "matchevent_seq",
-                  "name",
-                  "player_id",
-                  "team_name",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              },
-              "matches": {
-                "columns": [
-                  "away_score",
-                  "away_team",
-                  "home_score",
-                  "home_team",
-                  "match_id"
-                ],
-                "key": "matches",
-                "length": 64.0
-              },
-              "players": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "players",
-                "length": 602.0
-              },
-              "seg1": {
-                "columns": [
-                  "away_score",
-                  "away_team",
-                  "home_score",
-                  "home_team",
-                  "id",
-                  "match_id",
-                  "match_id_first",
-                  "possession_length",
-                  "team_name_first",
-                  "ts_max",
-                  "ts_min",
-                  "value"
-                ],
-                "key": "seg1",
-                "length": 26815.0
-              },
-              "seg1_edges": {
-                "columns": [
-                  "node_id",
-                  "segment_id"
-                ],
-                "key": "seg1_edges",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "graph",
-                "source_column": "matchevent_seq_src",
-                "source_key": "matchevent_seq",
-                "source_table": "events",
-                "target_column": "matchevent_seq_dst",
-                "target_key": "matchevent_seq",
-                "target_table": "events"
-              },
-              {
-                "df": "seg1_edges",
-                "name": "seg1_edges",
-                "source_column": "node_id",
-                "source_key": "matchevent_seq",
-                "source_table": "events",
-                "target_column": "segment_id",
-                "target_key": "id",
-                "target_table": "seg1"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Query operations > SQL",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "event_subtype_dst",
-                  "event_subtype_src",
-                  "event_type_dst",
-                  "event_type_src",
-                  "field_pos_abs_dst",
-                  "field_pos_abs_src",
-                  "field_pos_rel_dst",
-                  "field_pos_rel_src",
-                  "id_dst",
-                  "id_src",
-                  "match_event_dst",
-                  "match_event_src",
-                  "match_id_dst",
-                  "match_id_src",
-                  "matchevent_next_dst",
-                  "matchevent_next_src",
-                  "matchevent_seq_dst",
-                  "matchevent_seq_src",
-                  "name_dst",
-                  "name_src",
-                  "player_id_dst",
-                  "player_id_src",
-                  "team_name_dst",
-                  "team_name_src",
-                  "ts_dst",
-                  "ts_src",
-                  "x_abs_dst",
-                  "x_abs_src",
-                  "x_rel_dst",
-                  "x_rel_src",
-                  "y_abs_dst",
-                  "y_abs_src",
-                  "y_rel_dst",
-                  "y_rel_src"
-                ],
-                "key": "edges",
-                "length": 98648.0
-              },
-              "events": {
-                "columns": [
-                  "event_subtype",
-                  "event_type",
-                  "field_pos_abs",
-                  "field_pos_rel",
-                  "id",
-                  "match_event",
-                  "match_id",
-                  "matchevent_next",
-                  "matchevent_seq",
-                  "name",
-                  "player_id",
-                  "team_name",
-                  "ts",
-                  "x_abs",
-                  "x_rel",
-                  "y_abs",
-                  "y_rel"
-                ],
-                "key": "events",
-                "length": 125463.0
-              },
-              "matches": {
-                "columns": [
-                  "away_score",
-                  "away_team",
-                  "home_score",
-                  "home_team",
-                  "match_id"
-                ],
-                "key": "matches",
-                "length": 64.0
-              },
-              "players": {
-                "columns": [
-                  "id",
-                  "name",
-                  "team_name"
-                ],
-                "key": "players",
-                "length": 602.0
-              },
-              "results": {
-                "columns": [
-                  "away_score",
-                  "away_team",
-                  "home_score",
-                  "home_team",
-                  "id",
-                  "match_id",
-                  "match_id_first",
-                  "possession_length",
-                  "team_name_first",
-                  "ts_max",
-                  "ts_min",
-                  "value"
-                ],
-                "key": "results",
-                "length": 26815.0
-              },
-              "seg1": {
-                "columns": [
-                  "away_score",
-                  "away_team",
-                  "home_score",
-                  "home_team",
-                  "id",
-                  "match_id",
-                  "match_id_first",
-                  "possession_length",
-                  "team_name_first",
-                  "ts_max",
-                  "ts_min",
-                  "value"
-                ],
-                "key": "seg1",
-                "length": 26815.0
-              },
-              "seg1_edges": {
-                "columns": [
-                  "node_id",
-                  "segment_id"
-                ],
-                "key": "seg1_edges",
-                "length": 125463.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "graph",
-                "source_column": "matchevent_seq_src",
-                "source_key": "matchevent_seq",
-                "source_table": "events",
-                "target_column": "matchevent_seq_dst",
-                "target_key": "matchevent_seq",
-                "target_table": "events"
-              },
-              {
-                "df": "seg1_edges",
-                "name": "seg1_edges",
-                "source_column": "node_id",
-                "source_key": "matchevent_seq",
-                "source_table": "events",
-                "target_column": "segment_id",
-                "target_key": "id",
-                "target_table": "seg1"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "query": "select * from `seg1`\norder by possession_length desc",
-          "save_as": "results"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "SQL"
-      },
-      "dragHandle": ".drag-handle",
-      "extent": "parent",
-      "height": 315.0,
-      "id": "SQL 2",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": "Group 2",
-      "position": {
-        "x": 2367.6865809183573,
-        "y": 921.7620128290797
-      },
-      "selected": false,
       "type": "basic",
       "width": 315.0
     }
