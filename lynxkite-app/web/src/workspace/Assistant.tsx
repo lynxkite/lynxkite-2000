@@ -272,57 +272,6 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           </button>
         </div>
       </form>
-
-      <SpeechToTextDemo />
     </aside>
-  );
-}
-
-function SpeechToTextDemo() {
-  const { error, interimResult, isRecording, results, startSpeechToText, stopSpeechToText } =
-    useSpeechToText({
-      continuous: true,
-      useLegacyResults: false,
-      speechRecognitionProperties: {
-        lang: "en-US", // 👈 Explicitly define your language
-        interimResults: true,
-      },
-    });
-
-  useEffect(() => {
-    console.log("🟢 [DEBUG] Component Mounted");
-    return () => {
-      console.log("🔴 [DEBUG] Component Unmounted!");
-    };
-  }, []);
-
-  useEffect(() => {
-    if (error) console.log("Speech-to-text error details:", error);
-  }, [error]);
-
-  if (error)
-    return (
-      <p style={{ padding: "8px", color: "red" }}>
-        Web Speech API is not available in this browser 🤷
-      </p>
-    );
-
-  return (
-    <div style={{ padding: "8px", borderTop: "1px solid #d8dde3", fontSize: "12px" }}>
-      <p>Demo — Recording: {isRecording.toString()}</p>
-      <button
-        className="btn btn-sm"
-        type="button"
-        onClick={isRecording ? stopSpeechToText : startSpeechToText}
-      >
-        {isRecording ? "Stop Recording" : "Start Recording"}
-      </button>
-      <ul>
-        {(results as { timestamp: number; transcript: string }[]).map((result) => (
-          <li key={result.timestamp}>{result.transcript}</li>
-        ))}
-        {interimResult && <li>{interimResult}</li>}
-      </ul>
-    </div>
   );
 }
