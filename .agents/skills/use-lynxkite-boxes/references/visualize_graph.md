@@ -1,53 +1,31 @@
 **Visualize graph:**
-
+Visualizes the graph using ECharts and allows the user to customize the visualization through "chips".
 ```python
-@op("Visualize graph", view="visualization", icon="eye", color="blue")
-def visualize_graph(
-    graph: core.Bundle,
-    *,
-    color_nodes_by: core.NodePropertyName | None = None,
-    label_by: core.NodePropertyName | None = None,
-    color_edges_by: core.EdgePropertyName | None = None,
-):
-    graph = graph.copy()
-    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(graph)
-    if color_nodes_by and color_nodes_by in nodes.columns:
-        nodes["color"] = _map_color(nodes[color_nodes_by])
+@op("Visualize graph", view="graph_visualization", icon="eye", color="blue")
+def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
+    """
+    Visualizes the graph using ECharts and allows the user to customize the visualization through "chips".
+    :param b: the bundle
+    :param chip_data: the frontend uses this parameter to store relevant data of the chips
+    """
 
-    for cols in ["x y", "long lat"]:
-        x, y = cols.split()
-        if (
-            x in nodes.columns
-            and nodes[x].dtype == "float64"
-            and y in nodes.columns
-            and nodes[y].dtype == "float64"
-        ):
-            cx, cy = nodes[x].mean(), nodes[y].mean()
-            dx, dy = nodes[x].std(), nodes[y].std()
-            # Scale up to avoid float precision issues and because eCharts omits short edges.
-            scale_x = 100 / max(dx, dy)
-            scale_y = -scale_x
-            pos = {
-                node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
-                for node_id, row in nodes.iterrows()
-            }
-            curveness = 0  # Street maps are better with straight streets.
-            break
+    b = b.copy()
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(b)
+
+    item_count = len(nodes) + len(edges)
+    if item_count < 10000:
+        pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / item_count)))
     else:
-        pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
-        curveness = 0.3
-    nodes = nodes.to_records(index=False)
-    if color_edges_by:
-        edges["color"] = _map_color(edges[color_edges_by])
-    edges = edges.to_records()
+        pos = {node_id: np.random.rand(2) for node_id in nodes[node_id]}
 
-    def format_label(value):
-        if pd.isna(value):
-            return ""
-        elif isinstance(value, float):
-            return f"{value:.2f}"
-        else:
-            return str(value)
+    edges = bundle.df_for_frontend(edges, 10000)
+    nodes = bundle.df_for_frontend(nodes, 10000)
+
+    node_columns = [col for col in nodes.columns]
+    edge_columns = [col for col in edges.columns]
+
+    nodes_dict = nodes.to_dict(orient="index")
+    edges = edges.to_records()
 
     v = {
         "animationDuration": 500,
@@ -56,11 +34,9 @@ def visualize_graph(
         "series": [
             {
                 "type": "graph",
-                # Mouse zoom/panning is disabled for now. It interacts badly with ReactFlow.
-                # "roam": True,
                 "lineStyle": {
                     "color": "gray",
-                    "curveness": curveness,
+                    "curveness": 0.3,
                 },
                 "emphasis": {
                     "focus": "adjacency",
@@ -71,24 +47,19 @@ def visualize_graph(
                 "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
-                        "id": str(n[node_id]),
-                        "x": float(pos[n[node_id]][0]),
-                        "y": float(pos[n[node_id]][1]),
-                        # Adjust node size to cover the same area no matter how many nodes there are.
+                        "id": str(node_id),
+                        "x": float(pos[node_id][0]),
+                        "y": float(pos[node_id][1]),
                         "symbolSize": 50 / len(nodes) ** 0.5,
-                        "itemStyle": {"color": getattr(n, "color", None)} if color_nodes_by else {},
-                        "label": {"show": label_by is not None},
-                        "name": format_label(getattr(n, label_by, "")) if label_by else None,
-                        "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
+                        "attributes": {col: str(record[col]) for col in node_columns},
                     }
-                    for n in nodes
+                    for node_id, record in nodes_dict.items()
                 ],
                 "links": [
                     {
                         "source": str(getattr(r, source_id, "")),
                         "target": str(getattr(r, target_id, "")),
-                        "lineStyle": {"color": getattr(r, "color", None)} if color_edges_by else {},
-                        "value": str(getattr(r, color_edges_by, "")) if color_edges_by else None,
+                        "attributes": {col: str(getattr(r, col)) for col in edge_columns},
                     }
                     for r in edges
                 ],
@@ -98,7 +69,3 @@ def visualize_graph(
     return v
 
 ```
-Custom types:
-  - color_nodes_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}]]
-  - label_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].nodes[].columns[]'}]]
-  - color_edges_by: typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].edges[].columns[]'}]]

@@ -43,7 +43,9 @@ def take_first_element(df: pd.DataFrame, *, column: str):
 
 
 @op("Plot time series", view="matplotlib")
-def plot_time_series(bundle: Bundle, *, table_name: str, index: int, x_column: str, y_columns: str):
+def plot_time_series(
+    self, bundle: Bundle, *, table_name: str, index: int, x_column: str, y_columns: str
+):
     df = bundle.dfs[table_name]
     y_columns: list[str] = [y.strip() for y in y_columns.split(",")]
     x = df[x_column].iloc[index]

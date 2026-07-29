@@ -5,7 +5,7 @@ from lynxkite_core.ops import op
 
 
 @op("LynxKite Graph Analytics", "Matplotlib example", view="matplotlib")
-def example():
+def example(self):
     # Data to plot.
     x, y = np.meshgrid(np.arange(7), np.arange(10))
     z = np.sin(0.5 * x) * np.cos(0.52 * y)

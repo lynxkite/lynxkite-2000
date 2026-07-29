@@ -1,6 +1,6 @@
 from lynxkite_core import workspace
 
-from lynxkite_assistant.workspace_backend import _update_node_ids, _update_ws_positions
+from lynxkite_assistant.sync_workspaces import update_node_ids, update_ws_positions
 
 
 def test_update_node_ids_matches_by_op_id_and_params_and_updates_edges():
@@ -13,7 +13,7 @@ def test_update_node_ids_matches_by_op_id_and_params_and_updates_edges():
     target.add_node(id="tmp-2", title="Load", params={"path": "a.csv"})
     target.add_edge("tmp-2", "output", "tmp-1", "input")
 
-    _update_node_ids(source=source, target=target)
+    update_node_ids(source=source, target=target)
 
     assert {node.id for node in target.nodes} == {"src-load-a", "src-load-b"}
     assert [
@@ -30,7 +30,7 @@ def test_update_node_ids_uses_params_when_source_has_duplicate_op_ids():
     target = workspace.Workspace()
     target.add_node(id="tmp-only", title="Load", params={"path": "b.csv"})
 
-    _update_node_ids(source=source, target=target)
+    update_node_ids(source=source, target=target)
 
     assert [node.id for node in target.nodes] == ["src-load-b"]
 
@@ -43,7 +43,7 @@ def test_update_node_ids_uses_params_when_target_has_duplicate_op_ids():
     target.add_node(id="tmp-b", title="Load", params={"path": "b.csv"})
     target.add_node(id="tmp-a", title="Load", params={"path": "a.csv"})
 
-    _update_node_ids(source=source, target=target)
+    update_node_ids(source=source, target=target)
 
     target_ids = {node.id for node in target.nodes}
     assert "src-load-b" in target_ids
@@ -68,7 +68,7 @@ def test_update_node_ids_uses_neighbors_when_params_are_empty():
     target_save = target.add_node(id="tmp-save", title="Save", params={})
     target.add_edge(target_load_connected, "output", target_save, "input")
 
-    _update_node_ids(source=source, target=target)
+    update_node_ids(source=source, target=target)
 
     assert target_load_connected.id == "src-load-connected"
     assert target_load_free.id == "src-load-free"
@@ -105,7 +105,7 @@ def test_update_ws_positions_copies_geometry_for_matching_ids_only():
         height=40,
     )
 
-    _update_ws_positions(source=source, target=target)
+    update_ws_positions(source=source, target=target)
 
     shared = next(node for node in target.nodes if node.id == "shared-id")
     unmatched = next(node for node in target.nodes if node.id == "unmatched-id")

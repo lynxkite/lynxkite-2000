@@ -251,6 +251,7 @@ class Workspace(BaseConfig):
         path = str(path)
         with open(path, encoding="utf-8") as f:
             j = f.read()
+        ops.load_user_scripts(path)
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()

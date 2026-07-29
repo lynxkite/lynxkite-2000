@@ -4,6 +4,7 @@ Edges between bins are aggregated into one edge.
 ```python
 @op("Binned graph visualization", view="matplotlib", color="blue", icon="table")
 def binned_graph_visualization(
+    self,
     b: core.Bundle,
     *,
     x_property: str,

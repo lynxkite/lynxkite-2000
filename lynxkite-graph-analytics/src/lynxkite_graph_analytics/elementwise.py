@@ -7,7 +7,7 @@ import inspect
 import typing
 import pandas as pd
 
-from lynxkite_core.ops import OpContext
+from lynxkite_core.ops import OpContext, find_ctx_param_name
 
 try:
     from lynxkite_enterprise.execution import execution_parallelism  # ty: ignore[unresolved-import]
@@ -73,11 +73,12 @@ def elementwise(
         if is_lim and not enterprise_backend:
             raise ValueError("@lim requires LynxKite Enterprise")
 
+        ctx_param, _ctx_idx = find_ctx_param_name(func)
         public_signature = sig.replace(
             parameters=[
                 inspect.Parameter("self", inspect.Parameter.POSITIONAL_OR_KEYWORD),
                 inspect.Parameter("bundle", inspect.Parameter.POSITIONAL_OR_KEYWORD),
-                *[p for p in params[1:] if p.name != "bundle"],
+                *[p for p in params[1:] if p.name != "bundle" and p.name != ctx_param],
             ]
         )
 
@@ -146,14 +147,17 @@ async def _elementwise_impl_async(
         input_table_selection=input_table_selection,
     )
 
+    ctx_param, _ctx_idx = find_ctx_param_name(func)
+    ctx_dict = {ctx_param: self} if ctx_param else {}
+
     async def process_row_updates(idx: RowIndex, row: pd.Series) -> dict[ColumnKey, typing.Any]:
         record = Record(row, idx)
         if inspect.iscoroutinefunction(func):
-            result = func(record, **kwargs)
+            result = func(record, **{**kwargs, **ctx_dict})
             if inspect.isawaitable(result):
                 await result
         else:
-            await asyncio.to_thread(func, record, **kwargs)
+            await asyncio.to_thread(func, record, **{**kwargs, **ctx_dict})
         return record.get_updates()
 
     lim_cleanup = None
@@ -231,9 +235,11 @@ def _elementwise_impl_sync(
         input_table_selection=input_table_selection,
     )
 
+    ctx_param, _ctx_idx = find_ctx_param_name(func)
+    ctx_dict = {ctx_param: self} if ctx_param else {}
     for row_pos, (idx, row) in self.tqdm(enumerate(df.iterrows()), total=len(df), desc=desc):
         record = Record(row, idx)
-        func(record, **kwargs)
+        func(record, **{**kwargs, **ctx_dict})
         _apply_updates(df, row_pos, record.get_updates())
 
     bundle.dfs[table_name] = df

@@ -78,6 +78,7 @@ export interface Workspace {
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;
+  assistant_messages?: any[] | null;
   path?: string | null;
   [k: string]: unknown;
 }
@@ -116,6 +117,11 @@ export interface WorkspaceNodeData {
   telemetry?: {
     [k: string]: unknown;
   } | null;
+  chips?:
+    | {
+        [k: string]: string;
+      }[]
+    | null;
   meta?: Op | null;
   [k: string]: unknown;
 }

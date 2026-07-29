@@ -5,17 +5,25 @@ from lynxkite_core import ops, workspace
 import os
 
 
+async def _exec(a, b):
+    return
+
+
 @pytest.fixture(scope="module", autouse=True)
 def setup_workspace():
     ops.detect_plugins()
     ops_usr = ops.user_script_root
     wb_crdt = workspace_backend.crdt
+    executors = ops.EXECUTORS
     ops.user_script_root = Path()
+    ops.EXECUTORS = {  # skip execution during tests
+        env: (lambda x, y: _exec(x, y)) for env in ops.CATALOGS.keys()
+    }
     # Disable CRDT for testing
     workspace_backend.crdt = None  # type: ignore
 
     yield
-
+    ops.EXECUTORS = executors
     ops.user_script_root = ops_usr
     workspace_backend.crdt = wb_crdt
 
@@ -38,6 +46,8 @@ def create_temp_file():
 def get_example_jsons():
     # we assume that the test are run from the root of the repository
     for root, dirs, files in os.walk("examples"):
+        if "generated_samples" in root:
+            continue
         for file in files:
             if file.endswith(".lynxkite.json"):
                 yield os.path.join(root, file)

@@ -5,11 +5,13 @@ import fastapi
 import openai
 import pydantic
 from typing import cast
+from pathlib import Path
 from fastapi.responses import StreamingResponse
 import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
+from .instructions import SYSTEM_PROMPT
 
 try:
     from lynxkite_app import crdt
@@ -17,24 +19,6 @@ except ImportError:
     crdt = None  # type: ignore
 
 router = fastapi.APIRouter()
-
-SYSTEM_PROMPT = """
-You are an assistant for the LynxKite no-code AI workflow builder.
-The user sees the workflow in a visual representation. You have access to it as a file in `workspace.py`, which the user does not see.
-Each function call in `workspace.py` corresponds to a box in the visual representation. Boxes can be connected to each other by their inputs and outputs.
-You may change the layout of the boxes in the visual representation by editing `layout.json`. The user does not see this file, but they will see the updated layout in the visual representation.
-Edit this file to implement the user's requests. `workspace.py` must only contain function calls.
-Keyword arguments must be constants or previous results. Positional arguments are not allowed.
-DO NOT REMOVE or edit any existing code or comments! (unless asked explicitly by the user).
-When adding new comments, make sure to add them above the relevant line of code, so they appear above the box they are associated with.
-New boxes can be added by editing `boxes.py`. Follow the existing conventions in `boxes.py` when defining a new box.
-The new box can be used in `workspace.py` by calling the function from `boxes.py`. The functions are available under a custom module name, specified at the beginning of `boxes.py`.
-You must use existing boxes directly in `workspace.py` without adding them to `boxes.py`.
-You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you MUST FIX ALL ERRORS in the new boxes.
-If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box.
-The module name and usage examples are specified at the beginning of `boxes.py`.
-Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
-"""
 
 
 class AssistantMessage(pydantic.BaseModel):
@@ -81,16 +65,24 @@ def _extract_token_text(token_content: object) -> str:
 
 
 @router.post("/api/assistant/stream")
-async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
+async def assistant_stream(
+    req: AssistantCompletionRequest, skill_root="../.agents/skills"
+) -> StreamingResponse:
     model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
     workspace_backend = WorkspaceBackend(req.workspace)
+    routes = {
+        "/skills/": backends.FilesystemBackend(root_dir=skill_root, virtual_mode=True)
+    }
+    workspace_files_path = (
+        Path(req.workspace).parent / ".workspace_files" / Path(req.workspace).name
+    )
+    if workspace_files_path.exists():
+        routes["/workspace_files/"] = backends.FilesystemBackend(
+            root_dir=str(workspace_files_path), virtual_mode=True
+        )
     backend = backends.CompositeBackend(
         default=workspace_backend,
-        routes={
-            "/skills/": backends.FilesystemBackend(
-                root_dir=("../.agents/skills"), virtual_mode=True
-            )
-        },
+        routes=routes,
     )
     agent = deepagents.create_deep_agent(
         model=model,
@@ -114,7 +106,7 @@ async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse
 
     async def generate():
         response_message = []
-        for chunk in agent.stream(
+        async for chunk in agent.astream(
             {"messages": request_messages},
             stream_mode="messages",
             subgraphs=False,
