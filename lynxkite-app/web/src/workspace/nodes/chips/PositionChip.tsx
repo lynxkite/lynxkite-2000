@@ -114,7 +114,7 @@ export class PositionChip extends BaseChip {
       if (!source || !target) return;
       L.polyline([source, target], {
         color: edge.lineStyle?.color || "#94a3b8",
-        weight: 1.5,
+        weight: Number(series.lineStyle?.width) || 1.5,
         opacity: 0.7,
       }).addTo(map);
     });
@@ -128,12 +128,12 @@ export class PositionChip extends BaseChip {
       const labelText = node.label?.formatter;
 
       const circle = L.circleMarker(point, {
-        radius: 7,
+        radius: node.symbolSize,
         fillColor: node.itemStyle?.color || "#4f46e5",
-        color: "#fff",
-        weight: 1.5,
+        color: "#bbb",
+        weight: 0.5,
         opacity: 1,
-        fillOpacity: 0.85,
+        fillOpacity: 1,
       });
 
       if (labelText) {

@@ -52,6 +52,7 @@ export default function VisualChip({
       onClick={(e) => onEdit(e, index)}
       style={{
         display: "inline-flex",
+        height: 36,
         alignItems: "center",
         background: chip.bg,
         color: chip.text,

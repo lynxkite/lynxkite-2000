@@ -23,12 +23,13 @@ export class LabelChip extends SingleAttributeChip {
 
   apply(context: ChipApplyContext) {
     if (!this.attribute) return;
+
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
       node.label = {
         ...node.label,
         show: true,
-        formatter: String(value),
+        formatter: String(Math.round(Number(value) * 100) / 100),
         position: "top",
       };
     });
