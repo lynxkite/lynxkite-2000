@@ -2,13 +2,6 @@
   "assistant_messages": null,
   "edges": [
     {
-      "id": "Sample graph 1 Visualize graph 1",
-      "source": "Sample graph 1",
-      "sourceHandle": "output",
-      "target": "Visualize graph 1",
-      "targetHandle": "graph"
-    },
-    {
       "id": "SQL 1 View tables 1",
       "source": "SQL 1",
       "sourceHandle": "output",
@@ -49,6 +42,13 @@
       "sourceHandle": "output",
       "target": "SQL 1",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Sample graph 1 output Visualize graph 1 b",
+      "source": "Sample graph 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -291,96 +291,6 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 6,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "airline",
-                  "airline ID",
-                  "codeshare",
-                  "destination airport id",
-                  "destination apirport",
-                  "equipment",
-                  "source",
-                  "source airport",
-                  "source airport id",
-                  "stops",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 11754.0
-              },
-              "nodes": {
-                "columns": [
-                  "alt",
-                  "betweenness_centrality",
-                  "city",
-                  "country",
-                  "dst",
-                  "iata",
-                  "icao",
-                  "id",
-                  "idx",
-                  "lat",
-                  "long",
-                  "name",
-                  "source",
-                  "type",
-                  "tz",
-                  "tz_name"
-                ],
-                "key": "nodes",
-                "length": 1000.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Visualize graph",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "color_nodes_by": "tz"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Visualize graph"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 390.0,
-      "id": "Visualize graph 1",
-      "parentId": null,
-      "position": {
-        "x": 2760.0,
-        "y": 240.0
-      },
-      "type": "visualization",
-      "width": 452.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
         "display_version": null,
         "error": null,
         "expanded_height": null,
@@ -533,7 +443,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 8,
+        "display_version": 55,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -784,7 +694,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 6,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1006,11 +916,7 @@
           }
         ],
         "params": {
-          "endpoints": null,
-          "k": "10",
-          "normalized": null,
-          "seed": null,
-          "weight": null
+          "k": "10"
         },
         "status": "done",
         "telemetry": null,
@@ -1025,7 +931,120 @@
       },
       "type": "basic",
       "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 11754.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "long",
+              "yAttr": "lat"
+            },
+            {
+              "attribute": "tz",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "8",
+              "type": "node_size"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "0.3",
+              "type": "edge_width"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 774.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 2707.941277161725,
+        "y": -120.32985335713502
+      },
+      "type": "graph_visualization",
+      "width": 1155.0
     }
   ],
-  "paused": null
+  "paused": true
 }
