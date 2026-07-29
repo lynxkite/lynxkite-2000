@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from lynxkite_core.folder_settings import resolve_settings_section
+from lynxkite_core.folder_settings import resolve_flat_section, resolve_settings_section
 
 
 def test_resolve_settings_section_merges_parent_and_child(tmp_path: Path):
@@ -105,3 +105,19 @@ def test_resolve_settings_section_accepts_workspace_path_without_suffix(tmp_path
 
     merged = resolve_settings_section(tmp_path, "team", "lim")
     assert merged["Box A"] == {"cpu": "1", "memory": "8Gi"}
+
+
+def test_resolve_flat_section_child_overrides_parent(tmp_path: Path):
+    (tmp_path / "settings.yaml").write_text(
+        yaml.dump({"acl": {"read": ["*"], "write": []}}),
+        encoding="utf-8",
+    )
+    child = tmp_path / "team"
+    child.mkdir()
+    (child / "settings.yaml").write_text(
+        yaml.dump({"acl": {"write": ["group:Eng"]}}),
+        encoding="utf-8",
+    )
+
+    merged = resolve_flat_section(tmp_path, "team/ws.lynxkite.json", "acl")
+    assert merged == {"read": ["*"], "write": ["group:Eng"]}
