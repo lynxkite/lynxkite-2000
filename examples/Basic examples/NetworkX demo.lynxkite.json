@@ -184,7 +184,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2218.0
+                "length": 2185.0
               },
               "nodes": {
                 "columns": [
@@ -222,7 +222,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 233.0
+                "length": 219.0
               },
               "nodes": {
                 "columns": [
@@ -230,7 +230,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -283,7 +283,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 233.0
+                "length": 219.0
               },
               "nodes": {
                 "columns": [
@@ -291,7 +291,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -321,7 +321,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 228.0
+                "length": 213.0
               },
               "nodes": {
                 "columns": [
@@ -329,7 +329,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -511,7 +511,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2218.0
+                "length": 2185.0
               },
               "nodes": {
                 "columns": [
@@ -575,7 +575,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2218.0
+                "length": 2185.0
               },
               "nodes": {
                 "columns": [
@@ -612,7 +612,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2218.0
+                "length": 2185.0
               },
               "nodes": {
                 "columns": [
@@ -675,7 +675,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 228.0
+                "length": 213.0
               },
               "nodes": {
                 "columns": [
@@ -683,7 +683,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -713,7 +713,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 228.0
+                "length": 213.0
               },
               "nodes": {
                 "columns": [
@@ -722,7 +722,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -776,7 +776,7 @@
         "telemetry": null,
         "title": "Comment"
       },
-      "height": 270.0,
+      "height": 271.0,
       "id": "Comment 1",
       "parentId": null,
       "position": {
@@ -791,7 +791,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 24,
+        "display_version": 31,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -865,7 +865,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 23,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -877,7 +877,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 233.0
+                "length": 219.0
               },
               "nodes": {
                 "columns": [
@@ -885,7 +885,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -938,7 +938,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 8,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -950,7 +950,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 228.0
+                "length": 213.0
               },
               "nodes": {
                 "columns": [
@@ -959,7 +959,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 98.0
+                "length": 84.0
               }
             },
             "other": {},
@@ -1012,7 +1012,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 8,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1056,7 +1056,13 @@
           {}
         ],
         "params": {
-          "chip_data": []
+          "chip_data": [
+            {
+              "disabled": "false",
+              "symbolSize": "5",
+              "type": "node_size"
+            }
+          ]
         },
         "status": "done",
         "telemetry": null,
