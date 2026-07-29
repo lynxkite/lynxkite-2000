@@ -61,7 +61,6 @@ def _nodes_and_edges(
     nodes[node_id] = nodes["_table"].astype(str) + "_" + nodes["_id"].astype(str)
     nodes = nodes.drop_duplicates(subset=[node_id])
     nodes = nodes.set_index(node_id, drop=False)
-    nodes = bundle.df_for_frontend(nodes, 10_000)
 
     source_id = "_unique_source"
     target_id = "_unique_target"
@@ -81,10 +80,7 @@ def _nodes_and_edges(
             & edges_df[target_id].astype(str).isin(valid_nodes)
         ]
 
-    edges = edges_df.drop_duplicates([source_id, target_id])
-    edges = bundle.df_for_frontend(edges, 10_000)
-
-    return (nodes, node_id), (edges, source_id, target_id)
+    return (nodes, node_id), (edges_df, source_id, target_id)
 
 
 @op("Visualize graph", view="graph_visualization", icon="eye", color="blue")
@@ -96,15 +92,22 @@ def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
     """
 
     b = b.copy()
-    (nodes, node_id), (edges_df, source_id, target_id) = _nodes_and_edges(b)
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(b)
 
-    pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / len(nodes))))
+    item_count = len(nodes) + len(edges)
+    if item_count < 10000:
+        pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / item_count)))
+    else:
+        pos = {node_id: np.random.rand(2) for node_id in nodes[node_id]}
+
+    edges = bundle.df_for_frontend(edges, 10000)
+    nodes = bundle.df_for_frontend(nodes, 10000)
 
     node_columns = [col for col in nodes.columns]
-    edge_columns = [col for col in edges_df.columns]
+    edge_columns = [col for col in edges.columns]
 
     nodes_dict = nodes.to_dict(orient="index")
-    edges = edges_df.to_records()
+    edges = edges.to_records()
 
     v = {
         "animationDuration": 500,
