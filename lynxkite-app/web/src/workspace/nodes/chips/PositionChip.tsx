@@ -17,6 +17,9 @@ export class PositionChip extends BaseChip {
   mode: string;
   xAttr: string;
   yAttr: string;
+  zoom: string;
+  lat: string;
+  lng: string;
 
   private _map: L.Map | null = null;
   private _mapDiv: HTMLDivElement | null = null;
@@ -31,6 +34,9 @@ export class PositionChip extends BaseChip {
     this.mode = PositionChip.getMode(data);
     this.xAttr = data.xAttr || "";
     this.yAttr = data.yAttr || "";
+    this.zoom = data.zoom || "";
+    this.lat = data.lat || "";
+    this.lng = data.lng || "";
   }
 
   getLabel() {
@@ -44,6 +50,9 @@ export class PositionChip extends BaseChip {
       mode: this.mode,
       xAttr: this.xAttr,
       yAttr: this.yAttr,
+      zoom: this.zoom,
+      lat: this.lat,
+      lng: this.lng,
       type: this.type,
       disabled: String(this.disabled),
     };
@@ -67,6 +76,18 @@ export class PositionChip extends BaseChip {
     if (wasMap) this.cleanup();
   }
 
+  private setupMapListeners(map: L.Map) {
+    const updateViewState = () => {
+      const center = map.getCenter();
+      this.lat = String(center.lat);
+      this.lng = String(center.lng);
+      this.zoom = String(map.getZoom());
+    };
+
+    map.on("moveend", updateViewState);
+    map.on("zoomend", updateViewState);
+  }
+
   private applyMap(context: ChipApplyContext) {
     const { surfaceDiv, series } = context;
     if (
@@ -87,6 +108,7 @@ export class PositionChip extends BaseChip {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this._map);
+      this.setupMapListeners(this._map);
       this._mapDiv = surfaceDiv;
     }
 
@@ -148,7 +170,9 @@ export class PositionChip extends BaseChip {
       circle.addTo(map);
     });
 
-    if (points.length > 0) {
+    if (this.lat != null && this.lng != null && this.zoom != null) {
+      map.setView([Number(this.lat), Number(this.lng)], Number(this.zoom));
+    } else if (points.length > 0) {
       map.fitBounds(L.latLngBounds(points), { padding: [30, 30], maxZoom: 12 });
     }
   }

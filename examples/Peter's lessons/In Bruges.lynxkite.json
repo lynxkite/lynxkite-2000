@@ -3815,10 +3815,13 @@
           "chip_data": [
             {
               "disabled": "false",
+              "lat": "51.21327082549426",
+              "lng": "3.223927396039655",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
-              "yAttr": "lat"
+              "yAttr": "lat",
+              "zoom": "14"
             },
             {
               "disabled": "false",
@@ -4560,10 +4563,13 @@
           "chip_data": [
             {
               "disabled": "false",
+              "lat": "51.212723716990354",
+              "lng": "3.2248344013736934",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
-              "yAttr": "lat"
+              "yAttr": "lat",
+              "zoom": "14"
             },
             {
               "attribute": "new_node_type",
@@ -4573,7 +4579,7 @@
             },
             {
               "disabled": "false",
-              "symbolSize": "5",
+              "symbolSize": "10",
               "type": "node_size"
             },
             {
@@ -5065,10 +5071,13 @@
           "chip_data": [
             {
               "disabled": "false",
+              "lat": "51.214087161567875",
+              "lng": "3.2279870641916597",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
-              "yAttr": "lat"
+              "yAttr": "lat",
+              "zoom": "14"
             },
             {
               "attribute": "shortest_distance",
@@ -5612,10 +5621,13 @@
             },
             {
               "disabled": "false",
+              "lat": "51.21151282919938",
+              "lng": "3.2269013433327625",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
-              "yAttr": "lat"
+              "yAttr": "lat",
+              "zoom": "14"
             },
             {
               "disabled": "false",
