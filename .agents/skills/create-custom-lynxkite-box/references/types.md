@@ -1,7 +1,7 @@
 ## Here you can see some of the defined types in LynxKite
 
 ### Bundle
-Here is a skeleton of type python code of `Bundle`:
+Here is a skeleton of type python code of `Bundle`
 ```
 @dataclasses.dataclass
 class Bundle:
@@ -59,6 +59,12 @@ class BundleTableView:
         return BundleTableView(dataframes=dataframes, relations=bundle.relations, other=other)
 ```
 
+You can use this class like this:
+```
+from lynxkite_graph_analytics import core
+core.Bundle
+```
+
 ## Parameter types
 Here you can find some types you can use as parameters in your custom boxes.
 
@@ -68,6 +74,8 @@ as a query on the input_metadata. These query expressions are JMESPath expressio
 Parameter names in angle brackets, like <table_name>, will be replaced with the parameter values. (This is not part of JMESPath.)
 eg. ColumnNameByTableName will list the columns of the DataFrame with the name
 specified by the `table_name` parameter.
+
+You can use them by importing `lynxkite_graph_analytics.core`.
 
 ### TableName
 ```
