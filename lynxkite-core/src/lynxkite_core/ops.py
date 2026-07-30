@@ -307,6 +307,7 @@ class Op(BaseConfig):
     # Automatically set from `func`.
     python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
     placeholder_function_name: bool = pydantic.Field(default=False)
+    tags: list[str] | None = None
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
@@ -440,6 +441,7 @@ def op(
     [*categories, name] = names
 
     def decorator(func):
+        tags = []
         doc = parse_doc(func)
         sig = inspect.signature(func)
         _view = view
@@ -448,6 +450,7 @@ def op(
             func = matplotlib_to_image(func)
         ctx_name, ctx_idx = find_ctx_param_name(func)
         if slow:
+            tags.append("slow")
             func = make_async(func)
             if cache is not False:
                 if ctx_name is None or ctx_idx is None:
@@ -501,6 +504,7 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
+            tags=tags,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
