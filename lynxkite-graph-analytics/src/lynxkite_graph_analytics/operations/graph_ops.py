@@ -204,10 +204,12 @@ def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root
     if super_root not in T or len(T) <= 1:
         return 0.0, set(), set(), set()
 
-    sel_nodes = set(T.nodes) - {super_root}
+    rooted_nodes = nx.node_connected_component(T, super_root)
+
+    sel_nodes = rooted_nodes - {super_root}
     sel_roots = {r for r in eligible_root_nodes if T.has_edge(super_root, r)}
     sel_edges = {
-        (u, v) if u < v else (v, u) for u, v in T.edges if u != super_root and v != super_root
+        (u, v) if u < v else (v, u) for u, v in T.edges if u in sel_nodes and v in sel_nodes
     }
 
     profit = (
@@ -219,7 +221,7 @@ def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root
     return max(0.0, float(profit)), sel_nodes, sel_roots, sel_edges
 
 
-@op("Steiner forest", icon="eye", color="blue", slow=True)
+@op("Steiner forest", icon="binary-tree", slow=True)
 def pcsf(
     b: core.Bundle,
     *,
@@ -306,8 +308,8 @@ def pcsf(
     if "root_cost_sanitized" in node_df.columns:
         node_df.drop(columns=["root_cost_sanitized"], inplace=True)
 
-    b.dfs[rel.source_table] = node_df.astype(object).where(node_df.notnull(), None)
-    b.dfs[rel.df] = edge_df.astype(object).where(edge_df.notnull(), None)
+    b.dfs[rel.source_table] = node_df
+    b.dfs[rel.df] = edge_df
     return b
 
 

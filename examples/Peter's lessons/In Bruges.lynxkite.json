@@ -86,27 +86,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Derive with SQL 1 output Filter with formula 3 b",
-      "source": "Derive with SQL 1",
-      "sourceHandle": "output",
-      "target": "Filter with formula 3",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Filter with formula 3 output Visualize graph 1 b",
-      "source": "Filter with formula 3",
-      "sourceHandle": "output",
-      "target": "Visualize graph 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Derive with SQL 1 output Filter with formula 2 b",
-      "source": "Derive with SQL 1",
-      "sourceHandle": "output",
-      "target": "Filter with formula 2",
-      "targetHandle": "b"
-    },
-    {
       "id": "Supplement edges with node attributes 1 output Derive segment_length 1 b",
       "source": "Supplement edges with node attributes 1",
       "sourceHandle": "output",
@@ -132,13 +111,6 @@
       "source": "Steiner forest 2",
       "sourceHandle": "output",
       "target": "Fill attributes with default values 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Filter with formula 2 output Visualize graph 2 b",
-      "source": "Filter with formula 2",
-      "sourceHandle": "output",
-      "target": "Visualize graph 2",
       "targetHandle": "b"
     },
     {
@@ -217,6 +189,55 @@
       "source": "Filter with formula 6",
       "sourceHandle": "output",
       "target": "Visualize graph 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 2 output Filter with formula 7 b",
+      "source": "Filter with formula 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 7",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 3 output Filter with formula 8 b",
+      "source": "Filter with formula 3",
+      "sourceHandle": "output",
+      "target": "Filter with formula 8",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 8 output Visualize graph 1 b",
+      "source": "Filter with formula 8",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 7 output Visualize graph 2 b",
+      "source": "Filter with formula 7",
+      "sourceHandle": "output",
+      "target": "Visualize graph 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive with SQL 1 output Supplement edges with node attributes 2 b",
+      "source": "Derive with SQL 1",
+      "sourceHandle": "output",
+      "target": "Supplement edges with node attributes 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Supplement edges with node attributes 2 output Filter with formula 3 b",
+      "source": "Supplement edges with node attributes 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Supplement edges with node attributes 2 output Filter with formula 2 b",
+      "source": "Supplement edges with node attributes 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 2",
       "targetHandle": "b"
     }
   ],
@@ -311,7 +332,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 446.0,
+      "height": 456.0,
       "id": "Import CSV 2",
       "measured": {
         "height": 635.0,
@@ -367,7 +388,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 609.0,
+      "height": 618.0,
       "id": "Import CSV 3",
       "measured": {
         "height": 635.0,
@@ -423,7 +444,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 454.0,
+      "height": 450.0,
       "id": "Import CSV 4",
       "measured": {
         "height": 635.0,
@@ -3573,11 +3594,23 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
                 "length": 24746.0
@@ -3631,7 +3664,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2196.0
+                "length": 2175.0
               },
               "profit": {
                 "columns": [
@@ -3665,11 +3698,23 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
                 "length": 24746.0
@@ -3702,8 +3747,8 @@
       "id": "Filter with formula 3",
       "parentId": null,
       "position": {
-        "x": 10146.100375169055,
-        "y": 611.8134002496416
+        "x": 10448.053741350417,
+        "y": 684.6986955347985
       },
       "type": "basic",
       "width": 315.0
@@ -3713,7 +3758,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 17,
+        "display_version": 37,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3746,7 +3791,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2196.0
+                "length": 2175.0
               },
               "profit": {
                 "columns": [
@@ -3780,14 +3825,26 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 4400.0
               }
             },
             "other": {},
@@ -3815,8 +3872,8 @@
           "chip_data": [
             {
               "disabled": "false",
-              "lat": "51.21327082549426",
-              "lng": "3.223927396039655",
+              "lat": "51.20974511409714",
+              "lng": "3.228107375252334",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
@@ -3836,11 +3893,11 @@
             },
             {
               "disabled": "false",
-              "symbolSize": "5",
+              "symbolSize": "3",
               "type": "node_size"
             },
             {
-              "attribute": "new_node_type",
+              "attribute": "rootpoints",
               "continuous": "false",
               "disabled": "false",
               "type": "node_color"
@@ -3855,8 +3912,8 @@
       "id": "Visualize graph 1",
       "parentId": null,
       "position": {
-        "x": 10646.40589348337,
-        "y": 159.90284335507627
+        "x": 11514.336412784809,
+        "y": 169.69889887766587
       },
       "type": "graph_visualization",
       "width": 713.0
@@ -3933,11 +3990,23 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
                 "length": 24746.0
@@ -3991,7 +4060,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2201.0
+                "length": 2190.0
               },
               "profit": {
                 "columns": [
@@ -4025,11 +4094,23 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
                 "length": 24746.0
@@ -4059,7 +4140,7 @@
         "title": "Filter with formula"
       },
       "dragHandle": ".drag-handle",
-      "height": 298.0,
+      "height": 285.0,
       "id": "Filter with formula 2",
       "measured": {
         "height": 315.0,
@@ -4067,8 +4148,8 @@
       },
       "parentId": null,
       "position": {
-        "x": 10123.467397603667,
-        "y": 981.278410882862
+        "x": 10448.214938132622,
+        "y": 1085.4524644404976
       },
       "selected": false,
       "type": "basic",
@@ -4461,7 +4542,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 15,
+        "display_version": 35,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4494,7 +4575,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2201.0
+                "length": 2190.0
               },
               "profit": {
                 "columns": [
@@ -4528,14 +4609,26 @@
                   "location_src",
                   "lon_dst",
                   "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
                   "node_type_dst",
                   "node_type_src",
                   "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
                   "segment_length",
-                  "src_id"
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 4406.0
               }
             },
             "other": {},
@@ -4563,8 +4656,8 @@
           "chip_data": [
             {
               "disabled": "false",
-              "lat": "51.212723716990354",
-              "lng": "3.2248344013736934",
+              "lat": "51.21251255952397",
+              "lng": "3.225026901526431",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
@@ -4599,15 +4692,15 @@
         "telemetry": null,
         "title": "Visualize graph"
       },
-      "height": 712.0,
+      "height": 799.0,
       "id": "Visualize graph 2",
       "parentId": null,
       "position": {
-        "x": 10664.906785206325,
-        "y": 977.4110812656344
+        "x": 11515.204404567103,
+        "y": 1002.8808256243673
       },
       "type": "graph_visualization",
-      "width": 729.0
+      "width": 606.0
     },
     {
       "data": {
@@ -4982,7 +5075,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 7,
+        "display_version": 27,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5529,7 +5622,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 22,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5649,6 +5742,700 @@
       },
       "type": "graph_visualization",
       "width": 829.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 2190.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 2190.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 4406.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type_src in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\", \"STATION NOT USED\", \"CLIENT NOT REACHED\"] & new_node_type_dst in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\", \"STATION NOT USED\", \"CLIENT NOT REACHED\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 343.0,
+      "id": "Filter with formula 7",
+      "measured": {
+        "height": 343.0,
+        "width": 331.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 10889.760679710867,
+        "y": 1057.3317199985238
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 2175.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 2175.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 4400.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type_src in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\"] & new_node_type_dst in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 343.0,
+      "id": "Filter with formula 8",
+      "measured": {
+        "height": 343.0,
+        "width": 331.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 10872.345091298796,
+        "y": 669.031174015562
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Supplement edges with node attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Supplement edges with node attributes"
+      },
+      "height": 315.0,
+      "id": "Supplement edges with node attributes 2",
+      "parentId": null,
+      "position": {
+        "x": 10046.432132030557,
+        "y": 907.7571110451466
+      },
+      "type": "basic",
+      "width": 315.0
     }
   ],
   "paused": true
