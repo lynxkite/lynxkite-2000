@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "lynxkite": {
+      "command": ".venv/bin/python",
+      "cwd": "DIR_lynxkite-2000",
+      "args": ["lynxkite-mcp/src/lynxkite_mcp/assistant_mcp.py"]
+    }
+  }
+}

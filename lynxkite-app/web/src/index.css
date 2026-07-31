@@ -139,6 +139,15 @@ svg {
   flex-direction: column;
   height: 100vh;
 
+  &.read-only {
+    .react-flow__node input,
+    .react-flow__node select,
+    .react-flow__node textarea,
+    .react-flow__node button:not(.drag-handle):not([data-allow-readonly]) {
+      pointer-events: none;
+    }
+  }
+
   .top-bar {
     display: flex;
     align-items: center;

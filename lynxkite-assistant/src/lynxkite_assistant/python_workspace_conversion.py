@@ -53,6 +53,11 @@ def _rec_convert(arg_value: ast.expr, error_msg: str):
         return [_rec_convert(item, error_msg) for item in arg_value.elts]
     if isinstance(arg_value, ast.Tuple):
         return tuple(_rec_convert(item, error_msg) for item in arg_value.elts)
+    if isinstance(arg_value, ast.Dict):
+        return {
+            _rec_convert(k, error_msg): _rec_convert(v, error_msg)
+            for k, v in zip(arg_value.keys, arg_value.values)
+        }
     raise AssertionError(error_msg)
 
 
@@ -114,7 +119,7 @@ def parse_args(
 
 
 def python_to_workspace(
-    code: str, error_on_unknown_ops: bool = True
+    code: str, error_on_unknown_ops: bool = False
 ) -> workspace.Workspace:
     catalog = _get_catalog()
     tree = ast.parse(code)

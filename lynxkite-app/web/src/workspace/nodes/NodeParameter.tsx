@@ -139,6 +139,16 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         options={getDropDownValues(data, meta?.type?.metadata_query1)}
       />
     </label>
+  ) : meta?.type?.format === "dropdown-simple_adder" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownTextAdder
+        value={value ?? []}
+        onChange={onChange}
+        options={meta.type?.options1}
+        defaultValues={meta.type?.default_values}
+      />
+    </label>
   ) : meta?.type?.format === "dropdown-multidropdown_adder" ? (
     <div className="param">
       <ParamName name={name} doc={doc} />
