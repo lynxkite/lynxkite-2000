@@ -218,7 +218,9 @@ def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root
         - sum(float(root_costs.get(r, 0.0)) for r in sel_roots)
     )
 
-    return max(0.0, float(profit)), sel_nodes, sel_roots, sel_edges
+    if profit < 0.0:
+        return 0.0, set(), set(), set()
+    return profit, sel_nodes, sel_roots, sel_edges
 
 
 @op("Steiner forest", icon="binary-tree", slow=True)

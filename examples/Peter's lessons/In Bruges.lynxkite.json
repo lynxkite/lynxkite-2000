@@ -3758,7 +3758,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 37,
+        "display_version": 38,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3872,8 +3872,8 @@
           "chip_data": [
             {
               "disabled": "false",
-              "lat": "51.20974511409714",
-              "lng": "3.228107375252334",
+              "lat": "51.21329929897996",
+              "lng": "3.2227984195201036",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
@@ -3897,7 +3897,7 @@
               "type": "node_size"
             },
             {
-              "attribute": "rootpoints",
+              "attribute": "new_node_type",
               "continuous": "false",
               "disabled": "false",
               "type": "node_color"
@@ -4542,7 +4542,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 35,
+        "display_version": 36,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5075,7 +5075,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 27,
+        "display_version": 28,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5622,7 +5622,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 22,
+        "display_version": 23,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
