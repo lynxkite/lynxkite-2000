@@ -1,4 +1,10 @@
-import { Handle, NodeResizeControl, type Position, useEdges, useNodeConnections, useReactFlow } from "@xyflow/react";
+import {
+  Handle,
+  NodeResizeControl,
+  type Position,
+  useNodeConnections,
+  useReactFlow,
+} from "@xyflow/react";
 import Color from "colorjs.io";
 import React, { memo, useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -6,11 +12,11 @@ import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
-import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
-import { LynxKiteState } from "../LynxKiteState.ts";
+import { LynxKiteNodeState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
 import { NodeProgress } from "./ProgressBar.tsx";
 
@@ -172,11 +178,11 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const connections = useNodeConnections({ id: props.id });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const state = useContext(LynxKiteState);
+  const { iconized: iconizedGlobal } = useContext(LynxKiteNodeState);
   const canIconize =
     !data.collapsed &&
     !["visualization", "graph_visualization", "image", "molecule"].includes(props.type);
-  const iconized = state.iconized && canIconize;
+  const iconized = iconizedGlobal && canIconize;
   const handles = getHandles(
     connections,
     props.id,
@@ -228,19 +234,23 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     left: "top",
     right: "top",
   };
-  // const color = useMemo(() => new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)"), [meta.color]);
-  const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
-  const titleStyle = { backgroundColor: color.toString() };
-  color.lch[0] = 20;
-  color.alpha = 0.5;
-  const borderColor = color.toString();
-  color.lch[1] = 50;
-  color.alpha = 0.25;
-  const nodeStyle = {
-    ...props.nodeStyle,
-    borderColor,
-    boxShadow: `0px 5px 30px 0px ${color.toString()}`,
-  };
+  // Building a Color and doing LCH conversions is surprisingly expensive, so we
+  // only recompute the derived styles when the node's color actually changes.
+  const { titleStyle, nodeStyle } = useMemo(() => {
+    const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
+    const titleStyle = { backgroundColor: color.toString() };
+    color.lch[0] = 20;
+    color.alpha = 0.5;
+    const borderColor = color.toString();
+    color.lch[1] = 50;
+    color.alpha = 0.25;
+    const nodeStyle = {
+      ...props.nodeStyle,
+      borderColor,
+      boxShadow: `0px 5px 30px 0px ${color.toString()}`,
+    };
+    return { titleStyle, nodeStyle };
+  }, [meta.color, props.nodeStyle]);
   const titleTooltip = data.collapsed ? "Click to expand node" : summary;
 
   return (
@@ -358,45 +368,26 @@ function Icon({ name }: { name: string }) {
   return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
 }
 
-// Custom comparator to safely ignore object reference changes and position changes
-// function areNodePropsEqual(prev: any, next: any) {
-//   const d1 = prev.data;
-//   const d2 = next.data;
-//   if (prev.id === next.id &&
-//     prev.selected === next.selected &&
-//     prev.dragging === next.dragging &&
-//     d1.crdtWidth === d2.crdtWidth &&
-//     d1.crdtHeight === d2.crdtHeight &&
-//     d1.collapsed === d2.collapsed &&
-//     d1.status === d2.status &&
-//     d1.error === d2.error &&
-//     d1.message === d2.message &&
-//     d1.op_id === d2.op_id) {
-//     console.log("falling back to param comparison");
-//     // Only stringify the tiny params object, NEVER the massive 'meta' object!
-//     if (JSON.stringify(d1.params) === JSON.stringify(d2.params)) {
-//       return true;
-//     }
-//   }
-//   return false;
-
-//   // return (
-//   // );
-// }
-// 1. Blazing fast object comparison (nanoseconds instead of milliseconds)
+// Fast shallow equality check used by the node memo comparator. Avoids the cost
+// of JSON.stringify on the params object.
 function shallowCompare(obj1: any, obj2: any) {
   if (obj1 === obj2) return true;
   if (!obj1 || !obj2) return false;
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
   if (keys1.length !== keys2.length) return false;
-  for (let i = 0; i < keys1.length; i++) {
-    if (obj1[keys1[i]] !== obj2[keys1[i]]) return false;
+  for (const key of keys1) {
+    if (obj1[key] !== obj2[key]) return false;
   }
   return true;
 }
 
-// 2. The perfect comparator
+// Custom comparator so a node only re-renders when something it actually shows
+// changes. Reference-equality is avoided for `params` because the CRDT rebuilds
+// the whole node object (and thus every nested reference) on every update. For
+// the same reason we deliberately do NOT compare churning objects like
+// `telemetry` / `output_metadata` by reference here; they piggy-back on the
+// status/message changes that accompany them.
 function areNodePropsEqual(prev: any, next: any) {
   const d1 = prev.data;
   const d2 = next.data;
@@ -405,14 +396,15 @@ function areNodePropsEqual(prev: any, next: any) {
     prev.id === next.id &&
     prev.selected === next.selected &&
     prev.dragging === next.dragging &&
-    prev.width === next.width &&     // <-- Fixes the resize glitch organically!
-    prev.height === next.height &&   // <-- Fixes the resize glitch organically!
+    prev.width === next.width &&
+    prev.height === next.height &&
     d1.collapsed === d2.collapsed &&
     d1.status === d2.status &&
     d1.error === d2.error &&
     d1.message === d2.message &&
     d1.op_id === d2.op_id &&
-    shallowCompare(d1.params, d2.params) // <-- Microsecond check, NO JSON.stringify!
+    d1.display_version === d2.display_version &&
+    shallowCompare(d1.params, d2.params)
   );
 }
 
@@ -446,7 +438,7 @@ function UnknownOperationNode(props: { op_id: string; onChange: (newName: string
           )}
         </div>
         <NodeSearchInternal
-          onCancel={() => { }}
+          onCancel={() => {}}
           onClick={(op: OpsOp) => op.id && props.onChange(op.id)}
           categoryHierarchy={categoryHierarchy}
         />

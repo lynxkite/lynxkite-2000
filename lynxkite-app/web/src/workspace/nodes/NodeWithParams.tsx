@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import React, { memo } from "react";
+import React from "react";
 import Triangle from "~icons/tabler/triangle-inverted-filled.jsx";
 import LynxKiteNode from "./LynxKiteNode";
 import NodeParameter, { type UpdateOptions } from "./NodeParameter";
@@ -40,4 +40,7 @@ export function NodeWithParams(props: any) {
   );
 }
 
-export default memo(LynxKiteNode(NodeWithParams));
+// `LynxKiteNode` already wraps the component in `memo` with a custom comparator,
+// so no extra `memo` is needed here (a default one would always miss because the
+// CRDT rebuilds `data` on every update).
+export default LynxKiteNode(NodeWithParams);

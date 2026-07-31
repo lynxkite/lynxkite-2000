@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { useEffect, useState, memo } from "react";
+import { memo, useEffect, useState } from "react";
 
 interface InlineSvgProps {
   src?: string;

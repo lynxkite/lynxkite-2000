@@ -17,6 +17,12 @@ import * as Y from "yjs";
 import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 import { getWebSocketParams } from "../common.ts";
 
+// How often (ms) to broadcast a node's position to collaborators while it is
+// being dragged. Every animation frame (~16ms) would flood the backend; only
+// committing on drag-end would hide live movement from other users. ~20 Hz is a
+// good balance for smooth remote movement without overloading the sync/save.
+const POSITION_BROADCAST_INTERVAL_MS = 50;
+
 function endpointSignature(endpoints: any[] | undefined) {
   return (endpoints || []).map((x) => `${x?.name ?? ""}:${x?.position ?? ""}`).join("|");
 }
@@ -57,6 +63,7 @@ type CRDTWorkspace = {
   addEdge: (edge: Partial<WorkspaceEdge>) => void;
   onFENodesChange?: (changes: any[]) => void;
   onFEEdgesChange?: (changes: any[]) => void;
+  finalizeDrag: () => void;
   undo: () => void;
   redo: () => void;
 };
@@ -92,6 +99,12 @@ class CRDTConnection {
   state: CRDTWorkspace;
   observers: Set<() => void> = new Set();
   canWrite = true;
+  // Node ids this client is currently dragging. While a node is here we treat
+  // the local position as authoritative and ignore backend echoes for it, so
+  // the backend's save/reload cycle can't snap it backward mid-drag.
+  draggingNodeIds: Set<string> = new Set();
+  // Last time (ms) we broadcast each dragged node's position to collaborators.
+  lastPositionBroadcast: Map<string, number> = new Map();
   constructor(
     reactFlow: ReturnType<typeof useReactFlow>,
     updateNodeInternals: (id: string) => void,
@@ -171,6 +184,7 @@ class CRDTConnection {
       },
       onFENodesChange: this.onFENodesChange,
       onFEEdgesChange: this.onFEEdgesChange,
+      finalizeDrag: this.finalizeDrag,
       applyChange: (fn: (conn: CRDTConnection) => void) => {
         if (!this.canWrite) return;
         this.doc.transact(() => {
@@ -206,6 +220,40 @@ class CRDTConnection {
     }
   };
 
+  // Called when a drag gesture ends (from ReactFlow's onNodeDragStop). Commits
+  // the final position of every node that was being dragged and releases local
+  // authority, so the next backend update is applied normally. This is a safety
+  // net: normally the `dragging === false` position change already committed,
+  // but onNodeDragStop is guaranteed to fire and also covers multi-node drags.
+  finalizeDrag = () => {
+    if (this.draggingNodeIds.size === 0) return;
+    const draggedIds = [...this.draggingNodeIds];
+    this.draggingNodeIds.clear();
+    this.lastPositionBroadcast.clear();
+    if (this.canWrite) {
+      const wnodes = this.ws.get("nodes") as Y.Array<any>;
+      const idToIndex = new Map<string, number>();
+      wnodes.forEach((n: Y.Map<any>, i: number) => {
+        idToIndex.set(n.get("id"), i);
+      });
+      this.doc.transact(() => {
+        for (const id of draggedIds) {
+          const idx = idToIndex.get(id);
+          if (idx === undefined) continue;
+          const node = wnodes.get(idx) as Y.Map<any>;
+          const fe = this.state.feNodes.find((n) => n.id === id);
+          if (!fe) continue;
+          const cur = node.get("position");
+          if (cur.x !== fe.position.x || cur.y !== fe.position.y) {
+            node.set("position", { x: fe.position.x, y: fe.position.y });
+          }
+        }
+      });
+    }
+    // Reconcile local state with the CRDT now that the drag is over.
+    this.updateState();
+  };
+
   setCanWrite = (canWrite: boolean) => {
     this.canWrite = canWrite;
   };
@@ -239,15 +287,41 @@ class CRDTConnection {
       const node = wnodes.get(nodeIndex) as Y.Map<any>;
       // Position events sometimes come with NaN values. Ignore them.
       if (ch.type === "position" && !Number.isNaN(ch.position.x) && !Number.isNaN(ch.position.y)) {
-        if (node.get("position").x === ch.position.x && node.get("position").y === ch.position.y) {
-          continue;
+        // applyNodeChanges() above already updated the ReactFlow state, so the
+        // local view stays smooth via updateFEState() (no full toJSON()).
+        const fe = this.state.feNodes.find((n) => n.id === ch.id);
+        const pos = fe?.position ?? ch.position;
+        const current = node.get("position");
+        const moved = current.x !== pos.x || current.y !== pos.y;
+        if (ch.dragging) {
+          // Active drag. Broadcast the position to collaborators at a throttled
+          // rate so they see live movement, without writing on every frame
+          // (which floods the backend). We keep this node authoritative locally
+          // (updateState() ignores backend echoes for `draggingNodeIds`), so the
+          // backend's save/reload cycle can't snap it back mid-drag.
+          this.draggingNodeIds.add(ch.id);
+          const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+          const last = this.lastPositionBroadcast.get(ch.id) ?? 0;
+          if (moved && now - last >= POSITION_BROADCAST_INTERVAL_MS) {
+            this.lastPositionBroadcast.set(ch.id, now);
+            this.doc.transact(() => {
+              node.set("position", { x: pos.x, y: pos.y });
+            });
+          }
+        } else {
+          // Drag finished (dragging === false) or a programmatic move
+          // (dragging === undefined): commit the final position for everyone.
+          this.draggingNodeIds.delete(ch.id);
+          this.lastPositionBroadcast.delete(ch.id);
+          if (moved) {
+            wsChanged = true;
+            this.doc.transact(() => {
+              node.set("position", { x: pos.x, y: pos.y });
+            });
+          }
+          // Recompute handle/edge geometry once the move has settled.
+          this.updateNodeInternals(ch.id);
         }
-        wsChanged = true;
-        this.doc.transact(() => {
-          node.set("position", { x: ch.position.x, y: ch.position.y });
-        });
-        // Update edge positions.
-        this.updateNodeInternals(ch.id);
       } else if (ch.type === "select") {
       } else if (ch.type === "dimensions") {
         if (
@@ -358,6 +432,14 @@ class CRDTConnection {
         n.dragHandle = ".drag-handle";
       }
       const mergedNode = { ...oldNodes[n.id], ...n };
+
+      // While this client is actively dragging a node, keep the local live
+      // position and ignore the backend's echo (e.g. the slightly stale position
+      // it re-broadcasts after autosaving the workspace to disk). Otherwise the
+      // node would snap backward mid-drag.
+      if (this.draggingNodeIds.has(n.id) && oldNodes[n.id]?.position) {
+        mergedNode.position = oldNodes[n.id].position;
+      }
 
       // Clean up parent-child properties that may be stale from the old ReactFlow node.
       if (!n.parentId) {
