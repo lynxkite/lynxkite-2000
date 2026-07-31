@@ -378,6 +378,7 @@ class HeteroGraphEncoder(nn.Module):
 
 @pdx_op("Draw timeseries", view="matplotlib")
 def draw_timeseries(
+    self,
     b: core.Bundle,
     *,
     index: int = 0,

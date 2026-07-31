@@ -28,9 +28,7 @@ parameters:
   - weight: str | None = weight --Edge data key corresponding to the edge weight.
 If key not found, uses 1 as weight.
   - G: <class 'networkx.classes.graph.Graph'> = ? --Undirected graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.matching.min_weight_matching(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.matching.min_weight_matching(weight=<weight_value>, G=<G_variable>)

@@ -6,9 +6,7 @@ information on the internal organization of each k-shell. It is usually
 used alongside the `core numbers`.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph without self loops.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.core.onion_layers(G=<G_variable>)
+  output_variable = networkx.algorithms.core.onion_layers(G=<G_variable>)

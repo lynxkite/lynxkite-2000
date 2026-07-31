@@ -7,9 +7,7 @@ a node are guaranteed to be in a following generation. Nodes are guaranteed to
 be in the earliest possible generation that they can belong to.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.topological_generations(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.topological_generations(G=<G_variable>)

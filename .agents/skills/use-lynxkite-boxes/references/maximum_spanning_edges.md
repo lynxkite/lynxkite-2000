@@ -16,9 +16,7 @@ If `G` is not a multigraph, this is ignored.
 If `ignore_nan is True` then that edge is ignored instead.
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph. If `G` is connected, then the algorithm finds a
 spanning tree. Otherwise, a spanning forest is found.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.tree.mst.maximum_spanning_edges(algorithm=<algorithm_value>, weight=<weight_value>, keys=<keys_value>, data=<data_value>, ignore_nan=<ignore_nan_value>, G=<G_variable>)

@@ -11,9 +11,7 @@ Node labels are the integers 0 to 2*n - 1.
     >>> nx.draw(nx.ladder_graph(5))
 parameters:
   - n: <class 'int'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.ladder_graph(n=<n_value>)
+  output_variable = networkx.generators.classic.ladder_graph(n=<n_value>)

@@ -1,11 +1,9 @@
 **View tables:**
 
-parameters:
-  - limit: <class 'int'> = 100 --?
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("View tables", view="table_view", color="blue", icon="table-filled")
+def view_tables(bundle: core.Bundle, *, _tables_open: str = "", limit: int = 100):
+    _tables_open = _tables_open  # The frontend uses this parameter to track which tables are open.
+    return bundle.to_table_view(limit=limit)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.basic_ops.view_tables(limit=<limit_value>, bundle=<bundle_variable>)
+```

@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Example image table 1 View tables 1",
@@ -60,6 +61,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Example image table 1",
+      "parentId": null,
       "position": {
         "x": 80.0,
         "y": 40.0
@@ -71,7 +73,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -106,6 +108,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": 40.0
@@ -144,7 +147,8 @@
         "params": {
           "columns": "<from file>",
           "filename": "uploads/molecules2.csv",
-          "separator": "<auto>"
+          "separator": "<auto>",
+          "table_name": "records"
         },
         "status": "done",
         "telemetry": null,
@@ -153,6 +157,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Import CSV 1",
+      "parentId": null,
       "position": {
         "x": 80.0,
         "y": -320.0
@@ -164,7 +169,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -200,6 +205,7 @@
       "dragHandle": ".bg-primary",
       "height": 520.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 920.0,
         "y": -320.0
@@ -264,6 +270,7 @@
       },
       "height": 320.0,
       "id": "Fetch molecule images 1",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": -320.0

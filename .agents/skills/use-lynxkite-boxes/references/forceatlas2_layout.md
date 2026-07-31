@@ -26,9 +26,7 @@ if None, the random number generator is the RandomState instance used
 by numpy.random.
   - dim: <class 'int'> = 2 --Sets the dimensions for the layout. Ignored if `pos` is provided.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph to be laid out.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.drawing.layout.forceatlas2_layout(max_iter=<max_iter_value>, jitter_tolerance=<jitter_tolerance_value>, scaling_ratio=<scaling_ratio_value>, gravity=<gravity_value>, distributed_action=<distributed_action_value>, strong_gravity=<strong_gravity_value>, weight=<weight_value>, linlog=<linlog_value>, seed=<seed_value>, dim=<dim_value>, G=<G_variable>)
+  output_variable = networkx.drawing.layout.forceatlas2_layout(max_iter=<max_iter_value>, jitter_tolerance=<jitter_tolerance_value>, scaling_ratio=<scaling_ratio_value>, gravity=<gravity_value>, distributed_action=<distributed_action_value>, strong_gravity=<strong_gravity_value>, weight=<weight_value>, linlog=<linlog_value>, seed=<seed_value>, dim=<dim_value>, G=<G_variable>)

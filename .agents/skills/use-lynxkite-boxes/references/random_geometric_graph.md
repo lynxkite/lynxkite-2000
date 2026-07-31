@@ -19,9 +19,7 @@ This should not be confused with the `p` of an Erdős-Rényi random
 graph, which represents probability.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.geometric.random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)
+  output_variable = networkx.generators.geometric.random_geometric_graph(radius=<radius_value>, dim=<dim_value>, p=<p_value>, seed=<seed_value>)

@@ -13,9 +13,7 @@ For information about self-loops and more discussion, see the **Notes**
 section below.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX Graph, DiGraph, MultiGraph, or MultiDigraph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.line.line_graph(G=<G_variable>)
+  output_variable = networkx.generators.line.line_graph(G=<G_variable>)

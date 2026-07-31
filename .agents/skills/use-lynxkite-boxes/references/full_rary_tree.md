@@ -13,9 +13,7 @@ leaves to its right." [1]_
 parameters:
   - r: <class 'int'> = ? --branching factor of the tree
   - n: <class 'int'> = ? --Number of nodes in the tree
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.full_rary_tree(r=<r_value>, n=<n_value>)
+  output_variable = networkx.generators.classic.full_rary_tree(r=<r_value>, n=<n_value>)

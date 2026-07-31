@@ -18,10 +18,7 @@ This construction requires to compute squares in general finite fields and is
 not what is implemented here (i.e `paley_graph(25)` does not return the true
 Paley graph associated with $5^2$).
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.expanders.paley_graph()
+  output_variable = networkx.generators.expanders.paley_graph()

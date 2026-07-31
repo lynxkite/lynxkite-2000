@@ -11,10 +11,7 @@ a problem if your row is entirely numeric and a mix of ints and floats. In
 that case, all values will be returned as floats. See the
 DataFrame.iterrows documentation for an example.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.convert_matrix.from_pandas_edgelist()
+  output_variable = networkx.convert_matrix.from_pandas_edgelist()

@@ -8,10 +8,7 @@ It is the only regular graph of vertex degree 7, diameter 2, and girth 5.
 It is the unique (7,5)-cage graph and Moore graph, and contains many
 copies of the Petersen Graph [2]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.hoffman_singleton_graph()
+  output_variable = networkx.generators.small.hoffman_singleton_graph()

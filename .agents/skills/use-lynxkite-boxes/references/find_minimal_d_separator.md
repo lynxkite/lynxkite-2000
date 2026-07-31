@@ -17,9 +17,7 @@ the subgraph of G consisting of only the ancestors of `x` and `y`.
 For full details, see [1]_.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx DAG.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.d_separation.find_minimal_d_separator(G=<G_variable>)
+  output_variable = networkx.algorithms.d_separation.find_minimal_d_separator(G=<G_variable>)

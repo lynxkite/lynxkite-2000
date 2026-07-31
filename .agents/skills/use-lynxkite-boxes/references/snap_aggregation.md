@@ -35,9 +35,7 @@ parameters:
   - supernode_attribute: <class 'str'> = group --The node attribute for recording the supernode groupings of nodes. Defaults to 'group'.
   - superedge_attribute: <class 'str'> = types --The edge attribute for recording the edge types of multiple edges. Defaults to 'types'.
   - G: <class 'networkx.classes.graph.Graph'> = ? --Networkx Graph to be summarized
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.summarization.snap_aggregation(prefix=<prefix_value>, supernode_attribute=<supernode_attribute_value>, superedge_attribute=<superedge_attribute_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.summarization.snap_aggregation(prefix=<prefix_value>, supernode_attribute=<supernode_attribute_value>, superedge_attribute=<superedge_attribute_value>, G=<G_variable>)

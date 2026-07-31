@@ -9,9 +9,7 @@ parameters:
   - weight: <class 'int'> = weight --The node attribute that holds the integer value used as a weight.
 If None, then each node has weight 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --Undirected graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.clique.max_weight_clique(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.clique.max_weight_clique(weight=<weight_value>, G=<G_variable>)

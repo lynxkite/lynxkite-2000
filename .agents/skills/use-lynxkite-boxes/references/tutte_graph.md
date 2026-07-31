@@ -8,10 +8,7 @@ has a Hamiltonian cycle.
 It can be realized geometrically from a tetrahedron by multiply truncating
 three of its vertices [1]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.tutte_graph()
+  output_variable = networkx.generators.small.tutte_graph()

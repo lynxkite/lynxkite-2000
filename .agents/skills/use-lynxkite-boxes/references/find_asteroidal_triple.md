@@ -14,9 +14,7 @@ one, outlined in [1]_, which has a runtime of
 creation of the component structure.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to check whether is AT-free or not
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.asteroidal.find_asteroidal_triple(G=<G_variable>)
+  output_variable = networkx.algorithms.asteroidal.find_asteroidal_triple(G=<G_variable>)

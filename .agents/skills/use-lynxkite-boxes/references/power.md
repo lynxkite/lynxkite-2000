@@ -7,9 +7,7 @@ $v$ are adjacent in $G^k$ if and only if the shortest path
 distance between $u$ and $v$ in $G$ is at most $k$.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX simple graph object.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.product.power(G=<G_variable>)
+  output_variable = networkx.algorithms.operators.product.power(G=<G_variable>)

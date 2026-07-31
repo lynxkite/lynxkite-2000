@@ -16,9 +16,7 @@ where :math:`q_v(u,w)` are the number of common neighbors of :math:`u` and
 otherwise. [2]_
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cluster.square_clustering(G=<G_variable>)
+  output_variable = networkx.algorithms.cluster.square_clustering(G=<G_variable>)

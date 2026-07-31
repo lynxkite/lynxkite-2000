@@ -21,9 +21,7 @@ Otherwise holds the name of the edge attribute used as weight.
 The weight of an edge is treated as the length or distance between the two sides.
   - endpoints: bool | None = ? --If True include the endpoints in the shortest path counts.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.centrality.group.group_betweenness_centrality(normalized=<normalized_value>, weight=<weight_value>, endpoints=<endpoints_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.centrality.group.group_betweenness_centrality(normalized=<normalized_value>, weight=<weight_value>, endpoints=<endpoints_value>, G=<G_variable>)

@@ -1,10 +1,8 @@
 **Detail:**
 
-parameters:
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Detail", icon="filters-filled")
+def detail(image: Image.Image):
+    return image.filter(ImageFilter.DETAIL)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.detail(image=<image_variable>)
+```

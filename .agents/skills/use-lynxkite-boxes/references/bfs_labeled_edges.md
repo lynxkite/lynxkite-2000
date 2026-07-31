@@ -14,9 +14,7 @@ We emit each edge exactly once.  In an undirected graph, 'reverse' edges do
 not occur, because each is discovered either as a 'tree' or 'forward' edge.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph over which to find the layers using breadth-first search.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.traversal.breadth_first_search.bfs_labeled_edges(G=<G_variable>)
+  output_variable = networkx.algorithms.traversal.breadth_first_search.bfs_labeled_edges(G=<G_variable>)

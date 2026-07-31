@@ -1,14 +1,8 @@
 **Crop:**
 
-parameters:
-  - top: <class 'int'> = ? --?
-  - left: <class 'int'> = ? --?
-  - bottom: <class 'int'> = ? --?
-  - right: <class 'int'> = ? --?
-  - image: <class 'PIL.Image.Image'> = ? --?
+```python
+@op("Crop", icon="crop")
+def crop(image: Image.Image, *, top: int, left: int, bottom: int, right: int):
+    return image.crop((left, top, right, bottom))
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_pillow_example.crop(top=<top_value>, left=<left_value>, bottom=<bottom_value>, right=<right_value>, image=<image_variable>)
+```

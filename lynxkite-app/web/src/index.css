@@ -139,18 +139,75 @@ svg {
   flex-direction: column;
   height: 100vh;
 
+  &.read-only {
+    .react-flow__node input,
+    .react-flow__node select,
+    .react-flow__node textarea,
+    .react-flow__node button:not(.drag-handle):not([data-allow-readonly]) {
+      pointer-events: none;
+    }
+  }
+
   .top-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     background: #002a4c;
     color: oklch(75% 0.13 230);
     gap: 10px;
+    padding-right: 4px;
+
+    .top-bar-leading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .top-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .top-bar-trailing {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
 
     .ws-name {
       font-size: 1.5em;
-      flex: 1;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: white;
+    }
+
+    .workspace-progress-compact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .workspace-progress-compact progress {
+      width: 140px;
+      flex: 0 0 140px;
+      height: 8px;
+    }
+
+    .workspace-progress-compact-meta {
+      font-size: 0.7rem;
+      white-space: nowrap;
+      color: oklch(85% 0.08 230);
+      flex: 0 0 auto;
     }
 
     .logo img {
@@ -162,6 +219,7 @@ svg {
     .tools {
       display: flex;
       align-items: center;
+      flex: 0 0 auto;
 
       .btn {
         color: oklch(75% 0.13 230);
@@ -256,7 +314,7 @@ svg {
     display: flex;
     flex-direction: column;
 
-    > :not(.title, .react-flow__handle) {
+    &:not(.lynxkite-node-iconized) > :not(.title, .react-flow__handle) {
       user-select: text;
       cursor: default;
     }
@@ -400,6 +458,23 @@ svg {
   }
 
   .lynxkite-node.lynxkite-node-iconized {
+    border-radius: 40px;
+    --status-color-1: #0000;
+    --status-color-2: #0000;
+    --status-color-3: #0000;
+    transition:
+      --status-color-1 0.3s,
+      --status-color-2 0.3s,
+      --status-color-3 0.3s;
+    background-image: linear-gradient(
+      to right,
+      var(--status-color-1),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
+      var(--status-color-3)
+    );
+    background-blend-mode: luminosity;
+
     .node-content {
       display: none;
     }
@@ -423,6 +498,19 @@ svg {
         width: 0;
       }
     }
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.active {
+    --status-color-1: #0000;
+    --status-color-2: #fff4;
+    --status-color-3: #888f;
+    animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.planned {
+    --status-color-1: #888f;
+    --status-color-2: #888f;
+    --status-color-3: #888f;
   }
 
   .handle-name {
@@ -825,6 +913,14 @@ svg {
   }
 }
 
+.chat-system-message {
+  margin: auto;
+  text-align: center;
+  color: rgb(119, 119, 119);
+  font-style: italic;
+  font-size: 90%;
+}
+
 .assistant-empty {
   text-align: center;
   color: oklch(90% 0 0);
@@ -863,6 +959,10 @@ svg {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.assistant-clear-button {
+  margin-right: auto;
 }
 
 .prose {

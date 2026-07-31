@@ -14,9 +14,7 @@ parameters:
   - k: <class 'int'> = ? --Neighbor to connect in the inner circulant. ``1 <= k <= n/2``.
 Note that some people require ``k < n/2`` but we and others allow equality.
 Also, ``k < n/2`` is equivalent to ``k <= floor((n-1)/2)``
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.generalized_petersen_graph(n=<n_value>, k=<k_value>)
+  output_variable = networkx.generators.small.generalized_petersen_graph(n=<n_value>, k=<k_value>)

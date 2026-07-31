@@ -30,9 +30,7 @@ Other method values produce a ValueError.
 The default method is 'unweighted' if `weight` is None,
 otherwise the default method is 'dijkstra'.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.generic.average_shortest_path_length(weight=<weight_value>, method=<method_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.generic.average_shortest_path_length(weight=<weight_value>, method=<method_value>, G=<G_variable>)

@@ -19,9 +19,7 @@ null-model for normalization.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --Undirected graph with neither parallel edges nor self-loops.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.richclub.rich_club_coefficient(normalized=<normalized_value>, Q=<Q_value>, seed=<seed_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.richclub.rich_club_coefficient(normalized=<normalized_value>, Q=<Q_value>, seed=<seed_value>, G=<G_variable>)

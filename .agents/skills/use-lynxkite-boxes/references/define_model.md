@@ -1,12 +1,20 @@
 **Define model:**
 Trains the selected model on the selected dataset. Most training parameters are set in the model definition.
-parameters:
-  - model_workspace: <class 'str'> = ? --?
-  - save_as: <class 'str'> = model --?
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Define model", color="purple")
+def define_model(
+    bundle: core.Bundle,
+    *,
+    model_workspace: str,
+    save_as: str = "model",
+):
+    """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
+    assert model_workspace, "Model workspace is unset."
+    ws = load_ws(model_workspace + ".lynxkite.json")
+    m = pytorch_core.build_model(ws)
+    m.source_workspace = model_workspace
+    bundle = bundle.copy()
+    bundle.other[save_as] = m
+    return bundle
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
+```

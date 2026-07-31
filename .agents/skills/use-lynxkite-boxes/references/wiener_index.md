@@ -11,9 +11,7 @@ If a string, use this edge attribute as the edge weight.
 Any edge attribute not present defaults to 1.
 The edge weights are used to computing shortest-path distances.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.wiener.wiener_index(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.wiener.wiener_index(weight=<weight_value>, G=<G_variable>)

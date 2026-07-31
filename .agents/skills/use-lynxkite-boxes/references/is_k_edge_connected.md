@@ -6,9 +6,7 @@ If so, then G is k-edge-connected.
 parameters:
   - k: <class 'int'> = ? --edge connectivity to test for
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.connectivity.edge_augmentation.is_k_edge_connected(k=<k_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.connectivity.edge_augmentation.is_k_edge_connected(k=<k_value>, G=<G_variable>)

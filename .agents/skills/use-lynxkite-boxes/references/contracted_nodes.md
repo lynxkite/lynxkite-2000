@@ -11,9 +11,7 @@ self-loops on the new node in the returned graph.
   - copy: <class 'bool'> = ? --If this is True (the default), make a copy of
 `G` and return that instead of directly changing `G`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph whose nodes will be contracted.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.minors.contraction.contracted_nodes(self_loops=<self_loops_value>, copy=<copy_value>, G=<G_variable>)

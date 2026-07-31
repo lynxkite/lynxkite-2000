@@ -6,9 +6,7 @@ and isolated nodes found after the removal of edges are also removed.
 parameters:
   - k: int | None = ? --The order of the shell. If not specified return the main crust.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph or directed graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.core.k_crust(k=<k_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.core.k_crust(k=<k_value>, G=<G_variable>)

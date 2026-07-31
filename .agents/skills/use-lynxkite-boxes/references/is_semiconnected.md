@@ -15,9 +15,7 @@ the topological sort of `H` and check if for every $n$ there is an edge
 $(scc_n, scc_{n+1})$.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.semiconnected.is_semiconnected(G=<G_variable>)
+  output_variable = networkx.algorithms.components.semiconnected.is_semiconnected(G=<G_variable>)

@@ -8,9 +8,7 @@ otherwise an exception is raised.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
   - H: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.binary.full_join(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.binary.full_join(G=<G_variable>, H=<H_variable>)

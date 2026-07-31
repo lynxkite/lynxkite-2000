@@ -1,11 +1,8 @@
 **MSE loss:**
 
-parameters:
-  - x: <class 'inspect._empty'> = ? --?
-  - y: <class 'inspect._empty'> = ? --?
+```python
+@op("MSE loss")
+def mse_loss(x, y):
+    return torch.nn.functional.mse_loss
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.mse_loss(x=<x_variable>, y=<y_variable>)
+```

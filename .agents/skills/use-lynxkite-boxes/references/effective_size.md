@@ -35,9 +35,7 @@ parameters:
 Otherwise holds the name of the edge attribute used as weight.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph containing ``v``. Directed graphs are treated like
 undirected graphs when computing neighbors of ``v``.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.structuralholes.effective_size(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.structuralholes.effective_size(weight=<weight_value>, G=<G_variable>)

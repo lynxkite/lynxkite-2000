@@ -1,16 +1,8 @@
 **Attention:**
 
-parameters:
-  - embed_dim: <class 'int'> = 1024 --?
-  - num_heads: <class 'int'> = 1 --?
-  - dropout: <class 'float'> = ? --?
-  - query: <class 'inspect._empty'> = ? --?
-  - key: <class 'inspect._empty'> = ? --?
-  - value: <class 'inspect._empty'> = ? --?
+```python
+@op("Attention", outputs=["outputs", "weights"])
+def attention(query, key, value, *, embed_dim=1024, num_heads=1, dropout=0.0):
+    return torch.nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
 
-returns:
-  - outputs: ? - ?.
-  - weights: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.attention(embed_dim=<embed_dim_value>, num_heads=<num_heads_value>, dropout=<dropout_value>, query=<query_variable>, key=<key_variable>, value=<value_variable>)
+```

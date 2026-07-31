@@ -1,12 +1,12 @@
 **Sample table:**
 
-parameters:
-  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = meta --?
-  - fraction: <class 'float'> = 0.1 --?
-  - b: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Sample table", icon="filter-filled")
+def sample_table(b: core.Bundle, *, table_name: core.TableName = "meta", fraction: float = 0.1):
+    b = b.copy()
+    b.dfs[table_name] = b.dfs[table_name].sample(frac=fraction)
+    return b
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.table_ops.sample_table(table_name=<table_name_value>, fraction=<fraction_value>, b=<b_variable>)
+```
+Custom types:
+  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]

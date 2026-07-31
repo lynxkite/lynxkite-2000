@@ -11,9 +11,7 @@ minimal. One can use the function `is_d_separator` to only check if
 `z` is a d-separator. See examples below.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX DAG.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.d_separation.is_minimal_d_separator(G=<G_variable>)
+  output_variable = networkx.algorithms.d_separation.is_minimal_d_separator(G=<G_variable>)

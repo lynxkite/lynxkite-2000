@@ -43,3 +43,20 @@ test("Drag box", async () => {
   expect(newPos.x).toBeGreaterThan(originalPos.x);
   expect(newPos.y).toBeGreaterThan(originalPos.y);
 });
+
+test("Delete selection", async () => {
+  await workspace.addBox("Table operations › Enter table data");
+  await workspace.addBox("View tables");
+  await workspace.connectBoxes("Enter table data 1", "View tables 1");
+  await workspace.moveBox("Enter table data 1", { offsetX: 100, offsetY: 100 });
+  await workspace.addBox("Table operations › Enter table data");
+  await workspace.addBox("View tables");
+  await workspace.connectBoxes("Enter table data 2", "View tables 2");
+  await workspace.moveBox("Enter table data 2", { offsetX: 100, offsetY: 100 });
+  await workspace.selectBoxes(["Enter table data 1", "View tables 1"]);
+  await workspace.page.keyboard.press("Backspace");
+  await expect(workspace.getBox("Enter table data 1")).not.toBeVisible();
+  await expect(workspace.getBox("View tables 1")).not.toBeVisible();
+  await expect(workspace.getBox("Enter table data 2")).toBeVisible({ timeout: 500 });
+  await expect(workspace.getBox("View tables 2")).toBeVisible({ timeout: 500 });
+});

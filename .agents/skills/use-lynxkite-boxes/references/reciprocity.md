@@ -11,9 +11,7 @@ it is the ratio of the number of edges in both directions to
 the total number of edges attached to node u.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx directed graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.reciprocity.reciprocity(G=<G_variable>)
+  output_variable = networkx.algorithms.reciprocity.reciprocity(G=<G_variable>)

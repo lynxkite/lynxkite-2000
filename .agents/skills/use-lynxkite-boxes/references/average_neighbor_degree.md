@@ -35,9 +35,7 @@ Use "in"- or "out"-degree for target node.
   - weight: str | None = ? --The edge attribute that holds the numerical value used as a weight.
 If None, then each edge has weight 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.assortativity.neighbor_degree.average_neighbor_degree(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.assortativity.neighbor_degree.average_neighbor_degree(source=<source_value>, target=<target_value>, weight=<weight_value>, G=<G_variable>)

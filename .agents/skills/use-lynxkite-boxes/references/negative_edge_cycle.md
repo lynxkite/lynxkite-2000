@@ -16,9 +16,7 @@ return a number.
 cycles at a negligible cost. In case of graphs with a negative cycle,
 the performance of detection increases by at least an order of magnitude.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.shortest_paths.weighted.negative_edge_cycle(weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.shortest_paths.weighted.negative_edge_cycle(weight=<weight_value>, heuristic=<heuristic_value>, G=<G_variable>)

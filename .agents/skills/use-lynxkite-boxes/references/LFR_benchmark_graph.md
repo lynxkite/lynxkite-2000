@@ -58,9 +58,7 @@ average degree values.
 degree distribution, and community affiliations.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.LFR_benchmark_graph(n=<n_value>, tau1=<tau1_value>, tau2=<tau2_value>, mu=<mu_value>, average_degree=<average_degree_value>, min_degree=<min_degree_value>, max_degree=<max_degree_value>, min_community=<min_community_value>, max_community=<max_community_value>, tol=<tol_value>, max_iters=<max_iters_value>, seed=<seed_value>)
+  output_variable = networkx.generators.community.LFR_benchmark_graph(n=<n_value>, tau1=<tau1_value>, tau2=<tau2_value>, mu=<mu_value>, average_degree=<average_degree_value>, min_degree=<min_degree_value>, max_degree=<max_degree_value>, min_community=<min_community_value>, max_community=<max_community_value>, tol=<tol_value>, max_iters=<max_iters_value>, seed=<seed_value>)

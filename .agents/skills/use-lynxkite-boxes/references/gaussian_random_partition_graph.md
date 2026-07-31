@@ -13,9 +13,7 @@ parameters:
   - p_out: <class 'float'> = ? --Probability of inter cluster connection.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.gaussian_random_partition_graph(n=<n_value>, s=<s_value>, v=<v_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)
+  output_variable = networkx.generators.community.gaussian_random_partition_graph(n=<n_value>, s=<s_value>, v=<v_value>, p_in=<p_in_value>, p_out=<p_out_value>, seed=<seed_value>)

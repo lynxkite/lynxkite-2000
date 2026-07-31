@@ -9,9 +9,7 @@ parameters:
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
   - directed: bool | None = ? --If True, this function returns a directed graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)
+  output_variable = networkx.generators.random_graphs.gnp_random_graph(n=<n_value>, p=<p_value>, seed=<seed_value>, directed=<directed_value>)

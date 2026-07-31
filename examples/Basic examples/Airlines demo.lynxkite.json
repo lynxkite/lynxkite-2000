@@ -1,12 +1,6 @@
 {
+  "assistant_messages": null,
   "edges": [
-    {
-      "id": "Sample graph 1 Visualize graph 1",
-      "source": "Sample graph 1",
-      "sourceHandle": "output",
-      "target": "Visualize graph 1",
-      "targetHandle": "graph"
-    },
     {
       "id": "SQL 1 View tables 1",
       "source": "SQL 1",
@@ -29,25 +23,32 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Import GraphML 2 NX \u203a Betweenness Centrality 1",
+      "id": "Import GraphML 2 output Betweenness centrality 2 G",
       "source": "Import GraphML 2",
       "sourceHandle": "output",
-      "target": "NX \u203a Betweenness Centrality 1",
+      "target": "Betweenness centrality 2",
       "targetHandle": "G"
     },
     {
-      "id": "NX \u203a Betweenness Centrality 1 Sample graph 1",
-      "source": "NX \u203a Betweenness Centrality 1",
+      "id": "Betweenness centrality 2 output Sample graph 1 graph",
+      "source": "Betweenness centrality 2",
       "sourceHandle": "output",
       "target": "Sample graph 1",
       "targetHandle": "graph"
     },
     {
-      "id": "NX \u203a Betweenness Centrality 1 SQL 1",
-      "source": "NX \u203a Betweenness Centrality 1",
+      "id": "Betweenness centrality 2 output SQL 1 bundle",
+      "source": "Betweenness centrality 2",
       "sourceHandle": "output",
       "target": "SQL 1",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Sample graph 1 output Visualize graph 1 b",
+      "source": "Sample graph 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -132,6 +133,7 @@
       "dragHandle": ".bg-primary",
       "height": 272.0,
       "id": "Import GraphML 2",
+      "parentId": null,
       "position": {
         "x": 1364.6405223695278,
         "y": 739.0115677931503
@@ -276,101 +278,13 @@
       "dragHandle": ".bg-primary",
       "height": 71.0,
       "id": "Sample graph 1",
+      "parentId": null,
       "position": {
         "x": 2320.0,
         "y": 400.0
       },
       "type": "basic",
       "width": 317.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 5,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "airline",
-                  "airline ID",
-                  "codeshare",
-                  "destination airport id",
-                  "destination apirport",
-                  "equipment",
-                  "source",
-                  "source airport",
-                  "source airport id",
-                  "stops",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 11754.0
-              },
-              "nodes": {
-                "columns": [
-                  "alt",
-                  "betweenness_centrality",
-                  "city",
-                  "country",
-                  "dst",
-                  "iata",
-                  "icao",
-                  "id",
-                  "idx",
-                  "lat",
-                  "long",
-                  "name",
-                  "source",
-                  "type",
-                  "tz",
-                  "tz_name"
-                ],
-                "key": "nodes",
-                "length": 1000.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Visualize graph",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "color_nodes_by": "tz"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Visualize graph"
-      },
-      "dragHandle": ".bg-primary",
-      "height": 390.0,
-      "id": "Visualize graph 1",
-      "position": {
-        "x": 2760.0,
-        "y": 240.0
-      },
-      "type": "visualization",
-      "width": 452.0
     },
     {
       "data": {
@@ -517,6 +431,7 @@
       "dragHandle": ".bg-primary",
       "height": 280.0,
       "id": "SQL 1",
+      "parentId": null,
       "position": {
         "x": 2080.0,
         "y": 680.0
@@ -528,7 +443,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 55,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -615,6 +530,7 @@
       "dragHandle": ".bg-primary",
       "height": 280.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 2680.0,
         "y": 680.0
@@ -766,6 +682,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "Cypher 1",
+      "parentId": null,
       "position": {
         "x": 2080.0,
         "y": 1040.0
@@ -777,7 +694,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 5,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -864,6 +781,7 @@
       "dragHandle": ".bg-primary",
       "height": 320.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 2680.0,
         "y": 1040.0
@@ -878,7 +796,7 @@
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": 298.0,
+        "expanded_height": 315.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -1002,18 +920,131 @@
         },
         "status": "done",
         "telemetry": null,
-        "title": "NX \u203a Betweenness Centrality"
+        "title": "Betweenness centrality"
       },
-      "dragHandle": ".bg-primary",
       "height": 71.0,
-      "id": "NX \u203a Betweenness Centrality 1",
+      "id": "Betweenness centrality 2",
+      "parentId": null,
       "position": {
-        "x": 1920.0,
-        "y": 400.0
+        "x": 1811.3211709715142,
+        "y": 396.273358114571
       },
       "type": "basic",
-      "width": 293.0
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 11754.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "long",
+              "yAttr": "lat"
+            },
+            {
+              "attribute": "tz",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "8",
+              "type": "node_size"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "0.3",
+              "type": "edge_width"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 774.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 2707.941277161725,
+        "y": -120.32985335713502
+      },
+      "type": "graph_visualization",
+      "width": 1155.0
     }
   ],
-  "paused": null
+  "paused": true
 }

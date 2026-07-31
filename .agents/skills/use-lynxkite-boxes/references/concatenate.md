@@ -1,11 +1,8 @@
 **Concatenate:**
 
-parameters:
-  - a: <class 'inspect._empty'> = ? --?
-  - b: <class 'inspect._empty'> = ? --?
+```python
+@op("Concatenate")
+def concatenate(a, b):
+    return cat
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate(a=<a_variable>, b=<b_variable>)
+```

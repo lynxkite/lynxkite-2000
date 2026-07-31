@@ -16,9 +16,7 @@ If None, then each edge has weight 1.
 Laplacian matrix with the reciprocal of the weight. Not required
 if the weight is already inverted. Weight cannot be zero.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_measures.effective_graph_resistance(weight=<weight_value>, invert_weight=<invert_weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.distance_measures.effective_graph_resistance(weight=<weight_value>, invert_weight=<invert_weight_value>, G=<G_variable>)

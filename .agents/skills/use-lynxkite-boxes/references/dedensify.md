@@ -11,9 +11,7 @@ parameters:
 The threshold must be greater than or equal to 2.
   - copy: bool | None = ? --Indicates if dedensification should be done inplace
   - G: <class 'networkx.classes.graph.Graph'> = ? --A networkx graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.summarization.dedensify(threshold=<threshold_value>, copy=<copy_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.summarization.dedensify(threshold=<threshold_value>, copy=<copy_value>, G=<G_variable>)

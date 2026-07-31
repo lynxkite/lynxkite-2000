@@ -12,9 +12,7 @@ This index leads to zero-division for nodes only connected via self-loops.
 It is intended to be used when no self-loops are present.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --NetworkX undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.link_prediction.adamic_adar_index(G=<G_variable>)
+  output_variable = networkx.algorithms.link_prediction.adamic_adar_index(G=<G_variable>)

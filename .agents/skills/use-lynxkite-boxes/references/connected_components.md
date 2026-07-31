@@ -14,9 +14,7 @@ A graph consisting of a single node and no edges is connected.
 Connectivity is undefined for the null graph (graph with no nodes).
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.connected.connected_components(G=<G_variable>)
+  output_variable = networkx.algorithms.components.connected.connected_components(G=<G_variable>)

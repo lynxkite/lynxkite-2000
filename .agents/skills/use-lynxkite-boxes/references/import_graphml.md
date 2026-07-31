@@ -1,10 +1,16 @@
 **Import GraphML:**
 Imports a GraphML file.
-parameters:
-  - filename: typing.Annotated[str, {'format': 'path'}] = ? --?
+```python
+@op("Import GraphML", slow=True, color="green", icon="topology-star-3")
+def import_graphml(*, filename: ops.PathStr):
+    """Imports a GraphML file."""
+    files = fsspec.open_files(filename, compression="infer")
+    for f in files:
+        if ".graphml" in f.path:
+            with f as f:
+                return nx.read_graphml(f)
+    raise ValueError(f"No .graphml file found at {filename}")
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.file_ops.import_graphml(filename=<filename_value>)
+```
+Custom types:
+  - filename: typing.Annotated[str, {'format': 'path'}]

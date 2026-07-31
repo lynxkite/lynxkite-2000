@@ -14,9 +14,7 @@ $d_{u,i}$ is the *independent edge degree*.
 parameters:
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_clustered.random_clustered_graph(seed=<seed_value>)
+  output_variable = networkx.generators.random_clustered.random_clustered_graph(seed=<seed_value>)

@@ -11,9 +11,7 @@ parameters:
   - weight: str | None = ? --The edge attribute to use for calculating shortest-path distances.
 If None, all edges are considered to have a weight of 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected, connected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.wiener.hyper_wiener_index(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.wiener.hyper_wiener_index(weight=<weight_value>, G=<G_variable>)

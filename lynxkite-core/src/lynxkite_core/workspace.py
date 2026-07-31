@@ -73,6 +73,7 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
+    parentId: Optional[str] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
@@ -183,6 +184,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
+    assistant_messages: Optional[list[dict]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
@@ -219,7 +221,7 @@ class Workspace(BaseConfig):
             del j["path"]
         return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
-    def save(self, path: str | pathlib.Path):
+    def save(self, path: str | pathlib.Path, from_frontend=False):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
         j = self.model_dump_json_sorted()
@@ -233,6 +235,10 @@ class Workspace(BaseConfig):
             temp_name = f.name
             f.write(j)
         os.replace(temp_name, path)
+        if not from_frontend:
+            pathlib.Path(
+                path
+            ).touch()  # trigger the on_modified event to reload the workspace in the frontend
 
     @staticmethod
     def load(path: str | pathlib.Path) -> "Workspace":
@@ -249,6 +255,7 @@ class Workspace(BaseConfig):
         path = str(path)
         with open(path, encoding="utf-8") as f:
             j = f.read()
+        ops.load_user_scripts(path)
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()

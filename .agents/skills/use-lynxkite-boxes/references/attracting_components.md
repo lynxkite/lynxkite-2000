@@ -13,9 +13,7 @@ To obtain induced subgraphs on each component use:
 ``(G.subgraph(c).copy() for c in attracting_components(G))``
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be analyzed.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.components.attracting.attracting_components(G=<G_variable>)
+  output_variable = networkx.algorithms.components.attracting.attracting_components(G=<G_variable>)

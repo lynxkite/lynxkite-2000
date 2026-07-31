@@ -1,10 +1,10 @@
 **Discard loop edges:**
 
-parameters:
-  - graph: <class 'networkx.classes.graph.Graph'> = ? --?
+```python
+@op("Discard loop edges", icon="filter-filled")
+def discard_loop_edges(graph: nx.Graph):
+    graph = graph.copy()
+    graph.remove_edges_from(nx.selfloop_edges(graph))
+    return graph
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges(graph=<graph_variable>)
+```

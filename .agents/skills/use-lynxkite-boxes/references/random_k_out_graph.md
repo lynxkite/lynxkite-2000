@@ -32,9 +32,7 @@ their in-degree increases. If this parameter is not positive, a
   - self_loops: <class 'bool'> = ? --If True, self-loops are allowed when generating the graph.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.directed.random_k_out_graph(n=<n_value>, k=<k_value>, alpha=<alpha_value>, self_loops=<self_loops_value>, seed=<seed_value>)
+  output_variable = networkx.generators.directed.random_k_out_graph(n=<n_value>, k=<k_value>, alpha=<alpha_value>, self_loops=<self_loops_value>, seed=<seed_value>)

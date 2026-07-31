@@ -18,9 +18,7 @@ l)`-connected (and hence, whether `H` is simply a copy of the input
 graph `G`).
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph in which to find a maximum locally `(k, l)`-connected
 subgraph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.hybrid.kl_connected_subgraph(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, same_as_graph=<same_as_graph_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.hybrid.kl_connected_subgraph(k=<k_value>, l=<l_value>, low_memory=<low_memory_value>, same_as_graph=<same_as_graph_value>, G=<G_variable>)

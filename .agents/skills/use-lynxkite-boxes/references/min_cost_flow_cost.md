@@ -24,9 +24,7 @@ that edge. If not present, the weight is considered to be 0.
 Default value: 'weight'.
   - G: <class 'networkx.classes.graph.Graph'> = ? --DiGraph on which a minimum cost flow satisfying all demands is
 to be found.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.flow.mincost.min_cost_flow_cost(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.flow.mincost.min_cost_flow_cost(demand=<demand_value>, capacity=<capacity_value>, weight=<weight_value>, G=<G_variable>)

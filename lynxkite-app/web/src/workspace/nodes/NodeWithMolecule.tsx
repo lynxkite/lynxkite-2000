@@ -70,6 +70,23 @@ const NodeWithMolecule = (props: any) => {
         if (config.ligand && active) {
           await viewer.loadStructureFromData(config.ligand, inferFormat(config.ligand));
         }
+
+        if (config.model && config.coordinates && active) {
+          await viewer.loadTrajectory({
+            model: {
+              kind: "model-url",
+              url: config.model,
+              format: "gro",
+            },
+            coordinates: {
+              kind: "coordinates-url",
+              url: config.coordinates,
+              isBinary: true,
+              format: "xtc",
+            },
+            preset: "all-models",
+          });
+        }
       } catch (error) {
         console.error("Error rendering Mol* molecule:", error);
       } finally {

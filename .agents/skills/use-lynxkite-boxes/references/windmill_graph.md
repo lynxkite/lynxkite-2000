@@ -9,9 +9,7 @@ that is connected to all other nodes in the graph.
 parameters:
   - n: <class 'int'> = ? --Number of cliques
   - k: <class 'int'> = ? --Size of cliques
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.windmill_graph(n=<n_value>, k=<k_value>)
+  output_variable = networkx.generators.community.windmill_graph(n=<n_value>, k=<k_value>)

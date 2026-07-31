@@ -7,10 +7,7 @@ $C_n$ is a path with its two end-nodes connected.
 
     >>> nx.draw(nx.cycle_graph(5))
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.cycle_graph()
+  output_variable = networkx.generators.classic.cycle_graph()

@@ -16,9 +16,7 @@ parameters:
   - n: <class 'int'> = ? --The number of nodes.
   - r: <class 'int'> = ? --The number of partitions.
 Must be less than or equal to n.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.turan_graph(n=<n_value>, r=<r_value>)
+  output_variable = networkx.generators.classic.turan_graph(n=<n_value>, r=<r_value>)

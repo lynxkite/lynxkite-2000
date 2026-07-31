@@ -17,9 +17,7 @@ parameters:
   - weight: str | None = ? --The edge attribute that holds the numerical value used for
 the edge weight.  If None then all edge weights are 1.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.modularitymatrix.modularity_matrix(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.linalg.modularitymatrix.modularity_matrix(weight=<weight_value>, G=<G_variable>)

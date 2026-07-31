@@ -31,9 +31,7 @@ Should be larger for larger graphs.
   - digest_size: int | None = 16 --Size (in bytes) of blake2b hash digest to use for hashing node labels.
   - G: <class 'networkx.classes.graph.Graph'> = ? --The graph to be hashed.
 Can have node and/or edge attributes. Can also have no attributes.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_graph_hash(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.graph_hashing.weisfeiler_lehman_graph_hash(edge_attr=<edge_attr_value>, node_attr=<node_attr_value>, iterations=<iterations_value>, digest_size=<digest_size_value>, G=<G_variable>)

@@ -7,9 +7,7 @@ Wikipedia page [1]_, and runs in time O(mn) on a graph with m edges and n
 nodes.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.cycles.girth(G=<G_variable>)
+  output_variable = networkx.algorithms.cycles.girth(G=<G_variable>)

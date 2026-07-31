@@ -1,11 +1,8 @@
 **Dropout:**
 
-parameters:
-  - p: <class 'float'> = ? --?
-  - x: <class 'inspect._empty'> = ? --?
+```python
+@op("Dropout")
+def dropout(x, *, p=0.0):
+    return torch.nn.Dropout(p)
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.dropout(p=<p_value>, x=<x_variable>)
+```

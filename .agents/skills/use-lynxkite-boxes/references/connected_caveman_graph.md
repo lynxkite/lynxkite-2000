@@ -7,9 +7,7 @@ adjacent clique.
 parameters:
   - l: <class 'int'> = ? --number of cliques
   - k: <class 'int'> = ? --size of cliques (k at least 2 or NetworkXError is raised)
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.connected_caveman_graph(l=<l_value>, k=<k_value>)
+  output_variable = networkx.generators.community.connected_caveman_graph(l=<l_value>, k=<k_value>)

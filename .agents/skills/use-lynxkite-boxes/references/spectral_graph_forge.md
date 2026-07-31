@@ -15,9 +15,7 @@ are 'identity' and 'modularity'
   - seed: int | None = ? --Indicator of numpy random number generation state.
 See :ref:`Randomness<randomness>`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.spectral_graph_forge.spectral_graph_forge(alpha=<alpha_value>, transformation=<transformation_value>, seed=<seed_value>, G=<G_variable>)
+  output_variable = networkx.generators.spectral_graph_forge.spectral_graph_forge(alpha=<alpha_value>, transformation=<transformation_value>, seed=<seed_value>, G=<G_variable>)

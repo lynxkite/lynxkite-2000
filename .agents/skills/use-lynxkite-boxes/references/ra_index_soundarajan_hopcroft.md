@@ -18,9 +18,7 @@ parameters:
 G[u][community] identifies which community u belongs to. Each
 node belongs to at most one community. Default value: 'community'.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.link_prediction.ra_index_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.link_prediction.ra_index_soundarajan_hopcroft(community=<community_value>, G=<G_variable>)

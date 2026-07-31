@@ -23,9 +23,7 @@ errors in distances. Use integer weights to avoid this.
 
 Weights should be positive, since they are distances.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.distance_measures.eccentricity(weight=<weight_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.distance_measures.eccentricity(weight=<weight_value>, G=<G_variable>)

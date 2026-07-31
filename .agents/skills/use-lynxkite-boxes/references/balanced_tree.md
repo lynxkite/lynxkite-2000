@@ -8,9 +8,7 @@ parameters:
   - r: <class 'int'> = ? --Branching factor of the tree; each node will have `r`
 children.
   - h: <class 'int'> = ? --Height of the tree.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.balanced_tree(r=<r_value>, h=<h_value>)
+  output_variable = networkx.generators.classic.balanced_tree(r=<r_value>, h=<h_value>)

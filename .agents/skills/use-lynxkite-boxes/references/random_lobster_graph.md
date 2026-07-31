@@ -15,9 +15,7 @@ parameters:
   - p2: <class 'float'> = ? --Probability of adding an edge one level beyond backbone
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.random_lobster_graph(n=<n_value>, p1=<p1_value>, p2=<p2_value>, seed=<seed_value>)
+  output_variable = networkx.generators.random_graphs.random_lobster_graph(n=<n_value>, p1=<p1_value>, p2=<p2_value>, seed=<seed_value>)

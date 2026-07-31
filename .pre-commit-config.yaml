@@ -24,6 +24,7 @@ repos:
       entry: uv run --no-sync ty check
       types: [python]
       pass_filenames: true
+      exclude: ^lynxkite-assistant/tests/files
     - id: gen-skills
       name: gen-skills
       language: system

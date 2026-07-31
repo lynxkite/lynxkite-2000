@@ -6,9 +6,7 @@ edge from u to v implies that u appears before v in the topological sort
 order.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.all_topological_sorts(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.all_topological_sorts(G=<G_variable>)

@@ -7,9 +7,7 @@ cliques: first all cliques of size one, then all cliques of size
 two, etc.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.clique.enumerate_all_cliques(G=<G_variable>)
+  output_variable = networkx.algorithms.clique.enumerate_all_cliques(G=<G_variable>)

@@ -13,9 +13,7 @@ parameters:
   - n: <class 'int'> = ? --The number of nodes.
   - d: <class 'int'> = ? --The degree of each node.
   - seed: int | None = ? --Seed used to set random number generation state. See :ref`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.expanders.random_regular_expander_graph(n=<n_value>, d=<d_value>, seed=<seed_value>)
+  output_variable = networkx.generators.expanders.random_regular_expander_graph(n=<n_value>, d=<d_value>, seed=<seed_value>)

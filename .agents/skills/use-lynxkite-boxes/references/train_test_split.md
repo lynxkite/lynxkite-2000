@@ -1,13 +1,19 @@
 **Train/test split:**
 Splits a dataframe in the bundle into separate "_train" and "_test" dataframes.
-parameters:
-  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}] = ? --?
-  - test_ratio: <class 'float'> = 0.1 --?
-  - seed: <class 'int'> = 1234 --?
-  - bundle: <class 'lynxkite_graph_analytics.bundle.Bundle'> = ? --?
+```python
+@op("Train/test split")
+def train_test_split(
+    bundle: core.Bundle, *, table_name: core.TableName, test_ratio: float = 0.1, seed=1234
+):
+    """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
+    df = bundle.dfs[table_name]
+    test = df.sample(frac=test_ratio, random_state=seed).reset_index()
+    train = df.drop(test.index).reset_index()
+    bundle = bundle.copy()
+    bundle.dfs[f"{table_name}_train"] = train
+    bundle.dfs[f"{table_name}_test"] = test
+    return bundle
 
-returns:
-  - output: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.operations.ml_ops.train_test_split(table_name=<table_name_value>, test_ratio=<test_ratio_value>, seed=<seed_value>, bundle=<bundle_variable>)
+```
+Custom types:
+  - table_name: typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].keys(@)[]'}]

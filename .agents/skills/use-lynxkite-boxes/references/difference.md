@@ -5,9 +5,7 @@ The node sets of H and G must be the same.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph. G and H must have the same node sets.
   - H: <class 'networkx.classes.graph.Graph'> = ? --?
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.binary.difference(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.binary.difference(G=<G_variable>, H=<H_variable>)

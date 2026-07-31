@@ -62,6 +62,22 @@ ColumnNameByTableName = typing.Annotated[
 rendered as a dropdown in the frontend, listing the columns of the DataFrame
 named by the "table_name" parameter. The column name is passed to the operation as a string."""
 
+MultiColumnNameByTableName = typing.Annotated[
+    list[str],
+    {"format": "multi-dropdown", "metadata_query": "[].dataframes[].<table_name>.columns[]"},
+]
+"""A type annotation to be used for parameters of an operation. MultiColumnNameByTableName is
+rendered as a multiple-choice dropdown in the frontend, listing the columns of the DataFrame
+named by the "table_name" parameter. The column names are passed to the operation as a list of strings."""
+
+MultiTableName = typing.Annotated[
+    list[str],
+    {"format": "multi-dropdown", "metadata_query": "[].dataframes[].keys(@)[]"},
+]
+"""A type annotation to be used for parameters of an operation. MultiTableName is
+rendered as a multiple-choice dropdown in the frontend, listing the tables of the DataFrame.
+The table names are passed to the operation as a list of strings."""
+
 TableColumn = typing.Annotated[
     tuple[str, str],
     {
@@ -75,12 +91,71 @@ rendered as a pair of dropdowns for selecting a table in the Bundle and a column
 that table. Effectively "TableName" and "ColumnNameByTableName" combined.
 The selected table and column name is passed to the operation as a 2-tuple of strings."""
 
+RelationName = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].relations[].name"}
+]
+"""A type annotation to be used for parameters of an operation. RelationDropdown is rendered as a dropdown that lists the names of available relations."""
+
 RecordsColumn = typing.Annotated[
     str, {"format": "dropdown", "metadata_query": "[].dataframes[].records.columns[]"}
 ]
 """A type annotation to be used for parameters of an operation. RecordsColumn is
 rendered as a dropdown in the frontend, listing the columns of the "records" DataFrame.
 The column name is passed to the operation as a string."""
+
+DropdownTextAdderByTableName = typing.Annotated[
+    list[tuple[str, str]],
+    {
+        "format": "dropdown-textbox_adder",
+        "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. DropdownTextAdderByTableName is
+rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-textbox pairs, where the
+dropdown lists the columns of the DataFrame named by the "table_name" parameter.
+The column names are passed to the operation as a list of string 2-tuples."""
+
+pandas_aggregation_options = [
+    "sum",
+    "mean",
+    "median",
+    "min",
+    "max",
+    "prod",
+    "std",
+    "var",
+    "sem",
+    "skew",
+    "count",
+    "size",
+    "first",
+    "last",
+]
+
+AggregationAdderByTableName = typing.Annotated[
+    list[tuple[str, list[str]]],
+    {
+        "format": "dropdown-multidropdown_adder",
+        "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+        "options2": pandas_aggregation_options,
+    },
+]
+"""A type annotation to be used for parameters of an operation. AggregationAdderByTableName is
+rendered as a button in the frontend, that is able to add arbitrary amount of dropdown-multidropdown rows, where
+the dropdown lists the columns of the DataFrame named by the "table_name" parameter and the multi-dropdown
+contains fixed aggregation options.
+The values are passed to the operation as a list of tuples containing a column name and a list of selected strings."""
+
+DoubleTextAdder = typing.Annotated[
+    list[tuple[str, str]],
+    {
+        "format": "double-textbox_adder",
+        "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+    },
+]
+"""A type annotation to be used for parameters of an operation. DoubleTextAdder is
+rendered as a button in the frontend, that is able to add arbitrary amount of textbox-textbox pairs.
+The inputs are passed to the operation as a list of string 2-tuples."""
 
 
 def nx_node_attribute_func(name):

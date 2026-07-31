@@ -9,9 +9,7 @@ parameters:
   - p: <class 'float'> = ? --The probability for retaining the edge of the replicated node.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.duplication.duplication_divergence_graph(n=<n_value>, p=<p_value>, seed=<seed_value>)
+  output_variable = networkx.generators.duplication.duplication_divergence_graph(n=<n_value>, p=<p_value>, seed=<seed_value>)

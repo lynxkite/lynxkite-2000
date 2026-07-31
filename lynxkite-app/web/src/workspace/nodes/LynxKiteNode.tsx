@@ -174,7 +174,8 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const data = props.data;
   const state = useContext(LynxKiteState);
   const canIconize =
-    !data.collapsed && !["visualization", "image", "molecule"].includes(props.type);
+    !data.collapsed &&
+    !["visualization", "graph_visualization", "image", "molecule"].includes(props.type);
   const iconized = state.iconized && canIconize;
   const handles = getHandles(
     connections,
@@ -252,7 +253,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div
-        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized" : ""}`}
+        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized drag-handle" : ""} ${data.status}`}
         style={iconized ? { ...nodeStyle, ...titleStyle } : nodeStyle}
       >
         {iconized ? (

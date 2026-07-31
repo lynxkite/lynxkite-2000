@@ -6,9 +6,7 @@ for all v,w in V there is an edge (v,w) in E- if and only if (v,w) is
 in E and there is no path from v to w in G with length greater than 1.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.transitive_reduction(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.transitive_reduction(G=<G_variable>)

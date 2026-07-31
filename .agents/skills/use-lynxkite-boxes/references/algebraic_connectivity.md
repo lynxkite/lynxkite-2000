@@ -24,9 +24,7 @@ Value           Solver
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
   - G: <class 'networkx.classes.graph.Graph'> = ? --An undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.linalg.algebraicconnectivity.algebraic_connectivity(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)
+  output_variable = networkx.linalg.algebraicconnectivity.algebraic_connectivity(weight=<weight_value>, normalized=<normalized_value>, tol=<tol_value>, method=<method_value>, seed=<seed_value>, G=<G_variable>)

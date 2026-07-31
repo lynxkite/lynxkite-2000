@@ -17,6 +17,7 @@ build
 *.egg-info
 
 examples/.*
+examples/generated_samples
 !.workspace_files
 
 # Playwright

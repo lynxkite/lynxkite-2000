@@ -8,9 +8,7 @@ or $u==v$ and $(x,y)$ is an edge in $H$.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --Networkx graphs.
   - H: <class 'networkx.classes.graph.Graph'> = ? --Networkx graphs.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.operators.product.lexicographic_product(G=<G_variable>, H=<H_variable>)
+  output_variable = networkx.algorithms.operators.product.lexicographic_product(G=<G_variable>, H=<H_variable>)

@@ -7,9 +7,7 @@ on the blocks.
 parameters:
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.community.stochastic_block_model(seed=<seed_value>)
+  output_variable = networkx.generators.community.stochastic_block_model(seed=<seed_value>)

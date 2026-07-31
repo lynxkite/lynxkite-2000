@@ -11,9 +11,7 @@ The new integer labels are numbered first_label, ..., n-1+first_label.
   - label_attribute: str | None = ? --Name of node attribute to store old label.  If None no attribute
 is created.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.relabel.convert_node_labels_to_integers(first_label=<first_label_value>, ordering=<ordering_value>, label_attribute=<label_attribute_value>, G=<G_variable>)
+  output_variable = networkx.relabel.convert_node_labels_to_integers(first_label=<first_label_value>, ordering=<ordering_value>, label_attribute=<label_attribute_value>, G=<G_variable>)

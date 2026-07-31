@@ -7,10 +7,7 @@ vertex `x` to its inverse modulo `p`. This graph is a (mildly explicit)
 
 `p` *must* be a prime number.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.expanders.chordal_cycle_graph()
+  output_variable = networkx.generators.expanders.chordal_cycle_graph()

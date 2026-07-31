@@ -50,13 +50,6 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Randomly sample table 1 output View tables 2 bundle",
-      "source": "Randomly sample table 1",
-      "sourceHandle": "output",
-      "target": "View tables 2",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Randomly sample table 1 output SQL 2 bundle",
       "source": "Randomly sample table 1",
       "sourceHandle": "output",

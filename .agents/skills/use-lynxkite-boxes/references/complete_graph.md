@@ -8,10 +8,7 @@ of distinct nodes have an edge connecting them.
 
     >>> nx.draw(nx.complete_graph(5))
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.complete_graph()
+  output_variable = networkx.generators.classic.complete_graph()

@@ -7,9 +7,7 @@ parameters:
   - n: <class 'int'> = ? --Number of integers from which to make node subsets.
 Subsets are drawn from ``set(range(n))``.
   - k: <class 'int'> = ? --Size of the subsets.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.kneser_graph(n=<n_value>, k=<k_value>)
+  output_variable = networkx.generators.classic.kneser_graph(n=<n_value>, k=<k_value>)

@@ -9,9 +9,7 @@ parameters:
   - n: <class 'int'> = ? --The number of nodes. The value of $n \times d$ must be even.
   - seed: int | None = ? --Indicator of random number generation state.
 See :ref:`Randomness<randomness>`.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.random_graphs.random_regular_graph(d=<d_value>, n=<n_value>, seed=<seed_value>)
+  output_variable = networkx.generators.random_graphs.random_regular_graph(d=<d_value>, n=<n_value>, seed=<seed_value>)

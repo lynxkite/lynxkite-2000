@@ -10,9 +10,7 @@ the leftmost child of the root of the other.
     >>> nx.draw(nx.binomial_tree(3))
 parameters:
   - n: <class 'int'> = ? --Order of the binomial tree.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.classic.binomial_tree(n=<n_value>)
+  output_variable = networkx.generators.classic.binomial_tree(n=<n_value>)

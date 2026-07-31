@@ -1,10 +1,10 @@
 **Mean pool:**
 
-parameters:
-  - x: <class 'inspect._empty'> = ? --?
+```python
+@op("Mean pool")
+def mean_pool(x):
+    import torch_geometric.nn as pyg_nn
 
-returns:
-  - output: ? - ?.
+    return pyg_nn.global_mean_pool
 
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.mean_pool(x=<x_variable>)
+```

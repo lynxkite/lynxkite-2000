@@ -8,9 +8,7 @@ parameters:
 ``(u, v)``. Otherwise, edges will be of the form ``(u, v, k)``.
 This option is ignored unless `G` is a multigraph.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A graph, either directed or undirected.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.euler.eulerian_circuit(keys=<keys_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.euler.eulerian_circuit(keys=<keys_value>, G=<G_variable>)

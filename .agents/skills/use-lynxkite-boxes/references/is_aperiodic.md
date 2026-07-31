@@ -13,9 +13,7 @@ or attracting components
 and then apply this function to those individual components.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed graph
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.is_aperiodic(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.is_aperiodic(G=<G_variable>)

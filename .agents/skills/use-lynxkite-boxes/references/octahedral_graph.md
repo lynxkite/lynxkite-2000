@@ -7,10 +7,7 @@ and each person shakes hands with every person except his or her partner,
 then this graph describes the set of handshakes that take place;
 for this reason it is also called the cocktail party graph [2]_.
 parameters:
-
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.generators.small.octahedral_graph()
+  output_variable = networkx.generators.small.octahedral_graph()

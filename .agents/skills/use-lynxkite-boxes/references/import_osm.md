@@ -1,10 +1,10 @@
 **Graph from OSM:**
 
-parameters:
-  - location: <class 'str'> = ? --?
+```python
+@op("Graph from OSM", slow=True)
+def import_osm(*, location: str):
+    import osmnx as ox
 
-returns:
-  - output: ? - ?.
+    return ox.graph.graph_from_place(location, network_type="drive")
 
-usage:
-output_variable = lynxkite_graph_analytics.operations.file_ops.import_osm(location=<location_value>)
+```

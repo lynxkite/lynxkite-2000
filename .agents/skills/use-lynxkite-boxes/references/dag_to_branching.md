@@ -16,9 +16,7 @@ at `v` is duplicated for each copy. The algorithm then recurses on
 the children of each copy of `v`.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.dag_to_branching(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.dag_to_branching(G=<G_variable>)

@@ -16,9 +16,7 @@ details. Default value: 0.001.
 G[u][community] identifies which community u belongs to. Each
 node belongs to at most one community. Default value: 'community'.
   - G: <class 'networkx.classes.graph.Graph'> = ? --A NetworkX undirected graph.
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.link_prediction.within_inter_cluster(delta=<delta_value>, community=<community_value>, G=<G_variable>)
+  output_variable = networkx.algorithms.link_prediction.within_inter_cluster(delta=<delta_value>, community=<community_value>, G=<G_variable>)

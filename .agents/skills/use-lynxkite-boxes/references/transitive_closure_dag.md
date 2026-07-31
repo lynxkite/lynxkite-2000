@@ -9,9 +9,7 @@ for all v, w in V there is an edge (v, w) in E+ if and only if there
 is a non-null path from v to w in G.
 parameters:
   - G: <class 'networkx.classes.graph.Graph'> = ? --A directed acyclic graph (DAG)
-
 returns:
   - output: <class 'networkx.classes.graph.Graph'> - ?.
-
 usage:
-output_variable = networkx.algorithms.dag.transitive_closure_dag(G=<G_variable>)
+  output_variable = networkx.algorithms.dag.transitive_closure_dag(G=<G_variable>)

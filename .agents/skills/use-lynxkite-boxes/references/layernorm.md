@@ -1,12 +1,9 @@
 **LayerNorm:**
 
-parameters:
-  - normalized_shape: <class 'str'> = ? --?
-  - x: <class 'inspect._empty'> = ? --?
+```python
+@op("LayerNorm", outputs=["outputs", "weights"])
+def layernorm(x, *, normalized_shape=""):
+    normalized_shape = [int(s.strip()) for s in normalized_shape.split(",")]
+    return torch.nn.LayerNorm(normalized_shape)
 
-returns:
-  - outputs: ? - ?.
-  - weights: ? - ?.
-
-usage:
-output_variable = lynxkite_graph_analytics.pytorch.pytorch_ops.layernorm(normalized_shape=<normalized_shape_value>, x=<x_variable>)
+```
