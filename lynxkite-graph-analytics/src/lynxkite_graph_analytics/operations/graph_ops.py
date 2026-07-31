@@ -120,7 +120,7 @@ def _dual_growth(all_nodes, edges, prizes, super_root):
             if cu != cv:
                 rate = active[cu] + active[cv]
                 if rate > 0 and (slack / rate) < min_eps:
-                    min_eps, event_edge, event_comp = slack / rate, (u, v), None
+                    min_eps, event_edge = slack / rate, (u, v)
 
         for c, is_act in active.items():
             if is_act and prizes[c] < min_eps:
