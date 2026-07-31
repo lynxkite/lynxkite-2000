@@ -8,6 +8,23 @@ import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
 import type { useCRDTWorkspace } from "./crdt";
 
+function checkIfChromiumMissingKeys() {
+  const ua = navigator.userAgent;
+  const isLinux = /Linux/i.test(ua);
+  const navData = (navigator as any).userAgentData;
+  if (navData && Array.isArray(navData.brands)) {
+    const brands = navData.brands.map((b: { brand: string }) => b.brand);
+    const isChromiumBrand = brands.includes("Chromium");
+    const isGoogleChromeBrand = brands.includes("Google Chrome");
+    if (isLinux && isChromiumBrand && !isGoogleChromeBrand) {
+      return true;
+    }
+  } else if (isLinux && /Chromium/i.test(ua) && !/Chrome/i.test(ua)) {
+    return true;
+  }
+  return false;
+}
+
 export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useCRDTWorkspace> }) {
   const { crdtWorkspace } = props;
   const crdtWorkspaceRef = useRef(crdtWorkspace);
@@ -48,6 +65,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
     ("SpeechRecognition" in window || "webkitSpeechRecognition" in (window as any));
   const isSpeechToTextUnsupported =
     !hasSpeechRecognitionApi ||
+    checkIfChromiumMissingKeys() ||
     speechError === "SpeechRecognition API is not available in this browser";
   const microphoneTitle = isSpeechToTextUnsupported
     ? "Voice input is unavailable: this browser does not support the Web Speech API."
