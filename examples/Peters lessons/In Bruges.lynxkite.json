@@ -2,13 +2,6 @@
   "assistant_messages": null,
   "edges": [
     {
-      "id": "Merge 3 output Use table as attributes 2 b",
-      "source": "Merge 3",
-      "sourceHandle": "output",
-      "target": "Use table as attributes 2",
-      "targetHandle": "b"
-    },
-    {
       "id": "Join tables 1 output Merge 3 bundles",
       "source": "Join tables 1",
       "sourceHandle": "output",
@@ -332,7 +325,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 455.99006893331443,
+      "height": 456.0,
       "id": "Import CSV 2",
       "measured": {
         "height": 635.0,
@@ -346,7 +339,7 @@
       "resizing": false,
       "selected": false,
       "type": "basic",
-      "width": 431.7397428125196
+      "width": 424.0
     },
     {
       "data": {
@@ -388,7 +381,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 617.6836694462414,
+      "height": 618.0,
       "id": "Import CSV 3",
       "measured": {
         "height": 635.0,
@@ -402,7 +395,7 @@
       "resizing": false,
       "selected": false,
       "type": "basic",
-      "width": 416.5811909498566
+      "width": 424.0
     },
     {
       "data": {
@@ -444,7 +437,7 @@
         "title": "Import CSV"
       },
       "dragHandle": ".drag-handle",
-      "height": 449.86966871179516,
+      "height": 450.0,
       "id": "Import CSV 4",
       "measured": {
         "height": 635.0,
@@ -458,7 +451,7 @@
       "resizing": false,
       "selected": false,
       "type": "basic",
-      "width": 435.4685323239139
+      "width": 424.0
     },
     {
       "data": {
@@ -1088,8 +1081,8 @@
       "id": "Supplement edges with node attributes 1",
       "parentId": null,
       "position": {
-        "x": 4725.446195038736,
-        "y": 508.36635052939334
+        "x": 4677.119457394076,
+        "y": 504.9144406976319
       },
       "type": "basic",
       "width": 315.0
@@ -3573,7 +3566,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 41,
+        "display_version": 43,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3955,7 +3948,7 @@
         "title": "Filter with formula"
       },
       "dragHandle": ".drag-handle",
-      "height": 279.5475355595024,
+      "height": 280.0,
       "id": "Filter with formula 2",
       "measured": {
         "height": 315.0,
@@ -3968,7 +3961,7 @@
       },
       "selected": false,
       "type": "basic",
-      "width": 331.7850618673783
+      "width": 315.0
     },
     {
       "data": {
@@ -4357,7 +4350,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 39,
+        "display_version": 41,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4890,7 +4883,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 31,
+        "display_version": 33,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5437,7 +5430,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 28,
+        "display_version": 30,
         "error": null,
         "expanded_height": null,
         "input_metadata": [

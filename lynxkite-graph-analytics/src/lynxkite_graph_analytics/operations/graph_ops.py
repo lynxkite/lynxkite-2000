@@ -185,7 +185,7 @@ def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root
     if not nodes:
         return 0.0, set(), set(), set()
 
-    super_root = "-1"
+    super_root = "_virtual_source_"
     edges = {e: float(edge_costs[e]) for e in und_list}
     for r in eligible_root_nodes:
         if r in nodes:
