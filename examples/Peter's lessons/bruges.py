@@ -1,4 +1,4 @@
-"""Custom operations for the ODE+GNN model."""
+"""Custom operations for the In Bruges demo workspace."""
 
 import numpy as np
 from lynxkite_core.ops import op_registration
