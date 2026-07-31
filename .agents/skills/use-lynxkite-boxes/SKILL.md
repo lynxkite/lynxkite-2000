@@ -107,7 +107,7 @@ usage: lynxkite_graph_analytics.operations.graph_ops.discard_parallel_edges(grap
 for detailed information, see references/discard_parallel_edges.md
 
 **Distance via shortest path:**
-usage: lynxkite_graph_analytics.operations.graph_ops.shortest_distance(relation=<relation_value>, edge_distances=<edge_distances_value>, attribute_name=<attribute_name_value>, starting_distance=<starting_distance_value>, max_iterations=<max_iterations_value>, undirected=<undirected_value>, b=<b_variable>)
+usage: lynxkite_graph_analytics.operations.graph_ops.shortest_distance(relation=<relation_value>, edge_distances=<edge_distances_value>, attribute_name=<attribute_name_value>, starting_distance=<starting_distance_value>, undirected=<undirected_value>, b=<b_variable>)
 for detailed information, see references/shortest_distance.md
 
 **Graph from edge list:**

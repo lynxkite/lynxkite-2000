@@ -58,20 +58,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Derive property 2 output Distance via shortest path 1 b",
-      "source": "Derive property 2",
-      "sourceHandle": "output",
-      "target": "Distance via shortest path 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Distance via shortest path 1 output Derive property 3 b",
-      "source": "Distance via shortest path 1",
-      "sourceHandle": "output",
-      "target": "Derive property 3",
-      "targetHandle": "b"
-    },
-    {
       "id": "Derive property 3 output Derive property 4 b",
       "source": "Derive property 3",
       "sourceHandle": "output",
@@ -104,20 +90,6 @@
       "source": "Derive property 4",
       "sourceHandle": "output",
       "target": "Steiner forest 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Steiner forest 2 output Fill attributes with default values 1 b",
-      "source": "Steiner forest 2",
-      "sourceHandle": "output",
-      "target": "Fill attributes with default values 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Distance via shortest path 1 output Filter with formula 1 b",
-      "source": "Distance via shortest path 1",
-      "sourceHandle": "output",
-      "target": "Filter with formula 1",
       "targetHandle": "b"
     },
     {
@@ -238,6 +210,34 @@
       "source": "Supplement edges with node attributes 2",
       "sourceHandle": "output",
       "target": "Filter with formula 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive property 2 output Distance via shortest path 2 b",
+      "source": "Derive property 2",
+      "sourceHandle": "output",
+      "target": "Distance via shortest path 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Distance via shortest path 2 output Derive property 3 b",
+      "source": "Distance via shortest path 2",
+      "sourceHandle": "output",
+      "target": "Derive property 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Distance via shortest path 2 output Filter with formula 1 b",
+      "source": "Distance via shortest path 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Steiner forest 2 output Fill attributes with default values 1 b",
+      "source": "Steiner forest 2",
+      "sourceHandle": "output",
+      "target": "Fill attributes with default values 1",
       "targetHandle": "b"
     }
   ],
@@ -1090,191 +1090,6 @@
       "position": {
         "x": 4725.446195038736,
         "y": 508.36635052939334
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": 315.0,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
-                  "node_type",
-                  "shortest_distance",
-                  "start"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "EUR_dst",
-                  "EUR_src",
-                  "dst_id",
-                  "expected_capex_dst",
-                  "expected_capex_src",
-                  "expected_profit_dst",
-                  "expected_profit_src",
-                  "lat_dst",
-                  "lat_src",
-                  "location_dst",
-                  "location_src",
-                  "lon_dst",
-                  "lon_src",
-                  "node_type_dst",
-                  "node_type_src",
-                  "segment_length",
-                  "src_id"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Graph operations > Distance via shortest path",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
-                  "node_type",
-                  "shortest_distance",
-                  "start"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "EUR_dst",
-                  "EUR_src",
-                  "dst_id",
-                  "expected_capex_dst",
-                  "expected_capex_src",
-                  "expected_profit_dst",
-                  "expected_profit_src",
-                  "lat_dst",
-                  "lat_src",
-                  "location_dst",
-                  "location_src",
-                  "lon_dst",
-                  "lon_src",
-                  "node_type_dst",
-                  "node_type_src",
-                  "segment_length",
-                  "src_id"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "attribute_name": "shortest_distance",
-          "edge_distances": "segment_length",
-          "max_iterations": "100",
-          "relation": "edges1",
-          "starting_distance": "start",
-          "undirected": true
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Distance via shortest path"
-      },
-      "height": 315.0,
-      "id": "Distance via shortest path 1",
-      "parentId": null,
-      "position": {
-        "x": 6733.3109821441785,
-        "y": 494.9061893709945
       },
       "type": "basic",
       "width": 315.0
@@ -3758,7 +3573,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 38,
+        "display_version": 41,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4542,7 +4357,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 36,
+        "display_version": 39,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5075,7 +4890,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 28,
+        "display_version": 31,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5164,8 +4979,8 @@
           "chip_data": [
             {
               "disabled": "false",
-              "lat": "51.214087161567875",
-              "lng": "3.2279870641916597",
+              "lat": "51.213399401061636",
+              "lng": "3.2252206671620876",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
@@ -5622,7 +5437,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 23,
+        "display_version": 28,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6433,6 +6248,190 @@
       "position": {
         "x": 10046.432132030557,
         "y": 907.7571110451466
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Distance via shortest path",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "attribute_name": "shortest_distance",
+          "edge_distances": "segment_length",
+          "relation": "edges1",
+          "starting_distance": "start",
+          "undirected": true
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Distance via shortest path"
+      },
+      "height": 315.0,
+      "id": "Distance via shortest path 2",
+      "parentId": null,
+      "position": {
+        "x": 6737.533034357444,
+        "y": 519.0382446453582
       },
       "type": "basic",
       "width": 315.0

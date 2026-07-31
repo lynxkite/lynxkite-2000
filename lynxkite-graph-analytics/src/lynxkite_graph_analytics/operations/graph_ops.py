@@ -451,7 +451,6 @@ def shortest_distance(
     edge_distances: str,
     attribute_name: str,
     starting_distance: str,
-    max_iterations: str,
     undirected: bool,
 ) -> core.Bundle:
     """
@@ -461,58 +460,43 @@ def shortest_distance(
     :param edge_distances: the distances for the edges
     :param attribute_name: the name of the attribute for storing the shortest distances
     :param starting_distance: the name of the attribute for the starting distances
-    :param max_iterations: the maximum number of iterations allowed
     :param undirected: whether to treat the graph as undirected or not
     """
     b = b.copy()
+    r = next(r for r in b.relations if r.name == relation)
+    if r.source_table != r.target_table:
+        raise ValueError("Source and target tables must be the same.")
 
-    for r in b.relations:
-        if r.name == relation:
-            edge_df = b.dfs[r.df].copy()
-            source_table, source_col, target_col, source_key = (
-                r.source_table,
-                r.source_column,
-                r.target_column,
-                r.source_key,
-            )
-            break
-    else:
-        raise ValueError(f"Relation '{relation}' not found.")
+    edges = b.dfs[r.df].copy()
+    nodes = b.dfs[r.source_table]
 
-    edge_df[source_col] = edge_df[source_col].astype(str).str.strip()
-    edge_df[target_col] = edge_df[target_col].astype(str).str.strip()
+    weight_col = "_weight"
+    edges[weight_col] = pd.to_numeric(edges[edge_distances], errors="coerce").fillna(1.0)
 
-    if undirected:
-        reverse = edge_df.rename(columns={source_col: target_col, target_col: source_col})
-        edge_df = pd.concat([edge_df, reverse], ignore_index=True)
+    G = nx.from_pandas_edgelist(
+        edges,
+        source=r.source_column,
+        target=r.target_column,
+        edge_attr=[weight_col],
+        create_using=nx.Graph if undirected else nx.DiGraph,
+    )
+    G.add_nodes_from(nodes[r.source_key])
 
-    nodes = b.dfs[source_table].copy()
-    nodes[source_key] = nodes[source_key].astype(str).str.strip()
-    nodes = nodes.set_index(source_key, drop=False)
-    nodes[attribute_name] = pd.to_numeric(nodes[starting_distance], errors="coerce")
+    virtual_source = "_virtual_source_"
+    valid_dists = pd.to_numeric(nodes[starting_distance], errors="coerce")
 
-    for _ in range(int(max_iterations)):
-        current = nodes[attribute_name].dropna()
-        if current.empty:
-            break
+    virtual_edges = [
+        (virtual_source, node_id, dist)
+        for node_id, dist in zip(nodes[r.source_key], valid_dists)
+        if pd.notna(dist)
+    ]
+    G.add_weighted_edges_from(virtual_edges, weight=weight_col)
 
-        merged = edge_df.merge(current, left_on=source_col, right_index=True, how="inner")
-        if merged.empty:
-            break
-
-        merged["_candidate"] = merged[attribute_name] + merged[edge_distances]
-        best = merged.groupby(target_col)["_candidate"].min()
-
-        before = nodes[attribute_name].copy()
-        nodes = nodes.join(best.rename("_candidate"), how="left")
-        nodes[attribute_name] = nodes[[attribute_name, "_candidate"]].min(axis=1, skipna=True)
-        nodes.drop(columns="_candidate", inplace=True)
-
-        if nodes[attribute_name].equals(before):
-            break
-
-    node_lookup = b.dfs[source_table][source_key].astype(str).str.strip()
-    b.dfs[source_table][attribute_name] = node_lookup.map(nodes[attribute_name])
+    distances = nx.single_source_bellman_ford_path_length(
+        G, source=virtual_source, weight=weight_col
+    )
+    distances.pop(virtual_source, None)
+    b.dfs[r.source_table][attribute_name] = nodes[r.source_key].map(distances)
 
     return b
 
