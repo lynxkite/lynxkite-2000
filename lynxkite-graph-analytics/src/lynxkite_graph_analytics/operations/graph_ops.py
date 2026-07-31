@@ -443,7 +443,7 @@ def merge_parallel_edges(
     return b
 
 
-@op("Distance via shortest path", icon="link")
+@op("Distance via shortest path", icon="route-square")
 def shortest_distance(
     b: core.Bundle,
     *,

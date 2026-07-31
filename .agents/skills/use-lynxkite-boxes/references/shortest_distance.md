@@ -1,7 +1,7 @@
 **Distance via shortest path:**
 Computes the shortest distance from each node to the starting nodes using the specified edge distances.
 ```python
-@op("Distance via shortest path", icon="link")
+@op("Distance via shortest path", icon="route-square")
 def shortest_distance(
     b: core.Bundle,
     *,
