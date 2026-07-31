@@ -2,6 +2,7 @@
 
 import os
 import fastapi
+from crw import CrwClient
 import openai
 import pydantic
 from typing import cast
@@ -59,6 +60,27 @@ def _extract_token_text(token_content: object) -> str:
     return ""
 
 
+crw_client = CrwClient("http://localhost:3000")
+
+
+def internet_search(
+    query: str,
+    max_results: int = 5,
+):
+    """Run a web search"""
+    return crw_client.search(
+        query,
+        max_results=max_results,
+    )
+
+
+def scrape_web_page(
+    url: str,
+):
+    """Scrape a web page"""
+    return crw_client.scrape(url)
+
+
 @router.post("/api/assistant/stream")
 async def assistant_stream(
     req: AssistantCompletionRequest, skill_root="../.agents/skills"
@@ -83,6 +105,7 @@ async def assistant_stream(
         model=model,
         backend=backend,
         skills=["/skills"],
+        tools=[internet_search, scrape_web_page],
         system_prompt=SYSTEM_PROMPT,
     )
     request_messages: list[dict[str, str]] = []
