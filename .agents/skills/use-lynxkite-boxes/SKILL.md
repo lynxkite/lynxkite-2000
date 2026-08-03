@@ -78,6 +78,10 @@ for detailed information, see references/import_graphml.md
 usage: lynxkite_graph_analytics.operations.file_ops.import_parquet(filename=<filename_value>)
 for detailed information, see references/import_parquet.md
 
+**Add node attributes to edges:**
+usage: lynxkite_graph_analytics.operations.graph_ops.supplement_edges(table_name=<table_name_value>, b=<b_variable>)
+for detailed information, see references/supplement_edges.md
+
 **Aggregate on neighbors:**
 usage: lynxkite_graph_analytics.operations.graph_ops.aggregate_on_neighbors(property=<property_value>, aggregation=<aggregation_value>, g=<g_variable>)
 for detailed information, see references/aggregate_on_neighbors.md
@@ -137,10 +141,6 @@ for detailed information, see references/sample_graph.md
 **Steiner forest:**
 usage: lynxkite_graph_analytics.operations.graph_ops.pcsf(relation=<relation_value>, price_column=<price_column_value>, weight_column=<weight_column_value>, root_cost_column=<root_cost_column_value>, output_edge=<output_edge_value>, output_node=<output_node_value>, output_root_nodes=<output_root_nodes_value>, output_profit=<output_profit_value>, b=<b_variable>)
 for detailed information, see references/pcsf.md
-
-**Supplement edges with node attributes:**
-usage: lynxkite_graph_analytics.operations.graph_ops.supplement_edges(table_name=<table_name_value>, b=<b_variable>)
-for detailed information, see references/supplement_edges.md
 
 **Define model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)

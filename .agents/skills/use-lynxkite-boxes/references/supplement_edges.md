@@ -1,7 +1,7 @@
-**Supplement edges with node attributes:**
+**Add node attributes to edges:**
 Adds the attributes of the source and target nodes to the edges in the specified relation.
 ```python
-@op("Supplement edges with node attributes", icon="link")
+@op("Add node attributes to edges", icon="link")
 def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
     """
     Adds the attributes of the source and target nodes to the edges in the specified relation.
