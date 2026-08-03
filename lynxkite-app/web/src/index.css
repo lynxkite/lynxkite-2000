@@ -881,7 +881,7 @@ svg {
 }
 
 .assistant-panel {
-  width: min(36vw, 440px);
+  width: min(38vw, 460px);
   min-width: 300px;
   border-left: 1px solid #d8dde3;
   background: white;

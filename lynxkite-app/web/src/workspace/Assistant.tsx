@@ -114,7 +114,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
       setResults([]);
       return;
     }
-    if (withoutLastThreeWords && rawInput.endsWith("do it now")) {
+    if (withoutLastThreeWords && rawInput.endsWith("do it now") && !interimResult) {
       submitInput(withoutLastThreeWords, false);
     } else {
       setInput(nextInput);
@@ -255,7 +255,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
           className="assistant-editor"
           aria-disabled={status !== "ready"}
           data-placeholder="Ask to make changes to the workspace, create custom boxes, or for general help."
-          contentEditable
+          contentEditable={!isRecording}
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
           onKeyDown={(event) => {
@@ -292,7 +292,7 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
             type="button"
             onClick={clearChatHistory}
           >
-            Clear
+            Clear chat
           </button>
           {isGenerating && (
             <button className="btn btn-sm" type="button" onClick={stop}>
