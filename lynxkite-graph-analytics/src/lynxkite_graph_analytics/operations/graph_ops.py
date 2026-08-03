@@ -9,6 +9,7 @@ from .. import core, bundle
 import networkx as nx
 import enum
 import numpy as np
+import pcst_fast
 
 
 op = ops.op_registration(core.ENV, "Graph operations")
@@ -86,143 +87,6 @@ def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bund
     return b
 
 
-class UnionFind:
-    items: dict
-
-    def __init__(self, items):
-        self.items = {i: i for i in items}
-
-    def find(self, i):
-        path = []
-        while self.items[i] != i:
-            path.append(i)
-            i = self.items[i]
-        for node in path:
-            self.items[node] = i
-        return self.items[i]
-
-    def union(self, a, b):
-        self.items[b] = a
-
-
-def _dual_growth(all_nodes, edges, prizes, super_root):
-    uf = UnionFind(all_nodes)
-    active = {c: (prizes[c] > 0 and c != super_root) for c in prizes}
-    edge_slack = dict(edges)
-    added_edges = []
-    epsilon = 1e-12
-
-    while any(active.values()):
-        min_eps, event_edge, event_comp = float("inf"), None, None
-
-        for (u, v), slack in edge_slack.items():
-            cu, cv = uf.find(u), uf.find(v)
-            if cu != cv:
-                rate = active[cu] + active[cv]
-                if rate > 0 and (slack / rate) < min_eps:
-                    min_eps, event_edge = slack / rate, (u, v)
-
-        for c, is_act in active.items():
-            if is_act and prizes[c] < min_eps:
-                min_eps, event_edge, event_comp = prizes[c], None, c
-
-        if min_eps == float("inf") or (min_eps <= epsilon and not event_edge and not event_comp):
-            break
-
-        for c, is_act in active.items():
-            if is_act:
-                prizes[c] -= min_eps
-
-        for u, v in list(edge_slack.keys()):
-            cu, cv = uf.find(u), uf.find(v)
-            if cu != cv:
-                rate = active[cu] + active[cv]
-                if rate > 0:
-                    edge_slack[(u, v)] -= rate * min_eps
-
-        if event_comp:
-            active[event_comp] = False
-        elif event_edge:
-            u, v = event_edge
-            cu, cv = uf.find(u), uf.find(v)
-            added_edges.append((u, v))
-
-            if cu == super_root or cv == super_root:
-                old_c = cv if cu == super_root else cu
-                uf.union(super_root, old_c)
-                active[old_c] = False
-            else:
-                new_c, old_c = (cv, cu) if prizes[cv] >= prizes[cu] else (cu, cv)
-                uf.union(new_c, old_c)
-                prizes[new_c] += prizes[old_c]
-                active[new_c] = prizes[new_c] > 0
-                active[old_c] = False
-
-    return added_edges
-
-
-def _prune_tree(added_edges, edges, prizes, super_root):
-    T = nx.Graph()
-    for u, v in added_edges:
-        T.add_edge(u, v, weight=edges[(u, v) if u < v else (v, u)])
-
-    if super_root not in T:
-        return T
-
-    leaves = [n for n, d in T.degree() if n != super_root and d == 1]
-    while leaves:
-        node = leaves.pop()
-        if node in T and T.degree(node) == 1 and node != super_root:
-            nbr = next(T.neighbors(node))
-            if prizes.get(node, 0.0) <= T[node][nbr]["weight"]:
-                T.remove_node(node)
-                if nbr != super_root and T.degree(nbr) == 1:
-                    leaves.append(nbr)
-    return T
-
-
-def _gw_pcsf(nodes, und_list, node_prices, edge_costs, root_costs, eligible_root_nodes):
-    if not nodes:
-        return 0.0, set(), set(), set()
-
-    super_root = "_virtual_source_"
-    edges = {e: float(edge_costs[e]) for e in und_list}
-    for r in eligible_root_nodes:
-        if r in nodes:
-            edges[(super_root, r) if super_root < r else (r, super_root)] = float(
-                root_costs.get(r, 0.0)
-            )
-
-    initial_prizes = {n: float(node_prices.get(n, 0.0)) for n in nodes}
-    growth_prizes = dict(initial_prizes)
-    growth_prizes[super_root] = float("inf")
-
-    all_nodes = list(nodes) + [super_root]
-    added_edges = _dual_growth(all_nodes, edges, growth_prizes, super_root)
-    T = _prune_tree(added_edges, edges, initial_prizes, super_root)
-
-    if super_root not in T or len(T) <= 1:
-        return 0.0, set(), set(), set()
-
-    rooted_nodes = nx.node_connected_component(T, super_root)
-
-    sel_nodes = rooted_nodes - {super_root}
-    sel_roots = {r for r in eligible_root_nodes if T.has_edge(super_root, r)}
-    sel_edges = {
-        (u, v) if u < v else (v, u) for u, v in T.edges if u in sel_nodes and v in sel_nodes
-    }
-
-    profit = (
-        sum(initial_prizes[n] for n in sel_nodes)
-        - sum(edges[e] for e in sel_edges)
-        - sum(float(root_costs.get(r, 0.0)) for r in sel_roots)
-    )
-
-    if profit < 0.0:
-        return 0.0, set(), set(), set()
-    return profit, sel_nodes, sel_roots, sel_edges
-
-
 @op("Steiner forest", icon="binary-tree", slow=True)
 def pcsf(
     b: core.Bundle,
@@ -250,7 +114,7 @@ def pcsf(
 
     """
     b = b.copy()
-    rel = next((r for r in b.relations if r.name == relation))
+    rel = next(r for r in b.relations if r.name == relation)
     if rel.source_table != rel.target_table:
         raise ValueError("Source and target tables must be the same.")
 
@@ -264,51 +128,80 @@ def pcsf(
     edge_df[weight_column] = pd.to_numeric(edge_df[weight_column]).fillna(0.0).clip(lower=0.0)
 
     raw_root_costs = pd.to_numeric(node_df[root_cost_column])
-    eligible_root_mask = raw_root_costs.notna() & (raw_root_costs >= 0)
-    eligible_root_nodes = set(node_df.loc[eligible_root_mask, nid])
-    node_df["root_cost_sanitized"] = raw_root_costs.fillna(0.0).clip(lower=0.0)
+    node_df["_root_cost"] = raw_root_costs.clip(lower=0.0)
+    eligible_root_nodes = set(node_df.loc[raw_root_costs.notna() & (raw_root_costs >= 0), nid])
+
+    node_prices = dict(zip(node_df[nid], node_df[price_column]))
+    root_costs = dict(zip(node_df[nid], node_df["_root_cost"].fillna(0.0)))
+
+    edge_df["_key"] = edge_df.apply(lambda r: tuple(sorted([r[src], r[dst]])), axis=1)
+    edge_df = edge_df[edge_df[src] != edge_df[dst]]
+    edge_df = edge_df[edge_df[src].isin(node_prices) & edge_df[dst].isin(node_prices)]
+    cheapest = edge_df.groupby("_key")[weight_column].idxmin()
+    undirected_edges = (
+        edge_df.loc[cheapest, ["_key", weight_column]].set_index("_key")[weight_column].to_dict()
+    )
+    original_idx = edge_df.loc[cheapest, "_key"].reset_index().set_index("_key")["index"].to_dict()
 
     nodes = list(node_df[nid].unique())
-    node_prices = dict(zip(node_df[nid], node_df[price_column]))
-    root_costs = dict(zip(node_df[nid], node_df["root_cost_sanitized"]))
+    node_index = {node: i for i, node in enumerate(nodes)}
+    virtual_root = len(nodes)
 
-    undirected_edges = {}
-    edge_costs = {}
+    solver_edges = [(node_index[u], node_index[v]) for u, v in undirected_edges]
+    solver_costs = [float(w) for w in undirected_edges.values()]
+    eligible_roots = [r for r in eligible_root_nodes if r in node_index]
+    for root in eligible_roots:
+        solver_edges.append((virtual_root, node_index[root]))
+        solver_costs.append(float(root_costs.get(root, 0.0)))
 
-    for idx, row in edge_df.iterrows():
-        u, v, w = row[src], row[dst], row[weight_column]
-        if u == v or u not in node_prices or v not in node_prices:
-            continue
+    selected_nodes, selected_roots, selected_edges = set(), set(), set()
+    net_profit = 0.0
+    if solver_edges and eligible_roots:
+        prizes = np.asarray(
+            [float(node_prices.get(n, 0.0)) for n in nodes] + [0.0], dtype=np.float64
+        )
+        result_nodes, result_edges = pcst_fast.pcst_fast(
+            np.asarray(solver_edges, dtype=np.int64),
+            prizes,
+            np.asarray(solver_costs, dtype=np.float64),
+            virtual_root,
+            1,
+            "strong",
+            0,
+        )
+        if virtual_root in result_nodes:
+            selected_nodes = {str(nodes[i]) for i in result_nodes if i != virtual_root}
+            for edge_id in result_edges:
+                i, j = solver_edges[int(edge_id)]
+                if virtual_root in (i, j):
+                    selected_roots.add(str(nodes[j if i == virtual_root else i]))
+                else:
+                    u, v = str(nodes[i]), str(nodes[j])
+                    selected_edges.add((u, v) if u < v else (v, u))
+            net_profit = (
+                sum(float(node_prices.get(n, 0.0)) for n in selected_nodes)
+                - sum(float(undirected_edges[e]) for e in selected_edges)
+                - sum(float(root_costs.get(r, 0.0)) for r in selected_roots)
+            )
+            if net_profit < 0.0:
+                selected_nodes, selected_roots, selected_edges, net_profit = (
+                    set(),
+                    set(),
+                    set(),
+                    0.0,
+                )
 
-        key = tuple(sorted([u, v]))
-        if key not in edge_costs or w < edge_costs[key]:
-            undirected_edges[key] = idx
-            edge_costs[key] = w
+    selected_edge_indices = {original_idx[e] for e in selected_edges if e in original_idx}
 
-    edges = list(undirected_edges.keys())
+    node_df[output_node] = node_df[nid].isin(selected_nodes).map({True: 1.0, False: None})
+    node_df[output_root_nodes] = node_df[nid].isin(selected_roots).map({True: 1.0, False: None})
+    edge_df[output_edge] = pd.Series(
+        edge_df.index.isin(selected_edge_indices), index=edge_df.index
+    ).map({True: 1.0, False: None})
 
-    net_profit, selected_nodes, selected_roots, selected_edges = _gw_pcsf(
-        nodes=nodes,
-        und_list=edges,
-        node_prices=node_prices,
-        edge_costs=edge_costs,
-        root_costs=root_costs,
-        eligible_root_nodes=eligible_root_nodes,
-    )
-
-    selected_edge_indices = {undirected_edges[e] for e in selected_edges if e in undirected_edges}
-
-    node_df[output_node] = [1.0 if x in selected_nodes else None for x in node_df[nid]]
-    node_df[output_root_nodes] = [1.0 if x in selected_roots else None for x in node_df[nid]]
-    edge_df[output_edge] = [1.0 if idx in selected_edge_indices else None for idx in edge_df.index]
-
-    results_df = pd.DataFrame(
-        {output_profit: [float(net_profit) if net_profit is not None else None]}
-    )
-    b.dfs[output_profit] = results_df
-
-    if "root_cost_sanitized" in node_df.columns:
-        node_df.drop(columns=["root_cost_sanitized"], inplace=True)
+    b.dfs[output_profit] = pd.DataFrame({output_profit: [net_profit]})
+    node_df.drop(columns=["_root_cost"], inplace=True)
+    edge_df.drop(columns=["_key"], inplace=True)
 
     b.dfs[rel.source_table] = node_df
     b.dfs[rel.df] = edge_df

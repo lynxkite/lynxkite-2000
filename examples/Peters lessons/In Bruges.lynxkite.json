@@ -232,6 +232,13 @@
       "sourceHandle": "output",
       "target": "Fill attributes with default values 1",
       "targetHandle": "b"
+    },
+    {
+      "id": "Steiner forest 2 output View tables 1 bundle",
+      "source": "Steiner forest 2",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -3472,7 +3479,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2175.0
+                "length": 1396.0
               },
               "profit": {
                 "columns": [
@@ -3566,7 +3573,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 43,
+        "display_version": 55,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3599,7 +3606,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2175.0
+                "length": 1396.0
               },
               "profit": {
                 "columns": [
@@ -3652,7 +3659,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 4400.0
+                "length": 2832.0
               }
             },
             "other": {},
@@ -3680,8 +3687,8 @@
           "chip_data": [
             {
               "disabled": "false",
-              "lat": "51.21329929897996",
-              "lng": "3.2227984195201036",
+              "lat": "51.21289804651531",
+              "lng": "3.224447024009667",
               "mode": "map",
               "type": "position",
               "xAttr": "lon",
@@ -3868,7 +3875,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2190.0
+                "length": 1470.0
               },
               "profit": {
                 "columns": [
@@ -4350,7 +4357,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 41,
+        "display_version": 53,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4383,7 +4390,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2190.0
+                "length": 1470.0
               },
               "profit": {
                 "columns": [
@@ -4436,7 +4443,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 4406.0
+                "length": 2838.0
               }
             },
             "other": {},
@@ -4883,7 +4890,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 33,
+        "display_version": 45,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5430,7 +5437,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 30,
+        "display_version": 42,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5589,7 +5596,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2190.0
+                "length": 1470.0
               },
               "profit": {
                 "columns": [
@@ -5693,7 +5700,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2190.0
+                "length": 1470.0
               },
               "profit": {
                 "columns": [
@@ -5746,7 +5753,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 4406.0
+                "length": 2838.0
               }
             },
             "other": {},
@@ -5827,7 +5834,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2175.0
+                "length": 1396.0
               },
               "profit": {
                 "columns": [
@@ -5931,7 +5938,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 2175.0
+                "length": 1396.0
               },
               "profit": {
                 "columns": [
@@ -5984,7 +5991,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 4400.0
+                "length": 2832.0
               }
             },
             "other": {},
@@ -6428,6 +6435,128 @@
       },
       "type": "basic",
       "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 11,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "profit": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 511.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 9077.528946403418,
+        "y": 1031.311160090222
+      },
+      "type": "table_view",
+      "width": 450.0
     }
   ],
   "paused": true
