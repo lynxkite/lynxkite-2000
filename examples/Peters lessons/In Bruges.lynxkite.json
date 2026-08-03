@@ -65,13 +65,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Supplement edges with node attributes 1 output Derive segment_length 1 b",
-      "source": "Supplement edges with node attributes 1",
-      "sourceHandle": "output",
-      "target": "Derive segment_length 1",
-      "targetHandle": "b"
-    },
-    {
       "id": "Derive segment_length 1 output Derive property 2 b",
       "source": "Derive segment_length 1",
       "sourceHandle": "output",
@@ -136,20 +129,6 @@
       "targetHandle": "bundles"
     },
     {
-      "id": "Merge two attributes 1 output Supplement edges with node attributes 1 b",
-      "source": "Merge two attributes 1",
-      "sourceHandle": "output",
-      "target": "Supplement edges with node attributes 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Supplement edges with node attributes 1 output Filter with formula 5 b",
-      "source": "Supplement edges with node attributes 1",
-      "sourceHandle": "output",
-      "target": "Filter with formula 5",
-      "targetHandle": "b"
-    },
-    {
       "id": "Filter with formula 6 output Visualize graph 4 b",
       "source": "Filter with formula 6",
       "sourceHandle": "output",
@@ -182,27 +161,6 @@
       "source": "Filter with formula 7",
       "sourceHandle": "output",
       "target": "Visualize graph 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Derive with SQL 1 output Supplement edges with node attributes 2 b",
-      "source": "Derive with SQL 1",
-      "sourceHandle": "output",
-      "target": "Supplement edges with node attributes 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Supplement edges with node attributes 2 output Filter with formula 3 b",
-      "source": "Supplement edges with node attributes 2",
-      "sourceHandle": "output",
-      "target": "Filter with formula 3",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Supplement edges with node attributes 2 output Filter with formula 2 b",
-      "source": "Supplement edges with node attributes 2",
-      "sourceHandle": "output",
-      "target": "Filter with formula 2",
       "targetHandle": "b"
     },
     {
@@ -239,6 +197,48 @@
       "sourceHandle": "output",
       "target": "View tables 1",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Merge two attributes 1 output Add node attributes to edges 1 b",
+      "source": "Merge two attributes 1",
+      "sourceHandle": "output",
+      "target": "Add node attributes to edges 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 1 output Derive segment_length 1 b",
+      "source": "Add node attributes to edges 1",
+      "sourceHandle": "output",
+      "target": "Derive segment_length 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive with SQL 1 output Add node attributes to edges 2 b",
+      "source": "Derive with SQL 1",
+      "sourceHandle": "output",
+      "target": "Add node attributes to edges 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 2 output Filter with formula 2 b",
+      "source": "Add node attributes to edges 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 2 output Filter with formula 3 b",
+      "source": "Add node attributes to edges 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 1 output Filter with formula 5 b",
+      "source": "Add node attributes to edges 1",
+      "sourceHandle": "output",
+      "target": "Filter with formula 5",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -930,166 +930,6 @@
       "position": {
         "x": 6056.5093065058945,
         "y": 509.6309437380463
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
-                  "node_type"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "dst_id",
-                  "src_id"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Graph operations > Supplement edges with node attributes",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
-                  "node_type"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "EUR_dst",
-                  "EUR_src",
-                  "dst_id",
-                  "expected_capex_dst",
-                  "expected_capex_src",
-                  "expected_profit_dst",
-                  "expected_profit_src",
-                  "lat_dst",
-                  "lat_src",
-                  "location_dst",
-                  "location_src",
-                  "lon_dst",
-                  "lon_src",
-                  "node_type_dst",
-                  "node_type_src",
-                  "src_id"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "table_name": "segments"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Supplement edges with node attributes"
-      },
-      "height": 315.0,
-      "id": "Supplement edges with node attributes 1",
-      "parentId": null,
-      "position": {
-        "x": 4677.119457394076,
-        "y": 504.9144406976319
       },
       "type": "basic",
       "width": 315.0
@@ -3573,7 +3413,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 57,
+        "display_version": 59,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4357,7 +4197,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 55,
+        "display_version": 57,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4890,7 +4730,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 47,
+        "display_version": 50,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5437,7 +5277,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 44,
+        "display_version": 45,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6063,224 +5903,6 @@
                   "lat",
                   "location",
                   "lon",
-                  "new_node_type",
-                  "node",
-                  "node_type",
-                  "profit_5y",
-                  "rootpoints",
-                  "shortest_distance",
-                  "start"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "profit": {
-                "columns": [
-                  "profit"
-                ],
-                "key": "profit",
-                "length": 1.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "EUR_dst",
-                  "EUR_src",
-                  "arc",
-                  "dst_id",
-                  "expected_capex_dst",
-                  "expected_capex_src",
-                  "expected_profit_dst",
-                  "expected_profit_src",
-                  "lat_dst",
-                  "lat_src",
-                  "location_dst",
-                  "location_src",
-                  "lon_dst",
-                  "lon_src",
-                  "node_type_dst",
-                  "node_type_src",
-                  "piping_cost",
-                  "segment_length",
-                  "src_id"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Graph operations > Supplement edges with node attributes",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
-                  "new_node_type",
-                  "node",
-                  "node_type",
-                  "profit_5y",
-                  "rootpoints",
-                  "shortest_distance",
-                  "start"
-                ],
-                "key": "locations",
-                "length": 11008.0
-              },
-              "profit": {
-                "columns": [
-                  "profit"
-                ],
-                "key": "profit",
-                "length": 1.0
-              },
-              "prospects": {
-                "columns": [
-                  "expected_profit",
-                  "id",
-                  "node_type"
-                ],
-                "key": "prospects",
-                "length": 230.0
-              },
-              "segments": {
-                "columns": [
-                  "EUR_dst",
-                  "EUR_src",
-                  "arc",
-                  "dst_id",
-                  "expected_capex_dst",
-                  "expected_capex_src",
-                  "expected_profit_dst",
-                  "expected_profit_src",
-                  "lat_dst",
-                  "lat_src",
-                  "location_dst",
-                  "location_src",
-                  "lon_dst",
-                  "lon_src",
-                  "new_node_type_dst",
-                  "new_node_type_src",
-                  "node_dst",
-                  "node_src",
-                  "node_type_dst",
-                  "node_type_src",
-                  "piping_cost",
-                  "profit_5y_dst",
-                  "profit_5y_src",
-                  "rootpoints_dst",
-                  "rootpoints_src",
-                  "segment_length",
-                  "shortest_distance_dst",
-                  "shortest_distance_src",
-                  "src_id",
-                  "start_dst",
-                  "start_src"
-                ],
-                "key": "segments",
-                "length": 24746.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "segments",
-                "name": "edges1",
-                "source_column": "src_id",
-                "source_key": "id",
-                "source_table": "locations",
-                "target_column": "dst_id",
-                "target_key": "id",
-                "target_table": "locations"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "table_name": "segments"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Supplement edges with node attributes"
-      },
-      "height": 315.0,
-      "id": "Supplement edges with node attributes 2",
-      "parentId": null,
-      "position": {
-        "x": 10046.432132030557,
-        "y": 907.7571110451466
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "capex": {
-                "columns": [
-                  "expected_capex",
-                  "id",
-                  "node_type"
-                ],
-                "key": "capex",
-                "length": 6.0
-              },
-              "locations": {
-                "columns": [
-                  "EUR",
-                  "expected_capex",
-                  "expected_profit",
-                  "id",
-                  "lat",
-                  "location",
-                  "lon",
                   "node_type",
                   "shortest_distance",
                   "start"
@@ -6438,10 +6060,9 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 13,
+        "display_version": 14,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6557,6 +6178,384 @@
       },
       "type": "table_view",
       "width": 450.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Add node attributes to edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Add node attributes to edges"
+      },
+      "height": 315.0,
+      "id": "Add node attributes to edges 1",
+      "parentId": null,
+      "position": {
+        "x": 4544.750693706618,
+        "y": 515.2031805886122
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Add node attributes to edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Add node attributes to edges"
+      },
+      "height": 315.0,
+      "id": "Add node attributes to edges 2",
+      "parentId": null,
+      "position": {
+        "x": 9990.256213013152,
+        "y": 872.017261781321
+      },
+      "type": "basic",
+      "width": 315.0
     }
   ],
   "paused": true
