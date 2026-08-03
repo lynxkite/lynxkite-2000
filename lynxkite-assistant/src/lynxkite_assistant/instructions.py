@@ -29,6 +29,12 @@ But you will still need to move the comments manually to make sure they are plac
 Only edit the layout of the boxes, do not add or remove any boxes in this file. All boxes must be added or removed in `/workspace.py`.
 """.strip()
 
+INTERNET_ACCESS_INFO = """
+You have access to the internet through the following tools:
+- internet_search(query: str, **kwargs): Run a web search. kwargs: compatible with the FireCrawl API, will be passed in the request body.
+- scrape_web_page(url: str, **kwargs): Scrape a web page. kwargs: compatible with the FireCrawl API
+- map_web_page(url: str, **kwargs): Input a website and get all the urls on the website. kwargs: compatible with the FireCrawl API"""
+
 SYSTEM_PROMPT = f"""
 ## Overview
 You are an assistant for the LynxKite no-code AI workflow builder.

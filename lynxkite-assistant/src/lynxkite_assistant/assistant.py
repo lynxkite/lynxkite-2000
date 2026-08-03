@@ -12,7 +12,7 @@ import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
-from .instructions import SYSTEM_PROMPT
+from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
 
 router = fastapi.APIRouter()
 
@@ -68,29 +68,33 @@ if os.environ.get("LYNXKITE_WEB_ACCESS_API_KEY"):
     }
 
 
-def internet_search(query: str, max_results: int = 5):
-    """Run a web search"""
+def internet_search(query: str, **kwargs: object):
+    """Run a web search. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    # sometimes kwargs is passed as a dict under the key "kwargs", sometimes it's passed directly as keyword arguments. Handle both cases.
+    other_params = kwargs.get("kwargs", kwargs)
     return requests.post(
         f"{web_access_url}/v1/search",
-        json={"query": query, "limit": max_results},
+        json={"query": query, **other_params},
         headers=headers,
     ).text
 
 
-def scrape_web_page(url: str):
-    """Scrape a web page"""
+def scrape_web_page(url: str, **kwargs: object):
+    """Scrape a web page. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    other_params = kwargs.get("kwargs", kwargs)
     return requests.post(
         f"{web_access_url}/v1/scrape",
-        json={"url": url},
+        json={"url": url, **other_params},
         headers=headers,
     ).text
 
 
-def map_web_page(url: str):
-    """Input a website and get all the urls on the website"""
+def map_web_page(url: str, **kwargs: object):
+    """Input a website and get all the urls on the website. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    other_params = kwargs.get("kwargs", kwargs)
     return requests.post(
         f"{web_access_url}/v1/map",
-        json={"url": url},
+        json={"url": url, **other_params},
         headers=headers,
     ).text
 
@@ -121,7 +125,9 @@ async def assistant_stream(
         backend=backend,
         skills=["/skills"],
         tools=tools,
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=(SYSTEM_PROMPT + INTERNET_ACCESS_INFO)
+        if web_access_url
+        else SYSTEM_PROMPT,
     )
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
