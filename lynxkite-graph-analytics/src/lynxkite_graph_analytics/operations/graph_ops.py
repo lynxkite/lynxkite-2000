@@ -9,7 +9,7 @@ from .. import core, bundle
 import networkx as nx
 import enum
 import numpy as np
-import pcst_fast
+import pcst_fast  # ty: ignore[unresolved-import]
 
 
 op = ops.op_registration(core.ENV, "Graph operations")
