@@ -2,9 +2,9 @@
 
 import os
 import fastapi
-from crw import CrwClient
 import openai
 import pydantic
+import requests
 from typing import cast
 from pathlib import Path
 from fastapi.responses import StreamingResponse
@@ -60,25 +60,39 @@ def _extract_token_text(token_content: object) -> str:
     return ""
 
 
-crw_client = CrwClient("http://localhost:3000")
+web_access_url = os.environ.get("LYNXKITE_WEB_ACCESS_URL")
+headers = None
+if os.environ.get("LYNXKITE_WEB_ACCESS_API_KEY"):
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('LYNXKITE_WEB_ACCESS_API_KEY')}"
+    }
 
 
-def internet_search(
-    query: str,
-    max_results: int = 5,
-):
+def internet_search(query: str, max_results: int = 5):
     """Run a web search"""
-    return crw_client.search(
-        query,
-        max_results=max_results,
-    )
+    return requests.post(
+        f"{web_access_url}/v1/search",
+        json={"query": query, "limit": max_results},
+        headers=headers,
+    ).text
 
 
-def scrape_web_page(
-    url: str,
-):
+def scrape_web_page(url: str):
     """Scrape a web page"""
-    return crw_client.scrape(url)
+    return requests.post(
+        f"{web_access_url}/v1/scrape",
+        json={"url": url},
+        headers=headers,
+    ).text
+
+
+def map_web_page(url: str):
+    """Input a website and get all the urls on the website"""
+    return requests.post(
+        f"{web_access_url}/v1/map",
+        json={"url": url},
+        headers=headers,
+    ).text
 
 
 @router.post("/api/assistant/stream")
@@ -101,11 +115,12 @@ async def assistant_stream(
         default=workspace_backend,
         routes=routes,
     )
+    tools = [internet_search, scrape_web_page, map_web_page] if web_access_url else []
     agent = deepagents.create_deep_agent(
         model=model,
         backend=backend,
         skills=["/skills"],
-        tools=[internet_search, scrape_web_page],
+        tools=tools,
         system_prompt=SYSTEM_PROMPT,
     )
     request_messages: list[dict[str, str]] = []
