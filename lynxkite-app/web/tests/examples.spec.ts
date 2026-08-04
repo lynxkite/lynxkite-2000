@@ -28,9 +28,9 @@ test("Model use", async ({ page }) => {
   await ws.execute({ timeout: 60000 }); // Actually trains the model.
   await ws.expectErrorFree();
   let b = ws.boxByTitle("Train/test split");
-  await b.expectParameterOptions("table name", ["", "records"]);
+  await b.expectParameterOptions("table name", ["records", ""]);
   b = ws.boxByTitle("Train model");
-  await b.expectParameterOptions("model name", ["", "model"]);
+  await b.expectParameterOptions("model name", ["model", ""]);
   b = ws.boxByTitle("View vectors");
   await b.locator.locator(".params-expander").click();
   await b.expectParameterOptions("table name", [
