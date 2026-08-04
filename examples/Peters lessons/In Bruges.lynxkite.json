@@ -1,0 +1,6562 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "Join tables 1 output Merge 3 bundles",
+      "source": "Join tables 1",
+      "sourceHandle": "output",
+      "target": "Merge 3",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Merge 3 output Join tables 2 b",
+      "source": "Merge 3",
+      "sourceHandle": "output",
+      "target": "Join tables 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Join tables 2 output Vector from attributes 1 b",
+      "source": "Join tables 2",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Import CSV 3 output Merge 3 bundles",
+      "source": "Import CSV 3",
+      "sourceHandle": "output",
+      "target": "Merge 3",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Merge 2 output Join tables 1 b",
+      "source": "Merge 2",
+      "sourceHandle": "output",
+      "target": "Join tables 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Import CSV 2 output Merge 2 bundles",
+      "source": "Import CSV 2",
+      "sourceHandle": "output",
+      "target": "Merge 2",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Vector from attributes 1 output Merge two attributes 1 b",
+      "source": "Vector from attributes 1",
+      "sourceHandle": "output",
+      "target": "Merge two attributes 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive property 3 output Derive property 4 b",
+      "source": "Derive property 3",
+      "sourceHandle": "output",
+      "target": "Derive property 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Fill attributes with default values 1 output Derive with SQL 1 b",
+      "source": "Fill attributes with default values 1",
+      "sourceHandle": "output",
+      "target": "Derive with SQL 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive segment_length 1 output Derive property 2 b",
+      "source": "Derive segment_length 1",
+      "sourceHandle": "output",
+      "target": "Derive property 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive property 4 output Steiner forest 2 b",
+      "source": "Derive property 4",
+      "sourceHandle": "output",
+      "target": "Steiner forest 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 1 output Filter with formula 4 b",
+      "source": "Filter with formula 1",
+      "sourceHandle": "output",
+      "target": "Filter with formula 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Visualize graph 3 b Filter with formula 4 output",
+      "source": "Filter with formula 4",
+      "sourceHandle": "output",
+      "target": "Visualize graph 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 5 output Filter with formula 6 b",
+      "selected": false,
+      "source": "Filter with formula 5",
+      "sourceHandle": "output",
+      "target": "Filter with formula 6",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Import CSV 4 output Merge 4 bundles",
+      "source": "Import CSV 4",
+      "sourceHandle": "output",
+      "target": "Merge 4",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Import CSV 1 output Merge 4 bundles",
+      "source": "Import CSV 1",
+      "sourceHandle": "output",
+      "target": "Merge 4",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Define edges 1 b Merge 4 output",
+      "source": "Merge 4",
+      "sourceHandle": "output",
+      "target": "Define edges 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Define edges 1 output Merge 2 bundles",
+      "source": "Define edges 1",
+      "sourceHandle": "output",
+      "target": "Merge 2",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Filter with formula 6 output Visualize graph 4 b",
+      "source": "Filter with formula 6",
+      "sourceHandle": "output",
+      "target": "Visualize graph 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 2 output Filter with formula 7 b",
+      "source": "Filter with formula 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 7",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 3 output Filter with formula 8 b",
+      "source": "Filter with formula 3",
+      "sourceHandle": "output",
+      "target": "Filter with formula 8",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 8 output Visualize graph 1 b",
+      "source": "Filter with formula 8",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Filter with formula 7 output Visualize graph 2 b",
+      "source": "Filter with formula 7",
+      "sourceHandle": "output",
+      "target": "Visualize graph 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive property 2 output Distance via shortest path 2 b",
+      "source": "Derive property 2",
+      "sourceHandle": "output",
+      "target": "Distance via shortest path 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Distance via shortest path 2 output Derive property 3 b",
+      "source": "Distance via shortest path 2",
+      "sourceHandle": "output",
+      "target": "Derive property 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Distance via shortest path 2 output Filter with formula 1 b",
+      "source": "Distance via shortest path 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Steiner forest 2 output Fill attributes with default values 1 b",
+      "source": "Steiner forest 2",
+      "sourceHandle": "output",
+      "target": "Fill attributes with default values 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Steiner forest 2 output View tables 1 bundle",
+      "source": "Steiner forest 2",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Merge two attributes 1 output Add node attributes to edges 1 b",
+      "source": "Merge two attributes 1",
+      "sourceHandle": "output",
+      "target": "Add node attributes to edges 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 1 output Derive segment_length 1 b",
+      "source": "Add node attributes to edges 1",
+      "sourceHandle": "output",
+      "target": "Derive segment_length 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Derive with SQL 1 output Add node attributes to edges 2 b",
+      "source": "Derive with SQL 1",
+      "sourceHandle": "output",
+      "target": "Add node attributes to edges 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 2 output Filter with formula 2 b",
+      "source": "Add node attributes to edges 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 2 output Filter with formula 3 b",
+      "source": "Add node attributes to edges 2",
+      "sourceHandle": "output",
+      "target": "Filter with formula 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Add node attributes to edges 1 output Filter with formula 5 b",
+      "source": "Add node attributes to edges 1",
+      "sourceHandle": "output",
+      "target": "Filter with formula 5",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/bruges_road_segments.csv",
+          "separator": "<auto>",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Import CSV"
+      },
+      "height": 530.0,
+      "id": "Import CSV 1",
+      "parentId": null,
+      "position": {
+        "x": -261.73692440103105,
+        "y": 20.855498441156882
+      },
+      "type": "basic",
+      "width": 380.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/plumbing_client_prospects.csv",
+          "separator": "<auto>",
+          "table_name": "prospects"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Import CSV"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 456.0,
+      "id": "Import CSV 2",
+      "measured": {
+        "height": 635.0,
+        "width": 424.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 863.2602571874804,
+        "y": 559.0099310666856
+      },
+      "resizing": false,
+      "selected": false,
+      "type": "basic",
+      "width": 424.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/water_stations_capex.csv",
+          "separator": "<auto>",
+          "table_name": "capex"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Import CSV"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 618.0,
+      "id": "Import CSV 3",
+      "measured": {
+        "height": 635.0,
+        "width": 424.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 1613.4188090501434,
+        "y": 642.3163305537586
+      },
+      "resizing": false,
+      "selected": false,
+      "type": "basic",
+      "width": 424.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/bruges_locations.csv",
+          "separator": "<auto>",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Import CSV"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 450.0,
+      "id": "Import CSV 4",
+      "measured": {
+        "height": 635.0,
+        "width": 424.0
+      },
+      "parentId": null,
+      "position": {
+        "x": -295.4685323239139,
+        "y": -554.8696687117952
+      },
+      "resizing": false,
+      "selected": false,
+      "type": "basic",
+      "width": 424.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "attributes": [
+            "lat",
+            "lon"
+          ],
+          "table_name": "locations",
+          "vector_name": "location"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 338.0,
+      "id": "Vector from attributes 1",
+      "parentId": null,
+      "position": {
+        "x": 3387.9993924228647,
+        "y": 494.38900633957866
+      },
+      "type": "basic",
+      "width": 344.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge two attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "new_attribute": "EUR",
+          "primary_attribute": "expected_capex",
+          "secondary_attribute": "expected_profit",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Merge two attributes"
+      },
+      "height": 360.0,
+      "id": "Merge two attributes 1",
+      "parentId": null,
+      "position": {
+        "x": 3994.841689699346,
+        "y": 490.74350923255685
+      },
+      "type": "basic",
+      "width": 339.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Derive property",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "start = 0 / (node_type == 'STATION')",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Derive property"
+      },
+      "height": 315.0,
+      "id": "Derive property 2",
+      "parentId": null,
+      "position": {
+        "x": 6056.5093065058945,
+        "y": 509.6309437380463
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Derive property",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "profit_5y",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "profit_5y = expected_profit * 5",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Derive property"
+      },
+      "height": 315.0,
+      "id": "Derive property 3",
+      "parentId": null,
+      "position": {
+        "x": 7478.193856859762,
+        "y": 661.1844679380816
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "profit_5y",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Derive property",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "profit_5y",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "piping_cost = segment_length*1200",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Derive property"
+      },
+      "height": 315.0,
+      "id": "Derive property 4",
+      "parentId": null,
+      "position": {
+        "x": 7892.331866904321,
+        "y": 662.0383607422971
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Fill attributes with default values",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "adder": [
+            [
+              "lon",
+              "0"
+            ]
+          ],
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fill attributes with default values"
+      },
+      "height": 315.0,
+      "id": "Fill attributes with default values 1",
+      "parentId": null,
+      "position": {
+        "x": 9067.794670414643,
+        "y": 606.4319359480736
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "merge_mode": "must be unique"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Merge"
+      },
+      "height": 315.0,
+      "id": "Merge 2",
+      "parentId": null,
+      "position": {
+        "x": 1377.6293334607776,
+        "y": 164.09647992515332
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "merge_mode": "must be unique"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Merge"
+      },
+      "height": 315.0,
+      "id": "Merge 3",
+      "parentId": null,
+      "position": {
+        "x": 2319.0303948950914,
+        "y": 517.7444977126471
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Join tables",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "merge_mode": "Merge, prefer the second table's version",
+          "table1_column": [
+            "locations",
+            "id"
+          ],
+          "table2_column": [
+            "prospects",
+            "id"
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Join tables"
+      },
+      "height": 315.0,
+      "id": "Join tables 1",
+      "parentId": null,
+      "position": {
+        "x": 1833.7518251131698,
+        "y": 156.92031541381695
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Join tables",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "merge_mode": "Merge, prefer the second table's version",
+          "table1_column": [
+            "locations",
+            "id"
+          ],
+          "table2_column": [
+            "capex",
+            "id"
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Join tables"
+      },
+      "height": 315.0,
+      "id": "Join tables 2",
+      "parentId": null,
+      "position": {
+        "x": 2891.9960522247775,
+        "y": 510.27209678023144
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "locations": {
+              "columns": [
+                "id",
+                "lat",
+                "lon"
+              ],
+              "data": [
+                [
+                  17407562.0,
+                  51.1995894,
+                  3.2192497
+                ],
+                [
+                  17407563.0,
+                  51.2001924,
+                  3.2191509
+                ],
+                [
+                  17407564.0,
+                  51.2006909,
+                  3.2188189
+                ],
+                [
+                  17407565.0,
+                  51.2008274,
+                  3.219152
+                ],
+                [
+                  17407582.0,
+                  51.2041598,
+                  3.2190431
+                ],
+                [
+                  17407584.0,
+                  51.2057628,
+                  3.2168502
+                ],
+                [
+                  17407586.0,
+                  51.2054283,
+                  3.2197019
+                ],
+                [
+                  17407587.0,
+                  51.2048296,
+                  3.2177967
+                ],
+                [
+                  17407588.0,
+                  51.204193,
+                  3.217399
+                ],
+                [
+                  17407752.0,
+                  51.2078171,
+                  3.2158884
+                ],
+                [
+                  17407753.0,
+                  51.2083522,
+                  3.2153795
+                ],
+                [
+                  17407754.0,
+                  51.2071852,
+                  3.216128
+                ],
+                [
+                  17407756.0,
+                  51.2064403,
+                  3.2165561
+                ],
+                [
+                  17407757.0,
+                  51.2059119,
+                  3.2170208
+                ],
+                [
+                  17407762.0,
+                  51.2058751,
+                  3.2171865
+                ],
+                [
+                  17407837.0,
+                  51.2056221,
+                  3.2157354
+                ],
+                [
+                  17421081.0,
+                  51.2083532,
+                  3.2211776
+                ],
+                [
+                  17421084.0,
+                  51.2080346,
+                  3.2220584
+                ],
+                [
+                  17421085.0,
+                  51.2078195,
+                  3.2222431
+                ],
+                [
+                  17421090.0,
+                  51.208676,
+                  3.2264929
+                ],
+                [
+                  17421091.0,
+                  51.2081751,
+                  3.2266276
+                ],
+                [
+                  17421092.0,
+                  51.2088833,
+                  3.2274408
+                ],
+                [
+                  17421093.0,
+                  51.2094099,
+                  3.2268868
+                ],
+                [
+                  17421094.0,
+                  51.2084766,
+                  3.2274159
+                ],
+                [
+                  17421099.0,
+                  51.2089555,
+                  3.2273021
+                ],
+                [
+                  17421100.0,
+                  51.2091808,
+                  3.2280714
+                ],
+                [
+                  17421101.0,
+                  51.2094438,
+                  3.2287309
+                ],
+                [
+                  17421107.0,
+                  51.2097281,
+                  3.2295434
+                ],
+                [
+                  17421108.0,
+                  51.2090361,
+                  3.2301209
+                ],
+                [
+                  17421110.0,
+                  51.2087351,
+                  3.2293442
+                ],
+                [
+                  17421113.0,
+                  51.2083167,
+                  3.2283868
+                ],
+                [
+                  17421114.0,
+                  51.2099053,
+                  3.2303351
+                ],
+                [
+                  17421303.0,
+                  51.2077144,
+                  3.2233305
+                ],
+                [
+                  17421305.0,
+                  51.2089458,
+                  3.2233027
+                ],
+                [
+                  17421307.0,
+                  51.209372,
+                  3.2247182
+                ],
+                [
+                  17421310.0,
+                  51.2084168,
+                  3.2250606
+                ],
+                [
+                  17421311.0,
+                  51.2081394,
+                  3.2244354
+                ],
+                [
+                  17421435.0,
+                  51.2085178,
+                  3.2255764
+                ],
+                [
+                  17421436.0,
+                  51.2086177,
+                  3.2263317
+                ],
+                [
+                  17421753.0,
+                  51.2078423,
+                  3.2256796
+                ],
+                [
+                  17421754.0,
+                  51.2075567,
+                  3.2261752
+                ],
+                [
+                  17421757.0,
+                  51.2069162,
+                  3.2270696
+                ],
+                [
+                  17421759.0,
+                  51.2074832,
+                  3.2252087
+                ],
+                [
+                  17421761.0,
+                  51.2073242,
+                  3.2250727
+                ],
+                [
+                  17421762.0,
+                  51.2070685,
+                  3.2248464
+                ],
+                [
+                  17421764.0,
+                  51.205673,
+                  3.2206262
+                ],
+                [
+                  17421767.0,
+                  51.2067544,
+                  3.2223171
+                ],
+                [
+                  17421769.0,
+                  51.2062974,
+                  3.2228911
+                ],
+                [
+                  17421771.0,
+                  51.2064142,
+                  3.2231545
+                ],
+                [
+                  17421926.0,
+                  51.2092201,
+                  3.2228441
+                ],
+                [
+                  17421932.0,
+                  51.210445,
+                  3.2244492
+                ],
+                [
+                  17421937.0,
+                  51.209569,
+                  3.2246813
+                ],
+                [
+                  17422183.0,
+                  51.2105355,
+                  3.2252583
+                ],
+                [
+                  17422185.0,
+                  51.2107097,
+                  3.2261755
+                ],
+                [
+                  17422441.0,
+                  51.207539,
+                  3.2283405
+                ],
+                [
+                  17422442.0,
+                  51.206948,
+                  3.2271168
+                ],
+                [
+                  17422443.0,
+                  51.2071956,
+                  3.22763
+                ],
+                [
+                  17422444.0,
+                  51.2073303,
+                  3.2279056
+                ],
+                [
+                  17422445.0,
+                  51.2074816,
+                  3.2278161
+                ],
+                [
+                  17422447.0,
+                  51.2078599,
+                  3.2276615
+                ],
+                [
+                  17422448.0,
+                  51.2076025,
+                  3.2284714
+                ],
+                [
+                  17422449.0,
+                  51.2077535,
+                  3.227449
+                ],
+                [
+                  17422526.0,
+                  51.2065577,
+                  3.2265961
+                ],
+                [
+                  17422527.0,
+                  51.2062682,
+                  3.2261951
+                ],
+                [
+                  17422529.0,
+                  51.2060672,
+                  3.2255842
+                ],
+                [
+                  17422530.0,
+                  51.206404,
+                  3.2261959
+                ],
+                [
+                  17422531.0,
+                  51.2064263,
+                  3.2263474
+                ],
+                [
+                  17422532.0,
+                  51.2065572,
+                  3.2265242
+                ],
+                [
+                  17422533.0,
+                  51.206728,
+                  3.2267505
+                ],
+                [
+                  17422534.0,
+                  51.2056516,
+                  3.2252489
+                ],
+                [
+                  17422535.0,
+                  51.2053884,
+                  3.2254934
+                ],
+                [
+                  17422536.0,
+                  51.2051121,
+                  3.2255671
+                ],
+                [
+                  17422537.0,
+                  51.2054988,
+                  3.224871
+                ],
+                [
+                  17422566.0,
+                  51.2051745,
+                  3.2243233
+                ],
+                [
+                  17422567.0,
+                  51.2048367,
+                  3.223747
+                ],
+                [
+                  17422570.0,
+                  51.2042282,
+                  3.2242076
+                ],
+                [
+                  17422577.0,
+                  51.2030882,
+                  3.2251655
+                ],
+                [
+                  17422579.0,
+                  51.2025637,
+                  3.2259089
+                ],
+                [
+                  17422582.0,
+                  51.2023917,
+                  3.2261814
+                ],
+                [
+                  17422584.0,
+                  51.2020117,
+                  3.2267487
+                ],
+                [
+                  17422586.0,
+                  51.2017696,
+                  3.2270133
+                ],
+                [
+                  17422588.0,
+                  51.2014524,
+                  3.2273404
+                ],
+                [
+                  17422590.0,
+                  51.201237,
+                  3.2275543
+                ],
+                [
+                  17422709.0,
+                  51.2046974,
+                  3.2258628
+                ],
+                [
+                  17422710.0,
+                  51.2040829,
+                  3.2264293
+                ],
+                [
+                  17422712.0,
+                  51.2039892,
+                  3.2265071
+                ],
+                [
+                  17422715.0,
+                  51.2033719,
+                  3.2269209
+                ],
+                [
+                  17422716.0,
+                  51.2030807,
+                  3.2260656
+                ],
+                [
+                  17422717.0,
+                  51.202818,
+                  3.2258722
+                ],
+                [
+                  17422718.0,
+                  51.2038388,
+                  3.2279927
+                ],
+                [
+                  17423164.0,
+                  51.2029813,
+                  3.2249073
+                ],
+                [
+                  17423165.0,
+                  51.2028254,
+                  3.2244593
+                ],
+                [
+                  17423166.0,
+                  51.2022982,
+                  3.2246102
+                ],
+                [
+                  17423167.0,
+                  51.2022253,
+                  3.2247127
+                ],
+                [
+                  17423169.0,
+                  51.2017476,
+                  3.2247416
+                ],
+                [
+                  17423172.0,
+                  51.2006736,
+                  3.2250634
+                ],
+                [
+                  17423175.0,
+                  51.2017219,
+                  3.2235502
+                ],
+                [
+                  17423264.0,
+                  51.2005628,
+                  3.2229844
+                ],
+                [
+                  17423265.0,
+                  51.2005818,
+                  3.2232636
+                ],
+                [
+                  17423266.0,
+                  51.2017044,
+                  3.2231858
+                ]
+              ]
+            },
+            "segments": {
+              "columns": [
+                "src_id",
+                "dst_id"
+              ],
+              "data": [
+                [
+                  1271366346.0,
+                  1271366384.0
+                ],
+                [
+                  4995181280.0,
+                  2529521797.0
+                ],
+                [
+                  5631269894.0,
+                  5631269878.0
+                ],
+                [
+                  3404418032.0,
+                  1388233250.0
+                ],
+                [
+                  5241507509.0,
+                  1165317896.0
+                ],
+                [
+                  312709083.0,
+                  1927150828.0
+                ],
+                [
+                  3779659124.0,
+                  3779659123.0
+                ],
+                [
+                  7725522646.0,
+                  7725522652.0
+                ],
+                [
+                  2410018061.0,
+                  5640662413.0
+                ],
+                [
+                  6260943447.0,
+                  1164764007.0
+                ],
+                [
+                  323742518.0,
+                  1515019652.0
+                ],
+                [
+                  26343710.0,
+                  5233171495.0
+                ],
+                [
+                  5584110171.0,
+                  7122141178.0
+                ],
+                [
+                  5373759178.0,
+                  5240131569.0
+                ],
+                [
+                  305443505.0,
+                  7757485617.0
+                ],
+                [
+                  6747337781.0,
+                  6747337782.0
+                ],
+                [
+                  4917095020.0,
+                  4917095722.0
+                ],
+                [
+                  1686655901.0,
+                  7725603389.0
+                ],
+                [
+                  1492554046.0,
+                  312714405.0
+                ],
+                [
+                  26343910.0,
+                  1598912937.0
+                ],
+                [
+                  5169436028.0,
+                  5169436029.0
+                ],
+                [
+                  4995181280.0,
+                  3340512430.0
+                ],
+                [
+                  5711826167.0,
+                  5711826166.0
+                ],
+                [
+                  7685484226.0,
+                  2517460459.0
+                ],
+                [
+                  1321891561.0,
+                  1321891699.0
+                ],
+                [
+                  766772547.0,
+                  1103393322.0
+                ],
+                [
+                  5520732573.0,
+                  5520732585.0
+                ],
+                [
+                  470512873.0,
+                  7538594603.0
+                ],
+                [
+                  1271366346.0,
+                  1271366396.0
+                ],
+                [
+                  5520732573.0,
+                  5520732576.0
+                ],
+                [
+                  1941115244.0,
+                  26347700.0
+                ],
+                [
+                  5643616755.0,
+                  5643616756.0
+                ],
+                [
+                  1321891811.0,
+                  1321891513.0
+                ],
+                [
+                  2529521737.0,
+                  2529521847.0
+                ],
+                [
+                  310385919.0,
+                  5061898100.0
+                ],
+                [
+                  312709083.0,
+                  1927246459.0
+                ],
+                [
+                  1321891811.0,
+                  1321891686.0
+                ],
+                [
+                  4278319941.0,
+                  4278319942.0
+                ],
+                [
+                  5643616755.0,
+                  5643616759.0
+                ],
+                [
+                  310386142.0,
+                  5627680626.0
+                ],
+                [
+                  5574136962.0,
+                  2968454151.0
+                ],
+                [
+                  3328488669.0,
+                  4595144333.0
+                ],
+                [
+                  2410018061.0,
+                  2410018073.0
+                ],
+                [
+                  4278319941.0,
+                  4176824706.0
+                ],
+                [
+                  26343723.0,
+                  26343722.0
+                ],
+                [
+                  4917095020.0,
+                  4917095721.0
+                ],
+                [
+                  7164964539.0,
+                  7164964538.0
+                ],
+                [
+                  1914291241.0,
+                  1870007640.0
+                ],
+                [
+                  7685484226.0,
+                  7685484227.0
+                ],
+                [
+                  5955133851.0,
+                  5959691743.0
+                ],
+                [
+                  26343910.0,
+                  5061064737.0
+                ],
+                [
+                  5640662414.0,
+                  2410018163.0
+                ],
+                [
+                  7725522646.0,
+                  7725522669.0
+                ],
+                [
+                  6570699188.0,
+                  6172781581.0
+                ],
+                [
+                  1311024433.0,
+                  893271485.0
+                ],
+                [
+                  310386142.0,
+                  310385918.0
+                ],
+                [
+                  766772547.0,
+                  766772545.0
+                ],
+                [
+                  1492554046.0,
+                  312714406.0
+                ],
+                [
+                  5682555820.0,
+                  5682555819.0
+                ],
+                [
+                  1311024433.0,
+                  893271480.0
+                ],
+                [
+                  5574136962.0,
+                  5574136961.0
+                ],
+                [
+                  1789677059.0,
+                  312712198.0
+                ],
+                [
+                  7725522646.0,
+                  7725522666.0
+                ],
+                [
+                  5520732573.0,
+                  5520732574.0
+                ],
+                [
+                  5631269894.0,
+                  5631269877.0
+                ],
+                [
+                  26343910.0,
+                  1271366350.0
+                ],
+                [
+                  5468190513.0,
+                  5468190514.0
+                ],
+                [
+                  1789677059.0,
+                  4971141883.0
+                ],
+                [
+                  5226746593.0,
+                  5226746594.0
+                ],
+                [
+                  26343723.0,
+                  1913770532.0
+                ],
+                [
+                  5226746593.0,
+                  5226748883.0
+                ],
+                [
+                  26343710.0,
+                  26343711.0
+                ],
+                [
+                  187067655.0,
+                  318730089.0
+                ],
+                [
+                  6448682259.0,
+                  6448682261.0
+                ],
+                [
+                  6747337781.0,
+                  6747337780.0
+                ],
+                [
+                  2410018144.0,
+                  5230762625.0
+                ],
+                [
+                  305443505.0,
+                  3606972356.0
+                ],
+                [
+                  5468190513.0,
+                  5468190516.0
+                ],
+                [
+                  323742518.0,
+                  6960563529.0
+                ],
+                [
+                  5373759178.0,
+                  5373759179.0
+                ],
+                [
+                  4969326080.0,
+                  4969326116.0
+                ],
+                [
+                  310385919.0,
+                  5061898159.0
+                ],
+                [
+                  310386142.0,
+                  5049458119.0
+                ],
+                [
+                  1941115244.0,
+                  1941115249.0
+                ],
+                [
+                  5373795797.0,
+                  5373795798.0
+                ],
+                [
+                  1686655901.0,
+                  7725603387.0
+                ],
+                [
+                  6570699188.0,
+                  6570699189.0
+                ],
+                [
+                  470512873.0,
+                  1164691751.0
+                ],
+                [
+                  5094631900.0,
+                  318174007.0
+                ],
+                [
+                  7169520149.0,
+                  7169520148.0
+                ],
+                [
+                  1165547266.0,
+                  5072243159.0
+                ],
+                [
+                  5540629393.0,
+                  5540629411.0
+                ],
+                [
+                  4995181280.0,
+                  1071493222.0
+                ],
+                [
+                  5169436028.0,
+                  1207217162.0
+                ],
+                [
+                  5584110171.0,
+                  5584110170.0
+                ],
+                [
+                  4969326080.0,
+                  4969326081.0
+                ],
+                [
+                  5094631900.0,
+                  318174006.0
+                ],
+                [
+                  6260943447.0,
+                  2500094100.0
+                ],
+                [
+                  1165547266.0,
+                  5072141141.0
+                ],
+                [
+                  5226746593.0,
+                  5226746592.0
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": [
+            {
+              "df": "segments",
+              "name": "edges1",
+              "source_column": "src_id",
+              "source_key": "id",
+              "source_table": "locations",
+              "target_column": "dst_id",
+              "target_key": "id",
+              "target_table": "locations"
+            }
+          ]
+        },
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Define edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "relations": "{\"edges1\":{\"name\":\"edges1\",\"df\":\"segments\",\"source_column\":\"src_id\",\"target_column\":\"dst_id\",\"source_table\":\"locations\",\"target_table\":\"locations\",\"source_key\":\"id\",\"target_key\":\"id\"}}"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Define edges"
+      },
+      "height": 772.0,
+      "id": "Define edges 1",
+      "parentId": null,
+      "position": {
+        "x": 610.0969687652846,
+        "y": -424.00264538951814
+      },
+      "type": "graph_creation_view",
+      "width": 554.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Derive with SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "CASE \n        WHEN node_type = 'STATION' THEN \n            CASE \n                WHEN rootpoints = 1 THEN 'STATION USED'\n                ELSE 'STATION NOT USED'\n            END\n            \n        WHEN node_type = 'CLIENT' THEN \n            CASE \n                WHEN node = 1 THEN 'CLIENT REACHED'\n                ELSE 'CLIENT NOT REACHED'\nEND\n            \n        WHEN node = 1 THEN 'PIPING'\n        \n        ELSE 'NOTHING'\n    END",
+          "name": "new_node_type",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Derive with SQL"
+      },
+      "height": 315.0,
+      "id": "Derive with SQL 1",
+      "parentId": null,
+      "position": {
+        "x": 9602.303021961583,
+        "y": 606.6212629090614
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1396.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\"]",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "height": 315.0,
+      "id": "Filter with formula 3",
+      "parentId": null,
+      "position": {
+        "x": 10448.053741350417,
+        "y": 684.6986955347985
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 59,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1396.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 2832.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "lat": "51.21289804651531",
+              "lng": "3.224447024009667",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "lon",
+              "yAttr": "lat",
+              "zoom": "14"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "10",
+              "type": "edge_width"
+            },
+            {
+              "attribute": "piping_cost",
+              "continuous": "true",
+              "disabled": "false",
+              "type": "edgeColor"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "3",
+              "type": "node_size"
+            },
+            {
+              "attribute": "new_node_type",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 805.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 11514.336412784809,
+        "y": 169.69889887766587
+      },
+      "type": "graph_visualization",
+      "width": 713.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1470.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\", \"STATION NOT USED\", \"CLIENT NOT REACHED\"]",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 280.0,
+      "id": "Filter with formula 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 10448.214938132622,
+        "y": 1085.4524644404976
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 436.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "profit_5y",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Steiner forest",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "output_edge": "arc",
+          "output_node": "node",
+          "output_profit": "profit",
+          "output_root_nodes": "rootpoints",
+          "price_column": "profit_5y",
+          "relation": "edges1",
+          "root_cost_column": "expected_capex",
+          "weight_column": "piping_cost"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Steiner forest"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 436.0,
+      "id": "Steiner forest 2",
+      "measured": {
+        "height": 436.0,
+        "width": 392.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 8526.970168221984,
+        "y": 610.1214937723977
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 392.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "In Bruges > Derive segment_length",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Derive segment_length"
+      },
+      "height": 315.0,
+      "id": "Derive segment_length 1",
+      "parentId": null,
+      "position": {
+        "x": 5377.559005927044,
+        "y": 525.8573499246531
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 57,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1470.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 2838.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "lat": "51.21251255952397",
+              "lng": "3.225026901526431",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "lon",
+              "yAttr": "lat",
+              "zoom": "14"
+            },
+            {
+              "attribute": "new_node_type",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "10",
+              "type": "node_size"
+            },
+            {
+              "attribute": "piping_cost",
+              "continuous": "true",
+              "disabled": "false",
+              "type": "edgeColor"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "10",
+              "type": "edge_width"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 799.0,
+      "id": "Visualize graph 2",
+      "parentId": null,
+      "position": {
+        "x": 11515.204404567103,
+        "y": 1002.8808256243673
+      },
+      "type": "graph_visualization",
+      "width": 606.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "node_type in [\"STATION\", \"CLIENT\"]",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 298.0,
+      "id": "Filter with formula 1",
+      "measured": {
+        "height": 298.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7436.036113962824,
+        "y": 319.87687977762164
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 18.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "node_type_src in [\"STATION\", \"CLIENT\"] & node_type_dst in [\"STATION\", \"CLIENT\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "height": 343.0,
+      "id": "Filter with formula 4",
+      "parentId": null,
+      "position": {
+        "x": 7894.938206625152,
+        "y": 295.778129801347
+      },
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 50,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 18.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "lat": "51.213399401061636",
+              "lng": "3.2252206671620876",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "lon",
+              "yAttr": "lat",
+              "zoom": "14"
+            },
+            {
+              "attribute": "shortest_distance",
+              "continuous": "true",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "15",
+              "type": "node_size"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 772.0,
+      "id": "Visualize graph 3",
+      "parentId": null,
+      "position": {
+        "x": 8444.842441190056,
+        "y": -191.1058762078748
+      },
+      "type": "graph_visualization",
+      "width": 677.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "node_type in [\"STATION\", \"CLIENT\"]",
+          "table_name": "locations"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 298.0,
+      "id": "Filter with formula 5",
+      "measured": {
+        "height": 298.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5397.35509097294,
+        "y": -210.24007966644376
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 18.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "node_type_src in [\"STATION\", \"CLIENT\"] & node_type_dst in [\"STATION\", \"CLIENT\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 343.0,
+      "id": "Filter with formula 6",
+      "measured": {
+        "height": 343.0,
+        "width": 331.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5779.053485491035,
+        "y": -234.33882964271834
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "locations": {
+                "columns": [
+                  "id",
+                  "lat",
+                  "lon"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "merge_mode": "must be unique"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Merge"
+      },
+      "height": 315.0,
+      "id": "Merge 4",
+      "parentId": null,
+      "position": {
+        "x": 211.45602230525822,
+        "y": -195.9655605739752
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 45,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 232.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 18.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "node_type",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "lat": "51.21151282919938",
+              "lng": "3.2269013433327625",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "lon",
+              "yAttr": "lat",
+              "zoom": "14"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "15",
+              "type": "node_size"
+            }
+          ]
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 797.0,
+      "id": "Visualize graph 4",
+      "parentId": null,
+      "position": {
+        "x": 6323.934731688392,
+        "y": -306.3551040217627
+      },
+      "type": "graph_visualization",
+      "width": 829.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1470.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1470.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 2838.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type_src in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\", \"STATION NOT USED\", \"CLIENT NOT REACHED\"] & new_node_type_dst in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\", \"STATION NOT USED\", \"CLIENT NOT REACHED\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 343.0,
+      "id": "Filter with formula 7",
+      "measured": {
+        "height": 343.0,
+        "width": 331.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 10889.760679710867,
+        "y": 1057.3317199985238
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1396.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Filter with formula",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 1396.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 2832.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "formula": "new_node_type_src in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\"] & new_node_type_dst in [\"STATION USED\", \"CLIENT REACHED\", \"PIPING\"]",
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Filter with formula"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 343.0,
+      "id": "Filter with formula 8",
+      "measured": {
+        "height": 343.0,
+        "width": 331.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 10872.345091298796,
+        "y": 669.031174015562
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 331.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Distance via shortest path",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "attribute_name": "shortest_distance",
+          "edge_distances": "segment_length",
+          "relation": "edges1",
+          "starting_distance": "start",
+          "undirected": true
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Distance via shortest path"
+      },
+      "height": 315.0,
+      "id": "Distance via shortest path 2",
+      "parentId": null,
+      "position": {
+        "x": 6737.533034357444,
+        "y": 519.0382446453582
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 14,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "profit": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 511.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 9077.528946403418,
+        "y": 1031.311160090222
+      },
+      "type": "table_view",
+      "width": 450.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "dst_id",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Add node attributes to edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "node_type"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Add node attributes to edges"
+      },
+      "height": 315.0,
+      "id": "Add node attributes to edges 1",
+      "parentId": null,
+      "position": {
+        "x": 4544.750693706618,
+        "y": 515.2031805886122
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "segment_length",
+                  "src_id"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Add node attributes to edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "capex": {
+                "columns": [
+                  "expected_capex",
+                  "id",
+                  "node_type"
+                ],
+                "key": "capex",
+                "length": 6.0
+              },
+              "locations": {
+                "columns": [
+                  "EUR",
+                  "expected_capex",
+                  "expected_profit",
+                  "id",
+                  "lat",
+                  "location",
+                  "lon",
+                  "new_node_type",
+                  "node",
+                  "node_type",
+                  "profit_5y",
+                  "rootpoints",
+                  "shortest_distance",
+                  "start"
+                ],
+                "key": "locations",
+                "length": 11008.0
+              },
+              "profit": {
+                "columns": [
+                  "profit"
+                ],
+                "key": "profit",
+                "length": 1.0
+              },
+              "prospects": {
+                "columns": [
+                  "expected_profit",
+                  "id",
+                  "node_type"
+                ],
+                "key": "prospects",
+                "length": 230.0
+              },
+              "segments": {
+                "columns": [
+                  "EUR_dst",
+                  "EUR_src",
+                  "arc",
+                  "dst_id",
+                  "expected_capex_dst",
+                  "expected_capex_src",
+                  "expected_profit_dst",
+                  "expected_profit_src",
+                  "lat_dst",
+                  "lat_src",
+                  "location_dst",
+                  "location_src",
+                  "lon_dst",
+                  "lon_src",
+                  "new_node_type_dst",
+                  "new_node_type_src",
+                  "node_dst",
+                  "node_src",
+                  "node_type_dst",
+                  "node_type_src",
+                  "piping_cost",
+                  "profit_5y_dst",
+                  "profit_5y_src",
+                  "rootpoints_dst",
+                  "rootpoints_src",
+                  "segment_length",
+                  "shortest_distance_dst",
+                  "shortest_distance_src",
+                  "src_id",
+                  "start_dst",
+                  "start_src"
+                ],
+                "key": "segments",
+                "length": 24746.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "segments",
+                "name": "edges1",
+                "source_column": "src_id",
+                "source_key": "id",
+                "source_table": "locations",
+                "target_column": "dst_id",
+                "target_key": "id",
+                "target_table": "locations"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "table_name": "segments"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Add node attributes to edges"
+      },
+      "height": 315.0,
+      "id": "Add node attributes to edges 2",
+      "parentId": null,
+      "position": {
+        "x": 9990.256213013152,
+        "y": 872.017261781321
+      },
+      "type": "basic",
+      "width": 315.0
+    }
+  ],
+  "paused": true
+}
