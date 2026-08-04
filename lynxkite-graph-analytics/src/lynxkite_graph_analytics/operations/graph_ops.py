@@ -101,7 +101,41 @@ def pcsf(
     output_profit: str,
 ):
     """
-    Creates a new dataframe that defines a Steiner Forest of the graph defined by the relation
+    The prize collecting Steiner tree is a problem that seeks a subtree of a graph that maximizes the total prize collected from the nodes minus the total weight of the edges.
+
+    The prize collecting Steiner Forest allows for multiple disjoint trees. This problem has multiple versions, in this case there are a set of nodes that can act as the root of the subtrees, and each such node has a cost for using it as the root of the tree it belongs to. Every subtree must have exactly 1 root.
+
+    A use case for this operation could be that we want to create a water supply network, where the water stations can act as the roots, and the houses have prizes, since they are the customers. The piping costs will be the weights of the edges.
+
+    This example can be seen in the "In Bruges" workspace in "examples/Peters lessons".
+
+    A small example of the PCSF problem:
+
+    We have a graph, with 5 nodes: A, B, C, D, E.
+
+    The edges with their weights:
+    A-B: 10
+    B-C: 20
+    D-E: 40
+
+    The nodes with their prizes:
+    A: 0
+    B: 30
+    C: 40
+    E: 25
+
+    The potential roots with the costs:
+    A: 15
+    D: 35
+
+    The optimal solution:
+    nodes: A, B, C
+    edges: A-B, B-C
+    roots: A
+    profit: (0 + 30 + 40) - (10 + 20) - (15) = 25
+
+    This box provides an approximate solution for the PCSF problem, as it is NP-hard.
+
     :param b: the bundle
     :param relation: the relation
     :param price_column: the column with the node prices
