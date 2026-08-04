@@ -5,6 +5,7 @@ import {
   BackgroundVariant,
   type Connection,
   MarkerType,
+  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -95,6 +96,19 @@ export default function Workspace(props: any) {
 }
 
 const ICONIZE_THRESHOLD = 0.3;
+const MIN_READABLE_ZOOM = 0.3;
+const MAX_AUTO_ZOOM = 0.85;
+const AUTO_ZOOM_DURATION_MS = 520;
+const NON_ICONIZED_NODE_TYPES = new Set([
+  "visualization",
+  "graph_visualization",
+  "image",
+  "molecule",
+]);
+
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
 
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
@@ -370,6 +384,38 @@ function LynxKiteFlow() {
       crdt?.addEdge(edge);
     },
     [crdt],
+  );
+  function canNodeBeIconized(node: Node): boolean {
+    return !node.data?.collapsed && !NON_ICONIZED_NODE_TYPES.has(node.type || "");
+  }
+  const zoomToReadableNode = useCallback(
+    (node: Node) => {
+      if (!iconized || !canNodeBeIconized(node)) return;
+
+      const viewportWidth = reactFlowContainer.current?.clientWidth;
+      const viewportHeight = reactFlowContainer.current?.clientHeight;
+      if (!viewportWidth || !viewportHeight) return;
+
+      const nodeWidth = node.measured?.width ?? node.width ?? 315;
+      const nodeHeight = node.measured?.height ?? node.height ?? 315;
+      const nodePos = node.positionAbsolute ?? node.position;
+      const centerX = nodePos.x + nodeWidth / 2;
+      const centerY = nodePos.y + nodeHeight / 2;
+
+      // Keep a very generous margin so nearby nodes remain visible and often readable after auto-zoom.
+      const fitZoom = Math.min(
+        viewportWidth / (nodeWidth * 2.45),
+        viewportHeight / (nodeHeight * 2.6),
+      );
+      const zoom = Math.max(MIN_READABLE_ZOOM, Math.min(MAX_AUTO_ZOOM, fitZoom));
+
+      reactFlow.setCenter(centerX, centerY, {
+        zoom,
+        duration: AUTO_ZOOM_DURATION_MS,
+        ease: easeInOutCubic,
+      });
+    },
+    [iconized, reactFlow],
   );
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -739,6 +785,7 @@ function LynxKiteFlow() {
                 onEdgesChange={crdt?.onFEEdgesChange}
                 onPaneClick={canWrite ? toggleNodeSearch : undefined}
                 onConnect={canWrite ? onConnect : undefined}
+                onNodeClick={(_, node) => zoomToReadableNode(node)}
                 onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
                 onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
                 onMove={() => {
