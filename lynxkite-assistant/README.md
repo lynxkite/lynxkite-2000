@@ -24,6 +24,11 @@ The LynxKite Assistant can:
 - add comments ot the workspace
 - reorganize the boxes in the workspace
 - with the proper setup, the assistant can access the internet and can make web searches and read websites
+- voice control: you can give verbal commands to the assistant. You can issue the following commands verbally:
+    - "Do it now": submits the prompt in the input box
+    - "Clear input field": clears the input box
+
+    Note: this feature will only work if you have a browser that supports WebSpeech API, such as Google Chrome.
 
 In your messages you can also reference the boxes you have selected with a click of a button, so the Assistant knows which boxes you're talking about.
 
