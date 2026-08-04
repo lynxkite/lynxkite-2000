@@ -415,6 +415,7 @@ def op(
     icon: str | None = None,
     cache: bool | None = None,
     dir: str = "left-to-right",
+    tags: list[str] | None = None,
 ):
     """
     Decorator for defining an operation.
@@ -441,7 +442,7 @@ def op(
     [*categories, name] = names
 
     def decorator(func):
-        tags = []
+        tag_list = tags or []
         doc = parse_doc(func)
         sig = inspect.signature(func)
         _view = view
@@ -450,7 +451,7 @@ def op(
             func = matplotlib_to_image(func)
         ctx_name, ctx_idx = find_ctx_param_name(func)
         if slow:
-            tags.append("slow")
+            tag_list.append("slow")
             func = make_async(func)
             if cache is not False:
                 if ctx_name is None or ctx_idx is None:
@@ -504,7 +505,7 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
-            tags=tags,
+            tags=tag_list,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
