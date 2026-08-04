@@ -398,7 +398,8 @@ function LynxKiteFlow() {
 
       const nodeWidth = node.measured?.width ?? node.width ?? 315;
       const nodeHeight = node.measured?.height ?? node.height ?? 315;
-      const nodePos = node.positionAbsolute ?? node.position;
+      const nodePos =
+        reactFlow.getInternalNode(node.id)?.internals.positionAbsolute ?? node.position;
       const centerX = nodePos.x + nodeWidth / 2;
       const centerY = nodePos.y + nodeHeight / 2;
 
