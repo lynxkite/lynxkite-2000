@@ -34,12 +34,12 @@ test("Model use", async ({ page }) => {
   b = ws.boxByTitle("View vectors");
   await b.locator.locator(".params-expander").click();
   await b.expectParameterOptions("table name", [
-    "",
     "records",
     "records_test",
     "records_train",
     "training",
+    "",
   ]);
-  await b.expectParameterOptions("vector column", ["", "index", "prediction", "x", "y"]);
-  await b.expectParameterOptions("label column", ["", "index", "prediction", "x", "y"]);
+  await b.expectParameterOptions("vector column", ["index", "prediction", "x", "y", ""]);
+  await b.expectParameterOptions("label column", ["index", "prediction", "x", "y", ""]);
 });
