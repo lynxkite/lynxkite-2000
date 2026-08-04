@@ -162,7 +162,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -387,7 +387,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -432,7 +432,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -917,7 +917,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -988,7 +988,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 14,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1165,7 +1165,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1441,10 +1441,9 @@
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 13,
+        "display_version": 14,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1510,7 +1509,7 @@
         "telemetry": null,
         "title": "Visualize graph"
       },
-      "height": 602.0,
+      "height": 22.0,
       "id": "Visualize graph 3",
       "parentId": null,
       "position": {
@@ -1518,14 +1517,13 @@
         "y": 347.0362850690021
       },
       "type": "graph_visualization",
-      "width": 571.0
+      "width": 22.0
     },
     {
       "data": {
-        "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 12,
+        "display_version": 13,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1594,7 +1592,7 @@
         "telemetry": null,
         "title": "Visualize graph"
       },
-      "height": 807.0,
+      "height": 22.0,
       "id": "Visualize graph 1",
       "parentId": null,
       "position": {
@@ -1602,7 +1600,7 @@
         "y": 1926.7275175551804
       },
       "type": "graph_visualization",
-      "width": 748.0
+      "width": 22.0
     }
   ],
   "paused": true
