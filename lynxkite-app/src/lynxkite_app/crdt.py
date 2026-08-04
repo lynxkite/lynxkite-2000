@@ -31,6 +31,7 @@ WORKSPACE_CHANGED_THROTTLE_SECONDS = 1.0
 @dataclass
 class WorkspaceRuntimeState:
     last_known_version: typing.Any = None
+    last_frontend_save: str | None = None
     delayed_execution: asyncio.Task | None = None
     pending_workspace_changes: list[int] = field(default_factory=list)
     delayed_workspace_change: asyncio.Task | None = None
@@ -38,6 +39,7 @@ class WorkspaceRuntimeState:
 
     def destroy(self):
         self.last_known_version = None
+        self.last_frontend_save = None
         if self.delayed_workspace_change:
             self.delayed_workspace_change.cancel()
         self.pending_workspace_changes = []
@@ -286,8 +288,22 @@ def load_workspace(ws: pycrdt.Map, name: str):
         ws: CRDT object to udpate with the workspace contents.
         name: Name of the workspace to load.
     """
+    runtime_state = state.get(name)
+    if runtime_state:
+        with open(name, encoding="utf-8") as f:
+            file_contents = f.read()
+        if runtime_state.last_frontend_save == file_contents:
+            runtime_state.last_frontend_save = None
+            return
+        runtime_state.last_frontend_save = None
     ws_pyd = workspace.Workspace.load(name)
     update_workspace(ws, ws_pyd)
+
+
+def save_workspace_from_frontend(name: str, ws_pyd: workspace.Workspace):
+    serialized = ws_pyd.model_dump_json_sorted()
+    state[name].last_frontend_save = serialized
+    ws_pyd.save(pathlib.Path() / name, from_frontend=True)
 
 
 def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
@@ -353,7 +369,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
     ws_pyd = workspace.Workspace.model_validate(raw)
-    ws_pyd.save(pathlib.Path() / name, from_frontend=True)
+    save_workspace_from_frontend(name, ws_pyd)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
     if ws_fingerprint == state[name].last_known_version:
@@ -407,7 +423,7 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
             nc["data"]["status"] = "planned"
             nc["data"]["message"] = None
     await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    ws_pyd.save(path, from_frontend=True)
+    save_workspace_from_frontend(name, ws_pyd)
     print(f"Finished running {name} in {ws_pyd.env}.")
 
 

@@ -222,7 +222,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       error: undefined,
     });
   }
-  const height = Math.max(67, data.crdtHeight ?? node?.height ?? props.height ?? 315);
+  const height = Math.max(67, node?.height ?? props.height ?? 315);
   const meta = data.meta ?? {};
   const icon = useMemo(() => <Icon name={meta.icon} />, [meta.icon]);
   const summary: string = data.error
@@ -257,7 +257,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     <div
       className={`node-container ${data.collapsed ? "collapsed" : "expanded"}`}
       style={{
-        width: data.crdtWidth ?? props.width ?? 315,
+        width: props.width || 315,
         height: data.collapsed ? undefined : height,
       }}
       ref={containerRef}
@@ -368,46 +368,6 @@ function Icon({ name }: { name: string }) {
   return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
 }
 
-// Fast shallow equality check used by the node memo comparator. Avoids the cost
-// of JSON.stringify on the params object.
-function shallowCompare(obj1: any, obj2: any) {
-  if (obj1 === obj2) return true;
-  if (!obj1 || !obj2) return false;
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-  if (keys1.length !== keys2.length) return false;
-  for (const key of keys1) {
-    if (obj1[key] !== obj2[key]) return false;
-  }
-  return true;
-}
-
-// Custom comparator so a node only re-renders when something it actually shows
-// changes. Reference-equality is avoided for `params` because the CRDT rebuilds
-// the whole node object (and thus every nested reference) on every update. For
-// the same reason we deliberately do NOT compare churning objects like
-// `telemetry` / `output_metadata` by reference here; they piggy-back on the
-// status/message changes that accompany them.
-function areNodePropsEqual(prev: any, next: any) {
-  const d1 = prev.data;
-  const d2 = next.data;
-
-  return (
-    prev.id === next.id &&
-    prev.selected === next.selected &&
-    prev.dragging === next.dragging &&
-    prev.width === next.width &&
-    prev.height === next.height &&
-    d1.collapsed === d2.collapsed &&
-    d1.status === d2.status &&
-    d1.error === d2.error &&
-    d1.message === d2.message &&
-    d1.op_id === d2.op_id &&
-    d1.display_version === d2.display_version &&
-    shallowCompare(d1.params, d2.params)
-  );
-}
-
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
   const WrappedNode = (props: any) => {
     return (
@@ -417,8 +377,10 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
     );
   };
 
-  // Apply our custom memoization rules
-  return memo(WrappedNode, areNodePropsEqual);
+  // CRDT updates preserve unchanged node object identities, so the default
+  // shallow comparator is both sufficient and safer than maintaining a list of
+  // rendered fields here.
+  return memo(WrappedNode);
 }
 
 function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {

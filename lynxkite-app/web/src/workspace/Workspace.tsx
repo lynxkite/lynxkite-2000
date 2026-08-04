@@ -119,43 +119,6 @@ function LynxKiteFlow() {
   const workspace = crdt.ws;
   const workspaceReady = Boolean(workspace) && !permissions.isLoading;
   const nodes = crdt.feNodes;
-  const nodesRef = useRef(nodes);
-  const edgesRef = useRef(crdt.feEdges);
-  const crdtRef = useRef(crdt);
-  useEffect(() => {
-    nodesRef.current = nodes;
-    edgesRef.current = crdt.feEdges;
-    crdtRef.current = crdt;
-  }, [nodes, crdt.feEdges, crdt]);
-  // Cache of the "crdt dimensions injected" node objects, keyed by node id.
-  // During a drag only the dragged node's object changes reference (the others
-  // are preserved by applyNodeChanges), so we reuse the previously mapped object
-  // for unchanged nodes. This keeps per-frame allocation O(1) instead of O(n)
-  // and lets ReactFlow skip reconciling the untouched nodes entirely.
-  const nodeMapCacheRef = useRef(new Map<string, { src: any; w: any; h: any; mapped: any }>());
-  const memoizedNodes = useMemo(() => {
-    const prevCache = nodeMapCacheRef.current;
-    const nextCache = new Map<string, { src: any; w: any; h: any; mapped: any }>();
-    const result = crdt.feNodes.map((n) => {
-      const cached = prevCache.get(n.id);
-      if (cached && cached.src === n && cached.w === n.width && cached.h === n.height) {
-        nextCache.set(n.id, cached);
-        return cached.mapped;
-      }
-      const mapped = {
-        ...n,
-        data: {
-          ...n.data,
-          crdtWidth: n.width, // Force CRDT dimensions into data
-          crdtHeight: n.height,
-        },
-      };
-      nextCache.set(n.id, { src: n, w: n.width, h: n.height, mapped });
-      return mapped;
-    });
-    nodeMapCacheRef.current = nextCache;
-    return result;
-  }, [crdt.feNodes]);
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
   // Context values are memoized so their identity only changes when the values
@@ -270,7 +233,7 @@ function LynxKiteFlow() {
       const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
-      if (event.key === "/" && categoryHierarchy && canWrite) {
+      if (event.key === "/" && categoryHierarchy.current && canWrite) {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
@@ -318,7 +281,7 @@ function LynxKiteFlow() {
     while (pos.y < H) {
       // Find a position that is not occupied by a node.
       const fpos = reactFlow.screenToFlowPosition(pos);
-      const occupied = crdt?.ws?.nodes?.some((n) => {
+      const occupied = nodes.some((n) => {
         const np = n.position;
         return (
           np.x < fpos.x + w + GAP &&
@@ -357,7 +320,6 @@ function LynxKiteFlow() {
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
       if (!canWrite) return;
-      if (!categoryHierarchy) return;
       if (suppressSearchUntil > Date.now()) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
@@ -370,12 +332,12 @@ function LynxKiteFlow() {
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [categoryHierarchy, canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch, refreshCategoryHierarchy],
   );
   function findFreeId(prefix: string) {
     let i = 1;
     let id = `${prefix} ${i}`;
-    const used = new Set(crdt?.ws?.nodes?.map((n) => n.id));
+    const used = new Set(nodes.map((n) => n.id));
     while (used.has(id)) {
       i += 1;
       id = `${prefix} ${i}`;
@@ -777,7 +739,7 @@ function LynxKiteFlow() {
             <LynxKiteState.Provider value={workspaceContextValue}>
               <LynxKiteNodeState.Provider value={nodeStateContextValue}>
                 <ReactFlow
-                  nodes={memoizedNodes}
+                  nodes={nodes}
                   edges={autoConnect.renderedEdges}
                   nodeTypes={nodeTypes}
                   edgeTypes={edgeTypes}
@@ -787,11 +749,7 @@ function LynxKiteFlow() {
                   elementsSelectable={true}
                   deleteKeyCode={canWrite ? ["Backspace", "Delete"] : null}
                   onNodesChange={(changes) => {
-                    changes = snapChangesToGrid(
-                      changes,
-                      isShiftPressed || gridSnapEnabled,
-                      crdt?.ws?.nodes || [],
-                    );
+                    changes = snapChangesToGrid(changes, isShiftPressed || gridSnapEnabled, nodes);
                     crdt?.onFENodesChange?.(changes);
                   }}
                   onEdgesChange={crdt?.onFEEdgesChange}
@@ -802,9 +760,6 @@ function LynxKiteFlow() {
                     canWrite
                       ? (event, node) => {
                           autoConnect.onNodeDragStop(event, node);
-                          // Commit the final drag position and release local drag
-                          // authority (safety net for the drag-end / multi-drag).
-                          crdt?.finalizeDrag?.();
                         }
                       : undefined
                   }
