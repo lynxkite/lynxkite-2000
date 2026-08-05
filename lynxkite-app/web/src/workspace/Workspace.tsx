@@ -121,9 +121,6 @@ function LynxKiteFlow() {
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
-  // Context values are memoized so their identity only changes when the values
-  // they carry actually change. This keeps every node from re-rendering (via
-  // `useContext`) whenever the workspace object is re-created on a drag frame.
   const workspaceContextValue = useMemo(
     () => ({ workspace: workspace as any, canWrite }),
     [workspace, canWrite],
@@ -183,10 +180,10 @@ function LynxKiteFlow() {
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-      | {
-          pos: XYPosition;
-        }
-      | undefined,
+    | {
+      pos: XYPosition;
+    }
+    | undefined,
   );
   const nodeTypes = useMemo(
     () => ({
@@ -759,8 +756,8 @@ function LynxKiteFlow() {
                   onNodeDragStop={
                     canWrite
                       ? (event, node) => {
-                          autoConnect.onNodeDragStop(event, node);
-                        }
+                        autoConnect.onNodeDragStop(event, node);
+                      }
                       : undefined
                   }
                   onMove={() => {

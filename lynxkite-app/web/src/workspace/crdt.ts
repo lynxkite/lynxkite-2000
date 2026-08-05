@@ -17,10 +17,7 @@ import * as Y from "yjs";
 import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
 import { getWebSocketParams } from "../common.ts";
 
-// How often (ms) to broadcast a node's position to collaborators while it is
-// being dragged. Every animation frame (~16ms) would flood the backend; only
-// committing on drag-end would hide live movement from other users. ~20 Hz is a
-// good balance for smooth remote movement without overloading the sync/save.
+// How often (in ms) to broadcast a node's position to collaborators while it is being dragged.
 const POSITION_BROADCAST_INTERVAL_MS = 16;
 
 function endpointSignature(endpoints: any[] | undefined) {
@@ -98,10 +95,7 @@ class CRDTConnection {
   state: CRDTWorkspace;
   observers: Set<() => void> = new Set();
   canWrite = true;
-  // Last time (ms) we broadcast each dragged node's position to collaborators.
   lastPositionBroadcast: Map<string, number> = new Map();
-  // Kept in sync with the Y.Array so node updates do not repeatedly scan every
-  // node while a drag is in progress.
   nodeMaps: Map<string, Y.Map<any>> = new Map();
   // Remote updates can arrive faster than React can render them. Coalesce them
   // until the next animation frame and read the latest Yjs state then. This
@@ -227,7 +221,9 @@ class CRDTConnection {
     this.doc.destroy();
     this.wsProvider.destroy();
   };
-
+  setCanWrite = (canWrite: boolean) => {
+    this.canWrite = canWrite;
+  };
   // Build a single ReactFlow node from its Y.Map, merging with the previous
   // ReactFlow node so that ReactFlow-managed fields (measured, selected, ...)
   // are preserved and unchanged nodes keep their object identity.
@@ -332,10 +328,6 @@ class CRDTConnection {
         }
       });
     }
-  };
-
-  setCanWrite = (canWrite: boolean) => {
-    this.canWrite = canWrite;
   };
   onBackendChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
     // Only react to remote updates. Local mutations are handled by the methods
