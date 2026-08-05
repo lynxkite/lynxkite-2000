@@ -40,7 +40,4 @@ export function NodeWithParams(props: any) {
   );
 }
 
-// `LynxKiteNode` already wraps the component in `memo` with a custom comparator,
-// so no extra `memo` is needed here (a default one would always miss because the
-// CRDT rebuilds `data` on every update).
 export default LynxKiteNode(NodeWithParams);

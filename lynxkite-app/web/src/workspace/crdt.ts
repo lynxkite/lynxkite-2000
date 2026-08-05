@@ -145,36 +145,12 @@ class CRDTConnection {
     this.state = {
       feNodes: [],
       feEdges: [],
-      setPausedState: (paused: boolean) => {
-        if (!this.canWrite) return;
-        this.ws.set("paused", paused);
-        this.updateHeader();
-        this.notifyObservers();
-      },
-      setEnv: (env: string) => {
-        if (!this.canWrite) return;
-        this.ws.set("env", env);
-        this.updateHeader();
-        this.notifyObservers();
-      },
-      setExecutionOptions: (options: Record<string, any>) => {
-        if (!this.canWrite) return;
-        this.ws.set("execution_options", options);
-        this.updateHeader();
-        this.notifyObservers();
-      },
-      setAssistantMessages: (messages: any[]) => {
-        if (!this.canWrite) return;
-        this.ws.set("assistant_messages", messages);
-        this.updateHeader();
-        this.notifyObservers();
-      },
-      clearAssistantMessages: () => {
-        if (!this.canWrite) return;
-        this.ws.set("assistant_messages", []);
-        this.updateHeader();
-        this.notifyObservers();
-      },
+      setPausedState: (paused: boolean) => this.setWsKey("paused", paused),
+      setEnv: (env: string) => this.setWsKey("env", env),
+      setExecutionOptions: (options: Record<string, any>) =>
+        this.setWsKey("execution_options", options),
+      setAssistantMessages: (messages: any[]) => this.setWsKey("assistant_messages", messages),
+      clearAssistantMessages: () => this.setWsKey("assistant_messages", []),
       addNode: (node: Partial<WorkspaceNode>) => {
         if (!this.canWrite) return;
         const ynode = nodeToYMap(node);
@@ -217,6 +193,12 @@ class CRDTConnection {
       },
     };
   }
+  setWsKey = (key: string, value: any) => {
+    if (!this.canWrite) return;
+    this.ws.set(key, value);
+    this.updateHeader();
+    this.notifyObservers();
+  };
   onDestroy = () => {
     this.doc.destroy();
     this.wsProvider.destroy();
@@ -224,36 +206,6 @@ class CRDTConnection {
   setCanWrite = (canWrite: boolean) => {
     this.canWrite = canWrite;
   };
-  // Build a single ReactFlow node from its Y.Map, merging with the previous
-  // ReactFlow node so that ReactFlow-managed fields (measured, selected, ...)
-  // are preserved and unchanged nodes keep their object identity.
-  nodeFromYMap = (nodeMap: Y.Map<any>, oldNode: any) => {
-    const n = nodeMap.toJSON();
-    if (n.type !== "node_group") {
-      n.dragHandle = ".drag-handle";
-    }
-    const mergedNode = { ...oldNode, ...n };
-
-    // Clean up parent-child properties that may be stale from the old ReactFlow node.
-    if (!n.parentId) {
-      delete mergedNode.parentId;
-    }
-    if (!n.extent) {
-      delete mergedNode.extent;
-    }
-
-    if (
-      n.width != null &&
-      n.height != null &&
-      (oldNode?.measured?.width !== n.width || oldNode?.measured?.height !== n.height)
-    ) {
-      mergedNode.measured = { width: n.width, height: n.height };
-    }
-    return mergedNode;
-  };
-
-  // Rebuild every node from the CRDT. Used on initial load and for array-level
-  // changes (add/remove/move). Returns ids whose internals need recomputing.
   rebuildAllNodes = (): string[] => {
     const wnodes = this.ws.get("nodes") as Y.Array<any> | undefined;
     if (!wnodes) return [];
@@ -273,9 +225,6 @@ class CRDTConnection {
     this.state = { ...this.state, feNodes: newNodes as Node[] };
     return changedNodeIds;
   };
-
-  // Update a single node from the CRDT, preserving the identity of all other
-  // nodes. Returns ids whose internals need recomputing.
   updateNode = (id: string): string[] => {
     const nodeMap = this.nodeMaps.get(id);
     if (!nodeMap) return [];
@@ -291,14 +240,12 @@ class CRDTConnection {
     };
     return needsNodeInternalsUpdate(oldNode, mergedNode) ? [id] : [];
   };
-
   rebuildEdges = () => {
     const wedges = this.ws.get("edges") as Y.Array<any> | undefined;
     if (!wedges) return;
     this.state = { ...this.state, feEdges: wedges.toJSON() as Edge[] };
   };
-
-  // Read only the top-level (non node/edge) fields of the workspace into `ws`.
+  // Read only the non node/edge fields of the workspace into `ws`.
   updateHeader = () => {
     const header: Record<string, any> = {};
     for (const key of this.ws.keys()) {
@@ -308,9 +255,6 @@ class CRDTConnection {
     }
     this.state = { ...this.state, ws: header as WorkspaceType };
   };
-
-  // Full reconciliation from the CRDT. Used after local structural mutations
-  // (add/remove/undo/redo) where we can't cheaply know exactly what changed.
   syncAll = (): string[] => {
     const changedNodeIds = this.rebuildAllNodes();
     this.rebuildEdges();
@@ -318,7 +262,6 @@ class CRDTConnection {
     this.notifyObservers();
     return changedNodeIds;
   };
-
   applyStateAndInternals = () => {
     const changedNodeIds = this.syncAll();
     if (changedNodeIds.length > 0) {
@@ -355,7 +298,6 @@ class CRDTConnection {
     }
     this.scheduleRemoteFlush();
   };
-
   scheduleRemoteFlush = () => {
     if (this.remoteFlushScheduled) return;
     this.remoteFlushScheduled = true;
@@ -364,7 +306,6 @@ class CRDTConnection {
       this.flushRemoteChanges();
     });
   };
-
   flushRemoteChanges = () => {
     const changedNodeIds = this.pendingRemoteNodeIds;
     const nodesArrayChanged = this.pendingRemoteNodesArrayChanged;
@@ -385,8 +326,6 @@ class CRDTConnection {
     }
     if (edgesChanged) this.rebuildEdges();
     if (headerChanged) this.updateHeader();
-    // Nothing observable changed (e.g. the only events were echoes for the node
-    // being dragged) — skip the re-render entirely.
     if (nodesArrayChanged || changedNodeIds.size > 0 || edgesChanged || headerChanged) {
       this.notifyObservers();
     }
@@ -403,17 +342,13 @@ class CRDTConnection {
     // Selection is always allowed; other mutations need write access.
     const allowed = this.canWrite ? changes : changes.filter((ch) => ch.type === "select");
     if (allowed.length === 0) return;
-    // Keep the external node array in sync with ReactFlow node changes,
-    // including active drag frames, so local movement is visible immediately.
+    // Apply it to the local state...
     this.state.feNodes = applyNodeChanges(allowed, this.state.feNodes);
-
     // ...and to the CRDT state.
     const wnodes = this.ws.get("nodes") as Y.Array<any>;
     const idToNode = this.nodeMaps;
     const feById = new Map(this.state.feNodes.map((n) => [n.id, n]));
-    // Keep the ReactFlow state and CRDT state in sync. The node array is copied
-    // by applyNodeChanges, but unchanged node objects retain their identity.
-    let needsNotify = false;
+    let wsChanged = false;
     for (const ch of allowed) {
       const node = idToNode.get(ch.id);
       if (!node) continue;
@@ -424,8 +359,6 @@ class CRDTConnection {
         const current = node.get("position");
         const moved = current.x !== pos.x || current.y !== pos.y;
         if (ch.dragging) {
-          // Active drag. Broadcast the position to collaborators at a throttled
-          // rate so they see live movement without flooding the websocket.
           const now = typeof performance !== "undefined" ? performance.now() : Date.now();
           const last = this.lastPositionBroadcast.get(ch.id) ?? 0;
           if (moved && now - last >= POSITION_BROADCAST_INTERVAL_MS) {
@@ -434,23 +367,20 @@ class CRDTConnection {
               node.set("position", { x: pos.x, y: pos.y });
             });
           }
-          needsNotify = true;
+          wsChanged = true;
         } else {
-          // Drag finished (dragging === false) or a programmatic move
-          // (dragging === undefined): commit the final position for everyone
-          // and reconcile React with the settled position.
           this.lastPositionBroadcast.delete(ch.id);
           if (moved) {
             this.doc.transact(() => {
               node.set("position", { x: pos.x, y: pos.y });
             });
           }
-          needsNotify = true;
-          // Recompute handle/edge geometry once the move has settled.
+          wsChanged = true;
+          // Update edge positions.
           this.updateNodeInternals(ch.id);
         }
       } else if (ch.type === "select") {
-        needsNotify = true;
+        wsChanged = true;
       } else if (ch.type === "dimensions") {
         if (
           node.get("width") === ch.dimensions.width &&
@@ -458,7 +388,7 @@ class CRDTConnection {
         ) {
           continue;
         }
-        needsNotify = true;
+        wsChanged = true;
         this.doc.transact(() => {
           node.set("width", ch.dimensions.width);
           node.set("height", ch.dimensions.height);
@@ -469,11 +399,11 @@ class CRDTConnection {
         const nodeIndex = wnodes.map((n: Y.Map<any>) => n.get("id")).indexOf(ch.id);
         if (nodeIndex === -1) continue;
         wnodes.delete(nodeIndex);
-        needsNotify = true;
+        wsChanged = true;
         this.lastPositionBroadcast.delete(ch.id);
         this.nodeMaps.delete(ch.id);
       } else if (ch.type === "replace") {
-        needsNotify = true;
+        wsChanged = true;
         this.doc.transact(() => {
           const data = ch.item.data;
           const wdata = node.get("data") as Y.Map<any>;
@@ -513,9 +443,7 @@ class CRDTConnection {
         console.log("Unknown node change", ch);
       }
     }
-    // Re-render React when local node state changed. Active drag frames must
-    // notify as well so the controlled nodes prop reflects live movement.
-    if (needsNotify) {
+    if (wsChanged) {
       this.updateFEState();
     }
   };
@@ -544,6 +472,30 @@ class CRDTConnection {
     return () => {
       this.observers.delete(onStorageChange);
     };
+  };
+  nodeFromYMap = (nodeMap: Y.Map<any>, oldNode: any) => {
+    const n = nodeMap.toJSON();
+    if (n.type !== "node_group") {
+      n.dragHandle = ".drag-handle";
+    }
+    const mergedNode = { ...oldNode, ...n };
+
+    // Clean up parent-child properties that may be stale from the old ReactFlow node.
+    if (!n.parentId) {
+      delete mergedNode.parentId;
+    }
+    if (!n.extent) {
+      delete mergedNode.extent;
+    }
+
+    if (
+      n.width != null &&
+      n.height != null &&
+      (oldNode?.measured?.width !== n.width || oldNode?.measured?.height !== n.height)
+    ) {
+      mergedNode.measured = { width: n.width, height: n.height };
+    }
+    return mergedNode;
   };
   updateFEState = () => {
     this.state = {

@@ -1,10 +1,8 @@
-import threading
 from enum import Enum
 
 import pycrdt
 import pytest
 
-from lynxkite_app.crdt import WorkspaceFileChangeHandler
 from lynxkite_app.crdt_update import crdt_update
 
 

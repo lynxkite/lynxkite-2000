@@ -180,10 +180,10 @@ function LynxKiteFlow() {
   const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
-    | {
-      pos: XYPosition;
-    }
-    | undefined,
+      | {
+          pos: XYPosition;
+        }
+      | undefined,
   );
   const nodeTypes = useMemo(
     () => ({
@@ -756,8 +756,8 @@ function LynxKiteFlow() {
                   onNodeDragStop={
                     canWrite
                       ? (event, node) => {
-                        autoConnect.onNodeDragStop(event, node);
-                      }
+                          autoConnect.onNodeDragStop(event, node);
+                        }
                       : undefined
                   }
                   onMove={() => {

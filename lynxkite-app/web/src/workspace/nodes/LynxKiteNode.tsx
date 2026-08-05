@@ -376,10 +376,6 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
       </LynxKiteNodeComponent>
     );
   };
-
-  // CRDT updates preserve unchanged node object identities, so the default
-  // shallow comparator is both sufficient and safer than maintaining a list of
-  // rendered fields here.
   return memo(WrappedNode);
 }
 

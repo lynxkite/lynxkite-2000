@@ -94,8 +94,9 @@ async def _flush_workspace_changes_async(
     except asyncio.CancelledError:
         pass
     finally:
-        runtime_state = state.get(name)
-        if runtime_state is not None:
+        new_runtime_state = state.get(name)
+        if new_runtime_state is not None:
+            runtime_state = new_runtime_state
             if runtime_state.delayed_workspace_change is this_task:
                 runtime_state.delayed_workspace_change = None
             # Ensure trailing changes are not dropped while throttling.
