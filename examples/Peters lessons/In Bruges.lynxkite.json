@@ -274,7 +274,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/bruges_road_segments.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/Qma9tpr3NtBRhp6cejpy3jccvRGUmJUQ2j7beuVnajD9N6",
           "separator": "<auto>",
           "table_name": "segments"
         },
@@ -323,7 +323,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/plumbing_client_prospects.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/QmZVXjemjgku6sp42etjN3promconrTzVAY4Ti58zkyEEH",
           "separator": "<auto>",
           "table_name": "prospects"
         },
@@ -379,7 +379,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/water_stations_capex.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/QmW37EqPS4WBKmWbmGfNUDYw94ofaYHgvakN4hQw81C6tr",
           "separator": "<auto>",
           "table_name": "capex"
         },
@@ -435,7 +435,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/bruges_locations.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/QmdUyxZVEMnAyfUJ7eq7g8X2hBg6krfbvYLELgm4UQqDNy",
           "separator": "<auto>",
           "table_name": "locations"
         },
@@ -3413,7 +3413,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 59,
+        "display_version": 62,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4197,7 +4197,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 57,
+        "display_version": 60,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4730,7 +4730,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 50,
+        "display_version": 53,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5277,7 +5277,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 45,
+        "display_version": 48,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6062,7 +6062,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 14,
+        "display_version": 16,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
