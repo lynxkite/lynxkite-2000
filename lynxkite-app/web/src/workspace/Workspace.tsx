@@ -96,19 +96,12 @@ export default function Workspace(props: any) {
 }
 
 const ICONIZE_THRESHOLD = 0.3;
-const MIN_READABLE_ZOOM = 0.3;
-const MAX_AUTO_ZOOM = 0.85;
-const AUTO_ZOOM_DURATION_MS = 520;
 const NON_ICONIZED_NODE_TYPES = new Set([
   "visualization",
   "graph_visualization",
   "image",
   "molecule",
 ]);
-
-function easeInOutCubic(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-}
 
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
@@ -385,36 +378,14 @@ function LynxKiteFlow() {
     },
     [crdt],
   );
-  function canNodeBeIconized(node: Node): boolean {
-    return !node.data?.collapsed && !NON_ICONIZED_NODE_TYPES.has(node.type || "");
-  }
   const zoomToReadableNode = useCallback(
-    (node: Node) => {
-      if (!iconized || !canNodeBeIconized(node)) return;
+    (event: MouseEvent, node: Node) => {
+      if (!iconized || node.data?.collapsed || NON_ICONIZED_NODE_TYPES.has(node.type || "")) return;
+      // Multi-select and resize clicks should not trigger auto-zoom.
+      if (event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if ((event.target as Element).closest(".react-flow__resize-control")) return;
 
-      const viewportWidth = reactFlowContainer.current?.clientWidth;
-      const viewportHeight = reactFlowContainer.current?.clientHeight;
-      if (!viewportWidth || !viewportHeight) return;
-
-      const nodeWidth = node.measured?.width ?? node.width ?? 315;
-      const nodeHeight = node.measured?.height ?? node.height ?? 315;
-      const nodePos =
-        reactFlow.getInternalNode(node.id)?.internals.positionAbsolute ?? node.position;
-      const centerX = nodePos.x + nodeWidth / 2;
-      const centerY = nodePos.y + nodeHeight / 2;
-
-      // Keep a very generous margin so nearby nodes remain visible and often readable after auto-zoom.
-      const fitZoom = Math.min(
-        viewportWidth / (nodeWidth * 2.45),
-        viewportHeight / (nodeHeight * 2.6),
-      );
-      const zoom = Math.max(MIN_READABLE_ZOOM, Math.min(MAX_AUTO_ZOOM, fitZoom));
-
-      reactFlow.setCenter(centerX, centerY, {
-        zoom,
-        duration: AUTO_ZOOM_DURATION_MS,
-        ease: easeInOutCubic,
-      });
+      reactFlow.fitView({ nodes: [node], duration: 500, maxZoom: 0.85, padding: 0.7 });
     },
     [iconized, reactFlow],
   );
@@ -786,7 +757,7 @@ function LynxKiteFlow() {
                 onEdgesChange={crdt?.onFEEdgesChange}
                 onPaneClick={canWrite ? toggleNodeSearch : undefined}
                 onConnect={canWrite ? onConnect : undefined}
-                onNodeClick={(_, node) => zoomToReadableNode(node)}
+                onNodeClick={zoomToReadableNode}
                 onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
                 onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
                 onMove={() => {
