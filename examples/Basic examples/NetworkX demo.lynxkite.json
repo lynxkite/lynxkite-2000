@@ -86,14 +86,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 298.0
+                "length": 298
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 200.0
+                "length": 200
               }
             },
             "other": {},
@@ -112,7 +112,51 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Takes a (preferably connected) subgraph."
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Graph operations > Sample graph",
+          "inputs": [
+            {
+              "name": "graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "Sample graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "nodes",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.sample_graph",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Sample graph",
         "output_metadata": [
           {
@@ -123,14 +167,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 298.0
+                "length": 298
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 200.0
+                "length": 200
               }
             },
             "other": {},
@@ -184,7 +228,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2185.0
+                "length": 2181
               },
               "nodes": {
                 "columns": [
@@ -192,7 +236,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 1000.0
+                "length": 1000
               }
             },
             "other": {},
@@ -211,7 +255,51 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Takes a (preferably connected) subgraph."
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Graph operations > Sample graph",
+          "inputs": [
+            {
+              "name": "graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "Sample graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "nodes",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.sample_graph",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Sample graph",
         "output_metadata": [
           {
@@ -222,7 +310,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 219.0
+                "length": 193
               },
               "nodes": {
                 "columns": [
@@ -230,7 +318,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -283,7 +371,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 219.0
+                "length": 193
               },
               "nodes": {
                 "columns": [
@@ -291,7 +379,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -310,7 +398,38 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "filter-filled",
+          "id": "Graph operations > Discard loop edges",
+          "inputs": [
+            {
+              "name": "graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "Discard loop edges",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Discard loop edges",
         "output_metadata": [
           {
@@ -321,7 +440,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 213.0
+                "length": 190
               },
               "nodes": {
                 "columns": [
@@ -329,7 +448,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -373,7 +492,45 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Classic"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the Ladder graph of length n.\n\nThis is two paths of n nodes, with\neach pair connected by a single edge.\n\nNode labels are the integers 0 to 2*n - 1.\n\n.. plot::\n\n    >>> nx.draw(nx.ladder_graph(5))"
+            }
+          ],
+          "icon": "fountain",
+          "id": "NetworkX > Generators > Classic > Ladder graph",
+          "inputs": [],
+          "name": "Ladder graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "n",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.generators.classic.ladder_graph",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Generators > Classic > Ladder graph",
         "output_metadata": [
           {
@@ -384,14 +541,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 298.0
+                "length": 298
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 200.0
+                "length": 200
               }
             },
             "other": {},
@@ -436,7 +593,37 @@
         "expanded_height": 190.0,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Social"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns Zachary's Karate Club graph.\n\nEach node in the returned graph has a node attribute 'club' that\nindicates the name of the club to which the member represented by that node\nbelongs, either 'Mr. Hi' or 'Officer'. Each edge has a weight based on the\nnumber of contexts in which that edge's incident node members interacted.\n\nThe dataset is derived from the 'Club After Split From Data' column of Table 3 in [1]_.\nThis was in turn derived from the 'Club After Fission' column of Table 1 in the\nsame paper. Note that the nodes are 0-indexed in NetworkX, but 1-indexed in the\npaper (the 'Individual Number in Matrix C' column of Table 3 starts at 1). This\nmeans, for example, that ``G.nodes[9][\"club\"]`` returns 'Officer', which\ncorresponds to row 10 of Table 3 in the paper.\n\nExamples\n--------\nTo get the name of the club to which a node belongs:\n\n>>> G = nx.karate_club_graph()\n>>> G.nodes[5][\"club\"]\n'Mr. Hi'\n>>> G.nodes[9][\"club\"]\n'Officer'\n\nReferences\n----------\n.. [1] Zachary, Wayne W.\n   \"An Information Flow Model for Conflict and Fission in Small Groups.\"\n   *Journal of Anthropological Research*, 33, 452--473, (1977)."
+            }
+          ],
+          "icon": "fountain",
+          "id": "NetworkX > Generators > Social > Karate club graph",
+          "inputs": [],
+          "name": "Karate club graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.generators.social.karate_club_graph",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Generators > Social > Karate club graph",
         "output_metadata": [
           {
@@ -448,7 +635,7 @@
                   "weight"
                 ],
                 "key": "edges",
-                "length": 78.0
+                "length": 78
               },
               "nodes": {
                 "columns": [
@@ -456,7 +643,7 @@
                   "id"
                 ],
                 "key": "nodes",
-                "length": 34.0
+                "length": 34
               }
             },
             "other": {},
@@ -500,7 +687,199 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Directed"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns a scale-free directed graph."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "integer"
+                  },
+                  "description": "Number of nodes in graph",
+                  "name": "n"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Probability for adding a new node connected to an existing node\nchosen randomly according to the in-degree distribution.",
+                  "name": "alpha"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Probability for adding an edge between two existing nodes.\nOne existing node is chosen randomly according the in-degree\ndistribution and the other chosen randomly according to the out-degree\ndistribution.",
+                  "name": "beta"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Probability for adding a new node connected to an existing node\nchosen randomly according to the out-degree distribution.",
+                  "name": "gamma"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Bias for choosing nodes from in-degree distribution.",
+                  "name": "delta_in"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Bias for choosing nodes from out-degree distribution.",
+                  "name": "delta_out"
+                },
+                {
+                  "annotation": "integer, random_state, or None (default)",
+                  "description": "Indicator of random number generation state.\nSee :ref:`Randomness<randomness>`.",
+                  "name": "seed"
+                },
+                {
+                  "annotation": "MultiDiGraph instance",
+                  "description": "Build the scale-free graph starting from this initial MultiDiGraph,\nif provided.",
+                  "name": "initial_graph"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "MultiDiGraph"
+                  },
+                  "description": "",
+                  "name": ""
+                }
+              ]
+            },
+            {
+              "kind": "examples",
+              "value": [
+                [
+                  "text",
+                  "Create a scale-free graph on one hundred nodes::"
+                ],
+                [
+                  "examples",
+                  ">>> G = nx.scale_free_graph(100)"
+                ]
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "Notes",
+              "value": {
+                "annotation": "note",
+                "description": "The sum of `alpha`, `beta`, and `gamma` must be 1."
+              }
+            },
+            {
+              "kind": "admonition",
+              "title": "References",
+              "value": {
+                "annotation": "references",
+                "description": ".. [1] B. Bollob\u00e1s, C. Borgs, J. Chayes, and O. Riordan,\n       Directed scale-free graphs,\n       Proceedings of the fourteenth annual ACM-SIAM Symposium on\n       Discrete Algorithms, 132--139, 2003."
+              }
+            }
+          ],
+          "icon": "fountain",
+          "id": "NetworkX > Generators > Directed > Scale-free graph",
+          "inputs": [],
+          "name": "Scale-free graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "n",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "0.41",
+              "name": "alpha",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": "0.54",
+              "name": "beta",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": "0.05",
+              "name": "gamma",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": "0.2",
+              "name": "delta_in",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": "0",
+              "name": "delta_out",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "seed",
+              "type": {
+                "type": "int | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.generators.directed.scale_free_graph",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Generators > Directed > Scale-free graph",
         "output_metadata": [
           {
@@ -511,14 +890,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2185.0
+                "length": 2181
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 1000.0
+                "length": 1000
               }
             },
             "other": {},
@@ -575,14 +954,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2185.0
+                "length": 2181
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 1000.0
+                "length": 1000
               }
             },
             "other": {},
@@ -601,7 +980,204 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Algorithms",
+            "Link analysis",
+            "PageRank alg"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the PageRank of the nodes in the graph.\n\nPageRank computes a ranking of the nodes in the graph G based on\nthe structure of the incoming links. It was originally designed as\nan algorithm to rank web pages."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "graph"
+                  },
+                  "description": "A NetworkX graph.  Undirected graphs will be converted to a directed\ngraph with two directed edges for each undirected edge.",
+                  "name": "G"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Damping parameter for PageRank, default=0.85.",
+                  "name": "alpha"
+                },
+                {
+                  "annotation": null,
+                  "description": "The \"personalization vector\" consisting of a dictionary with a\nkey some subset of graph nodes and personalization value each of those.\nAt least one personalization value must be non-zero.\nIf not specified, a nodes personalization value will be zero.\nBy default, a uniform distribution is used.",
+                  "name": "personalization"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "integer"
+                  },
+                  "description": "Maximum number of iterations in power method eigenvalue solver.",
+                  "name": "max_iter"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Error tolerance used to check convergence in power method solver.\nThe iteration will stop after a tolerance of ``len(G) * tol`` is reached.",
+                  "name": "tol"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "dictionary"
+                  },
+                  "description": "Starting value of PageRank iteration for each node.",
+                  "name": "nstart"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "key"
+                  },
+                  "description": "Edge data key to use as weight.  If None weights are set to 1.",
+                  "name": "weight"
+                },
+                {
+                  "annotation": null,
+                  "description": "The outedges to be assigned to any \"dangling\" nodes, i.e., nodes without\nany outedges. The dict key is the node the outedge points to and the dict\nvalue is the weight of that outedge. By default, dangling nodes are given\noutedges according to the personalization vector (uniform if not\nspecified). This must be selected to result in an irreducible transition\nmatrix (see notes under google_matrix). It may be common to have the\ndangling dict to be the same as the personalization dict.",
+                  "name": "dangling"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "dictionary"
+                  },
+                  "description": "Dictionary of nodes with PageRank as value\n",
+                  "name": "pagerank"
+                }
+              ]
+            },
+            {
+              "kind": "examples",
+              "value": [
+                [
+                  "examples",
+                  ">>> G = nx.DiGraph(nx.path_graph(4))\n>>> pr = nx.pagerank(G, alpha=0.9)"
+                ]
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "Notes",
+              "value": {
+                "annotation": "note",
+                "description": "The eigenvector calculation is done by the power iteration method\nand has no guarantee of convergence.  The iteration will stop after\nan error tolerance of ``len(G) * tol`` has been reached. If the\nnumber of iterations exceed `max_iter`, a\n:exc:`networkx.exception.PowerIterationFailedConvergence` exception\nis raised.\n\nThe PageRank algorithm was designed for directed graphs but this\nalgorithm does not check if the input graph is directed and will\nexecute on undirected graphs by converting each edge in the\ndirected graph to two edges."
+              }
+            },
+            {
+              "kind": "admonition",
+              "title": "See Also",
+              "value": {
+                "annotation": "see-also",
+                "description": "google_matrix\n:func:`~networkx.algorithms.bipartite.link_analysis.birank`"
+              }
+            },
+            {
+              "kind": "raises",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "PowerIterationFailedConvergence"
+                  },
+                  "description": "If the algorithm fails to converge to the specified tolerance\nwithin the specified number of iterations of the power iteration\nmethod.\n"
+                }
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "References",
+              "value": {
+                "annotation": "references",
+                "description": ".. [1] A. Langville and C. Meyer,\n   \"A survey of eigenvector methods of web information retrieval.\"\n   http://citeseer.ist.psu.edu/713792.html\n.. [2] Page, Lawrence; Brin, Sergey; Motwani, Rajeev and Winograd, Terry,\n   The PageRank citation ranking: Bringing order to the Web. 1999\n   http://dbpubs.stanford.edu:8090/pub/showDoc.Fulltext?lang=en&doc=1999-66&format=pdf"
+              }
+            }
+          ],
+          "icon": "cpu",
+          "id": "NetworkX > Algorithms > Link analysis > PageRank alg > PageRank",
+          "inputs": [
+            {
+              "name": "G",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "PageRank",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "0.85",
+              "name": "alpha",
+              "type": {
+                "type": "float | None"
+              }
+            },
+            {
+              "default": "100",
+              "name": "max_iter",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": "1e-06",
+              "name": "tol",
+              "type": {
+                "type": "float | None"
+              }
+            },
+            {
+              "default": "weight",
+              "name": "weight",
+              "type": {
+                "type": "str | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.algorithms.link_analysis.pagerank_alg.pagerank",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Algorithms > Link analysis > PageRank alg > PageRank",
         "output_metadata": [
           {
@@ -612,7 +1188,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 2185.0
+                "length": 2181
               },
               "nodes": {
                 "columns": [
@@ -620,7 +1196,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 1000.0
+                "length": 1000
               }
             },
             "other": {},
@@ -675,7 +1251,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 213.0
+                "length": 190
               },
               "nodes": {
                 "columns": [
@@ -683,7 +1259,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -702,7 +1278,107 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Algorithms",
+            "Core"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the core number for each node.\n\nA k-core is a maximal subgraph that contains nodes of degree k or more.\n\nThe core number of a node is the largest value k of a k-core containing\nthat node."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "NetworkX graph",
+                  "description": "An undirected or directed graph",
+                  "name": "G"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "dictionary"
+                  },
+                  "description": "A dictionary keyed by node to the core number.\n",
+                  "name": "core_number"
+                }
+              ]
+            },
+            {
+              "kind": "raises",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "NetworkXNotImplemented"
+                  },
+                  "description": "If `G` is a multigraph or contains self loops.\n"
+                }
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "Notes",
+              "value": {
+                "annotation": "note",
+                "description": "For directed graphs the node degree is defined to be the\nin-degree + out-degree."
+              }
+            },
+            {
+              "kind": "examples",
+              "value": [
+                [
+                  "examples",
+                  ">>> degrees = [0, 1, 2, 2, 2, 2, 3]\n>>> H = nx.havel_hakimi_graph(degrees)\n>>> nx.core_number(H)\n{0: 1, 1: 2, 2: 2, 3: 2, 4: 1, 5: 2, 6: 0}\n>>> G = nx.DiGraph()\n>>> G.add_edges_from([(1, 2), (2, 1), (2, 3), (2, 4), (3, 4), (4, 3)])\n>>> nx.core_number(G)\n{1: 2, 2: 2, 3: 2, 4: 2}"
+                ]
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "References",
+              "value": {
+                "annotation": "references",
+                "description": ".. [1] An O(m) Algorithm for Cores Decomposition of Networks\n   Vladimir Batagelj and Matjaz Zaversnik, 2003.\n   https://arxiv.org/abs/cs.DS/0310049"
+              }
+            }
+          ],
+          "icon": "cpu",
+          "id": "NetworkX > Algorithms > Core > Core number",
+          "inputs": [
+            {
+              "name": "G",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "Core number",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.algorithms.core.core_number",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Algorithms > Core > Core number",
         "output_metadata": [
           {
@@ -713,7 +1389,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 213.0
+                "length": 190
               },
               "nodes": {
                 "columns": [
@@ -722,7 +1398,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -766,7 +1442,20 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Comment",
+          "inputs": [],
+          "name": "Comment",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.comment",
+          "type": "basic"
+        },
         "op_id": "Comment",
         "output_metadata": null,
         "params": {
@@ -791,7 +1480,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 31,
+        "display_version": 32,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -804,7 +1493,7 @@
                   "weight"
                 ],
                 "key": "edges",
-                "length": 78.0
+                "length": 78
               },
               "nodes": {
                 "columns": [
@@ -812,7 +1501,7 @@
                   "id"
                 ],
                 "key": "nodes",
-                "length": 34.0
+                "length": 34
               }
             },
             "other": {},
@@ -831,7 +1520,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -865,7 +1613,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 23,
+        "display_version": 24,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -877,7 +1625,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 219.0
+                "length": 193
               },
               "nodes": {
                 "columns": [
@@ -885,7 +1633,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -904,7 +1652,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -938,7 +1745,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 15,
+        "display_version": 16,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -950,7 +1757,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 213.0
+                "length": 190
               },
               "nodes": {
                 "columns": [
@@ -959,7 +1766,7 @@
                   "pagerank"
                 ],
                 "key": "nodes",
-                "length": 84.0
+                "length": 90
               }
             },
             "other": {},
@@ -978,7 +1785,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -1012,7 +1878,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 8,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1024,14 +1890,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 298.0
+                "length": 298
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 200.0
+                "length": 200
               }
             },
             "other": {},
@@ -1050,7 +1916,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -1079,5 +2004,5 @@
       "width": 493.0
     }
   ],
-  "paused": null
+  "paused": true
 }

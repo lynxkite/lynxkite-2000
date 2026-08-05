@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Multi-output example 1 one View tables 1 bundle",
@@ -28,7 +29,90 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Examples"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns two outputs. Also demonstrates Numpy-style docstrings."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "int"
+                  },
+                  "description": "Number of elements in output \"one\".",
+                  "name": "a_limit"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "int"
+                  },
+                  "description": "Number of elements in output \"two\".",
+                  "name": "b_limit"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": "A dict with two DataFrames in it.",
+                  "description": "",
+                  "name": ""
+                }
+              ]
+            }
+          ],
+          "icon": null,
+          "id": "Examples > Multi-output example",
+          "inputs": [],
+          "name": "Multi-output example",
+          "outputs": [
+            {
+              "name": "one",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            },
+            {
+              "name": "two",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 4,
+              "name": "a_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 10,
+              "name": "b_limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "Basic_examples.multi_output_demo.multi_output",
+          "type": "basic"
+        },
         "op_id": "Examples > Multi-output example",
         "output_metadata": [
           {
@@ -38,7 +122,7 @@
                   "a"
                 ],
                 "key": "records",
-                "length": 2.0
+                "length": 2
               }
             },
             "other": {},
@@ -51,7 +135,7 @@
                   "b"
                 ],
                 "key": "records",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {},
@@ -69,6 +153,7 @@
       "dragHandle": ".drag-handle",
       "height": 275.0,
       "id": "Multi-output example 1",
+      "parentId": null,
       "position": {
         "x": 86.0,
         "y": 33.0
@@ -80,7 +165,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -91,7 +176,7 @@
                   "a"
                 ],
                 "key": "records",
-                "length": 2.0
+                "length": 2
               }
             },
             "other": {},
@@ -99,7 +184,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -114,6 +236,7 @@
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 485.0,
         "y": -31.0
@@ -125,7 +248,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -136,7 +259,7 @@
                   "b"
                 ],
                 "key": "records",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {},
@@ -144,7 +267,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -159,6 +319,7 @@
       "dragHandle": ".drag-handle",
       "height": 215.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": 191.0
@@ -167,5 +328,5 @@
       "width": 225.0
     }
   ],
-  "paused": null
+  "paused": true
 }
