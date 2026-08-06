@@ -367,6 +367,21 @@ function LynxKiteFlow() {
         target: connection.target,
         targetHandle: connection.targetHandle!,
       };
+      const source_node = crdt?.ws?.nodes?.find((n) => n.id === edge.source);
+      const target_node = crdt?.ws?.nodes?.find((n) => n.id === edge.target);
+      const prev_inp = target_node?.data?.input_metadata ?? [];
+      if (connection.sourceHandle === "output" && prev_inp.length <= 1) {
+        // only if the source is single output and the target is single input or missing
+        target_node!.data.input_metadata = source_node?.data?.output_metadata ?? null;
+        crdt?.applyChange((conn) => {
+          const wnodes = conn.ws.get("nodes") as YArray<any>;
+          const wnode = wnodes
+            .toArray()
+            .find((n) => (n as YMap<any>).get("id") === target_node!.id);
+          const target_data = (wnode as YMap<any>)?.get("data") as YMap<any>;
+          target_data?.set("input_metadata", target_node!.data.input_metadata);
+        });
+      }
       crdt?.addEdge(edge);
     },
     [crdt],

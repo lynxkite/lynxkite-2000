@@ -66,7 +66,13 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered appearance-none w-full"
-        value={value ?? ""}
+        value={(() => {
+          const firstOption = getDropDownValues(data, meta?.type?.metadata_query)[0] ?? "";
+          if (!value && firstOption) {
+            setParam(name, firstOption, {});
+          }
+          return value ?? firstOption;
+        })()}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {getDropDownValues(data, meta?.type?.metadata_query).map((option: string) => (
@@ -180,7 +186,13 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <div className="double-dropdown">
         <select
           className="select select-bordered appearance-none double-dropdown-first"
-          value={value?.[0] ?? ""}
+          value={(() => {
+            const firstOption = getDropDownValues(data, meta?.type?.metadata_query1)[0] ?? "";
+            if (!value?.[0] && firstOption) {
+              setParam(name, [firstOption, value?.[1]], {});
+            }
+            return value?.[0] ?? firstOption;
+          })()}
           onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
         >
           {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
@@ -191,7 +203,14 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         </select>
         <select
           className="select select-bordered appearance-none double-dropdown-second"
-          value={value?.[1] ?? ""}
+          value={(() => {
+            const firstOption =
+              getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] })[0] ?? "";
+            if (!value?.[1] && firstOption) {
+              setParam(name, [value?.[0], firstOption], { delay: 10 });
+            }
+            return value?.[1] ?? firstOption;
+          })()}
           onChange={(evt) => onChange([value?.[0], evt.currentTarget.value])}
         >
           {getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] }).map(
@@ -284,8 +303,9 @@ function getDropDownValues(
     query = query.replace(`<${k}>`, ss[k]);
   }
   try {
-    const res = ["", ...jmespath.search(metadata, query)];
+    const res = jmespath.search(metadata, query);
     res.sort();
+    res.push("");
     return res;
   } catch (_) {
     return [""];
