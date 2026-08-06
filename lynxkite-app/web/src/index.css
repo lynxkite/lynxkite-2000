@@ -1305,9 +1305,11 @@ svg {
 .react-flow__node.selected .lynxkite-node,
 .react-flow__node.selected .node-group,
 .react-flow__node.selected .comment-view {
-  outline: var(--xy-selection-border, 2px dotted rgba(0, 89, 220, 0.95));
-  outline-offset: 7.5px;
-  box-shadow: 0 0 0 6px rgba(0, 89, 220, 0.12);
+  outline: var(--xy-selection-border, 2px dotted rgba(0, 89, 220, 0.98));
+  outline-offset: 8px;
+  box-shadow:
+    0 0 0 5px rgba(0, 89, 220, 0.2),
+    0 0 0 10px rgba(0, 89, 220, 0.1);
 }
 
 .react-flow__node.selected .node-group {

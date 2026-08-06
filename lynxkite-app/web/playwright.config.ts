@@ -29,7 +29,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "cd ../../examples && LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite",
+    command: "cd ../../examples && LYNXKITE_SUPPRESS_OP_ERRORS=1 ../.venv/bin/lynxkite",
     port: 8000,
     reuseExistingServer: true,
   },
