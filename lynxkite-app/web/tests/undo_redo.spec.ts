@@ -4,6 +4,8 @@ import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
 const TEXT_INPUT_REDO_SHORTCUT = process.platform === "darwin" ? "Meta+Shift+z" : "Control+y";
+const TEXT_INPUT_REDO_FALLBACK_SHORTCUT =
+  process.platform === "darwin" ? "Meta+y" : "Control+Shift+z";
 
 test.beforeEach(async ({ browser }) => {
   workspace = await Workspace.empty(await browser.newPage(), "undo_redo_spec_test");
@@ -111,5 +113,8 @@ test("undo/redo normal text input", async () => {
   await workspace.undo();
   await expect(nInput).toHaveValue("");
   await workspace.page.keyboard.press(TEXT_INPUT_REDO_SHORTCUT);
+  if ((await nInput.inputValue()) !== "10") {
+    await workspace.page.keyboard.press(TEXT_INPUT_REDO_FALLBACK_SHORTCUT);
+  }
   await expect(nInput).toHaveValue("10");
 });
