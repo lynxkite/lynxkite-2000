@@ -191,6 +191,14 @@ export class Workspace {
     await this.page.keyboard.press(`${PRIMARY_MODIFIER}+x`);
   }
 
+  async undo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
+  }
+
+  async redo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+y`);
+  }
+
   async tryToConnectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
     const targetHandle = this.getBoxHandle(targetId, "left");

@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
+const TEXT_INPUT_REDO_SHORTCUT = process.platform === "darwin" ? "Meta+Shift+z" : "Control+y";
 
 test.beforeEach(async ({ browser }) => {
   workspace = await Workspace.empty(await browser.newPage(), "undo_redo_spec_test");
@@ -17,9 +18,9 @@ test.afterEach(async () => {
 test("undo/redo add_node transaction", async () => {
   await workspace.addBox("File operations › Import Parquet");
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
-  await workspace.page.keyboard.press("Control+z");
+  await workspace.undo();
   await expect(workspace.getBox("Import Parquet 1")).not.toBeVisible();
-  await workspace.page.keyboard.press("Control+y");
+  await workspace.redo();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
 });
 
@@ -30,9 +31,9 @@ test("undo/redo add_edge transaction", async () => {
   await workspace.connectBoxes("Import PyKEEN dataset 1", "View tables 1");
   const tableBox = workspace.getBox("View tables 1");
   await expect(tableBox.locator(".error")).not.toBeVisible();
-  await workspace.page.keyboard.press("Control+z");
+  await workspace.undo();
   await expect(tableBox.locator(".error")).toBeVisible();
-  await workspace.page.keyboard.press("Control+y");
+  await workspace.redo();
   await expect(tableBox.locator(".error")).not.toBeVisible();
 });
 
@@ -44,11 +45,11 @@ test("undo/redo box dragging", async () => {
   const newPos = await workspace.getBox("Import Parquet 1").boundingBox();
   expect(newPos?.x).toBeGreaterThan(originalPos!.x);
   expect(newPos?.y).toBeGreaterThan(originalPos!.y);
-  await workspace.page.keyboard.press("Control+z");
+  await workspace.undo();
   const undonePos = await workspace.getBox("Import Parquet 1").boundingBox();
   expect(undonePos?.x).toBeCloseTo(originalPos!.x, 1);
   expect(undonePos?.y).toBeCloseTo(originalPos!.y, 1);
-  await workspace.page.keyboard.press("Control+y");
+  await workspace.redo();
   const redonePos = await workspace.getBox("Import Parquet 1").boundingBox();
   expect(redonePos?.x).toBeGreaterThan(originalPos!.x);
   expect(redonePos?.y).toBeGreaterThan(originalPos!.y);
@@ -75,7 +76,7 @@ test("undo/redo grouping boxes", async () => {
     expect(await workspace.getNodeParentId("View tables 1")).toBe("Group 1"),
   ).toPass();
 
-  await workspace.page.keyboard.press("Control+z");
+  await workspace.undo();
   await expect(workspace.getBox("Group 1")).not.toBeVisible();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await expect(workspace.getBox("View tables 1")).toBeVisible();
@@ -87,7 +88,7 @@ test("undo/redo grouping boxes", async () => {
   ).toPass();
   expect(consoleMessages).toEqual([]);
 
-  await workspace.page.keyboard.press("Control+y");
+  await workspace.redo();
   await expect(workspace.getBox("Group 1")).toBeVisible();
   await expect(async () =>
     expect(await workspace.getNodeParentId("Import Parquet 1")).toBe("Group 1"),
@@ -101,9 +102,14 @@ test("undo/redo grouping boxes", async () => {
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
-  await graphBox.getByLabel("n", { exact: true }).fill("10");
-  await workspace.page.keyboard.press("Control+z");
-  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("");
-  await workspace.page.keyboard.press("Control+y");
-  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("10");
+  const nInput = graphBox.getByLabel("n", { exact: true });
+  await nInput.click();
+  await nInput.pressSequentially("10");
+  // Commit the change so it is tracked by history handlers.
+  await nInput.press("Tab");
+
+  await workspace.undo();
+  await expect(nInput).toHaveValue("");
+  await workspace.page.keyboard.press(TEXT_INPUT_REDO_SHORTCUT);
+  await expect(nInput).toHaveValue("10");
 });
