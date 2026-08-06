@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Pre-commit hook to check the demo workspaces."""
 
 from lynxkite_core import workspace, ops
