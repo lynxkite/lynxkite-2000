@@ -51,7 +51,7 @@ def check_demo_ws(ws_path):
             return f"{ws_path}: Node '{node.id}' has error: {node.data.error}"
 
 
-if __name__ == "__main__":
+def main():
     os.chdir(os.path.join(os.getcwd(), demo_dir))
     ops.detect_plugins()
     errors = []
@@ -71,3 +71,7 @@ if __name__ == "__main__":
         for e in errors:
             print(f"\t - {e}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
