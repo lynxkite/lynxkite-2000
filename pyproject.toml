@@ -61,3 +61,6 @@ gpu = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[project.scripts]
+check-demo-workspaces = "scripts.demo_pre_commit:main"
