@@ -1,7 +1,7 @@
 - id: check-demo-workspaces
   name: check-demo-workspaces
-  language: python
-  entry: check-demo-workspaces
+  language: system
+  entry: python scripts/demo_pre-commit.py
   types: [json]
   pass_filenames: true
   require_serial: true
