@@ -14,6 +14,7 @@ dependencies = [
     "numpy>=2.2.6",
     "osmnx>=2.0.2",
     "pandas>=2.2.3",
+    "pcst-fast2>=1.1.0",
     "polars>=1.25.2",
     "pyarrow>=19.0.1",
     "pydantic>=2.11.7",
@@ -60,6 +61,7 @@ grand-cypher = "grandcypher"
 umap-learn = "umap"
 cuml-cu12 = "cuml"
 cudf-cu12 = "cudf"
+pcst-fast2 = "pcst_fast"
 
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]

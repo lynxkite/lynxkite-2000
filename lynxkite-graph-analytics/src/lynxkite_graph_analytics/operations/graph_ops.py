@@ -9,6 +9,7 @@ from .. import core, bundle
 import networkx as nx
 import enum
 import numpy as np
+import pcst_fast  # ty: ignore[unresolved-import]
 
 
 op = ops.op_registration(core.ENV, "Graph operations")
@@ -33,6 +34,212 @@ def get_id(b: core.Bundle, table_name: str) -> str:
         if relation.target_table == table_name:
             return relation.target_key
     raise ValueError(f"{table_name} is not used in any relation")
+
+
+@op("Merge two attributes", icon="link")
+def merge_two_attributes(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    new_attribute: str,
+    primary_attribute: core.ColumnNameByTableName,
+    secondary_attribute: core.ColumnNameByTableName,
+) -> core.Bundle:
+    """
+    An attribute may not be defined everywhere. This operation uses the secondary attribute to fill in the values where the primary attribute is undefined. If both are undefined then the result is undefined too.
+    :param b: the bundle
+    :param table_name: the name of the table
+    :param new_attribute: the name of the new attribute
+    :param primary_attribute: the primary attribute to use
+    :param secondary_attribute: the secondary attribute to use
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+    df[new_attribute] = df[primary_attribute].combine_first(df[secondary_attribute])
+    b.dfs[table_name] = df
+    return b
+
+
+@op("Add node attributes to edges", icon="link")
+def supplement_edges(b: core.Bundle, *, table_name: core.TableName) -> core.Bundle:
+    """
+    Adds the attributes of the source and target nodes to the edges in the specified relation.
+    :param b: the bundle
+    :param table_name: the name of the edge table
+    """
+    b = b.copy()
+    for r in b.relations:
+        if r.df == table_name:
+            df = b.dfs[table_name].copy()
+            source_df = b.dfs[r.source_table].copy()
+            target_df = b.dfs[r.target_table].copy()
+            for src_column in source_df.columns:
+                if src_column != r.source_key:
+                    df[f"{src_column}_src"] = df[r.source_column].map(
+                        source_df.set_index(r.source_key)[src_column]
+                    )
+            for tgt_column in target_df.columns:
+                if tgt_column != r.target_key:
+                    df[f"{tgt_column}_dst"] = df[r.target_column].map(
+                        target_df.set_index(r.target_key)[tgt_column]
+                    )
+            b.dfs[r.df] = df
+    return b
+
+
+@op("Steiner forest", icon="binary-tree", slow=True)
+def pcsf(
+    b: core.Bundle,
+    *,
+    relation: core.RelationName,
+    price_column: str,
+    weight_column: str,
+    root_cost_column: str,
+    output_edge: str,
+    output_node: str,
+    output_root_nodes: str,
+    output_profit: str,
+):
+    """
+    The prize collecting Steiner tree is a problem that seeks a subtree of a graph that maximizes the total prize collected from the nodes minus the total weight of the edges.
+
+    The prize collecting Steiner Forest allows for multiple disjoint trees. This problem has multiple versions, in this case there are a set of nodes that can act as the root of the subtrees, and each such node has a cost for using it as the root of the tree it belongs to. Every subtree must have exactly 1 root.
+
+    A use case for this operation could be that we want to create a water supply network, where the water stations can act as the roots, and the houses have prizes, since they are the customers. The piping costs will be the weights of the edges.
+
+    This example can be seen in the "In Bruges" workspace in "examples/Peters lessons".
+
+    A small example of the PCSF problem:
+
+    We have a graph, with 5 nodes: A, B, C, D, E.
+
+    The edges with their weights:
+    A-B: 10
+    B-C: 20
+    D-E: 40
+
+    The nodes with their prizes:
+    A: 0
+    B: 30
+    C: 40
+    E: 25
+
+    The potential roots with the costs:
+    A: 15
+    D: 35
+
+    The optimal solution:
+    nodes: A, B, C
+    edges: A-B, B-C
+    roots: A
+    profit: (0 + 30 + 40) - (10 + 20) - (15) = 25
+
+    This box provides an approximate solution for the PCSF problem, as it is NP-hard.
+
+    :param b: the bundle
+    :param relation: the relation
+    :param price_column: the column with the node prices
+    :param weight_column: the column with the edge weights
+    :param root_cost_column: the column with the root costs
+    :param output_edge: the output column, 1.0 if the edge is part of the forest, None otherwise
+    :param output_node: the output column, 1.0 if the node is part of the forest, None otherwise
+    :param output_root_nodes: the output column, 1.0 if the node is a root node, None otherwise
+    :param output_profit: a table with a single record: the profit
+
+    """
+    b = b.copy()
+    rel = next(r for r in b.relations if r.name == relation)
+    if rel.source_table != rel.target_table:
+        raise ValueError("Source and target tables must be the same.")
+
+    node_df, edge_df = b.dfs[rel.source_table].copy(), b.dfs[rel.df].copy()
+    nid, src, dst = rel.source_key, rel.source_column, rel.target_column
+
+    node_df[nid] = node_df[nid].astype(str)
+    edge_df[[src, dst]] = edge_df[[src, dst]].astype(str)
+
+    node_df[price_column] = pd.to_numeric(node_df[price_column]).fillna(0.0).clip(lower=0.0)
+    edge_df[weight_column] = pd.to_numeric(edge_df[weight_column]).fillna(0.0).clip(lower=0.0)
+
+    raw_root_costs = pd.to_numeric(node_df[root_cost_column])
+    node_df["_root_cost"] = raw_root_costs.clip(lower=0.0)
+    eligible_root_nodes = set(node_df.loc[raw_root_costs.notna() & (raw_root_costs >= 0), nid])
+
+    node_prices = dict(zip(node_df[nid], node_df[price_column]))
+    root_costs = dict(zip(node_df[nid], node_df["_root_cost"].fillna(0.0)))
+
+    edge_df["_key"] = edge_df.apply(lambda r: tuple(sorted([r[src], r[dst]])), axis=1)
+    edge_df = edge_df[edge_df[src] != edge_df[dst]]
+    edge_df = edge_df[edge_df[src].isin(node_prices) & edge_df[dst].isin(node_prices)]
+    cheapest = edge_df.groupby("_key")[weight_column].idxmin()
+    undirected_edges = (
+        edge_df.loc[cheapest, ["_key", weight_column]].set_index("_key")[weight_column].to_dict()
+    )
+    original_idx = edge_df.loc[cheapest, "_key"].reset_index().set_index("_key")["index"].to_dict()
+
+    nodes = list(node_df[nid].unique())
+    node_index = {node: i for i, node in enumerate(nodes)}
+    virtual_root = len(nodes)
+
+    solver_edges = [(node_index[u], node_index[v]) for u, v in undirected_edges]
+    solver_costs = [float(w) for w in undirected_edges.values()]
+    eligible_roots = [r for r in eligible_root_nodes if r in node_index]
+    for root in eligible_roots:
+        solver_edges.append((virtual_root, node_index[root]))
+        solver_costs.append(float(root_costs.get(root, 0.0)))
+
+    selected_nodes, selected_roots, selected_edges = set(), set(), set()
+    net_profit = 0.0
+    if solver_edges and eligible_roots:
+        prizes = np.asarray(
+            [float(node_prices.get(n, 0.0)) for n in nodes] + [0.0], dtype=np.float64
+        )
+        result_nodes, result_edges = pcst_fast.pcst_fast(
+            np.asarray(solver_edges, dtype=np.int64),
+            prizes,
+            np.asarray(solver_costs, dtype=np.float64),
+            virtual_root,
+            1,
+            "strong",
+            0,
+        )
+        if virtual_root in result_nodes:
+            selected_nodes = {str(nodes[i]) for i in result_nodes if i != virtual_root}
+            for edge_id in result_edges:
+                i, j = solver_edges[int(edge_id)]
+                if virtual_root in (i, j):
+                    selected_roots.add(str(nodes[j if i == virtual_root else i]))
+                else:
+                    u, v = str(nodes[i]), str(nodes[j])
+                    selected_edges.add((u, v) if u < v else (v, u))
+            net_profit = (
+                sum(float(node_prices.get(n, 0.0)) for n in selected_nodes)
+                - sum(float(undirected_edges[e]) for e in selected_edges)
+                - sum(float(root_costs.get(r, 0.0)) for r in selected_roots)
+            )
+            if net_profit < 0.0:
+                selected_nodes, selected_roots, selected_edges, net_profit = (
+                    set(),
+                    set(),
+                    set(),
+                    0.0,
+                )
+
+    selected_edge_indices = {original_idx[e] for e in selected_edges if e in original_idx}
+
+    node_df[output_node] = node_df[nid].isin(selected_nodes).map({True: 1.0, False: None})
+    node_df[output_root_nodes] = node_df[nid].isin(selected_roots).map({True: 1.0, False: None})
+    edge_df[output_edge] = pd.Series(
+        edge_df.index.isin(selected_edge_indices), index=edge_df.index
+    ).map({True: 1.0, False: None})
+
+    b.dfs[output_profit] = pd.DataFrame({output_profit: [net_profit]})
+    node_df.drop(columns=["_root_cost"], inplace=True)
+    edge_df.drop(columns=["_key"], inplace=True)
+
+    b.dfs[rel.source_table] = node_df
+    b.dfs[rel.df] = edge_df
+    return b
 
 
 def update_relations(
@@ -160,6 +367,64 @@ def merge_parallel_edges(
         merged = edges.drop_duplicates(subset=group_cols).reset_index(drop=True)
 
     b.dfs[table_name] = merged
+    return b
+
+
+@op("Distance via shortest path", icon="route-square")
+def shortest_distance(
+    b: core.Bundle,
+    *,
+    relation: core.RelationName,
+    edge_distances: str,
+    attribute_name: str,
+    starting_distance: str,
+    undirected: bool,
+) -> core.Bundle:
+    """
+    Computes the shortest distance from each node to the starting nodes using the specified edge distances.
+    :param b: the bundle
+    :param relation: the relation to use for the graph
+    :param edge_distances: the distances for the edges
+    :param attribute_name: the name of the attribute for storing the shortest distances
+    :param starting_distance: the name of the attribute for the starting distances
+    :param undirected: whether to treat the graph as undirected or not
+    """
+    b = b.copy()
+    r = next(r for r in b.relations if r.name == relation)
+    if r.source_table != r.target_table:
+        raise ValueError("Source and target tables must be the same.")
+
+    edges = b.dfs[r.df].copy()
+    nodes = b.dfs[r.source_table]
+
+    weight_col = "_weight"
+    edges[weight_col] = pd.to_numeric(edges[edge_distances], errors="coerce").fillna(1.0)
+
+    G = nx.from_pandas_edgelist(
+        edges,
+        source=r.source_column,
+        target=r.target_column,
+        edge_attr=[weight_col],
+        create_using=nx.Graph if undirected else nx.DiGraph,
+    )
+    G.add_nodes_from(nodes[r.source_key])
+
+    virtual_source = "_virtual_source_"
+    valid_dists = pd.to_numeric(nodes[starting_distance], errors="coerce")
+
+    virtual_edges = [
+        (virtual_source, node_id, dist)
+        for node_id, dist in zip(nodes[r.source_key], valid_dists)
+        if pd.notna(dist)
+    ]
+    G.add_weighted_edges_from(virtual_edges, weight=weight_col)
+
+    distances = nx.single_source_bellman_ford_path_length(
+        G, source=virtual_source, weight=weight_col
+    )
+    distances.pop(virtual_source, None)
+    b.dfs[r.source_table][attribute_name] = nodes[r.source_key].map(distances)
+
     return b
 
 

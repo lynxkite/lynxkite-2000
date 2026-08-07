@@ -1,10 +1,29 @@
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
+import useSpeechToText from "react-hook-speech-to-text";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
 import type { useCRDTWorkspace } from "./crdt";
+
+function checkIfChromiumMissingKeys() {
+  const ua = navigator.userAgent;
+  const isLinux = /Linux/i.test(ua);
+  const navData = (navigator as any).userAgentData;
+  if (navData && Array.isArray(navData.brands)) {
+    const brands = navData.brands.map((b: { brand: string }) => b.brand);
+    const isChromiumBrand = brands.includes("Chromium");
+    const isGoogleChromeBrand = brands.includes("Google Chrome");
+    if (isLinux && isChromiumBrand && !isGoogleChromeBrand) {
+      return true;
+    }
+  } else if (isLinux && /Chromium/i.test(ua) && !/Chrome/i.test(ua)) {
+    return true;
+  }
+  return false;
+}
 
 export default function Assistant(props: {
   crdtWorkspace: ReturnType<typeof useCRDTWorkspace>;
@@ -21,6 +40,44 @@ export default function Assistant(props: {
   const workspacePath = crdtWorkspace.ws?.path || "";
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
   const [messagesLoaded, setMessagesLoaded] = useState(false);
+  const dictationBaseRef = useRef("");
+
+  const {
+    error: speechError,
+    interimResult,
+    isRecording,
+    results,
+    setResults,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    continuous: true,
+    useLegacyResults: false,
+    speechRecognitionProperties: {
+      interimResults: true,
+      lang: "en-US",
+    },
+  });
+
+  const hasSpeechRecognitionApi =
+    typeof window !== "undefined" &&
+    ("SpeechRecognition" in window || "webkitSpeechRecognition" in (window as any));
+  const isSpeechToTextUnsupported =
+    !hasSpeechRecognitionApi ||
+    checkIfChromiumMissingKeys() ||
+    speechError === "SpeechRecognition API is not available in this browser";
+  const microphoneTitle = isSpeechToTextUnsupported
+    ? "Voice input is unavailable: this browser does not support the Web Speech API."
+    : speechError
+      ? speechError
+      : isRecording
+        ? "Stop voice input"
+        : "Start voice input";
+
+  const transcriptText = results
+    .map((result) => (typeof result === "string" ? result : result.transcript))
+    .join(" ")
+    .trim();
 
   const { messages, sendMessage, status, error, stop, setMessages } = useChat({
     transport: new TextStreamChatTransport({
@@ -44,10 +101,75 @@ export default function Assistant(props: {
     container.scrollTop = container.scrollHeight;
   }, [messages, isGenerating]);
 
+  useEffect(() => {
+    const textFromSpeech = `${transcriptText}${interimResult ? ` ${interimResult}` : ""}`.trim();
+    if (!textFromSpeech) return;
+    const nextInput = `${dictationBaseRef.current}${textFromSpeech}`.trim();
+    const withoutLastThreeWords = nextInput.split(" ").slice(0, -3).join(" ");
+    const rawInput = transcriptText.toLowerCase().replace(/[.!?]/g, "");
+    if (rawInput.endsWith("clear input field") && !interimResult) {
+      setInput("");
+      dictationBaseRef.current = "";
+      setResults([]);
+      return;
+    }
+    if (withoutLastThreeWords && rawInput.endsWith("do it now") && !interimResult) {
+      submitInput(withoutLastThreeWords, false);
+    } else {
+      setInput(nextInput);
+    }
+  }, [interimResult, transcriptText]);
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+    if (editorRef.current.textContent !== input) {
+      editorRef.current.textContent = input;
+    }
+  }, [input]);
+
   function clearChatHistory() {
     setMessages([]);
     setMessagesLoaded(true);
     crdtWorkspaceRef.current.clearAssistantMessages();
+  }
+
+  function toggleVoiceInput() {
+    if (isSpeechToTextUnsupported) return;
+    if (isRecording) {
+      stopSpeechToText();
+      return;
+    }
+    dictationBaseRef.current = input ? `${input.trim()} ` : "";
+    setResults([]);
+    void startSpeechToText();
+  }
+
+  function submitInput(prompt: string, stopRecording = true) {
+    if (!prompt || status !== "ready") return;
+    if (includeSelectedNodes && selectedNodeIds.length > 0) {
+      setMessages([
+        ...messages,
+        {
+          id: `system-${Date.now()}`,
+          role: "system",
+          parts: [{ type: "text", text: `Referencing·box(es):·${selectedNodeIds.join(",·")}` }],
+        },
+      ]);
+    }
+    sendMessage({
+      text: prompt,
+      metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
+    });
+    if (isRecording && stopRecording) {
+      stopSpeechToText();
+    }
+    dictationBaseRef.current = "";
+    setResults([]);
+    setInput("");
+    if (editorRef.current) {
+      editorRef.current.textContent = "";
+      editorRef.current.focus();
+    }
   }
 
   return (
@@ -124,28 +246,7 @@ export default function Assistant(props: {
         onSubmit={async (event) => {
           event.preventDefault();
           const prompt = input.trim();
-          if (!prompt || status !== "ready") return;
-          if (includeSelectedNodes && selectedNodeIds.length > 0) {
-            setMessages([
-              ...messages,
-              {
-                id: `system-${Date.now()}`,
-                role: "system",
-                parts: [
-                  { type: "text", text: `Referencing·box(es):·${selectedNodeIds.join(",·")}` },
-                ],
-              },
-            ]);
-          }
-          sendMessage({
-            text: prompt,
-            metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
-          });
-          setInput("");
-          if (editorRef.current) {
-            editorRef.current.textContent = "";
-            editorRef.current.focus();
-          }
+          submitInput(prompt);
         }}
       >
         <div
@@ -153,7 +254,7 @@ export default function Assistant(props: {
           className="assistant-editor"
           aria-disabled={status !== "ready"}
           data-placeholder="Ask to make changes to the workspace, create custom boxes, or for general help."
-          contentEditable
+          contentEditable={!isRecording}
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
           onKeyDown={(event) => {
@@ -165,6 +266,19 @@ export default function Assistant(props: {
           }}
         />
         <div className="assistant-actions">
+          <span className="assistant-mic-wrapper" title={microphoneTitle}>
+            <button
+              className={`btn btn-sm btn-square assistant-mic-button ${
+                isRecording ? "is-recording" : ""
+              } ${isSpeechToTextUnsupported ? "is-disabled" : ""}`}
+              type="button"
+              aria-label={isRecording ? "Stop voice input" : "Start voice input"}
+              aria-disabled={isSpeechToTextUnsupported}
+              onClick={toggleVoiceInput}
+            >
+              <MicrophoneIcon />
+            </button>
+          </span>
           <button
             className={`btn btn-sm ${includeSelectedNodes ? "btn-primary" : ""}`}
             type="button"
@@ -177,7 +291,7 @@ export default function Assistant(props: {
             type="button"
             onClick={clearChatHistory}
           >
-            Clear
+            Clear chat
           </button>
           {isGenerating && (
             <button className="btn btn-sm" type="button" onClick={stop}>

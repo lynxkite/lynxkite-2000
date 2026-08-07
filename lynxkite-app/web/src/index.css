@@ -886,7 +886,7 @@ svg {
 }
 
 .assistant-panel {
-  width: min(34vw, 420px);
+  width: min(38vw, 460px);
   min-width: 300px;
   border-left: 1px solid #d8dde3;
   background: white;
@@ -961,6 +961,24 @@ svg {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.assistant-mic-wrapper {
+  display: inline-flex;
+}
+
+.assistant-mic-button.is-recording {
+  color: #ffffff;
+  border-color: #0284c7;
+  background: #0ea5e9;
+}
+
+.assistant-mic-button.is-disabled {
+  color: #9ca3af;
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  opacity: 1;
+  cursor: not-allowed;
 }
 
 .assistant-clear-button {
