@@ -109,6 +109,8 @@ class CRDTConnection {
   pendingRemoteEdgesChanged = false;
   pendingRemoteHeaderChanged = false;
   remoteFlushScheduled = false;
+  started = false;
+  destroyTimer: ReturnType<typeof setTimeout> | undefined;
   updateSelectionState = () => {
     const selectedNodeIds = this.state.feNodes.filter((n) => n.selected).map((n) => n.id);
     const prevIds = this.state.selectedNodeIds;
@@ -156,10 +158,6 @@ class CRDTConnection {
       this.doc,
       { connect: false },
     );
-    getWebSocketParams().then((params) => {
-      this.wsProvider.params = params;
-      this.wsProvider.connect();
-    });
     this.ws.observeDeep(this.onBackendChange);
     // The initial document sync applies the whole workspace in one transaction.
     // `observeDeep` fires for it, but to be robust (and to cover the case where
@@ -224,6 +222,31 @@ class CRDTConnection {
       },
     };
   }
+  start = () => {
+    if (this.destroyTimer !== undefined) {
+      clearTimeout(this.destroyTimer);
+      this.destroyTimer = undefined;
+    }
+    if (this.started) return;
+    this.started = true;
+    getWebSocketParams().then((params) => {
+      if (!this.started) return;
+      this.wsProvider.params = params;
+      this.wsProvider.connect();
+    });
+  };
+  stop = () => {
+    if (!this.started) return;
+    this.started = false;
+    this.wsProvider.disconnect();
+  };
+  scheduleDestroy = () => {
+    this.stop();
+    this.destroyTimer = setTimeout(() => {
+      this.destroyTimer = undefined;
+      this.onDestroy();
+    }, 0);
+  };
   setWsKey = (key: string, value: any) => {
     if (!this.canWrite) return;
     this.ws.set(key, value);
@@ -231,6 +254,12 @@ class CRDTConnection {
     this.notifyObservers();
   };
   onDestroy = () => {
+    this.started = false;
+    if (this.destroyTimer !== undefined) {
+      clearTimeout(this.destroyTimer);
+      this.destroyTimer = undefined;
+    }
+    this.stop();
     this.doc.destroy();
     this.wsProvider.destroy();
   };
@@ -555,10 +584,9 @@ export function useCRDTWorkspace(path: string, canWrite = true): CRDTWorkspace {
     connection.current?.setCanWrite(canWrite);
   }, [canWrite]);
   useEffect(() => {
-    return () => {
-      connection.current!.onDestroy();
-      connection.current = null;
-    };
+    const currentConnection = connection.current!;
+    currentConnection.start();
+    return () => currentConnection.scheduleDestroy();
   }, []);
   return useSyncExternalStore(connection.current.subscribe, connection.current.getSnapshot);
 }
