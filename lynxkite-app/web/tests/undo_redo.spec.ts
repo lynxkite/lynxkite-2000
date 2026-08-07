@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
+const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
 const TEXT_INPUT_REDO_SHORTCUT = process.platform === "darwin" ? "Meta+Shift+z" : "Control+y";
 const TEXT_INPUT_REDO_FALLBACK_SHORTCUT =
   process.platform === "darwin" ? "Meta+y" : "Control+Shift+z";
@@ -107,10 +108,9 @@ test("undo/redo normal text input", async () => {
   const nInput = graphBox.getByLabel("n", { exact: true });
   await nInput.click();
   await nInput.pressSequentially("10");
-  // Commit the change so it is tracked by history handlers.
-  await nInput.press("Tab");
+  await expect(nInput).toHaveValue("10");
 
-  await workspace.undo();
+  await workspace.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
   await expect(nInput).toHaveValue("");
   await workspace.page.keyboard.press(TEXT_INPUT_REDO_SHORTCUT);
   if ((await nInput.inputValue()) !== "10") {
