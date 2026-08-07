@@ -1,5 +1,7 @@
 """Custom operations for the KNN demo workspace."""
 
+from collections.abc import Iterable
+
 import pandas as pd
 
 from lynxkite_core.ops import op_registration
@@ -29,4 +31,29 @@ def one_hot(
         df[col] = list(map(tuple, dummies.to_numpy()))
 
     b.dfs[table_name + "_one_hot"] = df
+    return b
+
+
+def _recursive_flatten(item):
+    flat = []
+    if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
+        for i in item:
+            flat.extend(_recursive_flatten(i))
+    else:
+        flat.append(item)
+    return flat
+
+
+@op("Flatten column")
+def flatten_column(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    column_name: str,
+) -> core.Bundle:
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+
+    df[column_name] = df[column_name].apply(lambda x: tuple(_recursive_flatten(x)))
+    b.dfs[table_name] = df
     return b
