@@ -60,6 +60,13 @@ def ws_exception_handler(exception, log):
     for ex in exceptions:
         if isinstance(ex, builtins.BaseExceptionGroup):
             ws_exception_handler(ex, log)
+        elif isinstance(ex, RuntimeError) and str(ex).startswith(
+            "Unexpected ASGI message 'websocket.send', after sending 'websocket.close'"
+        ):
+            # The peer may close while pycrdt is flushing a pending sync/update.
+            # Uvicorn rejects the late send; this is a normal disconnect race,
+            # not a workspace or server failure.
+            continue
         elif not isinstance(ex, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)):
             log.exception(ex)
     return True

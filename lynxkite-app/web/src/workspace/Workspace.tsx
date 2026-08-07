@@ -36,7 +36,7 @@ import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
-import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceEdge, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import {
   apiJson,
@@ -411,31 +411,39 @@ function LynxKiteFlow() {
   const onConnect = useCallback(
     (connection: Connection) => {
       setSuppressSearchUntil(Date.now() + 200);
-      const edge = {
+      if (
+        !connection.source ||
+        !connection.target ||
+        !connection.sourceHandle ||
+        !connection.targetHandle
+      ) {
+        return;
+      }
+      const edge: WorkspaceEdge = {
         id: `${connection.source} ${connection.sourceHandle} ${connection.target} ${connection.targetHandle}`,
         source: connection.source,
-        sourceHandle: connection.sourceHandle!,
+        sourceHandle: connection.sourceHandle,
         target: connection.target,
-        targetHandle: connection.targetHandle!,
+        targetHandle: connection.targetHandle,
       };
-      const source_node = crdt?.ws?.nodes?.find((n) => n.id === edge.source);
-      const target_node = crdt?.ws?.nodes?.find((n) => n.id === edge.target);
-      const prev_inp = target_node?.data?.input_metadata ?? [];
-      if (connection.sourceHandle === "output" && prev_inp.length <= 1) {
+      const sourceNode = nodes.find((n) => n.id === edge.source);
+      const targetNode = nodes.find((n) => n.id === edge.target);
+      const prevInput = (targetNode?.data as any)?.input_metadata ?? [];
+      if (edge.sourceHandle === "output" && targetNode && prevInput.length <= 1) {
         // only if the source is single output and the target is single input or missing
-        target_node!.data.input_metadata = source_node?.data?.output_metadata ?? null;
+        const nextInputMetadata = (sourceNode?.data as any)?.output_metadata ?? null;
         crdt?.applyChange((conn) => {
           const wnodes = conn.ws.get("nodes") as YArray<any>;
-          const wnode = wnodes
-            .toArray()
-            .find((n) => (n as YMap<any>).get("id") === target_node!.id);
+          const wnode = wnodes.toArray().find((n) => (n as YMap<any>).get("id") === targetNode.id);
           const target_data = (wnode as YMap<any>)?.get("data") as YMap<any>;
-          target_data?.set("input_metadata", target_node!.data.input_metadata);
+          if (target_data?.get("input_metadata") !== nextInputMetadata) {
+            target_data?.set("input_metadata", nextInputMetadata);
+          }
         });
       }
       crdt?.addEdge(edge);
     },
-    [crdt],
+    [crdt, nodes],
   );
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {

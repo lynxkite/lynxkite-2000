@@ -168,6 +168,11 @@ class CRDTConnection {
         this.syncAll();
       }
     });
+    this.wsProvider.on("status", ({ status }: { status: string }) => {
+      if (status === "connected") {
+        this.syncAll();
+      }
+    });
     this.state = {
       feNodes: [],
       feEdges: [],
