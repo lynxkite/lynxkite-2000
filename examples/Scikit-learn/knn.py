@@ -1,5 +1,7 @@
 """Custom operations for the KNN demo workspace."""
 
+import pandas as pd
+
 from lynxkite_core.ops import op_registration
 from lynxkite_graph_analytics import core
 from sklearn.datasets import fetch_openml
@@ -12,4 +14,19 @@ def fetch_dataset(*, dataset_name: str, version: int = 1) -> core.Bundle:
     b = core.Bundle()
     dataset = fetch_openml(dataset_name, version=version, as_frame=True)
     b.dfs[dataset_name] = dataset.frame
+    return b
+
+
+@op("One-hot encoding")
+def one_hot(
+    b: core.Bundle, *, table_name: core.TableName, columns: core.MultiColumnNameByTableName
+) -> core.Bundle:
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+
+    for col in columns:
+        dummies = pd.get_dummies(df[col])
+        df[col] = list(map(tuple, dummies.to_numpy()))
+
+    b.dfs[table_name + "_one_hot"] = df
     return b
