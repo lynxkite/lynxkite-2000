@@ -13,6 +13,7 @@ dependencies = [
     "lynxkite-vibe",
     "pandas-stubs>=2.3.3.260113",
     "pillow>=11.3.0",
+    "scikit-learn>=1.8.0",
 ]
 classifiers = ["Private :: Do Not Upload"]
 

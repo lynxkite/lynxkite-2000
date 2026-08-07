@@ -2394,12 +2394,14 @@ name = "lynxkite-mcp"
 version = "0.3.0"
 source = { editable = "lynxkite-mcp" }
 dependencies = [
+    { name = "lynxkite-assistant" },
     { name = "lynxkite-core" },
     { name = "mcp" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "lynxkite-assistant", editable = "lynxkite-assistant" },
     { name = "lynxkite-core", editable = "lynxkite-core" },
     { name = "mcp", specifier = ">=1.20.0" },
 ]
@@ -2452,6 +2454,7 @@ dependencies = [
     { name = "lynxkite-vibe" },
     { name = "pandas-stubs" },
     { name = "pillow" },
+    { name = "scikit-learn" },
 ]
 
 [package.dev-dependencies]
@@ -2480,6 +2483,7 @@ requires-dist = [
     { name = "lynxkite-vibe", editable = "lynxkite-vibe" },
     { name = "pandas-stubs", specifier = ">=2.3.3.260113" },
     { name = "pillow", specifier = ">=11.3.0" },
+    { name = "scikit-learn", specifier = ">=1.8.0" },
 ]
 
 [package.metadata.requires-dev]
