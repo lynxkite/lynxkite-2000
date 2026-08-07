@@ -3,7 +3,7 @@
 
 import { type Edge, type Node, type ReactFlowInstance, useReactFlow } from "@xyflow/react";
 import type { InternalNodeBase } from "@xyflow/system";
-import { type MouseEvent, useState } from "react";
+import { type MouseEvent, useCallback, useMemo, useState } from "react";
 import type { WorkspaceEdge } from "../apiTypes.ts";
 
 const MIN_AUTO_CONNECT_DISTANCE = 100;
@@ -80,55 +80,64 @@ function getClosestEdge(reactFlow: ReactFlowInstance, draggedNode: Node): Worksp
 export function useAutoConnect(edges: Edge[], crdt: any) {
   const reactFlow = useReactFlow();
   const [previewEdge, setPreviewEdge] = useState<Edge | null>(null);
-  const renderedEdges = previewEdge ? [...edges, previewEdge] : edges;
+  const renderedEdges = useMemo(
+    () => (previewEdge ? [...edges, previewEdge] : edges),
+    [edges, previewEdge],
+  );
 
-  function onNodeDrag(_event: MouseEvent | TouchEvent, draggedNode: Node) {
-    const closeEdge = getClosestEdge(reactFlow, draggedNode);
-    if (
-      !closeEdge ||
-      edgeExists(
-        closeEdge.source,
-        closeEdge.sourceHandle,
-        closeEdge.target,
-        closeEdge.targetHandle,
-        edges,
-      )
-    ) {
-      if (previewEdge) setPreviewEdge(null);
-      return;
-    }
-    const previewId = `preview:${closeEdge.id}`;
-    if (previewEdge?.id === previewId) return;
-    setPreviewEdge({
-      ...closeEdge,
-      id: previewId,
-      className: "temp-preview-edge",
-      style: {
-        strokeDasharray: "8 6",
-        strokeLinecap: "round",
-      },
-      selectable: false,
-      deletable: false,
-      focusable: false,
-    });
-  }
+  const onNodeDrag = useCallback(
+    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
+      const closeEdge = getClosestEdge(reactFlow, draggedNode);
+      if (
+        !closeEdge ||
+        edgeExists(
+          closeEdge.source,
+          closeEdge.sourceHandle,
+          closeEdge.target,
+          closeEdge.targetHandle,
+          edges,
+        )
+      ) {
+        if (previewEdge) setPreviewEdge(null);
+        return;
+      }
+      const previewId = `preview:${closeEdge.id}`;
+      if (previewEdge?.id === previewId) return;
+      setPreviewEdge({
+        ...closeEdge,
+        id: previewId,
+        className: "temp-preview-edge",
+        style: {
+          strokeDasharray: "8 6",
+          strokeLinecap: "round",
+        },
+        selectable: false,
+        deletable: false,
+        focusable: false,
+      });
+    },
+    [reactFlow, edges, previewEdge],
+  );
 
-  function onNodeDragStop(_event: MouseEvent | TouchEvent, draggedNode: Node) {
-    const closeEdge = getClosestEdge(reactFlow, draggedNode);
-    setPreviewEdge(null);
-    if (
-      closeEdge &&
-      !edgeExists(
-        closeEdge.source,
-        closeEdge.sourceHandle,
-        closeEdge.target,
-        closeEdge.targetHandle,
-        edges,
-      )
-    ) {
-      crdt?.addEdge(closeEdge);
-    }
-  }
+  const onNodeDragStop = useCallback(
+    (_event: MouseEvent | TouchEvent, draggedNode: Node) => {
+      const closeEdge = getClosestEdge(reactFlow, draggedNode);
+      setPreviewEdge(null);
+      if (
+        closeEdge &&
+        !edgeExists(
+          closeEdge.source,
+          closeEdge.sourceHandle,
+          closeEdge.target,
+          closeEdge.targetHandle,
+          edges,
+        )
+      ) {
+        crdt?.addEdge(closeEdge);
+      }
+    },
+    [reactFlow, edges, crdt],
+  );
   return {
     // Handlers to register with React Flow.
     onNodeDrag,

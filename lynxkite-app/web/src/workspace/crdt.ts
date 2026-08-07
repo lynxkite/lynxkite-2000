@@ -50,6 +50,9 @@ type CRDTWorkspace = {
   ws?: WorkspaceType;
   feNodes: Node[];
   feEdges: Edge[];
+  selectedNodeIds: string[];
+  selectedNodeCount: number;
+  isAnyGroupSelected: boolean;
   setPausedState: (paused: boolean) => void;
   setEnv: (env: string) => void;
   setExecutionOptions: (options: Record<string, any>) => void;
@@ -78,6 +81,7 @@ export function nodeToYMap(node: any): Y.Map<WorkspaceNode> {
   ydata.set("params", yparams);
   const ynode = new Y.Map<any>();
   for (const [key, value] of Object.entries(node)) {
+    if (key === "measured") continue;
     ynode.set(key, value);
   }
   ynode.set("data", ydata);
@@ -105,6 +109,30 @@ class CRDTConnection {
   pendingRemoteEdgesChanged = false;
   pendingRemoteHeaderChanged = false;
   remoteFlushScheduled = false;
+  updateSelectionState = () => {
+    const selectedNodeIds = this.state.feNodes.filter((n) => n.selected).map((n) => n.id);
+    const prevIds = this.state.selectedNodeIds;
+    const sameIds =
+      prevIds.length === selectedNodeIds.length &&
+      prevIds.every((id, index) => id === selectedNodeIds[index]);
+    const selectedNodeCount = selectedNodeIds.length;
+    const isAnyGroupSelected = this.state.feNodes.some(
+      (n) => n.selected && n.type === "node_group",
+    );
+    if (
+      sameIds &&
+      this.state.selectedNodeCount === selectedNodeCount &&
+      this.state.isAnyGroupSelected === isAnyGroupSelected
+    ) {
+      return;
+    }
+    this.state = {
+      ...this.state,
+      selectedNodeIds,
+      selectedNodeCount,
+      isAnyGroupSelected,
+    };
+  };
   constructor(
     reactFlow: ReturnType<typeof useReactFlow>,
     updateNodeInternals: (id: string) => void,
@@ -145,6 +173,9 @@ class CRDTConnection {
     this.state = {
       feNodes: [],
       feEdges: [],
+      selectedNodeIds: [],
+      selectedNodeCount: 0,
+      isAnyGroupSelected: false,
       setPausedState: (paused: boolean) => this.setWsKey("paused", paused),
       setEnv: (env: string) => this.setWsKey("env", env),
       setExecutionOptions: (options: Record<string, any>) =>
@@ -258,6 +289,7 @@ class CRDTConnection {
   syncAll = (): string[] => {
     const changedNodeIds = this.rebuildAllNodes();
     this.rebuildEdges();
+    this.updateSelectionState();
     this.updateHeader();
     this.notifyObservers();
     return changedNodeIds;
@@ -319,10 +351,12 @@ class CRDTConnection {
     let internalsChanged: string[] = [];
     if (nodesArrayChanged) {
       internalsChanged = this.rebuildAllNodes();
+      this.updateSelectionState();
     } else if (changedNodeIds.size > 0) {
       for (const id of changedNodeIds) {
         internalsChanged.push(...this.updateNode(id));
       }
+      this.updateSelectionState();
     }
     if (edgesChanged) this.rebuildEdges();
     if (headerChanged) this.updateHeader();
@@ -349,6 +383,7 @@ class CRDTConnection {
     const idToNode = this.nodeMaps;
     const feById = new Map(this.state.feNodes.map((n) => [n.id, n]));
     let wsChanged = false;
+    let selectionChanged = false;
     for (const ch of allowed) {
       const node = idToNode.get(ch.id);
       if (!node) continue;
@@ -380,6 +415,7 @@ class CRDTConnection {
           this.updateNodeInternals(ch.id);
         }
       } else if (ch.type === "select") {
+        selectionChanged = true;
         wsChanged = true;
       } else if (ch.type === "dimensions") {
         if (
@@ -400,6 +436,7 @@ class CRDTConnection {
         if (nodeIndex === -1) continue;
         wnodes.delete(nodeIndex);
         wsChanged = true;
+        selectionChanged = true;
         this.lastPositionBroadcast.delete(ch.id);
         this.nodeMaps.delete(ch.id);
       } else if (ch.type === "replace") {
@@ -444,6 +481,9 @@ class CRDTConnection {
       }
     }
     if (wsChanged) {
+      if (selectionChanged) {
+        this.updateSelectionState();
+      }
       this.updateFEState();
     }
   };
@@ -475,6 +515,7 @@ class CRDTConnection {
   };
   nodeFromYMap = (nodeMap: Y.Map<any>, oldNode: any) => {
     const n = nodeMap.toJSON();
+    delete n.measured;
     if (n.type !== "node_group") {
       n.dragHandle = ".drag-handle";
     }
@@ -487,14 +528,7 @@ class CRDTConnection {
     if (!n.extent) {
       delete mergedNode.extent;
     }
-
-    if (
-      n.width != null &&
-      n.height != null &&
-      (oldNode?.measured?.width !== n.width || oldNode?.measured?.height !== n.height)
-    ) {
-      mergedNode.measured = { width: n.width, height: n.height };
-    }
+    delete mergedNode.measured;
     return mergedNode;
   };
   updateFEState = () => {

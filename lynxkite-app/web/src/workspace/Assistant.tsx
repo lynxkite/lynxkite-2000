@@ -6,8 +6,11 @@ import remarkGfm from "remark-gfm";
 import RobotIcon from "~icons/tabler/robot.jsx";
 import type { useCRDTWorkspace } from "./crdt";
 
-export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useCRDTWorkspace> }) {
-  const { crdtWorkspace } = props;
+export default function Assistant(props: {
+  crdtWorkspace: ReturnType<typeof useCRDTWorkspace>;
+  selectedNodeIds: string[];
+}) {
+  const { crdtWorkspace, selectedNodeIds } = props;
   const crdtWorkspaceRef = useRef(crdtWorkspace);
   crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
@@ -15,10 +18,6 @@ export default function Assistant(props: { crdtWorkspace: ReturnType<typeof useC
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
-  const selectedNodeIds = crdtWorkspace.feNodes
-    .filter((node) => node.selected)
-    .map((node) => node.id);
-
   const workspacePath = crdtWorkspace.ws?.path || "";
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
   const [messagesLoaded, setMessagesLoaded] = useState(false);

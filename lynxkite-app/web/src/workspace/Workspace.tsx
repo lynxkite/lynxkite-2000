@@ -120,6 +120,14 @@ function LynxKiteFlow() {
   const workspaceReady = Boolean(workspace) && !permissions.isLoading;
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
+  const selectedNodeCount = crdt.selectedNodeCount;
+  const isAnyGroupSelected = crdt.isAnyGroupSelected;
+  const nodesRef = useRef(nodes);
+  const onNodesChangeRef = useRef(crdt?.onFENodesChange);
+  useEffect(() => {
+    nodesRef.current = nodes;
+    onNodesChangeRef.current = crdt?.onFENodesChange;
+  }, [nodes, crdt?.onFENodesChange]);
   const autoConnect = useAutoConnect(edges, crdt);
   const workspaceContextValue = useMemo(
     () => ({ workspace: workspace as any, canWrite }),
@@ -207,6 +215,33 @@ function LynxKiteFlow() {
     }),
     [],
   );
+  const defaultEdgeOptions = useMemo(
+    () => ({
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: "#888",
+        width: 15,
+        height: 15,
+      },
+    }),
+    [],
+  );
+  const fitViewOptions = useMemo(() => ({ maxZoom: 1 }), []);
+  const onNodesChange = useCallback(
+    (changes: any[]) => {
+      const snapped = snapChangesToGrid(
+        changes,
+        isShiftPressed || gridSnapEnabled,
+        nodesRef.current,
+      );
+      onNodesChangeRef.current?.(snapped);
+    },
+    [isShiftPressed, gridSnapEnabled],
+  );
+  const onMove = useCallback(() => {
+    const nextIconized = reactFlow.getZoom() < ICONIZE_THRESHOLD;
+    setIconized((prev) => (prev === nextIconized ? prev : nextIconized));
+  }, [reactFlow]);
 
   function clearSelection() {
     if (!crdt) return;
@@ -580,9 +615,6 @@ function LynxKiteFlow() {
       childNodeIds.map((id) => ({ id, type: "select" as const, selected: true })),
     );
   }
-  const selected = nodes.filter((n) => n.selected);
-  const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
-
   if (!permissions.isLoading && !permissions.read) {
     return (
       <div className="workspace">
@@ -638,7 +670,7 @@ function LynxKiteFlow() {
                 <Tooltip doc="Group selected nodes">
                   <button
                     className="btn btn-link"
-                    disabled={selected.length < 2}
+                    disabled={selectedNodeCount < 2}
                     onClick={groupSelection}
                     name="groupBtn"
                   >
@@ -658,7 +690,7 @@ function LynxKiteFlow() {
                 <Tooltip doc="Delete selected nodes and edges">
                   <button
                     className="btn btn-link"
-                    disabled={selected.length === 0}
+                    disabled={selectedNodeCount === 0}
                     onClick={deleteSelection}
                   >
                     <DeleteIcon />
@@ -667,7 +699,7 @@ function LynxKiteFlow() {
                 <Tooltip doc="Change selected box to a different box">
                   <button
                     className="btn btn-link"
-                    disabled={selected.length !== 1}
+                    disabled={selectedNodeCount !== 1}
                     onClick={changeBox}
                   >
                     <ChangeTypeIcon />
@@ -745,25 +777,13 @@ function LynxKiteFlow() {
                   nodesConnectable={canWrite}
                   elementsSelectable={true}
                   deleteKeyCode={canWrite ? ["Backspace", "Delete"] : null}
-                  onNodesChange={(changes) => {
-                    changes = snapChangesToGrid(changes, isShiftPressed || gridSnapEnabled, nodes);
-                    crdt?.onFENodesChange?.(changes);
-                  }}
+                  onNodesChange={onNodesChange}
                   onEdgesChange={crdt?.onFEEdgesChange}
                   onPaneClick={canWrite ? toggleNodeSearch : undefined}
                   onConnect={canWrite ? onConnect : undefined}
                   onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
-                  onNodeDragStop={
-                    canWrite
-                      ? (event, node) => {
-                          autoConnect.onNodeDragStop(event, node);
-                        }
-                      : undefined
-                  }
-                  onMove={() => {
-                    const zoom = reactFlow.getZoom();
-                    setIconized(zoom < ICONIZE_THRESHOLD);
-                  }}
+                  onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
+                  onMove={onMove}
                   proOptions={{ hideAttribution: true }}
                   maxZoom={10}
                   minZoom={0.1}
@@ -772,15 +792,9 @@ function LynxKiteFlow() {
                   panOnDrag={[0]}
                   selectionOnDrag={false}
                   preventScrolling={true}
-                  defaultEdgeOptions={{
-                    markerEnd: {
-                      type: MarkerType.ArrowClosed,
-                      color: "#888",
-                      width: 15,
-                      height: 15,
-                    },
-                  }}
-                  fitViewOptions={{ maxZoom: 1 }}
+                  onlyRenderVisibleElements={true}
+                  defaultEdgeOptions={defaultEdgeOptions}
+                  fitViewOptions={fitViewOptions}
                 >
                   <Background
                     variant={BackgroundVariant.Dots}
@@ -815,7 +829,7 @@ function LynxKiteFlow() {
         </div>
         {isAssistantOpen && canWrite && (
           <Suspense fallback={<aside className="assistant-panel" />}>
-            <Assistant crdtWorkspace={crdt} />
+            <Assistant crdtWorkspace={crdt} selectedNodeIds={crdt.selectedNodeIds} />
           </Suspense>
         )}
       </div>
