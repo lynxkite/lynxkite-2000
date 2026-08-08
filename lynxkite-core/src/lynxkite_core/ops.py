@@ -94,6 +94,8 @@ def _cached_with_ctx(func, ctx_idx: int):
 
 
 def type_to_json(t):
+    if typing.get_origin(t) is typing.Literal:
+        return {"enum": list(typing.get_args(t))}
     if isinstance(t, type) and issubclass(t, enum.Enum):
         return {"enum": list(t.__members__.values())}
     if getattr(t, "__metadata__", None):
@@ -270,6 +272,12 @@ def get_optional_type(type):
 def _param_to_type(name, value, type):
     if value is None:
         value = ""
+    if typing.get_origin(type) is typing.Literal:
+        allowed = typing.get_args(type)
+        assert value in allowed, (
+            f'Parameter "{name}" must be one of {list(allowed)}. Found: {value}'
+        )
+        return value
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
