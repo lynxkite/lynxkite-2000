@@ -86,13 +86,12 @@ test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
   const nInput = graphBox.getByLabel("n", { exact: true });
+  await new Promise((resolve) => setTimeout(resolve, 600));
 
+  // Fill then blur immediately so both land in the same CRDT undo entry (<600ms apart).
   await nInput.fill("10");
-  await expect(nInput).toHaveValue("10");
-
-  // Blur the input so Ctrl+Z is captured by the workspace CRDT undo handler,
-  // not the browser's native text-input undo (which is unreliable in headless Chromium).
   await workspace.page.locator(".ws-name").click();
+  await expect(nInput).toHaveValue("10");
 
   await workspace.undo();
   await expect(nInput).not.toHaveValue("10");
