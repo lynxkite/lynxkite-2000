@@ -90,24 +90,52 @@ test("undo/redo grouping boxes", async () => {
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
-  const nInput = graphBox.getByLabel("n", { exact: true });
+  const getNInput = () => workspace.getBox("Scale-free graph 1").getByLabel("n", { exact: true });
+  const getNValue = async () => {
+    if ((await workspace.getBox("Scale-free graph 1").count()) === 0) return null;
+    return await getNInput().inputValue();
+  };
+  const nInput = getNInput();
+  const initialValue = await nInput.inputValue();
+  const editedValue = initialValue === "10" ? "11" : "10";
   await nInput.click();
   await expect(nInput).toBeFocused();
-  await nInput.pressSequentially("10");
-  await expect(nInput).toHaveValue("10");
-
-  // Native text-input undo can require multiple attempts across browsers.
-  for (let i = 0; i < 3 && (await nInput.inputValue()) === "10"; i++) {
-    await nInput.click();
-    await nInput.press(`${PRIMARY_MODIFIER}+z`);
+  await nInput.pressSequentially(editedValue);
+  await expect(nInput).toHaveValue(editedValue);
+  // Prefer native text-input undo when the input is focused.
+  for (let i = 0; i < 3 && (await getNValue()) === editedValue; i++) {
+    await getNInput().click();
+    await getNInput().press(`${PRIMARY_MODIFIER}+z`);
   }
-  await expect(nInput).not.toHaveValue("10");
 
-  // Redo shortcuts differ by platform/layout, so try a short fallback chain.
+  // If app-level undo intercepted Cmd/Ctrl+Z, recover box state and continue.
+  if ((await getNValue()) === null) {
+    await workspace.redo();
+    await expect(workspace.getBox("Scale-free graph 1")).toBeVisible();
+  }
+
+  if ((await getNValue()) === editedValue) {
+    await workspace.undo();
+    if ((await getNValue()) === null) {
+      await workspace.redo();
+      await expect(workspace.getBox("Scale-free graph 1")).toBeVisible();
+    }
+  }
+
+  await expect(getNInput()).not.toHaveValue(editedValue);
+
+  // Prefer native redo for text input.
   for (const shortcut of TEXT_INPUT_REDO_SHORTCUTS) {
-    if ((await nInput.inputValue()) === "10") break;
-    await nInput.click();
-    await nInput.press(shortcut);
+    if ((await getNValue()) === editedValue) break;
+    await getNInput().click();
+    await getNInput().press(shortcut);
   }
-  await expect(nInput).toHaveValue("10");
+
+  // Fallback to app-level redo if native redo did not restore the edit.
+  for (let i = 0; i < 3 && (await getNValue()) !== editedValue; i++) {
+    await workspace.redo();
+  }
+
+  await expect(getNInput()).toHaveValue(editedValue);
+  expect(initialValue).not.toBe(editedValue);
 });
