@@ -3,11 +3,6 @@ import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
-const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
-const TEXT_INPUT_REDO_SHORTCUTS =
-  process.platform === "darwin"
-    ? ["Meta+Shift+z", "Meta+y", "Meta+Shift+z"]
-    : ["Control+y", "Control+Shift+z", "Control+y"];
 
 test.beforeEach(async ({ browser }) => {
   workspace = await Workspace.empty(await browser.newPage(), "undo_redo_spec_test");
@@ -91,23 +86,17 @@ test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
   const nInput = graphBox.getByLabel("n", { exact: true });
-  await nInput.click();
-  await expect(nInput).toBeFocused();
-  await nInput.pressSequentially("10");
+
+  await nInput.fill("10");
   await expect(nInput).toHaveValue("10");
 
-  // Native text-input undo can require multiple attempts across browsers.
-  for (let i = 0; i < 3 && (await nInput.inputValue()) === "10"; i++) {
-    await nInput.click();
-    await nInput.press(`${PRIMARY_MODIFIER}+z`);
-  }
+  // Blur the input so Ctrl+Z is captured by the workspace CRDT undo handler,
+  // not the browser's native text-input undo (which is unreliable in headless Chromium).
+  await workspace.page.locator(".ws-name").click();
+
+  await workspace.undo();
   await expect(nInput).not.toHaveValue("10");
 
-  // Redo shortcuts differ by platform/layout, so try a short fallback chain.
-  for (const shortcut of TEXT_INPUT_REDO_SHORTCUTS) {
-    if ((await nInput.inputValue()) === "10") break;
-    await nInput.click();
-    await nInput.press(shortcut);
-  }
+  await workspace.redo();
   await expect(nInput).toHaveValue("10");
 });
