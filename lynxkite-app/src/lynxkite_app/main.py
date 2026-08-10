@@ -109,8 +109,8 @@ async def delete_workspace(req: dict, request: fastapi.Request):
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
     workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
-    json_path.unlink()
-    crdt_path.unlink()
+    json_path.unlink(missing_ok=True)
+    crdt_path.unlink(missing_ok=True)
     if workspace_files_path.exists():
         shutil.rmtree(workspace_files_path)
     crdt.delete_room(req["path"])

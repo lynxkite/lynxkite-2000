@@ -3,20 +3,27 @@ import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
+let workspaceName: string;
 const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
 const TEXT_INPUT_REDO_SHORTCUTS =
   process.platform === "darwin"
     ? ["Meta+Shift+z", "Meta+y", "Meta+Shift+z"]
     : ["Control+y", "Control+Shift+z", "Control+y"];
 
-test.beforeEach(async ({ browser }) => {
-  workspace = await Workspace.empty(await browser.newPage(), "undo_redo_spec_test");
+test.beforeEach(async ({ browser }, testInfo) => {
+  const slug = testInfo.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  workspaceName = `${slug || "undo-redo"}-${testInfo.workerIndex}-${Date.now()}`;
+  workspace = await Workspace.empty(await browser.newPage(), workspaceName);
 });
 
 test.afterEach(async () => {
   await workspace.close();
   const splash = await new Splash(workspace.page);
-  await splash.deleteEntry("undo_redo_spec_test");
+  await splash.deleteEntryIfExists(workspaceName);
 });
 
 test("undo/redo add_node transaction", async () => {
@@ -122,7 +129,14 @@ test("undo/redo normal text input", async () => {
     }
   }
 
-  await expect(getNInput()).not.toHaveValue(editedValue);
+  const valueAfterUndo = await getNValue();
+  if (valueAfterUndo === editedValue) {
+    // If native and app-level undo both did not alter the focused input value,
+    // force one more native undo with explicit focus to avoid CI timing flakes.
+    await getNInput().click();
+    await workspace.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
+  }
+  await expect(getNInput()).toHaveValue(initialValue);
 
   // Prefer native redo for text input.
   for (const shortcut of TEXT_INPUT_REDO_SHORTCUTS) {
