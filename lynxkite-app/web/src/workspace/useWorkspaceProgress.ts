@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import { parseProgressWorkspace } from "../progress";
+import { attachWorkspaceEtaAnchor, parseProgressWorkspace } from "../progress";
 
 export function useWorkspaceProgress(roomName: string | undefined, enabled = true) {
   const [workspaceProgress, setWorkspaceProgress] = useState<any | null>(null);
@@ -23,7 +23,8 @@ export function useWorkspaceProgress(roomName: string | undefined, enabled = tru
     const wsMap = doc.getMap("workspaces");
 
     function syncWorkspaceProgress() {
-      setWorkspaceProgress(parseProgressWorkspace(wsMap.get(currentRoomName)));
+      const parsed = parseProgressWorkspace(wsMap.get(currentRoomName));
+      setWorkspaceProgress((prev: any) => attachWorkspaceEtaAnchor(parsed, prev));
     }
 
     wsMap.observe(syncWorkspaceProgress);

@@ -15,18 +15,14 @@ import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
-import { parseProgressWorkspace } from "./progress";
+import {
+  attachWorkspaceEtaAnchor,
+  formatWorkspaceEta,
+  getWorkspaceDisplayEtaSeconds,
+  parseProgressWorkspace,
+} from "./progress";
 
 const echarts = await import("echarts");
-
-function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
-}
 
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
@@ -110,14 +106,21 @@ export default function ProgressPage() {
     const gpuServicesText = doc.getText("gpu_services");
 
     function syncWorkspaces() {
-      const workspaces: any[] = [];
-      for (const value of (wsMap as Y.Map<unknown>).values()) {
-        const ws = parseProgressWorkspace(value);
-        if (ws && typeof ws === "object") {
-          workspaces.push({ ...ws, user: ws.user || "—" });
+      setData((prev) => {
+        const prevByRoom = new Map(
+          (prev.workspaces || []).map((ws) => [ws.room_name || ws.name, ws]),
+        );
+        const nowMs = Date.now();
+        const workspaces: any[] = [];
+        for (const [roomName, value] of (wsMap as Y.Map<unknown>).entries()) {
+          const ws = parseProgressWorkspace(value);
+          if (ws && typeof ws === "object") {
+            const merged = attachWorkspaceEtaAnchor(ws, prevByRoom.get(roomName), nowMs);
+            workspaces.push({ ...merged, user: merged.user || "—" });
+          }
         }
-      }
-      setData((prev) => ({ ...prev, workspaces }));
+        return { ...prev, workspaces };
+      });
     }
 
     function syncGpuServices() {
@@ -191,6 +194,7 @@ export default function ProgressPage() {
 
       {currentTab === "workspaces" && (
         <Workspaces
+          nowMs={Date.now()}
           workspaces={data.workspaces}
           onPause={(roomName, paused) => pauseWorkspace(roomName, paused)}
           onStop={(roomName) => stopWorkspace(roomName)}
@@ -205,6 +209,7 @@ export default function ProgressPage() {
 }
 
 function Workspaces(props: {
+  nowMs: number;
   workspaces: any[];
   onPause: (roomName: string, paused: boolean) => void;
   onStop: (roomName: string) => void;
@@ -229,6 +234,7 @@ function Workspaces(props: {
           const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
           const tqdm = ws.active_node?.tqdm;
           const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
+          const etaText = formatWorkspaceEta(getWorkspaceDisplayEtaSeconds(ws, props.nowMs));
           const combinedProgress =
             typeof ws.progress_fraction === "number"
               ? ws.progress_fraction
@@ -256,7 +262,7 @@ function Workspaces(props: {
               </td>
               <td className="workspace-eta">
                 {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
-                {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
+                {etaText && <span> {etaText}</span>}
               </td>
               <td className="workspace-resources">{ws.gpus || "—"}</td>
               <td className="table-actions">
