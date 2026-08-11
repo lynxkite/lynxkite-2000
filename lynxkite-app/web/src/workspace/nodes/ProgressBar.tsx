@@ -28,18 +28,27 @@ export function NodeProgress({
 
   const { n = 0, total = 0, elapsed = 0, rate, prefix, postfix, unit = "it", colour } = t;
 
-  const hasTotal = typeof total === "number" && total > 0;
+  const parsedN = Number(n);
+  const parsedTotal = Number(total);
+  const parsedElapsed = Number(elapsed);
+  const parsedRate = Number(rate);
+  const safeN = Number.isFinite(parsedN) ? Math.max(0, parsedN) : 0;
+  const safeTotal = Number.isFinite(parsedTotal) ? Math.max(0, parsedTotal) : 0;
+  const safeElapsed = Number.isFinite(parsedElapsed) ? Math.max(0, parsedElapsed) : 0;
+  const safeRate = Number.isFinite(parsedRate) && parsedRate > 0 ? parsedRate : null;
+
+  const hasTotal = safeTotal > 0;
   // If we don't have a total, we can show an indeterminate animated bar or full bar
   const isIndeterminate = !hasTotal && status === "active";
-  const percentage = hasTotal ? Math.min(100, Math.max(0, (n / total) * 100)) : 100;
+  const percentage = hasTotal ? Math.min(100, Math.max(0, (safeN / safeTotal) * 100)) : 0;
 
   // Estimate time remaining
-  const eta = hasTotal && rate && rate > 0 ? (total - n) / rate : null;
+  const eta = hasTotal && safeRate ? Math.max(0, (safeTotal - safeN) / safeRate) : null;
   const itersPerSec =
-    typeof rate === "number" && Number.isFinite(rate)
-      ? rate < 1
-        ? `${(1 / rate).toFixed(2)} s/${unit}`
-        : `${rate.toFixed(2)} ${unit}/s`
+    safeRate != null
+      ? safeRate < 1
+        ? `${(1 / safeRate).toFixed(2)} s/${unit}`
+        : `${safeRate.toFixed(2)} ${unit}/s`
       : "";
 
   return (
@@ -57,7 +66,7 @@ export function NodeProgress({
           {prefix || "Execution Progress"}
         </span>
         <span style={{ fontWeight: 500 }}>
-          {hasTotal ? `${percentage.toFixed(1)}%` : `${n} ${unit}`}
+          {hasTotal ? `${percentage.toFixed(1)}%` : `${safeN} ${unit}`}
         </span>
       </div>
 
@@ -93,7 +102,11 @@ export function NodeProgress({
         }}
       >
         <span
-          title={postfix ? `${n} ${hasTotal ? `/ ${total} ` : ""}${unit} — ${postfix}` : undefined}
+          title={
+            postfix
+              ? `${safeN} ${hasTotal ? `/ ${safeTotal} ` : ""}${unit} — ${postfix}`
+              : undefined
+          }
           style={{
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -101,14 +114,14 @@ export function NodeProgress({
             flex: 1,
           }}
         >
-          {n} {hasTotal ? `/ ${total}` : ""} {unit} {postfix ? `— ${postfix}` : ""}
+          {safeN} {hasTotal ? `/ ${safeTotal}` : ""} {unit} {postfix ? `— ${postfix}` : ""}
         </span>
         <span style={{ display: "flex", gap: "8px", textAlign: "right" }}>
           {itersPerSec && <span>{itersPerSec}</span>}
           <span>
             {eta !== null && eta > 0
               ? `ETA: ${formatTime(eta)}`
-              : `Elapsed: ${formatTime(elapsed)}`}
+              : `Elapsed: ${formatTime(safeElapsed)}`}
           </span>
         </span>
       </div>
