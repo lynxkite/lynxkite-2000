@@ -1,6 +1,7 @@
 """Custom operations for the KNN demo workspace."""
 
 import enum
+import typing
 from collections.abc import Iterable
 from typing import Literal
 
@@ -54,7 +55,7 @@ def flatten_column(
     b: core.Bundle,
     *,
     table_name: core.TableName,
-    column_name: str,
+    column_name: core.ColumnNameByTableName,
 ) -> core.Bundle:
     b = b.copy()
     df = b.dfs[table_name].copy()
@@ -88,14 +89,19 @@ class DistanceMetric(enum.StrEnum):
     manhattan = "manhattan"
 
 
+_ColumnNameByTrainTable = typing.Annotated[
+    str, {"format": "dropdown", "metadata_query": "[].dataframes[].<train_table>.columns[]"}
+]
+
+
 @op("K-nearest neighbors classifier", icon="circles")
 def knn_classifier(
     b: core.Bundle,
     *,
     train_table: core.TableName,
     test_table: core.TableName,
-    feature_column: str,
-    label_column: str,
+    feature_column: _ColumnNameByTrainTable,
+    label_column: _ColumnNameByTrainTable,
     prediction_column: str,
     n_neighbors: int = 5,
     weights: Literal["uniform", "distance"] = "uniform",
