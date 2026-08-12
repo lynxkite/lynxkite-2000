@@ -4,7 +4,6 @@ import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
 let workspaceName: string;
-const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
 const TEXT_INPUT_REDO_SHORTCUTS =
   process.platform === "darwin"
     ? ["Meta+Shift+z", "Meta+y", "Meta+Shift+z"]
@@ -80,23 +79,40 @@ test("undo/redo grouping boxes", async () => {
   await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.groupSelection();
   await expect(workspace.getBox("Group 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBe("Group 1"),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBe("Group 1"),
+  ).toPass();
 
   await workspace.undo();
   await expect(workspace.getBox("Group 1")).not.toBeVisible();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await expect(workspace.getBox("View tables 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBeUndefined(),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBeUndefined(),
+  ).toPass();
   expect(consoleMessages).toEqual([]);
 
   await workspace.redo();
   await expect(workspace.getBox("Group 1")).toBeVisible();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await expect(workspace.getBox("View tables 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBe("Group 1"),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBe("Group 1"),
+  ).toPass();
   expect(consoleMessages).toEqual([]);
 });
 
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
-  const graphBox = workspace.getBox("Scale-free graph 1");
   const getNInput = () => workspace.getBox("Scale-free graph 1").getByLabel("n", { exact: true });
   const getNValue = async () => {
     if ((await workspace.getBox("Scale-free graph 1").count()) === 0) return null;
@@ -112,7 +128,7 @@ test("undo/redo normal text input", async () => {
   // Prefer native text-input undo when the input is focused.
   for (let i = 0; i < 3 && (await getNValue()) === editedValue; i++) {
     await getNInput().click();
-    await getNInput().press(`${PRIMARY_MODIFIER}+z`);
+    await workspace.undo();
   }
 
   // If app-level undo intercepted Cmd/Ctrl+Z, recover box state and continue.
@@ -134,14 +150,14 @@ test("undo/redo normal text input", async () => {
     // If native and app-level undo both did not alter the focused input value,
     // force one more native undo with explicit focus to avoid CI timing flakes.
     await getNInput().click();
-    await workspace.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
+    await workspace.undo();
   }
   const valueAfterFinalUndo = await getNValue();
   if (valueAfterFinalUndo !== editedValue) {
     await expect(getNInput()).toHaveValue(initialValue);
   }
 
-  // Prefer native redo for text input.
+  // Prefer native redo for focused text input first.
   for (const shortcut of TEXT_INPUT_REDO_SHORTCUTS) {
     if ((await getNValue()) === editedValue) break;
     await getNInput().click();
@@ -150,6 +166,7 @@ test("undo/redo normal text input", async () => {
 
   // Fallback to app-level redo if native redo did not restore the edit.
   for (let i = 0; i < 3 && (await getNValue()) !== editedValue; i++) {
+    await getNInput().click();
     await workspace.redo();
   }
 
