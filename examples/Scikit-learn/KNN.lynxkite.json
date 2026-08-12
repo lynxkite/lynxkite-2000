@@ -7,34 +7,6 @@
   ],
   "edges": [
     {
-      "id": "One-hot encoding 1 output Vector from attributes 1 b",
-      "source": "One-hot encoding 1",
-      "sourceHandle": "output",
-      "target": "Vector from attributes 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Vector from attributes 1 output Flatten column 1 b",
-      "source": "Vector from attributes 1",
-      "sourceHandle": "output",
-      "target": "Flatten column 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Flatten column 1 output Train/test split 1 bundle",
-      "source": "Flatten column 1",
-      "sourceHandle": "output",
-      "target": "Train/test split 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Fetch openml dataset 1 output One-hot encoding 1 b",
-      "source": "Fetch openml dataset 1",
-      "sourceHandle": "output",
-      "target": "One-hot encoding 1",
-      "targetHandle": "b"
-    },
-    {
       "id": "Fetch openml dataset 2 output Vector from attributes 2 b",
       "source": "Fetch openml dataset 2",
       "sourceHandle": "output",
@@ -49,31 +21,10 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Train/test split 1 output Train K-nearest neighbors classifier 1 b",
-      "source": "Train/test split 1",
-      "sourceHandle": "output",
-      "target": "Train K-nearest neighbors classifier 1",
-      "targetHandle": "b"
-    },
-    {
       "id": "Train K-nearest neighbors classifier 2 b Train/test split 2 output",
       "source": "Train/test split 2",
       "sourceHandle": "output",
       "target": "Train K-nearest neighbors classifier 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Train K-nearest neighbors classifier 1 output Make prediction 1 b",
-      "source": "Train K-nearest neighbors classifier 1",
-      "sourceHandle": "output",
-      "target": "Make prediction 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Make prediction 1 output Confusion matrix 2 b",
-      "source": "Make prediction 1",
-      "sourceHandle": "output",
-      "target": "Confusion matrix 2",
       "targetHandle": "b"
     },
     {
@@ -89,808 +40,90 @@
       "sourceHandle": "output",
       "target": "Confusion matrix 1",
       "targetHandle": "b"
+    },
+    {
+      "id": "Fetch openml dataset 3 output Rename table 1 b",
+      "source": "Fetch openml dataset 3",
+      "sourceHandle": "output",
+      "target": "Rename table 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Rename table 1 output One-hot encoding 2 b",
+      "source": "Rename table 1",
+      "sourceHandle": "output",
+      "target": "One-hot encoding 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "One-hot encoding 2 output Vector from attributes 3 b",
+      "source": "One-hot encoding 2",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 3 output Train K-nearest neighbors classifier 3 b",
+      "source": "Train/test split 3",
+      "sourceHandle": "output",
+      "target": "Train K-nearest neighbors classifier 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 3 output Make prediction 3 b",
+      "source": "Train K-nearest neighbors classifier 3",
+      "sourceHandle": "output",
+      "target": "Make prediction 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 3 output Confusion matrix 3 b",
+      "source": "Make prediction 3",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Vector from attributes 3 output Flatten column 2 b",
+      "source": "Vector from attributes 3",
+      "sourceHandle": "output",
+      "target": "Flatten column 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Flatten column 2 output Train/test split 3 bundle",
+      "source": "Flatten column 2",
+      "sourceHandle": "output",
+      "target": "Train/test split 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 1 output Make prediction 1 b",
+      "selected": false,
+      "source": "Train K-nearest neighbors classifier 1",
+      "sourceHandle": "output",
+      "target": "Make prediction 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 1 output Confusion matrix 2 b",
+      "selected": false,
+      "source": "Make prediction 1",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 3 output Train K-nearest neighbors classifier 1 b",
+      "source": "Train/test split 3",
+      "sourceHandle": "output",
+      "target": "Train K-nearest neighbors classifier 1",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
   "execution_options": {},
   "nodes": [
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": 315.0,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Machine learning operations > Train/test split",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "seed": "151",
-          "table_name": "mushroom_one_hot",
-          "test_ratio": "0.2"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Train/test split"
-      },
-      "height": 315.0,
-      "id": "Train/test split 1",
-      "parentId": null,
-      "position": {
-        "x": 4085.2117875321924,
-        "y": 484.57138557356507
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Table operations > Vector from attributes",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "attributes": [
-            "bruises%3F",
-            "cap-color",
-            "cap-surface",
-            "cap-shape",
-            "gill-attachment",
-            "gill-color",
-            "gill-size",
-            "gill-spacing",
-            "habitat",
-            "odor",
-            "population",
-            "ring-number",
-            "ring-type",
-            "spore-print-color",
-            "stalk-color-above-ring",
-            "stalk-color-below-ring",
-            "stalk-root",
-            "stalk-shape",
-            "stalk-surface-above-ring",
-            "stalk-surface-below-ring",
-            "veil-color",
-            "veil-type"
-          ],
-          "table_name": "mushroom_one_hot",
-          "vector_name": "features"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Vector from attributes"
-      },
-      "height": 372.0,
-      "id": "Vector from attributes 1",
-      "parentId": null,
-      "position": {
-        "x": 3106.67369079586,
-        "y": 488.10012702503803
-      },
-      "type": "basic",
-      "width": 457.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Fetch openml dataset",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "dataset_name": "mushroom",
-          "version": 1.0
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Fetch openml dataset"
-      },
-      "height": 315.0,
-      "id": "Fetch openml dataset 1",
-      "parentId": null,
-      "position": {
-        "x": 2110.3281711162977,
-        "y": 510.64737956384306
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > One-hot encoding",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "columns": [
-            "bruises%3F",
-            "cap-color",
-            "cap-shape",
-            "cap-surface",
-            "gill-attachment",
-            "gill-color",
-            "gill-size",
-            "gill-spacing",
-            "habitat",
-            "odor",
-            "population",
-            "ring-number",
-            "ring-type",
-            "spore-print-color",
-            "stalk-color-above-ring",
-            "stalk-color-below-ring",
-            "stalk-root",
-            "stalk-shape",
-            "stalk-surface-above-ring",
-            "stalk-surface-below-ring",
-            "veil-color",
-            "veil-type"
-          ],
-          "table_name": "mushroom"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "One-hot encoding"
-      },
-      "height": 323.0,
-      "id": "One-hot encoding 1",
-      "parentId": null,
-      "position": {
-        "x": 2557.4830874563813,
-        "y": 512.2115733559372
-      },
-      "type": "basic",
-      "width": 357.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Flatten column",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "column_name": "features",
-          "table_name": "mushroom_one_hot"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Flatten column"
-      },
-      "height": 315.0,
-      "id": "Flatten column 1",
-      "parentId": null,
-      "position": {
-        "x": 3664.9519537882315,
-        "y": 484.42877107037697
-      },
-      "type": "basic",
-      "width": 315.0
-    },
     {
       "data": {
         "__execution_delay": 0.0,
@@ -939,8 +172,8 @@
       },
       "parentId": null,
       "position": {
-        "x": 2110.293577519071,
-        "y": 869.3950811556587
+        "x": 1936.5681124926987,
+        "y": 644.4063641542915
       },
       "selected": false,
       "type": "basic",
@@ -1014,8 +247,8 @@
       "id": "Vector from attributes 2",
       "parentId": null,
       "position": {
-        "x": 3110.9900233256835,
-        "y": 930.8375934538494
+        "x": 3272.1822026417367,
+        "y": 638.0599616348959
       },
       "type": "basic",
       "width": 461.0
@@ -1110,477 +343,11 @@
       "id": "Train/test split 2",
       "parentId": null,
       "position": {
-        "x": 4079.5498045445765,
-        "y": 922.2201699412116
+        "x": 4309.817353806087,
+        "y": 642.1238554333
       },
       "type": "basic",
       "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 0,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "prediction",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {
-              "knn": {
-                "key": "knn"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Confusion matrix",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "label_column": "class",
-          "prediction_column": "prediction",
-          "table_name": "mushroom_one_hot_test"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Confusion matrix"
-      },
-      "height": 763.0,
-      "id": "Confusion matrix 2",
-      "parentId": null,
-      "position": {
-        "x": 6140.954935329257,
-        "y": -59.016534722338996
-      },
-      "type": "visualization",
-      "width": 728.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Train K-nearest neighbors classifier",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {
-              "knn": {
-                "key": "knn"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "params": {
-          "algorithm": "auto",
-          "feature_column": "features",
-          "label_column": "class",
-          "leaf_size": 30.0,
-          "metric": "minkowski",
-          "model_name": "knn",
-          "n_neighbors": "5",
-          "p": 2.0,
-          "table_name": "mushroom_one_hot_train",
-          "weights": "uniform"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Train K-nearest neighbors classifier"
-      },
-      "height": 406.0,
-      "id": "Train K-nearest neighbors classifier 1",
-      "parentId": null,
-      "position": {
-        "x": 4585.051159559053,
-        "y": 417.9931291880412
-      },
-      "type": "basic",
-      "width": 456.0
     },
     {
       "data": {
@@ -1709,8 +476,8 @@
       "id": "Train K-nearest neighbors classifier 2",
       "parentId": null,
       "position": {
-        "x": 4565.946801350301,
-        "y": 901.1264042195827
+        "x": 4777.503297772858,
+        "y": 623.2860243184997
       },
       "type": "basic",
       "width": 516.0
@@ -1720,7 +487,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1793,309 +560,11 @@
       "id": "Confusion matrix 1",
       "parentId": null,
       "position": {
-        "x": 6137.559688390133,
-        "y": 822.6092551710569
+        "x": 6099.9414675328135,
+        "y": 29.634258690083897
       },
       "type": "visualization",
       "width": 735.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": false,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": 315.0,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {
-              "knn": {
-                "key": "knn"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Make prediction",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "mushroom": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom",
-                "length": 8124.0
-              },
-              "mushroom_one_hot": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot",
-                "length": 8124.0
-              },
-              "mushroom_one_hot_test": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "prediction",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_test",
-                "length": 1625.0
-              },
-              "mushroom_one_hot_train": {
-                "columns": [
-                  "bruises%3F",
-                  "cap-color",
-                  "cap-shape",
-                  "cap-surface",
-                  "class",
-                  "features",
-                  "gill-attachment",
-                  "gill-color",
-                  "gill-size",
-                  "gill-spacing",
-                  "habitat",
-                  "index",
-                  "odor",
-                  "population",
-                  "ring-number",
-                  "ring-type",
-                  "spore-print-color",
-                  "stalk-color-above-ring",
-                  "stalk-color-below-ring",
-                  "stalk-root",
-                  "stalk-shape",
-                  "stalk-surface-above-ring",
-                  "stalk-surface-below-ring",
-                  "veil-color",
-                  "veil-type"
-                ],
-                "key": "mushroom_one_hot_train",
-                "length": 6499.0
-              }
-            },
-            "other": {
-              "knn": {
-                "key": "knn"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "params": {
-          "feature_column": "features",
-          "model_name": "knn",
-          "prediction_column": "prediction",
-          "table_name": "mushroom_one_hot_test"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Make prediction"
-      },
-      "height": 315.0,
-      "id": "Make prediction 1",
-      "parentId": null,
-      "position": {
-        "x": 5465.978517758249,
-        "y": 462.19950287443135
-      },
-      "type": "basic",
-      "width": 315.0
     },
     {
       "data": {
@@ -2229,12 +698,2355 @@
       },
       "parentId": null,
       "position": {
-        "x": 5461.780908766267,
-        "y": 916.9418544083435
+        "x": 5547.276865260173,
+        "y": 639.9349553680898
       },
       "selected": false,
       "type": "basic",
       "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Fetch openml dataset",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "credit-g": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "credit-g",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "dataset_name": "credit-g",
+          "version": 1.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fetch openml dataset"
+      },
+      "height": 315.0,
+      "id": "Fetch openml dataset 3",
+      "parentId": null,
+      "position": {
+        "x": 1916.6894697916964,
+        "y": 1110.8746928836333
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > One-hot encoding",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": [
+            "checking_status",
+            "credit_history",
+            "purpose",
+            "savings_status",
+            "employment",
+            "personal_status",
+            "other_parties",
+            "property_magnitude",
+            "other_payment_plans",
+            "housing",
+            "job",
+            "own_telephone",
+            "foreign_worker"
+          ],
+          "table_name": "creditg"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "One-hot encoding"
+      },
+      "height": 406.0,
+      "id": "One-hot encoding 2",
+      "parentId": null,
+      "position": {
+        "x": 2670.5573579581906,
+        "y": 1075.071040788962
+      },
+      "type": "basic",
+      "width": 352.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "credit-g": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "credit-g",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Rename table",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "new_name": "creditg",
+          "old_name": "credit-g"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Rename table"
+      },
+      "height": 315.0,
+      "id": "Rename table 1",
+      "parentId": null,
+      "position": {
+        "x": 2282.404648416741,
+        "y": 1115.0019010613535
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "attributes": [
+            "age",
+            "checking_status",
+            "credit_amount",
+            "credit_history",
+            "duration",
+            "employment",
+            "existing_credits",
+            "foreign_worker",
+            "housing",
+            "installment_commitment",
+            "job",
+            "num_dependents",
+            "other_parties",
+            "other_payment_plans",
+            "own_telephone",
+            "personal_status",
+            "property_magnitude",
+            "purpose",
+            "residence_since",
+            "savings_status"
+          ],
+          "table_name": "creditg_one_hot",
+          "vector_name": "features"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 337.0,
+      "id": "Vector from attributes 3",
+      "parentId": null,
+      "position": {
+        "x": 3264.0511100826075,
+        "y": 1108.255864409576
+      },
+      "type": "basic",
+      "width": 463.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "seed": "42",
+          "table_name": "creditg_one_hot",
+          "test_ratio": "0.2"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "Train/test split 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4303.079400616586,
+        "y": 1122.6102337417105
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "algorithm": "auto",
+          "feature_column": "features",
+          "label_column": "class",
+          "leaf_size": 30.0,
+          "metric": "minkowski",
+          "model_name": "knn",
+          "n_neighbors": "5",
+          "p": 2.0,
+          "table_name": "creditg_one_hot_test",
+          "weights": "uniform"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train K-nearest neighbors classifier"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 351.0,
+      "id": "Train K-nearest neighbors classifier 3",
+      "measured": {
+        "height": 351.0,
+        "width": 516.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4771.497024293691,
+        "y": 1103.9941801936388
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 516.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "prediction",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "knn",
+          "prediction_column": "prediction",
+          "table_name": "creditg_one_hot_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 315.0,
+      "id": "Make prediction 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5542.191911172207,
+        "y": 1122.3247331875962
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 13,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "prediction",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "creditg_one_hot_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 707.0,
+      "id": "Confusion matrix 3",
+      "measured": {
+        "height": 707.0,
+        "width": 735.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 6076.859778950358,
+        "y": 928.664632594458
+      },
+      "selected": false,
+      "type": "visualization",
+      "width": 735.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Flatten column",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "column_name": "features",
+          "table_name": "creditg_one_hot"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Flatten column"
+      },
+      "height": 315.0,
+      "id": "Flatten column 2",
+      "parentId": null,
+      "position": {
+        "x": 3841.392798499792,
+        "y": 1120.5994631339422
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "algorithm": "auto",
+          "feature_column": "features",
+          "label_column": "class",
+          "leaf_size": 30.0,
+          "metric": "minkowski",
+          "model_name": "knn",
+          "n_neighbors": "5",
+          "p": 2.0,
+          "table_name": "creditg_one_hot_test",
+          "weights": "distance"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train K-nearest neighbors classifier"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 351.0,
+      "id": "Train K-nearest neighbors classifier 1",
+      "measured": {
+        "height": 351.0,
+        "width": 516.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4775.793880203066,
+        "y": 1484.6978346567162
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 516.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "prediction",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "knn",
+          "prediction_column": "prediction",
+          "table_name": "creditg_one_hot_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 315.0,
+      "id": "Make prediction 1",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5541.359009691948,
+        "y": 1496.188711131161
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 13,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "prediction",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "creditg_one_hot_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 707.0,
+      "id": "Confusion matrix 2",
+      "measured": {
+        "height": 707.0,
+        "width": 735.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 6071.2364039203585,
+        "y": 1794.7799145479064
+      },
+      "selected": false,
+      "type": "visualization",
+      "width": 735.0
     }
   ],
   "paused": true
