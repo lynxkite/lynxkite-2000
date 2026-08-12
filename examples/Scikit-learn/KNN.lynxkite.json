@@ -63,29 +63,29 @@
       "targetHandle": "b"
     },
     {
-      "id": "Train K-nearest neighbors classifier 2 output Make prediction with scikit-learn model 2 b",
-      "source": "Train K-nearest neighbors classifier 2",
-      "sourceHandle": "output",
-      "target": "Make prediction with scikit-learn model 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Train K-nearest neighbors classifier 1 output Make prediction with scikit-learn model 1 b",
+      "id": "Train K-nearest neighbors classifier 1 output Make prediction 1 b",
       "source": "Train K-nearest neighbors classifier 1",
       "sourceHandle": "output",
-      "target": "Make prediction with scikit-learn model 1",
+      "target": "Make prediction 1",
       "targetHandle": "b"
     },
     {
-      "id": "Make prediction with scikit-learn model 1 output Confusion matrix 2 b",
-      "source": "Make prediction with scikit-learn model 1",
+      "id": "Make prediction 1 output Confusion matrix 2 b",
+      "source": "Make prediction 1",
       "sourceHandle": "output",
       "target": "Confusion matrix 2",
       "targetHandle": "b"
     },
     {
-      "id": "Make prediction with scikit-learn model 2 output Confusion matrix 1 b",
-      "source": "Make prediction with scikit-learn model 2",
+      "id": "Train K-nearest neighbors classifier 2 output Make prediction 2 b",
+      "source": "Train K-nearest neighbors classifier 2",
+      "sourceHandle": "output",
+      "target": "Make prediction 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 2 output Confusion matrix 1 b",
+      "source": "Make prediction 2",
       "sourceHandle": "output",
       "target": "Confusion matrix 1",
       "targetHandle": "b"
@@ -517,7 +517,7 @@
         "input_metadata": [],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Fetch openml dataset",
+        "op_id": "Scikit > Fetch openml dataset",
         "output_metadata": [
           {
             "dataframes": {
@@ -620,7 +620,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > One-hot encoding",
+        "op_id": "Scikit > One-hot encoding",
         "output_metadata": [
           {
             "dataframes": {
@@ -805,7 +805,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Flatten column",
+        "op_id": "Scikit > Flatten column",
         "output_metadata": [
           {
             "dataframes": {
@@ -902,7 +902,7 @@
         "input_metadata": [],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Fetch openml dataset",
+        "op_id": "Scikit > Fetch openml dataset",
         "output_metadata": [
           {
             "dataframes": {
@@ -1121,7 +1121,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1260,7 +1260,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Confusion matrix",
+        "op_id": "Scikit > Confusion matrix",
         "output_metadata": [
           {}
         ],
@@ -1422,7 +1422,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Train K-nearest neighbors classifier",
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
         "output_metadata": [
           {
             "dataframes": {
@@ -1638,7 +1638,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Train K-nearest neighbors classifier",
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
         "output_metadata": [
           {
             "dataframes": {
@@ -1720,7 +1720,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 10,
+        "display_version": 0,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1776,7 +1776,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Confusion matrix",
+        "op_id": "Scikit > Confusion matrix",
         "output_metadata": [
           {}
         ],
@@ -1802,11 +1802,11 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 315.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -1942,7 +1942,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Make prediction with scikit-learn model",
+        "op_id": "Scikit > Make prediction",
         "output_metadata": [
           {
             "dataframes": {
@@ -2085,14 +2085,14 @@
         },
         "status": "done",
         "telemetry": null,
-        "title": "Make prediction with scikit-learn model"
+        "title": "Make prediction"
       },
       "height": 315.0,
-      "id": "Make prediction with scikit-learn model 1",
+      "id": "Make prediction 1",
       "parentId": null,
       "position": {
-        "x": 5423.767301005272,
-        "y": 480.4270310219362
+        "x": 5465.978517758249,
+        "y": 462.19950287443135
       },
       "type": "basic",
       "width": 315.0
@@ -2100,11 +2100,11 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 315.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -2157,7 +2157,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "KNN > Make prediction with scikit-learn model",
+        "op_id": "Scikit > Make prediction",
         "output_metadata": [
           {
             "dataframes": {
@@ -2217,15 +2217,22 @@
         },
         "status": "done",
         "telemetry": null,
-        "title": "Make prediction with scikit-learn model"
+        "title": "Make prediction"
       },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
       "height": 315.0,
-      "id": "Make prediction with scikit-learn model 2",
+      "id": "Make prediction 2",
+      "measured": {
+        "height": 71.0,
+        "width": 315.0
+      },
       "parentId": null,
       "position": {
-        "x": 5448.203283636842,
-        "y": 950.7593446062832
+        "x": 5461.780908766267,
+        "y": 916.9418544083435
       },
+      "selected": false,
       "type": "basic",
       "width": 315.0
     }

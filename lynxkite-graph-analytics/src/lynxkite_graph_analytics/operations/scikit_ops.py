@@ -1,4 +1,4 @@
-"""Custom operations for the KNN demo workspace."""
+"""Operations related to the scikit-learn library."""
 
 import enum
 from collections.abc import Iterable
@@ -8,12 +8,11 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
-
+from .. import core
 from lynxkite_core.ops import op_registration
-from lynxkite_graph_analytics import core
 from sklearn.datasets import fetch_openml
 
-op = op_registration(core.ENV, "KNN")
+op = op_registration(core.ENV, "Scikit")
 
 
 @op("Fetch openml dataset", color="blue", icon="database-import")
@@ -155,8 +154,8 @@ def train_knn(
     return b
 
 
-@op("Make prediction with scikit-learn model", icon="circles")
-def predict_knn(
+@op("Make prediction", icon="circles")
+def scikit_predict(
     b: core.Bundle,
     *,
     table_name: core.TableName,
