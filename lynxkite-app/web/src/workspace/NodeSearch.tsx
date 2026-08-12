@@ -12,8 +12,19 @@ type SearchResult = {
   item: OpsOp | Category;
   parentPath: string[];
   score: number;
+  description?: string;
+  matchedInName?: boolean;
+  matchedInDescription?: boolean;
   isCategory?: boolean;
   isBack?: boolean;
+};
+
+type SearchableItem = {
+  name: string;
+  item: OpsOp | Category;
+  parentPath: string[];
+  isCategory: boolean;
+  description: string;
 };
 
 export type Category = {
@@ -66,6 +77,128 @@ function categoryByPath(rootCategory: Category, categoryPath: string[]): Categor
   return currentLevel;
 }
 
+function docToSearchText(doc: OpsOp["doc"]): string {
+  if (!doc) {
+    return "";
+  }
+  return (
+    doc.map?.((section: any) => (section.kind === "text" ? section.value : "")).join("\n") ??
+    String(doc)
+  );
+}
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function queryTerms(searchTerm: string): string[] {
+  return searchTerm
+    .trim()
+    .split(/\s+/)
+    .map((term) => term.trim())
+    .filter(Boolean);
+}
+
+function hasWordStartMatch(text: string, term: string): boolean {
+  if (!text || !term) {
+    return false;
+  }
+  const matcher = new RegExp(`\\b${escapeRegExp(term)}`, "i");
+  return matcher.test(text);
+}
+
+function matchesQuery(text: string, searchTerm: string): boolean {
+  const terms = queryTerms(searchTerm);
+  if (!terms.length) {
+    return false;
+  }
+  return terms.every((term) => hasWordStartMatch(text, term));
+}
+
+function descriptionPreview(text: string, searchTerm: string): string {
+  if (!text) {
+    return "";
+  }
+  const terms = queryTerms(searchTerm);
+  if (!terms.length) {
+    return text;
+  }
+
+  let firstMatchIndex = -1;
+  for (const term of terms) {
+    const matcher = new RegExp(`\\b${escapeRegExp(term)}`, "i");
+    const match = matcher.exec(text);
+    if (match?.index !== undefined) {
+      if (firstMatchIndex === -1 || match.index < firstMatchIndex) {
+        firstMatchIndex = match.index;
+      }
+    }
+  }
+
+  if (firstMatchIndex === -1) {
+    return text;
+  }
+
+  const windowSize = 160;
+  const contextBefore = 45;
+  const start = Math.max(0, firstMatchIndex - contextBefore);
+  const end = Math.min(text.length, start + windowSize);
+  const prefix = start > 0 ? "..." : "";
+  const suffix = end < text.length ? "..." : "";
+  return `${prefix}${text.slice(start, end).trim()}${suffix}`;
+}
+
+function highlightMatches(text: string, searchTerm: string): React.ReactNode {
+  if (!searchTerm || !text) {
+    return text;
+  }
+  const trimmedTerm = searchTerm.trim();
+  const escapedTerm = escapeRegExp(trimmedTerm);
+  if (!escapedTerm) {
+    return text;
+  }
+  const matcher = new RegExp(`\\b${escapedTerm}`, "ig");
+  const nodes: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+  for (const match of text.matchAll(matcher)) {
+    const start = match.index ?? 0;
+    const matchedText = match[0] ?? "";
+    if (start > lastIndex) {
+      nodes.push(<span key={`text-${matchIndex}`}>{text.slice(lastIndex, start)}</span>);
+    }
+    nodes.push(
+      <mark key={`mark-${matchIndex}`} className="search-result-highlight">
+        {matchedText}
+      </mark>,
+    );
+    lastIndex = start + matchedText.length;
+    matchIndex += 1;
+  }
+  if (lastIndex < text.length) {
+    nodes.push(<span key={`tail-${matchIndex}`}>{text.slice(lastIndex)}</span>);
+  }
+  return nodes.length ? nodes : text;
+}
+
+function rankSearchResult(result: SearchResult, query: string): number {
+  const lowerName = result.name.toLowerCase();
+  const lowerQuery = query.toLowerCase();
+  if (lowerName === lowerQuery) {
+    return 0;
+  }
+  if (lowerName.startsWith(lowerQuery)) {
+    return 1;
+  }
+  if (result.matchedInName) {
+    return 2;
+  }
+  if (result.matchedInDescription) {
+    return 3;
+  }
+  return 4;
+}
+
 function filteredList(currentLevel: Category | undefined, searchTerm: string): SearchResult[] {
   if (!currentLevel) {
     return [];
@@ -91,27 +224,122 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
     if (!level) {
       return [];
     }
-    const fuse = new Fuse([...level.ops, ...level.categories], {
-      keys: ["name"],
+    const searchableItems: SearchableItem[] = [
+      ...level.ops.map(
+        (op): SearchableItem => ({
+          name: op.name,
+          item: op,
+          parentPath: [...path],
+          isCategory: false,
+          description: docToSearchText(op.doc),
+        }),
+      ),
+      ...level.categories.map(
+        (category): SearchableItem => ({
+          name: category.name,
+          item: category,
+          parentPath: [...path],
+          isCategory: true,
+          description: "",
+        }),
+      ),
+    ];
+    const fuse = new Fuse(searchableItems, {
+      keys: [
+        { name: "name", weight: 0.8 },
+        { name: "description", weight: 0.2 },
+      ],
       threshold: 0.4, // Balanced fuzziness for typos like "Dijkstra" → "Dikstra"
       includeScore: true,
+      includeMatches: true,
     });
+
+    const strictMatches = searchableItems
+      .filter((item) => {
+        if (item.isCategory) {
+          return matchesQuery(item.name, searchTerm);
+        }
+        return matchesQuery(item.name, searchTerm) || matchesQuery(item.description, searchTerm);
+      })
+      .map(
+        (item): SearchResult => ({
+          name: item.name,
+          item: item.item,
+          isCategory: item.isCategory,
+          parentPath: item.parentPath,
+          score: 0,
+          description: item.description,
+          matchedInName: matchesQuery(item.name, searchTerm),
+          matchedInDescription: !item.isCategory && matchesQuery(item.description, searchTerm),
+        }),
+      );
+
     const fuzzyResults = fuse.search(searchTerm);
-    const opsFromThisLevel = fuzzyResults.map((result) => ({
-      name: result.item.name,
-      item: result.item,
-      isCategory: "ops" in result.item,
-      parentPath: [...path],
-      score: result.score ?? 0,
-    }));
+    const fuzzyMatches = fuzzyResults
+      .map((result): SearchResult => {
+        const matchedInName =
+          result.matches?.some((match) =>
+            Array.isArray(match.key) ? match.key.includes("name") : match.key === "name",
+          ) ?? false;
+        const matchedInDescription =
+          result.matches?.some((match) =>
+            Array.isArray(match.key)
+              ? match.key.includes("description")
+              : match.key === "description",
+          ) ?? false;
+
+        return {
+          name: result.item.name,
+          item: result.item.item,
+          isCategory: result.item.isCategory,
+          parentPath: result.item.parentPath,
+          score: result.score ?? 0,
+          description: result.item.description,
+          matchedInName,
+          matchedInDescription,
+        };
+      })
+      .filter((result) => {
+        if (result.isCategory) {
+          return matchesQuery(result.name, searchTerm);
+        }
+        return (
+          matchesQuery(result.name, searchTerm) ||
+          matchesQuery(result.description ?? "", searchTerm)
+        );
+      });
+
+    const mergedByKey = new Map<string, SearchResult>();
+    for (const result of [...strictMatches, ...fuzzyMatches]) {
+      const key = `${result.parentPath.join("/")}::${result.name}::${result.isCategory ? "cat" : "op"}`;
+      const previous = mergedByKey.get(key);
+      if (!previous) {
+        mergedByKey.set(key, result);
+        continue;
+      }
+      mergedByKey.set(key, {
+        ...previous,
+        score: Math.min(previous.score, result.score),
+        matchedInName: previous.matchedInName || result.matchedInName,
+        matchedInDescription: previous.matchedInDescription || result.matchedInDescription,
+      });
+    }
+    const opsFromThisLevel = [...mergedByKey.values()];
     const opsFromCategories = level.categories.flatMap((cat) =>
       searchAllOperations(cat, [...path, cat.name]),
     );
     return [...opsFromThisLevel, ...opsFromCategories];
   }
 
+  const query = searchTerm.trim();
   const results = searchAllOperations(currentLevel);
-  results.sort((a, b) => a.score - b.score);
+  results.sort((a, b) => {
+    const rankDiff = rankSearchResult(a, query) - rankSearchResult(b, query);
+    if (rankDiff !== 0) {
+      return rankDiff;
+    }
+    return a.score - b.score;
+  });
   return results;
 }
 
@@ -312,6 +540,11 @@ export function NodeSearchInternal(props: {
             )}
             {result.parentPath.length ? (
               <span className="search-result-path">({result.parentPath.join(" › ")})</span>
+            ) : null}
+            {!!searchTerm && !result.isCategory && !result.isBack && result.description ? (
+              <span className="search-result-description">
+                {highlightMatches(descriptionPreview(result.description, searchTerm), searchTerm)}
+              </span>
             ) : null}
           </button>
         ))}
