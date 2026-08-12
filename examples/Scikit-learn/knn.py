@@ -16,7 +16,7 @@ from sklearn.datasets import fetch_openml
 op = op_registration(core.ENV, "KNN")
 
 
-@op("Fetch openml dataset")
+@op("Fetch openml dataset", color="blue", icon="database-import")
 def fetch_dataset(*, dataset_name: str, version: int = 1) -> core.Bundle:
     """
     Fetches the specified dataset from OpenML.
@@ -29,7 +29,7 @@ def fetch_dataset(*, dataset_name: str, version: int = 1) -> core.Bundle:
     return b
 
 
-@op("One-hot encoding")
+@op("One-hot encoding", icon="binary")
 def one_hot(
     b: core.Bundle, *, table_name: core.TableName, columns: core.MultiColumnNameByTableName
 ) -> core.Bundle:
@@ -60,7 +60,7 @@ def _recursive_flatten(item):
     return flat
 
 
-@op("Flatten column")
+@op("Flatten column", icon="ironing")
 def flatten_column(
     b: core.Bundle,
     *,
@@ -183,7 +183,7 @@ def predict_knn(
     return b
 
 
-@op("Confusion matrix", view="visualization", color="blue")
+@op("Confusion matrix", view="visualization", color="blue", icon="dots-diagonal-2")
 def conf_matrix(
     b: core.Bundle,
     *,

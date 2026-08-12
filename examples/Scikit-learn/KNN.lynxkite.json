@@ -263,7 +263,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -294,7 +294,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {},
@@ -304,7 +304,7 @@
         "params": {
           "seed": "151",
           "table_name": "mushroom_one_hot",
-          "test_ratio": "0.5"
+          "test_ratio": "0.2"
         },
         "status": "done",
         "telemetry": null,
@@ -1077,7 +1077,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -1090,7 +1090,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {},
@@ -1098,9 +1098,9 @@
           }
         ],
         "params": {
-          "seed": "420",
+          "seed": "149",
           "table_name": "iris",
-          "test_ratio": "0.9"
+          "test_ratio": "0.2"
         },
         "status": "done",
         "telemetry": null,
@@ -1121,7 +1121,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1216,7 +1216,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -1247,7 +1247,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {
@@ -1382,7 +1382,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -1413,7 +1413,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {},
@@ -1514,7 +1514,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -1545,7 +1545,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {
@@ -1563,8 +1563,7 @@
           "leaf_size": 30.0,
           "metric": "minkowski",
           "model_name": "knn",
-          "n_jobs": null,
-          "n_neighbors": 5.0,
+          "n_neighbors": "5",
           "p": 2.0,
           "table_name": "mushroom_one_hot_train",
           "weights": "uniform"
@@ -1617,7 +1616,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -1630,7 +1629,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {},
@@ -1666,7 +1665,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -1679,7 +1678,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {
@@ -1697,8 +1696,7 @@
           "leaf_size": 30.0,
           "metric": "minkowski",
           "model_name": "knn",
-          "n_jobs": null,
-          "n_neighbors": 5.0,
+          "n_neighbors": "5",
           "p": 2.0,
           "table_name": "iris_train",
           "weights": "uniform"
@@ -1722,7 +1720,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1752,7 +1750,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -1765,7 +1763,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {
@@ -1900,7 +1898,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -1931,7 +1929,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {
@@ -2037,7 +2035,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_test",
-                "length": 4062.0
+                "length": 1625.0
               },
               "mushroom_one_hot_train": {
                 "columns": [
@@ -2068,7 +2066,7 @@
                   "veil-type"
                 ],
                 "key": "mushroom_one_hot_train",
-                "length": 4062.0
+                "length": 6499.0
               }
             },
             "other": {
@@ -2133,7 +2131,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -2146,7 +2144,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {
@@ -2187,7 +2185,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_test",
-                "length": 135.0
+                "length": 30.0
               },
               "iris_train": {
                 "columns": [
@@ -2200,7 +2198,7 @@
                   "sepalwidth"
                 ],
                 "key": "iris_train",
-                "length": 15.0
+                "length": 120.0
               }
             },
             "other": {
