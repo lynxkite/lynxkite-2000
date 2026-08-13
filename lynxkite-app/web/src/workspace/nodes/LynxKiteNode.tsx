@@ -10,6 +10,7 @@ import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.t
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
 import Tooltip from "../../Tooltip";
+import { docToString } from "../docToString.ts";
 import { LynxKiteState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
 import { NodeProgress } from "./ProgressBar.tsx";
@@ -36,14 +37,6 @@ function paramSummary(data: WorkspaceNodeData): string {
     lines.push(`${key}: ${displayValue}`);
   }
   return lines.join(", ");
-}
-
-function docToString(doc: any): string {
-  if (!doc) return "";
-  return (
-    doc.map?.((section: any) => (section.kind === "text" ? section.value : "")).join("\n") ??
-    String(doc)
-  );
 }
 
 function formatOutputMetadata(metadata: any): string | undefined {
