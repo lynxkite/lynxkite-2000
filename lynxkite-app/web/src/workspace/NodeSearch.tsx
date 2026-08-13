@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
 import FolderIcon from "~icons/tabler/folder.jsx";
 import type { Op as OpsOp } from "../apiTypes.ts";
+import { docToString } from "./docToString.ts";
 
 export type Catalog = { [op: string]: OpsOp };
 export type Catalogs = { [env: string]: Catalog };
@@ -77,16 +78,6 @@ function categoryByPath(rootCategory: Category, categoryPath: string[]): Categor
   return currentLevel;
 }
 
-function docToSearchText(doc: OpsOp["doc"]): string {
-  if (!doc) {
-    return "";
-  }
-  return (
-    doc.map?.((section: any) => (section.kind === "text" ? section.value : "")).join("\n") ??
-    String(doc)
-  );
-}
-
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -97,22 +88,6 @@ function queryTerms(searchTerm: string): string[] {
     .split(/\s+/)
     .map((term) => term.trim())
     .filter(Boolean);
-}
-
-function hasWordStartMatch(text: string, term: string): boolean {
-  if (!text || !term) {
-    return false;
-  }
-  const matcher = new RegExp(`\\b${escapeRegExp(term)}`, "i");
-  return matcher.test(text);
-}
-
-function matchesQuery(text: string, searchTerm: string): boolean {
-  const terms = queryTerms(searchTerm);
-  if (!terms.length) {
-    return false;
-  }
-  return terms.every((term) => hasWordStartMatch(text, term));
 }
 
 function descriptionPreview(text: string, searchTerm: string): string {
@@ -152,12 +127,16 @@ function highlightMatches(text: string, searchTerm: string): React.ReactNode {
   if (!searchTerm || !text) {
     return text;
   }
-  const trimmedTerm = searchTerm.trim();
-  const escapedTerm = escapeRegExp(trimmedTerm);
-  if (!escapedTerm) {
+  const terms = queryTerms(searchTerm);
+  if (!terms.length) {
     return text;
   }
-  const matcher = new RegExp(`\\b${escapedTerm}`, "ig");
+  const uniqueTerms = [...new Set(terms.map((term) => term.toLowerCase()))];
+  const escapedAlternatives = uniqueTerms
+    .sort((a, b) => b.length - a.length)
+    .map((term) => escapeRegExp(term))
+    .join("|");
+  const matcher = new RegExp(`\\b(?:${escapedAlternatives})`, "ig");
   const nodes: React.ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;
@@ -231,7 +210,7 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
           item: op,
           parentPath: [...path],
           isCategory: false,
-          description: docToSearchText(op.doc),
+          description: docToString(op.doc),
         }),
       ),
       ...level.categories.map(
@@ -254,77 +233,30 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
       includeMatches: true,
     });
 
-    const strictMatches = searchableItems
-      .filter((item) => {
-        if (item.isCategory) {
-          return matchesQuery(item.name, searchTerm);
-        }
-        return matchesQuery(item.name, searchTerm) || matchesQuery(item.description, searchTerm);
-      })
-      .map(
-        (item): SearchResult => ({
-          name: item.name,
-          item: item.item,
-          isCategory: item.isCategory,
-          parentPath: item.parentPath,
-          score: 0,
-          description: item.description,
-          matchedInName: matchesQuery(item.name, searchTerm),
-          matchedInDescription: !item.isCategory && matchesQuery(item.description, searchTerm),
-        }),
-      );
-
     const fuzzyResults = fuse.search(searchTerm);
-    const fuzzyMatches = fuzzyResults
-      .map((result): SearchResult => {
-        const matchedInName =
-          result.matches?.some((match) =>
-            Array.isArray(match.key) ? match.key.includes("name") : match.key === "name",
-          ) ?? false;
-        const matchedInDescription =
-          result.matches?.some((match) =>
-            Array.isArray(match.key)
-              ? match.key.includes("description")
-              : match.key === "description",
-          ) ?? false;
+    const opsFromThisLevel = fuzzyResults.map((result): SearchResult => {
+      const matchedInName =
+        result.matches?.some((match) =>
+          Array.isArray(match.key) ? match.key.includes("name") : match.key === "name",
+        ) ?? false;
+      const matchedInDescription =
+        result.matches?.some((match) =>
+          Array.isArray(match.key)
+            ? match.key.includes("description")
+            : match.key === "description",
+        ) ?? false;
 
-        return {
-          name: result.item.name,
-          item: result.item.item,
-          isCategory: result.item.isCategory,
-          parentPath: result.item.parentPath,
-          score: result.score ?? 0,
-          description: result.item.description,
-          matchedInName,
-          matchedInDescription,
-        };
-      })
-      .filter((result) => {
-        if (result.isCategory) {
-          return matchesQuery(result.name, searchTerm);
-        }
-        return (
-          matchesQuery(result.name, searchTerm) ||
-          matchesQuery(result.description ?? "", searchTerm)
-        );
-      });
-
-    const mergedByKey = new Map<string, SearchResult>();
-    for (const result of [...strictMatches, ...fuzzyMatches]) {
-      const key = `${result.parentPath.join("/")}::${result.name}::${result.isCategory ? "cat" : "op"}`;
-      const previous = mergedByKey.get(key);
-      if (!previous) {
-        mergedByKey.set(key, result);
-        continue;
-      }
-      mergedByKey.set(key, {
-        ...previous,
-        score: Math.min(previous.score, result.score),
-        matchedInName: previous.matchedInName || result.matchedInName,
-        matchedInDescription: previous.matchedInDescription || result.matchedInDescription,
-      });
-    }
-    const opsFromThisLevel = [...mergedByKey.values()];
+      return {
+        name: result.item.name,
+        item: result.item.item,
+        isCategory: result.item.isCategory,
+        parentPath: result.item.parentPath,
+        score: result.score ?? 0,
+        description: result.item.description,
+        matchedInName,
+        matchedInDescription,
+      };
+    });
     const opsFromCategories = level.categories.flatMap((cat) =>
       searchAllOperations(cat, [...path, cat.name]),
     );
