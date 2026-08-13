@@ -21,6 +21,13 @@ class FileFormat(enum.StrEnum):
     pdb = "pdb"
 
 
+class ExportFileFormat(enum.StrEnum):
+    csv = "csv"
+    parquet = "parquet"
+    json = "json"
+    excel = "excel"
+
+
 @op(
     "Import file",
     color="green",
@@ -86,9 +93,9 @@ def import_file(
 def export_to_file(
     bundle: core.Bundle,
     *,
-    table_name: str,
+    table_name: core.TableName,
     filename: ops.PathStr,
-    file_format: FileFormat = FileFormat.csv,
+    file_format: ExportFileFormat = ExportFileFormat.csv,
 ):
     """Exports a DataFrame to a file.
 
@@ -100,13 +107,13 @@ def export_to_file(
     """
 
     df = bundle.dfs[table_name]
-    if file_format == FileFormat.csv:
+    if file_format == ExportFileFormat.csv:
         df.to_csv(filename, index=False)
-    elif file_format == FileFormat.json:
+    elif file_format == ExportFileFormat.json:
         df.to_json(filename, orient="records", lines=True)
-    elif file_format == FileFormat.parquet:
+    elif file_format == ExportFileFormat.parquet:
         df.to_parquet(filename, index=False)
-    elif file_format == FileFormat.excel:
+    elif file_format == ExportFileFormat.excel:
         df.to_excel(filename, index=False)
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
