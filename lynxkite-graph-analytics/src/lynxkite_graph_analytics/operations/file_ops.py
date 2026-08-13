@@ -18,6 +18,7 @@ class FileFormat(enum.StrEnum):
     json = "json"
     excel = "excel"
     cif = "cif"
+    pdb = "pdb"
 
 
 @op(
@@ -37,6 +38,7 @@ class FileFormat(enum.StrEnum):
                 "json": [],
                 "excel": [ops.Parameter.basic("sheet_name", type=str, default="Sheet1")],
                 "cif": [],
+                "pdb": [],
             },
             default=FileFormat.csv,
         ),
@@ -72,6 +74,9 @@ def import_file(
     elif file_format == "cif":
         with open(file_path, "r") as f:
             df = pd.DataFrame({"cif": [f.read()]})
+    elif file_format == "pdb":
+        with open(file_path, "r") as f:
+            df = pd.DataFrame({"pdb": [f.read()]})
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
     return core.Bundle(dfs={table_name: df})
