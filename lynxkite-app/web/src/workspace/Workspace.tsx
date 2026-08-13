@@ -428,6 +428,8 @@ function LynxKiteFlow() {
         node.data!.params.file_format = "excel";
       } else if (file.name.includes(".cif")) {
         node.data!.params.file_format = "cif";
+      } else if (file.name.includes(".pdb")) {
+        node.data!.params.file_format = "pdb";
       }
       addNode(node);
     } catch (error) {
