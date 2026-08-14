@@ -43,30 +43,56 @@ export function NodeProgress({
     rate: typeof rate === "number" && Number.isFinite(rate) ? rate : 0,
     atMs: Date.now(),
   });
+  const startedAtRef = useRef<{ elapsed: number; atMs: number } | null>(
+    status === "active"
+      ? {
+          elapsed: Number(elapsed) || 0,
+          atMs: Date.now(),
+        }
+      : null,
+  );
 
   useEffect(() => {
+    const previous = anchorRef.current;
+    const nextN = Number(n) || 0;
+    const nextTotal = Number(total) || 0;
+    const nextElapsed = Number(elapsed) || 0;
+    const nowMs = Date.now();
     anchorRef.current = {
-      n: Number(n) || 0,
-      total: Number(total) || 0,
+      n: nextN,
+      total: nextTotal,
       rate: typeof rate === "number" && Number.isFinite(rate) ? rate : 0,
-      atMs: Date.now(),
+      atMs: nowMs,
     };
-  }, [n, total, rate, elapsed]);
+
+    const shouldResetStartedAt =
+      status !== "active" ||
+      startedAtRef.current === null ||
+      nextElapsed < startedAtRef.current.elapsed ||
+      nextN < previous.n ||
+      nextTotal < previous.total;
+
+    if (status !== "active") {
+      startedAtRef.current = null;
+    } else if (shouldResetStartedAt) {
+      startedAtRef.current = {
+        elapsed: nextElapsed,
+        atMs: nowMs,
+      };
+    }
+  }, [n, total, rate, elapsed, status]);
 
   useEffect(() => {
     const shouldTick =
       status === "active" &&
-      hasTotal &&
-      typeof rate === "number" &&
-      Number.isFinite(rate) &&
-      rate > 0 &&
-      n < total;
+      (isIndeterminate ||
+        (hasTotal && typeof rate === "number" && Number.isFinite(rate) && rate > 0 && n < total));
     if (!shouldTick) {
       return;
     }
     const interval = setInterval(() => setTick((x) => x + 1), 1000);
     return () => clearInterval(interval);
-  }, [status, hasTotal, rate, n, total]);
+  }, [status, hasTotal, isIndeterminate, rate, n, total]);
 
   let displayN = Number(n) || 0;
   if (
@@ -79,11 +105,20 @@ export function NodeProgress({
     const elapsedSinceAnchorSec = Math.max(0, (Date.now() - anchorRef.current.atMs) / 1000);
     const projectedN = anchorRef.current.n + elapsedSinceAnchorSec * anchorRef.current.rate;
     displayN = Math.max(displayN, projectedN);
+    const nextStepN = Math.min(total, Math.floor(Number(n) || 0) + 1);
+    displayN = Math.min(displayN, nextStepN);
     if (displayN >= total && n < total) {
       // Keep active boxes visually just-below-complete until backend confirms completion.
-      displayN = Math.max(displayN, total - 0.001);
+      displayN = Math.min(displayN, total - 0.001);
     }
     displayN = Math.min(displayN, total);
+  }
+
+  let displayElapsed = Number(elapsed) || 0;
+  if (status === "active" && startedAtRef.current) {
+    const rollingElapsed =
+      startedAtRef.current.elapsed + Math.max(0, (Date.now() - startedAtRef.current.atMs) / 1000);
+    displayElapsed = Math.max(displayElapsed, rollingElapsed);
   }
 
   const percentage = hasTotal ? Math.min(100, Math.max(0, (displayN / total) * 100)) : 100;
@@ -168,7 +203,7 @@ export function NodeProgress({
           <span>
             {eta !== null && eta > 0
               ? `ETA: ${formatTime(eta)}`
-              : `Elapsed: ${formatTime(elapsed)}`}
+              : `Elapsed: ${formatTime(displayElapsed)}`}
           </span>
         </span>
       </div>
