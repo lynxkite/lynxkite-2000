@@ -188,12 +188,22 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
           className="select select-bordered appearance-none double-dropdown-first"
           value={(() => {
             const firstOption = getDropDownValues(data, meta?.type?.metadata_query1)[0] ?? "";
-            if (!value?.[0] && firstOption) {
+            if (value?.[0] == null && firstOption) {
               setParam(name, [firstOption, value?.[1]], {});
             }
             return value?.[0] ?? firstOption;
           })()}
-          onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
+          onChange={(evt) => {
+            const nextTable = evt.currentTarget.value;
+            const colOptions = getDropDownValues(data, meta?.type?.metadata_query2, {
+              first: nextTable,
+            });
+            const nextColumn =
+              value?.[1] != null && colOptions.includes(value[1])
+                ? value[1]
+                : (colOptions[0] ?? "");
+            onChange([nextTable, nextColumn]);
+          }}
         >
           {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
             <option key={option} value={option}>
@@ -204,12 +214,16 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         <select
           className="select select-bordered appearance-none double-dropdown-second"
           value={(() => {
-            const firstOption =
-              getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] })[0] ?? "";
-            if (!value?.[1] && firstOption) {
-              setParam(name, [value?.[0], firstOption], { delay: 10 });
+            const options = getDropDownValues(data, meta?.type?.metadata_query2, {
+              first: value?.[0],
+            });
+            const firstOption = options[0] ?? "";
+            const column =
+              value?.[1] != null && options.includes(value[1]) ? value[1] : firstOption;
+            if (column !== value?.[1]) {
+              setParam(name, [value?.[0], column], { delay: value?.[1] == null ? 10 : 0 });
             }
-            return value?.[1] ?? firstOption;
+            return column;
           })()}
           onChange={(evt) => onChange([value?.[0], evt.currentTarget.value])}
         >
