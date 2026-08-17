@@ -66,13 +66,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered appearance-none w-full"
-        value={(() => {
-          const firstOption = getDropDownValues(data, meta?.type?.metadata_query)[0] ?? "";
-          if (!value && firstOption) {
-            setParam(name, firstOption, {});
-          }
-          return value ?? firstOption;
-        })()}
+        value={value ?? ""}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {getDropDownValues(data, meta?.type?.metadata_query).map((option: string) => (
@@ -186,16 +180,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <div className="double-dropdown">
         <select
           className="select select-bordered appearance-none double-dropdown-first"
-          value={(() => {
-            const firstTable = getDropDownValues(data, meta?.type?.metadata_query1)[0] ?? "";
-            if (value?.[0] == null && firstTable) {
-              const cols = getDropDownValues(data, meta?.type?.metadata_query2, {
-                first: firstTable,
-              });
-              setParam(name, [firstTable, pickFromOptions(value?.[1], cols)], {});
-            }
-            return value?.[0] ?? firstTable;
-          })()}
+          value={value?.[0] ?? ""}
           onChange={(evt) => {
             const nextTable = evt.currentTarget.value;
             const cols = getDropDownValues(data, meta?.type?.metadata_query2, { first: nextTable });
@@ -210,16 +195,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         </select>
         <select
           className="select select-bordered appearance-none double-dropdown-second"
-          value={(() => {
-            const cols = getDropDownValues(data, meta?.type?.metadata_query2, {
-              first: value?.[0],
-            });
-            const column = pickFromOptions(value?.[1], cols);
-            if (value?.[0] != null && column !== value?.[1]) {
-              setParam(name, [value[0], column], {});
-            }
-            return column;
-          })()}
+          value={value?.[1] ?? ""}
           onChange={(evt) => onChange([value?.[0], evt.currentTarget.value])}
         >
           {getDropDownValues(data, meta?.type?.metadata_query2, { first: value?.[0] }).map(
@@ -239,7 +215,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered appearance-none w-full"
-        value={value || meta.type.enum[0]}
+        value={value ?? meta.type.enum[0]}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {meta.type.enum.map((option: string) => (
