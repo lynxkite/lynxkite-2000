@@ -68,34 +68,40 @@ if os.environ.get("LYNXKITE_WEB_ACCESS_API_KEY"):
     }
 
 
-def internet_search(query: str, **kwargs: object):
+def internet_search(
+    query: str,
+    params: dict | None = None,
+):
     """Run a web search. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
     # sometimes kwargs is passed as a dict under the key "kwargs", sometimes it's passed directly as keyword arguments. Handle both cases.
-    other_params = kwargs.get("kwargs", kwargs)
+    print("Running internet search with query:", query, "and params:", params)
     return requests.post(
         f"{web_access_url}/v1/search",
-        json={"query": query, **other_params},
+        json={"query": query, **(params or {})},
         headers=headers,
+        timeout=5,
     ).text
 
 
-def scrape_web_page(url: str, **kwargs: object):
+def scrape_web_page(url: str, params: dict | None = None):
     """Scrape a web page. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
-    other_params = kwargs.get("kwargs", kwargs)
+    print("Scraping web page with url:", url, "and params:", params)
     return requests.post(
         f"{web_access_url}/v1/scrape",
-        json={"url": url, **other_params},
+        json={"url": url, **(params or {})},
         headers=headers,
+        timeout=5,
     ).text
 
 
-def map_web_page(url: str, **kwargs: object):
+def map_web_page(url: str, params: dict | None = None):
     """Input a website and get all the urls on the website. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
-    other_params = kwargs.get("kwargs", kwargs)
+    print("Mapping web page with url:", url, "and params:", params)
     return requests.post(
         f"{web_access_url}/v1/map",
-        json={"url": url, **other_params},
+        json={"url": url, **(params or {})},
         headers=headers,
+        timeout=5,
     ).text
 
 

@@ -31,9 +31,10 @@ Only edit the layout of the boxes, do not add or remove any boxes in this file. 
 
 INTERNET_ACCESS_INFO = """
 You have access to the internet through the following tools:
-- internet_search(query: str, **kwargs): Run a web search. kwargs: compatible with the FireCrawl API, will be passed in the request body.
-- scrape_web_page(url: str, **kwargs): Scrape a web page. kwargs: compatible with the FireCrawl API
-- map_web_page(url: str, **kwargs): Input a website and get all the urls on the website. kwargs: compatible with the FireCrawl API"""
+- internet_search(query: str, params: dict | None = None): Run a web search. params: compatible with the FireCrawl API, will be passed in the request body.
+- scrape_web_page(url: str, params: dict | None = None): Scrape a web page. params: compatible with the FireCrawl API
+- map_web_page(url: str, params: dict | None = None): Input a website and get all the urls on the website. params: compatible with the FireCrawl API.
+Use these tools to gather information from the web when necessary. You can use them in your code by calling the functions with the appropriate arguments."""
 
 SYSTEM_PROMPT = f"""
 ## Overview
