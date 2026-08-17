@@ -20,6 +20,9 @@ def check_demo_ws(ws_path):
         changed_ws = True
     if not (parent_dir / ".workspace_files" / ws_name).exists():
         os.makedirs(parent_dir / ".workspace_files" / ws_name, exist_ok=True)
+    if ws.assistant_messages:
+        ws.assistant_messages = []
+        changed_ws = True
     missing_ws_files = False
     for node in ws.nodes:
         if (
