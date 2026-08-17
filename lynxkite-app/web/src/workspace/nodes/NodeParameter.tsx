@@ -189,26 +189,17 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
           value={(() => {
             const firstTable = getDropDownValues(data, meta?.type?.metadata_query1)[0] ?? "";
             if (value?.[0] == null && firstTable) {
-              const colOptions = getDropDownValues(data, meta?.type?.metadata_query2, {
+              const cols = getDropDownValues(data, meta?.type?.metadata_query2, {
                 first: firstTable,
               });
-              const firstCol = colOptions[0] ?? "";
-              const column =
-                value?.[1] != null && colOptions.includes(value[1]) ? value[1] : firstCol;
-              setParam(name, [firstTable, column], {});
+              setParam(name, [firstTable, pickFromOptions(value?.[1], cols)], {});
             }
             return value?.[0] ?? firstTable;
           })()}
           onChange={(evt) => {
             const nextTable = evt.currentTarget.value;
-            const colOptions = getDropDownValues(data, meta?.type?.metadata_query2, {
-              first: nextTable,
-            });
-            const nextColumn =
-              value?.[1] != null && colOptions.includes(value[1])
-                ? value[1]
-                : (colOptions[0] ?? "");
-            onChange([nextTable, nextColumn]);
+            const cols = getDropDownValues(data, meta?.type?.metadata_query2, { first: nextTable });
+            onChange([nextTable, pickFromOptions(value?.[1], cols)]);
           }}
         >
           {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
@@ -220,18 +211,12 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         <select
           className="select select-bordered appearance-none double-dropdown-second"
           value={(() => {
-            const table = value?.[0];
-            if (table == null) {
-              return value?.[1] ?? "";
-            }
-            const options = getDropDownValues(data, meta?.type?.metadata_query2, {
-              first: table,
+            const cols = getDropDownValues(data, meta?.type?.metadata_query2, {
+              first: value?.[0],
             });
-            const firstOption = options[0] ?? "";
-            const column =
-              value?.[1] != null && options.includes(value[1]) ? value[1] : firstOption;
-            if (column !== value?.[1]) {
-              setParam(name, [table, column], { delay: value?.[1] == null ? 10 : 0 });
+            const column = pickFromOptions(value?.[1], cols);
+            if (value?.[0] != null && column !== value?.[1]) {
+              setParam(name, [value[0], column], {});
             }
             return column;
           })()}
@@ -313,6 +298,10 @@ function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
   const tableName = relation?.[tableKey];
   const columns = metadata.dataframes?.[tableName]?.columns;
   return Array.isArray(columns) ? ["", ...columns].sort() : [""];
+}
+
+function pickFromOptions(value: any, options: string[]): string {
+  return value != null && options.includes(value) ? value : (options[0] ?? "");
 }
 
 function getDropDownValues(
