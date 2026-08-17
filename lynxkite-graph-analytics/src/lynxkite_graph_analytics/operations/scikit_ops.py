@@ -6,6 +6,8 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
 from .. import core
@@ -182,7 +184,7 @@ def scikit_predict(
     return b
 
 
-@op("Confusion matrix", view="visualization", color="blue", icon="dots-diagonal-2")
+@op("Confusion matrix", view="matplotlib", color="blue", icon="dots-diagonal-2")
 def conf_matrix(
     b: core.Bundle,
     *,
@@ -194,39 +196,23 @@ def conf_matrix(
     y_true = df[label_column].astype(str)
     y_pred = df[prediction_column].astype(str)
     classes = list(set(y_true) | set(y_pred))
-
     cm = confusion_matrix(y_true, y_pred, labels=classes)
+    fig, ax = plt.subplots(tight_layout=True)
 
-    max_val = max(int(cm.max()), 1)
-    data = []
-    for i, row in enumerate(cm):
-        for j, val in enumerate(row):
-            item = {
-                "value": [j, len(classes) - 1 - i, int(val)],
-                "itemStyle": {"color": f"rgba(0, 100, 200, {0.1 + 0.9 * (val / max_val)})"},
-            }
-            data.append(item)
-
-    return {
-        "xAxis": {
-            "position": "top",
-            "data": classes,
-            "name": "Predicted",
-            "nameLocation": "middle",
-            "nameGap": 50,
-        },
-        "yAxis": {
-            "data": classes[::-1],
-            "name": "Actual",
-            "nameLocation": "middle",
-            "nameGap": 60,
-        },
-        "visualMap": {"show": False},
-        "series": [
-            {
-                "type": "heatmap",
-                "data": data,
-                "label": {"show": True, "color": "#000000", "fontWeight": "bold", "fontSize": 32},
-            }
-        ],
-    }
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        cbar=False,
+        square=True,
+        xticklabels=classes,
+        yticklabels=classes,
+        ax=ax,
+        annot_kws={"size": 16, "weight": "bold"},
+    )
+    ax.xaxis.tick_top()
+    ax.xaxis.set_label_position("top")
+    plt.xlabel("Predicted", labelpad=15)
+    plt.ylabel("Actual", labelpad=15)
+    plt.yticks(rotation=0)

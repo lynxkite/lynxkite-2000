@@ -77,13 +77,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Make prediction 3 output Confusion matrix 3 b",
-      "source": "Make prediction 3",
-      "sourceHandle": "output",
-      "target": "Confusion matrix 3",
-      "targetHandle": "b"
-    },
-    {
       "id": "Vector from attributes 3 output Flatten column 2 b",
       "source": "Vector from attributes 3",
       "sourceHandle": "output",
@@ -106,18 +99,24 @@
       "targetHandle": "b"
     },
     {
-      "id": "Make prediction 1 output Confusion matrix 2 b",
-      "selected": false,
-      "source": "Make prediction 1",
-      "sourceHandle": "output",
-      "target": "Confusion matrix 2",
-      "targetHandle": "b"
-    },
-    {
       "id": "Train/test split 3 output Train K-nearest neighbors classifier 1 b",
       "source": "Train/test split 3",
       "sourceHandle": "output",
       "target": "Train K-nearest neighbors classifier 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 3 output Confusion matrix 4 b",
+      "source": "Make prediction 3",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 1 output Confusion matrix 5 b",
+      "source": "Make prediction 1",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 5",
       "targetHandle": "b"
     }
   ],
@@ -487,7 +486,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -544,9 +543,7 @@
         "message": null,
         "meta": null,
         "op_id": "Scikit > Confusion matrix",
-        "output_metadata": [
-          {}
-        ],
+        "output_metadata": [],
         "params": {
           "label_column": "class",
           "prediction_column": "prediction",
@@ -556,15 +553,15 @@
         "telemetry": null,
         "title": "Confusion matrix"
       },
-      "height": 707.0,
+      "height": 846.0,
       "id": "Confusion matrix 1",
       "parentId": null,
       "position": {
-        "x": 6099.9414675328135,
-        "y": 29.634258690083897
+        "x": 6065.358799486116,
+        "y": 14.81311524149946
       },
-      "type": "visualization",
-      "width": 735.0
+      "type": "image",
+      "width": 937.0
     },
     {
       "data": {
@@ -1988,171 +1985,6 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 13,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "creditg": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "duration",
-                  "employment",
-                  "existing_credits",
-                  "foreign_worker",
-                  "housing",
-                  "installment_commitment",
-                  "job",
-                  "num_dependents",
-                  "other_parties",
-                  "other_payment_plans",
-                  "own_telephone",
-                  "personal_status",
-                  "property_magnitude",
-                  "purpose",
-                  "residence_since",
-                  "savings_status"
-                ],
-                "key": "creditg",
-                "length": 1000.0
-              },
-              "creditg_one_hot": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "duration",
-                  "employment",
-                  "existing_credits",
-                  "features",
-                  "foreign_worker",
-                  "housing",
-                  "installment_commitment",
-                  "job",
-                  "num_dependents",
-                  "other_parties",
-                  "other_payment_plans",
-                  "own_telephone",
-                  "personal_status",
-                  "property_magnitude",
-                  "purpose",
-                  "residence_since",
-                  "savings_status"
-                ],
-                "key": "creditg_one_hot",
-                "length": 1000.0
-              },
-              "creditg_one_hot_test": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "duration",
-                  "employment",
-                  "existing_credits",
-                  "features",
-                  "foreign_worker",
-                  "housing",
-                  "index",
-                  "installment_commitment",
-                  "job",
-                  "num_dependents",
-                  "other_parties",
-                  "other_payment_plans",
-                  "own_telephone",
-                  "personal_status",
-                  "prediction",
-                  "property_magnitude",
-                  "purpose",
-                  "residence_since",
-                  "savings_status"
-                ],
-                "key": "creditg_one_hot_test",
-                "length": 200.0
-              },
-              "creditg_one_hot_train": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "duration",
-                  "employment",
-                  "existing_credits",
-                  "features",
-                  "foreign_worker",
-                  "housing",
-                  "index",
-                  "installment_commitment",
-                  "job",
-                  "num_dependents",
-                  "other_parties",
-                  "other_payment_plans",
-                  "own_telephone",
-                  "personal_status",
-                  "property_magnitude",
-                  "purpose",
-                  "residence_since",
-                  "savings_status"
-                ],
-                "key": "creditg_one_hot_train",
-                "length": 800.0
-              }
-            },
-            "other": {
-              "knn": {
-                "key": "knn"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Confusion matrix",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "label_column": "class",
-          "prediction_column": "prediction",
-          "table_name": "creditg_one_hot_test"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Confusion matrix"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 707.0,
-      "id": "Confusion matrix 3",
-      "measured": {
-        "height": 707.0,
-        "width": 735.0
-      },
-      "parentId": null,
-      "position": {
-        "x": 6076.859778950358,
-        "y": 928.664632594458
-      },
-      "selected": false,
-      "type": "visualization",
-      "width": 735.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
         "display_version": null,
         "error": null,
         "expanded_height": null,
@@ -2887,7 +2719,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 13,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3019,9 +2851,7 @@
         "message": null,
         "meta": null,
         "op_id": "Scikit > Confusion matrix",
-        "output_metadata": [
-          {}
-        ],
+        "output_metadata": [],
         "params": {
           "label_column": "class",
           "prediction_column": "prediction",
@@ -3031,22 +2861,172 @@
         "telemetry": null,
         "title": "Confusion matrix"
       },
-      "dragHandle": ".drag-handle",
-      "dragging": false,
-      "height": 707.0,
-      "id": "Confusion matrix 2",
-      "measured": {
-        "height": 707.0,
-        "width": 735.0
-      },
+      "height": 841.0,
+      "id": "Confusion matrix 4",
       "parentId": null,
       "position": {
-        "x": 6071.2364039203585,
-        "y": 1794.7799145479064
+        "x": 6064.550922471204,
+        "y": 968.6501193778283
       },
-      "selected": false,
-      "type": "visualization",
-      "width": 735.0
+      "type": "image",
+      "width": 939.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 3,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_one_hot": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot",
+                "length": 1000.0
+              },
+              "creditg_one_hot_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "prediction",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_test",
+                "length": 200.0
+              },
+              "creditg_one_hot_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "housing",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg_one_hot_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "creditg_one_hot_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "height": 881.0,
+      "id": "Confusion matrix 5",
+      "parentId": null,
+      "position": {
+        "x": 6062.862237345136,
+        "y": 1896.9135156908305
+      },
+      "type": "image",
+      "width": 948.0
     }
   ],
   "paused": true
