@@ -18,6 +18,7 @@ build
 
 examples/.*
 examples/generated_samples
+examples/*/.assistant_memory/*
 !.workspace_files
 
 # Playwright

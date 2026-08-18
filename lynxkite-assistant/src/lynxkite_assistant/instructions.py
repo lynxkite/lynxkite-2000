@@ -13,6 +13,7 @@ If `/workspace.py` is empty, you can still add new boxes by editing `/boxes.py` 
 You can see any errors that occurred in the boxes in `errors.txt`. Before finishing a task you MUST FIX ALL ERRORS in the new boxes.
 If a custom box returns an 'Unknown operation' error message, check if you are using the correct module name for the new box and you have every necessary dependency installed.
 Attempt to fix any errors in the boxes you add, and if you cannot, explain to the user what went wrong and how to fix it.
+The workspace is only executed on edit if the workspace is not paused. If the workspace is paused, you can still edit it, but it will not be executed until the user unpauses it.
 
 For further instructions, see the comments in `/workspace.py`.
 """.strip()
@@ -46,6 +47,7 @@ You have access to the following files, none of which are visible to the user:
 - /errors.txt: The errors that occurred in the boxes during execution.
 - /workspace_files/: The results of the executed boxes, such as View tables and View images.
 - /requirements.txt: dependencies for the custom boxes in the workflow.
+- /previous_states/: The previous states of the workflow, which you can use to revert to a previous state if necessary and check the results of previous executions.
 
 ## Editing the workflow
 {WORKSPACE_INFO}

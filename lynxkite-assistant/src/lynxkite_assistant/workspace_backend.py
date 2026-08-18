@@ -1,8 +1,11 @@
 """A Deep Agents backend that represents a workspace as a file."""
 
+import datetime
 import json
-import pathlib
+import os
+from pathlib import Path
 import asyncio
+import shutil
 from typing import Any
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
@@ -15,6 +18,12 @@ class WorkspaceBackend(state.StateBackend):
     def __init__(self, workspace: str) -> None:
         super().__init__()
         self._workspace = workspace
+        self.memory_dir = (
+            Path(workspace).parent
+            / ".assistant_memory"
+            / Path(workspace).name
+            / datetime.datetime.now().isoformat()
+        )
 
     def _read_files(self) -> dict[str, Any]:
         return {
@@ -46,7 +55,7 @@ class WorkspaceBackend(state.StateBackend):
         if "/workspace.py" in update:
             asyncio.run(
                 set_workspace_file_content(
-                    self._workspace, update["/workspace.py"]["content"]
+                    self._workspace, update["/workspace.py"]["content"], self.memory_dir
                 )
             )
         if "/layout.json" in update:
@@ -78,7 +87,9 @@ def get_workspace_file_content(ws_path: str) -> str:
     return python_workspace_conversion.workspace_to_python(ws)
 
 
-async def set_workspace_file_content(ws_path: str, content: str) -> None:
+async def set_workspace_file_content(
+    ws_path: str, content: str, memory_dirname: Path | None = None
+) -> None:
     old_ws = workspace.Workspace.load(ws_path)
     ops.load_user_scripts(ws_path)
     ws = python_workspace_conversion.python_to_workspace(content)
@@ -87,8 +98,21 @@ async def set_workspace_file_content(ws_path: str, content: str) -> None:
     ws.paused = old_ws.paused
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
+    if memory_dirname:
+        os.makedirs(memory_dirname, exist_ok=True)
+        # we only keep the first memory dir from an interaction, because the assistant creates a lot of
+        # faulty/unnecessary edits while it's working, we do not need to save those
+        memory_isempty = len(os.listdir(memory_dirname)) == 0
     if not ws.paused:
+        if memory_dirname and memory_isempty:
+            ws_files_path = (
+                Path(ws_path).parent / ".workspace_files" / Path(ws_path).name
+            )
+            shutil.copytree(ws_files_path, memory_dirname / "workspace_files")
         await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
+    if memory_dirname and memory_isempty:
+        with open(memory_dirname / "workspace.py", "w") as f:
+            f.write(python_workspace_conversion.workspace_to_python(old_ws))
     ws.save(ws_path)
 
 
@@ -101,7 +125,7 @@ async def execute_workspace(ws_path: str) -> None:
 
 def get_boxes_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
-    p = pathlib.Path(ws_path).parent / "boxes.py"
+    p = Path(ws_path).parent / "boxes.py"
     if not p.exists():
         module_name = (
             f"{ops.to_python_module_name(p.parent)}.boxes"
@@ -114,13 +138,13 @@ def get_boxes_file_content(ws_path: str) -> str:
 
 
 def set_boxes_file_content(ws_path: str, content: str) -> None:
-    p = pathlib.Path(ws_path).parent / "boxes.py"
+    p = Path(ws_path).parent / "boxes.py"
     with open(p, "w") as f:
         f.write(content)
 
 
 def get_req_content(ws_path: str) -> str:
-    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    p = Path(ws_path).parent / "requirements.txt"
     if not p.exists():
         return instructions.REQ_INFO
     with open(p) as f:
@@ -128,7 +152,7 @@ def get_req_content(ws_path: str) -> str:
 
 
 def set_req_file_content(ws_path: str, content: str) -> None:
-    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    p = Path(ws_path).parent / "requirements.txt"
     with open(p, "w") as f:
         f.write(content)
 
