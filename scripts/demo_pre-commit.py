@@ -45,7 +45,7 @@ def check_demo_ws(ws_path):
                 asyncio.run(ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env]))
                 sys.stderr = old_stderr
         except Exception as e:
-            print(f"Error executing workspace {ws_path}: {e}")
+            return f"Error executing workspace {ws_path}: {e}"
         changed_ws = True
     if changed_ws:
         ws.save(ws_path)
@@ -56,6 +56,9 @@ def check_demo_ws(ws_path):
 
 
 if __name__ == "__main__":
+    if not os.getcwd().endswith("lynxkite-2000"):
+        print("Please run this script from the lynxkite-2000 directory.")
+        sys.exit(1)
     os.chdir(os.path.join(os.getcwd(), demo_dir))
     ops.detect_plugins()
     errors = []
@@ -63,7 +66,7 @@ if __name__ == "__main__":
         ws_path = Path(ws_file)
         if (
             ws_path.is_relative_to(demo_dir)
-            and ws_file[-14:] == ".lynxkite.json"
+            and ws_file.endswith(".lynxkite.json")
             and ".workspace_files" not in ws_file
             and "generated_samples" not in ws_file
         ):
