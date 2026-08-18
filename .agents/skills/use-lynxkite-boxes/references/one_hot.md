@@ -16,9 +16,9 @@ def one_hot(
 
     for col in columns:
         dummies = pd.get_dummies(df[col])
-        df[col] = list(map(tuple, dummies.to_numpy()))
+        df[col + "_one_hot"] = list(map(tuple, dummies.to_numpy()))
 
-    b.dfs[table_name + "_one_hot"] = df
+    b.dfs[table_name] = df
     return b
 
 ```
