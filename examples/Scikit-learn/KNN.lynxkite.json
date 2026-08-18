@@ -7,13 +7,6 @@
   ],
   "edges": [
     {
-      "id": "Fetch openml dataset 2 output Vector from attributes 2 b",
-      "source": "Fetch openml dataset 2",
-      "sourceHandle": "output",
-      "target": "Vector from attributes 2",
-      "targetHandle": "b"
-    },
-    {
       "id": "Vector from attributes 2 output Train/test split 2 bundle",
       "source": "Vector from attributes 2",
       "sourceHandle": "output",
@@ -39,13 +32,6 @@
       "source": "Make prediction 2",
       "sourceHandle": "output",
       "target": "Confusion matrix 1",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Fetch openml dataset 3 output Rename table 1 b",
-      "source": "Fetch openml dataset 3",
-      "sourceHandle": "output",
-      "target": "Rename table 1",
       "targetHandle": "b"
     },
     {
@@ -118,66 +104,25 @@
       "sourceHandle": "output",
       "target": "Confusion matrix 5",
       "targetHandle": "b"
+    },
+    {
+      "id": "Fetch OpenML dataset 1 output Vector from attributes 2 b",
+      "source": "Fetch OpenML dataset 1",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Fetch OpenML dataset 2 output Rename table 1 b",
+      "source": "Fetch OpenML dataset 2",
+      "sourceHandle": "output",
+      "target": "Rename table 1",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
   "execution_options": {},
   "nodes": [
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Fetch openml dataset",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "iris": {
-                "columns": [
-                  "class",
-                  "petallength",
-                  "petalwidth",
-                  "sepallength",
-                  "sepalwidth"
-                ],
-                "key": "iris",
-                "length": 150.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "dataset_name": "iris",
-          "version": "1"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Fetch openml dataset"
-      },
-      "dragHandle": ".drag-handle",
-      "height": 315.0,
-      "id": "Fetch openml dataset 2",
-      "measured": {
-        "height": 315.0,
-        "width": 315.0
-      },
-      "parentId": null,
-      "position": {
-        "x": 1936.5681124926987,
-        "y": 644.4063641542915
-      },
-      "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
     {
       "data": {
         "__execution_delay": 0.0,
@@ -486,7 +431,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -699,71 +644,6 @@
         "y": 639.9349553680898
       },
       "selected": false,
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Fetch openml dataset",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "credit-g": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "duration",
-                  "employment",
-                  "existing_credits",
-                  "foreign_worker",
-                  "housing",
-                  "installment_commitment",
-                  "job",
-                  "num_dependents",
-                  "other_parties",
-                  "other_payment_plans",
-                  "own_telephone",
-                  "personal_status",
-                  "property_magnitude",
-                  "purpose",
-                  "residence_since",
-                  "savings_status"
-                ],
-                "key": "credit-g",
-                "length": 1000.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "dataset_name": "credit-g",
-          "version": 1.0
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Fetch openml dataset"
-      },
-      "height": 315.0,
-      "id": "Fetch openml dataset 3",
-      "parentId": null,
-      "position": {
-        "x": 1916.6894697916964,
-        "y": 1110.8746928836333
-      },
       "type": "basic",
       "width": 315.0
     },
@@ -2719,7 +2599,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -2876,7 +2756,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3027,6 +2907,120 @@
       },
       "type": "image",
       "width": 948.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Fetch OpenML dataset",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "dataset_name": "iris",
+          "version": "1"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fetch OpenML dataset"
+      },
+      "height": 315.0,
+      "id": "Fetch OpenML dataset 1",
+      "parentId": null,
+      "position": {
+        "x": 1908.7345978057158,
+        "y": 638.0035823678953
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Fetch OpenML dataset",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "credit-g": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "credit-g",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "dataset_name": "credit-g",
+          "version": 1.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fetch OpenML dataset"
+      },
+      "height": 315.0,
+      "id": "Fetch OpenML dataset 2",
+      "parentId": null,
+      "position": {
+        "x": 1912.2274705519926,
+        "y": 1115.0409190984535
+      },
+      "type": "basic",
+      "width": 315.0
     }
   ],
   "paused": true
