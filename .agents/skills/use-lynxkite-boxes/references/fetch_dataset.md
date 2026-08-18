@@ -1,7 +1,7 @@
-**Fetch openml dataset:**
+**Fetch OpenML dataset:**
 Fetches the specified dataset from OpenML.
 ```python
-@op("Fetch openml dataset", color="blue", icon="database-import")
+@op("Fetch OpenML dataset", slow=True, color="blue", icon="database-import")
 def fetch_dataset(*, dataset_name: str, version: int = 1) -> core.Bundle:
     """
     Fetches the specified dataset from OpenML.

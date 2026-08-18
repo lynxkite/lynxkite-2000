@@ -242,7 +242,7 @@ for detailed information, see references/sql.md
 usage: lynxkite_graph_analytics.operations.scikit_ops.conf_matrix(table_name=<table_name_value>, label_column=<label_column_value>, prediction_column=<prediction_column_value>, b=<b_variable>)
 for detailed information, see references/conf_matrix.md
 
-**Fetch openml dataset:**
+**Fetch OpenML dataset:**
 usage: lynxkite_graph_analytics.operations.scikit_ops.fetch_dataset(dataset_name=<dataset_name_value>, version=<version_value>)
 for detailed information, see references/fetch_dataset.md
 

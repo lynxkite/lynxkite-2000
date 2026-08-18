@@ -17,7 +17,7 @@ from sklearn.datasets import fetch_openml
 op = op_registration(core.ENV, "Scikit")
 
 
-@op("Fetch OpenML dataset", color="blue", icon="database-import")
+@op("Fetch OpenML dataset", slow=True, color="blue", icon="database-import")
 def fetch_dataset(*, dataset_name: str, version: int = 1) -> core.Bundle:
     """
     Fetches the specified dataset from OpenML.
