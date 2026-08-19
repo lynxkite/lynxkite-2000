@@ -1,5 +1,9 @@
 **Flatten column:**
-Flattens the items in the specified column of the specified table.
+Flattens the items to 1 dimension in the specified column of the specified table.
+
+If one of the items is the following list: [[a,b],[[c,d],e]]
+
+the flattened version will be: [a,b,c,d,e]
 ```python
 @op("Flatten column", icon="ironing")
 def flatten_column(
@@ -9,7 +13,11 @@ def flatten_column(
     column_name: core.ColumnNameByTableName,
 ) -> core.Bundle:
     """
-    Flattens the items in the specified column of the specified table.
+    Flattens the items to 1 dimension in the specified column of the specified table.
+
+    If one of the items is the following list: [[a,b],[[c,d],e]]
+
+    the flattened version will be: [a,b,c,d,e]
     :param b: The bundle
     :param table_name:  the name of the table
     :param column_name:  the name of the column whose items should be flattened

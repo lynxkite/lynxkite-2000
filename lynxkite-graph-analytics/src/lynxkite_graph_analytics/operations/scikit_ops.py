@@ -1,7 +1,6 @@
 """Operations related to the scikit-learn library."""
 
 import enum
-from collections.abc import Iterable
 from typing import Literal
 
 import numpy as np
@@ -47,37 +46,6 @@ def one_hot(
         dummies = pd.get_dummies(df[col])
         df[col + "_one_hot"] = list(map(tuple, dummies.to_numpy()))
 
-    b.dfs[table_name] = df
-    return b
-
-
-def _recursive_flatten(item):
-    flat = []
-    if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
-        for i in item:
-            flat.extend(_recursive_flatten(i))
-    else:
-        flat.append(item)
-    return flat
-
-
-@op("Flatten column", icon="ironing")
-def flatten_column(
-    b: core.Bundle,
-    *,
-    table_name: core.TableName,
-    column_name: core.ColumnNameByTableName,
-) -> core.Bundle:
-    """
-    Flattens the items in the specified column of the specified table.
-    :param b: The bundle
-    :param table_name:  the name of the table
-    :param column_name:  the name of the column whose items should be flattened
-    """
-    b = b.copy()
-    df = b.dfs[table_name].copy()
-
-    df[column_name] = df[column_name].apply(lambda x: tuple(_recursive_flatten(x)))
     b.dfs[table_name] = df
     return b
 

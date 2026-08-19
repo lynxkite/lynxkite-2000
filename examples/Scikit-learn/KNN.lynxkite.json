@@ -63,20 +63,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Vector from attributes 3 output Flatten column 2 b",
-      "source": "Vector from attributes 3",
-      "sourceHandle": "output",
-      "target": "Flatten column 2",
-      "targetHandle": "b"
-    },
-    {
-      "id": "Flatten column 2 output Train/test split 3 bundle",
-      "source": "Flatten column 2",
-      "sourceHandle": "output",
-      "target": "Train/test split 3",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Train K-nearest neighbors classifier 1 output Make prediction 1 b",
       "selected": false,
       "source": "Train K-nearest neighbors classifier 1",
@@ -118,6 +104,20 @@
       "sourceHandle": "output",
       "target": "Rename table 1",
       "targetHandle": "b"
+    },
+    {
+      "id": "Vector from attributes 3 output Flatten column 1 b",
+      "source": "Vector from attributes 3",
+      "sourceHandle": "output",
+      "target": "Flatten column 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Flatten column 1 output Train/test split 3 bundle",
+      "source": "Flatten column 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 3",
+      "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -431,7 +431,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 6,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1867,133 +1867,6 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "creditg": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "checking_status_one_hot",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "credit_history_one_hot",
-                  "duration",
-                  "employment",
-                  "employment_one_hot",
-                  "existing_credits",
-                  "features",
-                  "foreign_worker",
-                  "foreign_worker_one_hot",
-                  "housing",
-                  "housing_one_hot",
-                  "installment_commitment",
-                  "job",
-                  "job_one_hot",
-                  "num_dependents",
-                  "other_parties",
-                  "other_parties_one_hot",
-                  "other_payment_plans",
-                  "other_payment_plans_one_hot",
-                  "own_telephone",
-                  "own_telephone_one_hot",
-                  "personal_status",
-                  "personal_status_one_hot",
-                  "property_magnitude",
-                  "property_magnitude_one_hot",
-                  "purpose",
-                  "purpose_one_hot",
-                  "residence_since",
-                  "savings_status",
-                  "savings_status_one_hot"
-                ],
-                "key": "creditg",
-                "length": 1000.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Scikit > Flatten column",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "creditg": {
-                "columns": [
-                  "age",
-                  "checking_status",
-                  "checking_status_one_hot",
-                  "class",
-                  "credit_amount",
-                  "credit_history",
-                  "credit_history_one_hot",
-                  "duration",
-                  "employment",
-                  "employment_one_hot",
-                  "existing_credits",
-                  "features",
-                  "foreign_worker",
-                  "foreign_worker_one_hot",
-                  "housing",
-                  "housing_one_hot",
-                  "installment_commitment",
-                  "job",
-                  "job_one_hot",
-                  "num_dependents",
-                  "other_parties",
-                  "other_parties_one_hot",
-                  "other_payment_plans",
-                  "other_payment_plans_one_hot",
-                  "own_telephone",
-                  "own_telephone_one_hot",
-                  "personal_status",
-                  "personal_status_one_hot",
-                  "property_magnitude",
-                  "property_magnitude_one_hot",
-                  "purpose",
-                  "purpose_one_hot",
-                  "residence_since",
-                  "savings_status",
-                  "savings_status_one_hot"
-                ],
-                "key": "creditg",
-                "length": 1000.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "params": {
-          "column_name": "features",
-          "table_name": "creditg"
-        },
-        "status": "done",
-        "telemetry": null,
-        "title": "Flatten column"
-      },
-      "height": 315.0,
-      "id": "Flatten column 2",
-      "parentId": null,
-      "position": {
-        "x": 3841.392798499792,
-        "y": 1120.5994631339422
-      },
-      "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
         "display_version": null,
@@ -2623,7 +2496,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -2792,7 +2665,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3066,6 +2939,133 @@
       "position": {
         "x": 1912.2274705519926,
         "y": 1115.0409190984535
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Flatten column",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "column_name": "features",
+          "table_name": "creditg"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Flatten column"
+      },
+      "height": 315.0,
+      "id": "Flatten column 1",
+      "parentId": null,
+      "position": {
+        "x": 3869.430286288358,
+        "y": 1121.29521139167
       },
       "type": "basic",
       "width": 315.0

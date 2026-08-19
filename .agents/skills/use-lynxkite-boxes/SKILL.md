@@ -246,10 +246,6 @@ for detailed information, see references/conf_matrix.md
 usage: lynxkite_graph_analytics.operations.scikit_ops.fetch_dataset(dataset_name=<dataset_name_value>, version=<version_value>)
 for detailed information, see references/fetch_dataset.md
 
-**Flatten column:**
-usage: lynxkite_graph_analytics.operations.scikit_ops.flatten_column(table_name=<table_name_value>, column_name=<column_name_value>, b=<b_variable>)
-for detailed information, see references/flatten_column.md
-
 **Make prediction:**
 usage: lynxkite_graph_analytics.operations.scikit_ops.scikit_predict(table_name=<table_name_value>, feature_column=<feature_column_value>, prediction_column=<prediction_column_value>, model_name=<model_name_value>, b=<b_variable>)
 for detailed information, see references/scikit_predict.md
@@ -301,6 +297,10 @@ for detailed information, see references/fill_with_default.md
 **Filter with formula:**
 usage: lynxkite_graph_analytics.operations.table_ops.filter_with_formula(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
 for detailed information, see references/filter_with_formula.md
+
+**Flatten column:**
+usage: lynxkite_graph_analytics.operations.table_ops.flatten_column(table_name=<table_name_value>, column_name=<column_name_value>, b=<b_variable>)
+for detailed information, see references/flatten_column.md
 
 **Join tables:**
 usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table1_column=<table1_column_value>, table2_column=<table2_column_value>, merge_mode=<merge_mode_value>, b=<b_variable>)
