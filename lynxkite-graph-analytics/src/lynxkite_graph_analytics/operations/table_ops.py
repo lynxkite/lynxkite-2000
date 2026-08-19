@@ -1,6 +1,8 @@
 """Operations for tables."""
 
 import enum
+from collections.abc import Iterable
+
 import polars as pl
 
 from lynxkite_core import ops
@@ -256,4 +258,39 @@ def join_tables(
         merged.drop(columns=[f"{column}_1", f"{column}_2"], inplace=True)
 
     b.dfs[table1_column[0]] = merged
+    return b
+
+
+def _recursive_flatten(item):
+    flat = []
+    if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
+        for i in item:
+            flat.extend(_recursive_flatten(i))
+    else:
+        flat.append(item)
+    return flat
+
+
+@op("Flatten column", icon="ironing")
+def flatten_column(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    column_name: core.ColumnNameByTableName,
+) -> core.Bundle:
+    """
+    Flattens the items to 1 dimension in the specified column of the specified table.
+
+    If one of the items is the following list: [[a,b],[[c,d],e]]
+
+    the flattened version will be: [a,b,c,d,e]
+    :param b: The bundle
+    :param table_name:  the name of the table
+    :param column_name:  the name of the column whose items should be flattened
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+
+    df[column_name] = df[column_name].apply(lambda x: tuple(_recursive_flatten(x)))
+    b.dfs[table_name] = df
     return b

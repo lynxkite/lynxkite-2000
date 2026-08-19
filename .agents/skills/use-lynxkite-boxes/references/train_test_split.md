@@ -7,11 +7,11 @@ def train_test_split(
 ):
     """Splits a dataframe in the bundle into separate "_train" and "_test" dataframes."""
     df = bundle.dfs[table_name]
-    test = df.sample(frac=test_ratio, random_state=seed).reset_index()
-    train = df.drop(test.index).reset_index()
+    test = df.sample(frac=test_ratio, random_state=seed)
+    train = df.drop(test.index)
     bundle = bundle.copy()
-    bundle.dfs[f"{table_name}_train"] = train
-    bundle.dfs[f"{table_name}_test"] = test
+    bundle.dfs[f"{table_name}_train"] = train.reset_index()
+    bundle.dfs[f"{table_name}_test"] = test.reset_index()
     return bundle
 
 ```
