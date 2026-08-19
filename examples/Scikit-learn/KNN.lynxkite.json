@@ -1,0 +1,3075 @@
+{
+  "assistant_messages": [
+    {
+      "content": "hi",
+      "role": "user"
+    }
+  ],
+  "edges": [
+    {
+      "id": "Vector from attributes 2 output Train/test split 2 bundle",
+      "source": "Vector from attributes 2",
+      "sourceHandle": "output",
+      "target": "Train/test split 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 2 b Train/test split 2 output",
+      "source": "Train/test split 2",
+      "sourceHandle": "output",
+      "target": "Train K-nearest neighbors classifier 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 2 output Make prediction 2 b",
+      "source": "Train K-nearest neighbors classifier 2",
+      "sourceHandle": "output",
+      "target": "Make prediction 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 2 output Confusion matrix 1 b",
+      "source": "Make prediction 2",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Rename table 1 output One-hot encoding 2 b",
+      "source": "Rename table 1",
+      "sourceHandle": "output",
+      "target": "One-hot encoding 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "One-hot encoding 2 output Vector from attributes 3 b",
+      "source": "One-hot encoding 2",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 3 output Train K-nearest neighbors classifier 3 b",
+      "source": "Train/test split 3",
+      "sourceHandle": "output",
+      "target": "Train K-nearest neighbors classifier 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 3 output Make prediction 3 b",
+      "source": "Train K-nearest neighbors classifier 3",
+      "sourceHandle": "output",
+      "target": "Make prediction 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train K-nearest neighbors classifier 1 output Make prediction 1 b",
+      "selected": false,
+      "source": "Train K-nearest neighbors classifier 1",
+      "sourceHandle": "output",
+      "target": "Make prediction 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 3 output Train K-nearest neighbors classifier 1 b",
+      "source": "Train/test split 3",
+      "sourceHandle": "output",
+      "target": "Train K-nearest neighbors classifier 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 3 output Confusion matrix 4 b",
+      "source": "Make prediction 3",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 1 output Confusion matrix 5 b",
+      "source": "Make prediction 1",
+      "sourceHandle": "output",
+      "target": "Confusion matrix 5",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Fetch OpenML dataset 1 output Vector from attributes 2 b",
+      "source": "Fetch OpenML dataset 1",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Fetch OpenML dataset 2 output Rename table 1 b",
+      "source": "Fetch OpenML dataset 2",
+      "sourceHandle": "output",
+      "target": "Rename table 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Vector from attributes 3 output Flatten column 1 b",
+      "source": "Vector from attributes 3",
+      "sourceHandle": "output",
+      "target": "Flatten column 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Flatten column 1 output Train/test split 3 bundle",
+      "source": "Flatten column 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 3",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "attributes": [
+            "petallength",
+            "petalwidth",
+            "sepallength",
+            "sepalwidth"
+          ],
+          "table_name": "iris",
+          "vector_name": "features"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 313.0,
+      "id": "Vector from attributes 2",
+      "parentId": null,
+      "position": {
+        "x": 3272.1822026417367,
+        "y": 638.0599616348959
+      },
+      "type": "basic",
+      "width": 461.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "seed": "149",
+          "table_name": "iris",
+          "test_ratio": "0.2"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "height": 315.0,
+      "id": "Train/test split 2",
+      "parentId": null,
+      "position": {
+        "x": 4309.817353806087,
+        "y": 642.1238554333
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "algorithm": "auto",
+          "feature_column": "features",
+          "label_column": "class",
+          "leaf_size": 30.0,
+          "metric": "minkowski",
+          "model_name": "knn",
+          "n_neighbors": "5",
+          "p": 2.0,
+          "table_name": "iris_train",
+          "weights": "uniform"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train K-nearest neighbors classifier"
+      },
+      "height": 351.0,
+      "id": "Train K-nearest neighbors classifier 2",
+      "parentId": null,
+      "position": {
+        "x": 4777.503297772858,
+        "y": 623.2860243184997
+      },
+      "type": "basic",
+      "width": 516.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 9,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "prediction",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "iris_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "height": 846.0,
+      "id": "Confusion matrix 1",
+      "parentId": null,
+      "position": {
+        "x": 6065.358799486116,
+        "y": 14.81311524149946
+      },
+      "type": "image",
+      "width": 937.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "features",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              },
+              "iris_test": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "prediction",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_test",
+                "length": 30.0
+              },
+              "iris_train": {
+                "columns": [
+                  "class",
+                  "features",
+                  "index",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris_train",
+                "length": 120.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "knn",
+          "prediction_column": "prediction",
+          "table_name": "iris_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 315.0,
+      "id": "Make prediction 2",
+      "measured": {
+        "height": 71.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5547.276865260173,
+        "y": 639.9349553680898
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > One-hot encoding",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": [
+            "checking_status",
+            "credit_history",
+            "purpose",
+            "savings_status",
+            "employment",
+            "personal_status",
+            "other_parties",
+            "property_magnitude",
+            "other_payment_plans",
+            "housing",
+            "job",
+            "own_telephone",
+            "foreign_worker"
+          ],
+          "table_name": "creditg"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "One-hot encoding"
+      },
+      "height": 406.0,
+      "id": "One-hot encoding 2",
+      "parentId": null,
+      "position": {
+        "x": 2670.5573579581906,
+        "y": 1075.071040788962
+      },
+      "type": "basic",
+      "width": 352.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "credit-g": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "credit-g",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Rename table",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "new_name": "creditg",
+          "old_name": "credit-g"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Rename table"
+      },
+      "height": 315.0,
+      "id": "Rename table 1",
+      "parentId": null,
+      "position": {
+        "x": 2282.404648416741,
+        "y": 1115.0019010613535
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "attributes": [
+            "age",
+            "credit_amount",
+            "duration",
+            "existing_credits",
+            "installment_commitment",
+            "num_dependents",
+            "residence_since",
+            "checking_status_one_hot",
+            "employment_one_hot",
+            "foreign_worker_one_hot",
+            "housing_one_hot",
+            "job_one_hot",
+            "other_parties_one_hot",
+            "other_payment_plans_one_hot",
+            "own_telephone_one_hot",
+            "personal_status_one_hot",
+            "property_magnitude_one_hot",
+            "purpose_one_hot",
+            "savings_status_one_hot",
+            "credit_history_one_hot"
+          ],
+          "table_name": "creditg",
+          "vector_name": "features"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 338.0,
+      "id": "Vector from attributes 3",
+      "parentId": null,
+      "position": {
+        "x": 3264.0511100826075,
+        "y": 1108.255864409576
+      },
+      "type": "basic",
+      "width": 475.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "seed": "42",
+          "table_name": "creditg",
+          "test_ratio": "0.2"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "Train/test split 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4303.079400616586,
+        "y": 1122.6102337417105
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "algorithm": "auto",
+          "feature_column": "features",
+          "label_column": "class",
+          "leaf_size": 30.0,
+          "metric": "minkowski",
+          "model_name": "knn",
+          "n_neighbors": "5",
+          "p": 2.0,
+          "table_name": "creditg_test",
+          "weights": "uniform"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train K-nearest neighbors classifier"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 351.0,
+      "id": "Train K-nearest neighbors classifier 3",
+      "measured": {
+        "height": 351.0,
+        "width": 516.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4771.497024293691,
+        "y": 1103.9941801936388
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 516.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "prediction",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "knn",
+          "prediction_column": "prediction",
+          "table_name": "creditg_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 315.0,
+      "id": "Make prediction 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5542.191911172207,
+        "y": 1122.3247331875962
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Train K-nearest neighbors classifier",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "algorithm": "auto",
+          "feature_column": "features",
+          "label_column": "class",
+          "leaf_size": 30.0,
+          "metric": "minkowski",
+          "model_name": "knn",
+          "n_neighbors": "5",
+          "p": 2.0,
+          "table_name": "creditg_test",
+          "weights": "distance"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Train K-nearest neighbors classifier"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 351.0,
+      "id": "Train K-nearest neighbors classifier 1",
+      "measured": {
+        "height": 351.0,
+        "width": 516.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4775.793880203066,
+        "y": 1484.6978346567162
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 516.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "prediction",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "knn",
+          "prediction_column": "prediction",
+          "table_name": "creditg_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 315.0,
+      "id": "Make prediction 1",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5541.359009691948,
+        "y": 1496.188711131161
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "prediction",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "creditg_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "height": 841.0,
+      "id": "Confusion matrix 4",
+      "parentId": null,
+      "position": {
+        "x": 6064.550922471204,
+        "y": 968.6501193778283
+      },
+      "type": "image",
+      "width": 939.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              },
+              "creditg_test": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "prediction",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_test",
+                "length": 200.0
+              },
+              "creditg_train": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "index",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg_train",
+                "length": 800.0
+              }
+            },
+            "other": {
+              "knn": {
+                "key": "knn"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Confusion matrix",
+        "output_metadata": [],
+        "params": {
+          "label_column": "class",
+          "prediction_column": "prediction",
+          "table_name": "creditg_test"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Confusion matrix"
+      },
+      "height": 881.0,
+      "id": "Confusion matrix 5",
+      "parentId": null,
+      "position": {
+        "x": 6062.862237345136,
+        "y": 1896.9135156908305
+      },
+      "type": "image",
+      "width": 948.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Fetch OpenML dataset",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "iris": {
+                "columns": [
+                  "class",
+                  "petallength",
+                  "petalwidth",
+                  "sepallength",
+                  "sepalwidth"
+                ],
+                "key": "iris",
+                "length": 150.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "dataset_name": "iris",
+          "version": "1"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fetch OpenML dataset"
+      },
+      "height": 315.0,
+      "id": "Fetch OpenML dataset 1",
+      "parentId": null,
+      "position": {
+        "x": 1908.7345978057158,
+        "y": 638.0035823678953
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Fetch OpenML dataset",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "credit-g": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "duration",
+                  "employment",
+                  "existing_credits",
+                  "foreign_worker",
+                  "housing",
+                  "installment_commitment",
+                  "job",
+                  "num_dependents",
+                  "other_parties",
+                  "other_payment_plans",
+                  "own_telephone",
+                  "personal_status",
+                  "property_magnitude",
+                  "purpose",
+                  "residence_since",
+                  "savings_status"
+                ],
+                "key": "credit-g",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "dataset_name": "credit-g",
+          "version": 1.0
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Fetch OpenML dataset"
+      },
+      "height": 315.0,
+      "id": "Fetch OpenML dataset 2",
+      "parentId": null,
+      "position": {
+        "x": 1912.2274705519926,
+        "y": 1115.0409190984535
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Flatten column",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "creditg": {
+                "columns": [
+                  "age",
+                  "checking_status",
+                  "checking_status_one_hot",
+                  "class",
+                  "credit_amount",
+                  "credit_history",
+                  "credit_history_one_hot",
+                  "duration",
+                  "employment",
+                  "employment_one_hot",
+                  "existing_credits",
+                  "features",
+                  "foreign_worker",
+                  "foreign_worker_one_hot",
+                  "housing",
+                  "housing_one_hot",
+                  "installment_commitment",
+                  "job",
+                  "job_one_hot",
+                  "num_dependents",
+                  "other_parties",
+                  "other_parties_one_hot",
+                  "other_payment_plans",
+                  "other_payment_plans_one_hot",
+                  "own_telephone",
+                  "own_telephone_one_hot",
+                  "personal_status",
+                  "personal_status_one_hot",
+                  "property_magnitude",
+                  "property_magnitude_one_hot",
+                  "purpose",
+                  "purpose_one_hot",
+                  "residence_since",
+                  "savings_status",
+                  "savings_status_one_hot"
+                ],
+                "key": "creditg",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "column_name": "features",
+          "table_name": "creditg"
+        },
+        "status": "done",
+        "telemetry": null,
+        "title": "Flatten column"
+      },
+      "height": 315.0,
+      "id": "Flatten column 1",
+      "parentId": null,
+      "position": {
+        "x": 3869.430286288358,
+        "y": 1121.29521139167
+      },
+      "type": "basic",
+      "width": 315.0
+    }
+  ],
+  "paused": true
+}
