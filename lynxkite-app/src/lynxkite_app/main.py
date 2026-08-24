@@ -17,7 +17,7 @@ from lynxkite_core import opcontext, ops, workspace
 from lynxkite_core.folder_settings import SETTINGS_FILENAME
 from pydantic_core import from_json
 
-from . import acl, auth, crdt, icons, workspace_export
+from . import acl, auth, crdt, workspace_export
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import ProgressReporter, capture_tqdm
 
@@ -52,7 +52,6 @@ ops.save_catalogs("plugins loaded")
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
-app.include_router(icons.router)
 if assistant_router is not None:
     app.include_router(assistant_router)
 if enterprise_backend is not None:

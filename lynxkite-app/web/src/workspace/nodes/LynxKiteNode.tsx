@@ -8,7 +8,7 @@ import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
-import InlineSVG from "../../InlineSVG.tsx";
+import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
 import { LynxKiteState } from "../LynxKiteState.ts";
@@ -346,7 +346,11 @@ function Icon({ name }: { name: string }) {
   if (name.startsWith("<svg")) {
     return <span className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
   }
-  return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
+  const svg = getTablerIconSvgMarkup(name);
+  if (!svg) {
+    return <div className="title-icon-placeholder" />;
+  }
+  return <span className="title-icon" dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
