@@ -5,6 +5,8 @@ import json
 import pathlib
 import zipfile
 
+from lynxkite_core import workspace
+
 
 def _zip_path(path: pathlib.Path) -> str:
     return path.as_posix()
@@ -54,7 +56,9 @@ def build_workspace_zip(
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         _add_directory(zf, web_assets_path, pathlib.Path(), skip_root_files={"index.html"})
         zf.writestr("index.html", _static_index_html(web_assets_path, workspace_filename))
-        zf.write(data_path / workspace_path, "data/workspace.lynxkite.json")
+        # Load the workspace to make sure the metadata is updated.
+        ws = workspace.Workspace.load(data_path / workspace_path)
+        zf.writestr("data/workspace.lynxkite.json", ws.model_dump_json_sorted())
         if workspace_files_path.exists():
             _add_directory(
                 zf,
