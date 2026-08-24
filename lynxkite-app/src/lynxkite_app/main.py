@@ -3,10 +3,12 @@
 import os
 import pathlib
 import shutil
+import tempfile
 
 import fastapi
 import joblib
 import pydantic
+import starlette.background
 import starlette.datastructures
 import starlette.exceptions
 from fastapi.middleware.gzip import GZipMiddleware
@@ -15,7 +17,7 @@ from lynxkite_core import opcontext, ops, workspace
 from lynxkite_core.folder_settings import SETTINGS_FILENAME
 from pydantic_core import from_json
 
-from . import acl, auth, crdt, icons
+from . import acl, auth, crdt, icons, workspace_export
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import ProgressReporter, capture_tqdm
 
@@ -236,6 +238,30 @@ async def download(req: dict, request: fastapi.Request):
     if not file_path.exists() or not file_path.is_file():
         raise fastapi.HTTPException(status_code=404, detail="File not found")
     return fastapi.responses.FileResponse(file_path)
+
+
+@app.post("/api/export_workspace")
+async def export_workspace(req: dict, request: fastapi.Request):
+    """Sends a static workspace ZIP to the client."""
+    await auth.check_permission(request, "read", req["path"])
+    workspace_path = pathlib.Path(req["path"])
+    file_path = data_path / workspace_path
+    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    if not file_path.exists() or not file_path.is_file():
+        raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:
+        zip_path = pathlib.Path(f.name)
+    workspace_export.build_workspace_zip(
+        zip_path,
+        data_path,
+        workspace_path,
+        pathlib.Path(__file__).parent / "web_assets",
+    )
+    return fastapi.responses.FileResponse(
+        zip_path,
+        filename=f"{workspace_path.stem}.zip",
+        background=starlette.background.BackgroundTask(zip_path.unlink),
+    )
 
 
 @app.post("/api/execute_workspace")

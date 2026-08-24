@@ -196,6 +196,25 @@ export default function Directory() {
     list.mutate();
   }
 
+  async function downloadBlob(apiPath: string, item: DirectoryEntry, fileName: string) {
+    const res = await apiFetch(apiPath, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: item.name }),
+    });
+    if (!res.ok) {
+      alert("Failed to download file.");
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <ManagementPage>
       {list.error && <p className="error">{list.error.message}</p>}
@@ -346,25 +365,23 @@ export default function Directory() {
                             <button
                               type="button"
                               onClick={async () => {
-                                const res = await apiFetch("/api/download", {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ path: item.name }),
-                                });
-                                if (!res.ok) {
-                                  alert("Failed to download file.");
-                                  return;
-                                }
-                                const blob = await res.blob();
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = item.name.split("/").pop()!;
-                                a.click();
-                                URL.revokeObjectURL(url);
+                                downloadBlob("/api/download", item, item.name.split("/").pop()!);
                               }}
                             >
                               Download
+                            </button>
+                          </li>
+                        )}
+                        {item.type === "workspace" && (
+                          <li>
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const fileName = `${shortName(item)}.zip`;
+                                downloadBlob("/api/export_workspace", item, fileName);
+                              }}
+                            >
+                              Export for static embedding
                             </button>
                           </li>
                         )}

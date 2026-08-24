@@ -41,6 +41,7 @@ import favicon from "../assets/favicon.ico";
 import {
   apiJson,
   getConfig,
+  isStaticWorkspaceMode,
   parentPath,
   uploadFile,
   useFolderPermissions,
@@ -67,6 +68,7 @@ import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+import { useStaticWorkspace } from "./staticWorkspace.ts";
 import { WorkspaceProgress } from "./WorkspaceProgress.tsx";
 
 const Assistant = lazy(() => import("./Assistant.tsx"));
@@ -105,18 +107,21 @@ function LynxKiteFlow() {
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
   );
+  const isStatic = isStaticWorkspaceMode();
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
   const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
-  const shortPath = path!
+  const permissions = useFolderPermissions(path);
+  const canWrite = isStatic ? false : permissions.write;
+  const staticWorkspace = useStaticWorkspace();
+  const liveWorkspace = useCRDTWorkspace(path, canWrite, !isStatic);
+  const crdt = isStatic ? staticWorkspace : liveWorkspace;
+  const workspace = crdt.ws;
+  const workspaceReady = Boolean(workspace) && (isStatic || !permissions.isLoading);
+  const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite.json") : path)!
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const permissions = useFolderPermissions(path);
-  const canWrite = permissions.write;
-  const crdt = useCRDTWorkspace(path, canWrite);
-  const workspace = crdt.ws;
-  const workspaceReady = Boolean(workspace) && !permissions.isLoading;
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const autoConnect = useAutoConnect(edges, crdt);
@@ -154,7 +159,7 @@ function LynxKiteFlow() {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
   const catalog = useSWR<Catalogs>(
-    `/api/catalog?workspace=${encodedPathForAPI}`,
+    isStatic ? null : `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher as Fetcher<Catalogs>,
   );
   const config = getConfig();
@@ -584,7 +589,7 @@ function LynxKiteFlow() {
   const selected = nodes.filter((n) => n.selected);
   const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
 
-  if (!permissions.isLoading && !permissions.read) {
+  if (!isStatic && !permissions.isLoading && !permissions.read) {
     return (
       <div className="workspace">
         <div className="hero min-h-screen">
@@ -618,7 +623,7 @@ function LynxKiteFlow() {
         </div>
         <title>{shortPath}</title>
         <div className="top-bar-trailing">
-          <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws)} />
+          <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws) && !isStatic} />
           {crdt?.ws && canWrite && (
             <div className="top-bar-controls">
               <ExecutionOptions

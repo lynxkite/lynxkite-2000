@@ -19,7 +19,7 @@ class build_py(_build_py):
         print("files in", frontend_dir / "dist")
         for file in (frontend_dir / "dist").iterdir():
             print(file)
-        # shutil.rmtree(package_dir)
+        shutil.rmtree(package_dir)
         shutil.copytree(frontend_dir / "dist", package_dir, dirs_exist_ok=True)
         # (frontend_dir / "dist").rename(package_dir)
         print("files in", package_dir)

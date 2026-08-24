@@ -390,21 +390,43 @@ class CRDTConnection {
   };
 }
 
-export function useCRDTWorkspace(path: string, canWrite = true): CRDTWorkspace {
+const EMPTY_WORKSPACE: CRDTWorkspace = {
+  feNodes: [],
+  feEdges: [],
+  setPausedState: () => {},
+  setEnv: () => {},
+  setExecutionOptions: () => {},
+  setAssistantMessages: () => {},
+  clearAssistantMessages: () => {},
+  applyChange: () => {},
+  addNode: () => {},
+  addEdge: () => {},
+  undo: () => {},
+  redo: () => {},
+};
+
+const noopSubscribe = () => () => {};
+
+export function useCRDTWorkspace(path: string, canWrite = true, enabled = true): CRDTWorkspace {
   const reactFlow = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const connection = useRef<CRDTConnection | null>(null);
-  if (!connection.current) {
+  if (enabled && !connection.current) {
     connection.current = new CRDTConnection(reactFlow, updateNodeInternals, path, canWrite);
   }
   useEffect(() => {
-    connection.current?.setCanWrite(canWrite);
-  }, [canWrite]);
+    if (enabled) {
+      connection.current?.setCanWrite(canWrite);
+    }
+  }, [canWrite, enabled]);
   useEffect(() => {
     return () => {
-      connection.current!.onDestroy();
+      connection.current?.onDestroy();
       connection.current = null;
     };
   }, []);
-  return useSyncExternalStore(connection.current.subscribe, connection.current.getSnapshot);
+  return useSyncExternalStore(
+    connection.current?.subscribe ?? noopSubscribe,
+    connection.current?.getSnapshot ?? (() => EMPTY_WORKSPACE),
+  );
 }
