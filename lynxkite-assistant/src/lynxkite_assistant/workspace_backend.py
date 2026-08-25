@@ -95,13 +95,6 @@ async def set_workspace_file_content(
     ws_path: str, content: str, memory_dir: Path | None = None
 ) -> None:
     old_ws = workspace.Workspace.load(ws_path)
-    ops.load_user_scripts(ws_path)
-    ws = python_workspace_conversion.python_to_workspace(content)
-    ws.env = old_ws.env
-    ws.assistant_messages = old_ws.assistant_messages
-    ws.paused = old_ws.paused
-    sync_workspaces.update_node_ids(source=ws, target=old_ws)
-    sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if memory_dir:
         save_in_memory(
             memory_dir,
@@ -109,6 +102,13 @@ async def set_workspace_file_content(
             python_workspace_conversion.workspace_to_python(old_ws),
         )
         save_in_memory(memory_dir, "layout.json", get_workspace_layout(ws_path))
+    ops.load_user_scripts(ws_path)
+    ws = python_workspace_conversion.python_to_workspace(content)
+    ws.env = old_ws.env
+    ws.assistant_messages = old_ws.assistant_messages
+    ws.paused = old_ws.paused
+    sync_workspaces.update_node_ids(source=ws, target=old_ws)
+    sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
         if memory_dir:
             ws_files_path = (
