@@ -48,7 +48,7 @@ You have access to the following files, none of which are visible to the user:
 - /workspace_files/: The results of the executed boxes, such as View tables and View images.
 - /requirements.txt: dependencies for the custom boxes in the workflow.
 - /previous_states/: The previous states of the workflow, which you can use to revert to a previous state if necessary and check the results of previous executions.
-    Note, that some of the box ids might have changed, keep that in mind when editing layout.json.
+    Note, that some of the box ids might have changed, keep that in mind when editing layout.json. Only those files are saved here that have been edited in a previous step.
 
 ## Editing the workflow
 {WORKSPACE_INFO}
