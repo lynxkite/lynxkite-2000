@@ -254,7 +254,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -265,7 +322,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -302,7 +359,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -314,7 +428,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               }
             },
             "other": {},
@@ -358,7 +472,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -370,7 +541,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               }
             },
             "other": {},
@@ -414,7 +585,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -426,7 +654,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               }
             },
             "other": {},
@@ -478,7 +706,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -490,7 +718,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -499,7 +727,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -507,7 +735,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -526,7 +754,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -538,7 +826,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -551,7 +839,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -560,7 +848,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -568,7 +856,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -626,7 +914,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -639,7 +927,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -648,7 +936,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -656,7 +944,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -675,7 +963,105 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An attribute may not be defined everywhere. This operation uses the secondary attribute to fill in the values where the primary attribute is undefined. If both are undefined then the result is undefined too."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the new attribute",
+                  "name": "new_attribute"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the primary attribute to use",
+                  "name": "primary_attribute"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the secondary attribute to use",
+                  "name": "secondary_attribute"
+                }
+              ]
+            }
+          ],
+          "icon": "link",
+          "id": "Graph operations > Merge two attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Merge two attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "new_attribute",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "primary_attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "secondary_attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge_two_attributes",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge two attributes",
         "output_metadata": [
           {
@@ -687,7 +1073,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -701,7 +1087,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -710,7 +1096,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -718,7 +1104,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -774,7 +1160,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -788,7 +1174,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -797,7 +1183,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -820,7 +1206,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -839,7 +1225,54 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "arrow-big-right-lines",
+          "id": "Table operations > Derive property",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive property",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_property",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
@@ -851,7 +1284,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -866,7 +1299,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -875,7 +1308,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -898,7 +1331,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -952,7 +1385,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -968,7 +1401,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -977,7 +1410,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1000,7 +1433,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1019,7 +1452,54 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "arrow-big-right-lines",
+          "id": "Table operations > Derive property",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive property",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_property",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
@@ -1031,7 +1511,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1048,7 +1528,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1057,7 +1537,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1080,7 +1560,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1134,7 +1614,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1151,7 +1631,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1160,7 +1640,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1183,7 +1663,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1202,7 +1682,54 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "arrow-big-right-lines",
+          "id": "Table operations > Derive property",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive property",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_property",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
@@ -1214,7 +1741,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1231,7 +1758,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1240,7 +1767,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1264,7 +1791,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1318,7 +1845,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1337,14 +1864,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -1353,7 +1880,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1378,7 +1905,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1397,7 +1924,80 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An attribute may not be defined everywhere. This operation sets the provided values for the rows of the specified attributes where they are not defined."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the table to operate on",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the attributes and the values to set",
+                  "name": "adder"
+                }
+              ]
+            }
+          ],
+          "icon": "table-column",
+          "id": "Table operations > Fill attributes with default values",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Fill attributes with default values",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "adder",
+              "type": {
+                "format": "dropdown-textbox_adder",
+                "metadata_query1": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.fill_with_default",
+          "type": "basic"
+        },
         "op_id": "Table operations > Fill attributes with default values",
         "output_metadata": [
           {
@@ -1409,7 +2009,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1428,14 +2028,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -1444,7 +2044,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1469,7 +2069,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1521,7 +2121,55 @@
           {}
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merge multiple inputs"
+            }
+          ],
+          "icon": "arrows-join",
+          "id": "Graph operations > Merge",
+          "inputs": [
+            {
+              "name": "bundles",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.bundle.Bundle]"
+              }
+            }
+          ],
+          "name": "Merge",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "must be unique",
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "must be unique",
+                  "rename non-unique",
+                  "concatenate non-unique"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge",
         "output_metadata": [
           {
@@ -1533,7 +2181,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1542,7 +2190,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1550,7 +2198,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1596,7 +2244,55 @@
           {}
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merge multiple inputs"
+            }
+          ],
+          "icon": "arrows-join",
+          "id": "Graph operations > Merge",
+          "inputs": [
+            {
+              "name": "bundles",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.bundle.Bundle]"
+              }
+            }
+          ],
+          "name": "Merge",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "must be unique",
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "must be unique",
+                  "rename non-unique",
+                  "concatenate non-unique"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge",
         "output_metadata": [
           {
@@ -1608,7 +2304,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1619,7 +2315,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1628,7 +2324,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1636,7 +2332,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1689,7 +2385,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1698,7 +2394,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1706,7 +2402,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1725,7 +2421,103 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds data from the second table to the first table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the first table and its column to join on",
+                  "name": "table1_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the second table and its column to join on",
+                  "name": "table2_column"
+                },
+                {
+                  "annotation": "TableMergeMode",
+                  "description": "determines what happens if a column is in both tables\nMerge, prefer the second table\u2019s version: Where the second table defines values, those will be used. Elsewhere, the first table's values are used.\nMerge, prefer the first table\u2019s version: Where the first table defines values, those will be used. Elsewhere, the second table's values are used.\nMerge, report error on conflict: An assertion is made to ensure that the values in the two tables are equal. If they are not, an error is raised.\nUse the first table\u2019s version: The data in the second table is ignored.\nUse the second table\u2019s version: The data in the first table is ignored.\nOnly keep rows with matching values: Only rows that have matching values in both tables are kept.\nKeep both values with suffixes: Both values are kept, with suffixes added to the column names to distinguish them.\nDisallow this: A name conflict is treated as an error.",
+                  "name": "merge_mode"
+                }
+              ]
+            }
+          ],
+          "icon": "table-plus",
+          "id": "Table operations > Join tables",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Join tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table1_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "table2_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "Merge, prefer the first table's version",
+                  "Merge, prefer the second table's version",
+                  "Merge, report error on conflict",
+                  "Keep the first table's version",
+                  "Use the second table's version",
+                  "Only keep rows with matching values",
+                  "Keep both values with suffixes",
+                  "Disallow this"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.join_tables",
+          "type": "basic"
+        },
         "op_id": "Table operations > Join tables",
         "output_metadata": [
           {
@@ -1739,7 +2531,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1748,7 +2540,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1756,7 +2548,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1817,7 +2609,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1828,7 +2620,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1837,7 +2629,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1845,7 +2637,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1864,7 +2656,103 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds data from the second table to the first table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the first table and its column to join on",
+                  "name": "table1_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the second table and its column to join on",
+                  "name": "table2_column"
+                },
+                {
+                  "annotation": "TableMergeMode",
+                  "description": "determines what happens if a column is in both tables\nMerge, prefer the second table\u2019s version: Where the second table defines values, those will be used. Elsewhere, the first table's values are used.\nMerge, prefer the first table\u2019s version: Where the first table defines values, those will be used. Elsewhere, the second table's values are used.\nMerge, report error on conflict: An assertion is made to ensure that the values in the two tables are equal. If they are not, an error is raised.\nUse the first table\u2019s version: The data in the second table is ignored.\nUse the second table\u2019s version: The data in the first table is ignored.\nOnly keep rows with matching values: Only rows that have matching values in both tables are kept.\nKeep both values with suffixes: Both values are kept, with suffixes added to the column names to distinguish them.\nDisallow this: A name conflict is treated as an error.",
+                  "name": "merge_mode"
+                }
+              ]
+            }
+          ],
+          "icon": "table-plus",
+          "id": "Table operations > Join tables",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Join tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table1_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "table2_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "Merge, prefer the first table's version",
+                  "Merge, prefer the second table's version",
+                  "Merge, report error on conflict",
+                  "Keep the first table's version",
+                  "Use the second table's version",
+                  "Only keep rows with matching values",
+                  "Keep both values with suffixes",
+                  "Disallow this"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.join_tables",
+          "type": "basic"
+        },
         "op_id": "Table operations > Join tables",
         "output_metadata": [
           {
@@ -1876,7 +2764,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -1888,7 +2776,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -1897,7 +2785,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -1905,7 +2793,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -1962,502 +2850,502 @@
               ],
               "data": [
                 [
-                  17407562.0,
+                  17407562,
                   51.1995894,
                   3.2192497
                 ],
                 [
-                  17407563.0,
+                  17407563,
                   51.2001924,
                   3.2191509
                 ],
                 [
-                  17407564.0,
+                  17407564,
                   51.2006909,
                   3.2188189
                 ],
                 [
-                  17407565.0,
+                  17407565,
                   51.2008274,
                   3.219152
                 ],
                 [
-                  17407582.0,
+                  17407582,
                   51.2041598,
                   3.2190431
                 ],
                 [
-                  17407584.0,
+                  17407584,
                   51.2057628,
                   3.2168502
                 ],
                 [
-                  17407586.0,
+                  17407586,
                   51.2054283,
                   3.2197019
                 ],
                 [
-                  17407587.0,
+                  17407587,
                   51.2048296,
                   3.2177967
                 ],
                 [
-                  17407588.0,
+                  17407588,
                   51.204193,
                   3.217399
                 ],
                 [
-                  17407752.0,
+                  17407752,
                   51.2078171,
                   3.2158884
                 ],
                 [
-                  17407753.0,
+                  17407753,
                   51.2083522,
                   3.2153795
                 ],
                 [
-                  17407754.0,
+                  17407754,
                   51.2071852,
                   3.216128
                 ],
                 [
-                  17407756.0,
+                  17407756,
                   51.2064403,
                   3.2165561
                 ],
                 [
-                  17407757.0,
+                  17407757,
                   51.2059119,
                   3.2170208
                 ],
                 [
-                  17407762.0,
+                  17407762,
                   51.2058751,
                   3.2171865
                 ],
                 [
-                  17407837.0,
+                  17407837,
                   51.2056221,
                   3.2157354
                 ],
                 [
-                  17421081.0,
+                  17421081,
                   51.2083532,
                   3.2211776
                 ],
                 [
-                  17421084.0,
+                  17421084,
                   51.2080346,
                   3.2220584
                 ],
                 [
-                  17421085.0,
+                  17421085,
                   51.2078195,
                   3.2222431
                 ],
                 [
-                  17421090.0,
+                  17421090,
                   51.208676,
                   3.2264929
                 ],
                 [
-                  17421091.0,
+                  17421091,
                   51.2081751,
                   3.2266276
                 ],
                 [
-                  17421092.0,
+                  17421092,
                   51.2088833,
                   3.2274408
                 ],
                 [
-                  17421093.0,
+                  17421093,
                   51.2094099,
                   3.2268868
                 ],
                 [
-                  17421094.0,
+                  17421094,
                   51.2084766,
                   3.2274159
                 ],
                 [
-                  17421099.0,
+                  17421099,
                   51.2089555,
                   3.2273021
                 ],
                 [
-                  17421100.0,
+                  17421100,
                   51.2091808,
                   3.2280714
                 ],
                 [
-                  17421101.0,
+                  17421101,
                   51.2094438,
                   3.2287309
                 ],
                 [
-                  17421107.0,
+                  17421107,
                   51.2097281,
                   3.2295434
                 ],
                 [
-                  17421108.0,
+                  17421108,
                   51.2090361,
                   3.2301209
                 ],
                 [
-                  17421110.0,
+                  17421110,
                   51.2087351,
                   3.2293442
                 ],
                 [
-                  17421113.0,
+                  17421113,
                   51.2083167,
                   3.2283868
                 ],
                 [
-                  17421114.0,
+                  17421114,
                   51.2099053,
                   3.2303351
                 ],
                 [
-                  17421303.0,
+                  17421303,
                   51.2077144,
                   3.2233305
                 ],
                 [
-                  17421305.0,
+                  17421305,
                   51.2089458,
                   3.2233027
                 ],
                 [
-                  17421307.0,
+                  17421307,
                   51.209372,
                   3.2247182
                 ],
                 [
-                  17421310.0,
+                  17421310,
                   51.2084168,
                   3.2250606
                 ],
                 [
-                  17421311.0,
+                  17421311,
                   51.2081394,
                   3.2244354
                 ],
                 [
-                  17421435.0,
+                  17421435,
                   51.2085178,
                   3.2255764
                 ],
                 [
-                  17421436.0,
+                  17421436,
                   51.2086177,
                   3.2263317
                 ],
                 [
-                  17421753.0,
+                  17421753,
                   51.2078423,
                   3.2256796
                 ],
                 [
-                  17421754.0,
+                  17421754,
                   51.2075567,
                   3.2261752
                 ],
                 [
-                  17421757.0,
+                  17421757,
                   51.2069162,
                   3.2270696
                 ],
                 [
-                  17421759.0,
+                  17421759,
                   51.2074832,
                   3.2252087
                 ],
                 [
-                  17421761.0,
+                  17421761,
                   51.2073242,
                   3.2250727
                 ],
                 [
-                  17421762.0,
+                  17421762,
                   51.2070685,
                   3.2248464
                 ],
                 [
-                  17421764.0,
+                  17421764,
                   51.205673,
                   3.2206262
                 ],
                 [
-                  17421767.0,
+                  17421767,
                   51.2067544,
                   3.2223171
                 ],
                 [
-                  17421769.0,
+                  17421769,
                   51.2062974,
                   3.2228911
                 ],
                 [
-                  17421771.0,
+                  17421771,
                   51.2064142,
                   3.2231545
                 ],
                 [
-                  17421926.0,
+                  17421926,
                   51.2092201,
                   3.2228441
                 ],
                 [
-                  17421932.0,
+                  17421932,
                   51.210445,
                   3.2244492
                 ],
                 [
-                  17421937.0,
+                  17421937,
                   51.209569,
                   3.2246813
                 ],
                 [
-                  17422183.0,
+                  17422183,
                   51.2105355,
                   3.2252583
                 ],
                 [
-                  17422185.0,
+                  17422185,
                   51.2107097,
                   3.2261755
                 ],
                 [
-                  17422441.0,
+                  17422441,
                   51.207539,
                   3.2283405
                 ],
                 [
-                  17422442.0,
+                  17422442,
                   51.206948,
                   3.2271168
                 ],
                 [
-                  17422443.0,
+                  17422443,
                   51.2071956,
                   3.22763
                 ],
                 [
-                  17422444.0,
+                  17422444,
                   51.2073303,
                   3.2279056
                 ],
                 [
-                  17422445.0,
+                  17422445,
                   51.2074816,
                   3.2278161
                 ],
                 [
-                  17422447.0,
+                  17422447,
                   51.2078599,
                   3.2276615
                 ],
                 [
-                  17422448.0,
+                  17422448,
                   51.2076025,
                   3.2284714
                 ],
                 [
-                  17422449.0,
+                  17422449,
                   51.2077535,
                   3.227449
                 ],
                 [
-                  17422526.0,
+                  17422526,
                   51.2065577,
                   3.2265961
                 ],
                 [
-                  17422527.0,
+                  17422527,
                   51.2062682,
                   3.2261951
                 ],
                 [
-                  17422529.0,
+                  17422529,
                   51.2060672,
                   3.2255842
                 ],
                 [
-                  17422530.0,
+                  17422530,
                   51.206404,
                   3.2261959
                 ],
                 [
-                  17422531.0,
+                  17422531,
                   51.2064263,
                   3.2263474
                 ],
                 [
-                  17422532.0,
+                  17422532,
                   51.2065572,
                   3.2265242
                 ],
                 [
-                  17422533.0,
+                  17422533,
                   51.206728,
                   3.2267505
                 ],
                 [
-                  17422534.0,
+                  17422534,
                   51.2056516,
                   3.2252489
                 ],
                 [
-                  17422535.0,
+                  17422535,
                   51.2053884,
                   3.2254934
                 ],
                 [
-                  17422536.0,
+                  17422536,
                   51.2051121,
                   3.2255671
                 ],
                 [
-                  17422537.0,
+                  17422537,
                   51.2054988,
                   3.224871
                 ],
                 [
-                  17422566.0,
+                  17422566,
                   51.2051745,
                   3.2243233
                 ],
                 [
-                  17422567.0,
+                  17422567,
                   51.2048367,
                   3.223747
                 ],
                 [
-                  17422570.0,
+                  17422570,
                   51.2042282,
                   3.2242076
                 ],
                 [
-                  17422577.0,
+                  17422577,
                   51.2030882,
                   3.2251655
                 ],
                 [
-                  17422579.0,
+                  17422579,
                   51.2025637,
                   3.2259089
                 ],
                 [
-                  17422582.0,
+                  17422582,
                   51.2023917,
                   3.2261814
                 ],
                 [
-                  17422584.0,
+                  17422584,
                   51.2020117,
                   3.2267487
                 ],
                 [
-                  17422586.0,
+                  17422586,
                   51.2017696,
                   3.2270133
                 ],
                 [
-                  17422588.0,
+                  17422588,
                   51.2014524,
                   3.2273404
                 ],
                 [
-                  17422590.0,
+                  17422590,
                   51.201237,
                   3.2275543
                 ],
                 [
-                  17422709.0,
+                  17422709,
                   51.2046974,
                   3.2258628
                 ],
                 [
-                  17422710.0,
+                  17422710,
                   51.2040829,
                   3.2264293
                 ],
                 [
-                  17422712.0,
+                  17422712,
                   51.2039892,
                   3.2265071
                 ],
                 [
-                  17422715.0,
+                  17422715,
                   51.2033719,
                   3.2269209
                 ],
                 [
-                  17422716.0,
+                  17422716,
                   51.2030807,
                   3.2260656
                 ],
                 [
-                  17422717.0,
+                  17422717,
                   51.202818,
                   3.2258722
                 ],
                 [
-                  17422718.0,
+                  17422718,
                   51.2038388,
                   3.2279927
                 ],
                 [
-                  17423164.0,
+                  17423164,
                   51.2029813,
                   3.2249073
                 ],
                 [
-                  17423165.0,
+                  17423165,
                   51.2028254,
                   3.2244593
                 ],
                 [
-                  17423166.0,
+                  17423166,
                   51.2022982,
                   3.2246102
                 ],
                 [
-                  17423167.0,
+                  17423167,
                   51.2022253,
                   3.2247127
                 ],
                 [
-                  17423169.0,
+                  17423169,
                   51.2017476,
                   3.2247416
                 ],
                 [
-                  17423172.0,
+                  17423172,
                   51.2006736,
                   3.2250634
                 ],
                 [
-                  17423175.0,
+                  17423175,
                   51.2017219,
                   3.2235502
                 ],
                 [
-                  17423264.0,
+                  17423264,
                   51.2005628,
                   3.2229844
                 ],
                 [
-                  17423265.0,
+                  17423265,
                   51.2005818,
                   3.2232636
                 ],
                 [
-                  17423266.0,
+                  17423266,
                   51.2017044,
                   3.2231858
                 ]
@@ -2470,404 +3358,404 @@
               ],
               "data": [
                 [
-                  1271366346.0,
-                  1271366384.0
+                  1271366346,
+                  1271366384
                 ],
                 [
-                  4995181280.0,
-                  2529521797.0
+                  4995181280,
+                  2529521797
                 ],
                 [
-                  5631269894.0,
-                  5631269878.0
+                  5631269894,
+                  5631269878
                 ],
                 [
-                  3404418032.0,
-                  1388233250.0
+                  3404418032,
+                  1388233250
                 ],
                 [
-                  5241507509.0,
-                  1165317896.0
+                  5241507509,
+                  1165317896
                 ],
                 [
-                  312709083.0,
-                  1927150828.0
+                  312709083,
+                  1927150828
                 ],
                 [
-                  3779659124.0,
-                  3779659123.0
+                  3779659124,
+                  3779659123
                 ],
                 [
-                  7725522646.0,
-                  7725522652.0
+                  7725522646,
+                  7725522652
                 ],
                 [
-                  2410018061.0,
-                  5640662413.0
+                  2410018061,
+                  5640662413
                 ],
                 [
-                  6260943447.0,
-                  1164764007.0
+                  6260943447,
+                  1164764007
                 ],
                 [
-                  323742518.0,
-                  1515019652.0
+                  323742518,
+                  1515019652
                 ],
                 [
-                  26343710.0,
-                  5233171495.0
+                  26343710,
+                  5233171495
                 ],
                 [
-                  5584110171.0,
-                  7122141178.0
+                  5584110171,
+                  7122141178
                 ],
                 [
-                  5373759178.0,
-                  5240131569.0
+                  5373759178,
+                  5240131569
                 ],
                 [
-                  305443505.0,
-                  7757485617.0
+                  305443505,
+                  7757485617
                 ],
                 [
-                  6747337781.0,
-                  6747337782.0
+                  6747337781,
+                  6747337782
                 ],
                 [
-                  4917095020.0,
-                  4917095722.0
+                  4917095020,
+                  4917095722
                 ],
                 [
-                  1686655901.0,
-                  7725603389.0
+                  1686655901,
+                  7725603389
                 ],
                 [
-                  1492554046.0,
-                  312714405.0
+                  1492554046,
+                  312714405
                 ],
                 [
-                  26343910.0,
-                  1598912937.0
+                  26343910,
+                  1598912937
                 ],
                 [
-                  5169436028.0,
-                  5169436029.0
+                  5169436028,
+                  5169436029
                 ],
                 [
-                  4995181280.0,
-                  3340512430.0
+                  4995181280,
+                  3340512430
                 ],
                 [
-                  5711826167.0,
-                  5711826166.0
+                  5711826167,
+                  5711826166
                 ],
                 [
-                  7685484226.0,
-                  2517460459.0
+                  7685484226,
+                  2517460459
                 ],
                 [
-                  1321891561.0,
-                  1321891699.0
+                  1321891561,
+                  1321891699
                 ],
                 [
-                  766772547.0,
-                  1103393322.0
+                  766772547,
+                  1103393322
                 ],
                 [
-                  5520732573.0,
-                  5520732585.0
+                  5520732573,
+                  5520732585
                 ],
                 [
-                  470512873.0,
-                  7538594603.0
+                  470512873,
+                  7538594603
                 ],
                 [
-                  1271366346.0,
-                  1271366396.0
+                  1271366346,
+                  1271366396
                 ],
                 [
-                  5520732573.0,
-                  5520732576.0
+                  5520732573,
+                  5520732576
                 ],
                 [
-                  1941115244.0,
-                  26347700.0
+                  1941115244,
+                  26347700
                 ],
                 [
-                  5643616755.0,
-                  5643616756.0
+                  5643616755,
+                  5643616756
                 ],
                 [
-                  1321891811.0,
-                  1321891513.0
+                  1321891811,
+                  1321891513
                 ],
                 [
-                  2529521737.0,
-                  2529521847.0
+                  2529521737,
+                  2529521847
                 ],
                 [
-                  310385919.0,
-                  5061898100.0
+                  310385919,
+                  5061898100
                 ],
                 [
-                  312709083.0,
-                  1927246459.0
+                  312709083,
+                  1927246459
                 ],
                 [
-                  1321891811.0,
-                  1321891686.0
+                  1321891811,
+                  1321891686
                 ],
                 [
-                  4278319941.0,
-                  4278319942.0
+                  4278319941,
+                  4278319942
                 ],
                 [
-                  5643616755.0,
-                  5643616759.0
+                  5643616755,
+                  5643616759
                 ],
                 [
-                  310386142.0,
-                  5627680626.0
+                  310386142,
+                  5627680626
                 ],
                 [
-                  5574136962.0,
-                  2968454151.0
+                  5574136962,
+                  2968454151
                 ],
                 [
-                  3328488669.0,
-                  4595144333.0
+                  3328488669,
+                  4595144333
                 ],
                 [
-                  2410018061.0,
-                  2410018073.0
+                  2410018061,
+                  2410018073
                 ],
                 [
-                  4278319941.0,
-                  4176824706.0
+                  4278319941,
+                  4176824706
                 ],
                 [
-                  26343723.0,
-                  26343722.0
+                  26343723,
+                  26343722
                 ],
                 [
-                  4917095020.0,
-                  4917095721.0
+                  4917095020,
+                  4917095721
                 ],
                 [
-                  7164964539.0,
-                  7164964538.0
+                  7164964539,
+                  7164964538
                 ],
                 [
-                  1914291241.0,
-                  1870007640.0
+                  1914291241,
+                  1870007640
                 ],
                 [
-                  7685484226.0,
-                  7685484227.0
+                  7685484226,
+                  7685484227
                 ],
                 [
-                  5955133851.0,
-                  5959691743.0
+                  5955133851,
+                  5959691743
                 ],
                 [
-                  26343910.0,
-                  5061064737.0
+                  26343910,
+                  5061064737
                 ],
                 [
-                  5640662414.0,
-                  2410018163.0
+                  5640662414,
+                  2410018163
                 ],
                 [
-                  7725522646.0,
-                  7725522669.0
+                  7725522646,
+                  7725522669
                 ],
                 [
-                  6570699188.0,
-                  6172781581.0
+                  6570699188,
+                  6172781581
                 ],
                 [
-                  1311024433.0,
-                  893271485.0
+                  1311024433,
+                  893271485
                 ],
                 [
-                  310386142.0,
-                  310385918.0
+                  310386142,
+                  310385918
                 ],
                 [
-                  766772547.0,
-                  766772545.0
+                  766772547,
+                  766772545
                 ],
                 [
-                  1492554046.0,
-                  312714406.0
+                  1492554046,
+                  312714406
                 ],
                 [
-                  5682555820.0,
-                  5682555819.0
+                  5682555820,
+                  5682555819
                 ],
                 [
-                  1311024433.0,
-                  893271480.0
+                  1311024433,
+                  893271480
                 ],
                 [
-                  5574136962.0,
-                  5574136961.0
+                  5574136962,
+                  5574136961
                 ],
                 [
-                  1789677059.0,
-                  312712198.0
+                  1789677059,
+                  312712198
                 ],
                 [
-                  7725522646.0,
-                  7725522666.0
+                  7725522646,
+                  7725522666
                 ],
                 [
-                  5520732573.0,
-                  5520732574.0
+                  5520732573,
+                  5520732574
                 ],
                 [
-                  5631269894.0,
-                  5631269877.0
+                  5631269894,
+                  5631269877
                 ],
                 [
-                  26343910.0,
-                  1271366350.0
+                  26343910,
+                  1271366350
                 ],
                 [
-                  5468190513.0,
-                  5468190514.0
+                  5468190513,
+                  5468190514
                 ],
                 [
-                  1789677059.0,
-                  4971141883.0
+                  1789677059,
+                  4971141883
                 ],
                 [
-                  5226746593.0,
-                  5226746594.0
+                  5226746593,
+                  5226746594
                 ],
                 [
-                  26343723.0,
-                  1913770532.0
+                  26343723,
+                  1913770532
                 ],
                 [
-                  5226746593.0,
-                  5226748883.0
+                  5226746593,
+                  5226748883
                 ],
                 [
-                  26343710.0,
-                  26343711.0
+                  26343710,
+                  26343711
                 ],
                 [
-                  187067655.0,
-                  318730089.0
+                  187067655,
+                  318730089
                 ],
                 [
-                  6448682259.0,
-                  6448682261.0
+                  6448682259,
+                  6448682261
                 ],
                 [
-                  6747337781.0,
-                  6747337780.0
+                  6747337781,
+                  6747337780
                 ],
                 [
-                  2410018144.0,
-                  5230762625.0
+                  2410018144,
+                  5230762625
                 ],
                 [
-                  305443505.0,
-                  3606972356.0
+                  305443505,
+                  3606972356
                 ],
                 [
-                  5468190513.0,
-                  5468190516.0
+                  5468190513,
+                  5468190516
                 ],
                 [
-                  323742518.0,
-                  6960563529.0
+                  323742518,
+                  6960563529
                 ],
                 [
-                  5373759178.0,
-                  5373759179.0
+                  5373759178,
+                  5373759179
                 ],
                 [
-                  4969326080.0,
-                  4969326116.0
+                  4969326080,
+                  4969326116
                 ],
                 [
-                  310385919.0,
-                  5061898159.0
+                  310385919,
+                  5061898159
                 ],
                 [
-                  310386142.0,
-                  5049458119.0
+                  310386142,
+                  5049458119
                 ],
                 [
-                  1941115244.0,
-                  1941115249.0
+                  1941115244,
+                  1941115249
                 ],
                 [
-                  5373795797.0,
-                  5373795798.0
+                  5373795797,
+                  5373795798
                 ],
                 [
-                  1686655901.0,
-                  7725603387.0
+                  1686655901,
+                  7725603387
                 ],
                 [
-                  6570699188.0,
-                  6570699189.0
+                  6570699188,
+                  6570699189
                 ],
                 [
-                  470512873.0,
-                  1164691751.0
+                  470512873,
+                  1164691751
                 ],
                 [
-                  5094631900.0,
-                  318174007.0
+                  5094631900,
+                  318174007
                 ],
                 [
-                  7169520149.0,
-                  7169520148.0
+                  7169520149,
+                  7169520148
                 ],
                 [
-                  1165547266.0,
-                  5072243159.0
+                  1165547266,
+                  5072243159
                 ],
                 [
-                  5540629393.0,
-                  5540629411.0
+                  5540629393,
+                  5540629411
                 ],
                 [
-                  4995181280.0,
-                  1071493222.0
+                  4995181280,
+                  1071493222
                 ],
                 [
-                  5169436028.0,
-                  1207217162.0
+                  5169436028,
+                  1207217162
                 ],
                 [
-                  5584110171.0,
-                  5584110170.0
+                  5584110171,
+                  5584110170
                 ],
                 [
-                  4969326080.0,
-                  4969326081.0
+                  4969326080,
+                  4969326081
                 ],
                 [
-                  5094631900.0,
-                  318174006.0
+                  5094631900,
+                  318174006
                 ],
                 [
-                  6260943447.0,
-                  2500094100.0
+                  6260943447,
+                  2500094100
                 ],
                 [
-                  1165547266.0,
-                  5072141141.0
+                  1165547266,
+                  5072141141
                 ],
                 [
-                  5226746593.0,
-                  5226746592.0
+                  5226746593,
+                  5226746592
                 ]
               ]
             }
@@ -2899,7 +3787,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "segments": {
                 "columns": [
@@ -2907,7 +3795,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -2915,7 +3803,51 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Define edges between node tables"
+            }
+          ],
+          "icon": "route",
+          "id": "Graph operations > Define edges",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Define edges",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "relations",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.define_edges",
+          "type": "graph_creation_view"
+        },
         "op_id": "Graph operations > Define edges",
         "output_metadata": [
           {
@@ -2927,7 +3859,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "segments": {
                 "columns": [
@@ -2935,7 +3867,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -2988,7 +3920,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3007,14 +3939,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3023,7 +3955,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3048,7 +3980,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3067,7 +3999,91 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Derives a new column with a SQL expression and stores it in the same table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table to derive the column in.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the formula to derive the column with.",
+                  "name": "formula"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the derived column.",
+                  "name": "name"
+                }
+              ]
+            }
+          ],
+          "icon": "database-plus",
+          "id": "Table operations > Derive with SQL",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive with SQL",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_with_sql",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive with SQL",
         "output_metadata": [
           {
@@ -3079,7 +4095,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3099,14 +4115,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3115,7 +4131,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3140,7 +4156,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3195,7 +4211,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3215,14 +4231,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3231,7 +4247,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3268,7 +4284,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3287,7 +4303,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -3299,7 +4367,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3319,14 +4387,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1396.0
+                "length": 1396
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3335,7 +4403,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3372,7 +4440,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3413,7 +4481,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 62,
+        "display_version": 63,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3426,7 +4494,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3446,14 +4514,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1396.0
+                "length": 1396
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3462,7 +4530,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3499,7 +4567,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 2832.0
+                "length": 2832
               }
             },
             "other": {},
@@ -3518,7 +4586,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -3591,7 +4718,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3611,14 +4738,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3627,7 +4754,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3664,7 +4791,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3683,7 +4810,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -3695,7 +4874,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3715,14 +4894,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1470.0
+                "length": 1470
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3731,7 +4910,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3768,7 +4947,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3828,7 +5007,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3845,7 +5024,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -3854,7 +5033,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3878,7 +5057,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -3897,7 +5076,151 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "The prize collecting Steiner tree is a problem that seeks a subtree of a graph that maximizes the total prize collected from the nodes minus the total weight of the edges.\n\nThe prize collecting Steiner Forest allows for multiple disjoint trees. This problem has multiple versions, in this case there are a set of nodes that can act as the root of the subtrees, and each such node has a cost for using it as the root of the tree it belongs to. Every subtree must have exactly 1 root.\n\nA use case for this operation could be that we want to create a water supply network, where the water stations can act as the roots, and the houses have prizes, since they are the customers. The piping costs will be the weights of the edges.\n\nThis example can be seen in the \"In Bruges\" workspace in \"examples/Peters lessons\".\n\nA small example of the PCSF problem:\n\nWe have a graph, with 5 nodes: A, B, C, D, E.\n\nThe edges with their weights:\nA-B: 10\nB-C: 20\nD-E: 40\n\nThe nodes with their prizes:\nA: 0\nB: 30\nC: 40\nE: 25\n\nThe potential roots with the costs:\nA: 15\nD: 35\n\nThe optimal solution:\nnodes: A, B, C\nedges: A-B, B-C\nroots: A\nprofit: (0 + 30 + 40) - (10 + 20) - (15) = 25\n\nThis box provides an approximate solution for the PCSF problem, as it is NP-hard."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation",
+                  "name": "relation"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the column with the node prices",
+                  "name": "price_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the column with the edge weights",
+                  "name": "weight_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the column with the root costs",
+                  "name": "root_cost_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the output column, 1.0 if the edge is part of the forest, None otherwise",
+                  "name": "output_edge"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the output column, 1.0 if the node is part of the forest, None otherwise",
+                  "name": "output_node"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the output column, 1.0 if the node is a root node, None otherwise",
+                  "name": "output_root_nodes"
+                },
+                {
+                  "annotation": "str",
+                  "description": "a table with a single record: the profit",
+                  "name": "output_profit"
+                }
+              ]
+            }
+          ],
+          "icon": "binary-tree",
+          "id": "Graph operations > Steiner forest",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Steiner forest",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            },
+            {
+              "default": null,
+              "name": "price_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "weight_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "root_cost_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "output_edge",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "output_node",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "output_root_nodes",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "output_profit",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.pcsf",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Steiner forest",
         "output_metadata": [
           {
@@ -3909,7 +5232,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -3928,14 +5251,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -3944,7 +5267,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -3969,7 +5292,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4035,7 +5358,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4049,7 +5372,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -4058,7 +5381,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4080,7 +5403,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4099,7 +5422,47 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "In Bruges"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "In Bruges > Derive segment_length",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive segment_length",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "Peters_lessons.bruges.derive_segment_length",
+          "type": "basic"
+        },
         "op_id": "In Bruges > Derive segment_length",
         "output_metadata": [
           {
@@ -4111,7 +5474,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4125,7 +5488,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -4134,7 +5497,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4157,7 +5520,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4197,7 +5560,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 60,
+        "display_version": 61,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4210,7 +5573,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4230,14 +5593,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1470.0
+                "length": 1470
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -4246,7 +5609,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4283,7 +5646,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 2838.0
+                "length": 2838
               }
             },
             "other": {},
@@ -4302,7 +5665,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -4375,7 +5797,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4391,7 +5813,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -4400,7 +5822,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4423,7 +5845,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4442,7 +5864,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -4454,7 +5928,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4470,7 +5944,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -4479,7 +5953,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4502,7 +5976,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4562,7 +6036,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4578,7 +6052,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -4587,7 +6061,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4610,7 +6084,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4629,7 +6103,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -4641,7 +6167,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4657,7 +6183,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -4666,7 +6192,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4689,7 +6215,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 18.0
+                "length": 18
               }
             },
             "other": {},
@@ -4730,7 +6256,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 53,
+        "display_version": 54,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4743,7 +6269,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4759,7 +6285,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -4768,7 +6294,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4791,7 +6317,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 18.0
+                "length": 18
               }
             },
             "other": {},
@@ -4810,7 +6336,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -4872,7 +6457,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4886,7 +6471,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -4895,7 +6480,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4917,7 +6502,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -4936,7 +6521,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -4948,7 +6585,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -4962,7 +6599,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -4971,7 +6608,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -4993,7 +6630,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5053,7 +6690,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5067,7 +6704,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -5076,7 +6713,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5098,7 +6735,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5117,7 +6754,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5129,7 +6818,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5143,7 +6832,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -5152,7 +6841,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5174,7 +6863,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 18.0
+                "length": 18
               }
             },
             "other": {},
@@ -5228,7 +6917,55 @@
           {}
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merge multiple inputs"
+            }
+          ],
+          "icon": "arrows-join",
+          "id": "Graph operations > Merge",
+          "inputs": [
+            {
+              "name": "bundles",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.bundle.Bundle]"
+              }
+            }
+          ],
+          "name": "Merge",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "must be unique",
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "must be unique",
+                  "rename non-unique",
+                  "concatenate non-unique"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge",
         "output_metadata": [
           {
@@ -5240,7 +6977,7 @@
                   "lon"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "segments": {
                 "columns": [
@@ -5248,7 +6985,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5277,7 +7014,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 48,
+        "display_version": 49,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5290,7 +7027,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5304,7 +7041,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 232.0
+                "length": 232
               },
               "prospects": {
                 "columns": [
@@ -5313,7 +7050,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5335,7 +7072,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 18.0
+                "length": 18
               }
             },
             "other": {},
@@ -5354,7 +7091,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the frontend uses this parameter to store relevant data of the chips",
+                  "name": "chip_data"
+                }
+              ]
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualizations > Visualize graph",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "chip_data",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
+          "type": "graph_visualization"
+        },
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -5416,7 +7212,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5436,14 +7232,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1470.0
+                "length": 1470
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -5452,7 +7248,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5489,7 +7285,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5508,7 +7304,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5520,7 +7368,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5540,14 +7388,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1470.0
+                "length": 1470
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -5556,7 +7404,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5593,7 +7441,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 2838.0
+                "length": 2838
               }
             },
             "other": {},
@@ -5654,7 +7502,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5674,14 +7522,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1396.0
+                "length": 1396
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -5690,7 +7538,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5727,7 +7575,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5746,7 +7594,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5758,7 +7658,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5778,14 +7678,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 1396.0
+                "length": 1396
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -5794,7 +7694,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5831,7 +7731,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 2832.0
+                "length": 2832
               }
             },
             "other": {},
@@ -5892,7 +7792,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5908,7 +7808,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -5917,7 +7817,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -5940,7 +7840,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -5959,7 +7859,115 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Computes the shortest distance from each node to the starting nodes using the specified edge distances."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation to use for the graph",
+                  "name": "relation"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the distances for the edges",
+                  "name": "edge_distances"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the attribute for storing the shortest distances",
+                  "name": "attribute_name"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the attribute for the starting distances",
+                  "name": "starting_distance"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "whether to treat the graph as undirected or not",
+                  "name": "undirected"
+                }
+              ]
+            }
+          ],
+          "icon": "route-square",
+          "id": "Graph operations > Distance via shortest path",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Distance via shortest path",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            },
+            {
+              "default": null,
+              "name": "edge_distances",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "attribute_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "starting_distance",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "undirected",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.shortest_distance",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Distance via shortest path",
         "output_metadata": [
           {
@@ -5971,7 +7979,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -5987,7 +7995,7 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -5996,7 +8004,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6019,7 +8027,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -6062,7 +8070,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 17,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6075,7 +8083,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -6094,14 +8102,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -6110,7 +8118,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6135,7 +8143,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -6154,7 +8162,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -6197,7 +8242,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -6211,7 +8256,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -6220,7 +8265,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6228,7 +8273,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -6247,7 +8292,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds the attributes of the source and target nodes to the edges in the specified relation."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the edge table",
+                  "name": "table_name"
+                }
+              ]
+            }
+          ],
+          "icon": "link",
+          "id": "Graph operations > Add node attributes to edges",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Add node attributes to edges",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.supplement_edges",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Add node attributes to edges",
         "output_metadata": [
           {
@@ -6259,7 +8364,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -6273,7 +8378,7 @@
                   "node_type"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "prospects": {
                 "columns": [
@@ -6282,7 +8387,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6304,7 +8409,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -6357,7 +8462,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -6377,14 +8482,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -6393,7 +8498,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6418,7 +8523,7 @@
                   "src_id"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
@@ -6437,7 +8542,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds the attributes of the source and target nodes to the edges in the specified relation."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the edge table",
+                  "name": "table_name"
+                }
+              ]
+            }
+          ],
+          "icon": "link",
+          "id": "Graph operations > Add node attributes to edges",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Add node attributes to edges",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.supplement_edges",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Add node attributes to edges",
         "output_metadata": [
           {
@@ -6449,7 +8614,7 @@
                   "node_type"
                 ],
                 "key": "capex",
-                "length": 6.0
+                "length": 6
               },
               "locations": {
                 "columns": [
@@ -6469,14 +8634,14 @@
                   "start"
                 ],
                 "key": "locations",
-                "length": 11008.0
+                "length": 11008
               },
               "profit": {
                 "columns": [
                   "profit"
                 ],
                 "key": "profit",
-                "length": 1.0
+                "length": 1
               },
               "prospects": {
                 "columns": [
@@ -6485,7 +8650,7 @@
                   "node_type"
                 ],
                 "key": "prospects",
-                "length": 230.0
+                "length": 230
               },
               "segments": {
                 "columns": [
@@ -6522,7 +8687,7 @@
                   "start_src"
                 ],
                 "key": "segments",
-                "length": 24746.0
+                "length": 24746
               }
             },
             "other": {},
