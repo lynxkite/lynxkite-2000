@@ -1,10 +1,5 @@
 {
-  "assistant_messages": [
-    {
-      "content": "hi",
-      "role": "user"
-    }
-  ],
+  "assistant_messages": [],
   "edges": [
     {
       "id": "Vector from attributes 2 output Train/test split 2 bundle",
@@ -184,6 +179,7 @@
           "vector_name": "features"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Vector from attributes"
       },
@@ -280,6 +276,7 @@
           "test_ratio": "0.2"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train/test split"
       },
@@ -413,6 +410,7 @@
           "weights": "uniform"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -431,7 +429,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -495,6 +493,7 @@
           "table_name": "iris_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -627,6 +626,7 @@
           "table_name": "iris_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -760,6 +760,7 @@
           "table_name": "creditg"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "One-hot encoding"
       },
@@ -859,6 +860,7 @@
           "old_name": "credit-g"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Rename table"
       },
@@ -1007,6 +1009,7 @@
           "vector_name": "features"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Vector from attributes"
       },
@@ -1219,6 +1222,7 @@
           "test_ratio": "0.2"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train/test split"
       },
@@ -1532,6 +1536,7 @@
           "weights": "uniform"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -1844,6 +1849,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -2158,6 +2164,7 @@
           "weights": "distance"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -2471,6 +2478,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -2496,7 +2504,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -2647,6 +2655,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -2665,7 +2674,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -2816,6 +2825,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -2865,6 +2875,9 @@
           "version": "1"
         },
         "status": "done",
+        "tags": [
+          "slow"
+        ],
         "telemetry": null,
         "title": "Fetch OpenML dataset"
       },
@@ -2930,6 +2943,9 @@
           "version": 1.0
         },
         "status": "done",
+        "tags": [
+          "slow"
+        ],
         "telemetry": null,
         "title": "Fetch OpenML dataset"
       },
@@ -3057,6 +3073,7 @@
           "table_name": "creditg"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Flatten column"
       },
