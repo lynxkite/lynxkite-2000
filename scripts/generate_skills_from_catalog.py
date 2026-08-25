@@ -27,13 +27,9 @@ class BoxSkill:
         self.long_description = text_doc
         self.parameters = []
         self.usage = ""
-        self.returns = [
-            (o.name, o.type, output_docs.get(o.name, "")) for o in op.outputs
-        ]
+        self.returns = [(o.name, o.type, output_docs.get(o.name, "")) for o in op.outputs]
         self.package = (
-            ".".join(op.python_function_name.split(".")[:-1])
-            if op.python_function_name
-            else ""
+            ".".join(op.python_function_name.split(".")[:-1]) if op.python_function_name else ""
         )
         self.function_name = (
             op.python_function_name.split(".")[-1] if op.python_function_name else ""
@@ -65,9 +61,7 @@ class BoxSkill:
                 "```",
             ]
             custom_types = [
-                (p["name"], p["type"])
-                for p in self.parameters
-                if "typing" in str(p["type"])
+                (p["name"], p["type"]) for p in self.parameters if "typing" in str(p["type"])
             ]
             if custom_types:
                 desc.append("Custom types:")
@@ -83,10 +77,7 @@ class BoxSkill:
                     for param in self.parameters
                 ],
                 "returns:",
-                *[
-                    f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}."
-                    for ret in self.returns
-                ],
+                *[f"  - {ret[0]}: {ret[1] or '?'} - {ret[2] or '?'}." for ret in self.returns],
                 "usage:",
                 f"  output_variable = {self.usage}",
             ]

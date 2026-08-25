@@ -30,7 +30,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -42,14 +42,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 272.0
+                "length": 272
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 246.0
+                "length": 246
               }
             },
             "other": {},
@@ -68,7 +68,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -111,7 +148,7 @@
                   "mrna"
                 ],
                 "key": "records",
-                "length": 272.0
+                "length": 272
               }
             },
             "other": {},
@@ -119,7 +156,55 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "topology-star-3",
+          "id": "Graph operations > Graph from edge list",
+          "inputs": [
+            {
+              "name": "df",
+              "position": "left",
+              "type": {
+                "type": "<class 'pandas.core.frame.DataFrame'>"
+              }
+            }
+          ],
+          "name": "Graph from edge list",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "source",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].records.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "target",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].records.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.graph_from_edge_list",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Graph from edge list",
         "output_metadata": [
           {
@@ -130,14 +215,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 272.0
+                "length": 272
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 246.0
+                "length": 246
               }
             },
             "other": {},
@@ -183,7 +268,20 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Comment",
+          "inputs": [],
+          "name": "Comment",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.comment",
+          "type": "basic"
+        },
         "op_id": "Comment",
         "output_metadata": null,
         "params": {
@@ -213,7 +311,20 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Comment",
+          "inputs": [],
+          "name": "Comment",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.comment",
+          "type": "basic"
+        },
         "op_id": "Comment",
         "output_metadata": null,
         "params": {
@@ -237,8 +348,8 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": null,
-        "error": "KeyError: 'hsa-miR-155-5p'",
+        "display_version": 1,
+        "error": null,
         "expanded_height": null,
         "input_metadata": [
           {
@@ -249,14 +360,14 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 272.0
+                "length": 272
               },
               "nodes": {
                 "columns": [
                   "id"
                 ],
                 "key": "nodes",
-                "length": 246.0
+                "length": 246
               }
             },
             "other": {},
@@ -275,7 +386,49 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "A custom graph visualization."
+            }
+          ],
+          "icon": "eye",
+          "id": "Visualize miRNA graph",
+          "inputs": [
+            {
+              "name": "graph",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Visualize miRNA graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "color_edges_by",
+              "type": {
+                "type": "typing.Optional[typing.Annotated[str, {'format': 'dropdown', 'metadata_query': '[].dataframes[].edges[].columns[]'}]]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "miRNA_networks.visualize_miRNA_network.visualize_mirna_graph",
+          "type": "visualization"
+        },
         "op_id": "Visualize miRNA graph",
         "output_metadata": [
           {}
@@ -305,7 +458,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -316,7 +526,7 @@
                   "mrna"
                 ],
                 "key": "records",
-                "length": 272.0
+                "length": 272
               }
             },
             "other": {},
