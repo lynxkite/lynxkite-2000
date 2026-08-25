@@ -1,5 +1,3 @@
-
-
 """Operations for reading from databases."""
 
 from lynxkite_core import ops
@@ -72,8 +70,8 @@ def import_from_database_with_SQL(
 def import_all_tables_from_database(
     *, database_type: DatabaseType = DatabaseType.postgresql
 ) -> core.Bundle:
-
     """Import all tables from a database"""
+
 
     database = os.getenv("PGDATABASE") or os.getenv("POSTGRES_DB")
     user = os.getenv("PGUSER") or os.getenv("POSTGRES_USER", "postgres")
@@ -104,15 +102,18 @@ def import_all_tables_from_database(
         host=host,
         port=port
     )
-
-    executable = conn.sql("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+    query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+    executable = conn.sql(query)
     tables = executable.execute()
+    tables_df = pd.DataFrame(tables, columns=["table_name"])
+    dfs = {}
+    
+    for table in tables_df["table_name"]:
+        table_query = f"SELECT * FROM {table};"
+        table_executable = conn.sql(table_query)
+        dfs[table] = pd.DataFrame(table_executable.execute())
 
-    df = pd.DataFrame()
-    for table in tables["table_name"]:
-        table_df = conn.table(table).execute()
-        df = pd.concat([df, table_df], ignore_index=True)
-    return core.Bundle(dfs={"database_tables": df})
+    return core.Bundle(dfs=dfs)
 
 
 @op("Explode Database Table", icon = "bomb")
@@ -161,15 +162,18 @@ def explode_column(b: core.Bundle, *, added_columns_from="<column name>"):
     for k in b.dfs:
         df = b.dfs[k]
         if added_columns_from not in df.columns:
+            # skip this table if the column is not found
             dfs[k] = df
             continue
         parsed = df[added_columns_from].apply(_parse).tolist()
         # Build one list per key; avoids broadcast assignment that fails on list values
         all_keys = dict.fromkeys(key for d in parsed for key in d)
         json_df = pd.DataFrame(
-            {key: [d.get(key) for d in parsed] for key in all_keys},
-            index=df.index,
+            {key: pd.Series([d.get(key) for d in parsed], index=df.index, dtype=object) for key in all_keys},
         )
-        dfs[k] = pd.concat([df.drop(columns=[added_columns_from]), json_df], axis=1)
+        result_df = pd.concat([df.drop(columns=[added_columns_from]), json_df], axis=1)
+        # Ensure we're storing a DataFrame, not a list
+        assert isinstance(result_df, pd.DataFrame), f"Expected DataFrame, got {type(result_df).__name__}"
+        dfs[k] = result_df
     return core.Bundle(dfs=dfs)
 
