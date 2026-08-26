@@ -1,0 +1,1011 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "One-hot encoding 1 output Vector from attributes 1 b",
+      "source": "One-hot encoding 1",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Vector from attributes 1 output Flatten column 1 b",
+      "source": "Vector from attributes 1",
+      "sourceHandle": "output",
+      "target": "Flatten column 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Flatten column 1 output Train/test split 1 bundle",
+      "source": "Flatten column 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import CSV 1 output One-hot encoding 1 b",
+      "source": "Import CSV 1",
+      "sourceHandle": "output",
+      "target": "One-hot encoding 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 1 output Train linear regression model 1 b",
+      "source": "Train/test split 1",
+      "sourceHandle": "output",
+      "target": "Train linear regression model 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train linear regression model 1 output Make prediction 1 b",
+      "source": "Train linear regression model 1",
+      "sourceHandle": "output",
+      "target": "Make prediction 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 1 output Scatter plot 1 bundle",
+      "source": "Make prediction 1",
+      "sourceHandle": "output",
+      "target": "Scatter plot 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Make prediction 1 output SQL 1 bundle",
+      "source": "Make prediction 1",
+      "sourceHandle": "output",
+      "target": "SQL 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "SQL 1 output View tables 1 bundle",
+      "source": "SQL 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import CSV",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "gender",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": "<from file>",
+          "filename": "uploads/hypo_telco_vertices.csv",
+          "separator": "<auto>",
+          "table_name": "records"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Import CSV"
+      },
+      "height": 557.0,
+      "id": "Import CSV 1",
+      "parentId": null,
+      "position": {
+        "x": 355.7996372249671,
+        "y": 125.0424518772098
+      },
+      "type": "basic",
+      "width": 481.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "seed": 1234.0,
+          "table_name": "records",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "height": 315.0,
+      "id": "Train/test split 1",
+      "parentId": null,
+      "position": {
+        "x": 2524.2224198274916,
+        "y": 241.5251863482176
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "gender",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > One-hot encoding",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "columns": [
+            "gender"
+          ],
+          "table_name": "records"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "One-hot encoding"
+      },
+      "height": 315.0,
+      "id": "One-hot encoding 1",
+      "parentId": null,
+      "position": {
+        "x": 1066.5679677703552,
+        "y": 245.47373346731877
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "attributes": [
+            "gender_one_hot",
+            "data_usage"
+          ],
+          "table_name": "records",
+          "vector_name": "features"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 315.0,
+      "id": "Vector from attributes 1",
+      "parentId": null,
+      "position": {
+        "x": 1579.2975963694753,
+        "y": 242.1104285824706
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Flatten column",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "column_name": "features",
+          "table_name": "records"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Flatten column"
+      },
+      "height": 315.0,
+      "id": "Flatten column 1",
+      "parentId": null,
+      "position": {
+        "x": 2018.638237542378,
+        "y": 242.72077260515152
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "linear",
+          "prediction_column": "age_prediction",
+          "table_name": "records_test"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "height": 386.0,
+      "id": "Make prediction 1",
+      "parentId": null,
+      "position": {
+        "x": 3513.124962329479,
+        "y": 194.89378302312366
+      },
+      "type": "basic",
+      "width": 336.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Train linear regression model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "label_column": "age",
+          "model_name": "linear",
+          "table_name": "records_train"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train linear regression model"
+      },
+      "height": 370.0,
+      "id": "Train linear regression model 1",
+      "parentId": null,
+      "position": {
+        "x": 3029.5983165675607,
+        "y": 210.35841132344106
+      },
+      "type": "basic",
+      "width": 328.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 3,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "identity_line": true,
+          "origin": true,
+          "table_name": "records_test",
+          "x_column": "age",
+          "y_column": "age_prediction"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 799.0,
+      "id": "Scatter plot 1",
+      "parentId": null,
+      "position": {
+        "x": 4139.675417275317,
+        "y": -402.3898578735199
+      },
+      "type": "image",
+      "width": 911.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "query": "select \nsqrt(\n  AVG(\n    (age - age_prediction)\n    *(age - age_prediction)\n  )\n)\n\nfrom records_test",
+          "save_as": "results"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "SQL"
+      },
+      "height": 315.0,
+      "id": "SQL 1",
+      "parentId": null,
+      "position": {
+        "x": 4119.401282833828,
+        "y": 540.6537384972929
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": null,
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "records",
+                "length": 10000.0
+              },
+              "records_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_test",
+                "length": 1000.0
+              },
+              "records_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "records_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "results": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 315.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 4620.1916230219,
+        "y": 543.6332701353508
+      },
+      "type": "table_view",
+      "width": 315.0
+    }
+  ],
+  "paused": true
+}
