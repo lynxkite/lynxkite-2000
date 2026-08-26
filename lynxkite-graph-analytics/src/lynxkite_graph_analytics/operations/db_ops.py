@@ -66,12 +66,58 @@ def import_from_database_with_SQL(
     df = executable.execute()
     return core.Bundle(dfs={"database_data": df})
 
-@op("Import all tables from a Database", color="green", icon="database", slow=True)
-def import_all_tables_from_database(
-    *, database_type: DatabaseType = DatabaseType.postgresql
-) -> core.Bundle:
-    """Import all tables from a database"""
+# @op("Import all tables from a Database", color="green", icon="database", slow=True)
+# def import_all_tables_from_database(
+#     *, database_type: DatabaseType = DatabaseType.postgresql
+# ) -> core.Bundle:
+#     """Import all tables from a database"""
 
+
+#     database = os.getenv("PGDATABASE") or os.getenv("POSTGRES_DB")
+#     user = os.getenv("PGUSER") or os.getenv("POSTGRES_USER", "postgres")
+#     password = os.getenv("PGPASSWORD") or os.getenv("POSTGRES_PASSWORD")
+#     host = os.getenv("PGHOST") or os.getenv("POSTGRES_HOST", "localhost")
+#     port_raw = os.getenv("PGPORT") or os.getenv("POSTGRES_PORT", "5432")
+
+#     if not database:
+#         raise ValueError(
+#             "PostgreSQL database name is missing. Set PGDATABASE or POSTGRES_DB."
+#         )
+#     if password is None:
+#         raise ValueError(
+#             "PostgreSQL password is missing. Set PGPASSWORD or POSTGRES_PASSWORD."
+#         )
+
+#     try:
+#         port = int(port_raw)
+#     except ValueError as e:
+#         raise ValueError(
+#             f"Invalid PostgreSQL port '{port_raw}'. Set PGPORT or POSTGRES_PORT to an integer."
+#         ) from e
+
+#     conn = ibis.postgres.connect(
+#         database=database,
+#         user=user,
+#         password=password,
+#         host=host,
+#         port=port
+#     )
+#     query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+#     executable = conn.sql(query)
+#     tables = executable.execute()
+#     tables_df = pd.DataFrame(tables, columns=["table_name"])
+#     dfs = {}
+    
+#     for table in tables_df["table_name"]:
+#         table_query = f"SELECT * FROM {table};"
+#         table_executable = conn.sql(table_query)
+#         dfs[table] = pd.DataFrame(table_executable.execute())
+
+#     return core.Bundle(dfs=dfs)
+
+@op("Import all tables from a database", color="green", icon = "database", slow=True)
+def import_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseType.postgresql) -> core.Bundle:
+    """Import all tables from a database"""
 
     database = os.getenv("PGDATABASE") or os.getenv("POSTGRES_DB")
     user = os.getenv("PGUSER") or os.getenv("POSTGRES_USER", "postgres")
