@@ -244,8 +244,12 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div
-        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized drag-handle" : ""} ${data.status}`}
-        style={iconized ? { ...nodeStyle, ...titleStyle } : nodeStyle}
+        className={`lynxkite-node nopan ${iconized ? "lynxkite-node-iconized drag-handle" : ""} ${data.status}`}
+        style={
+          iconized
+            ? { ...nodeStyle, ...titleStyle, ...(data.error ? { backgroundColor: "red" } : {}) }
+            : nodeStyle
+        }
       >
         {iconized ? (
           <Tooltip doc={data.title} disabled={props.dragging}>
