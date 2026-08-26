@@ -79,25 +79,11 @@
       "targetHandle": "bundles"
     },
     {
-      "id": "Import CSV 2 output View tables 2 bundle",
-      "source": "Import CSV 2",
-      "sourceHandle": "output",
-      "target": "View tables 2",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Train/test split 1 output Merge 1 bundles",
       "source": "Train/test split 1",
       "sourceHandle": "output",
       "target": "Merge 1",
       "targetHandle": "bundles"
-    },
-    {
-      "id": "Aggregate between neighbors 1 b Define edges 1 output",
-      "source": "Define edges 1",
-      "sourceHandle": "output",
-      "target": "Aggregate between neighbors 1",
-      "targetHandle": "b"
     },
     {
       "id": "Aggregate between neighbors 1 output Rename columns 1 b",
@@ -127,6 +113,87 @@
       "sourceHandle": "output",
       "target": "SQL 2",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Define edges 1 output Aggregate between neighbors 1 b",
+      "source": "Define edges 1",
+      "sourceHandle": "output",
+      "target": "Aggregate between neighbors 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Merge 1 output Define edges 2 b",
+      "source": "Merge 1",
+      "sourceHandle": "output",
+      "target": "Define edges 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Flatten column 2 output Train/test split 2 bundle",
+      "source": "Flatten column 2",
+      "sourceHandle": "output",
+      "target": "Train/test split 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train linear regression model 2 output Make prediction 2 b",
+      "selected": false,
+      "source": "Train linear regression model 2",
+      "sourceHandle": "output",
+      "target": "Make prediction 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 2 output Scatter plot 3 bundle",
+      "selected": false,
+      "source": "Make prediction 2",
+      "sourceHandle": "output",
+      "target": "Scatter plot 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Make prediction 2 output SQL 3 bundle",
+      "selected": false,
+      "source": "Make prediction 2",
+      "sourceHandle": "output",
+      "target": "SQL 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "SQL 3 output View tables 2 bundle",
+      "selected": false,
+      "source": "SQL 3",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train/test split 2 output Train linear regression model 2 b",
+      "source": "Train/test split 2",
+      "sourceHandle": "output",
+      "target": "Train linear regression model 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Define edges 2 output Out degree centrality 1 G",
+      "source": "Define edges 2",
+      "sourceHandle": "output",
+      "target": "Out degree centrality 1",
+      "targetHandle": "G"
+    },
+    {
+      "id": "Vector from attributes 2 output Flatten column 2 b",
+      "source": "Vector from attributes 2",
+      "sourceHandle": "output",
+      "target": "Flatten column 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Out degree centrality 1 output Vector from attributes 2 b",
+      "source": "Out degree centrality 1",
+      "sourceHandle": "output",
+      "target": "Vector from attributes 2",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -1113,8 +1180,8 @@
       "id": "Import CSV 2",
       "parentId": null,
       "position": {
-        "x": 2114.743875018924,
-        "y": 976.6617318400577
+        "x": 1960.4949936335524,
+        "y": 1270.3278714006688
       },
       "type": "basic",
       "width": 414.0
@@ -1122,7 +1189,7 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": {
           "dataframes": {
             "edges": {
@@ -4188,7 +4255,7 @@
         },
         "display_version": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 887.0,
         "input_metadata": [
           {
             "dataframes": {
@@ -4408,57 +4475,10 @@
       "id": "Merge 1",
       "parentId": null,
       "position": {
-        "x": 2759.141200659309,
-        "y": 1023.9730402500435
+        "x": 2593.027020705832,
+        "y": 1314.6728551686283
       },
       "type": "basic",
-      "width": 315.0
-    },
-    {
-      "data": {
-        "collapsed": null,
-        "display": null,
-        "display_version": 1,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "callee",
-                  "caller"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              }
-            },
-            "other": {},
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "View tables",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "limit": 100.0
-        },
-        "status": "done",
-        "tags": null,
-        "telemetry": null,
-        "title": "View tables"
-      },
-      "height": 315.0,
-      "id": "View tables 2",
-      "parentId": null,
-      "position": {
-        "x": 2684.5520032892146,
-        "y": 1427.5173630974666
-      },
-      "type": "table_view",
       "width": 315.0
     },
     {
@@ -5083,7 +5103,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 12,
+        "display_version": 14,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5190,6 +5210,4480 @@
       },
       "selected": false,
       "type": "table_view",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": {
+          "dataframes": {
+            "edges": {
+              "columns": [
+                "callee",
+                "caller"
+              ],
+              "data": [
+                [
+                  "Leah Miller",
+                  "Troy Webb"
+                ],
+                [
+                  "Luke Holmes",
+                  "Marcus Wolf"
+                ],
+                [
+                  "Shelby Ward",
+                  "Ruth Acosta"
+                ],
+                [
+                  "Julie Webb",
+                  "Kyle Pham"
+                ],
+                [
+                  "Gary Long",
+                  "Sean Ray"
+                ],
+                [
+                  "Cheryl Mays",
+                  "April Kelly"
+                ],
+                [
+                  "Luis Moore",
+                  "Chad Ponce"
+                ],
+                [
+                  "Karen Chung",
+                  "Lori Horton"
+                ],
+                [
+                  "Peter Boyd",
+                  "Carol Fry"
+                ],
+                [
+                  "Vickie Snow",
+                  "Kelly Vang"
+                ],
+                [
+                  "Brad Becker",
+                  "Amber Rice"
+                ],
+                [
+                  "Karen Brown",
+                  "Tammy Huang"
+                ],
+                [
+                  "Molly Mccoy",
+                  "Wendy Hobbs"
+                ],
+                [
+                  "Kim Hudson",
+                  "Renee Cross"
+                ],
+                [
+                  "Joy Green",
+                  "Robin Garza"
+                ],
+                [
+                  "Bryce Ware",
+                  "Kenneth Lin"
+                ],
+                [
+                  "Kurt Fox",
+                  "Ann Duarte"
+                ],
+                [
+                  "Michael Liu",
+                  "Kyle Meyer"
+                ],
+                [
+                  "Tammy Lang",
+                  "Robin Ware"
+                ],
+                [
+                  "Nancy Joyce",
+                  "Jacob Bell"
+                ],
+                [
+                  "Diana Morse",
+                  "Austin York"
+                ],
+                [
+                  "Ryan Sims",
+                  "Sara Keith"
+                ],
+                [
+                  "Robin Moore",
+                  "Lori Vang"
+                ],
+                [
+                  "Monica Lee",
+                  "Stacy Hart"
+                ],
+                [
+                  "Jorge Blair",
+                  "Hannah Neal"
+                ],
+                [
+                  "Emily Riley",
+                  "Emily Nunez"
+                ],
+                [
+                  "Bruce Moore",
+                  "Gina Barton"
+                ],
+                [
+                  "Mike Mccann",
+                  "Sarah King"
+                ],
+                [
+                  "Ana Ellis",
+                  "Anna Beard"
+                ],
+                [
+                  "Aaron Soto",
+                  "Ruth Roach"
+                ],
+                [
+                  "Dale Medina",
+                  "Teresa Ray"
+                ],
+                [
+                  "Dennis Cain",
+                  "Kevin Terry"
+                ],
+                [
+                  "Joel Beck",
+                  "Nancy Wells"
+                ],
+                [
+                  "James Cruz",
+                  "Henry Welch"
+                ],
+                [
+                  "Eric Thomas",
+                  "Claire Leon"
+                ],
+                [
+                  "Anna Salas",
+                  "Amy Kelley"
+                ],
+                [
+                  "Andrew Boyd",
+                  "Jaime King"
+                ],
+                [
+                  "Edwin Tran",
+                  "Adam Quinn"
+                ],
+                [
+                  "Emily Wu",
+                  "Harold Buck"
+                ],
+                [
+                  "Mia Bell",
+                  "Neil Harris"
+                ],
+                [
+                  "Carl Evans",
+                  "Melvin Dean"
+                ],
+                [
+                  "Erin Fox",
+                  "Jean Church"
+                ],
+                [
+                  "Debra Cox",
+                  "Kyle Vaughn"
+                ],
+                [
+                  "Robert Ware",
+                  "Peggy Wood"
+                ],
+                [
+                  "Jerry Cook",
+                  "Jeremy Kidd"
+                ],
+                [
+                  "Gary Sosa",
+                  "Sara Hall"
+                ],
+                [
+                  "Juan Hardin",
+                  "Laura Stone"
+                ],
+                [
+                  "Amy Berry",
+                  "Ashley Hess"
+                ],
+                [
+                  "Tony Walker",
+                  "Grace Hicks"
+                ],
+                [
+                  "Joan Berger",
+                  "Kimberly Li"
+                ],
+                [
+                  "Kevin Adams",
+                  "Jesus Bell"
+                ],
+                [
+                  "Tina Ross",
+                  "James Velez"
+                ],
+                [
+                  "Brad Mills",
+                  "Ariel Brady"
+                ],
+                [
+                  "Ryan Yates",
+                  "Paul Nguyen"
+                ],
+                [
+                  "Adam Terry",
+                  "Jade Clarke"
+                ],
+                [
+                  "Kayla Frank",
+                  "Teresa Hess"
+                ],
+                [
+                  "Alex Lowe",
+                  "Debra Young"
+                ],
+                [
+                  "Casey Kelly",
+                  "Linda Watts"
+                ],
+                [
+                  "John Singh",
+                  "Noah Stone"
+                ],
+                [
+                  "Ian Ross",
+                  "Carol Hunt"
+                ],
+                [
+                  "Mary Walsh",
+                  "Megan Luna"
+                ],
+                [
+                  "Monica Byrd",
+                  "Jacob Price"
+                ],
+                [
+                  "Kevin Garza",
+                  "Eddie Doyle"
+                ],
+                [
+                  "Chase Brown",
+                  "Holly Shea"
+                ],
+                [
+                  "Donald Holt",
+                  "Casey Young"
+                ],
+                [
+                  "Faith Ball",
+                  "Julie Horne"
+                ],
+                [
+                  "Jimmy Kline",
+                  "Bobby Evans"
+                ],
+                [
+                  "Tina Kent",
+                  "Megan Ward"
+                ],
+                [
+                  "Gary Curry",
+                  "Chad Fowler"
+                ],
+                [
+                  "Dana Bruce",
+                  "Karen Eaton"
+                ],
+                [
+                  "James Levy",
+                  "Evan Joseph"
+                ],
+                [
+                  "Lynn Haas",
+                  "Pamela West"
+                ],
+                [
+                  "Carly Bates",
+                  "Stacey Wolf"
+                ],
+                [
+                  "Kim Monroe",
+                  "Megan Ruiz"
+                ],
+                [
+                  "Anna Beard",
+                  "Cody Tran"
+                ],
+                [
+                  "Edward Cruz",
+                  "George Cole"
+                ],
+                [
+                  "Juan Little",
+                  "Dylan Simon"
+                ],
+                [
+                  "Alexa Kelly",
+                  "Chad Gay"
+                ],
+                [
+                  "Jose Kelly",
+                  "Diane Chen"
+                ],
+                [
+                  "Donald Bean",
+                  "Jason Rios"
+                ],
+                [
+                  "Ethan Lopez",
+                  "Kim Hudson"
+                ],
+                [
+                  "Shane Dunn",
+                  "Mark Acosta"
+                ],
+                [
+                  "Anne Walker",
+                  "Billy Day"
+                ],
+                [
+                  "Ronald Long",
+                  "Pamela Cook"
+                ],
+                [
+                  "Brian Wong",
+                  "Susan Hull"
+                ],
+                [
+                  "Nathan Berg",
+                  "Ryan Peters"
+                ],
+                [
+                  "Troy Webb",
+                  "Shelby Hunt"
+                ],
+                [
+                  "Eric Stark",
+                  "Erika Mora"
+                ],
+                [
+                  "Wayne Wells",
+                  "Joel Kerr"
+                ],
+                [
+                  "Rose Gomez",
+                  "Joseph Li"
+                ],
+                [
+                  "Dana Durham",
+                  "Jamie Vance"
+                ],
+                [
+                  "Louis Watts",
+                  "Mark Baird"
+                ],
+                [
+                  "Frank Leon",
+                  "Jodi Ramsey"
+                ],
+                [
+                  "Katie Olson",
+                  "Maria Moses"
+                ],
+                [
+                  "Alexa Kelly",
+                  "Kevin Cruz"
+                ],
+                [
+                  "Ana Nguyen",
+                  "Ronald Cruz"
+                ],
+                [
+                  "Barry Mason",
+                  "Jesse Allen"
+                ],
+                [
+                  "Lisa Pugh",
+                  "Diana Hunt"
+                ],
+                [
+                  "Tyler Wood",
+                  "Chad Ponce"
+                ],
+                [
+                  "Oscar Ayala",
+                  "Henry Hall"
+                ]
+              ]
+            },
+            "nodes": {
+              "columns": [
+                "name",
+                "age",
+                "data_usage",
+                "gender",
+                "gender_one_hot",
+                "features"
+              ],
+              "data": [
+                [
+                  "Alex Lamb",
+                  27.464584350585938,
+                  1502.2009155179774,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1502.2009155179774)"
+                ],
+                [
+                  "Bruce Cruz",
+                  35.968299865722656,
+                  1099.6562398559988,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1099.6562398559988)"
+                ],
+                [
+                  "Lisa Hudson",
+                  34.18540573120117,
+                  653.2743930965021,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 653.2743930965021)"
+                ],
+                [
+                  "Henry Dixon",
+                  22.06322860717773,
+                  1277.9381150977963,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1277.9381150977963)"
+                ],
+                [
+                  "Cody Baker",
+                  32.16081619262695,
+                  961.127643215568,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 961.127643215568)"
+                ],
+                [
+                  "Ann Wolf",
+                  40.48213577270508,
+                  689.3541843770798,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 689.3541843770798)"
+                ],
+                [
+                  "Rickey Hill",
+                  39.86235046386719,
+                  971.0495352403592,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 971.0495352403592)"
+                ],
+                [
+                  "Max Adkins",
+                  26.81281089782715,
+                  1800.6794221970986,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1800.6794221970986)"
+                ],
+                [
+                  "Tommy King",
+                  23.902271270751957,
+                  883.387161762977,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 883.387161762977)"
+                ],
+                [
+                  "Paula Moore",
+                  24.99309539794922,
+                  1910.7401503266133,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1910.7401503266133)"
+                ],
+                [
+                  "Edward Khan",
+                  30.097068786621094,
+                  1474.6877838118282,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1474.6877838118282)"
+                ],
+                [
+                  "Shawn Green",
+                  38.09220123291016,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  "Cody Hill",
+                  39.471561431884766,
+                  1024.589987432543,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1024.589987432543)"
+                ],
+                [
+                  "Tina Chavez",
+                  28.255931854248047,
+                  1770.895001907746,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1770.895001907746)"
+                ],
+                [
+                  "Martin Dean",
+                  41.1771125793457,
+                  473.0843403170643,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 473.0843403170643)"
+                ],
+                [
+                  "Tyler Moore",
+                  23.859582901000977,
+                  2151.139243438687,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2151.139243438687)"
+                ],
+                [
+                  "Emma Ball",
+                  34.10274124145508,
+                  1252.7218842914183,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1252.7218842914183)"
+                ],
+                [
+                  "Brian Bond",
+                  30.2437744140625,
+                  1772.9694383505323,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1772.9694383505323)"
+                ],
+                [
+                  "Scott Mason",
+                  30.37061309814453,
+                  1517.5144556932037,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1517.5144556932037)"
+                ],
+                [
+                  "Eric Ortiz",
+                  32.19626235961914,
+                  1409.8174969402617,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1409.8174969402617)"
+                ],
+                [
+                  "Matthew Lee",
+                  40.50498962402344,
+                  785.9492522981042,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 785.9492522981042)"
+                ],
+                [
+                  "Greg Olsen",
+                  35.726776123046875,
+                  564.4033356032073,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 564.4033356032073)"
+                ],
+                [
+                  "Matthew Key",
+                  33.860572814941406,
+                  1273.895297046039,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1273.895297046039)"
+                ],
+                [
+                  "Jason Colon",
+                  29.11613655090332,
+                  767.7399715299617,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 767.7399715299617)"
+                ],
+                [
+                  "Tina Wright",
+                  32.258583068847656,
+                  1501.3052651915364,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1501.3052651915364)"
+                ],
+                [
+                  "Jason Ball",
+                  52.82293701171875,
+                  2608.836181175317,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2608.836181175317)"
+                ],
+                [
+                  "Noah Hudson",
+                  32.20969009399414,
+                  1446.953459261468,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1446.953459261468)"
+                ],
+                [
+                  "Gary Curtis",
+                  37.41194915771485,
+                  1116.2683794805314,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1116.2683794805314)"
+                ],
+                [
+                  "Mary Warner",
+                  38.45712661743164,
+                  994.1395186119104,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 994.1395186119104)"
+                ],
+                [
+                  "Scott Rush",
+                  25.97191619873047,
+                  1816.0183683633247,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1816.0183683633247)"
+                ],
+                [
+                  "Paul Robles",
+                  37.68334579467773,
+                  898.3466382962172,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 898.3466382962172)"
+                ],
+                [
+                  "Chris Huang",
+                  36.69420623779297,
+                  1117.1803689451494,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1117.1803689451494)"
+                ],
+                [
+                  "James Bean",
+                  35.68675231933594,
+                  432.33199619524027,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 432.33199619524027)"
+                ],
+                [
+                  "Jamie Holt",
+                  22.433351516723636,
+                  2307.522390230102,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2307.522390230102)"
+                ],
+                [
+                  "Dan Garza",
+                  33.08222579956055,
+                  241.00370440267525,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 241.00370440267525)"
+                ],
+                [
+                  "David Lane",
+                  30.69134330749512,
+                  1488.047757138267,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1488.047757138267)"
+                ],
+                [
+                  "Jesse Brown",
+                  32.51597595214844,
+                  422.4108134719039,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 422.4108134719039)"
+                ],
+                [
+                  "Joy Marsh",
+                  20.457529067993164,
+                  2418.81665507493,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2418.81665507493)"
+                ],
+                [
+                  "Alan White",
+                  36.97640609741211,
+                  1023.7012740423976,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1023.7012740423976)"
+                ],
+                [
+                  "Brent Adams",
+                  30.07295227050781,
+                  1340.6247281238282,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1340.6247281238282)"
+                ],
+                [
+                  "Sharon Lara",
+                  40.04914474487305,
+                  882.6418496637776,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 882.6418496637776)"
+                ],
+                [
+                  "Rodney Bond",
+                  44.16339874267578,
+                  1243.037569811891,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1243.037569811891)"
+                ],
+                [
+                  "Scott Jones",
+                  31.339738845825195,
+                  1402.7781737381738,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1402.7781737381738)"
+                ],
+                [
+                  "Joy Murray",
+                  25.817747116088867,
+                  1745.4839875809444,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1745.4839875809444)"
+                ],
+                [
+                  "Hunter Cobb",
+                  35.9210090637207,
+                  1268.469781996556,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1268.469781996556)"
+                ],
+                [
+                  "Jenna Wall",
+                  39.23278045654297,
+                  1073.0885372647476,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1073.0885372647476)"
+                ],
+                [
+                  "Jessica Lam",
+                  22.049184799194336,
+                  2293.4988064532363,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2293.4988064532363)"
+                ],
+                [
+                  "Micheal Lee",
+                  26.592960357666016,
+                  1925.875430897172,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1925.875430897172)"
+                ],
+                [
+                  "John Rose",
+                  31.03327751159668,
+                  1625.716746495783,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1625.716746495783)"
+                ],
+                [
+                  "Ana Moore",
+                  28.63198471069336,
+                  1595.0397027293293,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1595.0397027293293)"
+                ],
+                [
+                  "Kevin Crane",
+                  41.61800003051758,
+                  1992.9006985669344,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1992.9006985669344)"
+                ],
+                [
+                  "Jerry Pham",
+                  32.96065139770508,
+                  1348.7375057319125,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1348.7375057319125)"
+                ],
+                [
+                  "Mary Hill",
+                  42.26340866088867,
+                  796.676029109531,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 796.676029109531)"
+                ],
+                [
+                  "Marc Hill",
+                  33.89805221557617,
+                  1363.5253186502262,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1363.5253186502262)"
+                ],
+                [
+                  "Paul Long",
+                  34.60439682006836,
+                  2223.1256158947344,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2223.1256158947344)"
+                ],
+                [
+                  "Logan Shaw",
+                  30.30622100830078,
+                  1497.464686710916,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1497.464686710916)"
+                ],
+                [
+                  "Brandon May",
+                  35.00214767456055,
+                  1161.9870254401212,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1161.9870254401212)"
+                ],
+                [
+                  "Jay Watkins",
+                  29.455501556396484,
+                  1457.4827726363171,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1457.4827726363171)"
+                ],
+                [
+                  "Kim Spencer",
+                  31.60009765625,
+                  1633.3493231214234,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1633.3493231214234)"
+                ],
+                [
+                  "Cody Adams",
+                  42.52571487426758,
+                  595.6056391771431,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 595.6056391771431)"
+                ],
+                [
+                  "Johnny Boyd",
+                  36.16543197631836,
+                  1216.59289546612,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1216.59289546612)"
+                ],
+                [
+                  "Henry Smith",
+                  36.10131454467773,
+                  1263.4810169347488,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1263.4810169347488)"
+                ],
+                [
+                  "Terry Dyer",
+                  30.42870330810547,
+                  1152.6073397589682,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1152.6073397589682)"
+                ],
+                [
+                  "Chad Young",
+                  32.1609992980957,
+                  1325.9448539922598,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1325.9448539922598)"
+                ],
+                [
+                  "Susan Lowe",
+                  35.153324127197266,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  "Eric Savage",
+                  36.37335586547852,
+                  1074.2625546825006,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1074.2625546825006)"
+                ],
+                [
+                  "John Franco",
+                  25.662752151489254,
+                  1401.5098731607522,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1401.5098731607522)"
+                ],
+                [
+                  "Cole Ryan",
+                  32.7464599609375,
+                  724.6423449870415,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 724.6423449870415)"
+                ],
+                [
+                  "Erik Fritz",
+                  35.735233306884766,
+                  1017.0379781113592,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1017.0379781113592)"
+                ],
+                [
+                  "Ricky Clay",
+                  32.95611572265625,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  "Scott Shaw",
+                  46.21307373046875,
+                  72.90225924396941,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 72.90225924396941)"
+                ],
+                [
+                  "Sarah Ellis",
+                  41.87916564941406,
+                  1037.8605980894883,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1037.8605980894883)"
+                ],
+                [
+                  "Julia Hicks",
+                  37.09849166870117,
+                  1786.3873196179034,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1786.3873196179034)"
+                ],
+                [
+                  "James Tate",
+                  40.76308441162109,
+                  810.8490825829725,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 810.8490825829725)"
+                ],
+                [
+                  "Roger Huang",
+                  31.14910316467285,
+                  593.8131452595335,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 593.8131452595335)"
+                ],
+                [
+                  "Jared Bell",
+                  27.93041610717773,
+                  1801.9883101967584,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1801.9883101967584)"
+                ],
+                [
+                  "James Hill",
+                  26.652000427246094,
+                  3185.834562499579,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 3185.834562499579)"
+                ],
+                [
+                  "Kevin King",
+                  36.63190078735352,
+                  2042.580453825287,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2042.580453825287)"
+                ],
+                [
+                  "Laura Combs",
+                  47.70941925048828,
+                  566.3634362705295,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 566.3634362705295)"
+                ],
+                [
+                  "Kendra Wolf",
+                  37.41472625732422,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  "Cheryl Cox",
+                  36.39861297607422,
+                  1287.3813916399947,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1287.3813916399947)"
+                ],
+                [
+                  "Kyle Pierce",
+                  33.933475494384766,
+                  1528.7198625100891,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1528.7198625100891)"
+                ],
+                [
+                  "Adam Valdez",
+                  26.840763092041016,
+                  1776.8512053302202,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1776.8512053302202)"
+                ],
+                [
+                  "Tracy Pitts",
+                  30.848403930664062,
+                  2209.047989237699,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2209.047989237699)"
+                ],
+                [
+                  "Jamie Parks",
+                  28.470033645629883,
+                  895.595628536085,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 895.595628536085)"
+                ],
+                [
+                  "Max Johnson",
+                  32.70277786254883,
+                  1466.438518026461,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1466.438518026461)"
+                ],
+                [
+                  "Cody Clark",
+                  28.818078994750977,
+                  2656.930958048464,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2656.930958048464)"
+                ],
+                [
+                  "Danny White",
+                  35.88169860839844,
+                  2136.4117790804653,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2136.4117790804653)"
+                ],
+                [
+                  "Kevin Welch",
+                  41.70392608642578,
+                  773.6903663584603,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 773.6903663584603)"
+                ],
+                [
+                  "Haley Wise",
+                  34.843021392822266,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  "Larry Rose",
+                  37.11202621459961,
+                  1030.9630399975438,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1030.9630399975438)"
+                ],
+                [
+                  "Casey White",
+                  31.16646385192871,
+                  371.3660587319233,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 371.3660587319233)"
+                ],
+                [
+                  "Gail Green",
+                  40.54286575317383,
+                  2176.3751824643805,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2176.3751824643805)"
+                ],
+                [
+                  "Grant Diaz",
+                  30.64560317993164,
+                  1544.4905820236934,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1544.4905820236934)"
+                ],
+                [
+                  "Shelly Case",
+                  27.907480239868164,
+                  3131.59338071663,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 3131.59338071663)"
+                ],
+                [
+                  "Carla Smith",
+                  27.07331275939941,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  "Susan King",
+                  29.91884422302246,
+                  1126.5110939166684,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1126.5110939166684)"
+                ],
+                [
+                  "Jorge Kim",
+                  29.767179489135746,
+                  1509.974841793068,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1509.974841793068)"
+                ],
+                [
+                  "Lori Parker",
+                  27.75515556335449,
+                  1849.8093740079853,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1849.8093740079853)"
+                ],
+                [
+                  "Alex Jordan",
+                  34.60690689086914,
+                  1349.2890242970882,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1349.2890242970882)"
+                ]
+              ]
+            },
+            "nodes_test": {
+              "columns": [
+                "index",
+                "name",
+                "age",
+                "data_usage",
+                "gender",
+                "gender_one_hot",
+                "features"
+              ],
+              "data": [
+                [
+                  2374.0,
+                  "Jenna Munoz",
+                  25.678003311157227,
+                  1987.4326671428707,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1987.4326671428707)"
+                ],
+                [
+                  1784.0,
+                  "Karen Novak",
+                  32.876556396484375,
+                  1490.2220070553324,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1490.2220070553324)"
+                ],
+                [
+                  6301.0,
+                  "Megan Solis",
+                  41.75533676147461,
+                  939.5646050284564,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 939.5646050284564)"
+                ],
+                [
+                  1600.0,
+                  "Joseph Shaw",
+                  36.13486099243164,
+                  1123.3636718678113,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1123.3636718678113)"
+                ],
+                [
+                  7920.0,
+                  "Amy Schmidt",
+                  35.51072311401367,
+                  1334.4140898791245,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1334.4140898791245)"
+                ],
+                [
+                  6868.0,
+                  "Jacob Duran",
+                  20.51615333557129,
+                  2291.5207455588425,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2291.5207455588425)"
+                ],
+                [
+                  9082.0,
+                  "Anna Taylor",
+                  38.91082382202149,
+                  908.1740911476708,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 908.1740911476708)"
+                ],
+                [
+                  9227.0,
+                  "Tami Davis",
+                  31.6108455657959,
+                  1573.3110926543234,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1573.3110926543234)"
+                ],
+                [
+                  6816.0,
+                  "Jean Beck",
+                  38.47003936767578,
+                  925.7729771187566,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 925.7729771187566)"
+                ],
+                [
+                  1492.0,
+                  "Daryl Ward",
+                  38.8262825012207,
+                  1117.255319445488,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1117.255319445488)"
+                ],
+                [
+                  4900.0,
+                  "Joy Edwards",
+                  22.60263061523437,
+                  2235.9687111088224,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2235.9687111088224)"
+                ],
+                [
+                  6502.0,
+                  "Chris Drake",
+                  40.40199279785156,
+                  869.8605449851206,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 869.8605449851206)"
+                ],
+                [
+                  786.0,
+                  "Julia Berry",
+                  33.8499755859375,
+                  1338.9517403261684,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1338.9517403261684)"
+                ],
+                [
+                  4147.0,
+                  "Tracy Roth",
+                  34.62472152709961,
+                  1211.8674992663457,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1211.8674992663457)"
+                ],
+                [
+                  7824.0,
+                  "Evan Parker",
+                  31.161039352416992,
+                  1372.6076654434794,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1372.6076654434794)"
+                ],
+                [
+                  5680.0,
+                  "Bryan Perez",
+                  35.970985412597656,
+                  1161.4280143530432,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1161.4280143530432)"
+                ],
+                [
+                  8443.0,
+                  "Joanna Rich",
+                  38.17674255371094,
+                  1039.8385756679045,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1039.8385756679045)"
+                ],
+                [
+                  3196.0,
+                  "Scott Kim",
+                  24.892763137817383,
+                  2201.8202336899235,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2201.8202336899235)"
+                ],
+                [
+                  954.0,
+                  "Jose Gibson",
+                  35.105037689208984,
+                  887.6085208368547,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 887.6085208368547)"
+                ],
+                [
+                  4906.0,
+                  "Jason Henry",
+                  37.94258117675781,
+                  1291.173736932854,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1291.173736932854)"
+                ],
+                [
+                  1552.0,
+                  "Jason Lee",
+                  42.5909309387207,
+                  898.0455906840931,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 898.0455906840931)"
+                ],
+                [
+                  3764.0,
+                  "Kathryn Ray",
+                  33.68312072753906,
+                  1171.6867387999964,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1171.6867387999964)"
+                ],
+                [
+                  1763.0,
+                  "Ann Stuart",
+                  33.47910690307617,
+                  1205.3891831949634,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1205.3891831949634)"
+                ],
+                [
+                  3637.0,
+                  "Brian Doyle",
+                  34.032958984375,
+                  789.5529547341976,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 789.5529547341976)"
+                ],
+                [
+                  8866.0,
+                  "Mary Perry",
+                  32.23353576660156,
+                  1451.3000134591784,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1451.3000134591784)"
+                ],
+                [
+                  8524.0,
+                  "Sean Ray",
+                  36.4946517944336,
+                  3253.126288642846,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 3253.126288642846)"
+                ],
+                [
+                  6011.0,
+                  "Jodi Davila",
+                  32.935569763183594,
+                  1020.7119450177278,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1020.7119450177278)"
+                ],
+                [
+                  2165.0,
+                  "Yvonne Hale",
+                  28.782447814941406,
+                  1595.7327042443949,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1595.7327042443949)"
+                ],
+                [
+                  9663.0,
+                  "Kyle Murray",
+                  37.31654739379883,
+                  912.2724511136596,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 912.2724511136596)"
+                ],
+                [
+                  3864.0,
+                  "Debra Carey",
+                  39.32894515991211,
+                  734.3802866266875,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 734.3802866266875)"
+                ],
+                [
+                  5951.0,
+                  "Mary Howard",
+                  30.141435623168945,
+                  1624.4747672627066,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1624.4747672627066)"
+                ],
+                [
+                  104.0,
+                  "Kevin Kent",
+                  38.44050979614258,
+                  2090.7494499849613,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2090.7494499849613)"
+                ],
+                [
+                  5513.0,
+                  "Wendy Clark",
+                  38.4884147644043,
+                  1174.482667665421,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1174.482667665421)"
+                ],
+                [
+                  6858.0,
+                  "Andrew Kidd",
+                  33.98292922973633,
+                  46.18256732682264,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 46.18256732682264)"
+                ],
+                [
+                  2295.0,
+                  "Scott Evans",
+                  35.61384963989258,
+                  1388.653403803516,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1388.653403803516)"
+                ],
+                [
+                  9806.0,
+                  "Cindy Buck",
+                  40.22438049316406,
+                  896.7301804124637,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 896.7301804124637)"
+                ],
+                [
+                  3765.0,
+                  "Philip Moon",
+                  37.185691833496094,
+                  1003.4601953982092,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1003.4601953982092)"
+                ],
+                [
+                  3981.0,
+                  "Jay Graham",
+                  33.950157165527344,
+                  1042.744913113023,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1042.744913113023)"
+                ],
+                [
+                  1816.0,
+                  "Ruth Steele",
+                  34.452293395996094,
+                  1154.7112925529177,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1154.7112925529177)"
+                ],
+                [
+                  5141.0,
+                  "Tina Malone",
+                  32.05030059814453,
+                  1347.491569032239,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1347.491569032239)"
+                ],
+                [
+                  7316.0,
+                  "Omar Parker",
+                  29.69182777404785,
+                  1619.6608366052794,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1619.6608366052794)"
+                ],
+                [
+                  4441.0,
+                  "Anna Arnold",
+                  28.26763153076172,
+                  1794.474564038153,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1794.474564038153)"
+                ],
+                [
+                  7667.0,
+                  "Billy Walsh",
+                  31.11008071899414,
+                  1575.7795296788522,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1575.7795296788522)"
+                ],
+                [
+                  1757.0,
+                  "Jeff Wright",
+                  28.798389434814453,
+                  984.8396766252272,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 984.8396766252272)"
+                ],
+                [
+                  9268.0,
+                  "Linda White",
+                  35.873023986816406,
+                  2219.304834338005,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2219.304834338005)"
+                ],
+                [
+                  2694.0,
+                  "Carol Silva",
+                  45.23771286010742,
+                  587.1185272493349,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 587.1185272493349)"
+                ],
+                [
+                  7722.0,
+                  "Jason Peck",
+                  33.56021499633789,
+                  1240.033586996306,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1240.033586996306)"
+                ],
+                [
+                  7455.0,
+                  "Lori Todd",
+                  46.77248001098633,
+                  2558.096870904419,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2558.096870904419)"
+                ],
+                [
+                  6739.0,
+                  "Jake Cox",
+                  33.39628219604492,
+                  1293.865412971005,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1293.865412971005)"
+                ],
+                [
+                  9751.0,
+                  "Jean Wright",
+                  30.01332092285156,
+                  48.08562768557681,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 48.08562768557681)"
+                ],
+                [
+                  3377.0,
+                  "Beth Price",
+                  41.79498291015625,
+                  853.5189391391816,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 853.5189391391816)"
+                ],
+                [
+                  3484.0,
+                  "Erin Owens",
+                  32.83160400390625,
+                  3954.1044771095017,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 3954.1044771095017)"
+                ],
+                [
+                  2202.0,
+                  "Adam Brewer",
+                  24.794601440429688,
+                  1542.852749072896,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1542.852749072896)"
+                ],
+                [
+                  3512.0,
+                  "Chad Lowe",
+                  35.25570297241211,
+                  1053.609729872102,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1053.609729872102)"
+                ],
+                [
+                  7392.0,
+                  "Eric Duncan",
+                  30.46738052368164,
+                  1563.8182096361115,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1563.8182096361115)"
+                ],
+                [
+                  4882.0,
+                  "Sonya Love",
+                  41.76301956176758,
+                  887.9079174562735,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 887.9079174562735)"
+                ],
+                [
+                  2272.0,
+                  "James Mora",
+                  32.844749450683594,
+                  1394.8656357054094,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1394.8656357054094)"
+                ],
+                [
+                  1353.0,
+                  "Luis Hale",
+                  36.15841674804688,
+                  1034.449862351354,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1034.449862351354)"
+                ],
+                [
+                  7871.0,
+                  "Charles Lin",
+                  45.79400253295898,
+                  602.4519717285689,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 602.4519717285689)"
+                ],
+                [
+                  5044.0,
+                  "John Bryant",
+                  42.38317489624024,
+                  358.0251041000088,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 358.0251041000088)"
+                ],
+                [
+                  3999.0,
+                  "Kevin Wells",
+                  35.35710906982422,
+                  1787.7388816738503,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1787.7388816738503)"
+                ],
+                [
+                  3562.0,
+                  "Diana James",
+                  26.955961227416992,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  1440.0,
+                  "Nancy Howe",
+                  30.37069702148437,
+                  132.68142879032143,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 132.68142879032143)"
+                ],
+                [
+                  4114.0,
+                  "Barry Scott",
+                  33.47334671020508,
+                  1336.5831462083163,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1336.5831462083163)"
+                ],
+                [
+                  2514.0,
+                  "Faith Ball",
+                  35.45331954956055,
+                  710.2362792181972,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 710.2362792181972)"
+                ],
+                [
+                  3748.0,
+                  "Dana Durham",
+                  38.89826965332031,
+                  926.4575276260872,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 926.4575276260872)"
+                ],
+                [
+                  1916.0,
+                  "Aaron Carr",
+                  36.3917236328125,
+                  1224.4652877677495,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1224.4652877677495)"
+                ],
+                [
+                  2987.0,
+                  "Kara Beck",
+                  35.68772506713867,
+                  1141.8923172775872,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1141.8923172775872)"
+                ],
+                [
+                  9188.0,
+                  "Sarah Mejia",
+                  24.439428329467773,
+                  2000.0087911045357,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2000.0087911045357)"
+                ],
+                [
+                  212.0,
+                  "Erica Patel",
+                  29.621387481689453,
+                  1686.919441907047,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1686.919441907047)"
+                ],
+                [
+                  5590.0,
+                  "Erin Cooley",
+                  40.03284454345703,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  1293.0,
+                  "Alisha Hall",
+                  35.72943878173828,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  4915.0,
+                  "Adam Gordon",
+                  36.304325103759766,
+                  1368.1520980631094,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1368.1520980631094)"
+                ],
+                [
+                  1435.0,
+                  "Brian Howe",
+                  43.11431121826172,
+                  389.3751351425635,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 389.3751351425635)"
+                ],
+                [
+                  9034.0,
+                  "Megan Ruiz",
+                  43.49476623535156,
+                  685.126477936988,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 685.126477936988)"
+                ],
+                [
+                  964.0,
+                  "Kevin Hanna",
+                  37.69957733154297,
+                  1260.1107819436434,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1260.1107819436434)"
+                ],
+                [
+                  9891.0,
+                  "Ryan Clay",
+                  27.448436737060547,
+                  1644.5205050217398,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1644.5205050217398)"
+                ],
+                [
+                  8758.0,
+                  "Adam Olson",
+                  38.90301132202149,
+                  921.533921071534,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 921.533921071534)"
+                ],
+                [
+                  2710.0,
+                  "Jerry Berry",
+                  36.71982955932617,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  1577.0,
+                  "Travis Ray",
+                  34.55507278442383,
+                  1173.2579373719732,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1173.2579373719732)"
+                ],
+                [
+                  6290.0,
+                  "Kelly Moody",
+                  38.138145446777344,
+                  905.2517286407456,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 905.2517286407456)"
+                ],
+                [
+                  818.0,
+                  "Jon Evans",
+                  15.85618782043457,
+                  3069.363501246744,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 3069.363501246744)"
+                ],
+                [
+                  1954.0,
+                  "Megan Haley",
+                  35.52373123168945,
+                  1308.1460682998757,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1308.1460682998757)"
+                ],
+                [
+                  1111.0,
+                  "Donald Cole",
+                  25.298925399780277,
+                  2012.266098022283,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2012.266098022283)"
+                ],
+                [
+                  3199.0,
+                  "Edward Pugh",
+                  22.810901641845703,
+                  2238.3651058981222,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2238.3651058981222)"
+                ],
+                [
+                  8535.0,
+                  "Adam Leon",
+                  37.10984420776367,
+                  1832.559942373824,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1832.559942373824)"
+                ],
+                [
+                  315.0,
+                  "Joe Medina",
+                  32.60334014892578,
+                  1450.7509609252982,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1450.7509609252982)"
+                ],
+                [
+                  7654.0,
+                  "Jenna Frank",
+                  33.80979919433594,
+                  1370.79394716967,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1370.79394716967)"
+                ],
+                [
+                  6564.0,
+                  "Gary Reyes",
+                  39.93391418457031,
+                  971.7776195746528,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 971.7776195746528)"
+                ],
+                [
+                  7356.0,
+                  "Ethan Lopez",
+                  39.72217178344727,
+                  2273.610062326297,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2273.610062326297)"
+                ],
+                [
+                  5068.0,
+                  "Duane Love",
+                  47.394622802734375,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  9421.0,
+                  "Laura Long",
+                  38.501983642578125,
+                  1004.3719830621832,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1004.3719830621832)"
+                ],
+                [
+                  5997.0,
+                  "Robin Hicks",
+                  36.408485412597656,
+                  1113.3847899966552,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1113.3847899966552)"
+                ],
+                [
+                  7868.0,
+                  "Lisa Stark",
+                  27.21254539489746,
+                  1730.1106249468876,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1730.1106249468876)"
+                ],
+                [
+                  1914.0,
+                  "Seth Campos",
+                  29.38336181640625,
+                  1590.1693714564908,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1590.1693714564908)"
+                ],
+                [
+                  9493.0,
+                  "Lisa Klein",
+                  40.9453239440918,
+                  780.2311616954049,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 780.2311616954049)"
+                ],
+                [
+                  4885.0,
+                  "Dean Murphy",
+                  37.67065048217773,
+                  1030.0384436733746,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1030.0384436733746)"
+                ],
+                [
+                  8686.0,
+                  "Cody Mills",
+                  36.24702072143555,
+                  1118.2068255854897,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1118.2068255854897)"
+                ],
+                [
+                  3829.0,
+                  "Amy Berry",
+                  29.007305145263672,
+                  1270.2104735883863,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1270.2104735883863)"
+                ],
+                [
+                  3066.0,
+                  "Amy Hanson",
+                  41.97983932495117,
+                  782.7619486387595,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 782.7619486387595)"
+                ]
+              ]
+            },
+            "nodes_train": {
+              "columns": [
+                "index",
+                "name",
+                "age",
+                "data_usage",
+                "gender",
+                "gender_one_hot",
+                "features"
+              ],
+              "data": [
+                [
+                  0.0,
+                  "Alex Lamb",
+                  27.464584350585938,
+                  1502.2009155179774,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1502.2009155179774)"
+                ],
+                [
+                  3.0,
+                  "Henry Dixon",
+                  22.06322860717773,
+                  1277.9381150977963,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1277.9381150977963)"
+                ],
+                [
+                  4.0,
+                  "Cody Baker",
+                  32.16081619262695,
+                  961.127643215568,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 961.127643215568)"
+                ],
+                [
+                  5.0,
+                  "Ann Wolf",
+                  40.48213577270508,
+                  689.3541843770798,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 689.3541843770798)"
+                ],
+                [
+                  6.0,
+                  "Rickey Hill",
+                  39.86235046386719,
+                  971.0495352403592,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 971.0495352403592)"
+                ],
+                [
+                  7.0,
+                  "Max Adkins",
+                  26.81281089782715,
+                  1800.6794221970986,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1800.6794221970986)"
+                ],
+                [
+                  8.0,
+                  "Tommy King",
+                  23.902271270751957,
+                  883.387161762977,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 883.387161762977)"
+                ],
+                [
+                  9.0,
+                  "Paula Moore",
+                  24.99309539794922,
+                  1910.7401503266133,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1910.7401503266133)"
+                ],
+                [
+                  10.0,
+                  "Edward Khan",
+                  30.097068786621094,
+                  1474.6877838118282,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1474.6877838118282)"
+                ],
+                [
+                  11.0,
+                  "Shawn Green",
+                  38.09220123291016,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  12.0,
+                  "Cody Hill",
+                  39.471561431884766,
+                  1024.589987432543,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1024.589987432543)"
+                ],
+                [
+                  13.0,
+                  "Tina Chavez",
+                  28.255931854248047,
+                  1770.895001907746,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1770.895001907746)"
+                ],
+                [
+                  15.0,
+                  "Tyler Moore",
+                  23.859582901000977,
+                  2151.139243438687,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2151.139243438687)"
+                ],
+                [
+                  16.0,
+                  "Emma Ball",
+                  34.10274124145508,
+                  1252.7218842914183,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1252.7218842914183)"
+                ],
+                [
+                  17.0,
+                  "Brian Bond",
+                  30.2437744140625,
+                  1772.9694383505323,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1772.9694383505323)"
+                ],
+                [
+                  20.0,
+                  "Matthew Lee",
+                  40.50498962402344,
+                  785.9492522981042,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 785.9492522981042)"
+                ],
+                [
+                  21.0,
+                  "Greg Olsen",
+                  35.726776123046875,
+                  564.4033356032073,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 564.4033356032073)"
+                ],
+                [
+                  22.0,
+                  "Matthew Key",
+                  33.860572814941406,
+                  1273.895297046039,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1273.895297046039)"
+                ],
+                [
+                  23.0,
+                  "Jason Colon",
+                  29.11613655090332,
+                  767.7399715299617,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 767.7399715299617)"
+                ],
+                [
+                  24.0,
+                  "Tina Wright",
+                  32.258583068847656,
+                  1501.3052651915364,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1501.3052651915364)"
+                ],
+                [
+                  25.0,
+                  "Jason Ball",
+                  52.82293701171875,
+                  2608.836181175317,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2608.836181175317)"
+                ],
+                [
+                  26.0,
+                  "Noah Hudson",
+                  32.20969009399414,
+                  1446.953459261468,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1446.953459261468)"
+                ],
+                [
+                  27.0,
+                  "Gary Curtis",
+                  37.41194915771485,
+                  1116.2683794805314,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1116.2683794805314)"
+                ],
+                [
+                  28.0,
+                  "Mary Warner",
+                  38.45712661743164,
+                  994.1395186119104,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 994.1395186119104)"
+                ],
+                [
+                  29.0,
+                  "Scott Rush",
+                  25.97191619873047,
+                  1816.0183683633247,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1816.0183683633247)"
+                ],
+                [
+                  30.0,
+                  "Paul Robles",
+                  37.68334579467773,
+                  898.3466382962172,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 898.3466382962172)"
+                ],
+                [
+                  31.0,
+                  "Chris Huang",
+                  36.69420623779297,
+                  1117.1803689451494,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1117.1803689451494)"
+                ],
+                [
+                  32.0,
+                  "James Bean",
+                  35.68675231933594,
+                  432.33199619524027,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 432.33199619524027)"
+                ],
+                [
+                  33.0,
+                  "Jamie Holt",
+                  22.433351516723636,
+                  2307.522390230102,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2307.522390230102)"
+                ],
+                [
+                  34.0,
+                  "Dan Garza",
+                  33.08222579956055,
+                  241.00370440267525,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 241.00370440267525)"
+                ],
+                [
+                  35.0,
+                  "David Lane",
+                  30.69134330749512,
+                  1488.047757138267,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1488.047757138267)"
+                ],
+                [
+                  36.0,
+                  "Jesse Brown",
+                  32.51597595214844,
+                  422.4108134719039,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 422.4108134719039)"
+                ],
+                [
+                  37.0,
+                  "Joy Marsh",
+                  20.457529067993164,
+                  2418.81665507493,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2418.81665507493)"
+                ],
+                [
+                  38.0,
+                  "Alan White",
+                  36.97640609741211,
+                  1023.7012740423976,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1023.7012740423976)"
+                ],
+                [
+                  39.0,
+                  "Brent Adams",
+                  30.07295227050781,
+                  1340.6247281238282,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1340.6247281238282)"
+                ],
+                [
+                  40.0,
+                  "Sharon Lara",
+                  40.04914474487305,
+                  882.6418496637776,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 882.6418496637776)"
+                ],
+                [
+                  41.0,
+                  "Rodney Bond",
+                  44.16339874267578,
+                  1243.037569811891,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1243.037569811891)"
+                ],
+                [
+                  42.0,
+                  "Scott Jones",
+                  31.339738845825195,
+                  1402.7781737381738,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1402.7781737381738)"
+                ],
+                [
+                  43.0,
+                  "Joy Murray",
+                  25.817747116088867,
+                  1745.4839875809444,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1745.4839875809444)"
+                ],
+                [
+                  44.0,
+                  "Hunter Cobb",
+                  35.9210090637207,
+                  1268.469781996556,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1268.469781996556)"
+                ],
+                [
+                  46.0,
+                  "Jessica Lam",
+                  22.049184799194336,
+                  2293.4988064532363,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2293.4988064532363)"
+                ],
+                [
+                  47.0,
+                  "Micheal Lee",
+                  26.592960357666016,
+                  1925.875430897172,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1925.875430897172)"
+                ],
+                [
+                  48.0,
+                  "John Rose",
+                  31.03327751159668,
+                  1625.716746495783,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1625.716746495783)"
+                ],
+                [
+                  49.0,
+                  "Ana Moore",
+                  28.63198471069336,
+                  1595.0397027293293,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1595.0397027293293)"
+                ],
+                [
+                  50.0,
+                  "Kevin Crane",
+                  41.61800003051758,
+                  1992.9006985669344,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1992.9006985669344)"
+                ],
+                [
+                  51.0,
+                  "Jerry Pham",
+                  32.96065139770508,
+                  1348.7375057319125,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1348.7375057319125)"
+                ],
+                [
+                  52.0,
+                  "Mary Hill",
+                  42.26340866088867,
+                  796.676029109531,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 796.676029109531)"
+                ],
+                [
+                  53.0,
+                  "Marc Hill",
+                  33.89805221557617,
+                  1363.5253186502262,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1363.5253186502262)"
+                ],
+                [
+                  54.0,
+                  "Paul Long",
+                  34.60439682006836,
+                  2223.1256158947344,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2223.1256158947344)"
+                ],
+                [
+                  55.0,
+                  "Logan Shaw",
+                  30.30622100830078,
+                  1497.464686710916,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1497.464686710916)"
+                ],
+                [
+                  56.0,
+                  "Brandon May",
+                  35.00214767456055,
+                  1161.9870254401212,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1161.9870254401212)"
+                ],
+                [
+                  57.0,
+                  "Jay Watkins",
+                  29.455501556396484,
+                  1457.4827726363171,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1457.4827726363171)"
+                ],
+                [
+                  58.0,
+                  "Kim Spencer",
+                  31.60009765625,
+                  1633.3493231214234,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1633.3493231214234)"
+                ],
+                [
+                  59.0,
+                  "Cody Adams",
+                  42.52571487426758,
+                  595.6056391771431,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 595.6056391771431)"
+                ],
+                [
+                  61.0,
+                  "Henry Smith",
+                  36.10131454467773,
+                  1263.4810169347488,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1263.4810169347488)"
+                ],
+                [
+                  62.0,
+                  "Terry Dyer",
+                  30.42870330810547,
+                  1152.6073397589682,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1152.6073397589682)"
+                ],
+                [
+                  63.0,
+                  "Chad Young",
+                  32.1609992980957,
+                  1325.9448539922598,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1325.9448539922598)"
+                ],
+                [
+                  64.0,
+                  "Susan Lowe",
+                  35.153324127197266,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  65.0,
+                  "Eric Savage",
+                  36.37335586547852,
+                  1074.2625546825006,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1074.2625546825006)"
+                ],
+                [
+                  66.0,
+                  "John Franco",
+                  25.662752151489254,
+                  1401.5098731607522,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1401.5098731607522)"
+                ],
+                [
+                  67.0,
+                  "Cole Ryan",
+                  32.7464599609375,
+                  724.6423449870415,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 724.6423449870415)"
+                ],
+                [
+                  68.0,
+                  "Erik Fritz",
+                  35.735233306884766,
+                  1017.0379781113592,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1017.0379781113592)"
+                ],
+                [
+                  69.0,
+                  "Ricky Clay",
+                  32.95611572265625,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  70.0,
+                  "Scott Shaw",
+                  46.21307373046875,
+                  72.90225924396941,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 72.90225924396941)"
+                ],
+                [
+                  72.0,
+                  "Julia Hicks",
+                  37.09849166870117,
+                  1786.3873196179034,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1786.3873196179034)"
+                ],
+                [
+                  74.0,
+                  "Roger Huang",
+                  31.14910316467285,
+                  593.8131452595335,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 593.8131452595335)"
+                ],
+                [
+                  75.0,
+                  "Jared Bell",
+                  27.93041610717773,
+                  1801.9883101967584,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1801.9883101967584)"
+                ],
+                [
+                  76.0,
+                  "James Hill",
+                  26.652000427246094,
+                  3185.834562499579,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 3185.834562499579)"
+                ],
+                [
+                  77.0,
+                  "Kevin King",
+                  36.63190078735352,
+                  2042.580453825287,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2042.580453825287)"
+                ],
+                [
+                  78.0,
+                  "Laura Combs",
+                  47.70941925048828,
+                  566.3634362705295,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 566.3634362705295)"
+                ],
+                [
+                  79.0,
+                  "Kendra Wolf",
+                  37.41472625732422,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  80.0,
+                  "Cheryl Cox",
+                  36.39861297607422,
+                  1287.3813916399947,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1287.3813916399947)"
+                ],
+                [
+                  81.0,
+                  "Kyle Pierce",
+                  33.933475494384766,
+                  1528.7198625100891,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1528.7198625100891)"
+                ],
+                [
+                  82.0,
+                  "Adam Valdez",
+                  26.840763092041016,
+                  1776.8512053302202,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1776.8512053302202)"
+                ],
+                [
+                  84.0,
+                  "Jamie Parks",
+                  28.470033645629883,
+                  895.595628536085,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 895.595628536085)"
+                ],
+                [
+                  85.0,
+                  "Max Johnson",
+                  32.70277786254883,
+                  1466.438518026461,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1466.438518026461)"
+                ],
+                [
+                  86.0,
+                  "Cody Clark",
+                  28.818078994750977,
+                  2656.930958048464,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2656.930958048464)"
+                ],
+                [
+                  87.0,
+                  "Danny White",
+                  35.88169860839844,
+                  2136.4117790804653,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2136.4117790804653)"
+                ],
+                [
+                  88.0,
+                  "Kevin Welch",
+                  41.70392608642578,
+                  773.6903663584603,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 773.6903663584603)"
+                ],
+                [
+                  89.0,
+                  "Haley Wise",
+                  34.843021392822266,
+                  0.0,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 0.0)"
+                ],
+                [
+                  90.0,
+                  "Larry Rose",
+                  37.11202621459961,
+                  1030.9630399975438,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1030.9630399975438)"
+                ],
+                [
+                  91.0,
+                  "Casey White",
+                  31.16646385192871,
+                  371.3660587319233,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 371.3660587319233)"
+                ],
+                [
+                  92.0,
+                  "Gail Green",
+                  40.54286575317383,
+                  2176.3751824643805,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2176.3751824643805)"
+                ],
+                [
+                  93.0,
+                  "Grant Diaz",
+                  30.64560317993164,
+                  1544.4905820236934,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1544.4905820236934)"
+                ],
+                [
+                  94.0,
+                  "Shelly Case",
+                  27.907480239868164,
+                  3131.59338071663,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 3131.59338071663)"
+                ],
+                [
+                  95.0,
+                  "Carla Smith",
+                  27.07331275939941,
+                  0.0,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 0.0)"
+                ],
+                [
+                  96.0,
+                  "Susan King",
+                  29.91884422302246,
+                  1126.5110939166684,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1126.5110939166684)"
+                ],
+                [
+                  97.0,
+                  "Jorge Kim",
+                  29.767179489135746,
+                  1509.974841793068,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1509.974841793068)"
+                ],
+                [
+                  98.0,
+                  "Lori Parker",
+                  27.75515556335449,
+                  1849.8093740079853,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1849.8093740079853)"
+                ],
+                [
+                  99.0,
+                  "Alex Jordan",
+                  34.60690689086914,
+                  1349.2890242970882,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1349.2890242970882)"
+                ],
+                [
+                  100.0,
+                  "Willie Ruiz",
+                  41.713863372802734,
+                  2488.984659966012,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 2488.984659966012)"
+                ],
+                [
+                  101.0,
+                  "Laura Gross",
+                  30.88542366027832,
+                  1492.0389500219237,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 1492.0389500219237)"
+                ],
+                [
+                  102.0,
+                  "Eric Holder",
+                  31.724140167236328,
+                  860.6294673582405,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 860.6294673582405)"
+                ],
+                [
+                  105.0,
+                  "Ann Beck",
+                  36.77978897094727,
+                  582.3662644223684,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 582.3662644223684)"
+                ],
+                [
+                  106.0,
+                  "Bob Parrish",
+                  35.73936462402344,
+                  2892.78591108362,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2892.78591108362)"
+                ],
+                [
+                  107.0,
+                  "Megan Noble",
+                  36.40023422241211,
+                  1837.4496860567072,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1837.4496860567072)"
+                ],
+                [
+                  108.0,
+                  "Mark Bean",
+                  40.46463394165039,
+                  1861.0100449977028,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1861.0100449977028)"
+                ],
+                [
+                  109.0,
+                  "Joshua Sosa",
+                  32.337921142578125,
+                  1276.1006764061754,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 1276.1006764061754)"
+                ],
+                [
+                  110.0,
+                  "Ashley Lin",
+                  47.01497268676758,
+                  500.0422253175181,
+                  "Male",
+                  "(np.int64(0), np.int64(1))",
+                  "(np.int64(0), np.int64(1), 500.0422253175181)"
+                ],
+                [
+                  111.0,
+                  "Roger Clark",
+                  26.295970916748047,
+                  2023.0727951562103,
+                  "Female",
+                  "(np.int64(1), np.int64(0))",
+                  "(np.int64(1), np.int64(0), 2023.0727951562103)"
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": [
+            {
+              "df": "edges",
+              "name": "edges_2",
+              "source_column": "callee",
+              "source_key": "name",
+              "source_table": "nodes",
+              "target_column": "caller",
+              "target_key": "name",
+              "target_table": "nodes"
+            }
+          ]
+        },
+        "display_version": null,
+        "error": null,
+        "expanded_height": 887.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "callee",
+                  "caller"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Define edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "callee",
+                  "caller"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges_2",
+                "source_column": "callee",
+                "source_key": "name",
+                "source_table": "nodes",
+                "target_column": "caller",
+                "target_key": "name",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "relations": "{\"edges_2\":{\"name\":\"edges_2\",\"df\":\"edges\",\"source_column\":\"callee\",\"target_column\":\"caller\",\"source_table\":\"nodes\",\"target_table\":\"nodes\",\"source_key\":\"name\",\"target_key\":\"name\"}}"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Define edges"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 887.0,
+      "id": "Define edges 2",
+      "measured": {
+        "height": 887.0,
+        "width": 451.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 3162.2560173919214,
+        "y": 1987.010636963482
+      },
+      "selected": false,
+      "type": "graph_creation_view",
+      "width": 451.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "seed": 1234.0,
+          "table_name": "nodes",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "height": 315.0,
+      "id": "Train/test split 2",
+      "parentId": null,
+      "position": {
+        "x": 5463.203075699425,
+        "y": 2304.9368758091464
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Flatten column",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "column_name": "features",
+          "table_name": "nodes"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Flatten column"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "Flatten column 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 4982.79674001958,
+        "y": 2297.110825801669
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "linear",
+          "prediction_column": "age_prediction",
+          "table_name": "nodes_test"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 386.0,
+      "id": "Make prediction 2",
+      "measured": {
+        "height": 386.0,
+        "width": 336.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 6583.378991917988,
+        "y": 2292.149120053052
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 336.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Train linear regression model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "label_column": "age",
+          "model_name": "linear",
+          "table_name": "nodes_train"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train linear regression model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 370.0,
+      "id": "Train linear regression model 2",
+      "measured": {
+        "height": 370.0,
+        "width": 328.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 5985.614595933439,
+        "y": 2295.152846905556
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 328.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 18,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "identity_line": true,
+          "origin": true,
+          "table_name": "nodes_test",
+          "x_column": "age",
+          "y_column": "age_prediction"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 799.0,
+      "id": "Scatter plot 3",
+      "measured": {
+        "height": 799.0,
+        "width": 911.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7264.530622063672,
+        "y": 2079.523577754428
+      },
+      "selected": false,
+      "type": "image",
+      "width": 911.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "query": "select \nsqrt(\n  AVG(\n    (age - age_prediction)\n    *(age - age_prediction)\n  )\n)\n\nfrom nodes_test",
+          "save_as": "results"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "SQL"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "SQL 3",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7244.256487622182,
+        "y": 3022.567174125241
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 36,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "results": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "View tables 2",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7745.046827810254,
+        "y": 3025.5467057632986
+      },
+      "selected": false,
+      "type": "table_view",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Table operations > Vector from attributes",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "attributes": [
+            "data_usage",
+            "gender_one_hot",
+            "out_degree_centrality"
+          ],
+          "table_name": "nodes",
+          "vector_name": "features"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Vector from attributes"
+      },
+      "height": 526.0,
+      "id": "Vector from attributes 2",
+      "parentId": null,
+      "position": {
+        "x": 4511.530021049322,
+        "y": 2261.1089599289676
+      },
+      "type": "basic",
+      "width": 348.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Algorithms > Centrality > Degree alg > Out degree centrality",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {},
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Out degree centrality"
+      },
+      "height": 315.0,
+      "id": "Out degree centrality 1",
+      "parentId": null,
+      "position": {
+        "x": 3896.0246167074097,
+        "y": 2356.777446534697
+      },
+      "type": "basic",
       "width": 315.0
     }
   ],
