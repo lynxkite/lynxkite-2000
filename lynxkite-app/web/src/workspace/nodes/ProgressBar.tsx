@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+
 function formatTime(secondsStr: number | string | undefined | null): string {
   const seconds = Number(secondsStr);
   if (!seconds || !Number.isFinite(seconds) || seconds < 0) return "00:00";
@@ -17,30 +19,123 @@ export function NodeProgress({
   color: string;
   status?: string;
 }) {
-  if (!telemetry) return null;
+  const [, setTick] = useState(0);
 
-  const isMap = telemetry instanceof Map || typeof telemetry.entries === "function";
-  const t = isMap
-    ? Object.fromEntries(telemetry.entries ? telemetry.entries() : telemetry)
-    : telemetry;
-
-  if (Object.keys(t).length === 0) return null;
+  const t = useMemo(() => {
+    if (!telemetry) {
+      return {};
+    }
+    const isMap = telemetry instanceof Map || typeof telemetry.entries === "function";
+    return isMap
+      ? Object.fromEntries(telemetry.entries ? telemetry.entries() : telemetry)
+      : telemetry;
+  }, [telemetry]);
 
   const { n = 0, total = 0, elapsed = 0, rate, prefix, postfix, unit = "it", colour } = t;
 
   const hasTotal = typeof total === "number" && total > 0;
-  // If we don't have a total, we can show an indeterminate animated bar or full bar
+  // If we don't have a total, we can show an indeterminate animated bar or full bar.
   const isIndeterminate = !hasTotal && status === "active";
-  const percentage = hasTotal ? Math.min(100, Math.max(0, (n / total) * 100)) : 100;
 
-  // Estimate time remaining
-  const eta = hasTotal && rate && rate > 0 ? (total - n) / rate : null;
+  const anchorRef = useRef<{ n: number; total: number; rate: number; atMs: number }>({
+    n: Number(n) || 0,
+    total: Number(total) || 0,
+    rate: typeof rate === "number" && Number.isFinite(rate) ? rate : 0,
+    atMs: Date.now(),
+  });
+  const startedAtRef = useRef<{ elapsed: number; atMs: number } | null>(
+    status === "active"
+      ? {
+          elapsed: Number(elapsed) || 0,
+          atMs: Date.now(),
+        }
+      : null,
+  );
+
+  useEffect(() => {
+    const previous = anchorRef.current;
+    const nextN = Number(n) || 0;
+    const nextTotal = Number(total) || 0;
+    const nextElapsed = Number(elapsed) || 0;
+    const nowMs = Date.now();
+    anchorRef.current = {
+      n: nextN,
+      total: nextTotal,
+      rate: typeof rate === "number" && Number.isFinite(rate) ? rate : 0,
+      atMs: nowMs,
+    };
+
+    const shouldResetStartedAt =
+      status !== "active" ||
+      startedAtRef.current === null ||
+      nextElapsed < startedAtRef.current.elapsed ||
+      nextN < previous.n ||
+      nextTotal < previous.total;
+
+    if (status !== "active") {
+      startedAtRef.current = null;
+    } else if (shouldResetStartedAt) {
+      startedAtRef.current = {
+        elapsed: nextElapsed,
+        atMs: nowMs,
+      };
+    }
+  }, [n, total, rate, elapsed, status]);
+
+  useEffect(() => {
+    const shouldTick =
+      status === "active" &&
+      (isIndeterminate ||
+        (hasTotal && typeof rate === "number" && Number.isFinite(rate) && rate > 0 && n < total));
+    if (!shouldTick) {
+      return;
+    }
+    const interval = setInterval(() => setTick((x) => x + 1), 1000);
+    return () => clearInterval(interval);
+  }, [status, hasTotal, isIndeterminate, rate, n, total]);
+
+  let displayN = Number(n) || 0;
+  if (
+    status === "active" &&
+    hasTotal &&
+    typeof rate === "number" &&
+    Number.isFinite(rate) &&
+    rate > 0
+  ) {
+    const elapsedSinceAnchorSec = Math.max(0, (Date.now() - anchorRef.current.atMs) / 1000);
+    const projectedN = anchorRef.current.n + elapsedSinceAnchorSec * anchorRef.current.rate;
+    displayN = Math.max(displayN, projectedN);
+    const nextStepN = Math.min(total, Math.floor(Number(n) || 0) + 1);
+    displayN = Math.min(displayN, nextStepN);
+    if (displayN >= total && n < total) {
+      // Keep active boxes visually just-below-complete until backend confirms completion.
+      displayN = Math.min(displayN, total - 0.001);
+    }
+    displayN = Math.min(displayN, total);
+  }
+
+  let displayElapsed = Number(elapsed) || 0;
+  if (status === "active" && startedAtRef.current) {
+    const rollingElapsed =
+      startedAtRef.current.elapsed + Math.max(0, (Date.now() - startedAtRef.current.atMs) / 1000);
+    displayElapsed = Math.max(displayElapsed, rollingElapsed);
+  }
+
+  const percentage = hasTotal ? Math.min(100, Math.max(0, (displayN / total) * 100)) : 100;
+
+  // Estimate time remaining.
+  const eta =
+    hasTotal && typeof rate === "number" && rate > 0
+      ? Math.max(0, (total - displayN) / rate)
+      : null;
   const itersPerSec =
     typeof rate === "number" && Number.isFinite(rate)
       ? rate < 1
         ? `${(1 / rate).toFixed(2)} s/${unit}`
         : `${rate.toFixed(2)} ${unit}/s`
       : "";
+
+  if (!telemetry || Object.keys(t).length === 0) return null;
 
   return (
     <div
@@ -108,7 +203,7 @@ export function NodeProgress({
           <span>
             {eta !== null && eta > 0
               ? `ETA: ${formatTime(eta)}`
-              : `Elapsed: ${formatTime(elapsed)}`}
+              : `Elapsed: ${formatTime(displayElapsed)}`}
           </span>
         </span>
       </div>
