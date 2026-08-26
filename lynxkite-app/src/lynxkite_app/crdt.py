@@ -364,7 +364,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     if runtime_state is not None and runtime_state.delayed_execution is not None:
         runtime_state.delayed_execution.cancel()
     # Check if workspace is paused - if so, skip automatic execution
-    if getattr(ws_pyd, "paused", False):
+    if ws_pyd.paused:
         return
 
     task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
