@@ -74,3 +74,22 @@ def scatter_plot(
         ax.axline((0, 0), slope=1, color="black", alpha=0.2)
     plt.xlabel(x_column)
     plt.ylabel(y_column)
+
+
+@op("Rename columns", color="orange", icon="writing")
+def rename_columns(
+    b: core.Bundle, *, table_name: core.TableName, pairs: core.DropdownTextAdderByTableName
+) -> core.Bundle:
+    """
+    Renames columns in the specified table according to the provided pairs of old and new names.
+    :param b: the bundle.
+    :param table_name: the table containing the columns to be renamed.
+    :param pairs: the list of pairs (old_name, new_name).
+    :return:
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+    for old_name, new_name in pairs:
+        df.rename(columns={old_name: new_name}, inplace=True)
+    b.dfs[table_name] = df
+    return b
