@@ -4,7 +4,7 @@ import { useDisplay } from "../../common";
 import LynxKiteNode from "./LynxKiteNode";
 import { NodeWithParams } from "./NodeWithParams";
 
-function inferFormat(data: string): "pdb" | "mmcif" | "sdf" | "mol" | "mol2" {
+function inferFormat(data: string, format?: string): "gro" | "pdb" | "mmcif" | "sdf" | "mol" | "mol2" {
   const trimmed = data.trimStart();
   if (trimmed.startsWith("data_")) return "mmcif";
   if (trimmed.includes("@<TRIPOS>MOLECULE")) return "mol2";
@@ -12,6 +12,7 @@ function inferFormat(data: string): "pdb" | "mmcif" | "sdf" | "mol" | "mol2" {
     if (trimmed.includes("$$$$")) return "sdf";
     return "mol";
   }
+  if (format == "gro") return format;
   return "pdb";
 }
 
@@ -62,13 +63,13 @@ const NodeWithMolecule = (props: any) => {
         }
 
         viewerRef.current = viewer;
-
+        console.log(config.format);
         if (config.data && active) {
-          await viewer.loadStructureFromData(config.data, inferFormat(config.data));
+          await viewer.loadStructureFromData(config.data, inferFormat(config.data, config.format));
         }
 
         if (config.ligand && active) {
-          await viewer.loadStructureFromData(config.ligand, inferFormat(config.ligand));
+          await viewer.loadStructureFromData(config.ligand, inferFormat(config.ligand, config.format));
         }
 
         if (config.model && config.coordinates && active) {
@@ -84,7 +85,7 @@ const NodeWithMolecule = (props: any) => {
               isBinary: true,
               format: "xtc",
             },
-            preset: "all-models",
+            preset: "default",
           });
         }
       } catch (error) {
