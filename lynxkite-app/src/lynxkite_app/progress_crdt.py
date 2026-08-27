@@ -24,14 +24,13 @@ _progress_server: ProgressWebsocketServer | None = None
 
 
 def ws_exception_handler(exception, log):
-    exceptions = (
-        exception.exceptions if isinstance(exception, builtins.BaseExceptionGroup) else [exception]
-    )
-    for ex in exceptions:
-        if isinstance(ex, builtins.BaseExceptionGroup):
+    if isinstance(exception, builtins.BaseExceptionGroup):
+        for ex in exception.exceptions:
             ws_exception_handler(ex, log)
-        elif not isinstance(ex, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)):
-            log.exception(ex)
+    elif not isinstance(
+        exception, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)
+    ):
+        log.exception(exception)
     return True
 
 

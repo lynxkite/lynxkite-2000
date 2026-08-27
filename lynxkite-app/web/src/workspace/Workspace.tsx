@@ -357,14 +357,14 @@ function LynxKiteFlow() {
         closeNodeSearch();
         return;
       }
-      const hierarchy = refreshCategoryHierarchy();
+      const hierarchy = categoryHierarchy.current;
       if (!hierarchy) return;
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch, refreshCategoryHierarchy],
+    [canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
