@@ -687,9 +687,34 @@ svg {
       margin: 3px 0;
     }
 
+    .search-result-op {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
     .search-result-path {
       color: #0008;
       font-size: 80%;
+    }
+
+    .search-result-description {
+      color: #0008;
+      font-size: 80%;
+      line-height: 1.3;
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .search-result-highlight {
+      background-color: oklch(92% 0.08 90);
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 2px;
     }
 
     .back-button,
