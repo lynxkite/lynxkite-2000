@@ -1,10 +1,5 @@
 {
-  "assistant_messages": [
-    {
-      "content": "hi",
-      "role": "user"
-    }
-  ],
+  "assistant_messages": [],
   "edges": [
     {
       "id": "Vector from attributes 2 output Train/test split 2 bundle",
@@ -151,7 +146,68 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -184,6 +240,7 @@
           "vector_name": "features"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Vector from attributes"
       },
@@ -226,7 +283,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Splits a dataframe in the bundle into separate \"_train\" and \"_test\" dataframes."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Train/test split",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train/test split",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": 1234,
+              "name": "seed",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.train_test_split",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Train/test split",
         "output_metadata": [
           {
@@ -280,6 +397,7 @@
           "test_ratio": "0.2"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train/test split"
       },
@@ -348,7 +466,220 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains a K-nearest neighbors classifier on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the training data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the labels.",
+                  "name": "label_column"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The number of neighbors to use.",
+                  "name": "n_neighbors"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name to assign to the trained model.",
+                  "name": "model_name"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The weight function used in prediction.",
+                  "name": "weights"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The algorithm used to compute the nearest neighbors.",
+                  "name": "algorithm"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The leaf size passed to the algorithm.",
+                  "name": "leaf_size"
+                },
+                {
+                  "annotation": "DistanceMetric",
+                  "description": "The distance metric to use.",
+                  "name": "metric"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The power parameter for the Minkowski metric.",
+                  "name": "p"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The number of parallel jobs to run.",
+                  "name": "n_jobs"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Train K-nearest neighbors classifier",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train K-nearest neighbors classifier",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": 5,
+              "name": "n_neighbors",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "knn",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "uniform",
+              "name": "weights",
+              "type": {
+                "enum": [
+                  "uniform",
+                  "distance"
+                ]
+              }
+            },
+            {
+              "default": "auto",
+              "name": "algorithm",
+              "type": {
+                "enum": [
+                  "auto",
+                  "ball_tree",
+                  "kd_tree",
+                  "brute"
+                ]
+              }
+            },
+            {
+              "default": 30,
+              "name": "leaf_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "minkowski",
+              "name": "metric",
+              "type": {
+                "enum": [
+                  "minkowski",
+                  "haversine",
+                  "russellrao",
+                  "dice",
+                  "braycurtis",
+                  "cosine",
+                  "canberra",
+                  "yule",
+                  "cityblock",
+                  "sokalsneath",
+                  "matching",
+                  "euclidean",
+                  "l1",
+                  "sqeuclidean",
+                  "correlation",
+                  "hamming",
+                  "chebyshev",
+                  "rogerstanimoto",
+                  "jaccard",
+                  "l2",
+                  "manhattan"
+                ]
+              }
+            },
+            {
+              "default": 2,
+              "name": "p",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": null,
+              "name": "n_jobs",
+              "type": {
+                "type": "int | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.train_knn",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Train K-nearest neighbors classifier",
         "output_metadata": [
           {
@@ -413,6 +744,7 @@
           "weights": "uniform"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -486,7 +818,56 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "blue",
+          "doc": null,
+          "icon": "dots-diagonal-2",
+          "id": "Scikit > Confusion matrix",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Confusion matrix",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.conf_matrix",
+          "tags": [],
+          "type": "image"
+        },
         "op_id": "Scikit > Confusion matrix",
         "output_metadata": [],
         "params": {
@@ -495,6 +876,7 @@
           "table_name": "iris_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -567,7 +949,105 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Makes predictions using a trained scikit-learn model on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the new column with the predictions.",
+                  "name": "prediction_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the trained model to use for the predictions.",
+                  "name": "model_name"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Make prediction",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Make prediction",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.scikit_predict",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Make prediction",
         "output_metadata": [
           {
@@ -627,6 +1107,7 @@
           "table_name": "iris_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -691,7 +1172,81 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new table with the one-hot encoded versions of the specified columns."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The columns to one-hot encode.",
+                  "name": "columns"
+                }
+              ]
+            }
+          ],
+          "icon": "binary",
+          "id": "Scikit > One-hot encoding",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "One-hot encoding",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "columns",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.one_hot",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > One-hot encoding",
         "output_metadata": [
           {
@@ -760,6 +1315,7 @@
           "table_name": "creditg"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "One-hot encoding"
       },
@@ -817,7 +1373,60 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Assigns a new name to the table"
+            }
+          ],
+          "icon": "writing",
+          "id": "Table operations > Rename table",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Rename table",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "old_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "new_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.rename_table",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Table operations > Rename table",
         "output_metadata": [
           {
@@ -859,6 +1468,7 @@
           "old_name": "credit-g"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Rename table"
       },
@@ -929,7 +1539,68 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -1007,6 +1678,7 @@
           "vector_name": "features"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Vector from attributes"
       },
@@ -1078,7 +1750,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Splits a dataframe in the bundle into separate \"_train\" and \"_test\" dataframes."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Train/test split",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train/test split",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": 1234,
+              "name": "seed",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.train_test_split",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Train/test split",
         "output_metadata": [
           {
@@ -1219,6 +1951,7 @@
           "test_ratio": "0.2"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train/test split"
       },
@@ -1380,7 +2113,220 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains a K-nearest neighbors classifier on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the training data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the labels.",
+                  "name": "label_column"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The number of neighbors to use.",
+                  "name": "n_neighbors"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name to assign to the trained model.",
+                  "name": "model_name"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The weight function used in prediction.",
+                  "name": "weights"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The algorithm used to compute the nearest neighbors.",
+                  "name": "algorithm"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The leaf size passed to the algorithm.",
+                  "name": "leaf_size"
+                },
+                {
+                  "annotation": "DistanceMetric",
+                  "description": "The distance metric to use.",
+                  "name": "metric"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The power parameter for the Minkowski metric.",
+                  "name": "p"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The number of parallel jobs to run.",
+                  "name": "n_jobs"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Train K-nearest neighbors classifier",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train K-nearest neighbors classifier",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": 5,
+              "name": "n_neighbors",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "knn",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "uniform",
+              "name": "weights",
+              "type": {
+                "enum": [
+                  "uniform",
+                  "distance"
+                ]
+              }
+            },
+            {
+              "default": "auto",
+              "name": "algorithm",
+              "type": {
+                "enum": [
+                  "auto",
+                  "ball_tree",
+                  "kd_tree",
+                  "brute"
+                ]
+              }
+            },
+            {
+              "default": 30,
+              "name": "leaf_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "minkowski",
+              "name": "metric",
+              "type": {
+                "enum": [
+                  "minkowski",
+                  "haversine",
+                  "russellrao",
+                  "dice",
+                  "braycurtis",
+                  "cosine",
+                  "canberra",
+                  "yule",
+                  "cityblock",
+                  "sokalsneath",
+                  "matching",
+                  "euclidean",
+                  "l1",
+                  "sqeuclidean",
+                  "correlation",
+                  "hamming",
+                  "chebyshev",
+                  "rogerstanimoto",
+                  "jaccard",
+                  "l2",
+                  "manhattan"
+                ]
+              }
+            },
+            {
+              "default": 2,
+              "name": "p",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": null,
+              "name": "n_jobs",
+              "type": {
+                "type": "int | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.train_knn",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Train K-nearest neighbors classifier",
         "output_metadata": [
           {
@@ -1532,6 +2478,7 @@
           "weights": "uniform"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -1697,7 +2644,105 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Makes predictions using a trained scikit-learn model on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the new column with the predictions.",
+                  "name": "prediction_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the trained model to use for the predictions.",
+                  "name": "model_name"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Make prediction",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Make prediction",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.scikit_predict",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Make prediction",
         "output_metadata": [
           {
@@ -1844,6 +2889,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -2006,7 +3052,220 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains a K-nearest neighbors classifier on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the training data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the labels.",
+                  "name": "label_column"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The number of neighbors to use.",
+                  "name": "n_neighbors"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name to assign to the trained model.",
+                  "name": "model_name"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The weight function used in prediction.",
+                  "name": "weights"
+                },
+                {
+                  "annotation": "Literal",
+                  "description": "The algorithm used to compute the nearest neighbors.",
+                  "name": "algorithm"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The leaf size passed to the algorithm.",
+                  "name": "leaf_size"
+                },
+                {
+                  "annotation": "DistanceMetric",
+                  "description": "The distance metric to use.",
+                  "name": "metric"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The power parameter for the Minkowski metric.",
+                  "name": "p"
+                },
+                {
+                  "annotation": "int | None",
+                  "description": "The number of parallel jobs to run.",
+                  "name": "n_jobs"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Train K-nearest neighbors classifier",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train K-nearest neighbors classifier",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": 5,
+              "name": "n_neighbors",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "knn",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "uniform",
+              "name": "weights",
+              "type": {
+                "enum": [
+                  "uniform",
+                  "distance"
+                ]
+              }
+            },
+            {
+              "default": "auto",
+              "name": "algorithm",
+              "type": {
+                "enum": [
+                  "auto",
+                  "ball_tree",
+                  "kd_tree",
+                  "brute"
+                ]
+              }
+            },
+            {
+              "default": 30,
+              "name": "leaf_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": "minkowski",
+              "name": "metric",
+              "type": {
+                "enum": [
+                  "minkowski",
+                  "haversine",
+                  "russellrao",
+                  "dice",
+                  "braycurtis",
+                  "cosine",
+                  "canberra",
+                  "yule",
+                  "cityblock",
+                  "sokalsneath",
+                  "matching",
+                  "euclidean",
+                  "l1",
+                  "sqeuclidean",
+                  "correlation",
+                  "hamming",
+                  "chebyshev",
+                  "rogerstanimoto",
+                  "jaccard",
+                  "l2",
+                  "manhattan"
+                ]
+              }
+            },
+            {
+              "default": 2,
+              "name": "p",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": null,
+              "name": "n_jobs",
+              "type": {
+                "type": "int | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.train_knn",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Train K-nearest neighbors classifier",
         "output_metadata": [
           {
@@ -2158,6 +3417,7 @@
           "weights": "distance"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Train K-nearest neighbors classifier"
       },
@@ -2324,7 +3584,105 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Makes predictions using a trained scikit-learn model on the data from the specified table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the table containing the data.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "The name of the column containing the feature vectors.",
+                  "name": "feature_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the new column with the predictions.",
+                  "name": "prediction_column"
+                },
+                {
+                  "annotation": "str",
+                  "description": "The name of the trained model to use for the predictions.",
+                  "name": "model_name"
+                }
+              ]
+            }
+          ],
+          "icon": "circles",
+          "id": "Scikit > Make prediction",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Make prediction",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "feature_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.scikit_predict",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Scikit > Make prediction",
         "output_metadata": [
           {
@@ -2471,6 +3829,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Make prediction"
       },
@@ -2638,7 +3997,56 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "blue",
+          "doc": null,
+          "icon": "dots-diagonal-2",
+          "id": "Scikit > Confusion matrix",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Confusion matrix",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.conf_matrix",
+          "tags": [],
+          "type": "image"
+        },
         "op_id": "Scikit > Confusion matrix",
         "output_metadata": [],
         "params": {
@@ -2647,6 +4055,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -2807,7 +4216,56 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "blue",
+          "doc": null,
+          "icon": "dots-diagonal-2",
+          "id": "Scikit > Confusion matrix",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Confusion matrix",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "prediction_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.conf_matrix",
+          "tags": [],
+          "type": "image"
+        },
         "op_id": "Scikit > Confusion matrix",
         "output_metadata": [],
         "params": {
@@ -2816,6 +4274,7 @@
           "table_name": "creditg_test"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Confusion matrix"
       },
@@ -2839,7 +4298,68 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Fetches the specified dataset from OpenML."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "str",
+                  "description": "The name of the dataset to fetch.",
+                  "name": "dataset_name"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The version of the dataset to fetch.",
+                  "name": "version"
+                }
+              ]
+            }
+          ],
+          "icon": "database-import",
+          "id": "Scikit > Fetch OpenML dataset",
+          "inputs": [],
+          "name": "Fetch OpenML dataset",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "dataset_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 1,
+              "name": "version",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.fetch_dataset",
+          "tags": [
+            "slow"
+          ],
+          "type": "basic"
+        },
         "op_id": "Scikit > Fetch OpenML dataset",
         "output_metadata": [
           {
@@ -2865,6 +4385,9 @@
           "version": "1"
         },
         "status": "done",
+        "tags": [
+          "slow"
+        ],
         "telemetry": null,
         "title": "Fetch OpenML dataset"
       },
@@ -2888,7 +4411,68 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Scikit"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Fetches the specified dataset from OpenML."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "str",
+                  "description": "The name of the dataset to fetch.",
+                  "name": "dataset_name"
+                },
+                {
+                  "annotation": "int",
+                  "description": "The version of the dataset to fetch.",
+                  "name": "version"
+                }
+              ]
+            }
+          ],
+          "icon": "database-import",
+          "id": "Scikit > Fetch OpenML dataset",
+          "inputs": [],
+          "name": "Fetch OpenML dataset",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "dataset_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 1,
+              "name": "version",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.scikit_ops.fetch_dataset",
+          "tags": [
+            "slow"
+          ],
+          "type": "basic"
+        },
         "op_id": "Scikit > Fetch OpenML dataset",
         "output_metadata": [
           {
@@ -2930,6 +4514,9 @@
           "version": 1.0
         },
         "status": "done",
+        "tags": [
+          "slow"
+        ],
         "telemetry": null,
         "title": "Fetch OpenML dataset"
       },
@@ -3001,7 +4588,81 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Flattens the items to 1 dimension in the specified column of the specified table.\n\nIf one of the items is the following list: [[a,b],[[c,d],e]]\n\nthe flattened version will be: [a,b,c,d,e]"
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "The bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the column whose items should be flattened",
+                  "name": "column_name"
+                }
+              ]
+            }
+          ],
+          "icon": "ironing",
+          "id": "Table operations > Flatten column",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Flatten column",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "column_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.flatten_column",
+          "tags": [],
+          "type": "basic"
+        },
         "op_id": "Table operations > Flatten column",
         "output_metadata": [
           {
@@ -3057,6 +4718,7 @@
           "table_name": "creditg"
         },
         "status": "done",
+        "tags": [],
         "telemetry": null,
         "title": "Flatten column"
       },
