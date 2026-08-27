@@ -194,6 +194,44 @@
       "sourceHandle": "output",
       "target": "Vector from attributes 2",
       "targetHandle": "b"
+    },
+    {
+      "id": "Make prediction 3 output Scatter plot 4 bundle",
+      "selected": false,
+      "source": "Make prediction 3",
+      "sourceHandle": "output",
+      "target": "Scatter plot 4",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Make prediction 3 output SQL 4 bundle",
+      "selected": false,
+      "source": "Make prediction 3",
+      "sourceHandle": "output",
+      "target": "SQL 4",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "SQL 4 output View tables 4 bundle",
+      "selected": false,
+      "source": "SQL 4",
+      "sourceHandle": "output",
+      "target": "View tables 4",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train decision tree regression model 1 output Make prediction 3 b",
+      "source": "Train decision tree regression model 1",
+      "sourceHandle": "output",
+      "target": "Make prediction 3",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Train/test split 2 output Train decision tree regression model 1 b",
+      "source": "Train/test split 2",
+      "sourceHandle": "output",
+      "target": "Train decision tree regression model 1",
+      "targetHandle": "b"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -9682,6 +9720,783 @@
       "position": {
         "x": 3896.0246167074097,
         "y": 2356.777446534697
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Scikit > Make prediction",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "model_name": "decision_tree",
+          "prediction_column": "age_prediction",
+          "table_name": "nodes_test"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Make prediction"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 386.0,
+      "id": "Make prediction 3",
+      "measured": {
+        "height": 386.0,
+        "width": 336.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 6626.984699398539,
+        "y": 3751.421910951745
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 336.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 7,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "identity_line": true,
+          "origin": true,
+          "table_name": "nodes_test",
+          "x_column": "age",
+          "y_column": "age_prediction"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 799.0,
+      "id": "Scatter plot 4",
+      "measured": {
+        "height": 799.0,
+        "width": 911.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7308.136329544223,
+        "y": 3538.796368653121
+      },
+      "selected": false,
+      "type": "image",
+      "width": 911.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "query": "select \nsqrt(\n  AVG(\n    (age - age_prediction)\n    *(age - age_prediction)\n  )\n)\n\nfrom nodes_test",
+          "save_as": "results"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "SQL"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "SQL 4",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7287.8621951027335,
+        "y": 4481.8399650239335
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 44,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "results": {
+                "columns": [
+                  "age"
+                ],
+                "key": "results",
+                "length": 1.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "results": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "View tables 4",
+      "measured": {
+        "height": 315.0,
+        "width": 315.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 7788.652535290806,
+        "y": 4484.819496661992
+      },
+      "selected": false,
+      "type": "table_view",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Train decision tree regression model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "feature_column": "features",
+          "label_column": "age",
+          "model_name": "decision_tree",
+          "table_name": "nodes_train"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train decision tree regression model"
+      },
+      "height": 315.0,
+      "id": "Train decision tree regression model 1",
+      "parentId": null,
+      "position": {
+        "x": 6122.540486846362,
+        "y": 3788.646055599776
       },
       "type": "basic",
       "width": 315.0

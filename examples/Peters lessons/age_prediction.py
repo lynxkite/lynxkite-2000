@@ -3,6 +3,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 
 from lynxkite_core.ops import op_registration
 from lynxkite_graph_analytics import core
@@ -92,4 +93,32 @@ def rename_columns(
     for old_name, new_name in pairs:
         df.rename(columns={old_name: new_name}, inplace=True)
     b.dfs[table_name] = df
+    return b
+
+
+@op("Train decision tree regression model", icon="circles")
+def train_decision_tree(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    feature_column: core.ColumnNameByTableName,
+    label_column: core.ColumnNameByTableName,
+    model_name: str = "decision_tree",
+) -> core.Bundle:
+    """
+    :param b: The bundle.
+    :param table_name: The name of the table containing the training data.
+    :param feature_column: The name of the column containing the feature vectors.
+    :param label_column: The name of the column containing the labels.
+    :param model_name: The name to assign to the trained model.
+    """
+    b = b.copy()
+    train_df = b.dfs[table_name].copy()
+    x_train = np.array(train_df[feature_column].tolist())
+    y_train = train_df[label_column].to_numpy()
+    tree = DecisionTreeRegressor(
+        max_depth=7, min_impurity_decrease=0.0, min_samples_leaf=1, random_state=42
+    )
+    tree = tree.fit(x_train, y_train)
+    b.other[model_name] = tree
     return b
