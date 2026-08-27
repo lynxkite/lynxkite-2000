@@ -12,6 +12,8 @@ from typing import Any
 import fastapi
 import pycrdt
 import pycrdt.websocket
+import uvicorn.protocols.utils
+from websockets.exceptions import ConnectionClosedOK
 from lynxkite_core import workspace
 from lynxkite_core.workspace_progress import compute_workspace_progress, workspace_display_name
 
@@ -22,10 +24,13 @@ _progress_server: ProgressWebsocketServer | None = None
 
 
 def ws_exception_handler(exception, log):
-    for ex in (
-        exception.exceptions if isinstance(exception, builtins.ExceptionGroup) else [exception]
+    if isinstance(exception, builtins.BaseExceptionGroup):
+        for ex in exception.exceptions:
+            ws_exception_handler(ex, log)
+    elif not isinstance(
+        exception, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)
     ):
-        log.exception(ex)
+        log.exception(exception)
     return True
 
 

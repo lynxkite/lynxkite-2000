@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 interface InlineSvgProps {
   src?: string;
@@ -7,7 +7,7 @@ interface InlineSvgProps {
   [key: string]: any;
 }
 
-export default function InlineSvg({ src, className, ...props }: InlineSvgProps) {
+const InlineSvg = memo(function InlineSvg({ src, className, ...props }: InlineSvgProps) {
   const [svg, setSvg] = useState<string | null>(null);
   useEffect(() => {
     if (!src) return;
@@ -23,4 +23,6 @@ export default function InlineSvg({ src, className, ...props }: InlineSvgProps) 
       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg || "") }}
     />
   );
-}
+});
+
+export default InlineSvg;
