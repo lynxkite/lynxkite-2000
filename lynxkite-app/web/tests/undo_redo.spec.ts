@@ -45,13 +45,17 @@ test("undo/redo box dragging", async () => {
   expect(newPos?.x).toBeGreaterThan(originalPos!.x);
   expect(newPos?.y).toBeGreaterThan(originalPos!.y);
   await workspace.page.keyboard.press("Control+z");
-  const undonePos = await workspace.getBox("Import Parquet 1").boundingBox();
-  expect(undonePos?.x).toBeCloseTo(originalPos!.x, 1);
-  expect(undonePos?.y).toBeCloseTo(originalPos!.y, 1);
+  await expect(async () => {
+    const undonePos = await workspace.getBox("Import Parquet 1").boundingBox();
+    expect(undonePos?.x).toBeCloseTo(originalPos!.x, 1);
+    expect(undonePos?.y).toBeCloseTo(originalPos!.y, 1);
+  }).toPass();
   await workspace.page.keyboard.press("Control+y");
-  const redonePos = await workspace.getBox("Import Parquet 1").boundingBox();
-  expect(redonePos?.x).toBeGreaterThan(originalPos!.x);
-  expect(redonePos?.y).toBeGreaterThan(originalPos!.y);
+  await expect(async () => {
+    const redonePos = await workspace.getBox("Import Parquet 1").boundingBox();
+    expect(redonePos?.x).toBeGreaterThan(originalPos!.x);
+    expect(redonePos?.y).toBeGreaterThan(originalPos!.y);
+  }).toPass();
 });
 
 test("undo/redo grouping boxes", async () => {
