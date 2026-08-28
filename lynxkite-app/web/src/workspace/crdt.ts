@@ -46,7 +46,7 @@ function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
 }
 
 // What the rest of the app observes as the workspace state. Only mutate it through the methods!
-type CRDTWorkspace = {
+export type CRDTWorkspace = {
   ws?: WorkspaceType;
   feNodes: Node[];
   feEdges: Edge[];
@@ -578,9 +578,12 @@ class CRDTConnection {
   };
 }
 
-const EMPTY_WORKSPACE: CRDTWorkspace = {
+export const EMPTY_WORKSPACE: CRDTWorkspace = {
   feNodes: [],
   feEdges: [],
+  selectedNodeIds: [],
+  selectedNodeCount: 0,
+  isAnyGroupSelected: false,
   setPausedState: () => {},
   setEnv: () => {},
   setExecutionOptions: () => {},

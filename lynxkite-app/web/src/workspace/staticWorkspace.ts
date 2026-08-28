@@ -3,6 +3,7 @@ import { applyEdgeChanges, applyNodeChanges, type Edge, type Node } from "@xyflo
 import { useEffect, useState } from "react";
 import type { Workspace as WorkspaceType } from "../apiTypes.ts";
 import { getStaticWorkspaceConfig } from "../common.ts";
+import { type CRDTWorkspace, EMPTY_WORKSPACE } from "./crdt.ts";
 
 function workspaceToFlowState(ws: WorkspaceType, oldNodes: Node[] = []) {
   const oldNodesById = Object.fromEntries(oldNodes.map((n) => [n.id, n]));
@@ -27,11 +28,7 @@ function workspaceToFlowState(ws: WorkspaceType, oldNodes: Node[] = []) {
 
 export function useStaticWorkspace() {
   const config = getStaticWorkspaceConfig();
-  const [state, setState] = useState(() => ({
-    ws: undefined as WorkspaceType | undefined,
-    feNodes: [] as Node[],
-    feEdges: [] as Edge[],
-  }));
+  const [state, setState] = useState<CRDTWorkspace>(() => ({ ...EMPTY_WORKSPACE }));
 
   useEffect(() => {
     if (!config) return;
@@ -40,6 +37,7 @@ export function useStaticWorkspace() {
       .then((ws: WorkspaceType) => {
         const withPath = { ...ws, path: config.workspace };
         setState((oldState) => ({
+          ...EMPTY_WORKSPACE,
           ws: withPath,
           ...workspaceToFlowState(withPath, oldState.feNodes),
         }));
@@ -48,14 +46,6 @@ export function useStaticWorkspace() {
 
   return {
     ...state,
-    setPausedState: () => {},
-    setEnv: () => {},
-    setExecutionOptions: () => {},
-    setAssistantMessages: () => {},
-    clearAssistantMessages: () => {},
-    applyChange: () => {},
-    addNode: () => {},
-    addEdge: () => {},
     onFENodesChange: (changes: any[]) => {
       setState((oldState) => ({
         ...oldState,
@@ -74,7 +64,5 @@ export function useStaticWorkspace() {
         ),
       }));
     },
-    undo: () => {},
-    redo: () => {},
   };
 }

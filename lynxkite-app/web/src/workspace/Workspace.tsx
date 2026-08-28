@@ -51,7 +51,7 @@ import Tooltip from "../Tooltip.tsx";
 import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
-import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
+import { type CRDTWorkspace, nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
 import { snapChangesToGrid } from "./grid.ts";
@@ -114,9 +114,12 @@ function LynxKiteFlow() {
   const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
   const permissions = useFolderPermissions(path);
   const canWrite = isStatic ? false : permissions.write;
-  const staticWorkspace = useStaticWorkspace();
-  const liveWorkspace = useCRDTWorkspace(path, canWrite, !isStatic);
-  const crdt = isStatic ? staticWorkspace : liveWorkspace;
+  // Conditional useFoo hooks are safe here because isStatic never changes.
+  // biome-ignore-start lint/correctness/useHookAtTopLevel: isStatic is static
+  const crdt: CRDTWorkspace = isStatic
+    ? useStaticWorkspace()
+    : useCRDTWorkspace(path, canWrite, !isStatic);
+  // biome-ignore-end lint/correctness/useHookAtTopLevel: isStatic is static
   const workspace = crdt.ws;
   const workspaceReady = Boolean(workspace) && (isStatic || !permissions.isLoading);
   const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite.json") : path)!
