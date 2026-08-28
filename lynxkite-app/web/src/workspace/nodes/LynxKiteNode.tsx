@@ -1,17 +1,23 @@
-import { Handle, NodeResizeControl, type Position, useReactFlow } from "@xyflow/react";
+import {
+  Handle,
+  NodeResizeControl,
+  type Position,
+  useNodeConnections,
+  useReactFlow,
+} from "@xyflow/react";
 import Color from "colorjs.io";
-import React, { useContext, useMemo } from "react";
+import React, { memo, useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
 import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
-import type { Op as OpsOp, Workspace, WorkspaceNodeData } from "../../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
-import { LynxKiteState } from "../LynxKiteState.ts";
+import { LynxKiteNodeState } from "../LynxKiteState.ts";
 import { NodeSearchInternal } from "../NodeSearch.tsx";
 import { NodeProgress } from "./ProgressBar.tsx";
 
@@ -55,7 +61,7 @@ function formatOutputMetadata(metadata: any): string | undefined {
 }
 
 function getHandles(
-  ws: Workspace,
+  connections: any[],
   id: string,
   inputs: any[],
   outputs: any[],
@@ -93,11 +99,11 @@ function getHandles(
   }
   // Add handles for connections that exist but are not defined in inputs/outputs.
   // This can happen on unknown operations, or when the inputs/outputs are renamed.
-  for (const e of ws.edges ?? []) {
-    if (e.target === id && !handles.find((h) => h.name === e.targetHandle)) {
+  for (const conn of connections ?? []) {
+    if (conn.target === id && !handles.find((h) => h.name === conn.targetHandle)) {
       handles.push({
         position: "left",
-        name: e.targetHandle,
+        name: conn.targetHandle,
         index: counts.left,
         offsetPercentage: 50,
         showLabel: true,
@@ -105,10 +111,10 @@ function getHandles(
       });
       counts.left++;
     }
-    if (e.source === id && !handles.find((h) => h.name === e.sourceHandle)) {
+    if (conn.source === id && !handles.find((h) => h.name === conn.sourceHandle)) {
       handles.push({
         position: "right",
-        name: e.sourceHandle,
+        name: conn.sourceHandle,
         index: counts.right,
         offsetPercentage: 50,
         showLabel: true,
@@ -162,15 +168,16 @@ function onWheel(e: WheelEvent) {
 
 function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
   const reactFlow = useReactFlow();
+  const connections = useNodeConnections({ id: props.id });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const data = props.data;
-  const state = useContext(LynxKiteState);
+  const { iconized: iconizedGlobal } = useContext(LynxKiteNodeState);
   const canIconize =
     !data.collapsed &&
     !["visualization", "graph_visualization", "image", "molecule"].includes(props.type);
-  const iconized = state.iconized && canIconize;
+  const iconized = iconizedGlobal && canIconize;
   const handles = getHandles(
-    state.workspace,
+    connections,
     props.id,
     data.meta?.inputs || [],
     data.meta?.outputs || [],
@@ -220,18 +227,23 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
     left: "top",
     right: "top",
   };
-  const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
-  const titleStyle = { backgroundColor: color.toString() };
-  color.lch[0] = 20;
-  color.alpha = 0.5;
-  const borderColor = color.toString();
-  color.lch[1] = 50;
-  color.alpha = 0.25;
-  const nodeStyle = {
-    ...props.nodeStyle,
-    borderColor,
-    boxShadow: `0px 5px 30px 0px ${color.toString()}`,
-  };
+  // Building a Color and doing LCH conversions is surprisingly expensive, so we
+  // only recompute the derived styles when the node's color actually changes.
+  const { titleStyle, nodeStyle } = useMemo(() => {
+    const color = new Color(COLORS[meta.color] ?? meta.color ?? "oklch(75% 0.2 55)");
+    const titleStyle = { backgroundColor: color.toString() };
+    color.lch[0] = 20;
+    color.alpha = 0.5;
+    const borderColor = color.toString();
+    color.lch[1] = 50;
+    color.alpha = 0.25;
+    const nodeStyle = {
+      ...props.nodeStyle,
+      borderColor,
+      boxShadow: `0px 5px 30px 0px ${color.toString()}`,
+    };
+    return { titleStyle, nodeStyle };
+  }, [meta.color, props.nodeStyle]);
   const titleTooltip = data.collapsed ? "Click to expand node" : summary;
 
   return (
@@ -358,13 +370,14 @@ function Icon({ name }: { name: string }) {
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
-  return (props: any) => {
+  const WrappedNode = (props: any) => {
     return (
       <LynxKiteNodeComponent {...props}>
         <Component {...props} />
       </LynxKiteNodeComponent>
     );
   };
+  return memo(WrappedNode);
 }
 
 function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {
