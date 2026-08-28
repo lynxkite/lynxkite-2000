@@ -29,8 +29,8 @@ def _add_directory(
 
 def _static_index_html(web_assets_path: pathlib.Path, workspace_filename: str) -> str:
     index_html = (web_assets_path / "index.html").read_text(encoding="utf-8")
-    index_html = index_html.replace('href="/assets/', 'href="assets/')
-    index_html = index_html.replace('src="/assets/', 'src="assets/')
+    # Use relative paths for the static export.
+    index_html = index_html.replace('<base href="/" />', "")
     static_config = {
         "workspace": "data/workspace.lynxkite.json",
         "filesBase": f"data/.workspace_files/{workspace_filename}/",
