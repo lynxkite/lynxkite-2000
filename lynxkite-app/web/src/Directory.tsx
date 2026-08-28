@@ -41,6 +41,8 @@ function EntryCreator(props: {
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
+type DownloadAction = "download" | "export";
+
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
     return <title>LynxKite 2000:MM</title>;
@@ -88,6 +90,10 @@ export default function Directory() {
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [pendingDownload, setPendingDownload] = useState<{
+    action: DownloadAction;
+    itemName: string;
+  } | null>(null);
 
   function link(item: DirectoryEntry) {
     const encodedName = encodePathSegments(item.name);
@@ -204,7 +210,7 @@ export default function Directory() {
     });
     if (!res.ok) {
       alert("Failed to download file.");
-      return;
+      return false;
     }
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
@@ -213,6 +219,34 @@ export default function Directory() {
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
+    return true;
+  }
+
+  function closeDropdown(trigger: HTMLElement) {
+    const dropdown = trigger.closest(".dropdown");
+    if (dropdown?.contains(document.activeElement)) {
+      (document.activeElement as HTMLElement).blur();
+    }
+    trigger.blur();
+  }
+
+  async function runDownloadAction(
+    action: DownloadAction,
+    apiPath: string,
+    item: DirectoryEntry,
+    fileName: string,
+    trigger: HTMLElement,
+  ) {
+    if (pendingDownload !== null) return;
+    setPendingDownload({ action, itemName: item.name });
+    try {
+      const started = await downloadBlob(apiPath, item, fileName);
+      if (started) {
+        closeDropdown(trigger);
+      }
+    } finally {
+      setPendingDownload(null);
+    }
   }
 
   return (
@@ -364,11 +398,21 @@ export default function Directory() {
                           <li>
                             <button
                               type="button"
-                              onClick={async () => {
-                                downloadBlob("/api/download", item, item.name.split("/").pop()!);
+                              aria-disabled={pendingDownload !== null}
+                              onClick={async (e) => {
+                                await runDownloadAction(
+                                  "download",
+                                  "/api/download",
+                                  item,
+                                  item.name.split("/").pop()!,
+                                  e.currentTarget,
+                                );
                               }}
                             >
-                              Download
+                              {pendingDownload?.action === "download" &&
+                              pendingDownload.itemName === item.name
+                                ? "Downloading..."
+                                : "Download"}
                             </button>
                           </li>
                         )}
@@ -376,12 +420,22 @@ export default function Directory() {
                           <li>
                             <button
                               type="button"
-                              onClick={async () => {
+                              aria-disabled={pendingDownload !== null}
+                              onClick={async (e) => {
                                 const fileName = `${shortName(item)}.zip`;
-                                downloadBlob("/api/export_workspace", item, fileName);
+                                await runDownloadAction(
+                                  "export",
+                                  "/api/export_workspace",
+                                  item,
+                                  fileName,
+                                  e.currentTarget,
+                                );
                               }}
                             >
-                              Export for static embedding
+                              {pendingDownload?.action === "export" &&
+                              pendingDownload.itemName === item.name
+                                ? "Exporting..."
+                                : "Export static page"}
                             </button>
                           </li>
                         )}
