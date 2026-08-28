@@ -13,21 +13,12 @@ type IconCollection = {
 };
 
 const tablerIcons = rawTablerIcons as IconCollection;
-const warnedMissingIcons = new Set<string>();
 
-function normalizeIconName(name: string): string {
-  return name.startsWith("tabler:") ? name.slice("tabler:".length) : name;
-}
-
-export function getTablerIconSvgMarkup(name: string): string | undefined {
-  const normalizedName = normalizeIconName(name);
-  const icon = tablerIcons.icons[normalizedName];
+export function getTablerIconSvgMarkup(name: string): string {
+  const icon = tablerIcons.icons[name];
   if (!icon) {
-    if (import.meta.env.DEV && !warnedMissingIcons.has(normalizedName)) {
-      warnedMissingIcons.add(normalizedName);
-      console.warn(`Missing Tabler icon: ${normalizedName}`);
-    }
-    return undefined;
+    console.warn(`Missing Tabler icon: ${name}`);
+    return getTablerIconSvgMarkup("exclamation-circle");
   }
   const width = icon.width ?? tablerIcons.width ?? 24;
   const height = icon.height ?? tablerIcons.height ?? 24;

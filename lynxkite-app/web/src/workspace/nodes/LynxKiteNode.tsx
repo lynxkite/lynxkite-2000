@@ -14,6 +14,7 @@ import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
+import InlineSVG from "../../InlineSVG.tsx";
 import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
@@ -356,17 +357,8 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
 }
 
 function Icon({ name }: { name: string }) {
-  if (!name) {
-    return <div className="title-icon-placeholder" />;
-  }
-  if (name.startsWith("<svg")) {
-    return <span className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
-  }
-  const svg = getTablerIconSvgMarkup(name);
-  if (!svg) {
-    return <div className="title-icon-placeholder" />;
-  }
-  return <span className="title-icon" dangerouslySetInnerHTML={{ __html: svg }} />;
+  const svg = name?.startsWith("<svg") ? name : getTablerIconSvgMarkup(name ?? "chevron-right");
+  return <InlineSVG className="title-icon" svg={svg} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {
