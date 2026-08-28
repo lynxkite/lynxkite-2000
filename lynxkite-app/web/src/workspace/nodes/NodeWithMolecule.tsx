@@ -56,7 +56,6 @@ const NodeWithMolecule = (props: any) => {
           layoutShowControls: false,
           layoutShowRemoteState: false,
           layoutShowLog: false,
-          viewportShowAnimation: false,
           collapseLeftPanel: true,
         });
 
