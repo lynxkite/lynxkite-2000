@@ -763,7 +763,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -3855,7 +3855,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4074,7 +4074,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [

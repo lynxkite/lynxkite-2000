@@ -1,6 +1,7 @@
 """FastAPI router exposing a Deep Agents assistant."""
 
 import os
+import shutil
 import fastapi
 import openai
 import pydantic
@@ -13,6 +14,8 @@ from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
 from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
+
+ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
 
 router = fastapi.APIRouter()
 
@@ -117,6 +120,24 @@ def map_web_page(url: str, params: dict | None = None):
         return f"Error mapping web page: {e}"
 
 
+def _init_memory(workspace_path: str) -> Path:
+    """Initialize the memory directory for a workspace."""
+    memory_files_path = (
+        Path(workspace_path).parent / ".assistant_memory" / Path(workspace_path).name
+    )
+    if memory_files_path.exists():
+        memory_dirs = sorted(
+            [d for d in memory_files_path.iterdir() if d.is_dir()],
+            key=lambda d: d.stat().st_mtime,
+        )
+        while len(memory_dirs) > ASSISTANT_MEMORY_DEPTH:
+            oldest_dir = memory_dirs.pop(0)
+            shutil.rmtree(oldest_dir)
+    else:
+        os.makedirs(memory_files_path, exist_ok=True)
+    return memory_files_path
+
+
 @router.post("/api/assistant/stream")
 async def assistant_stream(
     req: AssistantCompletionRequest, skill_root="../.agents/skills"
@@ -133,6 +154,10 @@ async def assistant_stream(
         routes["/workspace_files/"] = backends.FilesystemBackend(
             root_dir=str(workspace_files_path), virtual_mode=True
         )
+    memory_files_path = _init_memory(req.workspace)
+    routes["/previous_states/"] = backends.FilesystemBackend(
+        root_dir=str(memory_files_path), virtual_mode=True
+    )
     backend = backends.CompositeBackend(
         default=workspace_backend,
         routes=routes,
