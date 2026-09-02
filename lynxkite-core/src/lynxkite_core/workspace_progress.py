@@ -48,8 +48,6 @@ def compute_workspace_eta_seconds(
     boxes_done: int = 0,
     boxes_total: int = 0,
 ) -> float | None:
-    if boxes_total > 0 and boxes_done >= boxes_total:
-        return 0.0
     if elapsed_seconds and 0 < progress_fraction < 1:
         return max(0.0, elapsed_seconds * (1.0 - progress_fraction) / progress_fraction)
     if active_box_eta is not None:
@@ -72,7 +70,7 @@ def compute_workspace_progress(
     paused = bool(ws.paused)
     active_node, active_box_eta, partial = _active_node_info(nodes)
     finished = active_count == 0 and boxes_done + boxes_failed == boxes_total
-    fraction = (boxes_done + partial) / boxes_total if boxes_total else 0.0
+    fraction = min(1.0, max(0.0, (boxes_done + partial) / boxes_total)) if boxes_total else 0.0
 
     if not boxes_total:
         status = "idle"
@@ -85,17 +83,6 @@ def compute_workspace_progress(
     else:
         status = "running"
 
-    eta = (
-        0.0
-        if status in ("done", "failed", "idle")
-        else compute_workspace_eta_seconds(
-            progress_fraction=fraction,
-            elapsed_seconds=elapsed_seconds,
-            active_box_eta=active_box_eta,
-            boxes_done=boxes_done,
-            boxes_total=boxes_total,
-        )
-    )
     return {
         "name": workspace_display_name(room_name),
         "room_name": room_name,
@@ -104,9 +91,19 @@ def compute_workspace_progress(
         "boxes_failed": boxes_failed,
         "boxes_total": boxes_total,
         "active_node": active_node,
-        "progress_fraction": min(1.0, max(0.0, fraction)),
+        "progress_fraction": fraction,
         "elapsed_seconds": elapsed_seconds,
-        "eta_seconds": eta,
+        "eta_seconds": (
+            0.0
+            if status in ("done", "failed", "idle")
+            else compute_workspace_eta_seconds(
+                progress_fraction=fraction,
+                elapsed_seconds=elapsed_seconds,
+                active_box_eta=active_box_eta,
+                boxes_done=boxes_done,
+                boxes_total=boxes_total,
+            )
+        ),
         "gpus": gpus if gpus is not None else (ws.execution_options or {}).get("gpus", 0),
         "paused": paused,
     }
