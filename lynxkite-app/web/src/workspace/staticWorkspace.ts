@@ -18,9 +18,6 @@ function workspaceToFlowState(ws: WorkspaceType, oldNodes: Node[] = []) {
     if (node.extent === undefined) {
       delete mergedNode.extent;
     }
-    if (node.width != null && node.height != null) {
-      mergedNode.measured = { width: node.width, height: node.height };
-    }
     return mergedNode;
   });
   return { feNodes, feEdges: (ws.edges || []) as Edge[] };
