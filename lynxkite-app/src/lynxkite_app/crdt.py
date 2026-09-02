@@ -20,10 +20,11 @@ from .crdt_update import crdt_update
 from . import progress_crdt
 from . import ws_auth
 
+enterprise_backend: typing.Any = None
 try:
     import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
-    enterprise_backend = None
+    pass
 
 router = fastapi.APIRouter()
 main_loop = None
@@ -406,7 +407,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     if runtime_state.delayed_execution is not None:
         runtime_state.delayed_execution.cancel()
     # Check if workspace is paused - if so, skip automatic execution
-    if getattr(ws_pyd, "paused", False):
+    if ws_pyd.paused:
         return
 
     task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
