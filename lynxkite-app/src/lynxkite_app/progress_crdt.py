@@ -59,6 +59,10 @@ def reset_run_timer(room_name: str) -> None:
     _run_started_at[room_name] = time.monotonic()
 
 
+def mark_run_finished(room_name: str) -> None:
+    _run_started_at.pop(room_name, None)
+
+
 def _elapsed_seconds(room_name: str) -> float | None:
     started = _run_started_at.get(room_name)
     if started is None:
@@ -107,6 +111,7 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
                 room_name=room_name,
                 elapsed_seconds=_elapsed_seconds(room_name),
                 gpus=gpus,
+                executing=room_name in _run_started_at,
             )
             entries_by_room[room_name] = json.dumps(payload)
         except Exception as e:

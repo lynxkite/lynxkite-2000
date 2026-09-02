@@ -15,17 +15,17 @@ import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
-import { parseProgressWorkspace } from "./progress";
+import {
+  formatWorkspaceProgressSuffix,
+  getWorkspaceProgress,
+  parseProgressWorkspace,
+  workspaceProgressColor,
+} from "./progress";
 
 const echarts = await import("echarts");
 
 function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
+  return formatWorkspaceProgressSuffix(getWorkspaceProgress(ws));
 }
 
 export default function ProgressPage() {
@@ -248,7 +248,7 @@ function Workspaces(props: {
                     </span>
                   )}
                   <progress
-                    className={`progress progress-${ws.status === "active" ? "primary" : "neutral"} w-50`}
+                    className={`progress progress-${workspaceProgressColor(ws.status)} w-50`}
                     value={combinedProgress * 100}
                     max={100}
                   />
