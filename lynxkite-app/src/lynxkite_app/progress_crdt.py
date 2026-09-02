@@ -96,6 +96,18 @@ def on_workspace_connection_close(room_name: str, ws_server) -> None:
     update_progress_workspaces(ws_server)
 
 
+def _stop_progress_if_idle(payload: dict, room_name: str) -> dict:
+    """If the executor has stopped, leftover planned boxes are not still running."""
+    if room_name in _run_started_at or payload.get("status") in ("idle", "done", "failed"):
+        return payload
+    failed = payload.get("boxes_failed")
+    payload["status"] = "failed" if failed else "done"
+    payload["eta_seconds"] = 0.0
+    if not failed and payload.get("boxes_total"):
+        payload["progress_fraction"] = 1.0
+    return payload
+
+
 def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None) -> None:
     if _progress_ydoc is None or not hasattr(ws_server, "rooms"):
         return
@@ -106,12 +118,14 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
         try:
             ws = workspace.Workspace.model_validate(room.ws.to_py())
             gpus = k8s_workspace_gpus.get(workspace_display_name(room_name))
-            payload = compute_workspace_progress(
-                ws,
-                room_name=room_name,
-                elapsed_seconds=_elapsed_seconds(room_name),
-                gpus=gpus,
-                executing=room_name in _run_started_at,
+            payload = _stop_progress_if_idle(
+                compute_workspace_progress(
+                    ws,
+                    room_name=room_name,
+                    elapsed_seconds=_elapsed_seconds(room_name),
+                    gpus=gpus,
+                ),
+                room_name,
             )
             entries_by_room[room_name] = json.dumps(payload)
         except Exception as e:

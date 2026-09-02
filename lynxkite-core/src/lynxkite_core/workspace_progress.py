@@ -1,14 +1,7 @@
 """Workspace-level progress aggregation.
 
-``progress_fraction`` counts completed boxes plus partial credit from the active
-box's tqdm (``n / total``), divided by total progress boxes.
-
-``eta_seconds`` uses ``elapsed * (1 - f) / f`` when elapsed time and fraction
-are known; otherwise extrapolates from the active box's tqdm rate.
-
-``boxes_done`` = succeeded. ``boxes_failed`` = finished with an error.
-Bar uses succeeded / total. When the executor is not running, leftover
-planned boxes do not keep the ETA counting.
+``boxes_done`` is successful boxes. ``boxes_failed`` is boxes that finished
+with an error. The bar uses succeeded / total.
 """
 
 from __future__ import annotations
@@ -54,9 +47,8 @@ def compute_workspace_eta_seconds(
     active_box_eta: float | None = None,
     boxes_done: int = 0,
     boxes_total: int = 0,
-    finished: bool = False,
 ) -> float | None:
-    if finished:
+    if boxes_total > 0 and boxes_done >= boxes_total:
         return 0.0
     if elapsed_seconds and 0 < progress_fraction < 1:
         return max(0.0, elapsed_seconds * (1.0 - progress_fraction) / progress_fraction)
@@ -71,7 +63,6 @@ def compute_workspace_progress(
     room_name: str,
     elapsed_seconds: float | None = None,
     gpus: int | None = None,
-    executing: bool | None = None,
 ) -> dict[str, Any]:
     nodes = [n for n in (ws.nodes or []) if is_progress_box(n)]
     boxes_total = len(nodes)
@@ -80,12 +71,8 @@ def compute_workspace_progress(
     active_count = sum(n.data.status == NodeStatus.active for n in nodes)
     paused = bool(ws.paused)
     active_node, active_box_eta, partial = _active_node_info(nodes)
-    finished = active_count == 0 and (
-        executing is False or boxes_done + boxes_failed == boxes_total
-    )
+    finished = active_count == 0 and boxes_done + boxes_failed == boxes_total
     fraction = (boxes_done + partial) / boxes_total if boxes_total else 0.0
-    if finished and not boxes_failed and boxes_total:
-        fraction = 1.0
 
     if not boxes_total:
         status = "idle"
@@ -98,6 +85,17 @@ def compute_workspace_progress(
     else:
         status = "running"
 
+    eta = (
+        0.0
+        if status in ("done", "failed", "idle")
+        else compute_workspace_eta_seconds(
+            progress_fraction=fraction,
+            elapsed_seconds=elapsed_seconds,
+            active_box_eta=active_box_eta,
+            boxes_done=boxes_done,
+            boxes_total=boxes_total,
+        )
+    )
     return {
         "name": workspace_display_name(room_name),
         "room_name": room_name,
@@ -108,14 +106,7 @@ def compute_workspace_progress(
         "active_node": active_node,
         "progress_fraction": min(1.0, max(0.0, fraction)),
         "elapsed_seconds": elapsed_seconds,
-        "eta_seconds": compute_workspace_eta_seconds(
-            progress_fraction=fraction,
-            elapsed_seconds=elapsed_seconds,
-            active_box_eta=active_box_eta,
-            boxes_done=boxes_done,
-            boxes_total=boxes_total,
-            finished=status in ("done", "failed", "idle"),
-        ),
+        "eta_seconds": eta,
         "gpus": gpus if gpus is not None else (ws.execution_options or {}).get("gpus", 0),
         "paused": paused,
     }

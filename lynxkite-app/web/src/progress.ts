@@ -19,10 +19,7 @@ export function formatWorkspaceProgressSuffix(workspace: {
   boxesFailed?: number;
 }): string {
   if (workspace.status === "done") return "done";
-  if (workspace.status === "failed") {
-    const n = workspace.boxesFailed ?? 0;
-    return n > 0 ? `${n} failed` : "failed";
-  }
+  if (workspace.status === "failed") return `${workspace.boxesFailed ?? 0} failed`;
   return formatWorkspaceEta(workspace.etaSeconds);
 }
 
