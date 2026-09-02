@@ -1,10 +1,7 @@
 """Workspace-level progress aggregation.
 
-``progress_fraction`` counts completed boxes plus partial credit from the active
-box's tqdm (``n / total``), divided by total progress boxes.
-
-``eta_seconds`` uses ``elapsed * (1 - f) / f`` when elapsed time and fraction
-are known; otherwise extrapolates from the active box's tqdm rate.
+``boxes_done`` is successful boxes. ``boxes_failed`` is boxes that finished
+with an error. The bar uses succeeded / total.
 """
 
 from __future__ import annotations
@@ -51,8 +48,6 @@ def compute_workspace_eta_seconds(
     boxes_done: int = 0,
     boxes_total: int = 0,
 ) -> float | None:
-    if boxes_total > 0 and boxes_done >= boxes_total:
-        return 0.0
     if elapsed_seconds and 0 < progress_fraction < 1:
         return max(0.0, elapsed_seconds * (1.0 - progress_fraction) / progress_fraction)
     if active_box_eta is not None:
@@ -69,34 +64,45 @@ def compute_workspace_progress(
 ) -> dict[str, Any]:
     nodes = [n for n in (ws.nodes or []) if is_progress_box(n)]
     boxes_total = len(nodes)
-    boxes_done = sum(n.data.status == NodeStatus.done for n in nodes)
+    boxes_failed = sum(n.data.status == NodeStatus.done and bool(n.data.error) for n in nodes)
+    boxes_done = sum(n.data.status == NodeStatus.done and not n.data.error for n in nodes)
     active_count = sum(n.data.status == NodeStatus.active for n in nodes)
     paused = bool(ws.paused)
     active_node, active_box_eta, partial = _active_node_info(nodes)
-    fraction = max(0.0, min(1.0, (boxes_done + partial) / boxes_total)) if boxes_total else 0.0
+    finished = active_count == 0 and boxes_done + boxes_failed == boxes_total
+    fraction = min(1.0, max(0.0, (boxes_done + partial) / boxes_total)) if boxes_total else 0.0
+
     if not boxes_total:
         status = "idle"
-    elif boxes_done == boxes_total:
-        status = "done"
+    elif finished:
+        status = "failed" if boxes_failed else "done"
     elif paused:
         status = "paused"
+    elif active_count:
+        status = "active"
     else:
-        status = "active" if active_count else "running"
+        status = "running"
+
     return {
         "name": workspace_display_name(room_name),
         "room_name": room_name,
         "status": status,
         "boxes_done": boxes_done,
+        "boxes_failed": boxes_failed,
         "boxes_total": boxes_total,
         "active_node": active_node,
         "progress_fraction": fraction,
         "elapsed_seconds": elapsed_seconds,
-        "eta_seconds": compute_workspace_eta_seconds(
-            progress_fraction=fraction,
-            elapsed_seconds=elapsed_seconds,
-            active_box_eta=active_box_eta,
-            boxes_done=boxes_done,
-            boxes_total=boxes_total,
+        "eta_seconds": (
+            0.0
+            if status in ("done", "failed", "idle")
+            else compute_workspace_eta_seconds(
+                progress_fraction=fraction,
+                elapsed_seconds=elapsed_seconds,
+                active_box_eta=active_box_eta,
+                boxes_done=boxes_done,
+                boxes_total=boxes_total,
+            )
         ),
         "gpus": gpus if gpus is not None else (ws.execution_options or {}).get("gpus", 0),
         "paused": paused,

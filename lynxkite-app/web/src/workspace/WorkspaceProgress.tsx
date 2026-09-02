@@ -1,4 +1,8 @@
-import { formatWorkspaceEta, getWorkspaceProgress } from "../progress";
+import {
+  formatWorkspaceProgressSuffix,
+  getWorkspaceProgress,
+  workspaceProgressColor,
+} from "../progress";
 import { useWorkspaceProgress } from "./useWorkspaceProgress.ts";
 
 export function WorkspaceProgress({
@@ -16,22 +20,24 @@ export function WorkspaceProgress({
   if (progress.boxesTotal <= 0 || progress.status === "idle") {
     return null;
   }
-  const etaText = formatWorkspaceEta(progress.etaSeconds);
+  const suffix = formatWorkspaceProgressSuffix(progress);
   const label = progress.activeNode?.title || "Workspace progress";
-  const metaParts = [
+  const meta = [
     `${progress.percent.toFixed(0)}%`,
     `${progress.boxesDone}/${progress.boxesTotal}`,
-    etaText,
-  ].filter(Boolean);
+    suffix,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className="workspace-progress-compact" title={`${label} — ${metaParts.join(" ")}`}>
+    <div className="workspace-progress-compact" title={`${label} — ${meta}`}>
       <progress
-        className={`progress progress-${progress.status === "active" ? "primary" : "neutral"}`}
+        className={`progress progress-${workspaceProgressColor(progress.status)}`}
         value={progress.percent}
         max={100}
       />
-      <div className="workspace-progress-compact-meta">{metaParts.join(" ")}</div>
+      <div className="workspace-progress-compact-meta">{meta}</div>
     </div>
   );
 }
