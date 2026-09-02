@@ -7,7 +7,8 @@ from typing import Literal
 
 from lynxkite_core.folder_settings import resolve_flat_section
 
-Action = Literal["read", "write"]
+type User = dict[str, str | list[str]]
+type Action = Literal["read", "write"]
 VALID_ACTIONS = frozenset({"read", "write"})
 
 _data_root: Path = Path()
@@ -34,7 +35,7 @@ def resolve_folder(path: str | None) -> str:
     return p.as_posix() + "/"
 
 
-def user_principals(user: dict[str, str | list[str]]) -> set[str]:
+def user_principals(user: User) -> set[str]:
     """Build ACL principal IDs from JWT claims.
 
     Returns ``sub:<subject>`` for the user ID and ``group:<name>`` for each group
@@ -65,7 +66,7 @@ def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -
     return bool(principals & set(allowed))
 
 
-def has_permission(user: dict[str, str | list[str]], action: Action, path: str | None) -> bool:
+def has_permission(user: User, action: Action, path: str | None) -> bool:
     if action not in VALID_ACTIONS:
         raise ValueError(f"Invalid action {action!r}. Must be 'read' or 'write'.")
     grants = resolve_acl(resolve_folder(path))
@@ -79,7 +80,7 @@ def has_permission(user: dict[str, str | list[str]], action: Action, path: str |
     )
 
 
-def effective_permissions(user: dict[str, str | list[str]], path: str | None) -> dict[str, bool]:
+def effective_permissions(user: User, path: str | None) -> dict[str, bool]:
     return {
         "read": has_permission(user, "read", path),
         "write": has_permission(user, "write", path),

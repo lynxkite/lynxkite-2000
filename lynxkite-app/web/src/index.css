@@ -1223,6 +1223,7 @@ svg {
 
     button {
       padding-right: 10px;
+      white-space: nowrap;
     }
 
     &.empty {
