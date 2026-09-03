@@ -2,6 +2,7 @@
 
 import dataclasses
 import enum
+import numpy as np
 import typing
 
 import networkx as nx
@@ -323,4 +324,4 @@ def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
     for c in df.columns:
         if not pd.api.types.is_numeric_dtype(df[c]):
             df[c] = df[c].astype(str)
-    return df
+    return df.astype(object).replace({np.nan: None})

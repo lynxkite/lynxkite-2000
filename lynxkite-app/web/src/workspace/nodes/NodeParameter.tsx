@@ -181,7 +181,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         <select
           className="select select-bordered appearance-none double-dropdown-first"
           value={value?.[0] ?? ""}
-          onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
+          onChange={(evt) => {
+            const nextTable = evt.currentTarget.value;
+            const cols = getDropDownValues(data, meta?.type?.metadata_query2, { first: nextTable });
+            onChange([nextTable, pickFromOptions(value?.[1], cols)]);
+          }}
         >
           {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
             <option key={option} value={option}>
@@ -211,7 +215,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered appearance-none w-full"
-        value={value || meta.type.enum[0]}
+        value={value ?? meta.type.enum[0]}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {meta.type.enum.map((option: string) => (
@@ -272,6 +276,10 @@ function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
   return Array.isArray(columns) ? ["", ...columns].sort() : [""];
 }
 
+function pickFromOptions(value: any, options: string[]): string {
+  return value != null && options.includes(value) ? value : (options[0] ?? "");
+}
+
 function getDropDownValues(
   data: any,
   query: string,
@@ -284,8 +292,9 @@ function getDropDownValues(
     query = query.replace(`<${k}>`, ss[k]);
   }
   try {
-    const res = ["", ...jmespath.search(metadata, query)];
+    const res = jmespath.search(metadata, query);
     res.sort();
+    res.push("");
     return res;
   } catch (_) {
     return [""];

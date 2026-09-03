@@ -78,6 +78,10 @@ for detailed information, see references/import_graphml.md
 usage: lynxkite_graph_analytics.operations.file_ops.import_parquet(filename=<filename_value>)
 for detailed information, see references/import_parquet.md
 
+**Add node attributes to edges:**
+usage: lynxkite_graph_analytics.operations.graph_ops.supplement_edges(table_name=<table_name_value>, b=<b_variable>)
+for detailed information, see references/supplement_edges.md
+
 **Aggregate on neighbors:**
 usage: lynxkite_graph_analytics.operations.graph_ops.aggregate_on_neighbors(property=<property_value>, aggregation=<aggregation_value>, g=<g_variable>)
 for detailed information, see references/aggregate_on_neighbors.md
@@ -106,6 +110,10 @@ for detailed information, see references/discard_loop_edges_in_relation.md
 usage: lynxkite_graph_analytics.operations.graph_ops.discard_parallel_edges(graph=<graph_variable>)
 for detailed information, see references/discard_parallel_edges.md
 
+**Distance via shortest path:**
+usage: lynxkite_graph_analytics.operations.graph_ops.shortest_distance(relation=<relation_value>, edge_distances=<edge_distances_value>, attribute_name=<attribute_name_value>, starting_distance=<starting_distance_value>, undirected=<undirected_value>, b=<b_variable>)
+for detailed information, see references/shortest_distance.md
+
 **Graph from edge list:**
 usage: lynxkite_graph_analytics.operations.graph_ops.graph_from_edge_list(source=<source_value>, target=<target_value>, df=<df_variable>)
 for detailed information, see references/graph_from_edge_list.md
@@ -122,9 +130,17 @@ for detailed information, see references/merge_nodes.md
 usage: lynxkite_graph_analytics.operations.graph_ops.merge_parallel_edges(table_name=<table_name_value>, source_key=<source_key_value>, target_key=<target_key_value>, aggregations=<aggregations_value>, b=<b_variable>)
 for detailed information, see references/merge_parallel_edges.md
 
+**Merge two attributes:**
+usage: lynxkite_graph_analytics.operations.graph_ops.merge_two_attributes(table_name=<table_name_value>, new_attribute=<new_attribute_value>, primary_attribute=<primary_attribute_value>, secondary_attribute=<secondary_attribute_value>, b=<b_variable>)
+for detailed information, see references/merge_two_attributes.md
+
 **Sample graph:**
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
+
+**Steiner forest:**
+usage: lynxkite_graph_analytics.operations.graph_ops.pcsf(relation=<relation_value>, price_column=<price_column_value>, weight_column=<weight_column_value>, root_cost_column=<root_cost_column_value>, output_edge=<output_edge_value>, output_node=<output_node_value>, output_root_nodes=<output_root_nodes_value>, output_profit=<output_profit_value>, b=<b_variable>)
+for detailed information, see references/pcsf.md
 
 **Define model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
@@ -222,6 +238,26 @@ for detailed information, see references/cypher.md
 usage: lynxkite_graph_analytics.operations.query_ops.sql(query=<query_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/sql.md
 
+**Confusion matrix:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.conf_matrix(table_name=<table_name_value>, label_column=<label_column_value>, prediction_column=<prediction_column_value>, b=<b_variable>)
+for detailed information, see references/conf_matrix.md
+
+**Fetch OpenML dataset:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.fetch_dataset(dataset_name=<dataset_name_value>, version=<version_value>)
+for detailed information, see references/fetch_dataset.md
+
+**Make prediction:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.scikit_predict(table_name=<table_name_value>, feature_column=<feature_column_value>, prediction_column=<prediction_column_value>, model_name=<model_name_value>, b=<b_variable>)
+for detailed information, see references/scikit_predict.md
+
+**One-hot encoding:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.one_hot(table_name=<table_name_value>, columns=<columns_value>, b=<b_variable>)
+for detailed information, see references/one_hot.md
+
+**Train K-nearest neighbors classifier:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.train_knn(table_name=<table_name_value>, feature_column=<feature_column_value>, label_column=<label_column_value>, n_neighbors=<n_neighbors_value>, model_name=<model_name_value>, weights=<weights_value>, algorithm=<algorithm_value>, leaf_size=<leaf_size_value>, metric=<metric_value>, p=<p_value>, n_jobs=<n_jobs_value>, b=<b_variable>)
+for detailed information, see references/train_knn.md
+
 **Aggregate between neighbors:**
 usage: lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors(relation_name=<relation_name_value>, add_suffixes=<add_suffixes_value>, direction=<direction_value>, aggregations=<aggregations_value>, b=<b_variable>)
 for detailed information, see references/aggregate_between_neighbors.md
@@ -254,9 +290,17 @@ for detailed information, see references/drop_tables.md
 usage: lynxkite_graph_analytics.operations.table_ops.enter_table_data(table_name=<table_name_value>, data=<data_value>)
 for detailed information, see references/enter_table_data.md
 
+**Fill attributes with default values:**
+usage: lynxkite_graph_analytics.operations.table_ops.fill_with_default(table_name=<table_name_value>, adder=<adder_value>, b=<b_variable>)
+for detailed information, see references/fill_with_default.md
+
 **Filter with formula:**
 usage: lynxkite_graph_analytics.operations.table_ops.filter_with_formula(table_name=<table_name_value>, formula=<formula_value>, b=<b_variable>)
 for detailed information, see references/filter_with_formula.md
+
+**Flatten column:**
+usage: lynxkite_graph_analytics.operations.table_ops.flatten_column(table_name=<table_name_value>, column_name=<column_name_value>, b=<b_variable>)
+for detailed information, see references/flatten_column.md
 
 **Join tables:**
 usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table1_column=<table1_column_value>, table2_column=<table2_column_value>, merge_mode=<merge_mode_value>, b=<b_variable>)

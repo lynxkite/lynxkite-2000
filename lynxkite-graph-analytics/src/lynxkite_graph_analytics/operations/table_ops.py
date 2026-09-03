@@ -1,6 +1,8 @@
 """Operations for tables."""
 
 import enum
+from collections.abc import Iterable
+
 import polars as pl
 
 from lynxkite_core import ops
@@ -97,6 +99,24 @@ def drop_tables(b: core.Bundle, *, keep_selected: bool, tables: core.MultiTableN
 
     b.dfs = {k: v for k, v in b.dfs.items() if (k in tables) == keep_selected}
     b.relations = [r for r in b.relations if r.source_table in b.dfs and r.target_table in b.dfs]
+    return b
+
+
+@op("Fill attributes with default values", icon="table-column")
+def fill_with_default(
+    b: core.Bundle, *, table_name: core.TableName, adder: core.DropdownTextAdderByTableName
+) -> core.Bundle:
+    """
+    An attribute may not be defined everywhere. This operation sets the provided values for the rows of the specified attributes where they are not defined.
+    :param b: the bundle
+    :param table_name: the table to operate on
+    :param adder: the attributes and the values to set
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+    for column, default_value in adder:
+        df[column] = df[column].fillna(default_value)
+    b.dfs[table_name] = df
     return b
 
 
@@ -238,4 +258,39 @@ def join_tables(
         merged.drop(columns=[f"{column}_1", f"{column}_2"], inplace=True)
 
     b.dfs[table1_column[0]] = merged
+    return b
+
+
+def _recursive_flatten(item):
+    flat = []
+    if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
+        for i in item:
+            flat.extend(_recursive_flatten(i))
+    else:
+        flat.append(item)
+    return flat
+
+
+@op("Flatten column", icon="ironing")
+def flatten_column(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    column_name: core.ColumnNameByTableName,
+) -> core.Bundle:
+    """
+    Flattens the items to 1 dimension in the specified column of the specified table.
+
+    If one of the items is the following list: [[a,b],[[c,d],e]]
+
+    the flattened version will be: [a,b,c,d,e]
+    :param b: The bundle
+    :param table_name:  the name of the table
+    :param column_name:  the name of the column whose items should be flattened
+    """
+    b = b.copy()
+    df = b.dfs[table_name].copy()
+
+    df[column_name] = df[column_name].apply(lambda x: tuple(_recursive_flatten(x)))
+    b.dfs[table_name] = df
     return b

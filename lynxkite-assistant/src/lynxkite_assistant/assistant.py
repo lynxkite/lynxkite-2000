@@ -1,9 +1,11 @@
 """FastAPI router exposing a Deep Agents assistant."""
 
 import os
+import shutil
 import fastapi
 import openai
 import pydantic
+import requests
 from typing import cast
 from pathlib import Path
 from fastapi.responses import StreamingResponse
@@ -11,7 +13,9 @@ import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
-from .instructions import SYSTEM_PROMPT
+from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
+
+ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
 
 router = fastapi.APIRouter()
 
@@ -59,6 +63,81 @@ def _extract_token_text(token_content: object) -> str:
     return ""
 
 
+web_access_url = os.environ.get("LYNXKITE_WEB_ACCESS_URL")
+headers = None
+if os.environ.get("LYNXKITE_WEB_ACCESS_API_KEY"):
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('LYNXKITE_WEB_ACCESS_API_KEY')}"
+    }
+
+
+def internet_search(
+    query: str,
+    params: dict | None = None,
+):
+    """Run a web search. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    # sometimes kwargs is passed as a dict under the key "kwargs", sometimes it's passed directly as keyword arguments. Handle both cases.
+    print("Running internet search with query:", query, "and params:", params)
+    try:
+        return requests.post(
+            f"{web_access_url}/v1/search",
+            json={"query": query, **(params or {})},
+            headers=headers,
+            timeout=5,
+        ).text
+    except requests.exceptions.RequestException as e:
+        print(f"Error running internet search: {e}")
+        return f"Error running internet search: {e}"
+
+
+def scrape_web_page(url: str, params: dict | None = None):
+    """Scrape a web page. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    print("Scraping web page with url:", url, "and params:", params)
+    try:
+        return requests.post(
+            f"{web_access_url}/v1/scrape",
+            json={"url": url, **(params or {})},
+            headers=headers,
+            timeout=5,
+        ).text
+    except requests.exceptions.RequestException as e:
+        print(f"Error scraping web page: {e}")
+        return f"Error scraping web page: {e}"
+
+
+def map_web_page(url: str, params: dict | None = None):
+    """Input a website and get all the urls on the website. kwargs: compatible with the FireCrawl API, will be passed in the request body."""
+    print("Mapping web page with url:", url, "and params:", params)
+    try:
+        return requests.post(
+            f"{web_access_url}/v1/map",
+            json={"url": url, **(params or {})},
+            headers=headers,
+            timeout=5,
+        ).text
+    except requests.exceptions.RequestException as e:
+        print(f"Error mapping web page: {e}")
+        return f"Error mapping web page: {e}"
+
+
+def _init_memory(workspace_path: str) -> Path:
+    """Initialize the memory directory for a workspace."""
+    memory_files_path = (
+        Path(workspace_path).parent / ".assistant_memory" / Path(workspace_path).name
+    )
+    if memory_files_path.exists():
+        memory_dirs = sorted(
+            [d for d in memory_files_path.iterdir() if d.is_dir()],
+            key=lambda d: d.stat().st_mtime,
+        )
+        while len(memory_dirs) > ASSISTANT_MEMORY_DEPTH:
+            oldest_dir = memory_dirs.pop(0)
+            shutil.rmtree(oldest_dir)
+    else:
+        os.makedirs(memory_files_path, exist_ok=True)
+    return memory_files_path
+
+
 @router.post("/api/assistant/stream")
 async def assistant_stream(
     req: AssistantCompletionRequest, skill_root="../.agents/skills"
@@ -75,15 +154,23 @@ async def assistant_stream(
         routes["/workspace_files/"] = backends.FilesystemBackend(
             root_dir=str(workspace_files_path), virtual_mode=True
         )
+    memory_files_path = _init_memory(req.workspace)
+    routes["/previous_states/"] = backends.FilesystemBackend(
+        root_dir=str(memory_files_path), virtual_mode=True
+    )
     backend = backends.CompositeBackend(
         default=workspace_backend,
         routes=routes,
     )
+    tools = [internet_search, scrape_web_page, map_web_page] if web_access_url else []
     agent = deepagents.create_deep_agent(
         model=model,
         backend=backend,
         skills=["/skills"],
-        system_prompt=SYSTEM_PROMPT,
+        tools=tools,
+        system_prompt=(SYSTEM_PROMPT + INTERNET_ACCESS_INFO)
+        if web_access_url
+        else SYSTEM_PROMPT,
     )
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
