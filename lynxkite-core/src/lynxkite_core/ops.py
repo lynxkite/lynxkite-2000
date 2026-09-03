@@ -227,15 +227,14 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
-    def save_display(self, ws_path: str | None, node_id: str, version: int):
+    def save_display(self, display_path: os.PathLike[str], version: int):
         """Saves the display data to a file. The path is relative to the workspace's data directory."""
         # If old version had display and new run has None,
         # frontend keeps previous cached display keyed by unchanged version.
         # TODO: check if this is an actual problem.
         #   (e.g. the boxes that use display always return something)
-        if ws_path and self.display is not None:
-            path = build_output_path(ws_path, node_id)
-            path.parent.mkdir(exist_ok=True, parents=True)
+        path = pathlib.Path(display_path)
+        if self.display is not None:
             display_json = to_json(self.display)
             try:
                 with open(path, "r+b") as f:
@@ -346,11 +345,15 @@ class Op(BaseConfig):
                 res = Result(output=res)
 
         # Save display if needed
-        if is_visualization_type and not self.type == "graph_creation_view":
-            if op_ctx.ws and op_ctx.node:
-                res.save_display(
-                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
-                )
+        if (
+            is_visualization_type
+            and self.type != "graph_creation_view"
+            and op_ctx.ws
+            and op_ctx.node
+        ):
+            res.save_display(
+                op_ctx.get_box_dir() / "display.json", (op_ctx.node.data.display_version or 0)
+            )
 
         return res
 
