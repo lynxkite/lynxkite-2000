@@ -65,11 +65,40 @@ def import_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseT
     dfs = {}
 
     for table in tables_df["table_name"]:
-        table_query = f"SELECT * FROM {table};"
+        table_query = f"""SELECT * FROM "{table}";"""
         table_executable = conn.sql(table_query)
         dfs[table] = pd.DataFrame(table_executable.execute())
 
     return core.Bundle(dfs=dfs)
+
+@op("Import demo from all tables from a database", color="green", icon = "database", slow=True)
+def import_demo_from_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseType.postgresql, database_name: str = "default") -> core.Bundle:
+    """Import demo from all tables from a database"""
+
+    user = os.getenv("PGUSER", "postgres")
+    host = os.getenv("PGHOST", "localhost")
+    port = os.getenv("PGPORT", "5432")
+
+
+    conn = ibis.postgres.connect(
+        database=database_name,
+        user=user,
+        host=host,
+        port=port
+    )
+    query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+    executable = conn.sql(query)
+    tables = executable.execute()
+    tables_df = pd.DataFrame(tables, columns=["table_name"])
+    dfs = {}
+
+    for table in tables_df["table_name"]:
+        table_query = f"""SELECT * FROM "{table}" limit 50;"""
+        table_executable = conn.sql(table_query)
+        dfs[table] = pd.DataFrame(table_executable.execute())
+
+    return core.Bundle(dfs=dfs)
+
 
 
 @op("Explode table", icon = "bomb")
