@@ -40,7 +40,7 @@ def import_from_database_with_SQL(
 
     executable = conn.sql(query)
     df = executable.execute()
-    return core.Bundle(df)
+    return df
 
 
 @op("Import all tables from a database", color="green", icon = "database", slow=True)
