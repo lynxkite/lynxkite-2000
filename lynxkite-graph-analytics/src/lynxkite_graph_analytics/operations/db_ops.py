@@ -71,9 +71,10 @@ def import_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseT
 
     return core.Bundle(dfs=dfs)
 
-@op("Import demo from all tables from a database", color="green", icon = "database", slow=True)
-def import_demo_from_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseType.postgresql, database_name: str = "default") -> core.Bundle:
-    """Import demo from all tables from a database"""
+
+@op("Import N record from all tables from a database", color="green", icon = "database", slow=True)
+def import_n_records_from_all_tables_from_a_database(*, database_type: DatabaseType = DatabaseType.postgresql, database_name: str = "default", n: int = 0) -> core.Bundle:
+    """Import N records from all tables from a database"""
 
     user = os.getenv("PGUSER", "postgres")
     host = os.getenv("PGHOST", "localhost")
@@ -93,7 +94,7 @@ def import_demo_from_all_tables_from_a_database(*, database_type: DatabaseType =
     dfs = {}
 
     for table in tables_df["table_name"]:
-        table_query = f"""SELECT * FROM "{table}" limit 50;"""
+        table_query = f"""SELECT * FROM "{table}" limit {n};"""
         table_executable = conn.sql(table_query)
         dfs[table] = pd.DataFrame(table_executable.execute())
 
@@ -102,42 +103,42 @@ def import_demo_from_all_tables_from_a_database(*, database_type: DatabaseType =
 
 
 @op("Explode table", icon = "bomb")
-def explode_table(b: core.Bundle, *,column_divide_by: core.TableColumn):
+def explode_table(b: core.Bundle, *,select_table: core.TableColumn):
     """Divide a table into multiple tables, by the unique values of a column from the table"""
     if b is None:
         return core.Bundle(dfs={})
     dfs = {}
 
-    if not column_divide_by or not column_divide_by[0]:
+    if not select_table or not select_table[0]:
         raise ValueError("No table selected")
-    if len(column_divide_by) < 2 or not column_divide_by[1]:
+    if len(select_table) < 2 or not select_table[1]:
         raise ValueError("No column selected")
 
-    table = column_divide_by[0]
-    column = column_divide_by[1]
+    table = select_table[0]
+    column = select_table[1]
 
     df = b.dfs[table]
     unique_values = df[column].unique()
     for value in unique_values:
-        dfs[f"{table}_{column}_{value}"] = df[df[column] == value]
+        dfs[f"{table}_{column}_{value.replace(' ', '_')}"] = df[df[column] == value]
     return core.Bundle(dfs=dfs)
 
 
 @op("Parsing JSON column", icon = "bomb") # what is an explosion? Change it to parsing
-def parse_json_column(b: core.Bundle, *, select_column: core.TableColumn):
+def parse_json_column(b: core.Bundle, *, select_table: core.TableColumn):
     """
     Parse a JSON column in a table and add its keys as new columns to the table.
     The original JSON column is removed after parsing.
     Returns a new bundle with the updated table.
     """
 
-    if not select_column or not select_column[0]:
+    if not select_table or not select_table[0]:
         raise ValueError("No table selected")
-    if len(select_column) < 2 or not select_column[1]:
+    if len(select_table) < 2 or not select_table[1]:
         raise ValueError("No column selected")
 
-    table = select_column[0]
-    column = select_column[1]
+    table = select_table[0]
+    column = select_table[1]
 
     if b is None:
         return core.Bundle(dfs={})
