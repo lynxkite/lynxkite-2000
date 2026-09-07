@@ -59,6 +59,10 @@ def reset_run_timer(room_name: str) -> None:
     _run_started_at[room_name] = time.monotonic()
 
 
+def mark_run_finished(room_name: str) -> None:
+    _run_started_at.pop(room_name, None)
+
+
 def _elapsed_seconds(room_name: str) -> float | None:
     started = _run_started_at.get(room_name)
     if started is None:
@@ -108,6 +112,16 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
                 elapsed_seconds=_elapsed_seconds(room_name),
                 gpus=gpus,
             )
+            if room_name not in _run_started_at and payload["status"] not in (
+                "idle",
+                "done",
+                "failed",
+            ):
+                failed = payload.get("boxes_failed")
+                payload["status"] = "failed" if failed else "done"
+                payload["eta_seconds"] = 0.0
+                if not failed and payload.get("boxes_total"):
+                    payload["progress_fraction"] = 1.0
             entries_by_room[room_name] = json.dumps(payload)
         except Exception as e:
             print(f"Error updating progress for workspace {room_name}: {e}")
