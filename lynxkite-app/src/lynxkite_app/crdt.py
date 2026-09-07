@@ -433,8 +433,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     """
     if delay:
         await asyncio.sleep(delay)
-    progress_crdt.reset_run_timer(name)
-    print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
@@ -445,13 +443,18 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     ws_pyd.normalize()
     if not ws_pyd.has_executor():
         return
-    with ws_crdt.doc.transaction():
-        for nc in ws_crdt["nodes"]:
-            nc["data"]["status"] = "planned"
-            nc["data"]["message"] = None
-    await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    save_workspace_from_frontend(name, ws_pyd)
-    print(f"Finished running {name} in {ws_pyd.env}.")
+    progress_crdt.reset_run_timer(name)
+    print(f"Running {name} in {ws_pyd.env}...")
+    try:
+        with ws_crdt.doc.transaction():
+            for nc in ws_crdt["nodes"]:
+                nc["data"]["status"] = "planned"
+                nc["data"]["message"] = None
+        await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
+        save_workspace_from_frontend(name, ws_pyd)
+        print(f"Finished running {name} in {ws_pyd.env}.")
+    finally:
+        progress_crdt.mark_run_finished(name)
 
 
 async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):

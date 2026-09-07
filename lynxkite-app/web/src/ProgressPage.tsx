@@ -15,18 +15,14 @@ import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
-import { parseProgressWorkspace } from "./progress";
+import {
+  formatWorkspaceProgressSuffix,
+  getWorkspaceProgress,
+  parseProgressWorkspace,
+  workspaceProgressColor,
+} from "./progress";
 
 const echarts = await import("echarts");
-
-function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
-}
 
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
@@ -226,55 +222,45 @@ function Workspaces(props: {
       <tbody>
         {props.workspaces.map((ws) => {
           const roomName = ws.room_name || ws.name;
-          const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
-          const tqdm = ws.active_node?.tqdm;
-          const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
-          const combinedProgress =
-            typeof ws.progress_fraction === "number"
-              ? ws.progress_fraction
-              : tqdmFraction != null
-                ? (ws.boxes_done + tqdmFraction) / ws.boxes_total
-                : boxFraction;
+          const progress = getWorkspaceProgress(ws);
+          const tqdm = progress.activeNode?.tqdm;
+          const suffix = formatWorkspaceProgressSuffix(progress);
+          const showPause =
+            progress.status === "active" ||
+            progress.status === "running" ||
+            progress.status === "paused";
           return (
             <tr key={ws.name}>
               <td className="workspace-name">{ws.name}</td>
               <td className="workspace-user">{ws.user}</td>
               <td className="workspace-progress">
                 <div className="progress-details">
-                  {ws.active_node && (
+                  {progress.activeNode && (
                     <span className="active-node-label">
-                      {ws.active_node.title}
+                      {progress.activeNode.title}
                       {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
                     </span>
                   )}
                   <progress
-                    className={`progress progress-${ws.status === "active" ? "primary" : "neutral"} w-50`}
-                    value={combinedProgress * 100}
+                    className={`progress progress-${workspaceProgressColor(progress.status)} w-50`}
+                    value={progress.percent}
                     max={100}
                   />
                 </div>
               </td>
               <td className="workspace-eta">
-                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
-                {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
+                {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
+                {suffix && <span> {suffix}</span>}
               </td>
               <td className="workspace-resources">{ws.gpus || "—"}</td>
               <td className="table-actions">
-                {ws.paused ? (
+                {showPause && (
                   <button
                     className="btn btn-sm"
-                    title="Resume"
-                    onClick={() => props.onPause(roomName, false)}
+                    title={progress.paused ? "Resume" : "Pause"}
+                    onClick={() => props.onPause(roomName, !progress.paused)}
                   >
-                    <Play />
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-sm"
-                    title="Pause"
-                    onClick={() => props.onPause(roomName, true)}
-                  >
-                    <Pause />
+                    {progress.paused ? <Play /> : <Pause />}
                   </button>
                 )}
                 <button
