@@ -1,26 +1,20 @@
 import DOMPurify from "dompurify";
-import { useEffect, useState } from "react";
+import { memo } from "react";
 
 interface InlineSvgProps {
-  src?: string;
+  svg: string;
   className?: string;
   [key: string]: any;
 }
 
-export default function InlineSvg({ src, className, ...props }: InlineSvgProps) {
-  const [svg, setSvg] = useState<string | null>(null);
-  useEffect(() => {
-    if (!src) return;
-    fetch(src)
-      .then((res) => res.text())
-      .then((text) => setSvg(text))
-      .catch((err) => console.error("Error loading SVG:", err));
-  }, [src]);
+const InlineSvg = memo(function InlineSvg({ svg, className, ...props }: InlineSvgProps) {
   return (
     <span
       className={className}
       {...props}
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg || "") }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg) }}
     />
   );
-}
+});
+
+export default InlineSvg;

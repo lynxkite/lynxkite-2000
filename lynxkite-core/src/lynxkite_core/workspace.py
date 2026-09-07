@@ -48,6 +48,7 @@ class WorkspaceNodeData(BaseConfig):
     status: NodeStatus = NodeStatus.done
     telemetry: Optional[dict[str, Any]] = None
     meta: Optional["ops.Op"] = None
+    tags: Optional[list[str]] = None
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -290,6 +291,7 @@ class Workspace(BaseConfig):
                     data.error = None
                     if nc:
                         nc["data"]["error"] = None
+                data.tags = list(set(op.tags or []) | set(data.tags or []))
             else:
                 data.error = "Unknown operation."
                 data.meta = ops.Op.placeholder_from_id(data.op_id)
@@ -322,13 +324,17 @@ class Workspace(BaseConfig):
         if func:
             kwargs["type"] = func.__op__.type
             kwargs["data"] = WorkspaceNodeData(
-                title=func.__op__.name, op_id=func.__op__.id, params={}
+                title=func.__op__.name,
+                op_id=func.__op__.id,
+                params={},
+                tags=(func.__op__.tags or []) + kwargs.get("tags", []),
             )
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
                 title=kwargs["title"],
                 op_id=kwargs.get("op_id", kwargs["title"]),
                 params=kwargs.get("params", {}),
+                tags=kwargs.get("tags", []),
             )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")

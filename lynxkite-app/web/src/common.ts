@@ -24,9 +24,34 @@ let userManagerKey: string | undefined;
 let loginStarted = false;
 let axiosInterceptorsInstalled = false;
 
+const STATIC_CONFIG: GlobalConfig = {
+  assistant_available: false,
+  authentication_issuer: null,
+  authentication_audience: null,
+  enterprise_available: false,
+};
+
+type StaticWorkspaceConfig = {
+  workspace: string;
+  filesBase: string;
+};
+
+export function getStaticWorkspaceConfig(): StaticWorkspaceConfig | undefined {
+  return (window as Window & { LYNXKITE_STATIC_WORKSPACE?: StaticWorkspaceConfig })
+    .LYNXKITE_STATIC_WORKSPACE;
+}
+
+export function isStaticWorkspaceMode() {
+  return Boolean(getStaticWorkspaceConfig());
+}
+
 export async function loadConfig() {
   if (cachedConfig) {
     throw new Error("loadConfig() has already been called. Call getConfig() instead.");
+  }
+  if (isStaticWorkspaceMode()) {
+    cachedConfig = STATIC_CONFIG;
+    return;
   }
   cachedConfig = await apiJson<GlobalConfig>("/api/config");
 }
@@ -165,6 +190,11 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
 }
 
 function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string): string {
+  const staticConfig = getStaticWorkspaceConfig();
+  if (staticConfig) {
+    const filesBase = staticConfig.filesBase.replace(/[/]?$/, "/");
+    return `${filesBase}${encodeURIComponent(nodeId)}.json?v=${displayVersion}`;
+  }
   const sanitizedWorkspacePath = wsPath
     .split("/")
     .map((segment) => encodeURIComponent(segment))

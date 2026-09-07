@@ -14,7 +14,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
-import { loadConfig } from "./common.ts";
+import { isStaticWorkspaceMode, loadConfig } from "./common.ts";
 import Directory from "./Directory.tsx";
 
 const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
@@ -49,20 +49,24 @@ function WorkspaceError() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
-      <Route path="/" element={<Directory />} />
-      <Route path="/dir" element={<Directory />} />
-      <Route path="/dir/*" element={<Directory />} />
-      <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
-      <Route
-        path="/edit/*"
-        element={withSuspense(<Workspace />)}
-        errorElement={<WorkspaceError />}
-      />
-      <Route path="/code/*" element={withSuspense(<Code />)} />
-      <Route path="/progress" element={withSuspense(<ProgressPage />)} />
-      <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
-    </>,
+    isStaticWorkspaceMode() ? (
+      <Route path="*" element={withSuspense(<Workspace />)} errorElement={<WorkspaceError />} />
+    ) : (
+      <>
+        <Route path="/" element={<Directory />} />
+        <Route path="/dir" element={<Directory />} />
+        <Route path="/dir/*" element={<Directory />} />
+        <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
+        <Route
+          path="/edit/*"
+          element={withSuspense(<Workspace />)}
+          errorElement={<WorkspaceError />}
+        />
+        <Route path="/code/*" element={withSuspense(<Code />)} />
+        <Route path="/progress" element={withSuspense(<ProgressPage />)} />
+        <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
+      </>
+    ),
   ),
 );
 

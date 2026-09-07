@@ -53,26 +53,34 @@ export class ColorMap {
   private readonly min: number;
   private readonly max: number;
   private readonly attribute: string;
+  private readonly categoryMap: Map<string, number> = new Map();
 
-  constructor(items: any, attribute: string) {
+  constructor(items: any[], attribute: string) {
     const bounds = getBounds(items, attribute);
     this.min = bounds.min;
     this.max = bounds.max;
     this.attribute = attribute;
+
+    items.forEach((item) => {
+      const val = String(item?.attributes?.[this.attribute]);
+      if (!this.categoryMap.has(val)) {
+        this.categoryMap.set(val, this.categoryMap.size);
+      }
+    });
   }
+
   getContinuous(item: any) {
     const value = Number(item?.attributes?.[this.attribute]);
-    if (Number.isNaN(value)) return "#000000";
+    if (Number.isNaN(value) || this.max === this.min) return "#000000";
     const t = (value - this.min) / (this.max - this.min);
     return `hsl(${(1 - t) * 240}, 90%, 60%)`;
   }
   getCategories(item: any) {
-    let hash = 0;
     const text = String(item?.attributes?.[this.attribute]);
-    for (let i = 0; i < text.length; i++) {
-      hash = text.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return `hsl(${Math.abs(hash * 131) % 360}, 90%, 60%)`;
+    const index = this.categoryMap.get(text) ?? 0;
+    const totalCategories = this.categoryMap.size;
+    const hue = (index / totalCategories) * 360;
+    return `hsl(${hue}, 90%, 60%)`;
   }
 }
 

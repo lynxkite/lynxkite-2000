@@ -107,7 +107,6 @@ def visualize_mirna_graph(
     if color_edges_by:
         edges["color"] = _map_color(edges[color_edges_by])
     edges = edges.to_records()
-
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
@@ -129,8 +128,8 @@ def visualize_mirna_graph(
                 "data": [
                     {
                         "id": str(n.id),
-                        "x": float(pos[n.id][0]),
-                        "y": float(pos[n.id][1]),
+                        "x": float(pos["nodes_" + n.id][0]),
+                        "y": float(pos["nodes_" + n.id][1]),
                         # Adjust node size
                         "symbolSize": 22 if n.role == "target" else 6,
                         "symbol": {

@@ -28,8 +28,15 @@ repos:
     - id: gen-skills
       name: gen-skills
       language: system
-      entry: python lynxkite-assistant/src/lynxkite_assistant/generate_skills_from_catalog.py ./.agents/skills
+      entry: python scripts/generate_skills_from_catalog.py ./.agents/skills
       types: [python]
+      pass_filenames: true
+      require_serial: true
+    - id: check-demo-workspaces
+      name: check-demo-workspaces
+      language: system
+      entry: python scripts/demo_pre-commit.py
+      types: [json]
       pass_filenames: true
       require_serial: true
 - repo: https://github.com/fpgmaas/deptry.git

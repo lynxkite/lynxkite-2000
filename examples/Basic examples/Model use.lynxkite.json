@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Import Parquet 1 Train/test split 1",
@@ -131,7 +132,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               }
             },
             "other": {},
@@ -139,7 +140,66 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Splits a dataframe in the bundle into separate \"_train\" and \"_test\" dataframes."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Train/test split",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train/test split",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": 1234,
+              "name": "seed",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.train_test_split",
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Train/test split",
         "output_metadata": [
           {
@@ -150,7 +210,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -159,7 +219,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -168,7 +228,7 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               }
             },
             "other": {},
@@ -187,6 +247,7 @@
       "dragHandle": ".drag-handle",
       "height": 320.0,
       "id": "Train/test split 1",
+      "parentId": null,
       "position": {
         "x": 920.0,
         "y": 240.0
@@ -236,7 +297,43 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a Parquet file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import Parquet",
+          "inputs": [],
+          "name": "Import Parquet",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_parquet",
+          "type": "basic"
+        },
         "op_id": "File operations > Import Parquet",
         "output_metadata": [
           {
@@ -247,7 +344,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               }
             },
             "other": {},
@@ -264,6 +361,7 @@
       "dragHandle": ".drag-handle",
       "height": 240.0,
       "id": "Import Parquet 1",
+      "parentId": null,
       "position": {
         "x": 920.0,
         "y": -40.0
@@ -361,7 +459,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -370,7 +468,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -379,7 +477,7 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               }
             },
             "other": {},
@@ -387,7 +485,58 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "purple",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains the selected model on the selected dataset. Most training parameters are set in the model definition."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Define model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Define model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.define_model",
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Define model",
         "output_metadata": [
           {
@@ -398,7 +547,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -407,7 +556,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -416,7 +565,7 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               }
             },
             "other": {
@@ -479,6 +628,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -537,6 +687,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -575,6 +726,7 @@
       "dragHandle": ".drag-handle",
       "height": 240.0,
       "id": "Define model 1",
+      "parentId": null,
       "position": {
         "x": 920.0,
         "y": 600.0
@@ -702,7 +854,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -711,7 +863,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -720,14 +872,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -790,6 +942,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -848,6 +1001,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -876,7 +1030,73 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Executes a trained model."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Model inference",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Model inference",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key"
+              }
+            },
+            {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "lynxkite_graph_analytics.operations.ml_ops.ModelInferenceInputMapping | None"
+              }
+            },
+            {
+              "default": null,
+              "name": "output_mapping",
+              "type": {
+                "type": "lynxkite_graph_analytics.operations.ml_ops.ModelOutputMapping | None"
+              }
+            },
+            {
+              "default": 1,
+              "name": "batch_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.model_inference",
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Model inference",
         "output_metadata": [
           {
@@ -887,7 +1107,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -897,7 +1117,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -906,14 +1126,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -976,6 +1196,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -1034,6 +1255,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -1074,6 +1296,7 @@
       "dragHandle": ".drag-handle",
       "height": 640.0,
       "id": "Model inference 1",
+      "parentId": null,
       "position": {
         "x": 1920.0,
         "y": -120.0
@@ -1673,7 +1896,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 8,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1685,7 +1908,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -1694,7 +1917,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -1703,14 +1926,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -1773,6 +1996,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -1831,6 +2055,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -1859,7 +2084,38 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "trending-down-3",
+          "id": "Machine learning operations > View loss",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View loss",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.view_loss",
+          "type": "visualization"
+        },
         "op_id": "Machine learning operations > View loss",
         "output_metadata": [
           {}
@@ -1872,6 +2128,7 @@
       "dragHandle": ".drag-handle",
       "height": 480.0,
       "id": "View loss 1",
+      "parentId": null,
       "position": {
         "x": 1880.0,
         "y": 600.0
@@ -1883,7 +2140,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 8,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1895,7 +2152,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -1905,7 +2162,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -1914,14 +2171,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -1984,6 +2241,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -2042,6 +2300,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -2070,7 +2329,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -2092,6 +2388,7 @@
       "dragHandle": ".drag-handle",
       "height": 636.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 2560.0,
         "y": -120.0
@@ -2104,7 +2401,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 27,
+        "display_version": 28,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -2116,7 +2413,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -2126,7 +2423,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -2135,14 +2432,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -2205,6 +2502,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -2263,6 +2561,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -2291,7 +2590,100 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "blue",
+          "doc": null,
+          "icon": "robot",
+          "id": "Machine learning operations > View vectors",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View vectors",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "nodes",
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": "",
+              "name": "vector_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": "",
+              "name": "label_column",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": 15,
+              "name": "n_neighbors",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 0.1,
+              "name": "min_dist",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            },
+            {
+              "default": "euclidean",
+              "name": "metric",
+              "type": {
+                "enum": [
+                  "l1",
+                  "cityblock",
+                  "taxicab",
+                  "manhattan",
+                  "euclidean",
+                  "l2",
+                  "sqeuclidean",
+                  "canberra",
+                  "minkowski",
+                  "chebyshev",
+                  "linf",
+                  "cosine",
+                  "correlation",
+                  "hellinger",
+                  "hamming"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.view_vectors",
+          "type": "visualization"
+        },
         "op_id": "Machine learning operations > View vectors",
         "output_metadata": [
           {}
@@ -2310,6 +2702,7 @@
       "dragHandle": ".drag-handle",
       "height": 480.0,
       "id": "View vectors 1",
+      "parentId": null,
       "position": {
         "x": 2560.0,
         "y": 600.0
@@ -2334,7 +2727,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -2343,7 +2736,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -2352,7 +2745,7 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               }
             },
             "other": {
@@ -2415,6 +2808,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -2473,6 +2867,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -2501,7 +2896,73 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Machine learning operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Trains the selected model on the selected dataset.\nTraining parameters specific to the model are set in the model definition,\nwhile parameters specific to the hardware environment and dataset are set here."
+            }
+          ],
+          "icon": "robot",
+          "id": "Machine learning operations > Train model",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Train model",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].other.*[] | [?type == 'pytorch-model'].key"
+              }
+            },
+            {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "lynxkite_graph_analytics.operations.ml_ops.ModelTrainingInputMapping | None"
+              }
+            },
+            {
+              "default": 1,
+              "name": "epochs",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 1,
+              "name": "batch_size",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.ml_ops.train_model",
+          "type": "basic"
+        },
         "op_id": "Machine learning operations > Train model",
         "output_metadata": [
           {
@@ -2512,7 +2973,7 @@
                   "y"
                 ],
                 "key": "records",
-                "length": 100.0
+                "length": 100
               },
               "records_test": {
                 "columns": [
@@ -2521,7 +2982,7 @@
                   "y"
                 ],
                 "key": "records_test",
-                "length": 30.0
+                "length": 30
               },
               "records_train": {
                 "columns": [
@@ -2530,14 +2991,14 @@
                   "y"
                 ],
                 "key": "records_train",
-                "length": 70.0
+                "length": 70
               },
               "training": {
                 "columns": [
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 10.0
+                "length": 10
               }
             },
             "other": {
@@ -2600,6 +3061,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     },
@@ -2658,6 +3120,7 @@
                           }
                         }
                       ],
+                      "placeholder_function_name": false,
                       "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
                       "type": "basic"
                     }
@@ -2698,6 +3161,7 @@
       "dragHandle": ".drag-handle",
       "height": 760.0,
       "id": "Train model 1",
+      "parentId": null,
       "position": {
         "x": 1400.0,
         "y": 80.0
@@ -2706,5 +3170,5 @@
       "width": 360.0
     }
   ],
-  "paused": false
+  "paused": true
 }

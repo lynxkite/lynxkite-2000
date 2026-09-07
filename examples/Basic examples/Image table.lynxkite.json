@@ -35,7 +35,28 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": null,
+          "icon": "photo",
+          "id": "Example image table",
+          "inputs": [],
+          "name": "Example image table",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "Basic_examples.make_image_table.make_image_table",
+          "type": "basic"
+        },
         "op_id": "Example image table",
         "output_metadata": [
           {
@@ -46,7 +67,7 @@
                   "names"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -73,7 +94,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -85,7 +106,7 @@
                   "names"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -93,7 +114,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -126,7 +184,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -137,7 +252,7 @@
                   "smiles"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -169,7 +284,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -182,7 +297,7 @@
                   "smiles"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -190,7 +305,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -230,7 +382,7 @@
                   "smiles"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -238,7 +390,58 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds molecule images in a table."
+            }
+          ],
+          "icon": "microscope-filled",
+          "id": "Fetch molecule images",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Fetch molecule images",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": "image",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "Basic_examples.make_image_table.fetch_molecule_images",
+          "type": "basic"
+        },
         "op_id": "Fetch molecule images",
         "output_metadata": [
           {
@@ -250,7 +453,7 @@
                   "smiles"
                 ],
                 "key": "records",
-                "length": 3.0
+                "length": 3
               }
             },
             "other": {},
@@ -279,5 +482,5 @@
       "width": 360.0
     }
   ],
-  "paused": null
+  "paused": true
 }

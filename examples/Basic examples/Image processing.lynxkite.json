@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "xy-edge__Open image 1output-View image 1image",
@@ -49,7 +50,36 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "photo-filled",
+          "id": "Open image",
+          "inputs": [],
+          "name": "Open image",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.open_image",
+          "type": "basic"
+        },
         "op_id": "Open image",
         "output_metadata": null,
         "params": {
@@ -62,6 +92,7 @@
       "dragHandle": ".bg-primary",
       "height": 267.0,
       "id": "Open image 1",
+      "parentId": null,
       "position": {
         "x": -544.6548956661317,
         "y": 128.53932584269663
@@ -73,12 +104,41 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 8,
+        "display_version": 9,
         "error": null,
         "expanded_height": 280.0,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": null,
+          "icon": "photo-filled",
+          "id": "View image",
+          "inputs": [
+            {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<class 'PIL.Image.Image'>"
+              }
+            }
+          ],
+          "name": "View image",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.view_image",
+          "type": "image"
+        },
         "op_id": "View image",
         "output_metadata": null,
         "params": {},
@@ -89,6 +149,7 @@
       "dragHandle": ".bg-primary",
       "height": 386.0,
       "id": "View image 1",
+      "parentId": null,
       "position": {
         "x": 44.62279293739965,
         "y": 412.19903691813806
@@ -100,12 +161,41 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 8,
+        "display_version": 9,
         "error": null,
         "expanded_height": 440.0,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": null,
+          "icon": "photo-filled",
+          "id": "View image",
+          "inputs": [
+            {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<class 'PIL.Image.Image'>"
+              }
+            }
+          ],
+          "name": "View image",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.view_image",
+          "type": "image"
+        },
         "op_id": "View image",
         "output_metadata": null,
         "params": {},
@@ -116,6 +206,7 @@
       "dragHandle": ".bg-primary",
       "height": 440.0,
       "id": "View image 2",
+      "parentId": null,
       "position": {
         "x": 600.0,
         "y": 440.0
@@ -132,7 +223,36 @@
         "expanded_height": 200.0,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "filters-filled",
+          "id": "To grayscale",
+          "inputs": [
+            {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<class 'PIL.Image.Image'>"
+              }
+            }
+          ],
+          "name": "To grayscale",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.to_grayscale",
+          "type": "basic"
+        },
         "op_id": "To grayscale",
         "output_metadata": null,
         "params": {},
@@ -143,6 +263,7 @@
       "dragHandle": ".bg-primary",
       "height": 71.0,
       "id": "To grayscale 1",
+      "parentId": null,
       "position": {
         "x": 720.0,
         "y": 200.0
@@ -160,7 +281,44 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "filters-filled",
+          "id": "Blur",
+          "inputs": [
+            {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<class 'PIL.Image.Image'>"
+              }
+            }
+          ],
+          "name": "Blur",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 5,
+              "name": "radius",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.blur",
+          "type": "basic"
+        },
         "op_id": "Blur",
         "output_metadata": null,
         "params": {
@@ -173,6 +331,7 @@
       "dragHandle": ".bg-primary",
       "height": 200.0,
       "id": "Blur 1",
+      "parentId": null,
       "position": {
         "x": 440.0,
         "y": 200.0
@@ -189,7 +348,36 @@
         "expanded_height": 200.0,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "flip-vertical",
+          "id": "Flip vertically",
+          "inputs": [
+            {
+              "name": "image",
+              "position": "left",
+              "type": {
+                "type": "<class 'PIL.Image.Image'>"
+              }
+            }
+          ],
+          "name": "Flip vertically",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_pillow_example.flip_vertically",
+          "type": "basic"
+        },
         "op_id": "Flip vertically",
         "output_metadata": null,
         "params": {},
@@ -200,6 +388,7 @@
       "dragHandle": ".bg-primary",
       "height": 71.0,
       "id": "Flip vertically 1",
+      "parentId": null,
       "position": {
         "x": 80.0,
         "y": 200.0
@@ -208,5 +397,5 @@
       "width": 280.0
     }
   ],
-  "paused": null
+  "paused": true
 }

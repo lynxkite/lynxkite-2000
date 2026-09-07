@@ -50,7 +50,7 @@ def is_auth_enabled() -> bool:
     return bool(issuer and audience)
 
 
-async def get_current_user(request: Request):
+async def get_current_user(request: Request) -> acl.User:
     if not is_auth_enabled():
         return {"sub": "user", "email": ""}
     credentials: HTTPAuthorizationCredentials | None = await security(request)

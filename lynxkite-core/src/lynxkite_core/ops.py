@@ -94,6 +94,8 @@ def _cached_with_ctx(func, ctx_idx: int):
 
 
 def type_to_json(t):
+    if typing.get_origin(t) is typing.Literal:
+        return {"enum": list(typing.get_args(t))}
     if isinstance(t, type) and issubclass(t, enum.Enum):
         return {"enum": list(t.__members__.values())}
     if getattr(t, "__metadata__", None):
@@ -270,6 +272,12 @@ def get_optional_type(type):
 def _param_to_type(name, value, type):
     if value is None:
         value = ""
+    if typing.get_origin(type) is typing.Literal:
+        allowed = typing.get_args(type)
+        assert value in allowed, (
+            f'Parameter "{name}" must be one of {list(allowed)}. Found: {value}'
+        )
+        return value
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
@@ -307,6 +315,7 @@ class Op(BaseConfig):
     # Automatically set from `func`.
     python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
     placeholder_function_name: bool = pydantic.Field(default=False)
+    tags: list[str] | None = None
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
@@ -414,6 +423,7 @@ def op(
     icon: str | None = None,
     cache: bool | None = None,
     dir: str = "left-to-right",
+    tags: list[str] | None = None,
 ):
     """
     Decorator for defining an operation.
@@ -440,6 +450,7 @@ def op(
     [*categories, name] = names
 
     def decorator(func):
+        tag_list = tags or []
         doc = parse_doc(func)
         sig = inspect.signature(func)
         _view = view
@@ -448,6 +459,7 @@ def op(
             func = matplotlib_to_image(func)
         ctx_name, ctx_idx = find_ctx_param_name(func)
         if slow:
+            tag_list.append("slow")
             func = make_async(func)
             if cache is not False:
                 if ctx_name is None or ctx_idx is None:
@@ -501,6 +513,7 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
+            tags=tag_list,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})

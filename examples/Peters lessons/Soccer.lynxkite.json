@@ -298,11 +298,24 @@
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": null,
+        "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Group",
+          "inputs": [],
+          "name": "Group",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.group",
+          "type": "basic"
+        },
         "op_id": "Group",
         "output_metadata": null,
         "params": {
@@ -328,11 +341,24 @@
         "collapsed": null,
         "display": null,
         "display_version": null,
-        "error": null,
+        "error": "Unknown operation.",
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Group",
+          "inputs": [],
+          "name": "Group",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.group",
+          "type": "basic"
+        },
         "op_id": "Group",
         "output_metadata": null,
         "params": {
@@ -361,7 +387,20 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "red",
+          "doc": null,
+          "icon": "x",
+          "id": "Group",
+          "inputs": [],
+          "name": "Group",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.group",
+          "type": "basic"
+        },
         "op_id": "Group",
         "output_metadata": null,
         "params": {
@@ -435,7 +474,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -458,7 +497,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -467,7 +506,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -486,7 +525,121 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merges the nodes that have the same value for the given attribute.\nThe aggregations parameter is a list of tuples (column_name, aggregation_function(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)) that specifies\nwhich other columns should be included in the new DataFrame and how to aggregate them."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the attribute to merge on",
+                  "name": "attribute"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "whether to add suffixes to the aggregated columns",
+                  "name": "add_suffixes"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the aggregations to perform, specified as a list of tuples",
+                  "name": "aggregations"
+                }
+              ]
+            }
+          ],
+          "icon": "affiliate",
+          "id": "Graph operations > Merge nodes on attribute",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Merge nodes on attribute",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": false,
+              "name": "add_suffixes",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "aggregations",
+              "type": {
+                "format": "dropdown-multidropdown_adder",
+                "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+                "options2": [
+                  "sum",
+                  "mean",
+                  "median",
+                  "min",
+                  "max",
+                  "prod",
+                  "std",
+                  "var",
+                  "sem",
+                  "skew",
+                  "count",
+                  "size",
+                  "first",
+                  "last"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge_nodes",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge nodes on attribute",
         "output_metadata": [
           {
@@ -529,7 +682,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -542,7 +695,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 602.0
+                "length": 602
               },
               "players": {
                 "columns": [
@@ -551,7 +704,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -682,7 +835,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -695,7 +848,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 602.0
+                "length": 602
               },
               "players": {
                 "columns": [
@@ -704,7 +857,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -723,7 +876,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Discards loop edges in the specified relation."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation",
+                  "name": "relation"
+                }
+              ]
+            }
+          ],
+          "icon": "circle-off",
+          "id": "Graph operations > Discard loop edges in relation",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Discard loop edges in relation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.discard_loop_edges_in_relation",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Discard loop edges in relation",
         "output_metadata": [
           {
@@ -766,7 +979,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 51571.0
+                "length": 51571
               },
               "events": {
                 "columns": [
@@ -779,7 +992,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 602.0
+                "length": 602
               },
               "players": {
                 "columns": [
@@ -788,7 +1001,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -879,7 +1092,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 51571.0
+                "length": 51571
               },
               "events": {
                 "columns": [
@@ -892,7 +1105,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 602.0
+                "length": 602
               },
               "players": {
                 "columns": [
@@ -901,7 +1114,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -920,7 +1133,122 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merges parallel edges, and aggregates the attributes with the specified functions(https://pandas.pydata.org/pandas-docs/stable/reference/groupby.html#dataframegroupby-computations-descriptive-stats)."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the key in the source table",
+                  "name": "source_key"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the key in the target table",
+                  "name": "target_key"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the aggregations to perform, specified as a list of tuples",
+                  "name": "aggregations"
+                }
+              ]
+            }
+          ],
+          "icon": "arrows-right",
+          "id": "Graph operations > Merge parallel edges",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Merge parallel edges",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "source_key",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "target_key",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "aggregations",
+              "type": {
+                "format": "dropdown-multidropdown_adder",
+                "metadata_query1": "[].dataframes[].<table_name>.columns[]",
+                "options2": [
+                  "sum",
+                  "mean",
+                  "median",
+                  "min",
+                  "max",
+                  "prod",
+                  "std",
+                  "var",
+                  "sem",
+                  "skew",
+                  "count",
+                  "size",
+                  "first",
+                  "last"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge_parallel_edges",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge parallel edges",
         "output_metadata": [
           {
@@ -932,7 +1260,7 @@
                   "player_id_src"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "events": {
                 "columns": [
@@ -945,7 +1273,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 602.0
+                "length": 602
               },
               "players": {
                 "columns": [
@@ -954,7 +1282,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1023,7 +1351,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1036,7 +1364,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1055,7 +1383,204 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Algorithms",
+            "Link analysis",
+            "PageRank alg"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns the PageRank of the nodes in the graph.\n\nPageRank computes a ranking of the nodes in the graph G based on\nthe structure of the incoming links. It was originally designed as\nan algorithm to rank web pages."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "graph"
+                  },
+                  "description": "A NetworkX graph.  Undirected graphs will be converted to a directed\ngraph with two directed edges for each undirected edge.",
+                  "name": "G"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Damping parameter for PageRank, default=0.85.",
+                  "name": "alpha"
+                },
+                {
+                  "annotation": null,
+                  "description": "The \"personalization vector\" consisting of a dictionary with a\nkey some subset of graph nodes and personalization value each of those.\nAt least one personalization value must be non-zero.\nIf not specified, a nodes personalization value will be zero.\nBy default, a uniform distribution is used.",
+                  "name": "personalization"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "integer"
+                  },
+                  "description": "Maximum number of iterations in power method eigenvalue solver.",
+                  "name": "max_iter"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "float"
+                  },
+                  "description": "Error tolerance used to check convergence in power method solver.\nThe iteration will stop after a tolerance of ``len(G) * tol`` is reached.",
+                  "name": "tol"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "dictionary"
+                  },
+                  "description": "Starting value of PageRank iteration for each node.",
+                  "name": "nstart"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "key"
+                  },
+                  "description": "Edge data key to use as weight.  If None weights are set to 1.",
+                  "name": "weight"
+                },
+                {
+                  "annotation": null,
+                  "description": "The outedges to be assigned to any \"dangling\" nodes, i.e., nodes without\nany outedges. The dict key is the node the outedge points to and the dict\nvalue is the weight of that outedge. By default, dangling nodes are given\noutedges according to the personalization vector (uniform if not\nspecified). This must be selected to result in an irreducible transition\nmatrix (see notes under google_matrix). It may be common to have the\ndangling dict to be the same as the personalization dict.",
+                  "name": "dangling"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "dictionary"
+                  },
+                  "description": "Dictionary of nodes with PageRank as value\n",
+                  "name": "pagerank"
+                }
+              ]
+            },
+            {
+              "kind": "examples",
+              "value": [
+                [
+                  "examples",
+                  ">>> G = nx.DiGraph(nx.path_graph(4))\n>>> pr = nx.pagerank(G, alpha=0.9)"
+                ]
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "Notes",
+              "value": {
+                "annotation": "note",
+                "description": "The eigenvector calculation is done by the power iteration method\nand has no guarantee of convergence.  The iteration will stop after\nan error tolerance of ``len(G) * tol`` has been reached. If the\nnumber of iterations exceed `max_iter`, a\n:exc:`networkx.exception.PowerIterationFailedConvergence` exception\nis raised.\n\nThe PageRank algorithm was designed for directed graphs but this\nalgorithm does not check if the input graph is directed and will\nexecute on undirected graphs by converting each edge in the\ndirected graph to two edges."
+              }
+            },
+            {
+              "kind": "admonition",
+              "title": "See Also",
+              "value": {
+                "annotation": "see-also",
+                "description": "google_matrix\n:func:`~networkx.algorithms.bipartite.link_analysis.birank`"
+              }
+            },
+            {
+              "kind": "raises",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "PowerIterationFailedConvergence"
+                  },
+                  "description": "If the algorithm fails to converge to the specified tolerance\nwithin the specified number of iterations of the power iteration\nmethod.\n"
+                }
+              ]
+            },
+            {
+              "kind": "admonition",
+              "title": "References",
+              "value": {
+                "annotation": "references",
+                "description": ".. [1] A. Langville and C. Meyer,\n   \"A survey of eigenvector methods of web information retrieval.\"\n   http://citeseer.ist.psu.edu/713792.html\n.. [2] Page, Lawrence; Brin, Sergey; Motwani, Rajeev and Winograd, Terry,\n   The PageRank citation ranking: Bringing order to the Web. 1999\n   http://dbpubs.stanford.edu:8090/pub/showDoc.Fulltext?lang=en&doc=1999-66&format=pdf"
+              }
+            }
+          ],
+          "icon": "cpu",
+          "id": "NetworkX > Algorithms > Link analysis > PageRank alg > PageRank",
+          "inputs": [
+            {
+              "name": "G",
+              "position": "left",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "name": "PageRank",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "0.85",
+              "name": "alpha",
+              "type": {
+                "type": "float | None"
+              }
+            },
+            {
+              "default": "100",
+              "name": "max_iter",
+              "type": {
+                "type": "int | None"
+              }
+            },
+            {
+              "default": "1e-06",
+              "name": "tol",
+              "type": {
+                "type": "float | None"
+              }
+            },
+            {
+              "default": "weight",
+              "name": "weight",
+              "type": {
+                "type": "str | None"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.algorithms.link_analysis.pagerank_alg.pagerank",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Algorithms > Link analysis > PageRank alg > PageRank",
         "output_metadata": [
           {
@@ -1067,7 +1592,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1081,7 +1606,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1144,7 +1669,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1158,7 +1683,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1177,7 +1702,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -1189,7 +1774,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1204,7 +1789,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1269,7 +1854,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1284,7 +1869,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1303,7 +1888,92 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Segmentation operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Segments the nodes in a table based on the values of the specified attribute.\nCreates a new table with segmentation IDs, edge table connecting nodes to segments,\nand a relation accordingly."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table to segment",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the attribute to segment by",
+                  "name": "attribute"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the segmentation",
+                  "name": "segmentation_name"
+                }
+              ]
+            }
+          ],
+          "icon": "category-2",
+          "id": "Segmentation operations > Segment by attribute",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Segment by attribute",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "segmentation_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.segmentation_ops.segment_by_attribute",
+          "type": "basic"
+        },
         "op_id": "Segmentation operations > Segment by attribute",
         "output_metadata": [
           {
@@ -1315,7 +1985,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1330,7 +2000,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               },
               "team_stats": {
                 "columns": [
@@ -1338,7 +2008,7 @@
                   "team_name"
                 ],
                 "key": "team_stats",
-                "length": 32.0
+                "length": 32
               },
               "team_stats_edges": {
                 "columns": [
@@ -1346,7 +2016,7 @@
                   "segment_id"
                 ],
                 "key": "team_stats_edges",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1404,7 +2074,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 17,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1417,7 +2087,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1432,7 +2102,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1451,7 +2121,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -1487,7 +2194,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 17,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1500,7 +2207,7 @@
                   "target"
                 ],
                 "key": "edges",
-                "length": 6876.0
+                "length": 6876
               },
               "nodes": {
                 "columns": [
@@ -1515,7 +2222,7 @@
                   "y_rel"
                 ],
                 "key": "nodes",
-                "length": 602.0
+                "length": 602
               },
               "team_stats": {
                 "columns": [
@@ -1523,7 +2230,7 @@
                   "team_name"
                 ],
                 "key": "team_stats",
-                "length": 32.0
+                "length": 32
               },
               "team_stats_edges": {
                 "columns": [
@@ -1531,7 +2238,7 @@
                   "segment_id"
                 ],
                 "key": "team_stats_edges",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -1560,7 +2267,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -1603,7 +2347,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -1617,7 +2418,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               }
             },
             "other": {},
@@ -1701,7 +2502,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -1724,7 +2525,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -1735,7 +2536,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -1744,7 +2545,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -1762,7 +2563,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -1770,7 +2571,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -1799,7 +2600,58 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Query operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."
+            }
+          ],
+          "icon": "database",
+          "id": "Query operations > SQL",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "SQL",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "query",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            {
+              "default": "results",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.query_ops.sql",
+          "type": "basic"
+        },
         "op_id": "Query operations > SQL",
         "output_metadata": [
           {
@@ -1842,7 +2694,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -1865,7 +2717,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -1876,7 +2728,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -1885,7 +2737,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "results": {
                 "columns": [
@@ -1903,7 +2755,7 @@
                   "value"
                 ],
                 "key": "results",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1": {
                 "columns": [
@@ -1921,7 +2773,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -1929,7 +2781,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2032,7 +2884,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2055,7 +2907,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2066,7 +2918,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2075,7 +2927,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -2093,7 +2945,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -2101,7 +2953,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2130,7 +2982,136 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprAttribute",
+                    "values": [
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "core"
+                      },
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "TableColumn"
+                      }
+                    ]
+                  },
+                  "description": "The table and column to rank",
+                  "name": "table_column"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "str"
+                  },
+                  "description": "The name of the new rank column",
+                  "name": "rank_name"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "OrderType"
+                  },
+                  "description": "The order in which to rank the rows either 'ascending' or 'descending'",
+                  "name": "order"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprAttribute",
+                    "values": [
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "core"
+                      },
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "Bundle"
+                      }
+                    ]
+                  },
+                  "description": "The updated bundle with the new rank column",
+                  "name": "output"
+                }
+              ]
+            }
+          ],
+          "icon": "sort-descending",
+          "id": "Table operations > Add rank attribute",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Add rank attribute",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "rank_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "order",
+              "type": {
+                "enum": [
+                  "ascending",
+                  "descending"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.add_rank",
+          "type": "basic"
+        },
         "op_id": "Table operations > Add rank attribute",
         "output_metadata": [
           {
@@ -2173,7 +3154,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2196,7 +3177,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2207,7 +3188,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2216,7 +3197,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -2235,7 +3216,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -2243,7 +3224,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2350,7 +3331,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2374,7 +3355,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2385,7 +3366,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2394,7 +3375,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -2413,7 +3394,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -2421,7 +3402,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2450,7 +3431,58 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Query operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Run a SQL query on the DataFrames in the bundle. Save the results as a new DataFrame."
+            }
+          ],
+          "icon": "database",
+          "id": "Query operations > SQL",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "SQL",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "query",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            {
+              "default": "results",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.query_ops.sql",
+          "type": "basic"
+        },
         "op_id": "Query operations > SQL",
         "output_metadata": [
           {
@@ -2493,7 +3525,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2517,7 +3549,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2528,7 +3560,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2537,7 +3569,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "results": {
                 "columns": [
@@ -2556,7 +3588,7 @@
                   "value"
                 ],
                 "key": "results",
-                "length": 521.0
+                "length": 521
               },
               "seg1": {
                 "columns": [
@@ -2575,7 +3607,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -2583,7 +3615,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2686,7 +3718,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2710,7 +3742,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2721,7 +3753,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2730,7 +3762,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -2749,7 +3781,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -2757,7 +3789,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2786,7 +3818,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -2829,7 +3913,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -2853,7 +3937,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -2864,7 +3948,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -2873,7 +3957,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -2892,7 +3976,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 1.0
+                "length": 1
               },
               "seg1_edges": {
                 "columns": [
@@ -2900,7 +3984,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -2958,7 +4042,7 @@
       "data": {
         "collapsed": false,
         "display": null,
-        "display_version": 14,
+        "display_version": 15,
         "error": null,
         "expanded_height": 315.0,
         "input_metadata": [
@@ -3002,7 +4086,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3026,7 +4110,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -3037,7 +4121,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -3046,7 +4130,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3065,7 +4149,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 1.0
+                "length": 1
               },
               "seg1_edges": {
                 "columns": [
@@ -3073,7 +4157,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -3102,7 +4186,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -3186,7 +4307,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3209,7 +4330,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3218,7 +4339,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -3237,7 +4358,94 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Segmentation operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Finds connected components in the graph of the relation."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation whose graph is segmented",
+                  "name": "relation_name"
+                },
+                {
+                  "annotation": "EdgeDirection",
+                  "description": "whether to ignore the direction of the edges",
+                  "name": "edge_direction"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the segmentation.",
+                  "name": "segmentation_name"
+                }
+              ]
+            }
+          ],
+          "icon": "chart-dots-3",
+          "id": "Segmentation operations > Find connected components",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Find connected components",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            },
+            {
+              "default": null,
+              "name": "edge_direction",
+              "type": {
+                "enum": [
+                  "Ignore directions",
+                  "Require both directions"
+                ]
+              }
+            },
+            {
+              "default": null,
+              "name": "segmentation_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.segmentation_ops.connected_components",
+          "type": "basic"
+        },
         "op_id": "Segmentation operations > Find connected components",
         "output_metadata": [
           {
@@ -3280,7 +4488,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3303,7 +4511,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3312,7 +4520,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3320,7 +4528,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -3328,7 +4536,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -3431,7 +4639,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3454,7 +4662,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3463,7 +4671,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3475,7 +4683,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -3483,7 +4691,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -3512,7 +4720,54 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "arrow-big-right-lines",
+          "id": "Table operations > Derive property",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive property",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_property",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
@@ -3555,7 +4810,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3578,7 +4833,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3587,7 +4842,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3600,7 +4855,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -3608,7 +4863,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -3710,7 +4965,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3733,7 +4988,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3742,7 +4997,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3750,7 +5005,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -3758,7 +5013,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -3787,7 +5042,126 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Segmentation operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle to operate on",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation connecting the two tables",
+                  "name": "relation_name"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "whether to add suffixes or not",
+                  "name": "add_suffixes"
+                },
+                {
+                  "annotation": "Direction",
+                  "description": "whether to aggregate \"To\" or \"From\" the target table",
+                  "name": "direction"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the aggregations to perform, specified as a list of tuples (column_name, aggregation_function)",
+                  "name": "aggregations"
+                }
+              ]
+            }
+          ],
+          "icon": "topology-star-3",
+          "id": "Segmentation operations > Aggregate between neighbors",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Aggregate between neighbors",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            },
+            {
+              "default": null,
+              "name": "add_suffixes",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "direction",
+              "type": {
+                "enum": [
+                  "Aggregate to neighbor",
+                  "Aggregate from neighbor"
+                ]
+              }
+            },
+            {
+              "default": null,
+              "name": "aggregations",
+              "type": {
+                "direction_map": {
+                  "Aggregate from neighbor": "target_table",
+                  "Aggregate to neighbor": "source_table"
+                },
+                "format": "dropdown-multidropdown_relation_adder",
+                "options2": [
+                  "sum",
+                  "mean",
+                  "median",
+                  "min",
+                  "max",
+                  "prod",
+                  "std",
+                  "var",
+                  "sem",
+                  "skew",
+                  "count",
+                  "size",
+                  "first",
+                  "last"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors",
+          "type": "basic"
+        },
         "op_id": "Segmentation operations > Aggregate between neighbors",
         "output_metadata": [
           {
@@ -3830,7 +5204,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -3853,7 +5227,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -3862,7 +5236,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -3874,7 +5248,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -3882,7 +5256,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -4006,7 +5380,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -4029,7 +5403,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -4040,7 +5414,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -4049,7 +5423,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -4068,7 +5442,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -4076,7 +5450,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -4105,7 +5479,126 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Segmentation operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Depending on the direction, aggregates the specified columns nodes in one table to their neighbors in the other."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle to operate on",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the relation connecting the two tables",
+                  "name": "relation_name"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "whether to add suffixes or not",
+                  "name": "add_suffixes"
+                },
+                {
+                  "annotation": "Direction",
+                  "description": "whether to aggregate \"To\" or \"From\" the target table",
+                  "name": "direction"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the aggregations to perform, specified as a list of tuples (column_name, aggregation_function)",
+                  "name": "aggregations"
+                }
+              ]
+            }
+          ],
+          "icon": "topology-star-3",
+          "id": "Segmentation operations > Aggregate between neighbors",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Aggregate between neighbors",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "relation_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].relations[].name"
+              }
+            },
+            {
+              "default": null,
+              "name": "add_suffixes",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "direction",
+              "type": {
+                "enum": [
+                  "Aggregate to neighbor",
+                  "Aggregate from neighbor"
+                ]
+              }
+            },
+            {
+              "default": null,
+              "name": "aggregations",
+              "type": {
+                "direction_map": {
+                  "Aggregate from neighbor": "target_table",
+                  "Aggregate to neighbor": "source_table"
+                },
+                "format": "dropdown-multidropdown_relation_adder",
+                "options2": [
+                  "sum",
+                  "mean",
+                  "median",
+                  "min",
+                  "max",
+                  "prod",
+                  "std",
+                  "var",
+                  "sem",
+                  "skew",
+                  "count",
+                  "size",
+                  "first",
+                  "last"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors",
+          "type": "basic"
+        },
         "op_id": "Segmentation operations > Aggregate between neighbors",
         "output_metadata": [
           {
@@ -4148,7 +5641,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -4172,7 +5665,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -4183,7 +5676,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -4192,7 +5685,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -4211,7 +5704,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -4219,7 +5712,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -4286,7 +5779,7 @@
         "__execution_delay": null,
         "collapsed": null,
         "display": null,
-        "display_version": 14,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4330,7 +5823,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -4354,7 +5847,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -4365,7 +5858,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -4374,7 +5867,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "results": {
                 "columns": [
@@ -4393,7 +5886,7 @@
                   "value"
                 ],
                 "key": "results",
-                "length": 521.0
+                "length": 521
               },
               "seg1": {
                 "columns": [
@@ -4412,7 +5905,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -4420,7 +5913,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -4449,7 +5942,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -4485,7 +6015,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 14,
+        "display_version": 15,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -4529,7 +6059,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -4552,7 +6082,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -4563,7 +6093,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -4572,7 +6102,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "results": {
                 "columns": [
@@ -4590,7 +6120,7 @@
                   "value"
                 ],
                 "key": "results",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1": {
                 "columns": [
@@ -4608,7 +6138,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -4616,7 +6146,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -4645,7 +6175,44 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "table-filled",
+          "id": "View tables",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "View tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 100,
+              "name": "limit",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
+          "type": "table_view"
+        },
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -4687,7 +6254,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -4699,7 +6323,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -4763,7 +6387,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -4772,7 +6396,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -4780,7 +6404,136 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Sorts the rows by the given attribute in the given order and creates a new column with the rank of the row"
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprAttribute",
+                    "values": [
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "core"
+                      },
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "TableColumn"
+                      }
+                    ]
+                  },
+                  "description": "The table and column to rank",
+                  "name": "table_column"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "str"
+                  },
+                  "description": "The name of the new rank column",
+                  "name": "rank_name"
+                },
+                {
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "OrderType"
+                  },
+                  "description": "The order in which to rank the rows either 'ascending' or 'descending'",
+                  "name": "order"
+                }
+              ]
+            },
+            {
+              "kind": "returns",
+              "value": [
+                {
+                  "annotation": {
+                    "cls": "ExprAttribute",
+                    "values": [
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "core"
+                      },
+                      {
+                        "cls": "ExprName",
+                        "member": null,
+                        "name": "Bundle"
+                      }
+                    ]
+                  },
+                  "description": "The updated bundle with the new rank column",
+                  "name": "output"
+                }
+              ]
+            }
+          ],
+          "icon": "sort-descending",
+          "id": "Table operations > Add rank attribute",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Add rank attribute",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "rank_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "order",
+              "type": {
+                "enum": [
+                  "ascending",
+                  "descending"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.add_rank",
+          "type": "basic"
+        },
         "op_id": "Table operations > Add rank attribute",
         "output_metadata": [
           {
@@ -4805,7 +6558,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -4814,7 +6567,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -4881,7 +6634,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -4890,7 +6643,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -4898,7 +6651,54 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": null,
+          "icon": "arrow-big-right-lines",
+          "id": "Table operations > Derive property",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive property",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_property",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive property",
         "output_metadata": [
           {
@@ -4924,7 +6724,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -4933,7 +6733,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -4997,7 +6797,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5006,7 +6806,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5014,7 +6814,92 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates edges between nodes from table1 and table2 if the two attributes of the node are equal.\n\nParameters:\n- source_table: Name of the first table\n- source_id: ID column in the first table\n- source_attribute: Attribute column in the first table used for matching\n- target_table: Name of the second table\n- target_id: ID column in the second table\n- target_attribute: Attribute column in the second table used for matching"
+            }
+          ],
+          "icon": "share",
+          "id": "Graph operations > Connect nodes on attribute",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Connect nodes on attribute",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "source_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "source_id",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<source_table>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "source_attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<source_table>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "target_table",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "target_id",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<target_table>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "target_attribute",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].<target_table>.columns[]"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.connect_nodes",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Connect nodes on attribute",
         "output_metadata": [
           {
@@ -5057,7 +6942,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 125462.0
+                "length": 125462
               },
               "events": {
                 "columns": [
@@ -5080,7 +6965,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5089,7 +6974,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5185,7 +7070,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 125462.0
+                "length": 125462
               },
               "events": {
                 "columns": [
@@ -5208,7 +7093,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5217,7 +7102,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5236,7 +7121,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5279,7 +7216,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -5302,7 +7239,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5311,7 +7248,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5403,7 +7340,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -5426,7 +7363,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5435,7 +7372,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5454,7 +7391,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5497,7 +7486,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -5520,7 +7509,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5529,7 +7518,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5599,7 +7588,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5608,7 +7597,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5616,7 +7605,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -5638,7 +7687,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5647,7 +7696,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5711,7 +7760,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5720,7 +7769,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5728,7 +7777,67 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Creates a new column with vectors that contain the selected attributes in the selected order"
+            }
+          ],
+          "icon": "brackets-contain",
+          "id": "Table operations > Vector from attributes",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Vector from attributes",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "attributes",
+              "type": {
+                "format": "multi-dropdown",
+                "metadata_query": "[].dataframes[].<table_name>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "vector_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.vector_from_attributes",
+          "type": "basic"
+        },
         "op_id": "Table operations > Vector from attributes",
         "output_metadata": [
           {
@@ -5751,7 +7860,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5760,7 +7869,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5845,7 +7954,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -5868,7 +7977,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -5877,7 +7986,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -5896,7 +8005,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -5939,7 +8100,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -5962,7 +8123,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 100.0
+                "length": 100
               },
               "players": {
                 "columns": [
@@ -5971,7 +8132,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6019,7 +8180,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6063,7 +8224,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -6086,7 +8247,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 100.0
+                "length": 100
               },
               "players": {
                 "columns": [
@@ -6095,7 +8256,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6114,7 +8275,71 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Nodes binned together by x and y are aggregated into one node.\nEdges between bins are aggregated into one edge."
+            }
+          ],
+          "icon": "table",
+          "id": "Visualizations > Binned graph visualization",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Binned graph visualization",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "x_property",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "y_property",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 5,
+              "name": "x_bins",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 5,
+              "name": "y_bins",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": false,
+              "name": "show_loops",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization",
+          "type": "image"
+        },
         "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
@@ -6194,7 +8419,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -6217,7 +8442,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -6226,7 +8451,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6245,7 +8470,59 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Removes all rows where the formula(https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions) evaluates to false"
+            }
+          ],
+          "icon": "filter-filled",
+          "id": "Table operations > Filter with formula",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Filter with formula",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.filter_with_formula",
+          "type": "basic"
+        },
         "op_id": "Table operations > Filter with formula",
         "output_metadata": [
           {
@@ -6288,7 +8565,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -6311,7 +8588,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 114.0
+                "length": 114
               },
               "players": {
                 "columns": [
@@ -6320,7 +8597,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6368,7 +8645,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -6412,7 +8689,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 113410.0
+                "length": 113410
               },
               "events": {
                 "columns": [
@@ -6435,7 +8712,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 114.0
+                "length": 114
               },
               "players": {
                 "columns": [
@@ -6444,7 +8721,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6463,7 +8740,71 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Visualizations"
+          ],
+          "color": "blue",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Nodes binned together by x and y are aggregated into one node.\nEdges between bins are aggregated into one edge."
+            }
+          ],
+          "icon": "table",
+          "id": "Visualizations > Binned graph visualization",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Binned graph visualization",
+          "outputs": [],
+          "params": [
+            {
+              "default": null,
+              "name": "x_property",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": null,
+              "name": "y_property",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": 5,
+              "name": "x_bins",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": 5,
+              "name": "y_bins",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            },
+            {
+              "default": false,
+              "name": "show_loops",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.binned_graph_visualization",
+          "type": "image"
+        },
         "op_id": "Visualizations > Binned graph visualization",
         "output_metadata": [],
         "params": {
@@ -6504,7 +8845,64 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "File operations"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Imports a CSV file."
+            }
+          ],
+          "icon": "file-filled",
+          "id": "File operations > Import CSV",
+          "inputs": [],
+          "name": "Import CSV",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "format": "path"
+              }
+            },
+            {
+              "default": "<from file>",
+              "name": "columns",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "<auto>",
+              "name": "separator",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "records",
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.file_ops.import_csv",
+          "type": "basic"
+        },
         "op_id": "File operations > Import CSV",
         "output_metadata": [
           {
@@ -6522,7 +8920,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -6585,7 +8983,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -6594,7 +8992,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6602,7 +9000,91 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Derives a new column with a SQL expression and stores it in the same table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle.",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the name of the table to derive the column in.",
+                  "name": "table_name"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the formula to derive the column with.",
+                  "name": "formula"
+                },
+                {
+                  "annotation": "str",
+                  "description": "the name of the derived column.",
+                  "name": "name"
+                }
+              ]
+            }
+          ],
+          "icon": "database-plus",
+          "id": "Table operations > Derive with SQL",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Derive with SQL",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "format": "dropdown",
+                "metadata_query": "[].dataframes[].keys(@)[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "formula",
+              "type": {
+                "format": "textarea"
+              }
+            },
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.derive_with_sql",
+          "type": "basic"
+        },
         "op_id": "Table operations > Derive with SQL",
         "output_metadata": [
           {
@@ -6626,7 +9108,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -6635,7 +9117,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -6717,7 +9199,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -6740,7 +9222,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -6751,7 +9233,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -6760,7 +9242,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -6773,7 +9255,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -6781,7 +9263,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -6810,7 +9292,103 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds data from the second table to the first table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the first table and its column to join on",
+                  "name": "table1_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the second table and its column to join on",
+                  "name": "table2_column"
+                },
+                {
+                  "annotation": "TableMergeMode",
+                  "description": "determines what happens if a column is in both tables\nMerge, prefer the second table\u2019s version: Where the second table defines values, those will be used. Elsewhere, the first table's values are used.\nMerge, prefer the first table\u2019s version: Where the first table defines values, those will be used. Elsewhere, the second table's values are used.\nMerge, report error on conflict: An assertion is made to ensure that the values in the two tables are equal. If they are not, an error is raised.\nUse the first table\u2019s version: The data in the second table is ignored.\nUse the second table\u2019s version: The data in the first table is ignored.\nOnly keep rows with matching values: Only rows that have matching values in both tables are kept.\nKeep both values with suffixes: Both values are kept, with suffixes added to the column names to distinguish them.\nDisallow this: A name conflict is treated as an error.",
+                  "name": "merge_mode"
+                }
+              ]
+            }
+          ],
+          "icon": "table-plus",
+          "id": "Table operations > Join tables",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Join tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table1_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "table2_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "Merge, prefer the first table's version",
+                  "Merge, prefer the second table's version",
+                  "Merge, report error on conflict",
+                  "Keep the first table's version",
+                  "Use the second table's version",
+                  "Only keep rows with matching values",
+                  "Keep both values with suffixes",
+                  "Disallow this"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.join_tables",
+          "type": "basic"
+        },
         "op_id": "Table operations > Join tables",
         "output_metadata": [
           {
@@ -6853,7 +9431,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -6876,7 +9454,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -6887,7 +9465,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -6896,7 +9474,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -6914,7 +9492,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -6922,7 +9500,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},
@@ -7000,7 +9578,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -7009,7 +9587,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -7017,7 +9595,103 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Table operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Adds data from the second table to the first table."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "Bundle",
+                  "description": "the bundle",
+                  "name": "b"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the first table and its column to join on",
+                  "name": "table1_column"
+                },
+                {
+                  "annotation": "Annotated",
+                  "description": "the second table and its column to join on",
+                  "name": "table2_column"
+                },
+                {
+                  "annotation": "TableMergeMode",
+                  "description": "determines what happens if a column is in both tables\nMerge, prefer the second table\u2019s version: Where the second table defines values, those will be used. Elsewhere, the first table's values are used.\nMerge, prefer the first table\u2019s version: Where the first table defines values, those will be used. Elsewhere, the second table's values are used.\nMerge, report error on conflict: An assertion is made to ensure that the values in the two tables are equal. If they are not, an error is raised.\nUse the first table\u2019s version: The data in the second table is ignored.\nUse the second table\u2019s version: The data in the first table is ignored.\nOnly keep rows with matching values: Only rows that have matching values in both tables are kept.\nKeep both values with suffixes: Both values are kept, with suffixes added to the column names to distinguish them.\nDisallow this: A name conflict is treated as an error.",
+                  "name": "merge_mode"
+                }
+              ]
+            }
+          ],
+          "icon": "table-plus",
+          "id": "Table operations > Join tables",
+          "inputs": [
+            {
+              "name": "b",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Join tables",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "table1_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "table2_column",
+              "type": {
+                "format": "double-dropdown",
+                "metadata_query1": "[].dataframes[].keys(@)[]",
+                "metadata_query2": "[].dataframes[].<first>.columns[]"
+              }
+            },
+            {
+              "default": null,
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "Merge, prefer the first table's version",
+                  "Merge, prefer the second table's version",
+                  "Merge, report error on conflict",
+                  "Keep the first table's version",
+                  "Use the second table's version",
+                  "Only keep rows with matching values",
+                  "Keep both values with suffixes",
+                  "Disallow this"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.table_ops.join_tables",
+          "type": "basic"
+        },
         "op_id": "Table operations > Join tables",
         "output_metadata": [
           {
@@ -7038,7 +9712,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -7047,7 +9721,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -7091,7 +9765,55 @@
           {}
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merge multiple inputs"
+            }
+          ],
+          "icon": "arrows-join",
+          "id": "Graph operations > Merge",
+          "inputs": [
+            {
+              "name": "bundles",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.bundle.Bundle]"
+              }
+            }
+          ],
+          "name": "Merge",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "must be unique",
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "must be unique",
+                  "rename non-unique",
+                  "concatenate non-unique"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge",
         "output_metadata": [
           {
@@ -7109,7 +9831,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "players": {
                 "columns": [
@@ -7118,7 +9840,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               }
             },
             "other": {},
@@ -7154,7 +9876,55 @@
           {}
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "Graph operations"
+          ],
+          "color": "orange",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Merge multiple inputs"
+            }
+          ],
+          "icon": "arrows-join",
+          "id": "Graph operations > Merge",
+          "inputs": [
+            {
+              "name": "bundles",
+              "position": "left",
+              "type": {
+                "type": "list[lynxkite_graph_analytics.bundle.Bundle]"
+              }
+            }
+          ],
+          "name": "Merge",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "must be unique",
+              "name": "merge_mode",
+              "type": {
+                "enum": [
+                  "must be unique",
+                  "rename non-unique",
+                  "concatenate non-unique"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.graph_ops.merge",
+          "type": "basic"
+        },
         "op_id": "Graph operations > Merge",
         "output_metadata": [
           {
@@ -7197,7 +9967,7 @@
                   "y_rel_src"
                 ],
                 "key": "edges",
-                "length": 98648.0
+                "length": 98648
               },
               "events": {
                 "columns": [
@@ -7220,7 +9990,7 @@
                   "y_rel"
                 ],
                 "key": "events",
-                "length": 125463.0
+                "length": 125463
               },
               "matches": {
                 "columns": [
@@ -7231,7 +10001,7 @@
                   "match_id"
                 ],
                 "key": "matches",
-                "length": 64.0
+                "length": 64
               },
               "players": {
                 "columns": [
@@ -7240,7 +10010,7 @@
                   "team_name"
                 ],
                 "key": "players",
-                "length": 602.0
+                "length": 602
               },
               "seg1": {
                 "columns": [
@@ -7253,7 +10023,7 @@
                   "value"
                 ],
                 "key": "seg1",
-                "length": 26815.0
+                "length": 26815
               },
               "seg1_edges": {
                 "columns": [
@@ -7261,7 +10031,7 @@
                   "segment_id"
                 ],
                 "key": "seg1_edges",
-                "length": 125463.0
+                "length": 125463
               }
             },
             "other": {},

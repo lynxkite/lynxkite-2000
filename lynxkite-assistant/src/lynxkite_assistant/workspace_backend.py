@@ -1,8 +1,11 @@
 """A Deep Agents backend that represents a workspace as a file."""
 
+import datetime
 import json
-import pathlib
+import os
+from pathlib import Path
 import asyncio
+import shutil
 from typing import Any
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
@@ -15,6 +18,12 @@ class WorkspaceBackend(state.StateBackend):
     def __init__(self, workspace: str) -> None:
         super().__init__()
         self._workspace = workspace
+        self.memory_dir = (
+            Path(workspace).parent
+            / ".assistant_memory"
+            / Path(workspace).name
+            / datetime.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
+        )
 
     def _read_files(self) -> dict[str, Any]:
         return {
@@ -42,16 +51,20 @@ class WorkspaceBackend(state.StateBackend):
 
     def _send_files_update(self, update: dict[str, Any]) -> None:
         if "/boxes.py" in update:
-            set_boxes_file_content(self._workspace, update["/boxes.py"]["content"])
+            set_boxes_file_content(
+                self._workspace, update["/boxes.py"]["content"], self.memory_dir
+            )
         if "/workspace.py" in update:
             asyncio.run(
                 set_workspace_file_content(
-                    self._workspace, update["/workspace.py"]["content"]
+                    self._workspace, update["/workspace.py"]["content"], self.memory_dir
                 )
             )
         if "/layout.json" in update:
             set_layout_file_content(
-                self._workspace, json.loads(update["/layout.json"]["content"])
+                self._workspace,
+                json.loads(update["/layout.json"]["content"]),
+                self.memory_dir,
             )
         if "requirements.txt" in update:
             set_req_file_content(self._workspace, update["requirements.txt"]["content"])
@@ -78,8 +91,17 @@ def get_workspace_file_content(ws_path: str) -> str:
     return python_workspace_conversion.workspace_to_python(ws)
 
 
-async def set_workspace_file_content(ws_path: str, content: str) -> None:
+async def set_workspace_file_content(
+    ws_path: str, content: str, memory_dir: Path | None = None
+) -> None:
     old_ws = workspace.Workspace.load(ws_path)
+    if memory_dir:
+        save_in_memory(
+            memory_dir,
+            "workspace.py",
+            python_workspace_conversion.workspace_to_python(old_ws),
+        )
+        save_in_memory(memory_dir, "layout.json", get_workspace_layout(ws_path))
     ops.load_user_scripts(ws_path)
     ws = python_workspace_conversion.python_to_workspace(content)
     ws.env = old_ws.env
@@ -88,6 +110,14 @@ async def set_workspace_file_content(ws_path: str, content: str) -> None:
     sync_workspaces.update_node_ids(source=ws, target=old_ws)
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
+        if memory_dir:
+            ws_files_path = (
+                Path(ws_path).parent / ".workspace_files" / Path(ws_path).name
+            )
+            if os.path.exists(ws_files_path) and not os.path.exists(
+                memory_dir / "workspace_files"
+            ):
+                shutil.copytree(ws_files_path, memory_dir / "workspace_files")
         await ops.EXECUTORS[ws.env](ws, ops.CATALOGS[ws.env])
     ws.save(ws_path)
 
@@ -101,7 +131,7 @@ async def execute_workspace(ws_path: str) -> None:
 
 def get_boxes_file_content(ws_path: str) -> str:
     ws = workspace.Workspace.load(ws_path)
-    p = pathlib.Path(ws_path).parent / "boxes.py"
+    p = Path(ws_path).parent / "boxes.py"
     if not p.exists():
         module_name = (
             f"{ops.to_python_module_name(p.parent)}.boxes"
@@ -113,14 +143,18 @@ def get_boxes_file_content(ws_path: str) -> str:
         return f.read()
 
 
-def set_boxes_file_content(ws_path: str, content: str) -> None:
-    p = pathlib.Path(ws_path).parent / "boxes.py"
+def set_boxes_file_content(
+    ws_path: str, content: str, memory_dir: Path | None = None
+) -> None:
+    p = Path(ws_path).parent / "boxes.py"
+    if memory_dir:
+        save_in_memory(memory_dir, "boxes.py", get_boxes_file_content(ws_path))
     with open(p, "w") as f:
         f.write(content)
 
 
 def get_req_content(ws_path: str) -> str:
-    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    p = Path(ws_path).parent / "requirements.txt"
     if not p.exists():
         return instructions.REQ_INFO
     with open(p) as f:
@@ -128,7 +162,7 @@ def get_req_content(ws_path: str) -> str:
 
 
 def set_req_file_content(ws_path: str, content: str) -> None:
-    p = pathlib.Path(ws_path).parent / "requirements.txt"
+    p = Path(ws_path).parent / "requirements.txt"
     with open(p, "w") as f:
         f.write(content)
 
@@ -170,9 +204,13 @@ def get_workspace_layout(ws_path: str) -> str:
     return json.dumps(layout)
 
 
-def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
+def set_layout_file_content(
+    ws_path: str, layout: dict[str, Any], memory_dir: Path | None = None
+) -> None:
     ws = workspace.Workspace.load(ws_path)
     node_by_id = {node.id: node for node in ws.nodes}
+    if memory_dir:
+        save_in_memory(memory_dir, "layout.json", get_workspace_layout(ws_path))
     if layout.get("automatic_layout", ""):
         non_comment = [n for n in ws.nodes if not n.type == "comment"]
         sync_workspaces.organize_new_nodes(non_comment, ws.edges, offset=(0, 0))
@@ -192,3 +230,11 @@ def set_layout_file_content(ws_path: str, layout: dict[str, Any]) -> None:
             if "collapsed" in node_layout:
                 node.data.collapsed = bool(node_layout["collapsed"])
     ws.save(ws_path)
+
+
+def save_in_memory(memdir, fname, content):
+    os.makedirs(memdir, exist_ok=True)
+    if os.path.exists(memdir / fname):
+        return  # we only want to save the original (first) version
+    with open(memdir / fname, "w") as f:
+        f.write(content)

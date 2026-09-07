@@ -687,9 +687,34 @@ svg {
       margin: 3px 0;
     }
 
+    .search-result-op {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
     .search-result-path {
       color: #0008;
       font-size: 80%;
+    }
+
+    .search-result-description {
+      color: #0008;
+      font-size: 80%;
+      line-height: 1.3;
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .search-result-highlight {
+      background-color: oklch(92% 0.08 90);
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 2px;
     }
 
     .back-button,
@@ -717,6 +742,11 @@ svg {
   .react-flow__node {
     width: auto !important;
     height: auto !important;
+    transition: transform 0.04s linear !important;
+  }
+
+  .react-flow__node.dragging {
+    transition: none !important;
   }
 
   .react-flow__node-table_view {
@@ -881,7 +911,7 @@ svg {
 }
 
 .assistant-panel {
-  width: min(34vw, 420px);
+  width: min(38vw, 460px);
   min-width: 300px;
   border-left: 1px solid #d8dde3;
   background: white;
@@ -956,6 +986,24 @@ svg {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.assistant-mic-wrapper {
+  display: inline-flex;
+}
+
+.assistant-mic-button.is-recording {
+  color: #ffffff;
+  border-color: #0284c7;
+  background: #0ea5e9;
+}
+
+.assistant-mic-button.is-disabled {
+  color: #9ca3af;
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  opacity: 1;
+  cursor: not-allowed;
 }
 
 .assistant-clear-button {
@@ -1175,6 +1223,7 @@ svg {
 
     button {
       padding-right: 10px;
+      white-space: nowrap;
     }
 
     &.empty {

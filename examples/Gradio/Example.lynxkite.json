@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Karate club graph 1 output Gradio DataFrame 1 bundle",
@@ -17,11 +18,25 @@
         "display": {
           "backend": "/api/service/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio%20example%201"
         },
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "<svg fill=\"currentColor\" fill-rule=\"evenodd\" style=\"flex:none;line-height:1\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>Gradio</title><path clip-rule=\"evenodd\" d=\"M11.238 7.603a1.532 1.532 0 011.524 0l10.468 6a1.532 1.532 0 010 2.66l-10.468 6c-.472.27-1.052.27-1.524 0l-10.468-6a1.533 1.533 0 010-2.66l10.468-6zm-6.624 7.33L12 19.166l7.386-4.233L12 10.699l-7.386 4.234z\"></path><path clip-rule=\"evenodd\" d=\"M11.238 1.733a1.533 1.533 0 011.524 0l10.468 6a1.532 1.532 0 010 2.659l-10.468 6c-.472.27-1.052.27-1.524 0l-10.468-6a1.532 1.532 0 010-2.659l10.468-6zm-6.624 7.33L12 13.296l7.386-4.233L12 4.829 4.614 9.063z\"></path><path clip-rule=\"evenodd\" d=\"M12.784 10.265L2.291 16.239.774 13.575l10.494-5.974 1.516 2.664z\"></path></svg>\n",
+          "id": "Gradio example",
+          "inputs": [],
+          "name": "Gradio example",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "Gradio.example.gradio_example",
+          "type": "gradio"
+        },
         "op_id": "Gradio example",
         "output_metadata": [],
         "params": {},
@@ -32,6 +47,7 @@
       "dragHandle": ".drag-handle",
       "height": 466.0,
       "id": "Gradio example 1",
+      "parentId": null,
       "position": {
         "x": 840.0,
         "y": 40.0
@@ -43,11 +59,42 @@
       "data": {
         "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [
+            "NetworkX",
+            "Generators",
+            "Social"
+          ],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "Returns Zachary's Karate Club graph.\n\nEach node in the returned graph has a node attribute 'club' that\nindicates the name of the club to which the member represented by that node\nbelongs, either 'Mr. Hi' or 'Officer'. Each edge has a weight based on the\nnumber of contexts in which that edge's incident node members interacted.\n\nThe dataset is derived from the 'Club After Split From Data' column of Table 3 in [1]_.\nThis was in turn derived from the 'Club After Fission' column of Table 1 in the\nsame paper. Note that the nodes are 0-indexed in NetworkX, but 1-indexed in the\npaper (the 'Individual Number in Matrix C' column of Table 3 starts at 1). This\nmeans, for example, that ``G.nodes[9][\"club\"]`` returns 'Officer', which\ncorresponds to row 10 of Table 3 in the paper.\n\nExamples\n--------\nTo get the name of the club to which a node belongs:\n\n>>> G = nx.karate_club_graph()\n>>> G.nodes[5][\"club\"]\n'Mr. Hi'\n>>> G.nodes[9][\"club\"]\n'Officer'\n\nReferences\n----------\n.. [1] Zachary, Wayne W.\n   \"An Information Flow Model for Conflict and Fission in Small Groups.\"\n   *Journal of Anthropological Research*, 33, 452--473, (1977)."
+            }
+          ],
+          "icon": "fountain",
+          "id": "NetworkX > Generators > Social > Karate club graph",
+          "inputs": [],
+          "name": "Karate club graph",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "<class 'networkx.classes.graph.Graph'>"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "networkx.generators.social.karate_club_graph",
+          "type": "basic"
+        },
         "op_id": "NetworkX > Generators > Social > Karate club graph",
         "output_metadata": [
           {
@@ -93,6 +140,7 @@
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Karate club graph 1",
+      "parentId": null,
       "position": {
         "x": 1457.0215816117916,
         "y": 183.58356136741287
@@ -107,6 +155,7 @@
         "display": {
           "backend": "/api/service/lynxkite_graph_analytics/Gradio/Example.lynxkite.json/Gradio%20DataFrame%201"
         },
+        "display_version": null,
         "error": null,
         "expanded_height": 473.0,
         "input_metadata": [
@@ -146,7 +195,28 @@
           }
         ],
         "message": null,
-        "meta": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "<svg fill=\"currentColor\" fill-rule=\"evenodd\" style=\"flex:none;line-height:1\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>Gradio</title><path clip-rule=\"evenodd\" d=\"M11.238 7.603a1.532 1.532 0 011.524 0l10.468 6a1.532 1.532 0 010 2.66l-10.468 6c-.472.27-1.052.27-1.524 0l-10.468-6a1.533 1.533 0 010-2.66l10.468-6zm-6.624 7.33L12 19.166l7.386-4.233L12 10.699l-7.386 4.234z\"></path><path clip-rule=\"evenodd\" d=\"M11.238 1.733a1.533 1.533 0 011.524 0l10.468 6a1.532 1.532 0 010 2.659l-10.468 6c-.472.27-1.052.27-1.524 0l-10.468-6a1.532 1.532 0 010-2.659l10.468-6zm-6.624 7.33L12 13.296l7.386-4.233L12 4.829 4.614 9.063z\"></path><path clip-rule=\"evenodd\" d=\"M12.784 10.265L2.291 16.239.774 13.575l10.494-5.974 1.516 2.664z\"></path></svg>\n",
+          "id": "Gradio DataFrame",
+          "inputs": [
+            {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+              }
+            }
+          ],
+          "name": "Gradio DataFrame",
+          "outputs": [],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "Gradio.example.gradio_df",
+          "type": "gradio"
+        },
         "op_id": "Gradio DataFrame",
         "output_metadata": [],
         "params": {},
@@ -157,6 +227,7 @@
       "dragHandle": ".drag-handle",
       "height": 472.45158209612157,
       "id": "Gradio DataFrame 1",
+      "parentId": null,
       "position": {
         "x": 1874.5111268036615,
         "y": 52.54841790387843
@@ -165,5 +236,5 @@
       "width": 540.4888731963385
     }
   ],
-  "paused": false
+  "paused": true
 }

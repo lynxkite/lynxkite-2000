@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Linear 4 output Activation 4 x",
@@ -296,25 +297,102 @@
     }
   ],
   "env": "PyTorch model",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An input tensor."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "TorchTypes",
+                  "description": "The data type of the tensor.",
+                  "name": "type"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "Whether this has a different value for each sample, or is constant across the dataset.",
+                  "name": "per_sample"
+                }
+              ]
+            }
+          ],
+          "icon": "file-filled",
+          "id": "Input: tensor",
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "_input_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "float",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "float",
+                  "double",
+                  "int",
+                  "long",
+                  "bool"
+                ]
+              }
+            },
+            {
+              "default": true,
+              "name": "per_sample",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input",
+          "type": "basic"
+        },
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "name": "product1_embedding",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
       "height": 219.0,
       "id": "Input: tensor 1",
+      "parentId": null,
       "position": {
         "x": -969.3706591268473,
         "y": 1562.3962501475567
@@ -327,20 +405,70 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "purple",
+          "doc": null,
+          "icon": "robot",
+          "id": "Optimizer",
+          "inputs": [
+            {
+              "name": "loss",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Optimizer",
+          "outputs": [],
+          "params": [
+            {
+              "default": "AdamW",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "AdamW",
+                  "Adafactor",
+                  "Adagrad",
+                  "SGD",
+                  "Lion",
+                  "Paged AdamW",
+                  "Galore AdamW"
+                ]
+              }
+            },
+            {
+              "default": 0.0001,
+              "name": "lr",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.optimizer",
+          "type": "basic"
+        },
         "op_id": "Optimizer",
+        "output_metadata": null,
         "params": {
           "lr": "0.0005",
           "type": "AdamW"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Optimizer"
       },
       "dragHandle": ".drag-handle",
       "height": 236.0,
       "id": "Optimizer 1",
+      "parentId": null,
       "position": {
         "x": 1139.3898731338832,
         "y": -1313.9873443471338
@@ -351,20 +479,64 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "stack",
+          "id": "Linear",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Linear",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 1024,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.linear",
+          "type": "basic"
+        },
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "64"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Linear 3",
+      "parentId": null,
       "position": {
         "x": 506.2586730047117,
         "y": 455.269129598022
@@ -374,20 +546,75 @@
     },
     {
       "data": {
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Activation",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ELU",
+                  "GELU",
+                  "Leaky ReLU",
+                  "Mish",
+                  "PReLU",
+                  "ReLU",
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.activation",
+          "type": "basic"
+        },
         "op_id": "Activation",
+        "output_metadata": null,
         "params": {
           "type": "ReLU"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Activation"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Activation 3",
+      "parentId": null,
       "position": {
         "x": 513.5620292371923,
         "y": 172.04081475224737
@@ -398,20 +625,64 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "stack",
+          "id": "Linear",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Linear",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 1024,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.linear",
+          "type": "basic"
+        },
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "32"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Linear 4",
+      "parentId": null,
       "position": {
         "x": 844.4767401502626,
         "y": 454.82232519437264
@@ -421,20 +692,75 @@
     },
     {
       "data": {
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Activation",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ELU",
+                  "GELU",
+                  "Leaky ReLU",
+                  "Mish",
+                  "PReLU",
+                  "ReLU",
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.activation",
+          "type": "basic"
+        },
         "op_id": "Activation",
+        "output_metadata": null,
         "params": {
           "type": "ReLU"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Activation"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Activation 4",
+      "parentId": null,
       "position": {
         "x": 839.637073002496,
         "y": 170.36965406655878
@@ -447,19 +773,62 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "stack",
+          "id": "Linear",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Linear",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 1024,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.linear",
+          "type": "basic"
+        },
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Linear 5",
+      "parentId": null,
       "position": {
         "x": 840.7154233583174,
         "y": -316.2520109487639
@@ -470,21 +839,97 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An input tensor."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "TorchTypes",
+                  "description": "The data type of the tensor.",
+                  "name": "type"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "Whether this has a different value for each sample, or is constant across the dataset.",
+                  "name": "per_sample"
+                }
+              ]
+            }
+          ],
+          "icon": "file-filled",
+          "id": "Input: tensor",
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "_input_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "float",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "float",
+                  "double",
+                  "int",
+                  "long",
+                  "bool"
+                ]
+              }
+            },
+            {
+              "default": true,
+              "name": "per_sample",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input",
+          "type": "basic"
+        },
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "name": "label",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
       "height": 221.0,
       "id": "Input: tensor 3",
+      "parentId": null,
       "position": {
         "x": 1503.8786881292813,
         "y": -787.6905698776184
@@ -495,21 +940,97 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An input tensor."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "TorchTypes",
+                  "description": "The data type of the tensor.",
+                  "name": "type"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "Whether this has a different value for each sample, or is constant across the dataset.",
+                  "name": "per_sample"
+                }
+              ]
+            }
+          ],
+          "icon": "file-filled",
+          "id": "Input: tensor",
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "_input_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "float",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "float",
+                  "double",
+                  "int",
+                  "long",
+                  "bool"
+                ]
+              }
+            },
+            {
+              "default": true,
+              "name": "per_sample",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input",
+          "type": "basic"
+        },
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "name": "product2_embedding",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
       "height": 210.0,
       "id": "Input: tensor 2",
+      "parentId": null,
       "position": {
         "x": -552.5067662725078,
         "y": 1532.0915032329299
@@ -520,16 +1041,91 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An input tensor."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "TorchTypes",
+                  "description": "The data type of the tensor.",
+                  "name": "type"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "Whether this has a different value for each sample, or is constant across the dataset.",
+                  "name": "per_sample"
+                }
+              ]
+            }
+          ],
+          "icon": "file-filled",
+          "id": "Input: tensor",
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "_input_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "float",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "float",
+                  "double",
+                  "int",
+                  "long",
+                  "bool"
+                ]
+              }
+            },
+            {
+              "default": true,
+              "name": "per_sample",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input",
+          "type": "basic"
+        },
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "name": "product1_features",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
@@ -548,17 +1144,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Concatenate",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Concatenate",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate",
+          "type": "basic"
+        },
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
       "height": 87.0,
       "id": "Concatenate 2",
+      "parentId": null,
       "position": {
         "x": 306.3284461838001,
         "y": 1004.4188234031872
@@ -569,21 +1207,97 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "green",
+          "doc": [
+            {
+              "kind": "text",
+              "value": "An input tensor."
+            },
+            {
+              "kind": "parameters",
+              "value": [
+                {
+                  "annotation": "TorchTypes",
+                  "description": "The data type of the tensor.",
+                  "name": "type"
+                },
+                {
+                  "annotation": "bool",
+                  "description": "Whether this has a different value for each sample, or is constant across the dataset.",
+                  "name": "per_sample"
+                }
+              ]
+            }
+          ],
+          "icon": "file-filled",
+          "id": "Input: tensor",
+          "inputs": [],
+          "name": "Input: tensor",
+          "outputs": [
+            {
+              "name": "input",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "",
+              "name": "_input_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            {
+              "default": "float",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "float",
+                  "double",
+                  "int",
+                  "long",
+                  "bool"
+                ]
+              }
+            },
+            {
+              "default": true,
+              "name": "per_sample",
+              "type": {
+                "type": "<class 'bool'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.tensor_input",
+          "type": "basic"
+        },
         "op_id": "Input: tensor",
+        "output_metadata": null,
         "params": {
           "name": "product2_features",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Input: tensor"
       },
       "dragHandle": ".drag-handle",
       "height": 239.0,
       "id": "Input: tensor 5",
+      "parentId": null,
       "position": {
         "x": 507.62788060072376,
         "y": 1542.9047727445845
@@ -595,17 +1309,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Add",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Add",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.add",
+          "type": "basic"
+        },
         "op_id": "Add",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Add"
       },
       "dragHandle": ".drag-handle",
       "height": 63.0,
       "id": "Add 2",
+      "parentId": null,
       "position": {
         "x": -990.2317867636024,
         "y": 1309.8372436819193
@@ -617,17 +1373,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Add",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Add",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.add",
+          "type": "basic"
+        },
         "op_id": "Add",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Add"
       },
       "dragHandle": ".drag-handle",
       "height": 77.0,
       "id": "Add 3",
+      "parentId": null,
       "position": {
         "x": -9.163104691206186,
         "y": 1297.836433899262
@@ -639,17 +1437,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Subtract",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Subtract",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.subtract",
+          "type": "basic"
+        },
         "op_id": "Subtract",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Subtract"
       },
       "dragHandle": ".drag-handle",
       "height": 71.0,
       "id": "Subtract 1",
+      "parentId": null,
       "position": {
         "x": -461.87776942650004,
         "y": 1302.4568233493244
@@ -661,17 +1501,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Multiply",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Multiply",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.multiply",
+          "type": "basic"
+        },
         "op_id": "Multiply",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Multiply"
       },
       "dragHandle": ".drag-handle",
       "height": 77.0,
       "id": "Multiply 1",
+      "parentId": null,
       "position": {
         "x": -466.9988291742298,
         "y": 1145.8081987993196
@@ -683,17 +1565,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Subtract",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Subtract",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.subtract",
+          "type": "basic"
+        },
         "op_id": "Subtract",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Subtract"
       },
       "dragHandle": ".drag-handle",
       "height": 72.0,
       "id": "Subtract 2",
+      "parentId": null,
       "position": {
         "x": 536.2446531579872,
         "y": 1292.4631069780155
@@ -705,17 +1629,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Multiply",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Multiply",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.multiply",
+          "type": "basic"
+        },
         "op_id": "Multiply",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Multiply"
       },
       "dragHandle": ".drag-handle",
       "height": 87.0,
       "id": "Multiply 2",
+      "parentId": null,
       "position": {
         "x": 497.3948006570892,
         "y": 1129.5684096959426
@@ -727,17 +1693,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Multiply",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Multiply",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.multiply",
+          "type": "basic"
+        },
         "op_id": "Multiply",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Multiply"
       },
       "dragHandle": ".drag-handle",
       "height": 80.0,
       "id": "Multiply 3",
+      "parentId": null,
       "position": {
         "x": -712.9698932556386,
         "y": 1303.706037895738
@@ -749,17 +1757,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": null,
+          "id": "Multiply",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Multiply",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.multiply",
+          "type": "basic"
+        },
         "op_id": "Multiply",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Multiply"
       },
       "dragHandle": ".drag-handle",
       "height": 56.0,
       "id": "Multiply 4",
+      "parentId": null,
       "position": {
         "x": 261.41745294698836,
         "y": 1294.9615360708428
@@ -771,17 +1821,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Concatenate",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Concatenate",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate",
+          "type": "basic"
+        },
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
       "height": 80.0,
       "id": "Concatenate 3",
+      "parentId": null,
       "position": {
         "x": -859.2521967481083,
         "y": 1138.312911520838
@@ -793,17 +1885,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Concatenate",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Concatenate",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate",
+          "type": "basic"
+        },
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
       "height": 77.0,
       "id": "Concatenate 4",
+      "parentId": null,
       "position": {
         "x": -685.4948547403684,
         "y": 983.3708919334857
@@ -815,17 +1949,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Concatenate",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Concatenate",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate",
+          "type": "basic"
+        },
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
       "height": 68.0,
       "id": "Concatenate 6",
+      "parentId": null,
       "position": {
         "x": 124.67811806198557,
         "y": 1146.5095844772138
@@ -837,17 +2013,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Concatenate",
+          "inputs": [
+            {
+              "name": "a",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "b",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Concatenate",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.concatenate",
+          "type": "basic"
+        },
         "op_id": "Concatenate",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Concatenate"
       },
       "dragHandle": ".drag-handle",
       "height": 62.0,
       "id": "Concatenate 1",
+      "parentId": null,
       "position": {
         "x": -202.78197200983328,
         "y": 778.2717262565789
@@ -859,17 +2077,59 @@
       "data": {
         "collapsed": true,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Binary cross-entropy with logits loss",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            },
+            {
+              "name": "y",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Binary cross-entropy with logits loss",
+          "outputs": [
+            {
+              "name": "loss",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.binary_cross_entropy_loss",
+          "type": "basic"
+        },
         "op_id": "Binary cross-entropy with logits loss",
+        "output_metadata": null,
         "params": {},
         "status": "done",
+        "telemetry": null,
         "title": "Binary cross-entropy with logits loss"
       },
       "dragHandle": ".drag-handle",
       "height": 111.0,
       "id": "Binary cross-entropy with logits loss 1",
+      "parentId": null,
       "position": {
         "x": 1136.1716553901779,
         "y": -987.992928584029
@@ -882,20 +2142,63 @@
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "gray",
+          "doc": null,
+          "icon": "target",
+          "id": "Output",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "name": "Output",
+          "outputs": [
+            {
+              "name": "x",
+              "position": "top",
+              "type": {
+                "type": "tensor"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": null,
+              "name": "name",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "placeholder_function_name": true,
+          "python_function_name": "lynxkite_core.ops.output",
+          "type": "basic"
+        },
         "op_id": "Output",
+        "output_metadata": null,
         "params": {
           "name": "logit",
           "type": "float"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Output"
       },
       "dragHandle": ".drag-handle",
       "height": 232.0,
       "id": "Output 1",
+      "parentId": null,
       "position": {
         "x": 708.7139125764863,
         "y": -797.2888516416006
@@ -906,20 +2209,64 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Dropout",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Dropout",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 0.0,
+              "name": "p",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.dropout",
+          "type": "basic"
+        },
         "op_id": "Dropout",
+        "output_metadata": null,
         "params": {
           "p": "0.1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Dropout"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "Dropout 2",
+      "parentId": null,
       "position": {
         "x": 515.8064955825809,
         "y": -128.01648226762904
@@ -930,19 +2277,63 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "stack",
+          "id": "Linear",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Linear",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 1024,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.linear",
+          "type": "basic"
+        },
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "128"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "height": 200.0,
       "id": "Linear 1",
+      "parentId": null,
       "position": {
         "x": 198.60097102595543,
         "y": 447.9539831894246
@@ -952,19 +2343,74 @@
     },
     {
       "data": {
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Activation",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ELU",
+                  "GELU",
+                  "Leaky ReLU",
+                  "Mish",
+                  "PReLU",
+                  "ReLU",
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.activation",
+          "type": "basic"
+        },
         "op_id": "Activation",
+        "output_metadata": null,
         "params": {
           "type": "ReLU"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Activation"
       },
       "height": 200.0,
       "id": "Activation 1",
+      "parentId": null,
       "position": {
         "x": 200.219201683363,
         "y": 172.85477143013136
@@ -975,19 +2421,63 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Dropout",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Dropout",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 0.0,
+              "name": "p",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.dropout",
+          "type": "basic"
+        },
         "op_id": "Dropout",
+        "output_metadata": null,
         "params": {
           "p": "0.1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Dropout"
       },
       "height": 200.0,
       "id": "Dropout 1",
+      "parentId": null,
       "position": {
         "x": 208.31035497040108,
         "y": -129.75436150509114
@@ -998,19 +2488,63 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "blue",
+          "doc": null,
+          "icon": "stack",
+          "id": "Linear",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Linear",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 1024,
+              "name": "output_dim",
+              "type": {
+                "type": "<class 'int'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.linear",
+          "type": "basic"
+        },
         "op_id": "Linear",
+        "output_metadata": null,
         "params": {
           "output_dim": "256"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Linear"
       },
       "height": 200.0,
       "id": "Linear 2",
+      "parentId": null,
       "position": {
         "x": -194.62907872409306,
         "y": 451.1904445042398
@@ -1020,19 +2554,74 @@
     },
     {
       "data": {
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Activation",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Activation",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": "ReLU",
+              "name": "type",
+              "type": {
+                "enum": [
+                  "ELU",
+                  "GELU",
+                  "Leaky ReLU",
+                  "Mish",
+                  "PReLU",
+                  "ReLU",
+                  "Sigmoid",
+                  "SiLU",
+                  "Softplus",
+                  "Tanh"
+                ]
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.activation",
+          "type": "basic"
+        },
         "op_id": "Activation",
+        "output_metadata": null,
         "params": {
           "type": "ReLU"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Activation"
       },
       "height": 200.0,
       "id": "Activation 2",
+      "parentId": null,
       "position": {
         "x": -191.39261740927785,
         "y": 143.7266195967944
@@ -1043,19 +2632,63 @@
     {
       "data": {
         "__execution_delay": 0.0,
+        "collapsed": null,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": null,
-        "meta": null,
+        "message": null,
+        "meta": {
+          "categories": [],
+          "color": "orange",
+          "doc": null,
+          "icon": "stack",
+          "id": "Dropout",
+          "inputs": [
+            {
+              "name": "x",
+              "position": "bottom",
+              "type": {
+                "type": "<class 'inspect._empty'>"
+              }
+            }
+          ],
+          "name": "Dropout",
+          "outputs": [
+            {
+              "name": "output",
+              "position": "top",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
+          "params": [
+            {
+              "default": 0.0,
+              "name": "p",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.dropout",
+          "type": "basic"
+        },
         "op_id": "Dropout",
+        "output_metadata": null,
         "params": {
           "p": "0.1"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Dropout"
       },
       "height": 200.0,
       "id": "Dropout 3",
+      "parentId": null,
       "position": {
         "x": -189.77438675187022,
         "y": -139.46374544953676
@@ -1064,5 +2697,5 @@
       "width": 200.0
     }
   ],
-  "paused": false
+  "paused": true
 }

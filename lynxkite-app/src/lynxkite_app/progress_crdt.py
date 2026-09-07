@@ -12,6 +12,8 @@ from typing import Any
 import fastapi
 import pycrdt
 import pycrdt.websocket
+import uvicorn.protocols.utils
+from websockets.exceptions import ConnectionClosedOK
 from lynxkite_core import workspace
 from lynxkite_core.workspace_progress import compute_workspace_progress, workspace_display_name
 
@@ -22,10 +24,13 @@ _progress_server: ProgressWebsocketServer | None = None
 
 
 def ws_exception_handler(exception, log):
-    for ex in (
-        exception.exceptions if isinstance(exception, builtins.ExceptionGroup) else [exception]
+    if isinstance(exception, builtins.BaseExceptionGroup):
+        for ex in exception.exceptions:
+            ws_exception_handler(ex, log)
+    elif not isinstance(
+        exception, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)
     ):
-        log.exception(ex)
+        log.exception(exception)
     return True
 
 
@@ -52,6 +57,10 @@ def get_progress_server() -> ProgressWebsocketServer | None:
 
 def reset_run_timer(room_name: str) -> None:
     _run_started_at[room_name] = time.monotonic()
+
+
+def mark_run_finished(room_name: str) -> None:
+    _run_started_at.pop(room_name, None)
 
 
 def _elapsed_seconds(room_name: str) -> float | None:
@@ -103,6 +112,16 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
                 elapsed_seconds=_elapsed_seconds(room_name),
                 gpus=gpus,
             )
+            if room_name not in _run_started_at and payload["status"] not in (
+                "idle",
+                "done",
+                "failed",
+            ):
+                failed = payload.get("boxes_failed")
+                payload["status"] = "failed" if failed else "done"
+                payload["eta_seconds"] = 0.0
+                if not failed and payload.get("boxes_total"):
+                    payload["progress_fraction"] = 1.0
             entries_by_room[room_name] = json.dumps(payload)
         except Exception as e:
             print(f"Error updating progress for workspace {room_name}: {e}")

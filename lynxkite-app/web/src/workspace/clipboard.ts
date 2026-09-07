@@ -93,7 +93,7 @@ export async function pasteSelection(
       anchor && Number.isFinite(copiedCenter.x) && Number.isFinite(copiedCenter.y)
         ? { x: anchor.x - copiedCenter.x, y: anchor.y - copiedCenter.y }
         : { x: 20, y: 20 };
-    const usedIds = new Set((crdt?.ws?.nodes || []).map((node: any) => node.id));
+    const usedIds = new Set((crdt?.feNodes || []).map((node: any) => node.id));
     const findFreeIdInBatch = (prefix: string) => {
       let i = 1;
       let id = `${prefix} ${i}`;

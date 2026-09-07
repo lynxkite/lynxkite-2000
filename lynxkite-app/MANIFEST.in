@@ -1,2 +1,0 @@
-graft web
-prune web/node_modules
