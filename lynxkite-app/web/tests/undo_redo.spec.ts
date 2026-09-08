@@ -117,63 +117,10 @@ test("undo/redo grouping boxes", async () => {
 
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
-  const getNInput = () => workspace.getBox("Scale-free graph 1").getByLabel("n", { exact: true });
-  const getNValue = async () => {
-    if ((await workspace.getBox("Scale-free graph 1").count()) === 0) return null;
-    return await getNInput().inputValue();
-  };
-  const nInput = getNInput();
-  const initialValue = await nInput.inputValue();
-  const editedValue = initialValue === "10" ? "11" : "10";
-  await nInput.click();
-  await expect(nInput).toBeFocused();
-  await nInput.pressSequentially(editedValue);
-  await expect(nInput).toHaveValue(editedValue);
-  // Prefer native text-input undo when the input is focused.
-  for (let i = 0; i < 3 && (await getNValue()) === editedValue; i++) {
-    await getNInput().click();
-    await workspace.undo();
-  }
-
-  // If app-level undo intercepted Cmd/Ctrl+Z, recover box state and continue.
-  if ((await getNValue()) === null) {
-    await workspace.redo();
-    await expect(workspace.getBox("Scale-free graph 1")).toBeVisible();
-  }
-
-  if ((await getNValue()) === editedValue) {
-    await workspace.undo();
-    if ((await getNValue()) === null) {
-      await workspace.redo();
-      await expect(workspace.getBox("Scale-free graph 1")).toBeVisible();
-    }
-  }
-
-  const valueAfterUndo = await getNValue();
-  if (valueAfterUndo === editedValue) {
-    // If native and app-level undo both did not alter the focused input value,
-    // force one more native undo with explicit focus to avoid CI timing flakes.
-    await getNInput().click();
-    await workspace.undo();
-  }
-  const valueAfterFinalUndo = await getNValue();
-  if (valueAfterFinalUndo !== editedValue) {
-    await expect(getNInput()).toHaveValue(initialValue);
-  }
-
-  // Prefer native redo for focused text input first.
-  for (const shortcut of TEXT_INPUT_REDO_SHORTCUTS) {
-    if ((await getNValue()) === editedValue) break;
-    await getNInput().click();
-    await getNInput().press(shortcut);
-  }
-
-  // Fallback to app-level redo if native redo did not restore the edit.
-  for (let i = 0; i < 3 && (await getNValue()) !== editedValue; i++) {
-    await getNInput().click();
-    await workspace.redo();
-  }
-
-  await expect(getNInput()).toHaveValue(editedValue);
-  expect(initialValue).not.toBe(editedValue);
+  const graphBox = workspace.getBox("Scale-free graph 1");
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
+  await workspace.undo();
+  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("");
+  await workspace.redo();
+  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("10");
 });

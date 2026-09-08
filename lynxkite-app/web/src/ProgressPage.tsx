@@ -16,7 +16,6 @@ import UserFilled from "~icons/tabler/user-filled";
 import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
 import {
-  attachWorkspaceEtaAnchor,
   formatWorkspaceProgressSuffix,
   getWorkspaceProgress,
   parseProgressWorkspace,
@@ -108,16 +107,11 @@ export default function ProgressPage() {
 
     function syncWorkspaces() {
       setData((prev) => {
-        const prevByRoom = new Map(
-          (prev.workspaces || []).map((ws) => [ws.room_name || ws.name, ws]),
-        );
-        const nowMs = Date.now();
         const workspaces: any[] = [];
-        for (const [roomName, value] of (wsMap as Y.Map<unknown>).entries()) {
+        for (const [, value] of (wsMap as Y.Map<unknown>).entries()) {
           const ws = parseProgressWorkspace(value);
           if (ws && typeof ws === "object") {
-            const merged = attachWorkspaceEtaAnchor(ws, prevByRoom.get(roomName), nowMs);
-            workspaces.push({ ...merged, user: merged.user || "—" });
+            workspaces.push({ ...ws, user: ws.user || "—" });
           }
         }
         return { ...prev, workspaces };
@@ -195,7 +189,6 @@ export default function ProgressPage() {
 
       {currentTab === "workspaces" && (
         <Workspaces
-          nowMs={Date.now()}
           workspaces={data.workspaces}
           onPause={(roomName, paused) => pauseWorkspace(roomName, paused)}
           onStop={(roomName) => stopWorkspace(roomName)}
@@ -210,7 +203,6 @@ export default function ProgressPage() {
 }
 
 function Workspaces(props: {
-  nowMs: number;
   workspaces: any[];
   onPause: (roomName: string, paused: boolean) => void;
   onStop: (roomName: string) => void;
