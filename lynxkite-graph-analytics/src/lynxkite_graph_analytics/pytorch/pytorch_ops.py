@@ -1,11 +1,16 @@
 """Boxes for defining PyTorch models."""
 
 import enum
+import numpy as np
+
+from torch_geometric.nn import GCNConv
+
 from lynxkite_core import ops
 from lynxkite_core.ops import Parameter as P
 import torch
 from .pytorch_core import op, reg, ENV, input_op, InputContext
 from .. import core
+import torch_geometric.nn as pyg_nn
 
 
 class ActivationTypes(enum.StrEnum):
@@ -48,6 +53,19 @@ class TorchTypes(enum.StrEnum):
         return getattr(torch, self.value)
 
 
+def _series_to_tensor(col, dtype):
+    values = col.to_list()
+    if not values:
+        return torch.empty((0,), dtype=dtype)
+    first = values[0]
+    if isinstance(first, (np.ndarray, list, tuple)):
+        arr = np.asarray(values)
+        if arr.dtype == object:
+            arr = np.stack([np.asarray(v) for v in values])
+        return torch.as_tensor(arr, dtype=dtype)
+    return torch.as_tensor(col.to_numpy(copy=False), dtype=dtype)
+
+
 @input_op("tensor")
 def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor.
@@ -72,7 +90,7 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
         df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
         col = batch[column_name]
-        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
+        t = _series_to_tensor(col, type.to_dtype())
         return t
 
     return from_bundle
@@ -80,7 +98,7 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
 
 @input_op("graph edges")
 def graph_edges_input():
-    """The edges of a graph as input. A 2xE tensor of src/dst indices. Not batched."""
+    """The edges of a graph as input. A 2xE tensor of src/dst indices. Filtered for sequential batching."""
 
     def from_bundle(
         b: core.Bundle,
@@ -90,15 +108,38 @@ def graph_edges_input():
         source_column_name: core.ColumnNameByTableName = "",
         target_column_name: core.ColumnNameByTableName = "",
     ):
-        """
-        Args:
-            table_name: The table with the edges.
-            source_column_name: The column with source node indices.
-            target_column_name: The column with target node indices.
-        """
-        src = b.dfs[table_name][source_column_name]
-        dst = b.dfs[table_name][target_column_name]
-        return torch.tensor([src, dst], dtype=torch.long)
+        src = torch.as_tensor(
+            b.dfs[table_name][source_column_name].to_numpy(copy=False),
+            dtype=torch.long,
+        )
+        dst = torch.as_tensor(
+            b.dfs[table_name][target_column_name].to_numpy(copy=False),
+            dtype=torch.long,
+        )
+        edge_index = torch.stack([src, dst], dim=0)
+
+        # 1. Determine the global indices of the nodes in the current batch
+        batch_size = ctx.batch_size
+        start_node = ctx.batch_index * batch_size
+
+        # 2. Clamp the end_node to the actual dataset size to prevent out-of-bounds on final batch
+        max_nodes = ctx.total_samples if ctx.total_samples is not None else float("inf")
+        end_node = min(start_node + batch_size, max_nodes)
+
+        # 3. Filter edges to only include those where BOTH source and target are in the batch
+        mask = (
+            (edge_index[0] >= start_node)
+            & (edge_index[0] < end_node)
+            & (edge_index[1] >= start_node)
+            & (edge_index[1] < end_node)
+        )
+
+        batch_edge_index = edge_index[:, mask]
+
+        # 4. Remap global node IDs to local batch IDs
+        batch_edge_index = batch_edge_index - start_node
+
+        return batch_edge_index
 
     return from_bundle
 
@@ -127,7 +168,7 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
         df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
         col = batch[column_name]
-        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
+        t = _series_to_tensor(col, type.to_dtype())
         return t
 
     return from_bundle
@@ -242,15 +283,11 @@ def dropout(x, *, p=0.0):
 
 @op("Linear", weights=True)
 def linear(x, *, output_dim=1024):
-    import torch_geometric.nn as pyg_nn
-
     return pyg_nn.Linear(-1, output_dim)
 
 
 @op("Mean pool")
 def mean_pool(x):
-    import torch_geometric.nn as pyg_nn
-
     return pyg_nn.global_mean_pool
 
 
@@ -261,12 +298,27 @@ def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
 
 @op("MSE loss")
 def mse_loss(x, y):
-    return torch.nn.functional.mse_loss
+    def _loss(x, y):
+        # Common regression case: predictions [N, 1] vs labels [N].
+        if x.shape != y.shape:
+            if x.ndim == y.ndim + 1 and x.shape[-1] == 1 and x.shape[:-1] == y.shape:
+                y = y.unsqueeze(-1)
+            elif y.ndim == x.ndim + 1 and y.shape[-1] == 1 and y.shape[:-1] == x.shape:
+                x = x.unsqueeze(-1)
+        return torch.nn.functional.mse_loss(x, y)
+
+    return _loss
 
 
 @op("Binary cross-entropy with logits loss", outputs=["loss"])
 def binary_cross_entropy_loss(x, y):
     return torch.nn.functional.binary_cross_entropy_with_logits
+
+
+@op("Graph conv")
+def graph_conv(x, edges, *, type="GCNConv", output_dim=16):
+    conv = GCNConv(-1, output_dim)
+    return conv
 
 
 @op("Constant vector")
@@ -321,7 +373,7 @@ reg(
     params=[ops.Parameter.basic("n", 1, int)],
 )
 reg(
-    "Graph conv",
+    "Graph conv dummy",
     color="blue",
     inputs=["x", "edges"],
     outputs=["x"],

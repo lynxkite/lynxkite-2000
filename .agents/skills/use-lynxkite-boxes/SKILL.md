@@ -20,8 +20,8 @@ usage: lynxkite_core.ops.cross_entropy_loss(x=<x_variable>, y=<y_variable>)
 **Drop first n:**
 usage: lynxkite_core.ops.drop_first_n(n=<n_value>, x=<x_variable>)
 
-**Graph conv:**
-usage: lynxkite_core.ops.graph_conv(type=<type_value>, x=<x_variable>, edges=<edges_variable>)
+**Graph conv dummy:**
+usage: lynxkite_core.ops.graph_conv_dummy(type=<type_value>, x=<x_variable>, edges=<edges_variable>)
 
 **Heterogeneous graph conv:**
 usage: lynxkite_core.ops.heterogeneous_graph_conv(node_embeddings_order=<node_embeddings_order_value>, edge_modules_order=<edge_modules_order_value>, node_embeddings=<node_embeddings_variable>, edge_modules=<edge_modules_variable>)
@@ -374,6 +374,10 @@ for detailed information, see references/embedding.md
 
 **Exp:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.exp(input=<input_variable>)
+
+**Graph conv:**
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_conv(type=<type_value>, output_dim=<output_dim_value>, x=<x_variable>, edges=<edges_variable>)
+for detailed information, see references/graph_conv.md
 
 **Input: graph edges:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_edges_input(_input_name=<_input_name_value>)
