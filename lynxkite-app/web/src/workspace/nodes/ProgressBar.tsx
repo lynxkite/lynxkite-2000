@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type TelemetryRow = { key: string; telemetry: any };
+
 function formatTime(secondsStr: number | string | undefined | null): string {
   const seconds = Number(secondsStr);
   if (!seconds || !Number.isFinite(seconds) || seconds < 0) return "00:00";
@@ -11,6 +13,54 @@ function formatTime(secondsStr: number | string | undefined | null): string {
 }
 
 export function NodeProgress({
+  telemetry,
+  color,
+  status,
+}: {
+  telemetry: any;
+  color: string;
+  status?: string;
+}) {
+  const rows = useMemo<TelemetryRow[]>(() => {
+    if (!telemetry) {
+      return [];
+    }
+    const isMap = telemetry instanceof Map || typeof telemetry.entries === "function";
+    const value = isMap
+      ? Object.fromEntries(telemetry.entries ? telemetry.entries() : telemetry)
+      : telemetry;
+    const bars = value?.bars;
+    const barsIsMap = bars instanceof Map || typeof bars?.entries === "function";
+    if (bars && (barsIsMap || typeof bars === "object")) {
+      const entries: [string, any][] = barsIsMap
+        ? (Array.from(bars.entries ? bars.entries() : bars) as [string, any][])
+        : Object.entries(bars);
+      return entries
+        .filter(([, row]) => row && typeof row === "object")
+        .sort(([left], [right]) => {
+          const leftNumber = Number(left);
+          const rightNumber = Number(right);
+          return Number.isNaN(leftNumber) || Number.isNaN(rightNumber)
+            ? 0
+            : leftNumber - rightNumber;
+        })
+        .map(([key, row]) => ({ key: String(key), telemetry: row }));
+    }
+    return Object.keys(value).length > 0 ? [{ key: "default", telemetry: value }] : [];
+  }, [telemetry]);
+
+  if (rows.length === 0) return null;
+
+  return (
+    <>
+      {rows.map(({ key, telemetry: rowTelemetry }) => (
+        <ProgressBarRow key={key} telemetry={rowTelemetry} color={color} status={status} />
+      ))}
+    </>
+  );
+}
+
+function ProgressBarRow({
   telemetry,
   color,
   status,
@@ -83,11 +133,7 @@ export function NodeProgress({
   }, [n, total, rate, elapsed, status]);
 
   useEffect(() => {
-    const shouldTick =
-      status === "active" &&
-      (isIndeterminate ||
-        (hasTotal && typeof rate === "number" && Number.isFinite(rate) && rate > 0 && n < total));
-    if (!shouldTick) {
+    if (status !== "active") {
       return;
     }
     const interval = setInterval(() => setTick((x) => x + 1), 1000);

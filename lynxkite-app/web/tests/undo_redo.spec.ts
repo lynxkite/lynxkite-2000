@@ -4,10 +4,6 @@ import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
 let workspaceName: string;
-const TEXT_INPUT_REDO_SHORTCUTS =
-  process.platform === "darwin"
-    ? ["Meta+Shift+z", "Meta+y", "Meta+Shift+z"]
-    : ["Control+y", "Control+Shift+z", "Control+y"];
 
 test.beforeEach(async ({ browser }, testInfo) => {
   const slug = testInfo.title
