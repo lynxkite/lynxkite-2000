@@ -196,11 +196,29 @@ class OpContext:
         if self.node is not None and self.loop is not None:
             self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
 
-    def update_telemetry(self, telemetry: dict[str, typing.Any]):
-        """Updates the telemetry data for the current node."""
-        self.telemetry.update(telemetry)
+    def update_telemetry(self, telemetry: dict[str, typing.Any], *, row: str | int | None = None):
+        """Updates telemetry for the current node.
+
+        Without ``row``, this keeps the single-row telemetry format. When a row is
+        provided, telemetry is stored under ``bars[row]`` so an operation can expose any number
+        of independent progress bars. Progress bars are sorted by position first so
+        row=1 appears above row=2. When using key-based rows, the order is determined by the insertion order.
+        """
+        if row is None:
+            self.telemetry.update(telemetry)
+        else:
+            bars = self.telemetry.setdefault("bars", {})
+            if not isinstance(bars, dict):
+                raise TypeError("telemetry['bars'] must be a dictionary")
+            row_key = str(row)
+            bars[row_key] = {**bars.get(row_key, {}), **telemetry}
+
+        telemetry_snapshot = {
+            key: dict(value) if isinstance(value, dict) else value
+            for key, value in self.telemetry.items()
+        }
         if self.node is not None and self.loop is not None:
-            self.loop.call_soon_threadsafe(self.node.publish_telemetry, telemetry)
+            self.loop.call_soon_threadsafe(self.node.publish_telemetry, telemetry_snapshot)
 
     def __getattr__(self, name: str):
         if self.op is not None:

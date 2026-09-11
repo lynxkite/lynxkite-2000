@@ -59,7 +59,7 @@ def capture_tqdm(op_ctx: "OpContext"):
                 text = msg if msg is not None else str(tqdm_self)
                 if text:
                     if hasattr(tqdm_self, "format_dict"):
-                        op_ctx.update_telemetry(tqdm_self.format_dict)
+                        op_ctx.update_telemetry(tqdm_self.format_dict, row=tqdm_self.pos)
 
             setattr(tqdm_cls, "display", patched_display)
             patched_methods.append((tqdm_cls, "display", original_display))
@@ -70,7 +70,7 @@ def capture_tqdm(op_ctx: "OpContext"):
                 def patched_close(tqdm_self, *args, _orig=original_close, **kwargs):
                     if not getattr(tqdm_self, "disable", False):
                         if hasattr(tqdm_self, "format_dict"):
-                            op_ctx.update_telemetry(tqdm_self.format_dict)
+                            op_ctx.update_telemetry(tqdm_self.format_dict, row=tqdm_self.pos)
                     return _orig(tqdm_self, *args, **kwargs)
 
                 setattr(tqdm_cls, "close", patched_close)
@@ -101,7 +101,7 @@ class ProgressReporter:
                 return
             text = msg if msg is not None else str(self.pbar)
             if text:
-                self.op_ctx.update_telemetry(self.pbar.format_dict)
+                self.op_ctx.update_telemetry(self.pbar.format_dict, row=self.pbar.pos)
 
         self.pbar.display = patched_display  # type: ignore[assignment]
 
@@ -117,7 +117,7 @@ class ProgressReporter:
         def patched_close(*args, **kwargs):
             if not getattr(self.pbar, "disable", False):
                 if hasattr(self.pbar, "format_dict"):
-                    self.op_ctx.update_telemetry(self.pbar.format_dict)
+                    self.op_ctx.update_telemetry(self.pbar.format_dict, row=self.pbar.pos)
             return self._original_close(*args, **kwargs)  # type: ignore[misc]
 
         self.pbar.close = patched_close  # type: ignore[assignment]

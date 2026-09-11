@@ -106,14 +106,16 @@ export default function ProgressPage() {
     const gpuServicesText = doc.getText("gpu_services");
 
     function syncWorkspaces() {
-      const workspaces: any[] = [];
-      for (const value of (wsMap as Y.Map<unknown>).values()) {
-        const ws = parseProgressWorkspace(value);
-        if (ws && typeof ws === "object") {
-          workspaces.push({ ...ws, user: ws.user || "—" });
+      setData((prev) => {
+        const workspaces: any[] = [];
+        for (const [, value] of (wsMap as Y.Map<unknown>).entries()) {
+          const ws = parseProgressWorkspace(value);
+          if (ws && typeof ws === "object") {
+            workspaces.push({ ...ws, user: ws.user || "—" });
+          }
         }
-      }
-      setData((prev) => ({ ...prev, workspaces }));
+        return { ...prev, workspaces };
+      });
     }
 
     function syncGpuServices() {

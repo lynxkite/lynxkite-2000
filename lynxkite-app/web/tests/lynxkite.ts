@@ -174,6 +174,14 @@ export class Workspace {
     await this.page.keyboard.press("Control+x");
   }
 
+  async undo() {
+    await this.page.keyboard.press("Control+z");
+  }
+
+  async redo() {
+    await this.page.keyboard.press("Control+y");
+  }
+
   async tryToConnectBoxes(sourceId: string, targetId: string) {
     const sourceHandle = this.getBoxHandle(sourceId, "right");
     const targetHandle = this.getBoxHandle(targetId, "left");
