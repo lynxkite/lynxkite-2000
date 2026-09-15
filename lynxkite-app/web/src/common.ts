@@ -11,6 +11,7 @@ export type GlobalConfig = {
   authentication_issuer: string | null;
   authentication_audience: string | null;
   enterprise_available: boolean;
+  read_only: boolean;
 };
 
 export type FolderPermissions = {
@@ -29,6 +30,7 @@ const STATIC_CONFIG: GlobalConfig = {
   authentication_issuer: null,
   authentication_audience: null,
   enterprise_available: false,
+  read_only: false,
 };
 
 type StaticWorkspaceConfig = {
@@ -150,15 +152,6 @@ function ensureAxiosInterceptors() {
     }
     return config;
   });
-  axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401) {
-        await triggerLogin();
-      }
-      return Promise.reject(error);
-    },
-  );
   axiosInterceptorsInstalled = true;
 }
 
@@ -170,15 +163,10 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-  const response = await fetch(input, {
+  return fetch(input, {
     ...init,
     headers,
   });
-  if (response.status === 401) {
-    await triggerLogin();
-    throw new Error("Unauthorized");
-  }
-  return response;
 }
 
 export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
@@ -274,7 +262,7 @@ export function useCategoryHierarchy() {
 
 export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
 
-/** Effective folder permissions. Auth off → full access. */
+/** Effective folder permissions. Auth off → full access unless read_only. */
 export function useFolderPermissions(path: string | undefined) {
   const config = getConfig();
   const authOff = !config.authentication_issuer;
@@ -286,7 +274,7 @@ export function useFolderPermissions(path: string | undefined) {
   });
   return {
     read: authOff ? true : (data?.read ?? false),
-    write: authOff ? true : (data?.write ?? false),
+    write: authOff ? !config.read_only : (data?.write ?? false),
     isLoading: authOff ? false : Boolean(key) && isLoading,
     error: authOff ? undefined : error,
   };
