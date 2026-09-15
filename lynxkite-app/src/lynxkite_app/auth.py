@@ -50,15 +50,16 @@ def is_auth_enabled() -> bool:
     return bool(issuer and audience)
 
 
+def is_read_only() -> bool:
+    return os.environ.get("LYNXKITE_READ_ONLY") == "1"
+
+
 async def get_current_user(request: Request) -> acl.User:
     if not is_auth_enabled():
         return {"sub": "user", "email": ""}
     credentials: HTTPAuthorizationCredentials | None = await security(request)
     if credentials is None:
-        raise HTTPException(
-            status_code=401,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return {}
     try:
         return get_provider().verify(credentials.credentials)
     except JWTError:
@@ -70,12 +71,16 @@ async def get_current_user(request: Request) -> acl.User:
 
 async def check_permission(request: Request, action: acl.Action, requested_path: str | None = None):
     user = await get_current_user(request)
-    if is_auth_enabled() and not acl.has_permission(user, action, requested_path):
+    if not is_auth_enabled():
+        if action == "write" and is_read_only():
+            raise HTTPException(status_code=403, detail="Forbidden")
+        return
+    if not acl.has_permission(user, action, requested_path):
         raise HTTPException(status_code=403, detail="Forbidden")
 
 
 async def effective_permissions(request: Request, path: str | None = None) -> dict[str, bool]:
     if not is_auth_enabled():
-        return {"read": True, "write": True}
+        return {"read": True, "write": not is_read_only()}
     user = await get_current_user(request)
     return acl.effective_permissions(user, path)
