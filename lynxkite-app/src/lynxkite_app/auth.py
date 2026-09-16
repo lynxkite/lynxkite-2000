@@ -12,14 +12,20 @@ from . import acl
 
 security = HTTPBearer(auto_error=False)
 issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")
-audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")
+audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")  # SPA / OIDC client id
+# Optional API Identifier (Keycloak often = client id). Leave unset for Auth0 SPA
+# so the UI sends the ID token instead of an opaque access token.
+api_audience = os.environ.get("LYNXKITE_AUTH_API_AUDIENCE") or None
 
 
 class OIDCProvider:
-    def __init__(self, issuer: str, audience: str):
-        self.issuer = issuer
+    def __init__(self, issuer: str, audience: str, api_audience: str | None):
         self.audience = audience
-        self.config = httpx.get(f"{issuer}/.well-known/openid-configuration").json()
+        self.api_audience = api_audience
+        # Strip trailing `/` so Auth0 issuers do not 404 on `//.well-known/...`.
+        discovery = f"{issuer.rstrip('/')}/.well-known/openid-configuration"
+        self.config = httpx.get(discovery).json()
+        self.issuer = self.config.get("issuer") or issuer
         self.jwks = httpx.get(self.config["jwks_uri"]).json()
 
     def verify(self, token: str) -> dict:
@@ -30,12 +36,12 @@ class OIDCProvider:
             algorithms=["RS256"],
             options={"verify_aud": False},
         )
-        # Depending on the provider, the audience may be in different fields.
+        accepted = {a for a in (self.audience, self.api_audience) if a}
         for field in ["aud", "azp"]:
             value = payload.get(field)
-            if value == self.audience:
+            if value in accepted:
                 return payload
-            if isinstance(value, list) and self.audience in value:
+            if isinstance(value, list) and accepted & set(value):
                 return payload
         raise JWTError("Invalid audience")
 
@@ -43,7 +49,7 @@ class OIDCProvider:
 @lru_cache
 def get_provider():
     assert issuer is not None and audience is not None, "Authentication is not configured"
-    return OIDCProvider(issuer, audience)
+    return OIDCProvider(issuer, audience, api_audience)
 
 
 def is_auth_enabled() -> bool:

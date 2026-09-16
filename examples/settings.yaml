@@ -1,0 +1,8 @@
+# Guest read via anonymous. Authenticated write via * (Auth0 allowlist gates login).
+# Unused while LYNXKITE_AUTH_* unset; with auth off use LYNXKITE_READ_ONLY=1.
+acl:
+  read:
+    - anonymous
+    - "*"
+  write:
+    - "*"
