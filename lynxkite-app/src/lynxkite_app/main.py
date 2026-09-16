@@ -86,6 +86,7 @@ def get_config() -> dict[str, bool | str | None]:
         "assistant_available": assistant_router is not None,
         "authentication_issuer": auth.issuer,
         "authentication_audience": auth.audience,
+        "authentication_api_audience": auth.api_audience,
         "enterprise_available": enterprise_backend is not None,
         "read_only": auth.is_read_only(),
     }

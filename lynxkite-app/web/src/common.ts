@@ -10,6 +10,7 @@ export type GlobalConfig = {
   assistant_available: boolean;
   authentication_issuer: string | null;
   authentication_audience: string | null;
+  authentication_api_audience: string | null;
   enterprise_available: boolean;
   read_only: boolean;
 };
@@ -29,6 +30,7 @@ const STATIC_CONFIG: GlobalConfig = {
   assistant_available: false,
   authentication_issuer: null,
   authentication_audience: null,
+  authentication_api_audience: null,
   enterprise_available: false,
   read_only: false,
 };
@@ -73,7 +75,11 @@ async function getAccessToken(): Promise<string | null> {
   if (!user || user.expired) {
     return null;
   }
-  return user.access_token;
+  // No API audience → Auth0 access_token is opaque; send id_token instead.
+  if (cachedConfig?.authentication_api_audience) {
+    return user.access_token;
+  }
+  return user.id_token || user.access_token;
 }
 
 /** Query params for y-websocket when auth is on. Empty when auth off. */
@@ -85,10 +91,11 @@ export async function getWebSocketParams(): Promise<Record<string, string>> {
 function getUserManager() {
   const issuer = cachedConfig?.authentication_issuer;
   const audience = cachedConfig?.authentication_audience;
+  const apiAudience = cachedConfig?.authentication_api_audience || null;
   if (!issuer || !audience) {
     return null;
   }
-  const key = `${issuer}|${audience}`;
+  const key = `${issuer}|${audience}|${apiAudience ?? ""}`;
   if (userManager && userManagerKey === key) {
     return userManager;
   }
@@ -98,6 +105,7 @@ function getUserManager() {
     redirect_uri: `${window.location.origin}/auth/callback`,
     response_type: "code",
     scope: "openid profile email",
+    extraQueryParams: apiAudience ? { audience: apiAudience } : undefined,
   });
   userManagerKey = key;
   return userManager;
