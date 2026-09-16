@@ -11,7 +11,7 @@ from pycrdt.websocket.asgi_server import ASGIWebsocket
 from pycrdt.websocket.websocket_server import WebsocketServer
 
 from . import acl
-from .auth import get_provider, is_auth_enabled, is_read_only
+from .auth import get_provider, is_auth_enabled
 
 
 def _token_from_scope(scope: dict[str, Any]) -> str | None:
@@ -24,7 +24,7 @@ def _token_from_scope(scope: dict[str, Any]) -> str | None:
 def authenticate_websocket(scope: dict[str, Any], room_path: str) -> bool:
     """Set scope['lynxkite_write']. Return True if the connection must be rejected."""
     if not is_auth_enabled():
-        scope["lynxkite_write"] = not is_read_only()
+        scope["lynxkite_write"] = True
         scope["lynxkite_user"] = {"sub": "user", "email": ""}
         return False
 

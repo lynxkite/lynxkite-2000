@@ -48,13 +48,6 @@ def test_permissions_me_auth_off():
     assert response.json() == {"read": True, "write": True}
 
 
-def test_read_only(monkeypatch):
-    monkeypatch.setenv("LYNXKITE_READ_ONLY", "1")
-    assert client.get("/api/permissions/me").json() == {"read": True, "write": False}
-    assert client.get("/api/config").json()["read_only"] is True
-    assert client.post("/api/dir/mkdir", json={"path": "ro-forbidden"}).status_code == 403
-
-
 def test_guest_is_anonymous(auth_on, guest_acl):
     assert client.get("/api/permissions?path=foo.lynxkite.json").json() == {
         "read": True,
@@ -74,13 +67,6 @@ def test_guest_is_anonymous(auth_on, guest_acl):
 
 
 def test_ws_guest(auth_on, guest_acl):
-    scope: dict = {}
-    assert authenticate_websocket(scope, "x.lynxkite.json") is False
-    assert scope["lynxkite_write"] is False
-
-
-def test_ws_read_only(monkeypatch):
-    monkeypatch.setenv("LYNXKITE_READ_ONLY", "1")
     scope: dict = {}
     assert authenticate_websocket(scope, "x.lynxkite.json") is False
     assert scope["lynxkite_write"] is False

@@ -1,4 +1,8 @@
-"""Folder-level ACL for LynxKite authorization, stored in settings.yaml."""
+"""Folder-level ACL for LynxKite authorization, stored in settings.yaml.
+
+Used when auth is on. Requests with no token are treated as anonymous. A * matches any logged in user.
+For guest-read / staff-write, use read: [anonymous, *] and write: [*].
+"""
 
 from __future__ import annotations
 
