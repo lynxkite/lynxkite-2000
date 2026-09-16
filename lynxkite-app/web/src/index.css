@@ -250,10 +250,9 @@ svg {
     }
   }
 
-  .user-menu-actions {
-    display: flex;
-    gap: 4px;
-    align-items: center;
+  .user-menu .dropdown-content {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
 
   .user-menu-button {
@@ -1096,6 +1095,7 @@ svg {
 }
 
 .management-page {
+  position: relative;
   padding-top: 50px;
 
   .management-page-content {
@@ -1146,10 +1146,14 @@ svg {
     font-weight: 500;
   }
 
-  .user-menu-button {
+  .user-menu {
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 50;
+  }
+
+  .user-menu-button {
     color: rgba(255, 255, 255, 0.8);
     background: rgba(255, 255, 255, 0.08);
 
