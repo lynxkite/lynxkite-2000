@@ -376,7 +376,7 @@ for detailed information, see references/embedding.md
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.exp(input=<input_variable>)
 
 **Graph conv:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_conv(type=<type_value>, output_dim=<output_dim_value>, x=<x_variable>, edges=<edges_variable>)
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_conv(convolution_type=<convolution_type_value>, output_dim=<output_dim_value>, x=<x_variable>, edges=<edges_variable>)
 for detailed information, see references/graph_conv.md
 
 **Input: graph edges:**

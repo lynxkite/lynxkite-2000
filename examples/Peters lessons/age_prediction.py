@@ -204,49 +204,13 @@ def train_gnn_classifier(
     :param random_seed: Random seed for reproducibility.
     """
     b = b.copy()
-    if iterations <= 0:
-        raise ValueError("iterations must be a positive integer.")
-    if learning_rate <= 0:
-        raise ValueError("learning_rate must be positive.")
-    if hidden_size <= 0:
-        raise ValueError("hidden_size must be a positive integer.")
-    if num_conv_layers <= 0:
-        raise ValueError("num_conv_layers must be a positive integer.")
-
-    if train_table_name not in b.dfs:
-        raise ValueError(f"Training table '{train_table_name}' not found.")
-    if test_table_name not in b.dfs:
-        raise ValueError(f"Test table '{test_table_name}' not found.")
-    if table_name not in b.dfs:
-        raise ValueError(f"Node table '{table_name}' not found.")
 
     train_df = b.dfs[train_table_name].copy()
     test_df = b.dfs[test_table_name].copy()
-
-    rel = next((r for r in b.relations if r.name == relation_name), None)
-    if rel is None:
-        raise ValueError(f"Relation '{relation_name}' not found in bundle relations.")
-    if rel.df not in b.dfs:
-        raise ValueError(f"Relation '{relation_name}' refers to missing edge table '{rel.df}'.")
-
+    rel = next((r for r in b.relations if r.name == relation_name))
     node_df = b.dfs[table_name].copy()
     node_key = rel.source_key
-    if node_key not in node_df.columns:
-        raise ValueError(f"Node key '{node_key}' is missing from table '{table_name}'.")
-    if feature_column not in node_df.columns:
-        raise ValueError(f"Feature column '{feature_column}' not found in table '{table_name}'.")
-    if node_key not in train_df.columns or label_column not in train_df.columns:
-        raise ValueError(
-            f"Train table '{train_table_name}' must contain columns '{node_key}' and '{label_column}'."
-        )
-    if node_key not in test_df.columns:
-        raise ValueError(f"Test table '{test_table_name}' must contain column '{node_key}'.")
-
-    edge_df = b.dfs[rel.df]
-    if rel.source_column not in edge_df.columns or rel.target_column not in edge_df.columns:
-        raise ValueError(
-            f"Edge columns '{rel.source_column}'/'{rel.target_column}' are missing from '{rel.df}'."
-        )
+    edge_df = b.dfs[rel.df].copy()
 
     node_ids = node_df[node_key].to_numpy()
     node_to_idx = {node_id: idx for idx, node_id in enumerate(node_ids)}
@@ -254,8 +218,6 @@ def train_gnn_classifier(
     src_mapped = edge_df[rel.source_column].map(node_to_idx)
     tgt_mapped = edge_df[rel.target_column].map(node_to_idx)
     valid_edges = src_mapped.notna() & tgt_mapped.notna()
-    if not valid_edges.any():
-        raise ValueError("No usable edges remain after filtering to nodes in the selected table.")
 
     source_indices = src_mapped[valid_edges].astype(int).to_numpy()
     target_indices = tgt_mapped[valid_edges].astype(int).to_numpy()
@@ -272,8 +234,6 @@ def train_gnn_classifier(
 
     train_idx = train_df[node_key].map(node_to_idx)
     valid_train = train_idx.notna() & train_df[label_column].notna()
-    if not valid_train.any():
-        raise ValueError("No valid labeled training nodes were found in the full graph.")
 
     train_idx = train_idx[valid_train].astype(int).to_numpy()
     y_train_raw = np.asarray(train_df.loc[valid_train, label_column].to_numpy(), dtype=float)
@@ -363,7 +323,6 @@ def numeric_id(
     target_df = b.dfs[rel.target_table].copy()
     edge_df = b.dfs[rel.name].copy()
 
-    # 1. Build a single global ID map from the master node table
     global_source_map = {old_id: idx for idx, old_id in enumerate(source_df[rel.source_key])}
     source_df[rel.source_key] = range(len(source_df))
 
@@ -374,58 +333,19 @@ def numeric_id(
         global_target_map = {old_id: idx for idx, old_id in enumerate(target_df[rel.target_key])}
         target_df[rel.target_key] = range(len(target_df))
 
-    # 2. Update edge table indices using the global map
     edge_df[rel.source_column] = edge_df[rel.source_column].map(global_source_map)
     edge_df[rel.target_column] = edge_df[rel.target_column].map(global_target_map)
 
-    # 3. Write back primary tables
     b.dfs[rel.source_table] = source_df
     b.dfs[rel.target_table] = target_df
     b.dfs[rel.name] = edge_df
 
-    # 4. Update any split tables (e.g. nodes_train, nodes_test) to use global indices
     for df_name, df in b.dfs.items():
         if df_name in (rel.source_table, rel.target_table, rel.name):
             continue
 
-        # Remap source key if column exists in the split dataframe
         if rel.source_key in df.columns:
             updated_df = df.copy()
             updated_df[rel.source_key] = updated_df[rel.source_key].map(global_source_map)
             b.dfs[df_name] = updated_df
-    return b
-
-
-@op("Filter edges", color="green", icon="table-filled")
-def filter_edges(
-    b: core.Bundle,
-    *,
-    table_name: core.TableName,
-    relation_name: core.TableName,
-):
-    """Filters edges to only include nodes in table_name and remaps edge indices to zero-based row positions."""
-    b = b.copy()
-    b.dfs = b.dfs.copy()
-
-    rel = next((r for r in b.relations if r.name == relation_name))
-
-    # Use table_name passed from UI instead of rel.source_table
-    node_df = b.dfs[table_name].copy()
-    edge_df = b.dfs[rel.df].copy()
-
-    # Map original node IDs to their continuous row index [0, len(node_df)-1]
-    node_key = rel.source_key
-    id_to_idx = {node_id: idx for idx, node_id in enumerate(node_df[node_key])}
-
-    # Keep only edges where both endpoints exist in the target node set
-    valid_edges = edge_df[rel.source_column].isin(id_to_idx) & edge_df[rel.target_column].isin(
-        id_to_idx
-    )
-    filtered_edges = edge_df[valid_edges].copy()
-
-    # Remap edge source and target columns to 0-based positional indices
-    filtered_edges[rel.source_column] = filtered_edges[rel.source_column].map(id_to_idx)
-    filtered_edges[rel.target_column] = filtered_edges[rel.target_column].map(id_to_idx)
-
-    b.dfs[table_name + "_filtered_" + rel.df] = filtered_edges
     return b

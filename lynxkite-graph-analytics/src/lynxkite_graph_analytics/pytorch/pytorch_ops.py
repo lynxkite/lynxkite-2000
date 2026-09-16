@@ -315,9 +315,20 @@ def binary_cross_entropy_loss(x, y):
     return torch.nn.functional.binary_cross_entropy_with_logits
 
 
+class ConvolutionTypes(enum.StrEnum):
+    GCNConv = "GCNConv"
+    SAGEConv = "SAGEConv"
+
+
 @op("Graph conv")
-def graph_conv(x, edges, *, type="GCNConv", output_dim=16):
-    conv = GCNConv(-1, output_dim)
+def graph_conv(
+    x, edges, *, convolution_type: ConvolutionTypes = ConvolutionTypes.GCNConv, output_dim=16
+):
+    conv = None
+    if convolution_type == ConvolutionTypes.GCNConv:
+        conv = GCNConv(-1, output_dim)
+    elif convolution_type == ConvolutionTypes.SAGEConv:
+        conv = pyg_nn.SAGEConv(-1, output_dim)
     return conv
 
 
