@@ -10,9 +10,7 @@ export type GlobalConfig = {
   assistant_available: boolean;
   authentication_issuer: string | null;
   authentication_audience: string | null;
-  authentication_api_audience: string | null;
   enterprise_available: boolean;
-  read_only: boolean;
 };
 
 export type FolderPermissions = {
@@ -29,9 +27,7 @@ const STATIC_CONFIG: GlobalConfig = {
   assistant_available: false,
   authentication_issuer: null,
   authentication_audience: null,
-  authentication_api_audience: null,
   enterprise_available: false,
-  read_only: false,
 };
 
 type StaticWorkspaceConfig = {
@@ -74,10 +70,6 @@ async function getAccessToken(): Promise<string | null> {
   if (!user || user.expired) {
     return null;
   }
-  // No API audience → Auth0 access_token is opaque; send id_token instead.
-  if (cachedConfig?.authentication_api_audience) {
-    return user.access_token;
-  }
   return user.id_token || user.access_token;
 }
 
@@ -90,11 +82,10 @@ export async function getWebSocketParams(): Promise<Record<string, string>> {
 function getUserManager() {
   const issuer = cachedConfig?.authentication_issuer;
   const audience = cachedConfig?.authentication_audience;
-  const apiAudience = cachedConfig?.authentication_api_audience || null;
   if (!issuer || !audience) {
     return null;
   }
-  const key = `${issuer}|${audience}|${apiAudience ?? ""}`;
+  const key = `${issuer}|${audience}`;
   if (userManager && userManagerKey === key) {
     return userManager;
   }
@@ -105,7 +96,6 @@ function getUserManager() {
     post_logout_redirect_uri: window.location.origin,
     response_type: "code",
     scope: "openid profile email",
-    extraQueryParams: apiAudience ? { audience: apiAudience } : undefined,
   });
   userManagerKey = key;
   return userManager;
@@ -286,7 +276,7 @@ export function useCategoryHierarchy() {
 
 export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
 
-/** Effective folder permissions. Auth off → full access unless read_only. */
+/** Effective folder permissions. Auth off means full access. */
 export function useFolderPermissions(path: string | undefined) {
   const config = getConfig();
   const authOff = !config.authentication_issuer;
@@ -298,7 +288,7 @@ export function useFolderPermissions(path: string | undefined) {
   });
   return {
     read: authOff ? true : (data?.read ?? false),
-    write: authOff ? !config.read_only : (data?.write ?? false),
+    write: authOff ? true : (data?.write ?? false),
     isLoading: authOff ? false : Boolean(key) && isLoading,
     error: authOff ? undefined : error,
   };

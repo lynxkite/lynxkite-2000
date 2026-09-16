@@ -1,4 +1,8 @@
-"""User authentication and permission checking using OpenID Connect."""
+"""User authentication and permission checking using OpenID Connect.
+
+Auth is on when LYNXKITE_AUTH_ISSUER and LYNXKITE_AUTH_AUDIENCE are set. Audience is the SPA client id.
+The browser sends the ID token. Who may log in is configured in the identity provider. This module only verifies JWTs.
+"""
 
 from functools import lru_cache
 import os
@@ -11,18 +15,14 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from . import acl
 
 security = HTTPBearer(auto_error=False)
-issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")
-audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")  # SPA / OIDC client id
-# Optional API Identifier (Keycloak often = client id). Leave unset for Auth0 SPA
-# so the UI sends the ID token instead of an opaque access token.
-api_audience = os.environ.get("LYNXKITE_AUTH_API_AUDIENCE") or None
+issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")  # https://dev-lynxkite.eu.auth0.com/
+audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")  # CzxYq4nCYr3qvp2t9GDZFb1G7bRkNtD0
 
 
 class OIDCProvider:
-    def __init__(self, issuer: str, audience: str, api_audience: str | None):
+    def __init__(self, issuer: str, audience: str):
         self.audience = audience
-        self.api_audience = api_audience
-        # Strip trailing `/` so Auth0 issuers do not 404 on `//.well-known/...`.
+        # Strip trailing slash so Auth0 issuers do not 404 on well-known discovery.
         discovery = f"{issuer.rstrip('/')}/.well-known/openid-configuration"
         self.config = httpx.get(discovery).json()
         self.issuer = self.config.get("issuer") or issuer
@@ -36,28 +36,24 @@ class OIDCProvider:
             algorithms=["RS256"],
             options={"verify_aud": False},
         )
-        accepted = {a for a in (self.audience, self.api_audience) if a}
-        for field in ["aud", "azp"]:
-            value = payload.get(field)
-            if value in accepted:
-                return payload
-            if isinstance(value, list) and accepted & set(value):
-                return payload
+        value = payload.get("aud")
+        if value == self.audience:
+            return payload
+        if isinstance(value, list) and self.audience in value:
+            return payload
+        if payload.get("azp") == self.audience:
+            return payload
         raise JWTError("Invalid audience")
 
 
 @lru_cache
 def get_provider():
     assert issuer is not None and audience is not None, "Authentication is not configured"
-    return OIDCProvider(issuer, audience, api_audience)
+    return OIDCProvider(issuer, audience)
 
 
 def is_auth_enabled() -> bool:
     return bool(issuer and audience)
-
-
-def is_read_only() -> bool:
-    return os.environ.get("LYNXKITE_READ_ONLY") == "1"
 
 
 async def get_current_user(request: Request) -> acl.User:
@@ -76,17 +72,15 @@ async def get_current_user(request: Request) -> acl.User:
 
 
 async def check_permission(request: Request, action: acl.Action, requested_path: str | None = None):
-    user = await get_current_user(request)
     if not is_auth_enabled():
-        if action == "write" and is_read_only():
-            raise HTTPException(status_code=403, detail="Forbidden")
         return
+    user = await get_current_user(request)
     if not acl.has_permission(user, action, requested_path):
         raise HTTPException(status_code=403, detail="Forbidden")
 
 
 async def effective_permissions(request: Request, path: str | None = None) -> dict[str, bool]:
     if not is_auth_enabled():
-        return {"read": True, "write": not is_read_only()}
+        return {"read": True, "write": True}
     user = await get_current_user(request)
     return acl.effective_permissions(user, path)
