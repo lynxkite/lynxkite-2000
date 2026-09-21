@@ -121,6 +121,31 @@ def graph_edges_input():
     return from_bundle
 
 
+@input_op("masked tensor")
+def masked_tensor_input():
+    """A tensor aligned with the full node set, with NaN for unmasked values."""
+
+    def from_bundle(
+        b: core.Bundle,
+        ctx: InputContext,
+        *,
+        table_name: core.TableName,
+        id_column: core.ColumnNameByTableName,
+        mask_table_name: core.TableName,
+        mask_id_column: core.ColumnNameByTableName,
+        value_column: core.ColumnNameByTableName,
+    ):
+        full_df = b.dfs[table_name]
+        mask_df = b.dfs[mask_table_name]
+        full_ids = full_df[id_column]
+
+        mask_value_by_id = mask_df.set_index(mask_id_column)[value_column]
+        aligned_values = full_ids.map(mask_value_by_id)
+        return torch.as_tensor(aligned_values.to_numpy(copy=True), dtype=torch.float32)
+
+    return from_bundle
+
+
 @input_op("sequential")
 def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor with a sequence for each sample.

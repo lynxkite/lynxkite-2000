@@ -383,6 +383,10 @@ for detailed information, see references/graph_conv.md
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_edges_input(_input_name=<_input_name_value>)
 for detailed information, see references/graph_edges_input.md
 
+**Input: masked tensor:**
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.masked_tensor_input(_input_name=<_input_name_value>)
+for detailed information, see references/masked_tensor_input.md
+
 **Input: sequential:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.sequential_input(_input_name=<_input_name_value>, type=<type_value>, per_sample=<per_sample_value>)
 for detailed information, see references/sequential_input.md
