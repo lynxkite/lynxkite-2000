@@ -98,7 +98,7 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
 
 @input_op("graph edges")
 def graph_edges_input():
-    """The edges of a graph as input. A 2xE tensor of src/dst indices. Filtered for sequential batching."""
+    """The edges of a graph as input. A 2xE tensor of src/dst indices. Not batched."""
 
     def from_bundle(
         b: core.Bundle,
@@ -108,38 +108,15 @@ def graph_edges_input():
         source_column_name: core.ColumnNameByTableName = "",
         target_column_name: core.ColumnNameByTableName = "",
     ):
-        src = torch.as_tensor(
-            b.dfs[table_name][source_column_name].to_numpy(copy=False),
-            dtype=torch.long,
-        )
-        dst = torch.as_tensor(
-            b.dfs[table_name][target_column_name].to_numpy(copy=False),
-            dtype=torch.long,
-        )
-        edge_index = torch.stack([src, dst], dim=0)
-
-        # 1. Determine the global indices of the nodes in the current batch
-        batch_size = ctx.batch_size
-        start_node = ctx.batch_index * batch_size
-
-        # 2. Clamp the end_node to the actual dataset size to prevent out-of-bounds on final batch
-        max_nodes = ctx.total_samples if ctx.total_samples is not None else float("inf")
-        end_node = min(start_node + batch_size, max_nodes)
-
-        # 3. Filter edges to only include those where BOTH source and target are in the batch
-        mask = (
-            (edge_index[0] >= start_node)
-            & (edge_index[0] < end_node)
-            & (edge_index[1] >= start_node)
-            & (edge_index[1] < end_node)
-        )
-
-        batch_edge_index = edge_index[:, mask]
-
-        # 4. Remap global node IDs to local batch IDs
-        batch_edge_index = batch_edge_index - start_node
-
-        return batch_edge_index
+        """
+        Args:
+            table_name: The table with the edges.
+            source_column_name: The column with source node indices.
+            target_column_name: The column with target node indices.
+        """
+        src = b.dfs[table_name][source_column_name]
+        dst = b.dfs[table_name][target_column_name]
+        return torch.tensor([src, dst], dtype=torch.long)
 
     return from_bundle
 
