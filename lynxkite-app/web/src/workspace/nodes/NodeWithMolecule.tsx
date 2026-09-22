@@ -34,8 +34,7 @@ function parseStoredViewState(raw: unknown): any | null {
   }
 }
 
-/** Capture representation/canvas settings without embedding molecule bytes. */
-function captureViewState(viewer: any) {
+function collectRepresentationParams(viewer: any): any[] {
   const representations: any[] = [];
   for (const s of viewer.plugin.managers.structure.hierarchy.current.structures ?? []) {
     for (const c of s.components ?? []) {
@@ -45,17 +44,11 @@ function captureViewState(viewer: any) {
       }
     }
   }
-  const snapshot = viewer.plugin.state.getSnapshot({ data: false });
-  return {
-    representations,
-    canvas3d: snapshot.canvas3d,
-    canvas3dContext: snapshot.canvas3dContext,
-    structureComponentManager: snapshot.structureComponentManager,
-  };
+  return representations;
 }
 
-async function applyViewState(viewer: any, stored: any) {
-  const saved = Array.isArray(stored?.representations) ? stored.representations : [];
+async function applyRepresentations(viewer: any, saved: any[]) {
+  if (!saved.length) return;
   const structures = viewer.plugin.managers.structure.hierarchy.current.structures ?? [];
   let ri = 0;
   for (const s of structures) {
@@ -80,13 +73,6 @@ async function applyViewState(viewer: any, stored: any) {
       }
     }
   }
-
-  await viewer.plugin.state.setSnapshot({
-    id: stored.id,
-    canvas3d: stored.canvas3d,
-    canvas3dContext: stored.canvas3dContext,
-    structureComponentManager: stored.structureComponentManager,
-  });
 }
 
 const NodeWithMolecule = (props: any) => {
@@ -150,9 +136,10 @@ const NodeWithMolecule = (props: any) => {
 
         viewerRef.current = viewer;
         const stored = parseStoredViewState(paramsRef.current?.[MOLSTAR_STATE_PARAM]);
+        const savedReps = Array.isArray(stored?.representations) ? stored.representations : [];
         suppressSaveRef.current = true;
         // Hide until saved styles are applied so the default preset does not flash.
-        if (stored) wrap.style.opacity = "0";
+        if (savedReps.length) wrap.style.opacity = "0";
         try {
           if (config.data && active) {
             await viewer.loadStructureFromData(
@@ -185,11 +172,11 @@ const NodeWithMolecule = (props: any) => {
             });
           }
 
-          if (stored && active) {
-            await applyViewState(viewer, stored);
+          if (savedReps.length && active) {
+            await applyRepresentations(viewer, savedReps);
           }
         } finally {
-          if (stored) {
+          if (savedReps.length) {
             wrap.style.opacity = "";
             viewer.handleResize?.();
             viewer.plugin.managers.camera.reset(undefined, 0);
@@ -208,7 +195,9 @@ const NodeWithMolecule = (props: any) => {
           saveTimerRef.current = setTimeout(() => {
             if (!active || suppressSaveRef.current || !viewerRef.current) return;
             try {
-              const payload = JSON.stringify(captureViewState(viewerRef.current));
+              const payload = JSON.stringify({
+                representations: collectRepresentationParams(viewerRef.current),
+              });
               const prev = paramsRef.current?.[MOLSTAR_STATE_PARAM];
               if (prev === payload) return;
               setParam(MOLSTAR_STATE_PARAM, payload);
@@ -218,7 +207,6 @@ const NodeWithMolecule = (props: any) => {
           }, SAVE_DEBOUNCE_MS);
         };
 
-        // Representation changes only — camera is refit per molecule, not persisted.
         viewer.subscribe(viewer.plugin.state.data.events.changed, scheduleSave);
       } catch (error) {
         console.error("Error rendering Mol* molecule:", error);
