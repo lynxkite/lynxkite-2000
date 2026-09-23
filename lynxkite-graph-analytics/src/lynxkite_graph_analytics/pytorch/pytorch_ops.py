@@ -146,6 +146,39 @@ def masked_tensor_input():
     return from_bundle
 
 
+@op("Forget", outputs=["features", "label", "mask"])
+def forget(x, label, *, batch_size: int = 32):
+    label_flat = label.squeeze(-1) if label.ndim > 1 and label.shape[-1] == 1 else label
+    y_numpy = label_flat.detach().cpu().numpy()
+
+    labeled_indices = np.where(~np.isnan(y_numpy))[0]
+    sample_size = min(batch_size, len(labeled_indices))
+    train_batch = np.random.choice(labeled_indices, sample_size, replace=False)
+
+    batch_mask = np.zeros(len(y_numpy), dtype=bool)
+    batch_mask[train_batch] = True
+
+    label_for_input = np.nan_to_num(y_numpy, copy=True)
+    label_for_input[train_batch] = 0
+
+    label_known = (~np.isnan(y_numpy)).astype(float)
+    label_known[train_batch] = 0
+
+    augmented_x = torch.cat(
+        [
+            x,
+            torch.from_numpy(label_for_input).to(device=x.device, dtype=x.dtype).unsqueeze(1),
+            torch.from_numpy(label_known).to(device=x.device, dtype=x.dtype).unsqueeze(1),
+        ],
+        dim=1,
+    )
+    filled_label = torch.from_numpy(np.nan_to_num(y_numpy, copy=True)).to(
+        device=label.device, dtype=label_flat.dtype
+    )
+    mask_tensor = torch.from_numpy(batch_mask).to(device=label.device, dtype=torch.float32)
+    return augmented_x, filled_label, mask_tensor
+
+
 @input_op("sequential")
 def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor with a sequence for each sample.
