@@ -50,10 +50,15 @@ opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
+
+async def _assistant_requires_write(request: fastapi.Request):
+    await auth.check_permission(request, "write", "")
+
+
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 if assistant_router is not None:
-    app.include_router(assistant_router)
+    app.include_router(assistant_router, dependencies=[fastapi.Depends(_assistant_requires_write)])
 if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
 if register_lim_routes is not None and LIM_WORKER:
