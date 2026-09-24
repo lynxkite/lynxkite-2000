@@ -146,9 +146,17 @@ for detailed information, see references/pcsf.md
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/define_model.md
 
+**Graph model inference:**
+usage: lynxkite_graph_analytics.operations.ml_ops.graph_model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, table_name=<table_name_value>, output_node_id_column=<output_node_id_column_value>, full_node_id_column=<full_node_id_column_value>, bundle=<bundle_variable>)
+for detailed information, see references/graph_model_inference.md
+
 **Model inference:**
 usage: lynxkite_graph_analytics.operations.ml_ops.model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
 for detailed information, see references/model_inference.md
+
+**Train graph model:**
+usage: lynxkite_graph_analytics.operations.ml_ops.train_graph_model(model_name=<model_name_value>, input_mapping=<input_mapping_value>, epochs=<epochs_value>, bundle=<bundle_variable>)
+for detailed information, see references/train_graph_model.md
 
 **Train model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.train_model(model_name=<model_name_value>, input_mapping=<input_mapping_value>, epochs=<epochs_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
