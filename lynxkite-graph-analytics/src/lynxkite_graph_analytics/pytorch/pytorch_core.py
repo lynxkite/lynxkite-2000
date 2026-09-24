@@ -69,7 +69,7 @@ def input_op(op_name: str, outputs: list[str] | None = None, **kwargs):
 class InputContext:
     """Passed to input ops as the second parameter. Describes batching."""
 
-    batch_size: int
+    batch_size: int | None
     batch_index: int
     total_samples: int | None = None
 
@@ -80,6 +80,8 @@ class InputContext:
             assert len(df) == self.total_samples, (
                 f"Expected {self.total_samples} samples, found {len(df)}"
             )
+        if self.batch_size is None:
+            return df
         return df.iloc[
             self.batch_index * self.batch_size : (self.batch_index + 1) * self.batch_size
         ]
@@ -88,6 +90,15 @@ class InputContext:
 def _to_id(*strings: str) -> str:
     """Replaces all non-alphanumeric characters with underscores."""
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
+
+
+class MultiIdentity(torch.nn.Module):
+    """Passes through one or more tensors unchanged."""
+
+    def forward(self, *args):
+        if len(args) == 1:
+            return args[0]
+        return args
 
 
 @dataclasses.dataclass
@@ -228,14 +239,10 @@ class ModelConfig:
             tensors[input_name] = t
         return tensors
 
-    # __repr__, __getstate__, and __setstate__ ensure that Joblib handles models correctly.
-    # See https://github.com/joblib/joblib/issues/1282 for PyTorch coverage in Joblib.
     def __repr__(self):
         return repr(self.__getstate__())
 
     def __getstate__(self):
-        # The model may not be serializable. We store the contents of the definition workspace instead,
-        # plus the model parameters (state dict).
         state = dataclasses.asdict(self)
         del state["model"]
         del state["optimizer"]
@@ -248,7 +255,6 @@ class ModelConfig:
         return state
 
     def __setstate__(self, state):
-        # Rebuild the model from the workspace JSON and load the model and optimizer state dicts.
         model_state_dict = state.pop("model_state_dict", None)
         optimizer_state_dict = state.pop("optimizer_state_dict", None)
         self.__dict__.update(state)
@@ -302,16 +308,11 @@ class ModelBuilder:
             self.out_edges.setdefault(e.source, {}).setdefault(e.sourceHandle, []).append(
                 (e.target, e.targetHandle)
             )
-        # Split repeat boxes into start and end, and insert them into the flow.
-        # TODO: Think about recursive repeats.
         for repeat in repeats:
             if not self.out_edges[repeat] or not self.in_edges[repeat]:
                 continue
             start_id = f"START {repeat}"
             end_id = f"END {repeat}"
-            # repeat -> first <- real_input
-            # ...becomes...
-            # real_input -> start -> first
             first, firsth = self.out_edges[repeat]["output"][0]
             [(real_input, real_inputh)] = [
                 k for k in self.in_edges[first][firsth] if k != (repeat, "output")
@@ -326,9 +327,6 @@ class ModelBuilder:
             self.in_edges[start_id] = {"input": [(real_input, real_inputh)]}
             self.out_edges[start_id] = {"output": [(first, firsth)]}
             self.in_edges[first][firsth] = [(start_id, "output")]
-            # repeat <- last -> real_output
-            # ...becomes...
-            # last -> end -> real_output
             [(last, lasth)] = self.in_edges[repeat]["input"]
             del self.dependencies[repeat]
             self.dependencies[end_id] = [last]
@@ -348,7 +346,6 @@ class ModelBuilder:
             for i in v:
                 self.inv_dependencies[i].append(k)
         self.layers: list[Layer] = []
-        # Clean up disconnected nodes.
         to_delete = set()
         for node_id in self.nodes:
             op_id = self.nodes[node_id].data.op_id
@@ -367,7 +364,6 @@ class ModelBuilder:
             del self.nodes[node_id]
 
     def all_upstream(self, node: str) -> set[str]:
-        """Returns all nodes upstream of a node."""
         deps = set()
         for dep in self.dependencies[node]:
             deps.add(dep)
@@ -375,7 +371,6 @@ class ModelBuilder:
         return deps
 
     def all_downstream(self, node: str) -> set[str]:
-        """Returns all nodes downstream of a node."""
         deps = set()
         for dep in self.inv_dependencies[node]:
             deps.add(dep)
@@ -383,7 +378,6 @@ class ModelBuilder:
         return deps
 
     def run_node(self, node_id: str) -> None:
-        """Adds the layer(s) produced by this node to self.layers."""
         node = self.nodes[node_id]
         t = node.data.title
         op = self.catalog[node.data.op_id]
@@ -414,13 +408,12 @@ class ModelBuilder:
                 # Copy repeat section's output to repeat section's input.
                 self.layers.append(
                     Layer(
-                        torch.nn.Identity(),
+                        MultiIdentity(),
                         origin_id=node_id,
                         inputs=[_to_id(*last_output)],
                         outputs=[_to_id(start_id, "output")],
                     )
                 )
-                # Repeat the layers in the section.
                 for layer in repeated_layers:
                     if p["same_weights"]:
                         self.layers.append(layer)
@@ -429,17 +422,15 @@ class ModelBuilder:
         self.layers.append(self.run_op(node_id, op, p))
 
     def run_op(self, node_id: str, op: ops.Op, params: dict) -> Layer:
-        """Returns the layer produced by this op."""
         inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
-            module = torch.nn.Identity()
+            module = MultiIdentity()
         else:
             module = op.func(*inputs, **params)
         return Layer(module, node_id, inputs, outputs)
 
     def build_model(self) -> ModelConfig:
-        # Walk the graph in topological order.
         ts = graphlib.TopologicalSorter(self.dependencies)
         for node_id in ts.static_order():
             self.run_node(node_id)
@@ -448,7 +439,6 @@ class ModelBuilder:
     def get_config(self) -> ModelConfig:
         import torch_geometric.nn as pyg_nn
 
-        # Split the design into model and loss.
         model_nodes = set()
         for node_id in self.nodes:
             if self.nodes[node_id].data.title.startswith("Output"):
@@ -478,14 +468,12 @@ class ModelBuilder:
         )
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
-        layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
-        # Create model.
+        layers.append((MultiIdentity(), f"{outputs} -> {outputs}"))
         cfg["model"] = pyg_nn.Sequential(", ".join(cfg["model_inputs"]), layers)
         # Make sure the loss is output from the last loss layer.
         [(lossb, lossh)] = self.in_edges[self.optimizer]["loss"]
         lossi = _to_id(lossb, lossh)
-        loss_layers.append((torch.nn.Identity(), f"{lossi} -> loss"))
-        # Create loss function.
+        loss_layers.append((MultiIdentity(), f"{lossi} -> loss"))
         cfg["loss"] = pyg_nn.Sequential(", ".join(cfg["loss_inputs"]), loss_layers)
         assert not list(cfg["loss"].parameters()), f"loss should have no parameters: {loss_layers}"
         # Create optimizer.
@@ -495,7 +483,6 @@ class ModelBuilder:
         return ModelConfig(**cfg)
 
     def get_names_and_handlers(self, *ids: list[str]) -> tuple[dict[str, str], dict[str, ops.Op]]:
-        """Returns a mapping from internal IDs to human readable names and the handlers for inputs."""
         names = {}
         handlers = {}
         for i in ids:
@@ -514,9 +501,6 @@ class ModelBuilder:
                         else:
                             names[i] = f"{name} ({output.name})"
                         if "_input_name" in node.data.params:
-                            # For input nodes we generate the handlers here.
-                            # Handlers are similar to ops, but they don't have separate
-                            # boxes. Instead they appear in the input mapping.
                             params = op.convert_params(node.data.params)
                             func = op.func(**params)
                             handlers[i] = ops.op(None, name)(func).__op__
