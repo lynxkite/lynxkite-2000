@@ -28,6 +28,16 @@ def _active_node_info(
         if node.data.status != NodeStatus.active:
             continue
         t = node.data.telemetry or {}
+        bars = t.get("bars") if isinstance(t, dict) else None
+        if isinstance(bars, dict):
+            t = next(
+                (
+                    bar
+                    for bar in bars.values()
+                    if isinstance(bar, dict) and "n" in bar and "total" in bar
+                ),
+                {},
+            )
         n, total, rate = t.get("n"), t.get("total"), t.get("rate")
         tqdm = {"n": n, "total": total} if isinstance(total, (int, float)) and total > 0 else None
         partial = 0.0

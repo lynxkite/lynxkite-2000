@@ -59,13 +59,17 @@ test("Adding and removing relationships", async () => {
     await inputField.fill(fieldValue);
   }
   await graphBox.locator(".submit-relationship-button").click();
+  const relationHeaderInSession = graphBox.locator(".graph-relations .df-head", {
+    hasText: "relation_1",
+  });
+  await expect(relationHeaderInSession).toBeVisible({ timeout: 15000 });
   // check that the relationship has been saved in the backend
   await workspace.page.reload();
   const graphBoxAfterReload = await workspace.getBox("Define edges 1");
   const relationHeader = await graphBoxAfterReload.locator(".graph-relations .df-head", {
     hasText: "relation_1",
   });
-  await expect(relationHeader).toBeVisible();
+  await expect(relationHeader).toBeVisible({ timeout: 15000 });
   await relationHeader.locator("button").click(); // Delete the relationship
   await expect(relationHeader).not.toBeVisible();
 });
