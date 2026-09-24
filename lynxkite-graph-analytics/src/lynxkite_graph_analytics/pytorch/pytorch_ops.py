@@ -148,54 +148,79 @@ def masked_tensor_input():
 
 @op("Forget", outputs=["features", "label", "mask"])
 def forget(x, label, *, batch_size: int = 32):
-    label_flat = label.squeeze(-1) if label.ndim > 1 and label.shape[-1] == 1 else label
-    y_numpy = label_flat.detach().cpu().numpy()
+    """Prepares tensors for the 'forget' training strategy.
 
-    labeled_indices = np.where(~np.isnan(y_numpy))[0]
-    sample_size = min(batch_size, len(labeled_indices))
-    train_batch = np.random.choice(labeled_indices, sample_size, replace=False)
+    This is the cleaner, explicit graph equivalent of the original training code:
+    it samples labeled nodes, augments the features with label metadata, and returns
+    both the filled labels and the sampled-node mask needed by the masked loss.
 
-    batch_mask = np.zeros(len(y_numpy), dtype=bool)
-    batch_mask[train_batch] = True
+    Args:
+        x: Node features [N, F]
+        label: Node labels [N] or [N, 1], with NaN for unlabeled nodes
+        batch_size: Number of labeled nodes to sample each epoch
+    """
 
-    label_for_input = np.nan_to_num(y_numpy, copy=True)
-    label_for_input[train_batch] = 0
+    def _forget(x, label):
+        label_flat = label.squeeze(-1) if label.ndim > 1 and label.shape[-1] == 1 else label
+        y_numpy = label_flat.detach().cpu().numpy()
 
-    label_known = (~np.isnan(y_numpy)).astype(float)
-    label_known[train_batch] = 0
+        labeled_indices = np.where(~np.isnan(y_numpy))[0]
+        sample_size = min(batch_size, len(labeled_indices))
 
-    augmented_x = torch.cat(
-        [
-            x,
-            torch.from_numpy(label_for_input).to(device=x.device, dtype=x.dtype).unsqueeze(1),
-            torch.from_numpy(label_known).to(device=x.device, dtype=x.dtype).unsqueeze(1),
-        ],
-        dim=1,
-    )
-    filled_label = torch.from_numpy(np.nan_to_num(y_numpy, copy=True)).to(
-        device=label.device, dtype=label_flat.dtype
-    )
-    mask_tensor = torch.from_numpy(batch_mask).to(device=label.device, dtype=torch.float32)
-    return augmented_x, filled_label, mask_tensor
+        train_batch = np.random.choice(labeled_indices, sample_size, replace=False)
+
+        batch_mask = np.zeros(len(y_numpy), dtype=bool)
+        batch_mask[train_batch] = True
+
+        label_for_input = np.nan_to_num(y_numpy, copy=True)
+        label_for_input[train_batch] = 0
+
+        label_known = (~np.isnan(y_numpy)).astype(float)
+        label_known[train_batch] = 0
+
+        augmented_x = torch.cat(
+            [
+                x,
+                torch.from_numpy(label_for_input).to(device=x.device, dtype=x.dtype).unsqueeze(1),
+                torch.from_numpy(label_known).to(device=x.device, dtype=x.dtype).unsqueeze(1),
+            ],
+            dim=1,
+        )
+        filled_label = torch.from_numpy(np.nan_to_num(y_numpy, copy=True)).to(
+            device=label.device, dtype=label_flat.dtype
+        )
+        mask_tensor = torch.from_numpy(batch_mask).to(device=label.device, dtype=torch.float32)
+        return augmented_x, filled_label, mask_tensor
+
+    return _forget
 
 
 @op("masked MSE loss")
 def masked_mse_loss(pred, label, mask):
-    if pred.shape != label.shape:
-        if pred.ndim == label.ndim + 1 and pred.shape[-1] == 1 and pred.shape[:-1] == label.shape:
-            label = label.unsqueeze(-1)
-        elif (
-            label.ndim == pred.ndim + 1 and label.shape[-1] == 1 and label.shape[:-1] == pred.shape
-        ):
-            pred = pred.unsqueeze(-1)
+    def _masked_loss(pred, label, mask):
+        if pred.shape != label.shape:
+            if (
+                pred.ndim == label.ndim + 1
+                and pred.shape[-1] == 1
+                and pred.shape[:-1] == label.shape
+            ):
+                label = label.unsqueeze(-1)
+            elif (
+                label.ndim == pred.ndim + 1
+                and label.shape[-1] == 1
+                and label.shape[:-1] == pred.shape
+            ):
+                pred = pred.unsqueeze(-1)
 
-    pred_flat = pred.squeeze(-1)
-    label_flat = label.squeeze(-1)
-    mask_flat = mask.squeeze(-1) if mask.ndim > 1 else mask
+        pred_flat = pred.squeeze(-1)
+        label_flat = label.squeeze(-1)
+        mask_flat = mask.squeeze(-1) if mask.ndim > 1 else mask
 
-    diff = pred_flat[mask_flat.bool()] - label_flat[mask_flat.bool()]
-    mse = torch.mean(diff**2)
-    return mse
+        diff = pred_flat[mask_flat.bool()] - label_flat[mask_flat.bool()]
+        mse = torch.mean(diff**2)
+        return mse
+
+    return _masked_loss
 
 
 @input_op("sequential")
