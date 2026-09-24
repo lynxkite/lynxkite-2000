@@ -2,7 +2,7 @@ import os
 import pathlib
 import pytest
 import tempfile
-from lynxkite_core import workspace, ops
+from lynxkite_core import ops, workspace, workspace_progress
 
 ENV = "test_workspace_env"
 
@@ -103,3 +103,20 @@ def test_update_metadata_with_empty_workspace():
     ws = workspace.Workspace(env=ENV)
     ws.update_metadata()
     assert len(ws.nodes) == 0
+
+
+def test_workspace_progress_uses_a_keyed_telemetry_bar():
+    ws = workspace.Workspace(env=ENV)
+    ws.add_node(id="1", type="basic", title="Train")
+    ws.nodes[0].data.status = workspace.NodeStatus.active
+    ws.nodes[0].data.telemetry = {
+        "bars": {
+            "epochs": {"n": 2, "total": 5, "rate": 1},
+            "batches": {"n": 75, "total": 100, "rate": 20},
+        }
+    }
+
+    progress = workspace_progress.compute_workspace_progress(ws, room_name="training")
+
+    assert progress["active_node"]["tqdm"] == {"n": 2, "total": 5}
+    assert progress["progress_fraction"] == 0.4
