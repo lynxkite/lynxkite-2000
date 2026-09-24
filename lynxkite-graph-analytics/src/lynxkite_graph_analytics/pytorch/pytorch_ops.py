@@ -179,6 +179,25 @@ def forget(x, label, *, batch_size: int = 32):
     return augmented_x, filled_label, mask_tensor
 
 
+@op("masked MSE loss")
+def masked_mse_loss(pred, label, mask):
+    if pred.shape != label.shape:
+        if pred.ndim == label.ndim + 1 and pred.shape[-1] == 1 and pred.shape[:-1] == label.shape:
+            label = label.unsqueeze(-1)
+        elif (
+            label.ndim == pred.ndim + 1 and label.shape[-1] == 1 and label.shape[:-1] == pred.shape
+        ):
+            pred = pred.unsqueeze(-1)
+
+    pred_flat = pred.squeeze(-1)
+    label_flat = label.squeeze(-1)
+    mask_flat = mask.squeeze(-1) if mask.ndim > 1 else mask
+
+    diff = pred_flat[mask_flat.bool()] - label_flat[mask_flat.bool()]
+    mse = torch.mean(diff**2)
+    return mse
+
+
 @input_op("sequential")
 def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor with a sequence for each sample.

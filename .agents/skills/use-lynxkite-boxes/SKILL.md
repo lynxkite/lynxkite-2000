@@ -414,6 +414,10 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.log(input=<input_variable>)
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.lstm(input_size=<input_size_value>, hidden_size=<hidden_size_value>, dropout=<dropout_value>, x=<x_variable>)
 for detailed information, see references/lstm.md
 
+**masked MSE loss:**
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.masked_mse_loss(pred=<pred_variable>, label=<label_variable>, mask=<mask_variable>)
+for detailed information, see references/masked_mse_loss.md
+
 **Mean pool:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.mean_pool(x=<x_variable>)
 for detailed information, see references/mean_pool.md
