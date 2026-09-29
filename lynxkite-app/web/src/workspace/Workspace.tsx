@@ -5,6 +5,7 @@ import {
   BackgroundVariant,
   type Connection,
   MarkerType,
+  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -97,13 +98,22 @@ export default function Workspace(props: any) {
 }
 
 const ICONIZE_THRESHOLD = 0.3;
+const NON_ICONIZED_NODE_TYPES = new Set([
+  "visualization",
+  "graph_visualization",
+  "image",
+  "molecule",
+]);
 
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const cursorScreenPos = useRef<XYPosition | null>(null);
+  const selectedNodeIdsRef = useRef<Set<string>>(new Set());
+  const selectedEdgeIdsRef = useRef<Set<string>>(new Set());
   const categoryHierarchy = useRef<Category | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [isAreaSelecting, setIsAreaSelecting] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
@@ -142,6 +152,11 @@ function LynxKiteFlow() {
     [workspace, canWrite],
   );
   const nodeStateContextValue = useMemo(() => ({ iconized }), [iconized]);
+
+  useEffect(() => {
+    selectedNodeIdsRef.current = new Set(nodes.filter((n) => n.selected).map((n) => n.id));
+    selectedEdgeIdsRef.current = new Set(edges.filter((e) => e.selected).map((e) => e.id));
+  }, [nodes, edges]);
 
   // Track Shift key state
   useEffect(() => {
@@ -452,6 +467,42 @@ function LynxKiteFlow() {
       crdt?.addEdge(edge);
     },
     [crdt, nodes],
+  );
+  const zoomToReadableNode = useCallback(
+    (event: MouseEvent, node: Node) => {
+      if (!iconized || node.data?.collapsed || NON_ICONIZED_NODE_TYPES.has(node.type || "")) return;
+      // Area selection drag should not trigger auto-zoom.
+      if (isAreaSelecting) return;
+      if ((event.target as Element).closest(".react-flow__resize-control")) return;
+
+      const selectedNodeIdsBeforeClick = new Set(selectedNodeIdsRef.current);
+      const selectedEdgeIdsBeforeClick = new Set(selectedEdgeIdsRef.current);
+      const shouldPreserveSelection = selectedNodeIdsBeforeClick.has(node.id);
+
+      // React Flow may collapse a multi-selection to a single node on click.
+      // Restore the previous selection if the click happened inside the selected area.
+      if (shouldPreserveSelection && crdt) {
+        requestAnimationFrame(() => {
+          crdt.onFENodesChange?.(
+            nodes.map((n) => ({
+              id: n.id,
+              type: "select" as const,
+              selected: selectedNodeIdsBeforeClick.has(n.id),
+            })),
+          );
+          crdt.onFEEdgesChange?.(
+            edges.map((e) => ({
+              id: e.id,
+              type: "select" as const,
+              selected: selectedEdgeIdsBeforeClick.has(e.id),
+            })),
+          );
+        });
+      }
+
+      reactFlow.fitView({ nodes: [node], duration: 500, maxZoom: 0.85, padding: 0.7 });
+    },
+    [iconized, isAreaSelecting, reactFlow, crdt, nodes, edges],
   );
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -818,6 +869,10 @@ function LynxKiteFlow() {
                   onEdgesChange={crdt?.onFEEdgesChange}
                   onPaneClick={canWrite ? toggleNodeSearch : undefined}
                   onConnect={canWrite ? onConnect : undefined}
+                  onNodeClick={zoomToReadableNode}
+                  onSelectionDragStart={() => setIsAreaSelecting(true)}
+                  onSelectionDragStop={() => setIsAreaSelecting(false)}
+                  onSelectionEnd={() => setIsAreaSelecting(false)}
                   onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
                   onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
                   onMove={onMove}

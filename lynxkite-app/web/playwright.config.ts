@@ -29,7 +29,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "cd ../../examples && LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite",
+    command: `LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite`,
+    cwd: "../../examples",
     port: 8000,
     reuseExistingServer: true,
   },
