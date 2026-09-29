@@ -14,6 +14,7 @@ import starlette.exceptions
 from lynxkite_core import ops
 from lynxkite_core import opcontext
 from lynxkite_core import workspace
+from lynxkite_core import workspace_paths
 from lynxkite_core.folder_settings import SETTINGS_FILENAME
 from . import acl
 from . import auth
@@ -105,21 +106,24 @@ async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
     assert isinstance(req["path"], str)
-    json_path: pathlib.Path = data_path / req["path"]
+    workspace_path: pathlib.Path = data_path / req["path"]
     crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
-    workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
-    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
-    json_path.unlink()
-    crdt_path.unlink()
-    if workspace_files_path.exists():
-        shutil.rmtree(workspace_files_path)
+    assert workspace_path.is_relative_to(data_path), f"Path '{workspace_path}' is invalid"
+    if workspace_paths.is_workspace_bundle(workspace_path):
+        shutil.rmtree(workspace_path)
+    else:
+        workspace_path.unlink()
+        workspace_data_path = workspace_paths.workspace_data_dir(workspace_path)
+        if workspace_data_path.exists():
+            shutil.rmtree(workspace_data_path)
+    crdt_path.unlink(missing_ok=True)
     crdt.delete_room(req["path"])
 
 
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
-    await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
-    json_path = data_path / ops.build_output_path(workspace, node_id)
+    await auth.check_permission(request, "read", workspace)
+    json_path = data_path / workspace_paths.display_path(workspace, node_id)
     assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
     output = None
     if json_path.exists():
@@ -136,7 +140,9 @@ class DirectoryEntry(pydantic.BaseModel):
 
 
 def _get_path_type(path: pathlib.Path) -> str:
-    if path.is_dir():
+    if path.is_dir() and workspace_paths.is_workspace_bundle(path):
+        return "workspace"
+    elif path.is_dir():
         return "directory"
     elif path.suffixes[-2:] == [".lynxkite", ".json"]:
         return "workspace"
@@ -192,9 +198,24 @@ async def rename_path(req: dict, request: fastapi.Request):
     assert old_path.exists(), f"Path '{old_path}' does not exist"
     assert not new_path.exists(), f"Path '{new_path}' already exists"
     old_rel = req["old_path"]
-    old_path.rename(new_path)
+    if not workspace_paths.is_workspace_bundle(old_path) and workspace_paths.is_workspace_bundle(
+        new_path
+    ):
+        old_data_path = workspace_paths.workspace_data_dir(old_path)
+        new_path.mkdir()
+        old_path.rename(workspace_paths.workspace_file_path(new_path))
+        if old_data_path.exists():
+            new_data_path = workspace_paths.workspace_data_dir(new_path)
+            old_data_path.rename(new_data_path)
+            for display_file in new_data_path.glob("*.json"):
+                display_path = new_data_path / display_file.stem / "display.json"
+                display_path.parent.mkdir()
+                display_file.rename(display_path)
+    else:
+        old_path.rename(new_path)
     # Drop any open room under the old name so clients don't keep stale pointers.
     crdt.delete_room(old_rel)
+    (data_path / ".crdt" / f"{old_rel}.crdt").unlink(missing_ok=True)
 
 
 @app.get("/api/service/{module_path:path}")

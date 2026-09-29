@@ -23,6 +23,7 @@ import pydantic
 from pydantic_core import to_json
 from .matplotlib_to_image import matplotlib_to_image
 from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
+from .workspace_paths import display_path
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -203,12 +204,6 @@ class Output(BaseConfig):
     position: Position
 
 
-def build_output_path(ws_path: str, node_id: str) -> pathlib.Path:
-    """Builds the path to save the display data for a given node output."""
-    ws_path_obj = pathlib.Path(ws_path)
-    return pathlib.Path(f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.name}/{node_id}.json")
-
-
 @dataclass
 class Result:
     """Represents the result of an operation.
@@ -235,6 +230,7 @@ class Result:
         #   (e.g. the boxes that use display always return something)
         path = pathlib.Path(display_path)
         if self.display is not None:
+            path.parent.mkdir(parents=True, exist_ok=True)
             display_json = to_json(self.display)
             try:
                 with open(path, "r+b") as f:
@@ -253,6 +249,7 @@ class Result:
             ) as f:
                 temp_name = f.name
                 f.write(display_json)
+                f.write(b"\n")
             os.replace(temp_name, path)
             self.display = None
             self.display_version = version + 1
@@ -350,9 +347,11 @@ class Op(BaseConfig):
             and self.type != "graph_creation_view"
             and op_ctx.ws
             and op_ctx.node
+            and op_ctx.ws.path
         ):
             res.save_display(
-                op_ctx.get_box_dir() / "display.json", (op_ctx.node.data.display_version or 0)
+                display_path(op_ctx.ws.path, op_ctx.node.id),
+                (op_ctx.node.data.display_version or 0),
             )
 
         return res

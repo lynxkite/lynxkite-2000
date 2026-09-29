@@ -171,7 +171,9 @@ def test_cache_function_sync_and_async():
 
 
 def test_save_display_keeps_version_when_display_is_unchanged(tmp_path):
-    display_path = tmp_path / "ws_dir" / "ws.lynxkite.json" / "node-unchanged" / "display.json"
+    display_path = (
+        tmp_path / ".workspace_files" / "ws.lynxkite.json" / "node-unchanged" / "display.json"
+    )
     display_path.parent.mkdir(parents=True, exist_ok=True)
     version = 11
 
@@ -187,7 +189,10 @@ def test_save_display_keeps_version_when_display_is_unchanged(tmp_path):
 
 
 def test_save_display_writes_file_and_increments_version(tmp_path):
-    display_path = tmp_path / "ws_dir" / "ws.lynxkite.json" / "node-changed" / "display.json"
+    display_path = (
+        tmp_path / ".workspace_files" / "ws.lynxkite.json" / "node-write" / "display.json"
+    )
+    display_path.parent.mkdir(parents=True, exist_ok=True)
     version = 3
     assert not display_path.exists()
 

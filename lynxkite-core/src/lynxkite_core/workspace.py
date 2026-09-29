@@ -9,6 +9,7 @@ import os
 import pydantic
 import tempfile
 from . import ops
+from .workspace_paths import workspace_file_path
 
 if TYPE_CHECKING:
     import pycrdt
@@ -224,7 +225,7 @@ class Workspace(BaseConfig):
 
     def save(self, path: str | pathlib.Path, from_frontend=False):
         """Persist the workspace to a local file in JSON format."""
-        path = str(path)
+        path = str(workspace_file_path(path))
         j = self.model_dump_json_sorted()
         dirname, basename = os.path.split(path)
         if dirname:
@@ -253,14 +254,15 @@ class Workspace(BaseConfig):
         Returns:
             Workspace: The loaded workspace object, with updated metadata.
         """
-        path = str(path)
-        with open(path, encoding="utf-8") as f:
+        workspace_path = pathlib.Path(path)
+        file_path = workspace_file_path(workspace_path)
+        with file_path.open(encoding="utf-8") as f:
             j = f.read()
-        ops.load_user_scripts(path)
+        ops.load_user_scripts(str(file_path))
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()
-        ws.path = pathlib.Path(path).as_posix()
+        ws.path = workspace_path.as_posix()
         return ws
 
     def update_metadata(self):

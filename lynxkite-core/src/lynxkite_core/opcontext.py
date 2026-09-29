@@ -10,6 +10,8 @@ import typing
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .workspace_paths import box_data_dir
+
 if typing.TYPE_CHECKING:
     from . import workspace
     from .ops import Op
@@ -209,17 +211,18 @@ class OpContext:
             return getattr(self.op, name)
         raise AttributeError(name)
 
-    def get_box_dir(self, subdir: os.PathLike[str] = Path("")) -> Path:
+    def get_box_dir(self, subdir: str | os.PathLike[str] = Path("")) -> Path:
         """Get the custom output path for the current box based on the workspace and node.
         Create the directory if it doesn't exist.
         """
         if self.ws is None or self.node is None:
             raise ValueError("Both ws and node must be provided")
         ws_path = Path(self.ws.path or "")
-        path = ws_path.parent / ".workspace_files" / ws_path.name / self.node.id
-        calc_path = (path / subdir).resolve()
-        if not calc_path.is_relative_to(path):
+        path = box_data_dir(ws_path, self.node.id)
+        subdir_path = Path(subdir)
+        if subdir_path.is_absolute() or ".." in subdir_path.parts:
             raise ValueError("subdir must be a relative path")
+        calc_path = path / subdir_path
         os.makedirs(calc_path, exist_ok=True)
         return calc_path
 

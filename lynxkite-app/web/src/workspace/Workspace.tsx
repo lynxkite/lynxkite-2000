@@ -112,7 +112,7 @@ function LynxKiteFlow() {
   const shortPath = path!
     .split("/")
     .pop()!
-    .replace(/[.]lynxkite[.]json$/, "");
+    .replace(/[.]lynxkite(?:[.]json)?$/, "");
   const permissions = useFolderPermissions(path);
   const canWrite = permissions.write;
   const crdt = useCRDTWorkspace(path, canWrite);

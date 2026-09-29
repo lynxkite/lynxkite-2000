@@ -21,7 +21,8 @@ def is_progress_box(node: WorkspaceNode) -> bool:
 
 
 def workspace_display_name(room_name: str) -> str:
-    return re.sub(r"[^a-zA-Z0-9]", "-", pathlib.Path(room_name).name.removesuffix(".lynxkite.json"))
+    name = pathlib.Path(room_name).name.removesuffix(".json").removesuffix(".lynxkite")
+    return re.sub(r"[^a-zA-Z0-9]", "-", name)
 
 
 def _active_node_info(
