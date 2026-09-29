@@ -6,17 +6,16 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import Color from "colorjs.io";
-import React, { memo, useContext, useMemo, useState } from "react";
+import React, { memo, useContext, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import AlertTriangle from "~icons/tabler/alert-triangle-filled.jsx";
-import Check from "~icons/tabler/check.jsx";
 import ChevronDownRight from "~icons/tabler/chevron-down-right.jsx";
-import Copy from "~icons/tabler/copy.jsx";
 import Dots from "~icons/tabler/dots.jsx";
 import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
+import PrettyError from "../../PrettyError.tsx";
 import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
@@ -308,12 +307,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
                 <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
               ) : (
                 <>
-                  {data.error && (
-                    <div className="error">
-                      <span className="error-line">{data.error}</span>
-                      <CopyErrorButton text={data.error} />
-                    </div>
-                  )}
+                  {data.error && <PrettyError error={data.error} />}
                   <ErrorBoundary
                     resetKeys={[props]}
                     fallback={
@@ -377,31 +371,6 @@ export default function LynxKiteNode(Component: React.ComponentType<any>) {
     );
   };
   return memo(WrappedNode);
-}
-
-function CopyErrorButton(props: { text: string }) {
-  const [copied, setCopied] = useState(false);
-
-  function copy(e: React.MouseEvent) {
-    e.stopPropagation();
-    navigator.clipboard?.writeText(props.text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
-  }
-
-  return (
-    <Tooltip doc={copied ? "Copied!" : "Copy error to clipboard"}>
-      <button
-        className="error-copy-button"
-        onClick={copy}
-        aria-label="Copy error to clipboard"
-        type="button"
-      >
-        {copied ? <Check /> : <Copy />}
-      </button>
-    </Tooltip>
-  );
 }
 
 function UnknownOperationNode(props: { op_id: string; onChange: (newName: string) => void }) {
