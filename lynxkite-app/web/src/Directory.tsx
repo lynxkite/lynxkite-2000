@@ -43,6 +43,35 @@ const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
 type DownloadAction = "download" | "export";
 
+type UploadItem = { file: File; path: string };
+
+async function collectDroppedEntry(
+  entry: FileSystemEntry,
+  parent: string,
+  files: UploadItem[],
+  directories: string[],
+): Promise<void> {
+  const path = parent ? `${parent}/${entry.name}` : entry.name;
+  if (entry.isFile) {
+    const file = await new Promise<File>((resolve, reject) =>
+      (entry as FileSystemFileEntry).file(resolve, reject),
+    );
+    files.push({ file, path });
+  } else if (entry.isDirectory) {
+    directories.push(path);
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    while (true) {
+      const children = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+        reader.readEntries(resolve, reject),
+      );
+      if (!children.length) break;
+      for (const child of children) {
+        await collectDroppedEntry(child, path, files, directories);
+      }
+    }
+  }
+}
+
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
     return <title>LynxKite 2000:MM</title>;
@@ -130,21 +159,55 @@ export default function Directory() {
       replace: true,
     });
   }
-  async function uploadFiles(files: FileList | File[]) {
+  async function uploadFiles(files: UploadItem[], directories: string[] = []) {
     const dirParam = encodeURIComponent(path || "");
-    for (const file of Array.from(files)) {
+    if (directories.length) {
       const formData = new FormData();
-      formData.append("file", file);
+      for (const directory of directories) formData.append("directory", directory);
       const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
         method: "POST",
         body: formData,
       });
       if (!res.ok) {
+        alert("Failed to upload folders.");
+        return;
+      }
+    }
+    for (const { file, path: relativePath } of files) {
+      const formData = new FormData();
+      formData.append("file", file, relativePath);
+      const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        list.mutate();
         alert(`Failed to upload ${file.name}.`);
         return;
       }
     }
     list.mutate();
+  }
+
+  async function uploadDroppedItems(dataTransfer: DataTransfer) {
+    const entries = Array.from(dataTransfer.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.webkitGetAsEntry?.())
+      .filter((entry): entry is FileSystemEntry => entry !== null && entry !== undefined);
+    if (!entries.length) {
+      await uploadFiles(Array.from(dataTransfer.files, (file) => ({ file, path: file.name })));
+      return;
+    }
+    const files: UploadItem[] = [];
+    const directories: string[] = [];
+    try {
+      for (const entry of entries) {
+        await collectDroppedEntry(entry, "", files, directories);
+      }
+      await uploadFiles(files, directories);
+    } catch {
+      alert("Failed to read dropped files or folders.");
+    }
   }
 
   async function newFolderIn(path: string, folderName: string) {
@@ -294,7 +357,8 @@ export default function Directory() {
                 style={{ display: "none" }}
                 multiple
                 onChange={(e) => {
-                  if (e.target.files?.length) uploadFiles(e.target.files);
+                  if (e.target.files?.length)
+                    uploadFiles(Array.from(e.target.files, (file) => ({ file, path: file.name })));
                   e.target.value = "";
                 }}
               />
@@ -340,7 +404,8 @@ export default function Directory() {
                 ? (e) => {
                     e.preventDefault();
                     setIsDragOver(false);
-                    if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                      uploadDroppedItems(e.dataTransfer);
                   }
                 : undefined
             }

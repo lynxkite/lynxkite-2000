@@ -45,3 +45,42 @@ test("Can upload multiple files at once", async ({ page }) => {
   await expect(splash.getEntry(file1)).not.toBeVisible();
   await expect(splash.getEntry(file2)).not.toBeVisible();
 });
+
+test("Can drop a folder with nested files and empty subfolders", async ({ page }) => {
+  const splash = await Splash.open(page);
+  const folderName = `upload-folder-${Date.now()}`;
+
+  await page.evaluate((name) => {
+    const file = new File(["nested upload"], "hello.txt", { type: "text/plain" });
+    const fileEntry = {
+      name: file.name,
+      isFile: true,
+      file: (callback: (file: File) => void) => {
+        callback(file);
+      },
+    } as FileSystemFileEntry;
+    const folderEntry = (entryName: string, children: FileSystemEntry[]) =>
+      ({
+        name: entryName,
+        isDirectory: true,
+        createReader: () => ({
+          readEntries: (callback: (entries: FileSystemEntry[]) => void) => {
+            callback(children.splice(0, 1));
+          },
+        }),
+      }) as FileSystemDirectoryEntry;
+    const root = folderEntry(name, [folderEntry("nested", [fileEntry]), folderEntry("empty", [])]);
+    const event = new DragEvent("drop", { bubbles: true, cancelable: true });
+    Object.defineProperty(event, "dataTransfer", {
+      value: { items: [{ kind: "file", webkitGetAsEntry: () => root }], files: [] },
+    });
+    document.querySelector(".entry-drop-zone")!.dispatchEvent(event);
+  }, folderName);
+
+  await expect(splash.getEntry(folderName)).toBeVisible({ timeout: 10000 });
+  await splash.getEntry(folderName).click();
+  await expect(splash.getEntry("nested")).toBeVisible();
+  await expect(splash.getEntry("empty")).toBeVisible();
+  await splash.getEntry("nested").click();
+  await expect(splash.getEntry("hello.txt")).toBeVisible();
+});
