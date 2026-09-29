@@ -1,14 +1,4 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
-
-const configDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(configDir, "../..");
-const examplesDir = path.join(repoRoot, "examples");
-const lynxkiteExecutable =
-  process.platform === "win32"
-    ? path.join(repoRoot, ".venv", "Scripts", "lynxkite.exe")
-    : path.join(repoRoot, ".venv", "bin", "lynxkite");
 
 export default defineConfig({
   testDir: "./tests",
@@ -39,12 +29,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `"${lynxkiteExecutable}"`,
-    cwd: examplesDir,
-    env: {
-      ...process.env,
-      LYNXKITE_SUPPRESS_OP_ERRORS: "1",
-    },
+    command: `LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite`,
+    cwd: "../../examples",
     port: 8000,
     reuseExistingServer: true,
   },

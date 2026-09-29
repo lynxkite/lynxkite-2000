@@ -101,34 +101,18 @@ export class Workspace {
     const box = this.getBox(boxId);
     // Click on the resizer, so we don't click on any parameters by accident.
     await box.locator(".react-flow__resize-control.handle").click();
+    await expect(box).toHaveClass(/selected/);
   }
   async selectBoxes(boxIds: string[]) {
-    if (boxIds.length === 0) return;
+    // Unselect any previously selected boxes by pressing Escape first,
+    // then select the boxes one by one while holding Control.
     await this.page.keyboard.press("Escape");
-
-    if (boxIds.length === 1) {
-      await this.selectBox(boxIds[0]);
-      return;
+    for (const boxId of boxIds) {
+      await this.getBox(boxId)
+        .locator(".react-flow__resize-control.handle")
+        .click({ modifiers: ["Control"] });
+      await expect(this.getBox(boxId)).toHaveClass(/selected/);
     }
-
-    // Multi-select via area selection to avoid platform-specific click-modifier behavior.
-    const rects = (await Promise.all(boxIds.map((id) => this.getBox(id).boundingBox()))).filter(
-      Boolean,
-    ) as { x: number; y: number; width: number; height: number }[];
-    expect(rects.length).toBe(boxIds.length);
-
-    const minX = Math.min(...rects.map((r) => r.x));
-    const minY = Math.min(...rects.map((r) => r.y));
-    const maxX = Math.max(...rects.map((r) => r.x + r.width));
-    const maxY = Math.max(...rects.map((r) => r.y + r.height));
-    const padding = 16;
-
-    await this.page.keyboard.down("Shift");
-    await this.page.mouse.move(minX - padding, minY - padding);
-    await this.page.mouse.down();
-    await this.page.mouse.move(maxX + padding, maxY + padding, { steps: 8 });
-    await this.page.mouse.up();
-    await this.page.keyboard.up("Shift");
   }
 
   async deleteBoxes(boxIds: string[]) {

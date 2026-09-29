@@ -3,15 +3,22 @@ import { expect, test } from "@playwright/test";
 import { Splash, Workspace } from "./lynxkite";
 
 let workspace: Workspace;
+let workspaceName: string;
 
-test.beforeEach(async ({ browser }) => {
-  workspace = await Workspace.empty(await browser.newPage(), "undo_redo_spec_test");
+test.beforeEach(async ({ browser }, testInfo) => {
+  const slug = testInfo.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  workspaceName = `${slug || "undo-redo"}-${testInfo.workerIndex}-${Date.now()}`;
+  workspace = await Workspace.empty(await browser.newPage(), workspaceName);
 });
 
 test.afterEach(async () => {
   await workspace.close();
   const splash = await new Splash(workspace.page);
-  await splash.deleteEntry("undo_redo_spec_test");
+  await splash.deleteEntryIfExists(workspaceName);
 });
 
 test("undo/redo add_node transaction", async () => {
@@ -72,34 +79,44 @@ test("undo/redo grouping boxes", async () => {
   await new Promise((resolve) => setTimeout(resolve, 600));
   await workspace.groupSelection();
   await expect(workspace.getBox("Group 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBe("Group 1"),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBe("Group 1"),
+  ).toPass();
 
   await workspace.undo();
   await expect(workspace.getBox("Group 1")).not.toBeVisible();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await expect(workspace.getBox("View tables 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBeUndefined(),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBeUndefined(),
+  ).toPass();
   expect(consoleMessages).toEqual([]);
 
   await workspace.redo();
   await expect(workspace.getBox("Group 1")).toBeVisible();
   await expect(workspace.getBox("Import Parquet 1")).toBeVisible();
   await expect(workspace.getBox("View tables 1")).toBeVisible();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("Import Parquet 1")).toBe("Group 1"),
+  ).toPass();
+  await expect(async () =>
+    expect(await workspace.getNodeParentId("View tables 1")).toBe("Group 1"),
+  ).toPass();
   expect(consoleMessages).toEqual([]);
 });
 
 test("undo/redo normal text input", async () => {
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");
   const graphBox = workspace.getBox("Scale-free graph 1");
-  const nInput = graphBox.getByLabel("n", { exact: true });
-  await new Promise((resolve) => setTimeout(resolve, 600));
-
-  // Fill then blur immediately so both land in the same CRDT undo entry (<600ms apart).
-  await nInput.fill("10");
-  await workspace.page.locator(".ws-name").click();
-  await expect(nInput).toHaveValue("10");
-
+  await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.undo();
-  await expect(nInput).not.toHaveValue("10");
-
+  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("");
   await workspace.redo();
-  await expect(nInput).toHaveValue("10");
+  await expect(graphBox.getByLabel("n", { exact: true })).toHaveValue("10");
 });
