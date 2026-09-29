@@ -6,7 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "dev": "npx vite",
-    "build": "npx tsc -b && npx vite build && cp node_modules/@iconify-json/tabler/icons.json dist/tabler-icons.json",
+    "build": "npx tsc -b && npx vite build",
     "preview": "npx vite preview"
   },
   "dependencies": {

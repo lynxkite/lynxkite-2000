@@ -28,29 +28,30 @@ license = "AGPL-3.0-or-later"
 Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 
 [dependency-groups]
-dev = ["pydantic-to-typescript>=2.0.0", "setuptools>=80.9.0"]
+dev = ["hatchling>=1.27", "pydantic-to-typescript>=2.0.0"]
 
 [tool.uv.sources]
 lynxkite-core = { workspace = true }
 
 [build-system]
-requires = ["setuptools", "wheel", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
-namespaces = true
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/lynxkite_app"]
 
-[tool.setuptools.package-data]
-"lynxkite_app.web_assets" = ["*"]
-"lynxkite_app.web_assets.assets" = ["*"]
+[tool.hatch.build.targets.sdist]
+include = [
+    "/hatch_build.py",
+    "/pyproject.toml",
+    "/README.md",
+    "/src/lynxkite_app",
+    "/web",
+]
+exclude = ["/web/node_modules"]
 
-[tool.setuptools]
-py-modules = ["build_frontend"]
-include-package-data = true
-
-[tool.setuptools.cmdclass]
-build_py = "build_frontend.build_py"
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
 
 [project.scripts]
 lynxkite = "lynxkite_app.__main__:main"
@@ -63,4 +64,4 @@ sse-starlette = "starlette"
 DEP001 = ["lynxkite_enterprise"]
 DEP002 = ["pycrdt-websocket", "griffe"]
 DEP003 = ["lynxkite_assistant", "lynxkite_enterprise"]
-DEP004 = ["setuptools"]
+DEP004 = ["hatchling"]

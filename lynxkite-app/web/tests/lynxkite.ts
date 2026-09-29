@@ -7,6 +7,7 @@ export function toId(x: string) {
 }
 
 export const ROOT = "automated-tests";
+const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
 
 export class Workspace {
   readonly page: Page;
@@ -165,13 +166,21 @@ export class Workspace {
     await this.page.mouse.up();
   }
   async copySelection() {
-    await this.page.keyboard.press("Control+c");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+c`);
   }
   async pasteSelection() {
-    await this.page.keyboard.press("Control+v");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+v`);
   }
   async cutSelection() {
-    await this.page.keyboard.press("Control+x");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+x`);
+  }
+
+  async undo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
+  }
+
+  async redo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+y`);
   }
 
   async tryToConnectBoxes(sourceId: string, targetId: string) {

@@ -48,6 +48,7 @@ members = [
 dev = [
     "deptry>=0.23.0",
     "gradio>=5.50.0",
+    "hatchling>=1.27",
     "mkdocs-material>=9.6.15",
     "mkdocstrings[python]>=0.29.1",
     "pre-commit>=4.2.0",

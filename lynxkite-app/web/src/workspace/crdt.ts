@@ -46,7 +46,7 @@ function needsNodeInternalsUpdate(prevNode: any, nextNode: any) {
 }
 
 // What the rest of the app observes as the workspace state. Only mutate it through the methods!
-type CRDTWorkspace = {
+export type CRDTWorkspace = {
   ws?: WorkspaceType;
   feNodes: Node[];
   feEdges: Edge[];
@@ -498,7 +498,9 @@ class CRDTConnection {
           if (wdata.get("expanded_height") !== data.expanded_height) {
             wdata.set("expanded_height", data.expanded_height);
           }
-          wdata.set("__execution_delay", data.__execution_delay);
+          if (wdata.get("__execution_delay") !== data.__execution_delay) {
+            wdata.set("__execution_delay", data.__execution_delay);
+          }
           let wparams = wdata.get("params") as Y.Map<any>;
           if (!wparams) {
             wparams = new Y.Map<any>();
@@ -578,20 +580,45 @@ class CRDTConnection {
   };
 }
 
-export function useCRDTWorkspace(path: string, canWrite = true): CRDTWorkspace {
+export const EMPTY_WORKSPACE: CRDTWorkspace = {
+  feNodes: [],
+  feEdges: [],
+  selectedNodeIds: [],
+  selectedNodeCount: 0,
+  isAnyGroupSelected: false,
+  setPausedState: () => {},
+  setEnv: () => {},
+  setExecutionOptions: () => {},
+  setAssistantMessages: () => {},
+  clearAssistantMessages: () => {},
+  applyChange: () => {},
+  addNode: () => {},
+  addEdge: () => {},
+  undo: () => {},
+  redo: () => {},
+};
+
+const noopSubscribe = () => () => {};
+
+export function useCRDTWorkspace(path: string, canWrite = true, enabled = true): CRDTWorkspace {
   const reactFlow = useReactFlow();
   const updateNodeInternals = useUpdateNodeInternals();
   const connection = useRef<CRDTConnection | null>(null);
-  if (!connection.current) {
+  if (enabled && !connection.current) {
     connection.current = new CRDTConnection(reactFlow, updateNodeInternals, path, canWrite);
   }
   useEffect(() => {
-    connection.current?.setCanWrite(canWrite);
-  }, [canWrite]);
+    if (enabled) {
+      connection.current?.setCanWrite(canWrite);
+    }
+  }, [canWrite, enabled]);
   useEffect(() => {
     const currentConnection = connection.current!;
     currentConnection.start();
     return () => currentConnection.scheduleDestroy();
   }, []);
-  return useSyncExternalStore(connection.current.subscribe, connection.current.getSnapshot);
+  return useSyncExternalStore(
+    connection.current?.subscribe ?? noopSubscribe,
+    connection.current?.getSnapshot ?? (() => EMPTY_WORKSPACE),
+  );
 }

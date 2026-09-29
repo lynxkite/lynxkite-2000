@@ -15,6 +15,7 @@ import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
+import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
 import { LynxKiteNodeState } from "../LynxKiteState.ts";
@@ -256,8 +257,12 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
       ref={containerRef}
     >
       <div
-        className={`lynxkite-node ${iconized ? "lynxkite-node-iconized drag-handle" : ""} ${data.status}`}
-        style={iconized ? { ...nodeStyle, ...titleStyle } : nodeStyle}
+        className={`lynxkite-node nopan ${iconized ? "lynxkite-node-iconized drag-handle" : ""} ${data.status}`}
+        style={
+          iconized
+            ? { ...nodeStyle, ...titleStyle, ...(data.error ? { backgroundColor: "red" } : {}) }
+            : nodeStyle
+        }
       >
         {iconized ? (
           <Tooltip doc={data.title} disabled={props.dragging}>
@@ -352,13 +357,8 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
 }
 
 function Icon({ name }: { name: string }) {
-  if (!name) {
-    return <div className="title-icon-placeholder" />;
-  }
-  if (name.startsWith("<svg")) {
-    return <span className="title-icon" dangerouslySetInnerHTML={{ __html: name }} />;
-  }
-  return <InlineSVG className="title-icon" src={`/api/icons/${name}`} />;
+  const svg = name?.startsWith("<svg") ? name : getTablerIconSvgMarkup(name ?? "chevron-right");
+  return <InlineSVG className="title-icon" svg={svg} />;
 }
 
 export default function LynxKiteNode(Component: React.ComponentType<any>) {

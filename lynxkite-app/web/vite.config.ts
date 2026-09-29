@@ -5,6 +5,9 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Set the base path to be relative. Then in index.html we set it to be absolute.
+  // We can then modifying index.html if needed, for example for static exports.
+  base: "./",
   build: {
     chunkSizeWarningLimit: 3000,
     sourcemap: true,

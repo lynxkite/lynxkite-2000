@@ -23,7 +23,8 @@ export function useWorkspaceProgress(roomName: string | undefined, enabled = tru
     const wsMap = doc.getMap("workspaces");
 
     function syncWorkspaceProgress() {
-      setWorkspaceProgress(parseProgressWorkspace(wsMap.get(currentRoomName)));
+      const parsed = parseProgressWorkspace(wsMap.get(currentRoomName));
+      setWorkspaceProgress(parsed);
     }
 
     wsMap.observe(syncWorkspaceProgress);

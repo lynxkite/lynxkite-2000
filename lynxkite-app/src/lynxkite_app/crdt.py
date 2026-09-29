@@ -21,10 +21,11 @@ from .crdt_update import crdt_update
 from . import progress_crdt
 from . import ws_auth
 
+enterprise_backend: typing.Any = None
 try:
     import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
-    enterprise_backend = None
+    pass
 
 router = fastapi.APIRouter()
 main_loop = None
@@ -408,7 +409,7 @@ async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     if runtime_state.delayed_execution is not None:
         runtime_state.delayed_execution.cancel()
     # Check if workspace is paused - if so, skip automatic execution
-    if getattr(ws_pyd, "paused", False):
+    if ws_pyd.paused:
         return
 
     task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
@@ -434,8 +435,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     """
     if delay:
         await asyncio.sleep(delay)
-    progress_crdt.reset_run_timer(name)
-    print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
@@ -446,13 +445,18 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     ws_pyd.normalize()
     if not ws_pyd.has_executor():
         return
-    with ws_crdt.doc.transaction():
-        for nc in ws_crdt["nodes"]:
-            nc["data"]["status"] = "planned"
-            nc["data"]["message"] = None
-    await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    save_workspace_from_frontend(name, ws_pyd)
-    print(f"Finished running {name} in {ws_pyd.env}.")
+    progress_crdt.reset_run_timer(name)
+    print(f"Running {name} in {ws_pyd.env}...")
+    try:
+        with ws_crdt.doc.transaction():
+            for nc in ws_crdt["nodes"]:
+                nc["data"]["status"] = "planned"
+                nc["data"]["message"] = None
+        await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
+        save_workspace_from_frontend(name, ws_pyd)
+        print(f"Finished running {name} in {ws_pyd.env}.")
+    finally:
+        progress_crdt.mark_run_finished(name)
 
 
 async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
