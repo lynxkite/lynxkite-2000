@@ -1,6 +1,10 @@
-import inspect
-from lynxkite_core import ops
 import enum
+import inspect
+import json
+import tempfile
+
+import joblib
+from lynxkite_core import ops
 from pydantic_core import to_json
 
 DummyContext = ops.OpContext(
@@ -143,9 +147,6 @@ def test_cache_function_sync_and_async():
 
     old_cache_wrapper = ops.CACHE_WRAPPER
 
-    import joblib
-    import tempfile
-
     with tempfile.TemporaryDirectory() as cache_dir:
         mem = joblib.Memory(cache_dir, verbose=0)
         ops.CACHE_WRAPPER = mem.cache
@@ -200,13 +201,13 @@ def test_save_display_writes_file_and_increments_version(tmp_path):
     result.save_display(display_path, version)
 
     assert display_path.exists()
-    assert display_path.read_bytes() == to_json({"status": "new", "count": 2})
+    assert json.loads(display_path.read_text()) == {"status": "new", "count": 2}
     assert result.display is None
     assert result.display_version == version + 1
 
     result2 = ops.Result(display={"status": "updated", "count": 4})
     result2.save_display(display_path, version + 1)
 
-    assert display_path.read_bytes() == to_json({"status": "updated", "count": 4})
+    assert json.loads(display_path.read_text()) == {"status": "updated", "count": 4}
     assert result2.display is None
     assert result2.display_version == version + 2
