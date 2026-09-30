@@ -1,6 +1,10 @@
-import inspect
-from lynxkite_core import ops
 import enum
+import inspect
+import json
+import tempfile
+
+import joblib
+from lynxkite_core import ops
 from pydantic_core import to_json
 
 DummyContext = ops.OpContext(
@@ -143,9 +147,6 @@ def test_cache_function_sync_and_async():
 
     old_cache_wrapper = ops.CACHE_WRAPPER
 
-    import joblib
-    import tempfile
-
     with tempfile.TemporaryDirectory() as cache_dir:
         mem = joblib.Memory(cache_dir, verbose=0)
         ops.CACHE_WRAPPER = mem.cache
@@ -170,63 +171,43 @@ def test_cache_function_sync_and_async():
             ops.CACHE_WRAPPER = old_cache_wrapper
 
 
-def test_save_display_skips_when_workspace_path_or_display_missing(tmp_path):
-    result = ops.Result(display={"x": 1})
-    result.save_display(None, "node-1", 7)
-    assert result.display == {"x": 1}
-    assert result.display_version is None
-
-    ws_path = tmp_path / "workspace" / "example.lynxkite.json"
-    ws_path.parent.mkdir(parents=True, exist_ok=True)
-    ws_path.write_text("{}")
-
-    result = ops.Result(display=None)
-    result.save_display(str(ws_path), "node-1", 7)
-    assert result.display is None
-    assert result.display_version is None
-
-
 def test_save_display_keeps_version_when_display_is_unchanged(tmp_path):
-    ws_path = tmp_path / "workspace" / "example.lynxkite.json"
-    ws_path.parent.mkdir(parents=True, exist_ok=True)
-    ws_path.write_text("{}")
-    node_id = "node-unchanged"
+    display_path = (
+        tmp_path / ".workspace_files" / "ws.lynxkite.json" / "node-unchanged" / "display.json"
+    )
+    display_path.parent.mkdir(parents=True, exist_ok=True)
     version = 11
 
-    path = ops.build_output_path(str(ws_path), node_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
     expected = to_json({"k": "v", "n": 1})
-    path.write_bytes(expected)
+    display_path.write_bytes(expected)
 
     result = ops.Result(display={"k": "v", "n": 1})
-    result.save_display(str(ws_path), node_id, version)
+    result.save_display(display_path, version)
 
     assert result.display is None
     assert result.display_version == version
-    assert path.read_bytes() == expected
+    assert display_path.read_bytes() == expected
 
 
 def test_save_display_writes_file_and_increments_version(tmp_path):
-    ws_path = tmp_path / "workspace" / "example.lynxkite.json"
-    ws_path.parent.mkdir(parents=True, exist_ok=True)
-    ws_path.write_text("{}")
-    node_id = "node-changed"
+    display_path = (
+        tmp_path / ".workspace_files" / "ws.lynxkite.json" / "node-write" / "display.json"
+    )
+    display_path.parent.mkdir(parents=True, exist_ok=True)
     version = 3
-
-    path = ops.build_output_path(str(ws_path), node_id)
-    assert not path.exists()
+    assert not display_path.exists()
 
     result = ops.Result(display={"status": "new", "count": 2})
-    result.save_display(str(ws_path), node_id, version)
+    result.save_display(display_path, version)
 
-    assert path.exists()
-    assert path.read_bytes() == to_json({"status": "new", "count": 2})
+    assert display_path.exists()
+    assert json.loads(display_path.read_text()) == {"status": "new", "count": 2}
     assert result.display is None
     assert result.display_version == version + 1
 
     result2 = ops.Result(display={"status": "updated", "count": 4})
-    result2.save_display(str(ws_path), node_id, version + 1)
+    result2.save_display(display_path, version + 1)
 
-    assert path.read_bytes() == to_json({"status": "updated", "count": 4})
+    assert json.loads(display_path.read_text()) == {"status": "updated", "count": 4}
     assert result2.display is None
     assert result2.display_version == version + 2

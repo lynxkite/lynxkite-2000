@@ -15,6 +15,7 @@ import uvicorn.protocols.utils
 import builtins
 from websockets.exceptions import ConnectionClosedOK
 from lynxkite_core import workspace, ops
+from lynxkite_core.workspace_paths import workspace_file_path
 from watchdog import events, observers
 from .crdt_update import crdt_update
 from . import progress_crdt
@@ -142,7 +143,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
             ws["env"] = next(iter(ops.CATALOGS), "unset")
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
-            if not os.path.exists(name):
+            if not workspace_file_path(name).exists():
                 workspace.Workspace().save(name)
             else:
                 load_workspace(ws, name)
@@ -196,9 +197,10 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
 
 
 class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
-    def __init__(self, ws_crdt: pycrdt.Map, file_path: str, loop: asyncio.AbstractEventLoop):
-        self.file_path = file_path
-        self.dir_path = os.path.dirname(file_path) or "."
+    def __init__(self, ws_crdt: pycrdt.Map, workspace_name: str, loop: asyncio.AbstractEventLoop):
+        self.workspace_name = workspace_name
+        self.file_path = str(workspace_file_path(workspace_name))
+        self.dir_path = os.path.dirname(self.file_path) or "."
         self.ws_crdt = ws_crdt
         self.loop = loop
         self.started = False
@@ -222,12 +224,12 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
     def on_modified(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
-            self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
+            self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.workspace_name)
 
     def on_deleted(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
-            self.loop.call_soon_threadsafe(delete_room, self.file_path)
+            self.loop.call_soon_threadsafe(delete_room, self.workspace_name)
 
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
@@ -313,7 +315,7 @@ def load_workspace(ws: pycrdt.Map, name: str):
     """
     runtime_state = state.get(name)
     if runtime_state:
-        with open(name, encoding="utf-8") as f:
+        with workspace_file_path(name).open(encoding="utf-8") as f:
             file_contents = f.read()
         if runtime_state.last_frontend_save == file_contents:
             runtime_state.last_frontend_save = None
