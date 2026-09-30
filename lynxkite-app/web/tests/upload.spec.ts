@@ -5,15 +5,33 @@ import { Splash } from "./lynxkite";
 test("Can upload a file via the Upload file button", async ({ page }) => {
   const splash = await Splash.open(page);
   const fileName = `upload-test-${Date.now()}.txt`;
+  const contents = Buffer.from("hello from upload test");
+  let finishUpload!: () => void;
+  const holdUploadResponse = new Promise<void>((resolve) => {
+    finishUpload = resolve;
+  });
+  await page.route(/api\/upload/, async (route) => {
+    const response = await route.fetch();
+    await holdUploadResponse;
+    await route.fulfill({ response });
+  });
 
   const fileInput = page.locator('input[type="file"]');
   const upload = page.waitForResponse(/api\/upload/);
   await fileInput.setInputFiles({
     name: fileName,
     mimeType: "text/plain",
-    buffer: Buffer.from("hello from upload test"),
+    buffer: contents,
   });
+  const uploadStatus = page.getByRole("status");
+  await expect(uploadStatus).toContainText("Uploading files (0/1)");
+  const progress = uploadStatus.getByRole("progressbar");
+  await expect(progress).toHaveAttribute("max", contents.length.toString());
+  await expect(progress).toHaveClass(/progress-info w-full/);
+
+  finishUpload();
   await upload;
+  await expect(uploadStatus).not.toBeVisible();
 
   await expect(splash.getEntry(fileName)).toBeVisible({ timeout: 10000 });
 

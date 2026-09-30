@@ -22,6 +22,8 @@
 
   background: #002a4c;
   --color-base-100: white;
+  --color-base-200: #eee;
+  --color-base-300: #ddd;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;

@@ -12,9 +12,17 @@ import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, getConfig, useFolderPermissions, usePath } from "./common.ts";
+import {
+  apiFetch,
+  apiJson,
+  getConfig,
+  uploadFile,
+  useFolderPermissions,
+  usePath,
+} from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
+import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
 
 function EntryCreator(props: {
   label: string;
@@ -119,6 +127,7 @@ export default function Directory() {
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [pendingDownload, setPendingDownload] = useState<{
     action: DownloadAction;
     itemName: string;
@@ -173,19 +182,43 @@ export default function Directory() {
         return;
       }
     }
+    const totalBytes = files.reduce((total, item) => total + item.file.size, 0);
+    const totalFiles = files.length;
+    if (totalFiles) {
+      setUploadProgress({ uploadedBytes: 0, totalBytes, completedFiles: 0, totalFiles });
+    }
+    let completedBytes = 0;
+    let completedFiles = 0;
     for (const { file, path: relativePath } of files) {
-      const formData = new FormData();
-      formData.append("file", file, relativePath);
-      const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
+      try {
+        await uploadFile(file, {
+          directory: path || "",
+          path: relativePath,
+          onProgress: (uploadedBytes) => {
+            setUploadProgress({
+              uploadedBytes: completedBytes + uploadedBytes,
+              totalBytes,
+              completedFiles,
+              totalFiles,
+            });
+          },
+        });
+        completedBytes += file.size;
+        completedFiles += 1;
+        setUploadProgress({
+          uploadedBytes: completedBytes,
+          totalBytes,
+          completedFiles,
+          totalFiles,
+        });
+      } catch {
+        setUploadProgress(null);
         list.mutate();
         alert(`Failed to upload ${file.name}.`);
         return;
       }
     }
+    setUploadProgress(null);
     list.mutate();
   }
 
@@ -523,6 +556,7 @@ export default function Directory() {
           onSubmit={submitRename}
         />
       )}
+      {uploadProgress && <UploadProgressToast {...uploadProgress} />}
     </ManagementPage>
   );
 }
