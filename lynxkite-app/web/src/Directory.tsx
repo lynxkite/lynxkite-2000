@@ -12,9 +12,17 @@ import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, getConfig, useFolderPermissions, usePath } from "./common.ts";
+import {
+  apiFetch,
+  apiJson,
+  getConfig,
+  uploadFile,
+  useFolderPermissions,
+  usePath,
+} from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
+import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
 
 function EntryCreator(props: {
   label: string;
@@ -42,6 +50,35 @@ function EntryCreator(props: {
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
 type DownloadAction = "download" | "export";
+
+type UploadItem = { file: File; path: string };
+
+async function collectDroppedEntry(
+  entry: FileSystemEntry,
+  parent: string,
+  files: UploadItem[],
+  directories: string[],
+): Promise<void> {
+  const path = parent ? `${parent}/${entry.name}` : entry.name;
+  if (entry.isFile) {
+    const file = await new Promise<File>((resolve, reject) =>
+      (entry as FileSystemFileEntry).file(resolve, reject),
+    );
+    files.push({ file, path });
+  } else if (entry.isDirectory) {
+    directories.push(path);
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    while (true) {
+      const children = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+        reader.readEntries(resolve, reject),
+      );
+      if (!children.length) break;
+      for (const child of children) {
+        await collectDroppedEntry(child, path, files, directories);
+      }
+    }
+  }
+}
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
@@ -90,6 +127,7 @@ export default function Directory() {
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [pendingDownload, setPendingDownload] = useState<{
     action: DownloadAction;
     itemName: string;
@@ -130,21 +168,79 @@ export default function Directory() {
       replace: true,
     });
   }
-  async function uploadFiles(files: FileList | File[]) {
+  async function uploadFiles(files: UploadItem[], directories: string[] = []) {
     const dirParam = encodeURIComponent(path || "");
-    for (const file of Array.from(files)) {
+    if (directories.length) {
       const formData = new FormData();
-      formData.append("file", file);
+      for (const directory of directories) formData.append("directory", directory);
       const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
         method: "POST",
         body: formData,
       });
       if (!res.ok) {
+        alert("Failed to upload folders.");
+        return;
+      }
+    }
+    const totalBytes = files.reduce((total, item) => total + item.file.size, 0);
+    const totalFiles = files.length;
+    if (totalFiles) {
+      setUploadProgress({ uploadedBytes: 0, totalBytes, completedFiles: 0, totalFiles });
+    }
+    let completedBytes = 0;
+    let completedFiles = 0;
+    for (const { file, path: relativePath } of files) {
+      try {
+        await uploadFile(file, {
+          directory: path || "",
+          path: relativePath,
+          onProgress: (uploadedBytes) => {
+            setUploadProgress({
+              uploadedBytes: completedBytes + uploadedBytes,
+              totalBytes,
+              completedFiles,
+              totalFiles,
+            });
+          },
+        });
+        completedBytes += file.size;
+        completedFiles += 1;
+        setUploadProgress({
+          uploadedBytes: completedBytes,
+          totalBytes,
+          completedFiles,
+          totalFiles,
+        });
+      } catch {
+        setUploadProgress(null);
+        list.mutate();
         alert(`Failed to upload ${file.name}.`);
         return;
       }
     }
+    setUploadProgress(null);
     list.mutate();
+  }
+
+  async function uploadDroppedItems(dataTransfer: DataTransfer) {
+    const entries = Array.from(dataTransfer.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.webkitGetAsEntry?.())
+      .filter((entry): entry is FileSystemEntry => entry !== null && entry !== undefined);
+    if (!entries.length) {
+      await uploadFiles(Array.from(dataTransfer.files, (file) => ({ file, path: file.name })));
+      return;
+    }
+    const files: UploadItem[] = [];
+    const directories: string[] = [];
+    try {
+      for (const entry of entries) {
+        await collectDroppedEntry(entry, "", files, directories);
+      }
+      await uploadFiles(files, directories);
+    } catch {
+      alert("Failed to read dropped files or folders.");
+    }
   }
 
   async function newFolderIn(path: string, folderName: string) {
@@ -294,7 +390,8 @@ export default function Directory() {
                 style={{ display: "none" }}
                 multiple
                 onChange={(e) => {
-                  if (e.target.files?.length) uploadFiles(e.target.files);
+                  if (e.target.files?.length)
+                    uploadFiles(Array.from(e.target.files, (file) => ({ file, path: file.name })));
                   e.target.value = "";
                 }}
               />
@@ -340,7 +437,8 @@ export default function Directory() {
                 ? (e) => {
                     e.preventDefault();
                     setIsDragOver(false);
-                    if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                      uploadDroppedItems(e.dataTransfer);
                   }
                 : undefined
             }
@@ -458,6 +556,7 @@ export default function Directory() {
           onSubmit={submitRename}
         />
       )}
+      {uploadProgress && <UploadProgressToast {...uploadProgress} />}
     </ManagementPage>
   );
 }
