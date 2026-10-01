@@ -299,7 +299,7 @@ def train_graph_model(
     bundle: core.Bundle,
     *,
     model_name: pytorch_core.PyTorchModelName = "model",
-    input_mapping: ModelTrainingInputMapping,
+    input_mapping: ModelTrainingInputMapping | None,
     epochs: int = 1,
 ):
     m: pytorch_core.ModelConfig = bundle.other[model_name].copy()
@@ -328,12 +328,13 @@ def graph_model_inference(
     bundle: core.Bundle,
     *,
     model_name: pytorch_core.PyTorchModelName = "model",
-    input_mapping: ModelInferenceInputMapping,
-    output_mapping: ModelOutputMapping,
-    table_name: core.TableName,
-    output_node_id_column: core.ColumnNameByTableName,
-    full_node_id_column: core.ColumnNameByTableName,  # TODO: !!!
+    input_mapping: ModelInferenceInputMapping | None,
+    output_mapping: ModelOutputMapping | None,
+    full_id_column: core.TableColumn,
+    output_id_column: core.TableColumn,
 ):
+    if input_mapping is None or output_mapping is None:
+        return ops.Result(bundle, error="Mapping is unset.")
     m: pytorch_core.ModelConfig = bundle.other[model_name]
     input_ctx = pytorch_core.InputContext(batch_size=None, batch_index=0)
     inputs = m.inputs_from_bundle(bundle, m.model_inputs, input_mapping, input_ctx)
@@ -349,13 +350,9 @@ def graph_model_inference(
             bundle.dfs[df] = bundle.dfs[df].copy()
             copied.add(df)
         values = _tensor_to_column_values(batch_outputs[k])
-        if not output_node_id_column:
-            bundle.dfs[df][col] = values
-            continue
-        full_df_name = table_name
+        full_df_name = full_id_column[0]
         full_df = bundle.dfs[full_df_name]
         target_df = bundle.dfs[df]
-        predictions_by_id = pd.Series(list(values), index=full_df[full_node_id_column])
-
-        bundle.dfs[df][col] = target_df[output_node_id_column].map(predictions_by_id)
+        predictions_by_id = pd.Series(list(values), index=full_df[full_id_column[1]])
+        bundle.dfs[df][col] = target_df[output_id_column[1]].map(predictions_by_id)
     return bundle

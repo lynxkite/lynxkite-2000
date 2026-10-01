@@ -147,7 +147,7 @@ usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<
 for detailed information, see references/define_model.md
 
 **Graph model inference:**
-usage: lynxkite_graph_analytics.operations.ml_ops.graph_model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, table_name=<table_name_value>, output_node_id_column=<output_node_id_column_value>, full_node_id_column=<full_node_id_column_value>, bundle=<bundle_variable>)
+usage: lynxkite_graph_analytics.operations.ml_ops.graph_model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, full_id_column=<full_id_column_value>, output_id_column=<output_id_column_value>, bundle=<bundle_variable>)
 for detailed information, see references/graph_model_inference.md
 
 **Model inference:**
