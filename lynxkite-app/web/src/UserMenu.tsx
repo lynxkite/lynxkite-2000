@@ -1,5 +1,5 @@
 // Dropdown user menu showing login/logout controls and the current user's name and email.
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import LoginIcon from "~icons/tabler/login";
 import LogoutIcon from "~icons/tabler/logout";
 import UserCircleIcon from "~icons/tabler/user-circle";
@@ -12,6 +12,7 @@ const UserCircle = memo(UserCircleIcon);
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const config = getConfig();
   const user = useAuth();
   const authEnabled = !!config?.authentication_issuer;
@@ -20,13 +21,27 @@ export default function UserMenu() {
   const userEmail =
     user?.profile?.email || user?.profile?.preferred_username || user?.profile?.name;
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (rootRef.current?.contains(event.target as Node)) {
+        return;
+      }
+      setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
   if (!authEnabled) {
     return null;
   }
 
   if (!loggedIn) {
     return (
-      <div className="user-menu-actions">
+      <div className="user-menu">
         <button
           type="button"
           className="user-menu-button"
@@ -40,19 +55,18 @@ export default function UserMenu() {
   }
 
   return (
-    <div className={`dropdown dropdown-end ${open ? "dropdown-open" : ""}`}>
+    <div ref={rootRef} className={`user-menu dropdown dropdown-end ${open ? "dropdown-open" : ""}`}>
       <button
         type="button"
         className="user-menu-button"
-        onClick={() => setOpen(!open)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onClick={() => setOpen((value) => !value)}
         title={userName}
       >
         <UserCircle />
         <span className="user-menu-label">{userName}</span>
       </button>
       {open && (
-        <ul className="dropdown-content menu shadow-lg rounded-box bg-base-100 z-50 w-52 p-2 mt-2">
+        <ul className="dropdown-content menu shadow-lg rounded-box bg-base-100 z-50 w-52 p-2 mt-2 end-0">
           <li className="menu-title px-4 py-2 text-sm opacity-70">{userEmail}</li>
           <li>
             <button type="button" onClick={() => void triggerLogout()}>

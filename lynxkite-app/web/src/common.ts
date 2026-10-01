@@ -21,7 +21,6 @@ export type FolderPermissions = {
 let cachedConfig: GlobalConfig | undefined;
 let userManager: UserManager | null = null;
 let userManagerKey: string | undefined;
-let loginStarted = false;
 let axiosInterceptorsInstalled = false;
 
 const STATIC_CONFIG: GlobalConfig = {
@@ -71,7 +70,7 @@ async function getAccessToken(): Promise<string | null> {
   if (!user || user.expired) {
     return null;
   }
-  return user.access_token;
+  return user.id_token || user.access_token;
 }
 
 /** Query params for y-websocket when auth is on. Empty when auth off. */
@@ -94,6 +93,7 @@ function getUserManager() {
     authority: issuer,
     client_id: audience,
     redirect_uri: `${window.location.origin}/auth/callback`,
+    post_logout_redirect_uri: window.location.origin,
     response_type: "code",
     scope: "openid profile email",
   });
@@ -103,18 +103,17 @@ function getUserManager() {
 
 export async function triggerLogin() {
   const manager = getUserManager();
-  if (!manager || loginStarted) {
+  if (!manager) {
     return;
   }
-  loginStarted = true;
   try {
     await manager.signinRedirect({
       state: {
         returnTo: `${window.location.pathname}${window.location.search}${window.location.hash}`,
       },
     });
-  } catch (_error) {
-    loginStarted = false;
+  } catch {
+    // Redirect did not start (insecure context, blocked navigation).
   }
 }
 
@@ -123,19 +122,37 @@ export async function triggerLogout() {
   if (!manager) {
     return;
   }
-  // Remove local user state before redirecting.
+  const user = await manager.getUser();
   await manager.removeUser();
-  // Build the logout URL manually with client_id instead of id_token_hint.
-  // Keycloak 26 skips the confirmation page when id_token_hint is present,
-  // but shows it when relying on the browser SSO session cookie + client_id.
-  const metadata = await manager.metadataService.getMetadata();
-  const endSessionEndpoint = metadata.end_session_endpoint;
-  if (!endSessionEndpoint) return;
-  const params = new URLSearchParams({
-    client_id: cachedConfig?.authentication_audience ?? "",
-    post_logout_redirect_uri: window.location.origin,
-  });
-  window.location.href = `${endSessionEndpoint}?${params}`;
+
+  const returnTo = window.location.origin;
+  const clientId = cachedConfig?.authentication_audience ?? "";
+  const issuer = (cachedConfig?.authentication_issuer || "").replace(/\/$/, "");
+
+  try {
+    if (issuer.includes("auth0.com")) {
+      const url = new URL(`${issuer}/v2/logout`);
+      url.searchParams.set("client_id", clientId);
+      url.searchParams.set("returnTo", returnTo);
+      window.location.assign(url.toString());
+      return;
+    }
+    const { end_session_endpoint: endSession } = await manager.metadataService.getMetadata();
+    if (!endSession) {
+      window.location.assign(returnTo);
+      return;
+    }
+    const params = new URLSearchParams({
+      client_id: clientId,
+      post_logout_redirect_uri: returnTo,
+    });
+    if (user?.id_token) {
+      params.set("id_token_hint", user.id_token);
+    }
+    window.location.assign(`${endSession}?${params}`);
+  } catch {
+    window.location.assign(returnTo);
+  }
 }
 
 function ensureAxiosInterceptors() {
@@ -150,15 +167,6 @@ function ensureAxiosInterceptors() {
     }
     return config;
   });
-  axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401) {
-        await triggerLogin();
-      }
-      return Promise.reject(error);
-    },
-  );
   axiosInterceptorsInstalled = true;
 }
 
@@ -170,15 +178,10 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
-  const response = await fetch(input, {
+  return fetch(input, {
     ...init,
     headers,
   });
-  if (response.status === 401) {
-    await triggerLogin();
-    throw new Error("Unauthorized");
-  }
-  return response;
 }
 
 export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
@@ -222,7 +225,6 @@ export async function completeLoginCallback(): Promise<string> {
     return "/";
   }
   const user = await manager.signinCallback();
-  loginStarted = false;
   const state = user?.state as { returnTo?: string } | undefined;
   return state?.returnTo || "/";
 }
@@ -274,7 +276,7 @@ export function useCategoryHierarchy() {
 
 export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
 
-/** Effective folder permissions. Auth off → full access. */
+/** Effective folder permissions. Auth off means full access. */
 export function useFolderPermissions(path: string | undefined) {
   const config = getConfig();
   const authOff = !config.authentication_issuer;
