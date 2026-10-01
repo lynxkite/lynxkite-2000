@@ -383,10 +383,6 @@ for detailed information, see references/embedding.md
 **Exp:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.exp(input=<input_variable>)
 
-**Forget:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.forget(batch_size=<batch_size_value>, x=<x_variable>, label=<label_variable>)
-for detailed information, see references/forget.md
-
 **Graph conv:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.graph_conv(convolution_type=<convolution_type_value>, output_dim=<output_dim_value>, x=<x_variable>, edges=<edges_variable>)
 for detailed information, see references/graph_conv.md
@@ -422,10 +418,6 @@ usage: lynxkite_graph_analytics.pytorch.pytorch_ops.log(input=<input_variable>)
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.lstm(input_size=<input_size_value>, hidden_size=<hidden_size_value>, dropout=<dropout_value>, x=<x_variable>)
 for detailed information, see references/lstm.md
 
-**masked MSE loss:**
-usage: lynxkite_graph_analytics.pytorch.pytorch_ops.masked_mse_loss(pred=<pred_variable>, label=<label_variable>, mask=<mask_variable>)
-for detailed information, see references/masked_mse_loss.md
-
 **Mean pool:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.mean_pool(x=<x_variable>)
 for detailed information, see references/mean_pool.md
@@ -436,6 +428,10 @@ for detailed information, see references/mse_loss.md
 
 **Multiply:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.multiply(a=<a_variable>, b=<b_variable>)
+
+**NaN-aware MSE loss:**
+usage: lynxkite_graph_analytics.pytorch.pytorch_ops.nan_mse_loss(pred=<pred_variable>, label=<label_variable>)
+for detailed information, see references/nan_mse_loss.md
 
 **Neural ODE with MLP:**
 usage: lynxkite_graph_analytics.pytorch.pytorch_ops.neural_ode_mlp(method=<method_value>, relative_tolerance=<relative_tolerance_value>, absolute_tolerance=<absolute_tolerance_value>, state_dimensions=<state_dimensions_value>, mlp_layers=<mlp_layers_value>, mlp_hidden_size=<mlp_hidden_size_value>, mlp_activation=<mlp_activation_value>, state_0=<state_0_variable>, timestamps=<timestamps_variable>)

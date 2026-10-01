@@ -146,58 +146,11 @@ def masked_tensor_input():
     return from_bundle
 
 
-@op("Forget", outputs=["features", "label", "mask"])
-def forget(x, label, *, batch_size: int = 32):
-    """Prepares tensors for the 'forget' training strategy.
+@op("NaN-aware MSE loss")
+def nan_mse_loss(pred, label):
+    """Mean squared error over the entries of the label tensor that are not NaN."""
 
-    This is the cleaner, explicit graph equivalent of the original training code:
-    it samples labeled nodes, augments the features with label metadata, and returns
-    both the filled labels and the sampled-node mask needed by the masked loss.
-
-    Args:
-        x: Node features [N, F]
-        label: Node labels [N] or [N, 1], with NaN for unlabeled nodes
-        batch_size: Number of labeled nodes to sample each epoch
-    """
-
-    def _forget(x, label):
-        label_flat = label.squeeze(-1) if label.ndim > 1 and label.shape[-1] == 1 else label
-        y_numpy = label_flat.detach().cpu().numpy()
-
-        labeled_indices = np.where(~np.isnan(y_numpy))[0]
-        sample_size = min(batch_size, len(labeled_indices))
-
-        train_batch = np.random.choice(labeled_indices, sample_size, replace=False)
-
-        batch_mask = np.zeros(len(y_numpy), dtype=bool)
-        batch_mask[train_batch] = True
-
-        label_for_input = np.nan_to_num(y_numpy, copy=True)
-        label_for_input[train_batch] = 0
-
-        label_known = (~np.isnan(y_numpy)).astype(float)
-        label_known[train_batch] = 0
-
-        augmented_x = torch.cat(
-            [
-                x,
-                torch.from_numpy(label_for_input).to(device=x.device, dtype=x.dtype).unsqueeze(1),
-                torch.from_numpy(label_known).to(device=x.device, dtype=x.dtype).unsqueeze(1),
-            ],
-            dim=1,
-        )
-        filled_label = torch.from_numpy(np.nan_to_num(y_numpy, copy=True)).to(
-            device=label.device, dtype=label_flat.dtype
-        )
-        mask_tensor = torch.from_numpy(batch_mask).to(device=label.device, dtype=torch.float32)
-        return augmented_x, filled_label, mask_tensor
-
-    return _forget
-
-
-@op("masked MSE loss")
-def masked_mse_loss(pred, label, mask):
-    def _masked_loss(pred, label, mask):
+    def _nan_mse_loss(pred, label):
         if pred.shape != label.shape:
             if (
                 pred.ndim == label.ndim + 1
@@ -212,15 +165,13 @@ def masked_mse_loss(pred, label, mask):
             ):
                 pred = pred.unsqueeze(-1)
 
-        pred_flat = pred.squeeze(-1)
-        label_flat = label.squeeze(-1)
-        mask_flat = mask.squeeze(-1) if mask.ndim > 1 else mask
+        valid = torch.isfinite(label)
+        if not torch.any(valid):
+            return pred.sum() * 0.0
+        diff = pred[valid] - label[valid]
+        return torch.mean(diff**2)
 
-        diff = pred_flat[mask_flat.bool()] - label_flat[mask_flat.bool()]
-        mse = torch.mean(diff**2)
-        return mse
-
-    return _masked_loss
+    return _nan_mse_loss
 
 
 @input_op("sequential")
@@ -377,16 +328,7 @@ def activation(x, *, type: ActivationTypes = ActivationTypes.ReLU):
 
 @op("MSE loss")
 def mse_loss(x, y):
-    def _loss(x, y):
-        # Common regression case: predictions [N, 1] vs labels [N].
-        if x.shape != y.shape:
-            if x.ndim == y.ndim + 1 and x.shape[-1] == 1 and x.shape[:-1] == y.shape:
-                y = y.unsqueeze(-1)
-            elif y.ndim == x.ndim + 1 and y.shape[-1] == 1 and y.shape[:-1] == x.shape:
-                x = x.unsqueeze(-1)
-        return torch.nn.functional.mse_loss(x, y)
-
-    return _loss
+    return torch.nn.functional.mse_loss
 
 
 @op("Binary cross-entropy with logits loss", outputs=["loss"])
