@@ -1,9 +1,6 @@
 """Boxes for defining PyTorch models."""
 
 import enum
-
-from torch_geometric.nn import GCNConv
-
 from lynxkite_core import ops
 from lynxkite_core.ops import Parameter as P
 import torch
@@ -328,6 +325,8 @@ def binary_cross_entropy_loss(x, y):
 class ConvolutionTypes(enum.StrEnum):
     GCNConv = "GCNConv"
     SAGEConv = "SAGEConv"
+    GATConv = "GATConv"
+    GATv2Conv = "GATv2Conv"
 
 
 @op("Graph conv")
@@ -338,12 +337,8 @@ def graph_conv(x, edges, *, convolution_type: ConvolutionTypes, output_dim: int)
     :param convolution_type: The type of graph convolution to apply.
     :param output_dim: The number of outputs of this layer.
     """
-    conv = None
-    if convolution_type == ConvolutionTypes.GCNConv:
-        conv = GCNConv(-1, output_dim)
-    elif convolution_type == ConvolutionTypes.SAGEConv:
-        conv = pyg_nn.SAGEConv(-1, output_dim)
-    return conv
+    conv = getattr(pyg_nn, convolution_type.value)
+    return conv(-1, output_dim)
 
 
 @op("Constant vector")
@@ -374,36 +369,26 @@ def concatenate(a, b):
     return cat
 
 
-reg(
-    "Pick element by index",
-    inputs=["x", "index"],
-    outputs=["x_i"],
-)
-reg(
-    "Pick element by constant",
-    inputs=["x"],
-    outputs=["x_i"],
-    params=[ops.Parameter.basic("index", "0")],
-)
-reg(
-    "Take first n",
-    inputs=["x"],
-    outputs=["x"],
-    params=[ops.Parameter.basic("n", 1, int)],
-)
-reg(
-    "Drop first n",
-    inputs=["x"],
-    outputs=["x"],
-    params=[ops.Parameter.basic("n", 1, int)],
-)
-reg(
-    "Graph conv dummy",
-    color="blue",
-    inputs=["x", "edges"],
-    outputs=["x"],
-    params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
-)
+@op("Pick element by index")
+def pick_element_by_index(x, index):
+    return x[index]
+
+
+@op("Pick element by constant")
+def pick_element_by_constant(x, *, index: int = 0):
+    return x[index]
+
+
+@op("Take first n")
+def take_first_n(x, *, n: int = 1):
+    return x[:n]
+
+
+@op("Drop first n")
+def drop_first_n(x, *, n: int = 1):
+    return x[n:]
+
+
 reg(
     "Heterogeneous graph conv",
     inputs=["node_embeddings", "edge_modules"],
@@ -414,8 +399,17 @@ reg(
     ],
 )
 
-reg("Triplet margin loss", inputs=["x", "x_pos", "x_neg"], outputs=["loss"])
-reg("Cross-entropy loss", inputs=["x", "y"], outputs=["loss"])
+
+@op("Triplet margin loss", outputs=["loss"])
+def triplet_margin_loss(x, x_pos, x_neg):
+    return torch.nn.functional.triplet_margin_loss
+
+
+@op("Cross-entropy loss", outputs=["loss"])
+def cross_entropy_loss(x, y):
+    return torch.nn.functional.cross_entropy
+
+
 reg(
     "Optimizer",
     inputs=["loss"],
