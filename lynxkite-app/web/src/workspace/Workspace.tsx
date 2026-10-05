@@ -135,7 +135,7 @@ function LynxKiteFlow() {
   const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite.json") : path)!
     .split("/")
     .pop()!
-    .replace(/[.]lynxkite[.]json$/, "");
+    .replace(/[.]lynxkite(?:[.]json)?$/, "");
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const selectedNodeCount = crdt.selectedNodeCount;

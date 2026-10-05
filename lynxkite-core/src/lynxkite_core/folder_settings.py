@@ -12,7 +12,7 @@ SETTINGS_FILENAME = "settings.yaml"
 
 def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     path = workspace_path.replace("\\", "/")
-    if path.endswith(".lynxkite.json"):
+    if path.endswith((".lynxkite", ".lynxkite.json")):
         path = path.rsplit("/", 1)[0] if "/" in path else ""
     else:
         path = path.strip("/")

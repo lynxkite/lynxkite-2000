@@ -9,7 +9,7 @@ output boxes.
 In the MCP client, configure a command such as:
 
 ```
-lynxkite-mcp 'examples/NetworkX demo.lynxkite.json'
+lynxkite-mcp 'examples/NetworkX demo.lynxkite'
 ```
 
 This will take care of running the workspace. No need for a running LynxKite instance.

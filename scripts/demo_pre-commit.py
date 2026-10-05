@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pre-commit hook to check the demo workspaces."""
 
-from lynxkite_core import workspace, ops
+from lynxkite_core import workspace, ops, workspace_paths
 from pathlib import Path
 import os
 import asyncio
@@ -11,15 +11,12 @@ demo_dir = "examples"
 
 
 def check_demo_ws(ws_path):
-    parent_dir = ws_path.parent
-    ws_name = ws_path.name
     ws = workspace.Workspace.load(ws_path)
     changed_ws = False
     if not ws.paused:
         ws.paused = True
         changed_ws = True
-    if not (parent_dir / ".workspace_files" / ws_name).exists():
-        os.makedirs(parent_dir / ".workspace_files" / ws_name, exist_ok=True)
+    workspace_paths.workspace_data_dir(ws_path).mkdir(parents=True, exist_ok=True)
     if ws.assistant_messages:
         ws.assistant_messages = []
         changed_ws = True
@@ -34,7 +31,7 @@ def check_demo_ws(ws_path):
                 "image",
                 "molecule",
             ]
-            and not (parent_dir / ".workspace_files" / ws_name / f"{node.id}.json").exists()
+            and not workspace_paths.display_path(ws_path, node.id).exists()
         ):
             missing_ws_files = True
     if missing_ws_files:
@@ -66,10 +63,16 @@ if __name__ == "__main__":
         ws_path = Path(ws_file)
         if (
             ws_path.is_relative_to(demo_dir)
-            and ws_file.endswith(".lynxkite.json")
+            and (
+                ws_path.suffix == ".lynxkite"
+                or ws_path.suffixes[-2:] == [".lynxkite", ".json"]
+                or (ws_path.name == "workspace.json" and ws_path.parent.suffix == ".lynxkite")
+            )
             and ".workspace_files" not in ws_file
             and "generated_samples" not in ws_file
         ):
+            if ws_path.name == "workspace.json" and ws_path.parent.suffix == ".lynxkite":
+                ws_path = ws_path.parent
             e = check_demo_ws(ws_path.relative_to(demo_dir))
             if e:
                 errors.append(e)
