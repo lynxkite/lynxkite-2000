@@ -1,7 +1,6 @@
 """Boxes for defining PyTorch models."""
 
 import enum
-import numpy as np
 
 from torch_geometric.nn import GCNConv
 
@@ -53,19 +52,6 @@ class TorchTypes(enum.StrEnum):
         return getattr(torch, self.value)
 
 
-def _series_to_tensor(col, dtype):
-    values = col.to_list()
-    if not values:
-        return torch.empty((0,), dtype=dtype)
-    first = values[0]
-    if isinstance(first, (np.ndarray, list, tuple)):
-        arr = np.asarray(values)
-        if arr.dtype == object:
-            arr = np.stack([np.asarray(v) for v in values])
-        return torch.as_tensor(arr, dtype=dtype)
-    return torch.as_tensor(col.to_numpy(copy=False), dtype=dtype)
-
-
 @input_op("tensor")
 def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor.
@@ -90,7 +76,7 @@ def tensor_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True
         df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
         col = batch[column_name]
-        t = _series_to_tensor(col, type.to_dtype())
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -148,7 +134,10 @@ def masked_tensor_input():
 
 @op("NaN-aware MSE loss")
 def nan_mse_loss(pred, label):
-    """Mean squared error over the entries of the label tensor that are not NaN."""
+    """Mean squared error over the entries of the label tensor that are not NaN.
+    :param pred: The tensor of predictions.
+    :param label: The label tensor, with NaN for entries that should be ignored.
+    """
 
     def _nan_mse_loss(pred, label):
         if pred.shape != label.shape:
@@ -198,7 +187,7 @@ def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = 
         df = b.dfs[table_name]
         batch = ctx.batch_df(df) if per_sample else df
         col = batch[column_name]
-        t = _series_to_tensor(col, type.to_dtype())
+        t = torch.tensor(col.to_list(), dtype=type.to_dtype())
         return t
 
     return from_bundle
@@ -342,9 +331,13 @@ class ConvolutionTypes(enum.StrEnum):
 
 
 @op("Graph conv")
-def graph_conv(
-    x, edges, *, convolution_type: ConvolutionTypes = ConvolutionTypes.GCNConv, output_dim=16
-):
+def graph_conv(x, edges, *, convolution_type: ConvolutionTypes, output_dim: int):
+    """A graph convolution layer.
+    :param x: The feature tensor.
+    :param edges: The edge tensor.
+    :param convolution_type: The type of graph convolution to apply.
+    :param output_dim: The number of outputs of this layer.
+    """
     conv = None
     if convolution_type == ConvolutionTypes.GCNConv:
         conv = GCNConv(-1, output_dim)
