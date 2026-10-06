@@ -112,17 +112,23 @@ def masked_tensor_input():
         b: core.Bundle,
         ctx: InputContext,
         *,
-        table_name: core.TableName,
-        id_column: core.ColumnNameByTableName,
-        mask_table_name: core.TableName,
-        mask_id_column: core.ColumnNameByTableName,
-        value_column: core.ColumnNameByTableName,
+        full_id: core.TableColumn,
+        mask_id: core.TableColumn,
+        label_column: core.TableColumn,
     ):
-        full_df = b.dfs[table_name]
-        mask_df = b.dfs[mask_table_name]
-        full_ids = full_df[id_column]
+        """
+        :param b: the bundle
+        :param ctx: the input context
+        :param full_id: the dataframe to align to, and its id column
+        :param mask_id: the dataframe with the values to keep, and its id column
+        :param label_column: the column with labels in the mask dataframe
+        :return:
+        """
+        full_df = b.dfs[full_id[0]]
+        mask_df = b.dfs[mask_id[0]]
+        full_ids = full_df[full_id[1]]
 
-        mask_value_by_id = mask_df.set_index(mask_id_column)[value_column]
+        mask_value_by_id = mask_df.set_index(mask_id[1])[label_column[1]]
         aligned_values = full_ids.map(mask_value_by_id)
         return torch.as_tensor(aligned_values.to_numpy(copy=True), dtype=torch.float32)
 
