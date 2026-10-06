@@ -371,21 +371,41 @@ def concatenate(a, b):
 
 @op("Pick element by index")
 def pick_element_by_index(x, index):
+    """
+    Picks an element from the input tensor by the specified input index.
+    :param x: The input tensor.
+    :param index: The index of the element to pick.
+    """
     return x[index]
 
 
 @op("Pick element by constant")
 def pick_element_by_constant(x, *, index: int = 0):
+    """
+    Picks an element from the input tensor by the specified index parameter.
+    :param x: The input tensor.
+    :param index: The index of the element to pick.
+    """
     return x[index]
 
 
 @op("Take first n")
 def take_first_n(x, *, n: int = 1):
+    """
+    Returns the first n elements from the input tensor.
+    :param x: The input tensor.
+    :param n: The number of elements to take from the beginning of the tensor.
+    """
     return x[:n]
 
 
 @op("Drop first n")
 def drop_first_n(x, *, n: int = 1):
+    """
+    Returns the input tensor with the first n elements dropped.
+    :param x: The input tensor.
+    :param n: The number of elements to drop from the beginning of the tensor.
+    """
     return x[n:]
 
 
@@ -402,11 +422,22 @@ reg(
 
 @op("Triplet margin loss", outputs=["loss"])
 def triplet_margin_loss(x, x_pos, x_neg):
+    """
+    Returns the triplet margin loss for the given input tensors.
+    :param x: the anchor tensor.
+    :param x_pos: the positive tensor.
+    :param x_neg: the negative tensor.
+    """
     return torch.nn.functional.triplet_margin_loss
 
 
 @op("Cross-entropy loss", outputs=["loss"])
 def cross_entropy_loss(x, y):
+    """
+    Returns the cross-entropy loss for the given input tensors.
+    :param x: the input tensor.
+    :param y: the target tensor.
+    """
     return torch.nn.functional.cross_entropy
 
 
