@@ -113,6 +113,10 @@ for detailed information, see references/merge_parallel_edges.md
 usage: lynxkite_graph_analytics.operations.graph_ops.merge_two_attributes(table_name=<table_name_value>, new_attribute=<new_attribute_value>, primary_attribute=<primary_attribute_value>, secondary_attribute=<secondary_attribute_value>, b=<b_variable>)
 for detailed information, see references/merge_two_attributes.md
 
+**Numeric ids:**
+usage: lynxkite_graph_analytics.operations.graph_ops.numeric_id(relation_name=<relation_name_value>, b=<b_variable>)
+for detailed information, see references/numeric_id.md
+
 **Sample graph:**
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
@@ -125,17 +129,9 @@ for detailed information, see references/pcsf.md
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/define_model.md
 
-**Graph model inference:**
-usage: lynxkite_graph_analytics.operations.ml_ops.graph_model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, full_id_column=<full_id_column_value>, output_id_column=<output_id_column_value>, bundle=<bundle_variable>)
-for detailed information, see references/graph_model_inference.md
-
 **Model inference:**
 usage: lynxkite_graph_analytics.operations.ml_ops.model_inference(model_name=<model_name_value>, input_mapping=<input_mapping_value>, output_mapping=<output_mapping_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
 for detailed information, see references/model_inference.md
-
-**Train graph model:**
-usage: lynxkite_graph_analytics.operations.ml_ops.train_graph_model(model_name=<model_name_value>, input_mapping=<input_mapping_value>, epochs=<epochs_value>, bundle=<bundle_variable>)
-for detailed information, see references/train_graph_model.md
 
 **Train model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.train_model(model_name=<model_name_value>, input_mapping=<input_mapping_value>, epochs=<epochs_value>, batch_size=<batch_size_value>, bundle=<bundle_variable>)
@@ -241,9 +237,17 @@ for detailed information, see references/scikit_predict.md
 usage: lynxkite_graph_analytics.operations.scikit_ops.one_hot(table_name=<table_name_value>, columns=<columns_value>, b=<b_variable>)
 for detailed information, see references/one_hot.md
 
+**Train decision tree regression model:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.train_decision_tree(table_name=<table_name_value>, feature_column=<feature_column_value>, label_column=<label_column_value>, max_depth=<max_depth_value>, min_impurity_decrease=<min_impurity_decrease_value>, min_samples_leaf=<min_samples_leaf_value>, seed=<seed_value>, model_name=<model_name_value>, b=<b_variable>)
+for detailed information, see references/train_decision_tree.md
+
 **Train K-nearest neighbors classifier:**
 usage: lynxkite_graph_analytics.operations.scikit_ops.train_knn(table_name=<table_name_value>, feature_column=<feature_column_value>, label_column=<label_column_value>, n_neighbors=<n_neighbors_value>, model_name=<model_name_value>, weights=<weights_value>, algorithm=<algorithm_value>, leaf_size=<leaf_size_value>, metric=<metric_value>, p=<p_value>, n_jobs=<n_jobs_value>, b=<b_variable>)
 for detailed information, see references/train_knn.md
+
+**Train linear regression model:**
+usage: lynxkite_graph_analytics.operations.scikit_ops.train_linreg(table_name=<table_name_value>, feature_column=<feature_column_value>, label_column=<label_column_value>, model_name=<model_name_value>, b=<b_variable>)
+for detailed information, see references/train_linreg.md
 
 **Aggregate between neighbors:**
 usage: lynxkite_graph_analytics.operations.segmentation_ops.aggregate_between_neighbors(relation_name=<relation_name_value>, add_suffixes=<add_suffixes_value>, direction=<direction_value>, aggregations=<aggregations_value>, b=<b_variable>)
@@ -292,6 +296,10 @@ for detailed information, see references/flatten_column.md
 **Join tables:**
 usage: lynxkite_graph_analytics.operations.table_ops.join_tables(table1_column=<table1_column_value>, table2_column=<table2_column_value>, merge_mode=<merge_mode_value>, b=<b_variable>)
 for detailed information, see references/join_tables.md
+
+**Rename columns:**
+usage: lynxkite_graph_analytics.operations.table_ops.rename_columns(table_name=<table_name_value>, pairs=<pairs_value>, b=<b_variable>)
+for detailed information, see references/rename_columns.md
 
 **Rename table:**
 usage: lynxkite_graph_analytics.operations.table_ops.rename_table(old_name=<old_name_value>, new_name=<new_name_value>, b=<b_variable>)
