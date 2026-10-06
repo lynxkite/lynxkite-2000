@@ -92,15 +92,6 @@ def _to_id(*strings: str) -> str:
     return "_".join("".join(c if c.isalnum() else "_" for c in s) for s in strings)
 
 
-class MultiIdentity(torch.nn.Module):
-    """Passes through one or more tensors unchanged."""
-
-    def forward(self, *args):
-        if len(args) == 1:
-            return args[0]
-        return args
-
-
 @dataclasses.dataclass
 class Layer:
     """Temporary data structure used by ModelBuilder."""
@@ -408,7 +399,7 @@ class ModelBuilder:
                 # Copy repeat section's output to repeat section's input.
                 self.layers.append(
                     Layer(
-                        MultiIdentity(),
+                        torch.nn.Identity(),
                         origin_id=node_id,
                         inputs=[_to_id(*last_output)],
                         outputs=[_to_id(start_id, "output")],
@@ -425,7 +416,7 @@ class ModelBuilder:
         inputs = [_to_id(*i) for n in op.inputs for i in self.in_edges[node_id][n.name]]
         outputs = [_to_id(node_id, n.name) for n in op.outputs]
         if op.func == ops.no_op:
-            module = MultiIdentity()
+            module = torch.nn.Identity()
         else:
             module = op.func(*inputs, **params)
         return Layer(module, node_id, inputs, outputs)
@@ -468,12 +459,12 @@ class ModelBuilder:
         )
         # Make sure the trained output is output from the last model layer.
         outputs = ", ".join(cfg["model_outputs"])
-        layers.append((MultiIdentity(), f"{outputs} -> {outputs}"))
+        layers.append((torch.nn.Identity(), f"{outputs} -> {outputs}"))
         cfg["model"] = pyg_nn.Sequential(", ".join(cfg["model_inputs"]), layers)
         # Make sure the loss is output from the last loss layer.
         [(lossb, lossh)] = self.in_edges[self.optimizer]["loss"]
         lossi = _to_id(lossb, lossh)
-        loss_layers.append((MultiIdentity(), f"{lossi} -> loss"))
+        loss_layers.append((torch.nn.Identity(), f"{lossi} -> loss"))
         cfg["loss"] = pyg_nn.Sequential(", ".join(cfg["loss_inputs"]), loss_layers)
         assert not list(cfg["loss"].parameters()), f"loss should have no parameters: {loss_layers}"
         # Create optimizer.
