@@ -1,7 +1,9 @@
 import { useReactFlow } from "@xyflow/react";
 import React, { useState } from "react";
 import Markdown from "react-markdown";
+import Download from "~icons/tabler/download";
 import { useDisplay } from "../../common.ts";
+import Tooltip from "../../Tooltip";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";
 
@@ -37,14 +39,32 @@ function NodeWithTableView(props: any) {
       return newOpen;
     });
   }
+  function downloadButton(name: string) {
+    return (
+      <div className="float-right">
+        <Tooltip doc={`Download ${name} as CSV`}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log(`Download ${name}`);
+            }}
+          >
+            <Download />
+          </button>
+        </Tooltip>
+      </div>
+    );
+  }
   return (
     <>
       {display && [
         dfs.map(([name, df]: [string, any]) => (
           <React.Fragment key={name}>
-            {!single && (
+            {single ? (
+              downloadButton(name)
+            ) : (
               <div key={`${name}-header`} className="df-head" onClick={() => toggleTable(name)}>
-                {name}
+                {name} {downloadButton(name)}
               </div>
             )}
             {(single || open[name]) &&
