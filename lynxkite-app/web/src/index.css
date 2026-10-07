@@ -503,6 +503,9 @@ svg {
       var(--status-color-3)
     );
     background-blend-mode: luminosity;
+    border: 46px solid;
+    border-image: url(assets/candy-9-slice.webp) 140 fill;
+    overflow: visible;
 
     .node-content {
       display: none;
@@ -518,8 +521,8 @@ svg {
       .title-icon {
         display: block;
         width: 150px;
-        height: 150px;
         color: white;
+        filter: drop-shadow(10px 10px 1px #0001);
       }
 
       .title-icon-placeholder {
