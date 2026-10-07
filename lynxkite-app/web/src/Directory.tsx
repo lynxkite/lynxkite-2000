@@ -2,6 +2,7 @@ import { type ReactElement, useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
+import AlertCircle from "~icons/tabler/alert-circle";
 import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
@@ -249,9 +250,22 @@ export default function Directory() {
     }
   }
 
+  if (list.error) {
+    return (
+      <ManagementPage>
+        <div className="directory-error">
+          <AlertCircle style={{ verticalAlign: "baseline" }} />
+          <p>
+            <h1>Error</h1>
+            {list.error.message}
+          </p>
+        </div>
+      </ManagementPage>
+    );
+  }
+
   return (
     <ManagementPage>
-      {list.error && <p className="error">{list.error.message}</p>}
       {list.isLoading && (
         <output className="loading spinner-border">
           <span className="visually-hidden">Loading...</span>
