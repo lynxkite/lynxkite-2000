@@ -274,16 +274,26 @@ async def execute_workspace(name: str, req: fastapi.Request):
     await crdt.execute(name, room.ws, ws_pyd)
 
 
+class ExportTableRequest(pydantic.BaseModel):
+    workspace_name: str
+    box_id: str
+    output_id: str
+    table_name: str
+    format: str
+
+
 @app.post("/api/export_table")
 async def export_table(
-    workspace_name: str,
-    box_id: str,
-    output_id: str,
-    table_name: str,
-    format: str,
+    export_req: ExportTableRequest,
     req: fastapi.Request,
 ):
     """Export a table output as a downloadable file."""
+    workspace_name = export_req.workspace_name
+    box_id = export_req.box_id
+    output_id = export_req.output_id
+    table_name = export_req.table_name
+    format = export_req.format
+    # While we are _reading_ the table, we need to execute the workspace to access it.
     await auth.check_permission(req, "write", workspace_name)
     room = await crdt.get_room(workspace_name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())

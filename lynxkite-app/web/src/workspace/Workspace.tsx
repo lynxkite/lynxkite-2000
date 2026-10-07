@@ -148,8 +148,8 @@ function LynxKiteFlow() {
   }, [nodes, crdt?.onFENodesChange]);
   const autoConnect = useAutoConnect(edges, crdt);
   const workspaceContextValue = useMemo(
-    () => ({ workspace: workspace as any, canWrite }),
-    [workspace, canWrite],
+    () => ({ workspace: workspace as any, path, canWrite }),
+    [workspace, path, canWrite],
   );
   const nodeStateContextValue = useMemo(() => ({ iconized }), [iconized]);
 
