@@ -474,9 +474,10 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
             for nc in ws_crdt["nodes"]:
                 nc["data"]["status"] = "planned"
                 nc["data"]["message"] = None
-        await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
+        result = await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
         save_workspace_from_frontend(name, ws_pyd)
         print(f"Finished running {name} in {ws_pyd.env}.")
+        return result
     finally:
         progress_crdt.mark_run_finished(name)
 
