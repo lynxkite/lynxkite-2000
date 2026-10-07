@@ -27,7 +27,7 @@ test("Can upload a file via the Upload file button", async ({ page }) => {
   await expect(uploadStatus).toContainText("Uploading files (0/1)");
   const progress = uploadStatus.getByRole("progressbar");
   await expect(progress).toHaveAttribute("max", contents.length.toString());
-  await expect(progress).toHaveClass(/progress-info w-full/);
+  await expect(progress).toHaveClass(/progress-primary w-full/);
 
   finishUpload();
   await upload;
