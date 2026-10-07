@@ -10635,7 +10635,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -10987,7 +10987,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -11300,7 +11300,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 98,
+        "display_version": 102,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -11368,7 +11368,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -12452,7 +12452,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -12797,7 +12797,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -13101,22 +13101,22 @@
         "telemetry": null,
         "title": "Graph model inference"
       },
-      "height": 983.0,
+      "height": 666.0,
       "id": "Graph model inference 1",
       "parentId": null,
       "position": {
-        "x": 7341.765946978235,
-        "y": 2126.563932386466
+        "x": 7321.739200038494,
+        "y": 2386.9116426030932
       },
       "type": "basic",
-      "width": 628.0
+      "width": 579.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 6,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -13177,7 +13177,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -13495,7 +13495,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -13980,7 +13980,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 5000.0
+                "length": 1000.0
               }
             },
             "other": {
@@ -14265,7 +14265,7 @@
           }
         ],
         "params": {
-          "epochs": "5000",
+          "epochs": "1000",
           "input_mapping": "{\"map\":{\"Input__graph_edges_1_input\":{\"table_name\":\"edges\",\"source_column_name\":\"source\",\"target_column_name\":\"target\"},\"Input__masked_tensor_1_input\":{\"full_id\":[\"nodes\",\"id\"],\"mask_id\":[\"nodes_train\",\"id\"],\"label_column\":[\"nodes_train\",\"age\"]},\"Input__tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"}}}",
           "model_name": "model"
         },
@@ -14274,22 +14274,22 @@
         "telemetry": null,
         "title": "Train graph model"
       },
-      "height": 895.0,
+      "height": 610.0,
       "id": "Train graph model 1",
       "parentId": null,
       "position": {
-        "x": 6352.616388626871,
-        "y": 2156.718629127055
+        "x": 6456.755472713523,
+        "y": 2425.0770381195784
       },
       "type": "basic",
-      "width": 767.0
+      "width": 545.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 4,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -14392,7 +14392,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 8,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -14502,7 +14502,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [

@@ -1,0 +1,513 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "Graph conv 1 x Activation 1 output",
+      "source": "Activation 1",
+      "sourceHandle": "output",
+      "target": "Graph conv 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: graph edges 1 input Graph conv 1 edges",
+      "source": "Input: graph edges 1",
+      "sourceHandle": "input",
+      "target": "Graph conv 1",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Input: graph edges 1 input Graph conv 2 edges",
+      "source": "Input: graph edges 1",
+      "sourceHandle": "input",
+      "target": "Graph conv 2",
+      "targetHandle": "edges"
+    },
+    {
+      "id": "Graph conv 1 output Activation 2 x",
+      "source": "Graph conv 1",
+      "sourceHandle": "output",
+      "target": "Activation 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 3 x Linear 1 output",
+      "source": "Linear 1",
+      "sourceHandle": "output",
+      "target": "Activation 3",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 3 output Graph conv 2 x",
+      "source": "Activation 3",
+      "sourceHandle": "output",
+      "target": "Graph conv 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Activation 2 output Linear 2 x",
+      "source": "Activation 2",
+      "sourceHandle": "output",
+      "target": "Linear 2",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Linear 2 output Output 1 x",
+      "source": "Linear 2",
+      "sourceHandle": "output",
+      "target": "Output 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Graph conv 2 output Activation 1 x",
+      "source": "Graph conv 2",
+      "sourceHandle": "output",
+      "target": "Activation 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "Input: tensor 1 input Linear 1 x",
+      "source": "Input: tensor 1",
+      "sourceHandle": "input",
+      "target": "Linear 1",
+      "targetHandle": "x"
+    },
+    {
+      "id": "NaN-aware MSE loss 1 output Optimizer 1 loss",
+      "source": "NaN-aware MSE loss 1",
+      "sourceHandle": "output",
+      "target": "Optimizer 1",
+      "targetHandle": "loss"
+    },
+    {
+      "id": "Output 1 x NaN-aware MSE loss 1 pred",
+      "source": "Output 1",
+      "sourceHandle": "x",
+      "target": "NaN-aware MSE loss 1",
+      "targetHandle": "pred"
+    },
+    {
+      "id": "Input: masked tensor 1 input NaN-aware MSE loss 1 label",
+      "source": "Input: masked tensor 1",
+      "sourceHandle": "input",
+      "target": "NaN-aware MSE loss 1",
+      "targetHandle": "label"
+    }
+  ],
+  "env": "PyTorch model",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Input: graph edges",
+        "output_metadata": null,
+        "params": {
+          "_input_name": ""
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Input: graph edges"
+      },
+      "height": 168.0,
+      "id": "Input: graph edges 1",
+      "parentId": null,
+      "position": {
+        "x": 1018.492419556648,
+        "y": -3569.0457572664304
+      },
+      "type": "basic",
+      "width": 299.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Activation",
+        "output_metadata": null,
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Activation"
+      },
+      "height": 151.0,
+      "id": "Activation 1",
+      "parentId": null,
+      "position": {
+        "x": 681.440607825457,
+        "y": -4088.7537495370016
+      },
+      "type": "basic",
+      "width": 330.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 219.0,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Graph conv",
+        "output_metadata": null,
+        "params": {
+          "convolution_type": "GCNConv",
+          "output_dim": "16"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Graph conv"
+      },
+      "height": 219.0,
+      "id": "Graph conv 1",
+      "parentId": null,
+      "position": {
+        "x": 808.3418133861662,
+        "y": -4397.326140330407
+      },
+      "type": "basic",
+      "width": 321.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Optimizer",
+        "output_metadata": null,
+        "params": {
+          "lr": "0.005",
+          "type": "AdamW"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Optimizer"
+      },
+      "height": 258.0,
+      "id": "Optimizer 1",
+      "parentId": null,
+      "position": {
+        "x": 1459.5187608433555,
+        "y": -5403.4054734309175
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Output",
+        "output_metadata": null,
+        "params": {
+          "name": null
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Output"
+      },
+      "height": 150.0,
+      "id": "Output 1",
+      "parentId": null,
+      "position": {
+        "x": 846.4411325590911,
+        "y": -5030.003634337848
+      },
+      "type": "basic",
+      "width": 290.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "output_metadata": null,
+        "params": {
+          "_input_name": "X",
+          "per_sample": true,
+          "type": "float"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Input: tensor"
+      },
+      "height": 284.0,
+      "id": "Input: tensor 1",
+      "parentId": null,
+      "position": {
+        "x": 576.8861598911817,
+        "y": -3080.0508787357917
+      },
+      "type": "basic",
+      "width": 320.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 219.0,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Graph conv",
+        "output_metadata": null,
+        "params": {
+          "convolution_type": "GCNConv",
+          "output_dim": "16"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Graph conv"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 219.0,
+      "id": "Graph conv 2",
+      "measured": {
+        "height": 219.0,
+        "width": 321.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 681.411350661365,
+        "y": -3881.5302531472917
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 321.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Activation",
+        "output_metadata": null,
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Activation"
+      },
+      "dragHandle": ".drag-handle",
+      "dragging": false,
+      "height": 151.0,
+      "id": "Activation 2",
+      "measured": {
+        "height": 151.0,
+        "width": 330.0
+      },
+      "parentId": null,
+      "position": {
+        "x": 814.0100810921433,
+        "y": -4596.706249998401
+      },
+      "selected": false,
+      "type": "basic",
+      "width": 330.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Linear",
+        "output_metadata": null,
+        "params": {
+          "output_dim": "16"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Linear"
+      },
+      "height": 158.0,
+      "id": "Linear 1",
+      "parentId": null,
+      "position": {
+        "x": 588.7038127852488,
+        "y": -3316.984287923313
+      },
+      "type": "basic",
+      "width": 304.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Activation",
+        "output_metadata": null,
+        "params": {
+          "type": "ReLU"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Activation"
+      },
+      "height": 169.0,
+      "id": "Activation 3",
+      "parentId": null,
+      "position": {
+        "x": 593.7181359775235,
+        "y": -3561.4284617451463
+      },
+      "type": "basic",
+      "width": 299.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Linear",
+        "output_metadata": null,
+        "params": {
+          "output_dim": "1"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Linear"
+      },
+      "height": 165.0,
+      "id": "Linear 2",
+      "parentId": null,
+      "position": {
+        "x": 850.2455732876999,
+        "y": -4809.2671518934385
+      },
+      "type": "basic",
+      "width": 269.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "NaN-aware MSE loss",
+        "output_metadata": null,
+        "params": {},
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "NaN-aware MSE loss"
+      },
+      "height": 315.0,
+      "id": "NaN-aware MSE loss 1",
+      "parentId": null,
+      "position": {
+        "x": 1451.8412660839135,
+        "y": -5073.825650807883
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Input: masked tensor",
+        "output_metadata": null,
+        "params": {
+          "_input_name": ""
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Input: masked tensor"
+      },
+      "height": 315.0,
+      "id": "Input: masked tensor 1",
+      "parentId": null,
+      "position": {
+        "x": 1539.93025865797,
+        "y": -4647.757285178497
+      },
+      "type": "basic",
+      "width": 315.0
+    }
+  ],
+  "paused": true
+}

@@ -6,7 +6,6 @@ from lynxkite_core.ops import Parameter as P
 import torch
 from .pytorch_core import op, reg, ENV, input_op, InputContext
 from .. import core
-import torch_geometric.nn as pyg_nn
 
 
 class ActivationTypes(enum.StrEnum):
@@ -305,11 +304,15 @@ def dropout(x, *, p=0.0):
 
 @op("Linear", weights=True)
 def linear(x, *, output_dim=1024):
+    import torch_geometric.nn as pyg_nn
+
     return pyg_nn.Linear(-1, output_dim)
 
 
 @op("Mean pool")
 def mean_pool(x):
+    import torch_geometric.nn as pyg_nn
+
     return pyg_nn.global_mean_pool
 
 
@@ -343,6 +346,8 @@ def graph_conv(x, edges, *, convolution_type: ConvolutionTypes, output_dim: int)
     :param convolution_type: The type of graph convolution to apply.
     :param output_dim: The number of outputs of this layer.
     """
+    import torch_geometric.nn as pyg_nn
+
     conv = getattr(pyg_nn, convolution_type.value)
     return conv(-1, output_dim)
 
