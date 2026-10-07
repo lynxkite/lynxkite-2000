@@ -1137,6 +1137,27 @@ svg {
     padding: 0 0 10px 0;
   }
 
+  .directory-error {
+    padding: 10px;
+    padding-bottom: 0;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      font-size: 200%;
+    }
+
+    > p {
+      flex: 1;
+
+      h1 {
+        font-size: 120%;
+        font-weight: bold;
+      }
+    }
+  }
+
   @media (min-width: 768px) {
     .management-page-content {
       width: 768px;
