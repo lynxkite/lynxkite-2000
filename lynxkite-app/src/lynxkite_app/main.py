@@ -211,20 +211,34 @@ async def service_post(req: fastapi.Request, module_path: str):
     return await module.api_service_post(req)
 
 
+def safely_inside(base: pathlib.Path, relative: str) -> pathlib.Path:
+    path = base / relative
+    path_r = path.resolve()
+    base_r = base.resolve()
+    if not path_r.is_relative_to(base_r):
+        raise fastapi.HTTPException(status_code=400, detail=f"Path '{path}' is invalid")
+    return path
+
+
 @app.post("/api/upload")
 async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
     """Receives file uploads and stores them in DATA_PATH/dir."""
     await auth.check_permission(req, "write", dir)
-    upload_dir = data_path / dir
-    assert upload_dir.is_relative_to(data_path), f"Path '{upload_dir}' is invalid"
+    upload_dir = safely_inside(data_path, dir)
     form = await req.form()
-    for file in form.values():
-        if not isinstance(file, starlette.datastructures.UploadFile) or not file.filename:
-            continue
-        file_path = upload_dir / file.filename
-        assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+    for name, file in form.multi_items():
+        if (
+            name == "file"
+            and isinstance(file, starlette.datastructures.UploadFile)
+            and file.filename
+        ):
+            file_path = safely_inside(upload_dir, file.filename)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            with file_path.open("wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+        elif name == "directory" and isinstance(file, str):
+            file_path = safely_inside(upload_dir, file)
+            file_path.mkdir(parents=True, exist_ok=True)
     return {"status": "ok"}
 
 
@@ -232,8 +246,7 @@ async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
 async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
     await auth.check_permission(request, "read", req["path"])
-    file_path = data_path / req["path"]
-    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    file_path = safely_inside(data_path, req["path"])
     if not file_path.exists() or not file_path.is_file():
         raise fastapi.HTTPException(status_code=404, detail="File not found")
     return fastapi.responses.FileResponse(file_path)
@@ -244,8 +257,7 @@ async def export_workspace(req: dict, request: fastapi.Request):
     """Sends a static workspace ZIP to the client."""
     await auth.check_permission(request, "read", req["path"])
     workspace_path = pathlib.Path(req["path"])
-    file_path = data_path / workspace_path
-    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    file_path = safely_inside(data_path, req["path"])
     if not file_path.exists() or not file_path.is_file():
         raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:

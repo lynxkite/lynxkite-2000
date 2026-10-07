@@ -522,7 +522,10 @@ function LynxKiteFlow() {
     }
     try {
       await uploadFile(file, {
-        onProgress: (percentCompleted) => {
+        onProgress: (uploadedBytes, totalBytes) => {
+          const percentCompleted = totalBytes
+            ? Math.round((100 * uploadedBytes) / totalBytes)
+            : 100;
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
