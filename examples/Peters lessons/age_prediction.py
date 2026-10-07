@@ -107,3 +107,50 @@ def graph_model_inference(
         predictions_by_id = pd.Series(list(values), index=full_df[full_id_column[1]])
         bundle.dfs[df][col] = target_df[output_id_column[1]].map(predictions_by_id)
     return bundle
+
+
+@op("Use numeric IDs for nodes in a relation", color="green", icon="table-filled")
+def numeric_id(
+    b: core.Bundle,
+    *,
+    relation_name: core.RelationName,
+):
+    """Replaces the ids used in the relation with numeric ids. Useful when you want to put the ids into tensors.
+    :param b: The bundle.
+    :param relation_name: The name of the relation.
+    """
+    b = b.copy()
+    b.dfs = b.dfs.copy()
+
+    rel = next((r for r in b.relations if r.name == relation_name))
+
+    source_df = b.dfs[rel.source_table].copy()
+    target_df = b.dfs[rel.target_table].copy()
+    edge_df = b.dfs[rel.name].copy()
+
+    global_source_map = {old_id: idx for idx, old_id in enumerate(source_df[rel.source_key])}
+    source_df[rel.source_key] = range(len(source_df))
+
+    if rel.source_table == rel.target_table:
+        global_target_map = global_source_map
+        target_df[rel.target_key] = source_df[rel.source_key]
+    else:
+        global_target_map = {old_id: idx for idx, old_id in enumerate(target_df[rel.target_key])}
+        target_df[rel.target_key] = range(len(target_df))
+
+    edge_df[rel.source_column] = edge_df[rel.source_column].map(global_source_map)
+    edge_df[rel.target_column] = edge_df[rel.target_column].map(global_target_map)
+
+    b.dfs[rel.source_table] = source_df
+    b.dfs[rel.target_table] = target_df
+    b.dfs[rel.name] = edge_df
+
+    for df_name, df in b.dfs.items():
+        if df_name in (rel.source_table, rel.target_table, rel.name):
+            continue
+
+        if rel.source_key in df.columns:
+            updated_df = df.copy()
+            updated_df[rel.source_key] = updated_df[rel.source_key].map(global_source_map)
+            b.dfs[df_name] = updated_df
+    return b

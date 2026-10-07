@@ -113,10 +113,6 @@ for detailed information, see references/merge_parallel_edges.md
 usage: lynxkite_graph_analytics.operations.graph_ops.merge_two_attributes(table_name=<table_name_value>, new_attribute=<new_attribute_value>, primary_attribute=<primary_attribute_value>, secondary_attribute=<secondary_attribute_value>, b=<b_variable>)
 for detailed information, see references/merge_two_attributes.md
 
-**Numeric ids:**
-usage: lynxkite_graph_analytics.operations.graph_ops.numeric_id(relation_name=<relation_name_value>, b=<b_variable>)
-for detailed information, see references/numeric_id.md
-
 **Sample graph:**
 usage: lynxkite_graph_analytics.operations.graph_ops.sample_graph(nodes=<nodes_value>, graph=<graph_variable>)
 for detailed information, see references/sample_graph.md
