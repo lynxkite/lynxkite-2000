@@ -1,9 +1,11 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import io
 import os
 import pathlib
 import shutil
 import tempfile
+import typing
 
 import fastapi
 import joblib
@@ -270,6 +272,54 @@ async def execute_workspace(name: str, req: fastapi.Request):
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)
+
+
+class ExportTableRequest(pydantic.BaseModel):
+    workspace_name: str
+    box_id: str
+    output_id: str
+    table_name: str
+    format: str
+
+
+@app.post("/api/export_table")
+async def export_table(
+    export_req: ExportTableRequest,
+    req: fastapi.Request,
+):
+    """Export a table output as a downloadable file."""
+    workspace_name = export_req.workspace_name
+    box_id = export_req.box_id
+    output_id = export_req.output_id
+    table_name = export_req.table_name
+    format = export_req.format
+    # While we are _reading_ the table, we need to execute the workspace to access it.
+    await auth.check_permission(req, "write", workspace_name)
+    room = await crdt.get_room(workspace_name)
+    ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
+    result = await crdt.execute(workspace_name, room.ws, ws_pyd)
+    t = type(result)
+    if f"{t.__module__}.{t.__name__}" == "lynxkite_graph_analytics.core.WorkspaceResult":
+        # This is specific to lynxkite_graph_analytics.
+        import lynxkite_graph_analytics.core
+
+        result = typing.cast(lynxkite_graph_analytics.core.WorkspaceResult, result)
+        output = result.outputs[box_id, output_id]
+        df = output.dfs[table_name]
+        if format == "csv":
+            return fastapi.responses.StreamingResponse(
+                io.StringIO(df.to_csv(index=False)),
+                media_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename={table_name}.csv"},
+            )
+        elif format == "parquet":
+            return fastapi.responses.StreamingResponse(
+                io.BytesIO(df.to_parquet(index=False)),
+                media_type="application/octet-stream",
+                headers={"Content-Disposition": f"attachment; filename={table_name}.parquet"},
+            )
+        else:
+            raise fastapi.HTTPException(status_code=400, detail="Unsupported format")
 
 
 class SPAStaticFiles(StaticFiles):

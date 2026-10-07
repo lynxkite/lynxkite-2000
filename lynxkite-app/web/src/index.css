@@ -785,6 +785,10 @@ svg {
       padding: 8px;
       background: #f0f0f0;
       cursor: pointer;
+
+      button {
+        cursor: pointer;
+      }
     }
 
     dl {

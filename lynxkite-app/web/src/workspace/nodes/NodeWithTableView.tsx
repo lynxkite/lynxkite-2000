@@ -1,7 +1,10 @@
 import { useReactFlow } from "@xyflow/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Markdown from "react-markdown";
-import { useDisplay } from "../../common.ts";
+import Download from "~icons/tabler/download";
+import { apiFetch, useDisplay } from "../../common.ts";
+import Tooltip from "../../Tooltip";
+import { LynxKiteState } from "../LynxKiteState";
 import LynxKiteNode from "./LynxKiteNode";
 import Table from "./Table";
 
@@ -21,6 +24,7 @@ function NodeWithTableView(props: any) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState((props.data?.params?._tables_open ?? {}) as OpenState);
   const display = useDisplay(props.data?.display_version, props.id);
+  const state = useContext(LynxKiteState);
   const single = display?.dataframes && Object.keys(display?.dataframes).length === 1;
   const dfs = Object.entries(display?.dataframes || {});
   dfs.sort();
@@ -37,14 +41,57 @@ function NodeWithTableView(props: any) {
       return newOpen;
     });
   }
+  async function downloadTable(name: string) {
+    const outputId = props.data.meta.outputs?.[0].name;
+    const payload = {
+      workspace_name: state.path,
+      box_id: props.id,
+      output_id: outputId,
+      table_name: name,
+      format: "csv",
+    };
+    const response = await apiFetch(`/api/export_table`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      alert(`Failed to download ${name} as CSV.`);
+      return;
+    }
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${name}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+  function downloadButton(name: string) {
+    return (
+      <div className="float-right">
+        <Tooltip doc={`Download ${name} as CSV`}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              void downloadTable(name);
+            }}
+          >
+            <Download />
+          </button>
+        </Tooltip>
+      </div>
+    );
+  }
   return (
     <>
       {display && [
         dfs.map(([name, df]: [string, any]) => (
           <React.Fragment key={name}>
-            {!single && (
+            {single ? (
+              downloadButton(name)
+            ) : (
               <div key={`${name}-header`} className="df-head" onClick={() => toggleTable(name)}>
-                {name}
+                {name} {downloadButton(name)}
               </div>
             )}
             {(single || open[name]) &&
