@@ -53,7 +53,8 @@ test("Can import a CSV file", async () => {
   await validateImport(workspace, "import_test.csv", "csv");
 });
 
-test("Can download a table as CSV", async (_, testInfo) => {
+// biome-ignore lint/correctness/noEmptyPattern: Playwright requires destructuring argument
+test("Can download a table as CSV", async ({}, testInfo) => {
   await validateImport(workspace, "import_test.csv", "csv");
   const tableBox = workspace.getBox("View tables 1");
 
