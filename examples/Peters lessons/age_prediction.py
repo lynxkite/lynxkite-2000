@@ -109,7 +109,7 @@ def graph_model_inference(
     return bundle
 
 
-@op("Use numeric IDs for nodes in a relation", color="green", icon="table-filled")
+@op("Use numeric IDs for nodes in a relation", color="orange", icon="table-filled")
 def numeric_id(
     b: core.Bundle,
     *,

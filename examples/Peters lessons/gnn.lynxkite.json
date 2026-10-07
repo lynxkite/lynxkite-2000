@@ -202,7 +202,7 @@
         "op_id": "Optimizer",
         "output_metadata": null,
         "params": {
-          "lr": "0.005",
+          "lr": "0.002",
           "type": "AdamW"
         },
         "status": "done",

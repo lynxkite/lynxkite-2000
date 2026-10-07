@@ -1051,7 +1051,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -5001,7 +5001,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -9136,7 +9136,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -9628,7 +9628,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -12034,7 +12034,7 @@
         ],
         "message": null,
         "meta": null,
-        "op_id": "Graph operations > Numeric ids",
+        "op_id": "Age prediction > Use numeric IDs for nodes in a relation",
         "output_metadata": [
           {
             "dataframes": {
@@ -12382,7 +12382,7 @@
       "parentId": null,
       "position": {
         "x": 5743.86639869928,
-        "y": 2629.155993014834
+        "y": 2628.513421873174
       },
       "type": "basic",
       "width": 315.0
@@ -13101,22 +13101,22 @@
         "telemetry": null,
         "title": "Graph model inference"
       },
-      "height": 666.0,
+      "height": 983.0,
       "id": "Graph model inference 1",
       "parentId": null,
       "position": {
-        "x": 7321.739200038494,
-        "y": 2386.9116426030932
+        "x": 7341.765946978235,
+        "y": 2126.563932386466
       },
       "type": "basic",
-      "width": 579.0
+      "width": 628.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 10,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -13476,7 +13476,7 @@
           ]
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Scatter plot"
       },
@@ -13495,7 +13495,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 10,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -13564,7 +13564,7 @@
           ]
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Scatter plot"
       },
@@ -14270,26 +14270,28 @@
           "model_name": "model"
         },
         "status": "done",
-        "tags": null,
+        "tags": [
+          "slow"
+        ],
         "telemetry": null,
         "title": "Train graph model"
       },
-      "height": 610.0,
+      "height": 895.0,
       "id": "Train graph model 1",
       "parentId": null,
       "position": {
-        "x": 6456.755472713523,
-        "y": 2425.0770381195784
+        "x": 6352.616388626871,
+        "y": 2156.718629127055
       },
       "type": "basic",
-      "width": 545.0
+      "width": 767.0
     },
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 10,
+        "display_version": 9,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -14373,7 +14375,7 @@
           ]
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Scatter plot"
       },
@@ -14392,7 +14394,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 8,
+        "display_version": 7,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -14483,7 +14485,7 @@
           ]
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Scatter plot"
       },
@@ -14502,7 +14504,7 @@
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
-        "display_version": 9,
+        "display_version": 8,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -14593,7 +14595,7 @@
           ]
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Scatter plot"
       },
