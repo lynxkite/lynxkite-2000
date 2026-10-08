@@ -15,7 +15,7 @@ def one_hot(
     df = b.dfs[table_name].copy()
 
     for col in columns:
-        dummies = pd.get_dummies(df[col])
+        dummies = pd.get_dummies(df[col], dtype=int)
         df[col + "_one_hot"] = list(map(tuple, dummies.to_numpy()))
 
     b.dfs[table_name] = df
