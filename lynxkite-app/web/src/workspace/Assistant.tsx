@@ -30,7 +30,7 @@ export default function Assistant(props: {
   selectedNodeIds: string[];
   workspacePath: string;
 }) {
-  const { crdtWorkspace, selectedNodeIds, workspacePath: routePath } = props;
+  const { crdtWorkspace, selectedNodeIds, workspacePath } = props;
   const crdtWorkspaceRef = useRef(crdtWorkspace);
   crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
@@ -38,7 +38,6 @@ export default function Assistant(props: {
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
-  const workspacePath = crdtWorkspace.ws?.path || routePath;
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
   const [messagesLoaded, setMessagesLoaded] = useState(false);
   const dictationBaseRef = useRef("");
