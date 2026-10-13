@@ -6,7 +6,6 @@ import shutil
 import tempfile
 
 import fastapi
-import joblib
 import pydantic
 import starlette.background
 import starlette.datastructures
@@ -18,6 +17,7 @@ from lynxkite_core.folder_settings import SETTINGS_FILENAME
 from pydantic_core import from_json
 
 from . import acl, auth, crdt, workspace_export
+from . import joblib_deduplicated as joblib
 from .terminal_emulator import capture_output, enable_thread_proxies
 from .tqdm_emulator import ProgressReporter, capture_tqdm
 
