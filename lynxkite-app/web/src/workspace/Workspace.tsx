@@ -924,7 +924,11 @@ function LynxKiteFlow() {
         </div>
         {isAssistantOpen && canWrite && (
           <Suspense fallback={<aside className="assistant-panel" />}>
-            <Assistant crdtWorkspace={crdt} selectedNodeIds={crdt.selectedNodeIds} />
+            <Assistant
+              crdtWorkspace={crdt}
+              selectedNodeIds={crdt.selectedNodeIds}
+              workspacePath={path}
+            />
           </Suspense>
         )}
       </div>
