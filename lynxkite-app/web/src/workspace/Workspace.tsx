@@ -55,7 +55,7 @@ import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { type CRDTWorkspace, nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
-import { snapChangesToGrid } from "./grid.ts";
+import { GRID_SIZE, snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteNodeState, LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { buildCategoryHierarchy, type Catalogs, type Category } from "./NodeSearch.tsx";
@@ -405,8 +405,8 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
-      width: 315,
-      height: 315,
+      width: GRID_SIZE * 9,
+      height: GRID_SIZE * 9,
       data: {
         meta: meta,
         title: meta.name,
@@ -893,7 +893,7 @@ function LynxKiteFlow() {
                 >
                   <Background
                     variant={BackgroundVariant.Dots}
-                    gap={35}
+                    gap={GRID_SIZE}
                     size={6}
                     color="#f0f0f0"
                     bgColor="#fafafa"
