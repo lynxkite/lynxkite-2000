@@ -11,6 +11,7 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Settings from "~icons/tabler/settings";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import {
@@ -21,6 +22,7 @@ import {
   useFolderPermissions,
   usePath,
 } from "./common.ts";
+import { FolderSettingsModal, type FolderSettingsModalHandle } from "./FolderSettingsModal.tsx";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
@@ -125,6 +127,7 @@ export default function Directory() {
   });
   const navigate = useNavigate();
   const renameModalRef = useRef<ModalHandle>(null);
+  const folderSettingsModalRef = useRef<FolderSettingsModalHandle>(null);
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -412,6 +415,12 @@ export default function Directory() {
               <button type="button" onClick={() => fileInputRef.current?.click()}>
                 <Upload /> Upload file
               </button>
+              <button
+                type="button"
+                onClick={() => folderSettingsModalRef.current?.open(path || "")}
+              >
+                <Settings /> Folder settings
+              </button>
             </div>
           )}
           {!canWrite && !permissions.isLoading && config.authentication_issuer && (
@@ -432,28 +441,28 @@ export default function Directory() {
             onDragOver={
               canWrite
                 ? (e) => {
-                    e.preventDefault();
-                    setIsDragOver(true);
-                  }
+                  e.preventDefault();
+                  setIsDragOver(true);
+                }
                 : undefined
             }
             onDragLeave={
               canWrite
                 ? (e) => {
-                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                      setIsDragOver(false);
-                    }
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setIsDragOver(false);
                   }
+                }
                 : undefined
             }
             onDrop={
               canWrite
                 ? (e) => {
-                    e.preventDefault();
-                    setIsDragOver(false);
-                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
-                      uploadDroppedItems(e.dataTransfer);
-                  }
+                  e.preventDefault();
+                  setIsDragOver(false);
+                  if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                    uploadDroppedItems(e.dataTransfer);
+                }
                 : undefined
             }
           >
@@ -522,7 +531,7 @@ export default function Directory() {
                               }}
                             >
                               {pendingDownload?.action === "download" &&
-                              pendingDownload.itemName === item.name
+                                pendingDownload.itemName === item.name
                                 ? "Downloading..."
                                 : "Download"}
                             </button>
@@ -545,7 +554,7 @@ export default function Directory() {
                               }}
                             >
                               {pendingDownload?.action === "export" &&
-                              pendingDownload.itemName === item.name
+                                pendingDownload.itemName === item.name
                                 ? "Exporting..."
                                 : "Export static page"}
                             </button>
@@ -571,6 +580,7 @@ export default function Directory() {
         />
       )}
       {uploadProgress && <UploadProgressToast {...uploadProgress} />}
-    </ManagementPage>
+      {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
+    </ManagementPage >
   );
 }
