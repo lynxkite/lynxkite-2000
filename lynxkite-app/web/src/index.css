@@ -32,6 +32,7 @@
   --radius-box: 0.5rem;
   --radius-selector: 0.5rem;
   --bold: 500;
+  --iconized-border-size: 46px;
 }
 
 img,
@@ -505,8 +506,10 @@ svg {
       var(--status-color-3)
     );
     background-blend-mode: luminosity;
-    border: 46px solid;
+    border: var(--iconized-border-size) solid;
     border-image: url(assets/candy-9-slice.webp) 140 fill;
+    background-size: 250% 250%;
+    background-position-x: calc(-1 * var(--iconized-border-size));
     overflow: visible;
 
     .node-content {
@@ -538,7 +541,7 @@ svg {
     --status-color-1: #0000;
     --status-color-2: #fff4;
     --status-color-3: #888f;
-    animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
+    animation: active-node-gradient-animation-border-iconized 1.2s alternate ease-in-out infinite;
   }
 
   .lynxkite-node.lynxkite-node-iconized.planned {
@@ -1323,6 +1326,16 @@ svg {
 @keyframes active-node-gradient-animation {
   to {
     background-position-x: 100%;
+  }
+}
+
+@keyframes active-node-gradient-animation-border-iconized {
+  from {
+    background-position-x: calc(-1 * var(--iconized-border-size));
+  }
+
+  to {
+    background-position-x: calc(100% + var(--iconized-border-size));
   }
 }
 
