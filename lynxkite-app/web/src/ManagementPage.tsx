@@ -5,13 +5,17 @@ import Activity from "~icons/tabler/activity";
 import Book from "~icons/tabler/book";
 import BrandGithub from "~icons/tabler/brand-github";
 import Folder from "~icons/tabler/folder";
+import LogIn from "~icons/tabler/login";
 import LogOut from "~icons/tabler/logout";
 import Menu from "~icons/tabler/menu-2";
 import SettingsIcon from "~icons/tabler/settings";
 import UserIcon from "~icons/tabler/user";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { triggerLogout, useConfig, useCurrentUser } from "./common.ts";
+import { triggerLogin, triggerLogout, useConfig, useCurrentUser } from "./common.ts";
+import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.tsx";
+
+const SIDEBAR_OPEN_KEY = "lynxkite-sidebar-open";
 
 const NAV_ITEMS = [
   { to: "/dir", icon: <Folder />, label: "Files" },
@@ -21,9 +25,25 @@ const NAV_ITEMS = [
 export default function ManagementPage(props: {
   children: React.ReactNode;
   className?: string;
-  sidebar?: React.ReactNode;
+  sidebarBottom?: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpenState] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_OPEN_KEY) !== "false";
+    } catch {
+      return true;
+    }
+  });
+  // Each page renders its own ManagementPage, so the state is kept in localStorage.
+  function setSidebarOpen(open: boolean) {
+    setSidebarOpenState(open);
+    try {
+      localStorage.setItem(SIDEBAR_OPEN_KEY, String(open));
+    } catch {
+      // Storage may be blocked, for example when embedded in another site.
+    }
+  }
   const config = useConfig();
   const currentUser = useCurrentUser();
   const authEnabled = !!config.data?.authentication_issuer;
@@ -39,6 +59,8 @@ export default function ManagementPage(props: {
         >
           <Menu />
         </button>
+
+        <SidebarSearch open={sidebarOpen} onExpand={() => setSidebarOpen(true)} />
 
         <nav className="sidebar-nav">
           {NAV_ITEMS.map((item) => (
@@ -62,29 +84,56 @@ export default function ManagementPage(props: {
             <Book />
             <span className="sidebar-label">Documentation</span>
           </a>
-          <a className="sidebar-nav-item" title="Settings" href="#">
+          <button
+            type="button"
+            className="sidebar-nav-item"
+            title="Settings"
+            onClick={() => setSettingsOpen(true)}
+          >
             <SettingsIcon />
             <span className="sidebar-label">Settings</span>
-          </a>
+          </button>
         </nav>
 
-        {props.sidebar && <div className="sidebar-inner sidebar-page-section">{props.sidebar}</div>}
+        <div className="sidebar-inner">
+          <SidebarFavorites />
+          <SidebarRecent />
+          {props.sidebarBottom}
+        </div>
 
-        <div className="sidebar-footer">
-          {authEnabled && (
-            <div className="sidebar-user">
-              <UserIcon className="sidebar-user-icon" />
-              <span className="sidebar-label sidebar-user-name">{currentUser ?? "User"}</span>
+        {authEnabled && (
+          <div className="sidebar-user-section">
+            {authEnabled && currentUser === null && (
               <button
                 type="button"
-                className="sidebar-logout-btn"
-                title="Logout"
-                onClick={triggerLogout}
+                className="sidebar-nav-item"
+                title="Sign in"
+                onClick={triggerLogin}
               >
-                <LogOut />
+                <LogIn />
+                <span className="sidebar-label">Sign in</span>
               </button>
-            </div>
-          )}
+            )}
+            {authEnabled && currentUser !== null && (
+              // biome-ignore lint/a11y/useKeyWithClickEvents: expands the collapsed sidebar
+              // biome-ignore lint/a11y/noStaticElementInteractions: expands the collapsed sidebar
+              <div className="sidebar-user" onClick={() => !sidebarOpen && setSidebarOpen(true)}>
+                <UserIcon className="sidebar-user-icon" />
+                <span className="sidebar-label sidebar-user-name">{currentUser}</span>
+                <button
+                  type="button"
+                  className="sidebar-logout-btn"
+                  title="Logout"
+                  onClick={triggerLogout}
+                >
+                  <LogOut />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="sidebar-footer">
           <a
             href="https://github.com/lynxkite/lynxkite-2000"
             target="_blank"
@@ -97,6 +146,20 @@ export default function ManagementPage(props: {
           </a>
         </div>
       </div>
+
+      {settingsOpen && (
+        // biome-ignore lint/a11y/useKeyWithClickEvents: mockup dialog
+        <div className="settings-popup-backdrop" onClick={() => setSettingsOpen(false)}>
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: mockup dialog */}
+          <div className="settings-popup" onClick={(e) => e.stopPropagation()}>
+            <h3>Folder settings</h3>
+            <p>Folder demos will be here</p>
+            <button type="button" onClick={() => setSettingsOpen(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="management-main">
         <div className="logo">

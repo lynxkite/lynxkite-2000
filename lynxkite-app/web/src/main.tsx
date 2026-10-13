@@ -15,6 +15,7 @@ import {
   useRouteError,
 } from "react-router";
 import Directory from "./Directory.tsx";
+import { recordVisit } from "./sidebarStore.ts";
 
 const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
 const Code = lazy(() => import("./Code.tsx"));
@@ -64,6 +65,9 @@ const router = createBrowserRouter(
     </>,
   ),
 );
+
+recordVisit(window.location.pathname);
+router.subscribe((state) => recordVisit(state.location.pathname));
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
-import ChevronDown from "~icons/tabler/chevron-down";
 import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
@@ -11,13 +10,15 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
-import Plus from "~icons/tabler/plus";
+import Star from "~icons/tabler/star";
+import StarFilled from "~icons/tabler/star-filled";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
+import { entryLink, shortName, toggleFavorite, useFavorites } from "./sidebarStore.ts";
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
@@ -75,24 +76,7 @@ export default function Directory() {
   const newWorkspaceModalRef = useRef<ModalHandle>(null);
   const newCodeFileModalRef = useRef<ModalHandle>(null);
   const newFolderModalRef = useRef<ModalHandle>(null);
-
-  function link(item: DirectoryEntry) {
-    const encodedName = encodePathSegments(item.name);
-    if (item.type === "directory") {
-      return `/dir/${encodedName}`;
-    }
-    if (item.type === "workspace") {
-      return `/edit/${encodedName}`;
-    }
-    return `/code/${encodedName}`;
-  }
-
-  function shortName(item: DirectoryEntry) {
-    return item.name
-      .split("/")
-      .pop()
-      ?.replace(/[.]lynxkite[.]json$/, "");
-  }
+  const favorites = useFavorites();
 
   function encodePathSegments(path: string): string {
     const segments = path.split("/");
@@ -183,74 +167,10 @@ export default function Directory() {
     list.mutate();
   }
 
-  const [newMenuOpen, setNewMenuOpen] = useState(false);
-
-  const sidebar = (
-    <div className="directory-sidebar">
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        multiple
-        onChange={(e) => {
-          if (e.target.files?.length) uploadFiles(e.target.files);
-          e.target.value = "";
-        }}
-      />
-      <button
-        type="button"
-        className="sidebar-new-button"
-        onClick={() => setNewMenuOpen((o) => !o)}
-      >
-        <Plus />
-        <span className="sidebar-label">New</span>
-        <ChevronDown className={`new-menu-chevron sidebar-label${newMenuOpen ? " open" : ""}`} />
-      </button>
-      {newMenuOpen && (
-        <div className="sidebar-new-menu">
-          <button
-            type="button"
-            onClick={() => {
-              setNewMenuOpen(false);
-              newWorkspaceModalRef.current?.open();
-            }}
-          >
-            <LayoutGridAdd /> <span className="sidebar-label">Workspace</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setNewMenuOpen(false);
-              newCodeFileModalRef.current?.open();
-            }}
-          >
-            <FilePlus /> <span className="sidebar-label">Code file</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setNewMenuOpen(false);
-              newFolderModalRef.current?.open();
-            }}
-          >
-            <FolderPlus /> <span className="sidebar-label">Folder</span>
-          </button>
-        </div>
-      )}
-      <button
-        type="button"
-        className="sidebar-upload-button"
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <Upload />
-        <span className="sidebar-label">Upload</span>
-      </button>
-      {config.data?.enterprise_available && <WorkspaceProgressList />}
-    </div>
-  );
+  const sidebarBottom = config.data?.enterprise_available ? <WorkspaceProgressList /> : null;
 
   return (
-    <ManagementPage sidebar={sidebar}>
+    <ManagementPage sidebarBottom={sidebarBottom}>
       {list.error && <p className="error">{list.error.message}</p>}
       {list.isLoading && (
         <output className="loading spinner-border">
@@ -260,6 +180,31 @@ export default function Directory() {
 
       {list.data && (
         <>
+          <div className="actions">
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              multiple
+              onChange={(e) => {
+                if (e.target.files?.length) uploadFiles(e.target.files);
+                e.target.value = "";
+              }}
+            />
+            <button type="button" onClick={() => newWorkspaceModalRef.current?.open()}>
+              <LayoutGridAdd /> New workspace
+            </button>
+            <button type="button" onClick={() => newCodeFileModalRef.current?.open()}>
+              <FilePlus /> New code file
+            </button>
+            <button type="button" onClick={() => newFolderModalRef.current?.open()}>
+              <FolderPlus /> New folder
+            </button>
+            <button type="button" onClick={() => fileInputRef.current?.click()}>
+              <Upload /> Upload file
+            </button>
+          </div>
+
           <Breadcrumbs path={path} />
 
           <div
@@ -283,7 +228,7 @@ export default function Directory() {
               (item: DirectoryEntry) =>
                 !shortName(item)?.startsWith("__") && (
                   <div key={item.name} className="entry">
-                    <Link key={link(item)} to={link(item)}>
+                    <Link key={entryLink(item)} to={entryLink(item)}>
                       {item.type === "directory" ? (
                         <Folder />
                       ) : item.type === "workspace" ? (
@@ -293,6 +238,14 @@ export default function Directory() {
                       )}
                       <span className="entry-name">{shortName(item)}</span>
                     </Link>
+                    <button
+                      type="button"
+                      className={`entry-favorite-button${favorites.some((f) => f.name === item.name) ? " active" : ""}`}
+                      aria-label={`Toggle favorite for ${shortName(item)}`}
+                      onClick={() => toggleFavorite(item)}
+                    >
+                      {favorites.some((f) => f.name === item.name) ? <StarFilled /> : <Star />}
+                    </button>
                     <div className="dropdown dropdown-left dropdown-end">
                       <button
                         className="entry-actions-button"

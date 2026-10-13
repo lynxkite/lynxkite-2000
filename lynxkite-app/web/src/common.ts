@@ -70,7 +70,9 @@ export function useCurrentUser(): string | null {
     const manager = getUserManager();
     if (!manager) return;
     manager.getUser().then((u) => {
-      setDisplayName(u?.profile?.name ?? (u?.profile?.email as string | undefined) ?? null);
+      setDisplayName(
+        u ? (u.profile?.name ?? (u.profile?.email as string | undefined) ?? "User") : null,
+      );
     });
   }, [config.data?.authentication_issuer]);
   return displayName;
