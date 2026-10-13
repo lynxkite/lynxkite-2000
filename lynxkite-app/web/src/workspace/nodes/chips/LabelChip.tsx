@@ -26,10 +26,17 @@ export class LabelChip extends SingleAttributeChip {
 
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
+      let text = "";
+      if (value !== undefined && value !== null) {
+        text = String(value);
+        if (value !== "" && !Number.isNaN(Number(value))) {
+          text = String(Math.round(Number(value) * 100) / 100);
+        }
+      }
       node.label = {
         ...node.label,
         show: true,
-        formatter: String(Math.round(Number(value) * 100) / 100),
+        formatter: text,
         position: "top",
       };
     });
