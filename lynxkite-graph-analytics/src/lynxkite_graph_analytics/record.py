@@ -28,6 +28,16 @@ class Record:
         normalized_key = self._normalize_column_key(key)
         self._updates[normalized_key] = value
 
+    def keys(self) -> list[ColumnKey]:
+        """Return column keys, including newly assigned columns."""
+        return list(dict.fromkeys((*self._data.index, *self._updates)))
+
+    def __iter__(self) -> typing.Iterator[ColumnKey]:
+        return iter(self.keys())
+
+    def __len__(self) -> int:
+        return len(self.keys())
+
     def __getattr__(self, key: str) -> typing.Any:
         if key.startswith("_"):
             return object.__getattribute__(self, key)
