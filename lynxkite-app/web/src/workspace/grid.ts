@@ -1,10 +1,10 @@
 // Grid snapping functions.
 
+// Grid size for snapping
+export const GRID_SIZE = 35;
+
 // Snaps XYFlow changes to the grid if Shift is pressed.
 export function snapChangesToGrid(changes: any[], isShiftPressed: boolean, nodes: any[]) {
-  // Grid size for snapping
-  const GRID_SIZE = 35;
-
   function snapToGrid(position: { x: number; y: number }) {
     return {
       x: Math.round(position.x / GRID_SIZE) * GRID_SIZE,
