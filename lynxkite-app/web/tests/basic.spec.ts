@@ -14,6 +14,22 @@ test.afterEach(async () => {
   await splash.deleteEntry("basic_spec_test");
 });
 
+for (const delay of [0, 350]) {
+  test(`Background click dismisses node search without reopening (delay ${delay} ms)`, async () => {
+    await workspace.getCatalog();
+    await workspace.page.keyboard.press("/");
+    const search = workspace.page.locator(".node-search");
+    await expect(search).toBeVisible();
+
+    const background = workspace.page.locator(".react-flow__pane");
+    await background.click({ position: { x: 20, y: 20 }, delay });
+    await expect(search).not.toBeVisible();
+
+    await background.click({ position: { x: 100, y: 100 } });
+    await expect(search).toBeVisible();
+  });
+}
+
 test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
   for (const env of envs) {
