@@ -68,7 +68,7 @@ KindDropdown = typing.Annotated[
 ]
 
 
-@op("Hetionet lookup")
+@op("Hetionet lookup", icon="search")
 def hetionet_lookup(
     b: core.Bundle, *, name: str, neighbour_kinds: KindDropdown, metaedges: MetaedgeDropdown
 ):
@@ -95,7 +95,7 @@ def hetionet_lookup(
     return b
 
 
-@op("Import hetionet", slow=True, color="green", icon="graph")
+@op("Import hetionet", slow=True, color="green", icon="binary-tree-2")
 def import_hetionet():
     """Import Hetionet data from online."""
     b = core.Bundle()
