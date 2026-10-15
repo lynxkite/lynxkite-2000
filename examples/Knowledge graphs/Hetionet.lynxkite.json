@@ -122,7 +122,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 17,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -194,7 +194,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 37,
+        "display_version": 38,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -294,7 +294,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 16,
+        "display_version": 17,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -701,7 +701,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1183,7 +1183,7 @@
           "width": 972.0
         },
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "dragHandle": ".drag-handle",
         "dragging": false,
         "error": null,

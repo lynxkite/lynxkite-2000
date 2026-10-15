@@ -26,13 +26,8 @@ export class NodeTooltipChip extends SingleAttributeChip {
 
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
-      let text = "";
-      if (value !== undefined && value !== null) {
-        text = String(value);
-        if (value !== "" && !Number.isNaN(Number(value))) {
-          text = String(Math.round(Number(value) * 100) / 100);
-        }
-      }
+      const text =
+        value === "" || Number.isNaN(Number(value)) ? value : String(+Number(value).toFixed(2));
       node.tooltip = {
         ...node.tooltip,
         show: true,
