@@ -208,7 +208,7 @@ function LynxKiteFlow() {
     // Rebuild when catalog/env first become available (initial load) or env changes.
     refreshCategoryHierarchy();
   }, [refreshCategoryHierarchy]);
-  const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
+  const suppressSearchForGesture = useRef(false);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
       | {
@@ -370,12 +370,11 @@ function LynxKiteFlow() {
 
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
-    setSuppressSearchUntil(Date.now() + 200);
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
       if (!canWrite) return;
-      if (suppressSearchUntil > Date.now()) return;
+      if (suppressSearchForGesture.current) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
         return;
@@ -387,7 +386,7 @@ function LynxKiteFlow() {
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [canWrite, nodeSearchSettings, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
@@ -433,7 +432,7 @@ function LynxKiteFlow() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      setSuppressSearchUntil(Date.now() + 200);
+      suppressSearchForGesture.current = true;
       if (
         !connection.source ||
         !connection.target ||
@@ -850,6 +849,11 @@ function LynxKiteFlow() {
       <div className="workspace-body">
         <div
           className="reactflow-container"
+          onPointerDownCapture={() => {
+            // If node search is visible, this click will cause a blur event and close it.
+            // Then it will cause a click event which will reopen it. We set this flag to prevent the search from reopening immediately.
+            suppressSearchForGesture.current = Boolean(nodeSearchSettings);
+          }}
           onDragOver={canWrite ? onDragOver : undefined}
           onMouseMove={onMouseMove}
           onDrop={canWrite ? onDrop : undefined}
