@@ -63,5 +63,5 @@ sse-starlette = "starlette"
 [tool.deptry.per_rule_ignores]
 DEP001 = ["lynxkite_enterprise"]
 DEP002 = ["pycrdt-websocket", "griffe"]
-DEP003 = ["lynxkite_assistant", "lynxkite_enterprise"]
+DEP003 = ["lynxkite_assistant", "lynxkite_enterprise", "lynxkite_graph_analytics"]
 DEP004 = ["hatchling"]
