@@ -65,13 +65,6 @@
       "targetHandle": "x"
     },
     {
-      "id": "Input: tensor 1 input Linear 1 x",
-      "source": "Input: tensor 1",
-      "sourceHandle": "input",
-      "target": "Linear 1",
-      "targetHandle": "x"
-    },
-    {
       "id": "NaN-aware MSE loss 1 output Optimizer 1 loss",
       "source": "NaN-aware MSE loss 1",
       "sourceHandle": "output",
@@ -91,6 +84,13 @@
       "sourceHandle": "input",
       "target": "NaN-aware MSE loss 1",
       "targetHandle": "label"
+    },
+    {
+      "id": "Input: tensor 1 input Linear 1 x",
+      "source": "Input: tensor 1",
+      "sourceHandle": "input",
+      "target": "Linear 1",
+      "targetHandle": "x"
     }
   ],
   "env": "PyTorch model",
@@ -249,39 +249,6 @@
       },
       "type": "basic",
       "width": 290.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": null,
-        "message": null,
-        "meta": null,
-        "op_id": "Input: tensor",
-        "output_metadata": null,
-        "params": {
-          "_input_name": "X",
-          "per_sample": true,
-          "type": "float"
-        },
-        "status": "done",
-        "tags": null,
-        "telemetry": null,
-        "title": "Input: tensor"
-      },
-      "height": 284.0,
-      "id": "Input: tensor 1",
-      "parentId": null,
-      "position": {
-        "x": 576.8861598911817,
-        "y": -3080.0508787357917
-      },
-      "type": "basic",
-      "width": 320.0
     },
     {
       "data": {
@@ -502,8 +469,40 @@
       "id": "Input: masked tensor 1",
       "parentId": null,
       "position": {
-        "x": 1539.93025865797,
-        "y": -4647.757285178497
+        "x": 1502.5950287453388,
+        "y": -4586.239431580136
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Input: tensor",
+        "output_metadata": null,
+        "params": {
+          "_input_name": "",
+          "per_sample": true,
+          "type": "float"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Input: tensor"
+      },
+      "height": 315.0,
+      "id": "Input: tensor 1",
+      "parentId": null,
+      "position": {
+        "x": 584.8965919759562,
+        "y": -3046.852724427203
       },
       "type": "basic",
       "width": 315.0

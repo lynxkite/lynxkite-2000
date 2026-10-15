@@ -212,13 +212,6 @@
       "targetHandle": "bundle"
     },
     {
-      "id": "Define model 1 output Numeric ids 1 b",
-      "source": "Define model 1",
-      "sourceHandle": "output",
-      "target": "Numeric ids 1",
-      "targetHandle": "b"
-    },
-    {
       "id": "Train/test split 2 output Define model 1 bundle",
       "source": "Train/test split 2",
       "sourceHandle": "output",
@@ -247,20 +240,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Numeric ids 1 output Train graph model 1 bundle",
-      "source": "Numeric ids 1",
-      "sourceHandle": "output",
-      "target": "Train graph model 1",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Train graph model 1 output Graph model inference 1 bundle",
-      "source": "Train graph model 1",
-      "sourceHandle": "output",
-      "target": "Graph model inference 1",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Rename columns 1 output Scatter plot 2 b",
       "source": "Rename columns 1",
       "sourceHandle": "output",
@@ -280,6 +259,27 @@
       "sourceHandle": "output",
       "target": "Scatter plot 4",
       "targetHandle": "b"
+    },
+    {
+      "id": "Train graph model 1 output Graph model inference 1 bundle",
+      "source": "Train graph model 1",
+      "sourceHandle": "output",
+      "target": "Graph model inference 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define model 1 output Use numeric IDs for nodes in a relation 1 b",
+      "source": "Define model 1",
+      "sourceHandle": "output",
+      "target": "Use numeric IDs for nodes in a relation 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Use numeric IDs for nodes in a relation 1 output Train graph model 1 bundle",
+      "source": "Use numeric IDs for nodes in a relation 1",
+      "sourceHandle": "output",
+      "target": "Train graph model 1",
+      "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -317,7 +317,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/hypo_telco_vertices.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/QmXHdcG8UmVm51MtwGrJb68QTDCdtVDybtZgY1CB3nFezD",
           "separator": "<auto>",
           "table_name": "nodes"
         },
@@ -1051,7 +1051,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1169,7 +1169,7 @@
         ],
         "params": {
           "columns": "<from file>",
-          "filename": "uploads/hypo_telco_edges.csv",
+          "filename": "https://bewildered-lavender-bat.myfilebase.com/ipfs/QmaNSjrK7GzdAdbjij58TXDbuyYqJkhec2fYEwCSjbtA1u",
           "separator": "<auto>",
           "table_name": "edges"
         },
@@ -5001,7 +5001,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 5,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -9136,7 +9136,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -9628,7 +9628,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -10463,7 +10463,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -10480,7 +10480,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -10517,7 +10517,7 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -10563,8 +10563,8 @@
       "id": "Define model 1",
       "parentId": null,
       "position": {
-        "x": 5239.142808884567,
-        "y": 2627.3753443052983
+        "x": 5815.828829536679,
+        "y": 2455.179410865565
       },
       "type": "basic",
       "width": 315.0
@@ -10635,7 +10635,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 1000.0
+                "length": 3000.0
               }
             },
             "other": {
@@ -10832,7 +10832,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -10849,7 +10849,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -10886,7 +10886,7 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -10987,7 +10987,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 1000.0
+                "length": 3000.0
               }
             },
             "other": {
@@ -11184,7 +11184,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -11201,7 +11201,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -11238,7 +11238,7 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -11289,8 +11289,8 @@
       },
       "parentId": null,
       "position": {
-        "x": 8278.22134294475,
-        "y": 2897.224616002492
+        "x": 8466.803105056992,
+        "y": 2885.5837664893907
       },
       "selected": false,
       "type": "basic",
@@ -11300,7 +11300,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 102,
+        "display_version": 112,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -11368,7 +11368,7 @@
                   "training_loss"
                 ],
                 "key": "training",
-                "length": 1000.0
+                "length": 3000.0
               }
             },
             "other": {
@@ -11565,7 +11565,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -11582,7 +11582,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -11619,7 +11619,7 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -11683,8 +11683,8 @@
       },
       "parentId": null,
       "position": {
-        "x": 8785.690455790385,
-        "y": 2897.9778900880306
+        "x": 8939.349669363322,
+        "y": 2893.3215502827898
       },
       "selected": false,
       "type": "table_view",
@@ -11693,11 +11693,1525 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": false,
+        "collapsed": null,
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": 315.0,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 3000.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__graph_edges_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: graph edges",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: graph edges",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "source_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "target_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__masked_tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": ""
+                        },
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Bundle",
+                              "description": "the bundle",
+                              "name": "b"
+                            },
+                            {
+                              "annotation": "InputContext",
+                              "description": "the input context",
+                              "name": "ctx"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe to align to, and its id column",
+                              "name": "full_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe with the values to keep, and its id column",
+                              "name": "mask_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the column with labels in the mask dataframe",
+                              "name": "label_column"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "returns",
+                          "value": [
+                            {
+                              "annotation": "<class 'inspect._empty'>",
+                              "description": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: masked tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: masked tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": null,
+                          "name": "full_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "mask_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "label_column",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__graph_edges_1_input": "Input: graph edges",
+                    "Input__masked_tensor_1_input": "Input: masked tensor",
+                    "Input__tensor_1_input": "Input: tensor",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__masked_tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__graph_edges_1_input",
+                    "Input__tensor_1_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Graph model inference",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 3000.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__graph_edges_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: graph edges",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: graph edges",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "source_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "target_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__masked_tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": ""
+                        },
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Bundle",
+                              "description": "the bundle",
+                              "name": "b"
+                            },
+                            {
+                              "annotation": "InputContext",
+                              "description": "the input context",
+                              "name": "ctx"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe to align to, and its id column",
+                              "name": "full_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe with the values to keep, and its id column",
+                              "name": "mask_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the column with labels in the mask dataframe",
+                              "name": "label_column"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "returns",
+                          "value": [
+                            {
+                              "annotation": "<class 'inspect._empty'>",
+                              "description": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: masked tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: masked tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": null,
+                          "name": "full_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "mask_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "label_column",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__graph_edges_1_input": "Input: graph edges",
+                    "Input__masked_tensor_1_input": "Input: masked tensor",
+                    "Input__tensor_1_input": "Input: tensor",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__masked_tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__graph_edges_1_input",
+                    "Input__tensor_1_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "full_id_column": [
+            "nodes",
+            "id"
+          ],
+          "input_mapping": "{\"map\":{\"Input__graph_edges_1_input\":{\"table_name\":\"edges\",\"source_column_name\":\"source\",\"target_column_name\":\"target\"},\"Input__tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"},\"Input__node_tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"}}}",
+          "model_name": "model",
+          "output_id_column": [
+            "nodes_test",
+            "id"
+          ],
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"table_name\":\"nodes_test\",\"column\":\"age_prediction\"}}}"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Graph model inference"
+      },
+      "height": 983.0,
+      "id": "Graph model inference 1",
+      "parentId": null,
+      "position": {
+        "x": 7528.019539187856,
+        "y": 2126.563932386466
+      },
+      "type": "basic",
+      "width": 628.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 3000.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__graph_edges_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: graph edges",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: graph edges",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "source_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "target_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__masked_tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": ""
+                        },
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Bundle",
+                              "description": "the bundle",
+                              "name": "b"
+                            },
+                            {
+                              "annotation": "InputContext",
+                              "description": "the input context",
+                              "name": "ctx"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe to align to, and its id column",
+                              "name": "full_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe with the values to keep, and its id column",
+                              "name": "mask_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the column with labels in the mask dataframe",
+                              "name": "label_column"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "returns",
+                          "value": [
+                            {
+                              "annotation": "<class 'inspect._empty'>",
+                              "description": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: masked tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: masked tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": null,
+                          "name": "full_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "mask_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "label_column",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__graph_edges_1_input": "Input: graph edges",
+                    "Input__masked_tensor_1_input": "Input: masked tensor",
+                    "Input__tensor_1_input": "Input: tensor",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__masked_tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__graph_edges_1_input",
+                    "Input__tensor_1_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "x": [
+            "nodes_test",
+            "age"
+          ],
+          "y": [
+            "nodes_test",
+            "age_prediction"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 542.0,
+      "id": "Scatter plot 6",
+      "parentId": null,
+      "position": {
+        "x": 8338.303502092991,
+        "y": 2126.2279687988193
+      },
+      "type": "image",
+      "width": 586.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 14,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "x": [
+            "nodes_test",
+            "age"
+          ],
+          "y": [
+            "nodes_test",
+            "age_prediction"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 626.0,
+      "id": "Scatter plot 1",
+      "parentId": null,
+      "position": {
+        "x": 4359.2566452407755,
+        "y": -211.2991534450513
+      },
+      "type": "image",
+      "width": 645.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 14,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "callee",
+                  "caller"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "index",
+                  "name"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges_1",
+                "source_column": "callee",
+                "source_key": "name",
+                "source_table": "nodes_test",
+                "target_column": "caller",
+                "target_key": "name",
+                "target_table": "nodes_train"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "x": [
+            "nodes_test",
+            "age"
+          ],
+          "y": [
+            "nodes_test",
+            "age_prediction"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 536.0,
+      "id": "Scatter plot 2",
+      "parentId": null,
+      "position": {
+        "x": 5345.729988054413,
+        "y": 963.0412560406716
+      },
+      "type": "image",
+      "width": 559.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 22,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "linear": {
+                "key": "linear"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "x": [
+            "nodes_test",
+            "age"
+          ],
+          "y": [
+            "nodes_test",
+            "age_prediction"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 558.0,
+      "id": "Scatter plot 3",
+      "parentId": null,
+      "position": {
+        "x": 7220.096106130196,
+        "y": 3269.0463704332506
+      },
+      "type": "image",
+      "width": 541.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 23,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "age_prediction",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "decision_tree": {
+                "key": "decision_tree"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Scatter plot",
+        "output_metadata": [],
+        "params": {
+          "x": [
+            "nodes_test",
+            "age"
+          ],
+          "y": [
+            "nodes_test",
+            "age_prediction"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scatter plot"
+      },
+      "height": 420.0,
+      "id": "Scatter plot 4",
+      "parentId": null,
+      "position": {
+        "x": 7297.593080988065,
+        "y": 4810.189564669583
+      },
+      "type": "image",
+      "width": 437.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
@@ -11945,7 +13459,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -11962,7 +13476,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -11999,7 +13513,713 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__masked_tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__graph_edges_1_input",
+                    "Input__tensor_1_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Age prediction > Train graph model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 3000.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__graph_edges_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: graph edges",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: graph edges",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "source_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "target_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__masked_tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": ""
+                        },
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Bundle",
+                              "description": "the bundle",
+                              "name": "b"
+                            },
+                            {
+                              "annotation": "InputContext",
+                              "description": "the input context",
+                              "name": "ctx"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe to align to, and its id column",
+                              "name": "full_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe with the values to keep, and its id column",
+                              "name": "mask_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the column with labels in the mask dataframe",
+                              "name": "label_column"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "returns",
+                          "value": [
+                            {
+                              "annotation": "<class 'inspect._empty'>",
+                              "description": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: masked tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: masked tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": null,
+                          "name": "full_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "mask_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "label_column",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__graph_edges_1_input": "Input: graph edges",
+                    "Input__masked_tensor_1_input": "Input: masked tensor",
+                    "Input__tensor_1_input": "Input: tensor",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__masked_tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__graph_edges_1_input",
+                    "Input__tensor_1_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "epochs": "3000",
+          "input_mapping": "{\"map\":{\"Input__graph_edges_1_input\":{\"table_name\":\"edges\",\"source_column_name\":\"source\",\"target_column_name\":\"target\"},\"Input__masked_node_tensor_1_input\":{\"full_id\":[\"nodes\",\"id\"],\"mask_id\":[\"nodes_train\",\"id\"],\"label_column\":[\"nodes_train\",\"age\"]},\"Input__node_tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"},\"Input__masked_tensor_1_input\":{\"full_id\":[\"nodes\",\"id\"],\"mask_id\":[\"nodes_train\",\"id\"],\"label_column\":[\"nodes_train\",\"age\"]},\"Input__tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"}}}",
+          "model_name": "model"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Train graph model"
+      },
+      "height": 915.0,
+      "id": "Train graph model 1",
+      "parentId": null,
+      "position": {
+        "x": 6674.938387097219,
+        "y": 2163.5007816550756
+      },
+      "type": "basic",
+      "width": 729.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 283893.0
+              },
+              "nodes": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes",
+                "length": 10000.0
+              },
+              "nodes_test": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_test",
+                "length": 1000.0
+              },
+              "nodes_train": {
+                "columns": [
+                  "age",
+                  "data_usage",
+                  "features",
+                  "gender",
+                  "gender_one_hot",
+                  "id",
+                  "index",
+                  "out_degree_centrality"
+                ],
+                "key": "nodes_train",
+                "length": 9000.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__graph_edges_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: graph edges",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: graph edges",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "source_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "target_column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__masked_tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": ""
+                        },
+                        {
+                          "kind": "parameters",
+                          "value": [
+                            {
+                              "annotation": "Bundle",
+                              "description": "the bundle",
+                              "name": "b"
+                            },
+                            {
+                              "annotation": "InputContext",
+                              "description": "the input context",
+                              "name": "ctx"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe to align to, and its id column",
+                              "name": "full_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the dataframe with the values to keep, and its id column",
+                              "name": "mask_id"
+                            },
+                            {
+                              "annotation": "Annotated",
+                              "description": "the column with labels in the mask dataframe",
+                              "name": "label_column"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "returns",
+                          "value": [
+                            {
+                              "annotation": "<class 'inspect._empty'>",
+                              "description": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: masked tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: masked tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": null,
+                          "name": "full_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "mask_id",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        },
+                        {
+                          "default": null,
+                          "name": "label_column",
+                          "type": {
+                            "format": "double-dropdown",
+                            "metadata_query1": "[].dataframes[].keys(@)[]",
+                            "metadata_query2": "[].dataframes[].<first>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Input: tensor",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Input: tensor",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__graph_edges_1_input": "Input: graph edges",
+                    "Input__masked_tensor_1_input": "Input: masked tensor",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -12282,7 +14502,7 @@
                         }
                       ],
                       "icon": null,
-                      "id": "X",
+                      "id": "Input: tensor",
                       "inputs": [
                         {
                           "name": "b",
@@ -12299,7 +14519,7 @@
                           }
                         }
                       ],
-                      "name": "X",
+                      "name": "Input: tensor",
                       "outputs": [
                         {
                           "name": "output",
@@ -12336,7 +14556,7 @@
                   "input_output_names": {
                     "Input__graph_edges_1_input": "Input: graph edges",
                     "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
+                    "Input__tensor_1_input": "Input: tensor",
                     "Output_1_x": "Output"
                   },
                   "loss_inputs": [
@@ -12373,2241 +14593,19 @@
           "relation_name": "edges"
         },
         "status": "done",
-        "tags": [],
+        "tags": null,
         "telemetry": null,
-        "title": "Numeric ids"
+        "title": "Use numeric IDs for nodes in a relation"
       },
       "height": 315.0,
-      "id": "Numeric ids 1",
+      "id": "Use numeric IDs for nodes in a relation 1",
       "parentId": null,
       "position": {
-        "x": 5743.86639869928,
-        "y": 2628.513421873174
+        "x": 6258.329795980555,
+        "y": 2461.5038676511685
       },
       "type": "basic",
       "width": 315.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              },
-              "training": {
-                "columns": [
-                  "training_loss"
-                ],
-                "key": "training",
-                "length": 1000.0
-              }
-            },
-            "other": {
-              "model": {
-                "key": "model",
-                "model": {
-                  "input_handlers": {
-                    "Input__graph_edges_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: graph edges",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: graph edges",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "source_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "target_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__masked_tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": ""
-                        },
-                        {
-                          "kind": "parameters",
-                          "value": [
-                            {
-                              "annotation": "Bundle",
-                              "description": "the bundle",
-                              "name": "b"
-                            },
-                            {
-                              "annotation": "InputContext",
-                              "description": "the input context",
-                              "name": "ctx"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe to align to, and its id column",
-                              "name": "full_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe with the values to keep, and its id column",
-                              "name": "mask_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the column with labels in the mask dataframe",
-                              "name": "label_column"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "returns",
-                          "value": [
-                            {
-                              "annotation": "<class 'inspect._empty'>",
-                              "description": "",
-                              "name": ""
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: masked tensor",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: masked tensor",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": null,
-                          "name": "full_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "mask_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "label_column",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "X",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "X",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    }
-                  },
-                  "input_output_names": {
-                    "Input__graph_edges_1_input": "Input: graph edges",
-                    "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
-                    "Output_1_x": "Output"
-                  },
-                  "loss_inputs": [
-                    "Input__masked_tensor_1_input",
-                    "Output_1_x"
-                  ],
-                  "model_inputs": [
-                    "Input__graph_edges_1_input",
-                    "Input__tensor_1_input"
-                  ],
-                  "model_outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": true
-                },
-                "type": "pytorch-model"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Age prediction > Graph model inference",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              },
-              "training": {
-                "columns": [
-                  "training_loss"
-                ],
-                "key": "training",
-                "length": 1000.0
-              }
-            },
-            "other": {
-              "model": {
-                "key": "model",
-                "model": {
-                  "input_handlers": {
-                    "Input__graph_edges_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: graph edges",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: graph edges",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "source_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "target_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__masked_tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": ""
-                        },
-                        {
-                          "kind": "parameters",
-                          "value": [
-                            {
-                              "annotation": "Bundle",
-                              "description": "the bundle",
-                              "name": "b"
-                            },
-                            {
-                              "annotation": "InputContext",
-                              "description": "the input context",
-                              "name": "ctx"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe to align to, and its id column",
-                              "name": "full_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe with the values to keep, and its id column",
-                              "name": "mask_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the column with labels in the mask dataframe",
-                              "name": "label_column"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "returns",
-                          "value": [
-                            {
-                              "annotation": "<class 'inspect._empty'>",
-                              "description": "",
-                              "name": ""
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: masked tensor",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: masked tensor",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": null,
-                          "name": "full_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "mask_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "label_column",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "X",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "X",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    }
-                  },
-                  "input_output_names": {
-                    "Input__graph_edges_1_input": "Input: graph edges",
-                    "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
-                    "Output_1_x": "Output"
-                  },
-                  "loss_inputs": [
-                    "Input__masked_tensor_1_input",
-                    "Output_1_x"
-                  ],
-                  "model_inputs": [
-                    "Input__graph_edges_1_input",
-                    "Input__tensor_1_input"
-                  ],
-                  "model_outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": true
-                },
-                "type": "pytorch-model"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "full_id_column": [
-            "nodes",
-            "id"
-          ],
-          "input_mapping": "{\"map\":{\"Input__graph_edges_1_input\":{\"table_name\":\"edges\",\"source_column_name\":\"source\",\"target_column_name\":\"target\"},\"Input__tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"}}}",
-          "model_name": "model",
-          "output_id_column": [
-            "nodes_test",
-            "id"
-          ],
-          "output_mapping": "{\"map\":{\"Output_1_x\":{\"table_name\":\"nodes_test\",\"column\":\"age_prediction\"}}}"
-        },
-        "status": "done",
-        "tags": [
-          "slow"
-        ],
-        "telemetry": null,
-        "title": "Graph model inference"
-      },
-      "height": 983.0,
-      "id": "Graph model inference 1",
-      "parentId": null,
-      "position": {
-        "x": 7341.765946978235,
-        "y": 2126.563932386466
-      },
-      "type": "basic",
-      "width": 628.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 10,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              },
-              "training": {
-                "columns": [
-                  "training_loss"
-                ],
-                "key": "training",
-                "length": 1000.0
-              }
-            },
-            "other": {
-              "model": {
-                "key": "model",
-                "model": {
-                  "input_handlers": {
-                    "Input__graph_edges_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: graph edges",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: graph edges",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "source_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "target_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__masked_tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": ""
-                        },
-                        {
-                          "kind": "parameters",
-                          "value": [
-                            {
-                              "annotation": "Bundle",
-                              "description": "the bundle",
-                              "name": "b"
-                            },
-                            {
-                              "annotation": "InputContext",
-                              "description": "the input context",
-                              "name": "ctx"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe to align to, and its id column",
-                              "name": "full_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe with the values to keep, and its id column",
-                              "name": "mask_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the column with labels in the mask dataframe",
-                              "name": "label_column"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "returns",
-                          "value": [
-                            {
-                              "annotation": "<class 'inspect._empty'>",
-                              "description": "",
-                              "name": ""
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: masked tensor",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: masked tensor",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": null,
-                          "name": "full_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "mask_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "label_column",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "X",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "X",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    }
-                  },
-                  "input_output_names": {
-                    "Input__graph_edges_1_input": "Input: graph edges",
-                    "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
-                    "Output_1_x": "Output"
-                  },
-                  "loss_inputs": [
-                    "Input__masked_tensor_1_input",
-                    "Output_1_x"
-                  ],
-                  "model_inputs": [
-                    "Input__graph_edges_1_input",
-                    "Input__tensor_1_input"
-                  ],
-                  "model_outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": true
-                },
-                "type": "pytorch-model"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Scatter plot",
-        "output_metadata": [],
-        "params": {
-          "x": [
-            "nodes_test",
-            "age"
-          ],
-          "y": [
-            "nodes_test",
-            "age_prediction"
-          ]
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Scatter plot"
-      },
-      "height": 542.0,
-      "id": "Scatter plot 6",
-      "parentId": null,
-      "position": {
-        "x": 8338.303502092991,
-        "y": 2126.2279687988193
-      },
-      "type": "image",
-      "width": 586.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 9,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "name"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "index",
-                  "name"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "index",
-                  "name"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              }
-            },
-            "other": {
-              "linear": {
-                "key": "linear"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Scatter plot",
-        "output_metadata": [],
-        "params": {
-          "x": [
-            "nodes_test",
-            "age"
-          ],
-          "y": [
-            "nodes_test",
-            "age_prediction"
-          ]
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Scatter plot"
-      },
-      "height": 626.0,
-      "id": "Scatter plot 1",
-      "parentId": null,
-      "position": {
-        "x": 4359.2566452407755,
-        "y": -211.2991534450513
-      },
-      "type": "image",
-      "width": 645.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              }
-            },
-            "other": {
-              "model": {
-                "key": "model",
-                "model": {
-                  "input_handlers": {
-                    "Input__graph_edges_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: graph edges",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: graph edges",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "source_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "target_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__masked_tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": ""
-                        },
-                        {
-                          "kind": "parameters",
-                          "value": [
-                            {
-                              "annotation": "Bundle",
-                              "description": "the bundle",
-                              "name": "b"
-                            },
-                            {
-                              "annotation": "InputContext",
-                              "description": "the input context",
-                              "name": "ctx"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe to align to, and its id column",
-                              "name": "full_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe with the values to keep, and its id column",
-                              "name": "mask_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the column with labels in the mask dataframe",
-                              "name": "label_column"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "returns",
-                          "value": [
-                            {
-                              "annotation": "<class 'inspect._empty'>",
-                              "description": "",
-                              "name": ""
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: masked tensor",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: masked tensor",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": null,
-                          "name": "full_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "mask_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "label_column",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "X",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "X",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    }
-                  },
-                  "input_output_names": {
-                    "Input__graph_edges_1_input": "Input: graph edges",
-                    "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
-                    "Output_1_x": "Output"
-                  },
-                  "loss_inputs": [
-                    "Input__masked_tensor_1_input",
-                    "Output_1_x"
-                  ],
-                  "model_inputs": [
-                    "Input__graph_edges_1_input",
-                    "Input__tensor_1_input"
-                  ],
-                  "model_outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": false
-                },
-                "type": "pytorch-model"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Age prediction > Train graph model",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              },
-              "training": {
-                "columns": [
-                  "training_loss"
-                ],
-                "key": "training",
-                "length": 1000.0
-              }
-            },
-            "other": {
-              "model": {
-                "key": "model",
-                "model": {
-                  "input_handlers": {
-                    "Input__graph_edges_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: The table with the edges.\n    source_column_name: The column with source node indices.\n    target_column_name: The column with target node indices."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: graph edges",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: graph edges",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "source_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "target_column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__masked_tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": ""
-                        },
-                        {
-                          "kind": "parameters",
-                          "value": [
-                            {
-                              "annotation": "Bundle",
-                              "description": "the bundle",
-                              "name": "b"
-                            },
-                            {
-                              "annotation": "InputContext",
-                              "description": "the input context",
-                              "name": "ctx"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe to align to, and its id column",
-                              "name": "full_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the dataframe with the values to keep, and its id column",
-                              "name": "mask_id"
-                            },
-                            {
-                              "annotation": "Annotated",
-                              "description": "the column with labels in the mask dataframe",
-                              "name": "label_column"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "returns",
-                          "value": [
-                            {
-                              "annotation": "<class 'inspect._empty'>",
-                              "description": "",
-                              "name": ""
-                            }
-                          ]
-                        }
-                      ],
-                      "icon": null,
-                      "id": "Input: masked tensor",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "Input: masked tensor",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": null,
-                          "name": "full_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "mask_id",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        },
-                        {
-                          "default": null,
-                          "name": "label_column",
-                          "type": {
-                            "format": "double-dropdown",
-                            "metadata_query1": "[].dataframes[].keys(@)[]",
-                            "metadata_query2": "[].dataframes[].<first>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    },
-                    "Input__tensor_1_input": {
-                      "categories": [],
-                      "color": "orange",
-                      "doc": [
-                        {
-                          "kind": "text",
-                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
-                        }
-                      ],
-                      "icon": null,
-                      "id": "X",
-                      "inputs": [
-                        {
-                          "name": "b",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-                          }
-                        },
-                        {
-                          "name": "ctx",
-                          "position": "left",
-                          "type": {
-                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
-                          }
-                        }
-                      ],
-                      "name": "X",
-                      "outputs": [
-                        {
-                          "name": "output",
-                          "position": "right",
-                          "type": {
-                            "type": "None"
-                          }
-                        }
-                      ],
-                      "params": [
-                        {
-                          "default": "",
-                          "name": "table_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].keys(@)[]"
-                          }
-                        },
-                        {
-                          "default": "",
-                          "name": "column_name",
-                          "type": {
-                            "format": "dropdown",
-                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
-                          }
-                        }
-                      ],
-                      "placeholder_function_name": false,
-                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
-                      "tags": [],
-                      "type": "basic"
-                    }
-                  },
-                  "input_output_names": {
-                    "Input__graph_edges_1_input": "Input: graph edges",
-                    "Input__masked_tensor_1_input": "Input: masked tensor",
-                    "Input__tensor_1_input": "X",
-                    "Output_1_x": "Output"
-                  },
-                  "loss_inputs": [
-                    "Input__masked_tensor_1_input",
-                    "Output_1_x"
-                  ],
-                  "model_inputs": [
-                    "Input__graph_edges_1_input",
-                    "Input__tensor_1_input"
-                  ],
-                  "model_outputs": [
-                    "Output_1_x"
-                  ],
-                  "trained": true
-                },
-                "type": "pytorch-model"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "params": {
-          "epochs": "1000",
-          "input_mapping": "{\"map\":{\"Input__graph_edges_1_input\":{\"table_name\":\"edges\",\"source_column_name\":\"source\",\"target_column_name\":\"target\"},\"Input__masked_tensor_1_input\":{\"full_id\":[\"nodes\",\"id\"],\"mask_id\":[\"nodes_train\",\"id\"],\"label_column\":[\"nodes_train\",\"age\"]},\"Input__tensor_1_input\":{\"table_name\":\"nodes\",\"column_name\":\"features\"}}}",
-          "model_name": "model"
-        },
-        "status": "done",
-        "tags": [
-          "slow"
-        ],
-        "telemetry": null,
-        "title": "Train graph model"
-      },
-      "height": 895.0,
-      "id": "Train graph model 1",
-      "parentId": null,
-      "position": {
-        "x": 6352.616388626871,
-        "y": 2156.718629127055
-      },
-      "type": "basic",
-      "width": 767.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 9,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "callee",
-                  "caller"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "name"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "index",
-                  "name"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "index",
-                  "name"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              }
-            },
-            "other": {},
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges_1",
-                "source_column": "callee",
-                "source_key": "name",
-                "source_table": "nodes_test",
-                "target_column": "caller",
-                "target_key": "name",
-                "target_table": "nodes_train"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Scatter plot",
-        "output_metadata": [],
-        "params": {
-          "x": [
-            "nodes_test",
-            "age"
-          ],
-          "y": [
-            "nodes_test",
-            "age_prediction"
-          ]
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Scatter plot"
-      },
-      "height": 536.0,
-      "id": "Scatter plot 2",
-      "parentId": null,
-      "position": {
-        "x": 5345.729988054413,
-        "y": 963.0412560406716
-      },
-      "type": "image",
-      "width": 559.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 7,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              }
-            },
-            "other": {
-              "linear": {
-                "key": "linear"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Scatter plot",
-        "output_metadata": [],
-        "params": {
-          "x": [
-            "nodes_test",
-            "age"
-          ],
-          "y": [
-            "nodes_test",
-            "age_prediction"
-          ]
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Scatter plot"
-      },
-      "height": 558.0,
-      "id": "Scatter plot 3",
-      "parentId": null,
-      "position": {
-        "x": 7220.096106130196,
-        "y": 3269.0463704332506
-      },
-      "type": "image",
-      "width": 541.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": 8,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "edges": {
-                "columns": [
-                  "source",
-                  "target"
-                ],
-                "key": "edges",
-                "length": 283893.0
-              },
-              "nodes": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes",
-                "length": 10000.0
-              },
-              "nodes_test": {
-                "columns": [
-                  "age",
-                  "age_prediction",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_test",
-                "length": 1000.0
-              },
-              "nodes_train": {
-                "columns": [
-                  "age",
-                  "data_usage",
-                  "features",
-                  "gender",
-                  "gender_one_hot",
-                  "id",
-                  "index",
-                  "out_degree_centrality"
-                ],
-                "key": "nodes_train",
-                "length": 9000.0
-              }
-            },
-            "other": {
-              "decision_tree": {
-                "key": "decision_tree"
-              }
-            },
-            "relations": [
-              {
-                "df": "edges",
-                "name": "edges",
-                "source_column": "source",
-                "source_key": "id",
-                "source_table": "nodes",
-                "target_column": "target",
-                "target_key": "id",
-                "target_table": "nodes"
-              }
-            ]
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Visualizations > Scatter plot",
-        "output_metadata": [],
-        "params": {
-          "x": [
-            "nodes_test",
-            "age"
-          ],
-          "y": [
-            "nodes_test",
-            "age_prediction"
-          ]
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Scatter plot"
-      },
-      "height": 420.0,
-      "id": "Scatter plot 4",
-      "parentId": null,
-      "position": {
-        "x": 7297.593080988065,
-        "y": 4810.189564669583
-      },
-      "type": "image",
-      "width": 437.0
     }
   ],
   "paused": true
