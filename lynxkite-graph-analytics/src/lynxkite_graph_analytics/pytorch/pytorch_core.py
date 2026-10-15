@@ -69,7 +69,7 @@ def input_op(op_name: str, outputs: list[str] | None = None, **kwargs):
 class InputContext:
     """Passed to input ops as the second parameter. Describes batching."""
 
-    batch_size: int
+    batch_size: int | None
     batch_index: int
     total_samples: int | None = None
 
@@ -80,6 +80,8 @@ class InputContext:
             assert len(df) == self.total_samples, (
                 f"Expected {self.total_samples} samples, found {len(df)}"
             )
+        if self.batch_size is None:
+            return df
         return df.iloc[
             self.batch_index * self.batch_size : (self.batch_index + 1) * self.batch_size
         ]
