@@ -1,5 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import os
 import shutil
 import pydantic
 import fastapi
@@ -118,6 +119,40 @@ async def list_dir(path: str, request: fastapi.Request):
         ],
         key=lambda x: (x.type != "directory", x.name.lower()),
     )
+
+
+SEARCH_LIMIT = 20
+
+
+@app.get("/api/dir/search")
+async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT):
+    """Finds files and folders whose path contains `q`, ignoring case."""
+    await auth.check_permission(request, "read", "")
+    query = q.strip().lower()
+    if not query:
+        return []
+    matches = []
+    for root, dirs, files in os.walk(data_path):
+        # Hidden and "__" entries are not shown in the directory browser either.
+        dirs[:] = [d for d in dirs if not d.startswith((".", "__"))]
+        for name in dirs + files:
+            if name.startswith((".", "__")):
+                continue
+            p = pathlib.Path(root) / name
+            rel = p.relative_to(data_path).as_posix()
+            if query in rel.lower():
+                matches.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
+    matches.sort(key=lambda x: (x.type != "directory", x.name.lower()))
+    results = []
+    for entry in matches:
+        try:
+            await auth.check_permission(request, "read", entry.name)
+        except fastapi.HTTPException:
+            continue
+        results.append(entry)
+        if len(results) >= limit:
+            break
+    return results
 
 
 @app.post("/api/dir/mkdir")

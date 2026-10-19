@@ -1,4 +1,4 @@
-// Browser-local sidebar data: favorites, recently opened files and a name index for search.
+// Sidebar data: browser-local favorites and recently opened files, and the file search request.
 import { useSyncExternalStore } from "react";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import { apiJson } from "./common.ts";
@@ -92,41 +92,6 @@ export function recordVisit(pathname: string) {
   recent.set([entry, ...recent.get().filter((r) => r.name !== name)].slice(0, MAX_RECENT));
 }
 
-// Search runs over an index of all names, built by walking the directory listing API.
-const MAX_INDEXED = 5000;
-let indexCache: { time: number; entries: DirectoryEntry[] } | null = null;
-let indexPending: Promise<DirectoryEntry[]> | null = null;
-
-async function buildIndex(): Promise<DirectoryEntry[]> {
-  const entries: DirectoryEntry[] = [];
-  let level = [""];
-  while (level.length && entries.length < MAX_INDEXED) {
-    const lists = await Promise.all(
-      level.map((dir) =>
-        apiJson<DirectoryEntry[]>(`/api/dir/list?path=${encodeURIComponent(dir)}`).catch(
-          () => [] as DirectoryEntry[],
-        ),
-      ),
-    );
-    level = [];
-    for (const item of lists.flat()) {
-      if (shortName(item)?.startsWith("__")) continue;
-      entries.push(item);
-      if (item.type === "directory") level.push(item.name);
-    }
-  }
-  return entries.slice(0, MAX_INDEXED);
-}
-
-export async function getSearchIndex(): Promise<DirectoryEntry[]> {
-  if (indexCache && Date.now() - indexCache.time < 30_000) return indexCache.entries;
-  indexPending ??= buildIndex()
-    .then((entries) => {
-      indexCache = { time: Date.now(), entries };
-      return entries;
-    })
-    .finally(() => {
-      indexPending = null;
-    });
-  return indexPending;
+export function searchFiles(query: string): Promise<DirectoryEntry[]> {
+  return apiJson<DirectoryEntry[]>(`/api/dir/search?q=${encodeURIComponent(query)}`);
 }

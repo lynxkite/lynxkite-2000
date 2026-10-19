@@ -1,4 +1,5 @@
 import pathlib
+import shutil
 import uuid
 from fastapi.testclient import TestClient
 from lynxkite_app.main import app
@@ -34,6 +35,26 @@ def test_list_dir():
     file.unlink()
     ws.unlink()
     dir.rmdir()
+
+
+def test_search_dir():
+    test_dir = pathlib.Path() / str(uuid.uuid4())
+    (test_dir / "sub").mkdir(parents=True)
+    (test_dir / "__hidden").mkdir()
+    (test_dir / ".dot").mkdir()
+    (test_dir / "sub" / "Needle.txt").touch()
+    (test_dir / "sub" / "other.txt").touch()
+    (test_dir / "__hidden" / "needle.txt").touch()
+    (test_dir / ".dot" / "needle.txt").touch()
+    try:
+        response = client.get("/api/dir/search?q=NEEDLE")
+        assert response.status_code == 200
+        assert response.json() == [
+            {"name": f"{test_dir.as_posix()}/sub/Needle.txt", "type": "file"},
+        ]
+        assert client.get("/api/dir/search?q=%20").json() == []
+    finally:
+        shutil.rmtree(test_dir)
 
 
 def test_make_dir():

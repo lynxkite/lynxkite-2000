@@ -1,5 +1,5 @@
 // Search, favorites and recent files for the sidebar.
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import File from "~icons/tabler/file";
 import Folder from "~icons/tabler/folder";
@@ -8,9 +8,9 @@ import LayoutGrid from "~icons/tabler/layout-grid";
 import SearchIcon from "~icons/tabler/search";
 import Star from "~icons/tabler/star";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { entryLink, getSearchIndex, shortName, useFavorites, useRecent } from "./sidebarStore.ts";
+import { entryLink, searchFiles, shortName, useFavorites, useRecent } from "./sidebarStore.ts";
 
-const MAX_RESULTS = 8;
+const SEARCH_DELAY_MS = 200;
 
 function EntryIcon(props: { type: string }) {
   if (props.type === "directory") return <Folder />;
@@ -24,12 +24,36 @@ function parentPath(item: DirectoryEntry) {
 
 export function SidebarSearch(props: { open: boolean; onExpand: () => void }) {
   const [query, setQuery] = useState("");
-  const [index, setIndex] = useState<DirectoryEntry[]>([]);
+  const [results, setResults] = useState<DirectoryEntry[]>([]);
+  const [searched, setSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const q = query.trim().toLowerCase();
-  const results = q
-    ? index.filter((item) => item.name.toLowerCase().includes(q)).slice(0, MAX_RESULTS)
-    : [];
+  const q = query.trim();
+
+  useEffect(() => {
+    setSearched(false);
+    if (!q) {
+      setResults([]);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      searchFiles(q)
+        .then((items) => {
+          if (cancelled) return;
+          setResults(items);
+          setSearched(true);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setResults([]);
+          setSearched(true);
+        });
+    }, SEARCH_DELAY_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [q]);
 
   function expandAndFocus() {
     if (props.open) return;
@@ -51,7 +75,6 @@ export function SidebarSearch(props: { open: boolean; onExpand: () => void }) {
           placeholder="Search files..."
           value={query}
           tabIndex={props.open ? 0 : -1}
-          onFocus={() => getSearchIndex().then(setIndex)}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Escape") setQuery("");
@@ -75,7 +98,7 @@ export function SidebarSearch(props: { open: boolean; onExpand: () => void }) {
               </span>
             </Link>
           ))}
-          {results.length === 0 && <div className="sidebar-list-empty">No matches</div>}
+          {searched && results.length === 0 && <div className="sidebar-list-empty">No matches</div>}
         </div>
       )}
     </div>
