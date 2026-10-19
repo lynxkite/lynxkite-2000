@@ -63,38 +63,7 @@
         "expanded_height": null,
         "input_metadata": [],
         "message": null,
-        "meta": {
-          "categories": [
-            "Knowledge graphs"
-          ],
-          "color": "green",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Import Hetionet data from online."
-            }
-          ],
-          "icon": "binary-tree-2",
-          "id": "Knowledge graphs > Import hetionet",
-          "inputs": [],
-          "name": "Import hetionet",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [],
-          "placeholder_function_name": false,
-          "python_function_name": "Knowledge_graphs.hetio.import_hetionet",
-          "tags": [
-            "slow"
-          ],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Knowledge graphs > Import hetionet",
         "output_metadata": [
           {
@@ -197,105 +166,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [
-            "Knowledge graphs"
-          ],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Keep only nodes with the given name and their neighbors of the given kinds, connected by the given metaedges."
-            }
-          ],
-          "icon": "search",
-          "id": "Knowledge graphs > Hetionet lookup",
-          "inputs": [
-            {
-              "name": "b",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "Hetionet lookup",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": null,
-              "name": "neighbour_kinds",
-              "type": {
-                "format": "multi-dropdown_from_list",
-                "options": [
-                  "Anatomy",
-                  "BiologicalProcess",
-                  "CellularComponent",
-                  "Compound",
-                  "Disease",
-                  "Gene",
-                  "MolecularFunction",
-                  "Pathway",
-                  "PharmacologicClass",
-                  "SideEffect",
-                  "Symptom"
-                ]
-              }
-            },
-            {
-              "default": null,
-              "name": "metaedges",
-              "type": {
-                "format": "multi-dropdown_from_list",
-                "options": [
-                  "AdG",
-                  "AeG",
-                  "AuG",
-                  "CbG",
-                  "CcSE",
-                  "CdG",
-                  "CpD",
-                  "CrC",
-                  "CtD",
-                  "CuG",
-                  "DaG",
-                  "DdG",
-                  "DlA",
-                  "DpS",
-                  "DrD",
-                  "DuG",
-                  "GcG",
-                  "GiG",
-                  "GpBP",
-                  "GpCC",
-                  "GpMF",
-                  "GpPW",
-                  "Gr>G",
-                  "PCiC"
-                ]
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "Knowledge_graphs.hetio.hetionet_lookup",
-          "tags": [],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Knowledge graphs > Hetionet lookup",
         "output_metadata": [
           {
@@ -335,7 +206,6 @@
           }
         ],
         "params": {
-          "metaedges": null,
           "name": "multiple sclerosis",
           "neighbour_kinds": [
             "Compound"
@@ -402,105 +272,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [
-            "Knowledge graphs"
-          ],
-          "color": "orange",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Keep only nodes with the given name and their neighbors of the given kinds, connected by the given metaedges."
-            }
-          ],
-          "icon": "search",
-          "id": "Knowledge graphs > Hetionet lookup",
-          "inputs": [
-            {
-              "name": "b",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "Hetionet lookup",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": null,
-              "name": "name",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            },
-            {
-              "default": null,
-              "name": "neighbour_kinds",
-              "type": {
-                "format": "multi-dropdown_from_list",
-                "options": [
-                  "Anatomy",
-                  "BiologicalProcess",
-                  "CellularComponent",
-                  "Compound",
-                  "Disease",
-                  "Gene",
-                  "MolecularFunction",
-                  "Pathway",
-                  "PharmacologicClass",
-                  "SideEffect",
-                  "Symptom"
-                ]
-              }
-            },
-            {
-              "default": null,
-              "name": "metaedges",
-              "type": {
-                "format": "multi-dropdown_from_list",
-                "options": [
-                  "AdG",
-                  "AeG",
-                  "AuG",
-                  "CbG",
-                  "CcSE",
-                  "CdG",
-                  "CpD",
-                  "CrC",
-                  "CtD",
-                  "CuG",
-                  "DaG",
-                  "DdG",
-                  "DlA",
-                  "DpS",
-                  "DrD",
-                  "DuG",
-                  "GcG",
-                  "GiG",
-                  "GpBP",
-                  "GpCC",
-                  "GpMF",
-                  "GpPW",
-                  "Gr>G",
-                  "PCiC"
-                ]
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "Knowledge_graphs.hetio.hetionet_lookup",
-          "tags": [],
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Knowledge graphs > Hetionet lookup",
         "output_metadata": [
           {
@@ -543,8 +315,7 @@
           "metaedges": [
             "DlA"
           ],
-          "name": "brain",
-          "neighbour_kinds": null
+          "name": "brain"
         },
         "status": "done",
         "tags": [],
@@ -565,7 +336,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -606,45 +377,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
-          "tags": [],
-          "type": "table_view"
-        },
+        "meta": null,
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -675,7 +408,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -716,45 +449,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
-          "tags": [],
-          "type": "table_view"
-        },
+        "meta": null,
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -785,7 +480,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 3,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -826,45 +521,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "blue",
-          "doc": null,
-          "icon": "table-filled",
-          "id": "View tables",
-          "inputs": [
-            {
-              "name": "bundle",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "View tables",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": 100,
-              "name": "limit",
-              "type": {
-                "type": "<class 'int'>"
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
-          "tags": [],
-          "type": "table_view"
-        },
+        "meta": null,
         "op_id": "View tables",
         "output_metadata": [
           {}
@@ -895,7 +552,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 50,
+        "display_version": 51,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -936,67 +593,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [
-            "Visualizations"
-          ],
-          "color": "blue",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
-            },
-            {
-              "kind": "parameters",
-              "value": [
-                {
-                  "annotation": "Bundle",
-                  "description": "the bundle",
-                  "name": "b"
-                },
-                {
-                  "annotation": "str",
-                  "description": "the frontend uses this parameter to store relevant data of the chips",
-                  "name": "chip_data"
-                }
-              ]
-            }
-          ],
-          "icon": "eye",
-          "id": "Visualizations > Visualize graph",
-          "inputs": [
-            {
-              "name": "b",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "Visualize graph",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "",
-              "name": "chip_data",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
-          "tags": [],
-          "type": "graph_visualization"
-        },
+        "meta": null,
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -1055,7 +652,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 48,
+        "display_version": 49,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1096,67 +693,7 @@
           }
         ],
         "message": null,
-        "meta": {
-          "categories": [
-            "Visualizations"
-          ],
-          "color": "blue",
-          "doc": [
-            {
-              "kind": "text",
-              "value": "Visualizes the graph using ECharts and allows the user to customize the visualization through \"chips\"."
-            },
-            {
-              "kind": "parameters",
-              "value": [
-                {
-                  "annotation": "Bundle",
-                  "description": "the bundle",
-                  "name": "b"
-                },
-                {
-                  "annotation": "str",
-                  "description": "the frontend uses this parameter to store relevant data of the chips",
-                  "name": "chip_data"
-                }
-              ]
-            }
-          ],
-          "icon": "eye",
-          "id": "Visualizations > Visualize graph",
-          "inputs": [
-            {
-              "name": "b",
-              "position": "left",
-              "type": {
-                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
-              }
-            }
-          ],
-          "name": "Visualize graph",
-          "outputs": [
-            {
-              "name": "output",
-              "position": "right",
-              "type": {
-                "type": "None"
-              }
-            }
-          ],
-          "params": [
-            {
-              "default": "",
-              "name": "chip_data",
-              "type": {
-                "type": "<class 'str'>"
-              }
-            }
-          ],
-          "placeholder_function_name": false,
-          "python_function_name": "lynxkite_graph_analytics.operations.visualization_ops.visualize_graph",
-          "tags": [],
-          "type": "graph_visualization"
-        },
+        "meta": null,
         "op_id": "Visualizations > Visualize graph",
         "output_metadata": [
           {}
@@ -1216,21 +753,7 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "red",
-          "doc": null,
-          "icon": "x",
-          "id": "Comment",
-          "inputs": [],
-          "name": "Comment",
-          "outputs": [],
-          "params": [],
-          "placeholder_function_name": true,
-          "python_function_name": "lynxkite_core.ops.comment",
-          "tags": null,
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
         "params": {
@@ -1261,21 +784,7 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "red",
-          "doc": null,
-          "icon": "x",
-          "id": "Comment",
-          "inputs": [],
-          "name": "Comment",
-          "outputs": [],
-          "params": [],
-          "placeholder_function_name": true,
-          "python_function_name": "lynxkite_core.ops.comment",
-          "tags": null,
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
         "params": {
@@ -1306,21 +815,7 @@
         "expanded_height": null,
         "input_metadata": null,
         "message": null,
-        "meta": {
-          "categories": [],
-          "color": "red",
-          "doc": null,
-          "icon": "x",
-          "id": "Comment",
-          "inputs": [],
-          "name": "Comment",
-          "outputs": [],
-          "params": [],
-          "placeholder_function_name": true,
-          "python_function_name": "lynxkite_core.ops.comment",
-          "tags": null,
-          "type": "basic"
-        },
+        "meta": null,
         "op_id": "Comment",
         "output_metadata": null,
         "params": {

@@ -12,15 +12,15 @@ op = op_registration(core.ENV, "Knowledge graphs")
 
 class Kind(StrEnum):
     Anatomy = "Anatomy"
-    BiologicalProcess = "BiologicalProcess"
-    CellularComponent = "CellularComponent"
+    BiologicalProcess = "Biological Process"
+    CellularComponent = "Cellular Component"
     Compound = "Compound"
     Disease = "Disease"
     Gene = "Gene"
-    MolecularFunction = "MolecularFunction"
+    MolecularFunction = "Molecular Function"
     Pathway = "Pathway"
-    PharmacologicClass = "PharmacologicClass"
-    SideEffect = "SideEffect"
+    PharmacologicClass = "Pharmacologic Class"
+    SideEffect = "Side Effect"
     Symptom = "Symptom"
 
 
@@ -52,7 +52,7 @@ class Metaedge(StrEnum):
 
 
 MetaedgeDropdown = typing.Annotated[
-    list[str],
+    list[str] | str | None,
     {
         "format": "multi-dropdown_from_list",
         "options": [metaedge.value for metaedge in Metaedge],
@@ -60,7 +60,7 @@ MetaedgeDropdown = typing.Annotated[
 ]
 
 KindDropdown = typing.Annotated[
-    list[str],
+    list[str] | str | None,
     {
         "format": "multi-dropdown_from_list",
         "options": [kind.value for kind in Kind],
@@ -70,7 +70,11 @@ KindDropdown = typing.Annotated[
 
 @op("Hetionet lookup", icon="search")
 def hetionet_lookup(
-    b: core.Bundle, *, name: str, neighbour_kinds: KindDropdown, metaedges: MetaedgeDropdown
+    b: core.Bundle,
+    *,
+    name: str,
+    neighbour_kinds: KindDropdown = None,
+    metaedges: MetaedgeDropdown = None,
 ):
     """Keep only nodes with the given name and their neighbors of the given kinds, connected by the given metaedges."""
     b = b.copy()
@@ -78,6 +82,11 @@ def hetionet_lookup(
 
     seeds = all_nodes[all_nodes["name"].str.lower() == name.lower()]
     seed_ids = set(seeds["id"])
+
+    if isinstance(metaedges, str):
+        metaedges = [metaedges] if metaedges else []
+    if isinstance(neighbour_kinds, str):
+        neighbour_kinds = [neighbour_kinds] if neighbour_kinds else []
 
     edges = all_edges
     if metaedges:
