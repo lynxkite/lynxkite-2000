@@ -96,7 +96,9 @@ def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
 
     item_count = len(nodes) + len(edges)
     if item_count < 10000:
-        pos = nx.spring_layout(b.to_nx(), iterations=max(1, int(10000 / item_count)))
+        pos = nx.spring_layout(
+            b.to_nx(), k=10 / np.sqrt(item_count), iterations=max(1, int(10000 / item_count))
+        )
     else:
         pos = {node_id: np.random.rand(2) for node_id in nodes[node_id]}
 
@@ -108,7 +110,6 @@ def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
 
     nodes_dict = nodes.to_dict(orient="index")
     edges = edges.to_records()
-
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
