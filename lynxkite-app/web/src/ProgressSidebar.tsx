@@ -5,15 +5,14 @@ import * as Y from "yjs";
 import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
-
-function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
-}
+import {
+  formatWorkspaceProgressSuffix,
+  getWorkspaceProgress,
+  parseProgressWorkspace,
+  pauseWorkspace,
+  stopWorkspace,
+  workspaceProgressColor,
+} from "./progress";
 
 export function WorkspaceProgressList() {
   const [workspaces, setWorkspaces] = useState<any[]>([]);
@@ -37,9 +36,8 @@ export function WorkspaceProgressList() {
     function sync() {
       const ws: any[] = [];
       for (const value of (wsMap as Y.Map<unknown>).values()) {
-        try {
-          ws.push(typeof value === "string" ? JSON.parse(value) : (value as any));
-        } catch {}
+        const parsed = parseProgressWorkspace(value);
+        if (parsed) ws.push(parsed);
       }
       setWorkspaces(ws);
     }
@@ -57,22 +55,6 @@ export function WorkspaceProgressList() {
     };
   }, []);
 
-  async function pauseWorkspace(roomName: string, paused: boolean) {
-    await fetch("/api/pause_workspace", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ room_name: roomName, paused }),
-    });
-  }
-
-  async function stopWorkspace(roomName: string) {
-    await fetch("/api/stop_workspace", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ room_name: roomName }),
-    });
-  }
-
   return (
     <div className="sidebar-progress-section">
       <div className="sidebar-section-title">Running workspaces</div>
@@ -81,31 +63,29 @@ export function WorkspaceProgressList() {
       ) : (
         workspaces.map((ws) => {
           const roomName = ws.room_name || ws.name;
-          const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
-          const tqdm = ws.active_node?.tqdm;
-          const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
-          const progress =
-            tqdmFraction != null ? (ws.boxes_done + tqdmFraction) / ws.boxes_total : boxFraction;
+          const progress = getWorkspaceProgress(ws);
+          const tqdm = progress.activeNode?.tqdm;
+          const suffix = formatWorkspaceProgressSuffix(progress);
           return (
             <div key={ws.name} className="sidebar-workspace">
               <div className="sidebar-workspace-name">{ws.name}</div>
-              {ws.active_node && (
+              {progress.activeNode && (
                 <div className="sidebar-active-node">
-                  {ws.active_node.title}
+                  {progress.activeNode.title}
                   {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
                 </div>
               )}
               <progress
-                className={`progress progress-${ws.status === "active" ? "primary" : "neutral"} w-full`}
-                value={progress * 100}
+                className={`progress progress-${workspaceProgressColor(progress.status)} w-full`}
+                value={progress.percent}
                 max={100}
               />
               <div className="sidebar-workspace-meta">
-                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
-                {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
+                {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
+                {suffix && <span> {suffix}</span>}
               </div>
               <div className="sidebar-workspace-actions">
-                {ws.paused ? (
+                {progress.paused ? (
                   <button
                     className="btn btn-sm"
                     title="Resume"
