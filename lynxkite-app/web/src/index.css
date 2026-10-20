@@ -22,6 +22,8 @@
 
   background: #002a4c;
   --color-base-100: white;
+  --color-base-200: #eee;
+  --color-base-300: #ddd;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
@@ -30,6 +32,7 @@
   --radius-box: 0.5rem;
   --radius-selector: 0.5rem;
   --bold: 500;
+  --iconized-border-size: 46px;
 }
 
 img,
@@ -503,6 +506,11 @@ svg {
       var(--status-color-3)
     );
     background-blend-mode: luminosity;
+    border: var(--iconized-border-size) solid;
+    border-image: url(assets/candy-9-slice.webp) 140 fill;
+    background-size: 250% 250%;
+    background-position-x: calc(-1 * var(--iconized-border-size));
+    overflow: visible;
 
     .node-content {
       display: none;
@@ -518,8 +526,8 @@ svg {
       .title-icon {
         display: block;
         width: 150px;
-        height: 150px;
         color: white;
+        filter: drop-shadow(10px 10px 1px #0001);
       }
 
       .title-icon-placeholder {
@@ -533,7 +541,7 @@ svg {
     --status-color-1: #0000;
     --status-color-2: #fff4;
     --status-color-3: #888f;
-    animation: active-node-gradient-animation 1.2s alternate ease-in-out infinite;
+    animation: active-node-gradient-animation-border-iconized 1.2s alternate ease-in-out infinite;
   }
 
   .lynxkite-node.lynxkite-node-iconized.planned {
@@ -1134,6 +1142,27 @@ svg {
     padding: 0 0 10px 0;
   }
 
+  .directory-error {
+    padding: 10px;
+    padding-bottom: 0;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      font-size: 200%;
+    }
+
+    > p {
+      flex: 1;
+
+      h1 {
+        font-size: 120%;
+        font-weight: bold;
+      }
+    }
+  }
+
   @media (min-width: 768px) {
     .management-page-content {
       width: 768px;
@@ -1300,6 +1329,16 @@ svg {
   }
 }
 
+@keyframes active-node-gradient-animation-border-iconized {
+  from {
+    background-position-x: calc(-1 * var(--iconized-border-size));
+  }
+
+  to {
+    background-position-x: calc(100% + var(--iconized-border-size));
+  }
+}
+
 .progress-indeterminate .indeterminate-bar {
   --status-color-1: #0000;
   --status-color-2: #fff4;
@@ -1376,6 +1415,26 @@ svg {
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
+}
+
+.react-flow__node.selected .lynxkite-node,
+.react-flow__node.selected .node-group,
+.react-flow__node.selected .comment-view {
+  outline: var(--xy-selection-border, 2px dotted rgba(0, 89, 220, 0.98));
+  outline-offset: 8px;
+  box-shadow:
+    0 0 0 5px rgba(0, 89, 220, 0.2),
+    0 0 0 10px rgba(0, 89, 220, 0.1);
+}
+
+.react-flow__node.selected .node-group {
+  outline-offset: 20px;
+}
+
+.react-flow__selection,
+.react-flow__nodesselection,
+.react-flow__nodesselection-rect {
+  pointer-events: none;
 }
 
 .selected .node-group {

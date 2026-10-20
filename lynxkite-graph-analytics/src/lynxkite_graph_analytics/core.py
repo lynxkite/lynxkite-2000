@@ -370,6 +370,9 @@ async def _execute_node(
         result.output_metadata = [_get_metadata(result.output)]
     else:
         result.output_metadata = []
+    if result.error:
+        node.publish_result(result)
+        return
     try:
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"

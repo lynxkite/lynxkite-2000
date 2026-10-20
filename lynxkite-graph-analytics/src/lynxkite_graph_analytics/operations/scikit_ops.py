@@ -7,8 +7,11 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeRegressor
+
 from .. import core
 from lynxkite_core.ops import op_registration
 from sklearn.datasets import fetch_openml
@@ -43,7 +46,7 @@ def one_hot(
     df = b.dfs[table_name].copy()
 
     for col in columns:
-        dummies = pd.get_dummies(df[col])
+        dummies = pd.get_dummies(df[col], dtype=int)
         df[col + "_one_hot"] = list(map(tuple, dummies.to_numpy()))
 
     b.dfs[table_name] = df
@@ -184,3 +187,68 @@ def conf_matrix(
     plt.xlabel("Predicted", labelpad=15)
     plt.ylabel("Actual", labelpad=15)
     plt.yticks(rotation=0)
+
+
+@op("Train decision tree regression model", icon="circles")
+def train_decision_tree(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    feature_column: core.ColumnNameByTableName,
+    label_column: core.ColumnNameByTableName,
+    max_depth: int = 7,
+    min_impurity_decrease: float = 0.0,
+    min_samples_leaf: int = 1,
+    seed: int = 42,
+    model_name: str = "decision_tree",
+) -> core.Bundle:
+    """
+    :param seed: seed for random number generator.
+    :param min_samples_leaf: minimum number of samples required to be at a leaf node.
+    :param min_impurity_decrease: minimum impurity decrease required to split a node.
+    :param max_depth: maximum depth of the tree.
+    :param b: The bundle.
+    :param table_name: The name of the table containing the training data.
+    :param feature_column: The name of the column containing the feature vectors.
+    :param label_column: The name of the column containing the labels.
+    :param model_name: The name to assign to the trained model.
+    """
+    b = b.copy()
+    train_df = b.dfs[table_name].copy()
+    x_train = np.array(train_df[feature_column].tolist())
+    y_train = train_df[label_column].to_numpy()
+    tree = DecisionTreeRegressor(
+        max_depth=max_depth,
+        min_impurity_decrease=min_impurity_decrease,
+        min_samples_leaf=min_samples_leaf,
+        random_state=seed,
+    )
+    tree = tree.fit(x_train, y_train)
+    b.other[model_name] = tree
+    return b
+
+
+@op("Train linear regression model", icon="circles")
+def train_linreg(
+    b: core.Bundle,
+    *,
+    table_name: core.TableName,
+    feature_column: core.ColumnNameByTableName,
+    label_column: core.ColumnNameByTableName,
+    model_name: str = "linear",
+) -> core.Bundle:
+    """
+    :param b: The bundle.
+    :param table_name: The name of the table containing the training data.
+    :param feature_column: The name of the column containing the feature vectors.
+    :param label_column: The name of the column containing the labels.
+    :param model_name: The name to assign to the trained model.
+    """
+    b = b.copy()
+    train_df = b.dfs[table_name].copy()
+    x_train = np.array(train_df[feature_column].tolist())
+    y_train = train_df[label_column].to_numpy()
+
+    linear = LinearRegression().fit(x_train, y_train)
+    b.other[model_name] = linear
+    return b

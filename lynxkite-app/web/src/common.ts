@@ -304,17 +304,21 @@ export function shortName(path: string): string {
 export async function uploadFile(
   file: File,
   opts?: {
-    onProgress?: (percent: number) => void;
+    directory?: string;
+    path?: string;
+    onProgress?: (uploadedBytes: number, totalBytes: number) => void;
   },
 ): Promise<void> {
   const formData = new FormData();
-  formData.append("file", file);
-  await axios.post("/api/upload", formData, {
+  formData.append("file", file, opts?.path ?? file.name);
+  const directory =
+    opts?.directory !== undefined ? `?dir=${encodeURIComponent(opts.directory)}` : "";
+  await axios.post(`/api/upload${directory}`, formData, {
     onUploadProgress: (event) => {
       if (!opts?.onProgress) return;
-      if (!event.total) return;
-      const percent = Math.round((100 * event.loaded) / event.total);
-      opts.onProgress(percent);
+      const progress = event.progress ?? (event.total ? event.loaded / event.total : undefined);
+      if (progress === undefined) return;
+      opts.onProgress(Math.min(file.size, progress * file.size), file.size);
     },
   });
 }
