@@ -12,7 +12,7 @@ import SettingsIcon from "~icons/tabler/settings";
 import UserIcon from "~icons/tabler/user";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { triggerLogin, triggerLogout, getConfig, useCurrentUser } from "./common.ts";
+import { getConfig, triggerLogin, triggerLogout, useCurrentUser } from "./common.ts";
 import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.tsx";
 
 const SIDEBAR_OPEN_KEY = "lynxkite-sidebar-open";
