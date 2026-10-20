@@ -5,19 +5,24 @@ from __future__ import annotations
 import asyncio
 import enum
 import functools
+import hashlib
 import json
 import importlib.util
 import inspect
+import os
 import pathlib
 import pkgutil
 import subprocess
+import sys
+import tempfile
 import traceback
 import types
 import typing
 from dataclasses import dataclass
 import pydantic
+from pydantic_core import to_json
 from .matplotlib_to_image import matplotlib_to_image
-from .opcontext import OpContext, CONTEXT_PARAM_NAME
+from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -56,7 +61,7 @@ def cached(func):
     return CACHE_WRAPPER(func)
 
 
-def _cached_with_ctx(func):
+def _cached_with_ctx(func, ctx_idx: int):
     """
     This function is used with operations that have a context parameter.
     For caching to work the context parameter needs to be ignored (as it is not serializable),
@@ -67,7 +72,9 @@ def _cached_with_ctx(func):
         return func
 
     def _cache_with_message(op_ctx: "OpContext", *args, **kwargs):
-        result = asyncio.run(func(op_ctx, *args, **kwargs))
+        args_list = list(args)
+        args_list.insert(ctx_idx, op_ctx)
+        result = asyncio.run(func(*args_list, **kwargs))
         # Save the function result and the messages it sent.
         return _CachedCall(result=result, message=op_ctx.message or "")
 
@@ -87,6 +94,8 @@ def _cached_with_ctx(func):
 
 
 def type_to_json(t):
+    if typing.get_origin(t) is typing.Literal:
+        return {"enum": list(typing.get_args(t))}
     if isinstance(t, type) and issubclass(t, enum.Enum):
         return {"enum": list(t.__members__.values())}
     if getattr(t, "__metadata__", None):
@@ -114,6 +123,11 @@ class BaseConfig(pydantic.BaseModel):
     model_config = pydantic.ConfigDict()
 
 
+# Cache for dynamically created option enums. Ensures the same class object is reused
+# across calls so pickle can resolve it via sys.modules.
+_options_enum_cache: dict[tuple, enum.StrEnum] = {}
+
+
 class Parameter(BaseConfig):
     """Defines a parameter for an operation."""
 
@@ -123,8 +137,14 @@ class Parameter(BaseConfig):
 
     @staticmethod
     def options(name, options: list[str], default=None):
-        e = enum.StrEnum(f"OptionsFor_{name}", [(o, o) for o in options])
-        return Parameter.basic(name, default or options[0], e)
+        key = (name, tuple(options))
+        if key not in _options_enum_cache:
+            opts_hash = hashlib.md5(str(key).encode()).hexdigest()[:8]
+            cls_name = f"OptionsFor_{name}_{opts_hash}"
+            e = enum.StrEnum(cls_name, [(o, o) for o in options])
+            setattr(sys.modules[__name__], cls_name, e)
+            _options_enum_cache[key] = e
+        return Parameter.basic(name, default or options[0], _options_enum_cache[key])
 
     @staticmethod
     def basic(name, default=None, type=None):
@@ -183,6 +203,12 @@ class Output(BaseConfig):
     position: Position
 
 
+def build_output_path(ws_path: str, node_id: str) -> pathlib.Path:
+    """Builds the path to save the display data for a given node output."""
+    ws_path_obj = pathlib.Path(ws_path)
+    return pathlib.Path(f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.name}/{node_id}.json")
+
+
 @dataclass
 class Result:
     """Represents the result of an operation.
@@ -196,9 +222,41 @@ class Result:
 
     output: typing.Any | None = None
     display: ReadOnlyJSON | None = None
+    display_version: int | None = None
     error: str | None = None
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
+
+    def save_display(self, ws_path: str | None, node_id: str, version: int):
+        """Saves the display data to a file. The path is relative to the workspace's data directory."""
+        # If old version had display and new run has None,
+        # frontend keeps previous cached display keyed by unchanged version.
+        # TODO: check if this is an actual problem.
+        #   (e.g. the boxes that use display always return something)
+        if ws_path and self.display is not None:
+            path = build_output_path(ws_path, node_id)
+            path.parent.mkdir(exist_ok=True, parents=True)
+            display_json = to_json(self.display)
+            try:
+                with open(path, "r+b") as f:
+                    old_display = f.read()
+            except Exception:
+                old_display = None
+            if old_display == display_json:
+                self.display = None
+                self.display_version = version
+                return
+            with tempfile.NamedTemporaryFile(
+                "w+b",
+                prefix=f".{path.name}.",
+                dir=path.parent,
+                delete=False,
+            ) as f:
+                temp_name = f.name
+                f.write(display_json)
+            os.replace(temp_name, path)
+            self.display = None
+            self.display_version = version + 1
 
 
 def get_optional_type(type):
@@ -214,6 +272,12 @@ def get_optional_type(type):
 def _param_to_type(name, value, type):
     if value is None:
         value = ""
+    if typing.get_origin(type) is typing.Literal:
+        allowed = typing.get_args(type)
+        assert value in allowed, (
+            f'Parameter "{name}" must be one of {list(allowed)}. Found: {value}'
+        )
+        return value
     if type is int:
         assert value != "", f"{name} is unset."
         return int(value)
@@ -250,28 +314,44 @@ class Op(BaseConfig):
     id: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
     # Automatically set from `func`.
     python_function_name: str = pydantic.Field(default=None)  # ty: ignore[invalid-assignment]
+    placeholder_function_name: bool = pydantic.Field(default=False)
+    tags: list[str] | None = None
 
     def __call__(self, op_ctx: OpContext, *inputs, **params):
         assert isinstance(op_ctx, OpContext)
         # Convert parameters.
         params = self.convert_params(params)
-        if inspect.signature(self.func).parameters.get(CONTEXT_PARAM_NAME, None):
-            res = self.func(op_ctx, *inputs, **params)
+        ctx_name, ctx_idx = find_ctx_param_name(self.func)
+        if ctx_name is not None and ctx_idx is not None:
+            inputs_list = list(inputs)
+            inputs_list.insert(ctx_idx, op_ctx)
+            res = self.func(*inputs_list, **params)
         else:
             res = self.func(*inputs, **params)
+
+        is_visualization_type = self.type in [
+            "visualization",
+            "graph_visualization",
+            "table_view",
+            "graph_creation_view",
+            "image",
+            "molecule",
+        ]
         if not isinstance(res, Result):
             # Automatically wrap the result in a Result object, if it isn't already.
-            if self.type in [
-                "visualization",
-                "table_view",
-                "graph_creation_view",
-                "image",
-                "molecule",
-            ]:
+            if is_visualization_type:
                 # If the operation is a visualization, we use the returned value for display.
                 res = Result(display=res)
             else:
                 res = Result(output=res)
+
+        # Save display if needed
+        if is_visualization_type and not self.type == "graph_creation_view":
+            if op_ctx.ws and op_ctx.node:
+                res.save_display(
+                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
+                )
+
         return res
 
     def get_input(self, name: str):
@@ -303,7 +383,16 @@ class Op(BaseConfig):
             assert " > " not in c, "Operation category cannot contain ' > '"
         self.id = " > ".join(self.categories + [self.name])
         if self.func and hasattr(self.func, "__module__") and hasattr(self.func, "__name__"):
-            self.python_function_name = f"{self.func.__module__}.{self.func.__name__}"
+            if self.func.__name__ == "<lambda>" or self.func.__name__ == "no_op":
+                self.python_function_name = f"{self.func.__module__}.{
+                    ''.join(c if c.isalnum() else '_' for c in self.id.lower())
+                }"
+                self.placeholder_function_name = True
+            else:
+                self.python_function_name = (
+                    f"{self.func.__module__.replace('-', '_')}.{self.func.__name__}"
+                )
+                self.placeholder_function_name = False
         return self
 
     @staticmethod
@@ -334,6 +423,7 @@ def op(
     icon: str | None = None,
     cache: bool | None = None,
     dir: str = "left-to-right",
+    tags: list[str] | None = None,
 ):
     """
     Decorator for defining an operation.
@@ -342,7 +432,7 @@ def op(
         env: The environment (workspace type) to which the operation belongs. If None, the operation
              is not registered in any catalog.
         names: The list of categories this operation belongs to, followed by the name of the operation.
-        view: How the operation will be displayed in the UI. One of "basic", "visualization",
+        view: How the operation will be displayed in the UI. One of "basic", "visualization", "graph_visualization",
               "table_view", "graph_creation_view", "image", "molecule", "matplotlib", "service".
         outputs: A list of output names. If not provided, defaults to ["output"] for "basic" view.
         params: Normally the parameters are taken from the function signature.
@@ -360,27 +450,34 @@ def op(
     [*categories, name] = names
 
     def decorator(func):
+        tag_list = tags or []
         doc = parse_doc(func)
         sig = inspect.signature(func)
         _view = view
         if view == "matplotlib":
             _view = "image"
             func = matplotlib_to_image(func)
-
+        ctx_name, ctx_idx = find_ctx_param_name(func)
         if slow:
+            tag_list.append("slow")
             func = make_async(func)
             if cache is not False:
-                if sig.parameters.get(CONTEXT_PARAM_NAME, None) is None:
+                if ctx_name is None or ctx_idx is None:
                     func = cached(func)
                 else:
-                    func = _cached_with_ctx(func)
+                    func = _cached_with_ctx(func, ctx_idx)
         # Positional arguments are inputs.
         ipos, opos = Position.from_dir(dir)
+        try:
+            _hints = typing.get_type_hints(func)
+        except Exception:
+            _hints = {}
         inputs = [
             Input(name=name, type=param.annotation, position=ipos)
             for name, param in sig.parameters.items()
             if param.kind not in (param.KEYWORD_ONLY, param.VAR_KEYWORD)
-            and (name != CONTEXT_PARAM_NAME)
+            and name != CONTEXT_PARAM_NAME
+            and _hints.get(name) is not OpContext
         ]
         _params = []
         for n, param in sig.parameters.items():
@@ -397,6 +494,7 @@ def op(
                 in [
                     "basic",
                     "visualization",
+                    "graph_visualization",
                     "table_view",
                     "graph_creation_view",
                     "image",
@@ -415,6 +513,7 @@ def op(
             type=_view,
             color=color or "orange",
             icon=icon,
+            tags=tag_list,
         )
         if env is not None:
             CATALOGS.setdefault(env, {})
@@ -600,11 +699,23 @@ def install_requirements(req: pathlib.Path):
     subprocess.check_call(cmd)
 
 
+def to_python_module_name(path: pathlib.Path) -> str:
+    """Converts a path to a Python module name."""
+    return str(path).replace(" ", "_").replace("/", ".").replace("-", "_")
+
+
 def run_user_script(script_path: pathlib.Path):
-    spec = importlib.util.spec_from_file_location(script_path.stem, str(script_path))
+    module_name = (
+        f"{to_python_module_name(script_path.parent)}.{script_path.stem}"
+        if str(script_path.parent) != "."
+        else script_path.stem
+    )
+    spec = importlib.util.spec_from_file_location(module_name, str(script_path))
     assert spec
     module = importlib.util.module_from_spec(spec)
     assert spec.loader
+    # Register the module so that classes defined in user scripts are picklable by joblib.
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
 
 

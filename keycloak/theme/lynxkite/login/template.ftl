@@ -24,7 +24,7 @@
                 <div class="login-brand-logo">Lynx<span>Kite</span></div>
                 <div class="login-brand-sub">2000:MM</div>
             </div>
-            <div class="login-brand-tagline">The Complete Graph Data Science Platform</div>
+            <div class="login-brand-tagline">Discover Drugs, Graphs and the World!</div>
         </div>
 
         <#nested "form">

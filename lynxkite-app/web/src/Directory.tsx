@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
+import AlertCircle from "~icons/tabler/alert-circle";
 import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
@@ -14,13 +15,52 @@ import Star from "~icons/tabler/star";
 import StarFilled from "~icons/tabler/star-filled";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, useConfig, usePath } from "./common.ts";
+import {
+  apiFetch,
+  apiJson,
+  getConfig,
+  uploadFile,
+  useFolderPermissions,
+  usePath,
+} from "./common.ts";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
 import { entryLink, shortName, toggleFavorite, useFavorites } from "./sidebarStore.ts";
+import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
+
+type DownloadAction = "download" | "export";
+
+type UploadItem = { file: File; path: string };
+
+async function collectDroppedEntry(
+  entry: FileSystemEntry,
+  parent: string,
+  files: UploadItem[],
+  directories: string[],
+): Promise<void> {
+  const path = parent ? `${parent}/${entry.name}` : entry.name;
+  if (entry.isFile) {
+    const file = await new Promise<File>((resolve, reject) =>
+      (entry as FileSystemFileEntry).file(resolve, reject),
+    );
+    files.push({ file, path });
+  } else if (entry.isDirectory) {
+    directories.push(path);
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    while (true) {
+      const children = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+        reader.readEntries(resolve, reject),
+      );
+      if (!children.length) break;
+      for (const child of children) {
+        await collectDroppedEntry(child, path, files, directories);
+      }
+    }
+  }
+}
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
@@ -61,10 +101,11 @@ function Breadcrumbs(props: { path: string }) {
 }
 
 export default function Directory() {
-  useConfig();
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
-  const config = useConfig();
+  const config = getConfig();
+  const permissions = useFolderPermissions(path || "");
+  const canWrite = permissions.write;
   const list = useSWR(`/api/dir/list?path=${encodedPath}`, fetcher, {
     dedupingInterval: 0,
   });
@@ -77,6 +118,11 @@ export default function Directory() {
   const newCodeFileModalRef = useRef<ModalHandle>(null);
   const newFolderModalRef = useRef<ModalHandle>(null);
   const favorites = useFavorites();
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
+  const [pendingDownload, setPendingDownload] = useState<{
+    action: DownloadAction;
+    itemName: string;
+  } | null>(null);
 
   function encodePathSegments(path: string): string {
     const segments = path.split("/");
@@ -95,21 +141,79 @@ export default function Directory() {
       replace: true,
     });
   }
-  async function uploadFiles(files: FileList | File[]) {
+  async function uploadFiles(files: UploadItem[], directories: string[] = []) {
     const dirParam = encodeURIComponent(path || "");
-    for (const file of Array.from(files)) {
+    if (directories.length) {
       const formData = new FormData();
-      formData.append("file", file);
+      for (const directory of directories) formData.append("directory", directory);
       const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
         method: "POST",
         body: formData,
       });
       if (!res.ok) {
+        alert("Failed to upload folders.");
+        return;
+      }
+    }
+    const totalBytes = files.reduce((total, item) => total + item.file.size, 0);
+    const totalFiles = files.length;
+    if (totalFiles) {
+      setUploadProgress({ uploadedBytes: 0, totalBytes, completedFiles: 0, totalFiles });
+    }
+    let completedBytes = 0;
+    let completedFiles = 0;
+    for (const { file, path: relativePath } of files) {
+      try {
+        await uploadFile(file, {
+          directory: path || "",
+          path: relativePath,
+          onProgress: (uploadedBytes) => {
+            setUploadProgress({
+              uploadedBytes: completedBytes + uploadedBytes,
+              totalBytes,
+              completedFiles,
+              totalFiles,
+            });
+          },
+        });
+        completedBytes += file.size;
+        completedFiles += 1;
+        setUploadProgress({
+          uploadedBytes: completedBytes,
+          totalBytes,
+          completedFiles,
+          totalFiles,
+        });
+      } catch {
+        setUploadProgress(null);
+        list.mutate();
         alert(`Failed to upload ${file.name}.`);
         return;
       }
     }
+    setUploadProgress(null);
     list.mutate();
+  }
+
+  async function uploadDroppedItems(dataTransfer: DataTransfer) {
+    const entries = Array.from(dataTransfer.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.webkitGetAsEntry?.())
+      .filter((entry): entry is FileSystemEntry => entry !== null && entry !== undefined);
+    if (!entries.length) {
+      await uploadFiles(Array.from(dataTransfer.files, (file) => ({ file, path: file.name })));
+      return;
+    }
+    const files: UploadItem[] = [];
+    const directories: string[] = [];
+    try {
+      for (const entry of entries) {
+        await collectDroppedEntry(entry, "", files, directories);
+      }
+      await uploadFiles(files, directories);
+    } catch {
+      alert("Failed to read dropped files or folders.");
+    }
   }
 
   async function newFolderIn(path: string, folderName: string) {
@@ -167,11 +271,71 @@ export default function Directory() {
     list.mutate();
   }
 
-  const sidebarBottom = config.data?.enterprise_available ? <WorkspaceProgressList /> : null;
+  async function downloadBlob(apiPath: string, item: DirectoryEntry, fileName: string) {
+    const res = await apiFetch(apiPath, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: item.name }),
+    });
+    if (!res.ok) {
+      alert("Failed to download file.");
+      return false;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+    return true;
+  }
+
+  function closeDropdown(trigger: HTMLElement) {
+    const dropdown = trigger.closest(".dropdown");
+    if (dropdown?.contains(document.activeElement)) {
+      (document.activeElement as HTMLElement).blur();
+    }
+    trigger.blur();
+  }
+
+  async function runDownloadAction(
+    action: DownloadAction,
+    apiPath: string,
+    item: DirectoryEntry,
+    fileName: string,
+    trigger: HTMLElement,
+  ) {
+    if (pendingDownload !== null) return;
+    setPendingDownload({ action, itemName: item.name });
+    try {
+      const started = await downloadBlob(apiPath, item, fileName);
+      if (started) {
+        closeDropdown(trigger);
+      }
+    } finally {
+      setPendingDownload(null);
+    }
+  }
+
+  const sidebarBottom = config.enterprise_available ? <WorkspaceProgressList /> : null;
+
+  if (list.error) {
+    return (
+      <ManagementPage sidebarBottom={sidebarBottom}>
+        <div className="directory-error">
+          <AlertCircle style={{ verticalAlign: "baseline" }} />
+          <p>
+            <h1>Error</h1>
+            {list.error.message}
+          </p>
+        </div>
+      </ManagementPage>
+    );
+  }
 
   return (
     <ManagementPage sidebarBottom={sidebarBottom}>
-      {list.error && <p className="error">{list.error.message}</p>}
       {list.isLoading && (
         <output className="loading spinner-border">
           <span className="visually-hidden">Loading...</span>
@@ -180,49 +344,68 @@ export default function Directory() {
 
       {list.data && (
         <>
-          <div className="actions">
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              multiple
-              onChange={(e) => {
-                if (e.target.files?.length) uploadFiles(e.target.files);
-                e.target.value = "";
-              }}
-            />
-            <button type="button" onClick={() => newWorkspaceModalRef.current?.open()}>
-              <LayoutGridAdd /> New workspace
-            </button>
-            <button type="button" onClick={() => newCodeFileModalRef.current?.open()}>
-              <FilePlus /> New code file
-            </button>
-            <button type="button" onClick={() => newFolderModalRef.current?.open()}>
-              <FolderPlus /> New folder
-            </button>
-            <button type="button" onClick={() => fileInputRef.current?.click()}>
-              <Upload /> Upload file
-            </button>
-          </div>
+          {canWrite && (
+            <div className="actions">
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                multiple
+                onChange={(e) => {
+                  if (e.target.files?.length)
+                    uploadFiles(Array.from(e.target.files, (file) => ({ file, path: file.name })));
+                  e.target.value = "";
+                }}
+              />
+              <button type="button" onClick={() => newWorkspaceModalRef.current?.open()}>
+                <LayoutGridAdd /> New workspace
+              </button>
+              <button type="button" onClick={() => newCodeFileModalRef.current?.open()}>
+                <FilePlus /> New code file
+              </button>
+              <button type="button" onClick={() => newFolderModalRef.current?.open()}>
+                <FolderPlus /> New folder
+              </button>
+              <button type="button" onClick={() => fileInputRef.current?.click()}>
+                <Upload /> Upload file
+              </button>
+            </div>
+          )}
+          {!canWrite && !permissions.isLoading && config.authentication_issuer && (
+            <p className="text-sm opacity-70 px-2">This folder is read-only.</p>
+          )}
 
           <Breadcrumbs path={path} />
 
           <div
-            className={`entry-drop-zone${isDragOver ? " drag-over" : ""}`}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragOver(true);
-            }}
-            onDragLeave={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                setIsDragOver(false);
-              }
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsDragOver(false);
-              if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
-            }}
+            className={`entry-drop-zone${isDragOver && canWrite ? " drag-over" : ""}`}
+            onDragOver={
+              canWrite
+                ? (e) => {
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }
+                : undefined
+            }
+            onDragLeave={
+              canWrite
+                ? (e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setIsDragOver(false);
+                    }
+                  }
+                : undefined
+            }
+            onDrop={
+              canWrite
+                ? (e) => {
+                    e.preventDefault();
+                    setIsDragOver(false);
+                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                      uploadDroppedItems(e.dataTransfer);
+                  }
+                : undefined
+            }
           >
             {list.data.map(
               (item: DirectoryEntry) =>
@@ -256,51 +439,73 @@ export default function Directory() {
                         <DotsVertical />
                       </button>
                       <ul tabIndex={0} className="dropdown-content menu">
-                        <li>
-                          <button
-                            className="delete-button"
-                            type="button"
-                            onClick={() => {
-                              deleteItem(item);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              openRenameModal(item);
-                            }}
-                          >
-                            Rename
-                          </button>
-                        </li>
+                        {canWrite && (
+                          <>
+                            <li>
+                              <button
+                                className="delete-button"
+                                type="button"
+                                onClick={() => {
+                                  deleteItem(item);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  openRenameModal(item);
+                                }}
+                              >
+                                Rename
+                              </button>
+                            </li>
+                          </>
+                        )}
                         {item.type !== "directory" && (
                           <li>
                             <button
                               type="button"
-                              onClick={async () => {
-                                const res = await fetch("/api/download", {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ path: item.name }),
-                                });
-                                if (!res.ok) {
-                                  alert("Failed to download file.");
-                                  return;
-                                }
-                                const blob = await res.blob();
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = item.name;
-                                a.click();
-                                URL.revokeObjectURL(url);
+                              aria-disabled={pendingDownload !== null}
+                              onClick={async (e) => {
+                                await runDownloadAction(
+                                  "download",
+                                  "/api/download",
+                                  item,
+                                  item.name.split("/").pop()!,
+                                  e.currentTarget,
+                                );
                               }}
                             >
-                              Download
+                              {pendingDownload?.action === "download" &&
+                              pendingDownload.itemName === item.name
+                                ? "Downloading..."
+                                : "Download"}
+                            </button>
+                          </li>
+                        )}
+                        {item.type === "workspace" && (
+                          <li>
+                            <button
+                              type="button"
+                              aria-disabled={pendingDownload !== null}
+                              onClick={async (e) => {
+                                const fileName = `${shortName(item)}.zip`;
+                                await runDownloadAction(
+                                  "export",
+                                  "/api/export_workspace",
+                                  item,
+                                  fileName,
+                                  e.currentTarget,
+                                );
+                              }}
+                            >
+                              {pendingDownload?.action === "export" &&
+                              pendingDownload.itemName === item.name
+                                ? "Exporting..."
+                                : "Export static page"}
                             </button>
                           </li>
                         )}
@@ -313,35 +518,40 @@ export default function Directory() {
           </div>
         </>
       )}
-      <Modal
-        ref={renameModalRef}
-        title="Rename item"
-        description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
-        inputLabel="New name"
-        submitLabel="Rename"
-        onSubmit={submitRename}
-      />
-      <Modal
-        ref={newWorkspaceModalRef}
-        title="New workspace"
-        inputLabel="Name"
-        submitLabel="Create"
-        onSubmit={(name) => newWorkspaceIn(path || "", name)}
-      />
-      <Modal
-        ref={newCodeFileModalRef}
-        title="New code file"
-        inputLabel="Name"
-        submitLabel="Create"
-        onSubmit={(name) => newCodeFile(path || "", name)}
-      />
-      <Modal
-        ref={newFolderModalRef}
-        title="New folder"
-        inputLabel="Name"
-        submitLabel="Create"
-        onSubmit={(name) => newFolderIn(path || "", name)}
-      />
+      {canWrite && (
+        <>
+          <Modal
+            ref={renameModalRef}
+            title="Rename item"
+            description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
+            inputLabel="New name"
+            submitLabel="Rename"
+            onSubmit={submitRename}
+          />
+          <Modal
+            ref={newWorkspaceModalRef}
+            title="New workspace"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newWorkspaceIn(path || "", name)}
+          />
+          <Modal
+            ref={newCodeFileModalRef}
+            title="New code file"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newCodeFile(path || "", name)}
+          />
+          <Modal
+            ref={newFolderModalRef}
+            title="New folder"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newFolderIn(path || "", name)}
+          />
+        </>
+      )}
+      {uploadProgress && <UploadProgressToast {...uploadProgress} />}
     </ManagementPage>
   );
 }

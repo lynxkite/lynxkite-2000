@@ -1,6 +1,7 @@
 """Defines the OpContext class, which is passed to operations when they are executed.
 This context can be used to send messages to the frontend, capture stdout/stderr, and more."""
 
+import inspect
 import typing
 import contextlib
 import asyncio
@@ -73,6 +74,62 @@ class DummyTqdm:
 
 # Common name for the context parameter in operations that need access to the OpContext.
 CONTEXT_PARAM_NAME = "self"
+
+
+def find_ctx_param_name(func: typing.Callable) -> tuple[str, int] | tuple[None, None]:
+    """Returns the name of the OpContext parameter.
+
+    Detects two forms:
+    - Legacy: a parameter named ``CONTEXT_PARAM_NAME`` (``"self"``)
+    - New:    a non-keyword-only parameter annotated as ``OpContext``
+    """
+    try:
+        hints = typing.get_type_hints(func)
+    except Exception:
+        hints = {}
+
+    sig = inspect.signature(func)
+    func_name = getattr(func, "__name__", repr(func))
+    params = list(sig.parameters.items())
+    legacy_idx = next(
+        (idx for idx, (name, _) in enumerate(params) if name == CONTEXT_PARAM_NAME), None
+    )
+
+    kw_only_annotated = [
+        name
+        for name, param in params
+        if name != CONTEXT_PARAM_NAME
+        and hints.get(name) is OpContext
+        and param.kind is inspect.Parameter.KEYWORD_ONLY
+    ]
+    if kw_only_annotated:
+        raise ValueError(
+            f"Invalid context declaration: '{func_name}' has keyword-only "
+            f"OpContext-annotated parameter(s) {kw_only_annotated}. Declare OpContext as positional "
+            f"(e.g. 'def func(input1, op_ctx: OpContext, input2, *, param=...)')."
+        )
+
+    annotated = [
+        (name, idx)
+        for idx, (name, _) in enumerate(params)
+        if name != CONTEXT_PARAM_NAME and hints.get(name) is OpContext
+    ]
+    if len(annotated) > 1:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func_name}' has multiple OpContext-annotated "
+            f"parameters: {annotated}. Use only one."
+        )
+    if legacy_idx is not None and annotated:
+        raise ValueError(
+            f"Ambiguous context declaration: '{func_name}' has both the legacy "
+            f"'{CONTEXT_PARAM_NAME}' parameter and OpContext-annotated parameter(s) "
+            f"{annotated}. Use only one form."
+        )
+    if legacy_idx is not None:
+        return CONTEXT_PARAM_NAME, legacy_idx
+    return annotated[0] if annotated else (None, None)
+
+
 PROGRESS_REPORTER: ProgressReporterFactory = DummyTqdm
 TQDM_CAPTURER: typing.Optional[typing.Callable[["OpContext"], typing.Callable[..., typing.Any]]] = (
     None
@@ -139,11 +196,29 @@ class OpContext:
         if self.node is not None and self.loop is not None:
             self.loop.call_soon_threadsafe(self.node.publish_message, self.message)
 
-    def update_telemetry(self, telemetry: dict[str, typing.Any]):
-        """Updates the telemetry data for the current node."""
-        self.telemetry.update(telemetry)
+    def update_telemetry(self, telemetry: dict[str, typing.Any], *, row: str | int | None = None):
+        """Updates telemetry for the current node.
+
+        Without ``row``, this keeps the single-row telemetry format. When a row is
+        provided, telemetry is stored under ``bars[row]`` so an operation can expose any number
+        of independent progress bars. Progress bars are sorted by position first so
+        row=1 appears above row=2. When using key-based rows, the order is determined by the insertion order.
+        """
+        if row is None:
+            self.telemetry.update(telemetry)
+        else:
+            bars = self.telemetry.setdefault("bars", {})
+            if not isinstance(bars, dict):
+                raise TypeError("telemetry['bars'] must be a dictionary")
+            row_key = str(row)
+            bars[row_key] = {**bars.get(row_key, {}), **telemetry}
+
+        telemetry_snapshot = {
+            key: dict(value) if isinstance(value, dict) else value
+            for key, value in self.telemetry.items()
+        }
         if self.node is not None and self.loop is not None:
-            self.loop.call_soon_threadsafe(self.node.publish_telemetry, telemetry)
+            self.loop.call_soon_threadsafe(self.node.publish_telemetry, telemetry_snapshot)
 
     def __getattr__(self, name: str):
         if self.op is not None:

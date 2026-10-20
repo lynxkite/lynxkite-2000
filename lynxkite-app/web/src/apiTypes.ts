@@ -78,6 +78,7 @@ export interface Workspace {
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;
+  assistant_messages?: any[] | null;
   path?: string | null;
   [k: string]: unknown;
 }
@@ -97,6 +98,7 @@ export interface WorkspaceNodeData {
     [k: string]: unknown;
   };
   display?: unknown;
+  display_version?: number | null;
   input_metadata?:
     | {
         [k: string]: unknown;
@@ -112,10 +114,21 @@ export interface WorkspaceNodeData {
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
-  telemetry?: {
-    [k: string]: unknown;
-  } | null;
+  telemetry?: Telemetry | null;
+  chips?:
+    | {
+        [k: string]: string;
+      }[]
+    | null;
   meta?: Op | null;
+  [k: string]: unknown;
+}
+export interface Telemetry {
+  bars?: {
+    [row: string]: {
+      [k: string]: unknown;
+    };
+  };
   [k: string]: unknown;
 }
 export interface Position1 {

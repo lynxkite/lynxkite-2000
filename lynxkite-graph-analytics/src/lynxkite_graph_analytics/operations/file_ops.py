@@ -9,7 +9,7 @@ import networkx as nx
 import pandas as pd
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "File operations")
 
 
 class FileFormat(enum.StrEnum):
@@ -18,6 +18,14 @@ class FileFormat(enum.StrEnum):
     json = "json"
     excel = "excel"
     cif = "cif"
+    pdb = "pdb"
+
+
+class ExportFileFormat(enum.StrEnum):
+    csv = "csv"
+    parquet = "parquet"
+    json = "json"
+    excel = "excel"
 
 
 @op(
@@ -37,6 +45,7 @@ class FileFormat(enum.StrEnum):
                 "json": [],
                 "excel": [ops.Parameter.basic("sheet_name", type=str, default="Sheet1")],
                 "cif": [],
+                "pdb": [],
             },
             default=FileFormat.csv,
         ),
@@ -72,6 +81,9 @@ def import_file(
     elif file_format == "cif":
         with open(file_path, "r") as f:
             df = pd.DataFrame({"cif": [f.read()]})
+    elif file_format == "pdb":
+        with open(file_path, "r") as f:
+            df = pd.DataFrame({"pdb": [f.read()]})
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
     return core.Bundle(dfs={table_name: df})
@@ -81,9 +93,9 @@ def import_file(
 def export_to_file(
     bundle: core.Bundle,
     *,
-    table_name: str,
+    table_name: core.TableName,
     filename: ops.PathStr,
-    file_format: FileFormat = FileFormat.csv,
+    file_format: ExportFileFormat = ExportFileFormat.csv,
 ):
     """Exports a DataFrame to a file.
 
@@ -95,13 +107,13 @@ def export_to_file(
     """
 
     df = bundle.dfs[table_name]
-    if file_format == FileFormat.csv:
+    if file_format == ExportFileFormat.csv:
         df.to_csv(filename, index=False)
-    elif file_format == FileFormat.json:
+    elif file_format == ExportFileFormat.json:
         df.to_json(filename, orient="records", lines=True)
-    elif file_format == FileFormat.parquet:
+    elif file_format == ExportFileFormat.parquet:
         df.to_parquet(filename, index=False)
-    elif file_format == FileFormat.excel:
+    elif file_format == ExportFileFormat.excel:
         df.to_excel(filename, index=False)
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
@@ -114,11 +126,18 @@ def import_parquet(*, filename: ops.PathStr):
 
 
 @op("Import CSV", slow=True, color="green", icon="file-filled")
-def import_csv(*, filename: ops.PathStr, columns: str = "<from file>", separator: str = "<auto>"):
+def import_csv(
+    *,
+    filename: ops.PathStr,
+    columns: str = "<from file>",
+    separator: str = "<auto>",
+    table_name: str = "records",
+):
     """Imports a CSV file."""
     names = pd.api.extensions.no_default if columns == "<from file>" else columns.split(",")
     sep = pd.api.extensions.no_default if separator == "<auto>" else separator
-    return pd.read_csv(filename, names=names, sep=sep)  # ty: ignore[invalid-argument-type]
+    df = pd.read_csv(filename, names=names, sep=sep)  # ty: ignore[invalid-argument-type]
+    return core.Bundle(dfs={table_name: df})
 
 
 @op("Import GraphML", slow=True, color="green", icon="topology-star-3")

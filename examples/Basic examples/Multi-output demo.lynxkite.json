@@ -1,4 +1,5 @@
 {
+  "assistant_messages": null,
   "edges": [
     {
       "id": "Multi-output example 1 one View tables 1 bundle",
@@ -16,14 +17,18 @@
     }
   ],
   "env": "LynxKite Graph Analytics",
+  "execution_options": {},
   "nodes": [
     {
       "data": {
         "__execution_delay": 0.0,
         "collapsed": false,
         "display": null,
+        "display_version": null,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [],
+        "message": null,
         "meta": {
           "categories": [
             "Examples"
@@ -38,12 +43,20 @@
               "kind": "parameters",
               "value": [
                 {
-                  "annotation": "int",
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "int"
+                  },
                   "description": "Number of elements in output \"one\".",
                   "name": "a_limit"
                 },
                 {
-                  "annotation": "int",
+                  "annotation": {
+                    "cls": "ExprName",
+                    "member": null,
+                    "name": "int"
+                  },
                   "description": "Number of elements in output \"two\".",
                   "name": "b_limit"
                 }
@@ -60,6 +73,7 @@
               ]
             }
           ],
+          "icon": null,
           "id": "Examples > Multi-output example",
           "inputs": [],
           "name": "Multi-output example",
@@ -95,19 +109,51 @@
               }
             }
           ],
+          "placeholder_function_name": false,
+          "python_function_name": "Basic_examples.multi_output_demo.multi_output",
           "type": "basic"
         },
         "op_id": "Examples > Multi-output example",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "a"
+                ],
+                "key": "records",
+                "length": 2
+              }
+            },
+            "other": {},
+            "relations": []
+          },
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "b"
+                ],
+                "key": "records",
+                "length": 10
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
         "params": {
           "a_limit": "2",
           "b_limit": "10"
         },
         "status": "done",
+        "telemetry": null,
         "title": "Multi-output example"
       },
       "dragHandle": ".drag-handle",
       "height": 275.0,
       "id": "Multi-output example 1",
+      "parentId": null,
       "position": {
         "x": 86.0,
         "y": 33.0
@@ -117,55 +163,52 @@
     },
     {
       "data": {
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "a"
-              ],
-              "data": [
-                [
-                  0
-                ],
-                [
-                  1
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "a"
-                ]
+                ],
+                "key": "records",
+                "length": 2
               }
             },
             "other": {},
             "relations": []
           }
         ],
+        "message": null,
         "meta": {
           "categories": [],
-          "color": "orange",
+          "color": "blue",
           "doc": null,
+          "icon": "table-filled",
           "id": "View tables",
           "inputs": [
             {
               "name": "bundle",
               "position": "left",
               "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
               }
             }
           ],
           "name": "View tables",
-          "outputs": [],
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "params": [
             {
               "default": 100,
@@ -175,18 +218,25 @@
               }
             }
           ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
           "type": "table_view"
         },
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".drag-handle",
       "height": 200.0,
       "id": "View tables 1",
+      "parentId": null,
       "position": {
         "x": 485.0,
         "y": -31.0
@@ -196,79 +246,52 @@
     },
     {
       "data": {
-        "display": {
-          "dataframes": {
-            "df": {
-              "columns": [
-                "b"
-              ],
-              "data": [
-                [
-                  0
-                ],
-                [
-                  1
-                ],
-                [
-                  2
-                ],
-                [
-                  3
-                ],
-                [
-                  4
-                ],
-                [
-                  5
-                ],
-                [
-                  6
-                ],
-                [
-                  7
-                ],
-                [
-                  8
-                ],
-                [
-                  9
-                ]
-              ]
-            }
-          },
-          "other": {},
-          "relations": []
-        },
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
         "error": null,
+        "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "df": {
+              "records": {
                 "columns": [
                   "b"
-                ]
+                ],
+                "key": "records",
+                "length": 10
               }
             },
             "other": {},
             "relations": []
           }
         ],
+        "message": null,
         "meta": {
           "categories": [],
-          "color": "orange",
+          "color": "blue",
           "doc": null,
+          "icon": "table-filled",
           "id": "View tables",
           "inputs": [
             {
               "name": "bundle",
               "position": "left",
               "type": {
-                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+                "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
               }
             }
           ],
           "name": "View tables",
-          "outputs": [],
+          "outputs": [
+            {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          ],
           "params": [
             {
               "default": 100,
@@ -278,18 +301,25 @@
               }
             }
           ],
+          "placeholder_function_name": false,
+          "python_function_name": "lynxkite_graph_analytics.operations.basic_ops.view_tables",
           "type": "table_view"
         },
         "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
         "params": {
           "limit": 100.0
         },
         "status": "done",
+        "telemetry": null,
         "title": "View tables"
       },
       "dragHandle": ".drag-handle",
       "height": 215.0,
       "id": "View tables 2",
+      "parentId": null,
       "position": {
         "x": 480.0,
         "y": 191.0
@@ -297,5 +327,6 @@
       "type": "table_view",
       "width": 225.0
     }
-  ]
+  ],
+  "paused": true
 }

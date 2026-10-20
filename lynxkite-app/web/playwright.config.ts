@@ -12,7 +12,7 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["html"]] : "html",
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:8000",
     trace: "on",
     testIdAttribute: "data-nodeid", // Useful for easily selecting nodes using getByTestId
     permissions: ["clipboard-read", "clipboard-write"], // Needed for testing copy-paste functionality
@@ -29,7 +29,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "cd ../../examples && LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite",
+    command: `LYNXKITE_SUPPRESS_OP_ERRORS=1 lynxkite`,
+    cwd: "../../examples",
     port: 8000,
     reuseExistingServer: true,
   },

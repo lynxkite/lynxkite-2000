@@ -1,11 +1,14 @@
 import os
+import pathlib
 import pytest
 import tempfile
-from lynxkite_core import workspace
+from lynxkite_core import ops, workspace, workspace_progress
+
+ENV = "test_workspace_env"
 
 
 def test_save_load():
-    ws = workspace.Workspace(env="test")
+    ws = workspace.Workspace(env=ENV)
     ws.add_node(
         id="1",
         type="node_type",
@@ -58,15 +61,21 @@ def test_save_load():
         os.remove(path)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def populate_ops_catalog():
-    from lynxkite_core import ops
-
-    ops.register_passive_op("test", "Test Operation", inputs=[])
+@pytest.fixture(autouse=True)
+def isolate_ops_state():
+    old_user_script_root = ops.user_script_root
+    ops.save_catalogs("test_workspace")
+    ops.user_script_root = pathlib.Path(tempfile.gettempdir())
+    ops.register_passive_op(ENV, "Test Operation", inputs=[])
+    try:
+        yield
+    finally:
+        ops.load_catalogs("test_workspace")
+        ops.user_script_root = old_user_script_root
 
 
 def test_update_metadata():
-    ws = workspace.Workspace(env="test")
+    ws = workspace.Workspace(env=ENV)
     ws.add_node(
         id="1",
         type="basic",
@@ -91,6 +100,23 @@ def test_update_metadata():
 
 
 def test_update_metadata_with_empty_workspace():
-    ws = workspace.Workspace(env="test")
+    ws = workspace.Workspace(env=ENV)
     ws.update_metadata()
     assert len(ws.nodes) == 0
+
+
+def test_workspace_progress_uses_a_keyed_telemetry_bar():
+    ws = workspace.Workspace(env=ENV)
+    ws.add_node(id="1", type="basic", title="Train")
+    ws.nodes[0].data.status = workspace.NodeStatus.active
+    ws.nodes[0].data.telemetry = {
+        "bars": {
+            "epochs": {"n": 2, "total": 5, "rate": 1},
+            "batches": {"n": 75, "total": 100, "rate": 20},
+        }
+    }
+
+    progress = workspace_progress.compute_workspace_progress(ws, room_name="training")
+
+    assert progress["active_node"]["tqdm"] == {"n": 2, "total": 5}
+    assert progress["progress_fraction"] == 0.4

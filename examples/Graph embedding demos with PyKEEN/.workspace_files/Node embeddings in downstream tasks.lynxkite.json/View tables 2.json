@@ -1,0 +1,1 @@
+{"dataframes":{"baseline":{"columns":["metric","score"],"data":[["accuracy",0.956860395446375],["precision",0.9602446483180428],["recall",0.9520921770770163],["f1 score",0.9561510353227771]]}},"relations":[],"other":{}}

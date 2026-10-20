@@ -21,7 +21,7 @@ async function validateImport(workspace: Workspace, fileName: string, fileFormat
   const __dirname = dirname(__filename);
   const filePath = join(__dirname, "data", fileName);
 
-  await workspace.addBox("Import file");
+  await workspace.addBox("File operations › Import file");
   const importBox = workspace.getBox("Import file 1");
   const fileFormatSelect = await importBox
     .locator("label.param", { hasText: "file format" })

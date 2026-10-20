@@ -1,5 +1,11 @@
 import jmespath from "jmespath";
 import Tooltip from "../../Tooltip";
+import {
+  DoubleTextAdder,
+  DropdownMultiDropdownAdder,
+  DropdownTextAdder,
+  SelectDropdown,
+} from "./Adder";
 import ModelMapping from "./ModelMappingParameter";
 import NodeGroupParameter from "./NodeGroupParameter";
 import ParameterInput from "./ParameterInput";
@@ -22,6 +28,8 @@ function ParamName({ name, doc }: { name: string; doc: string }) {
   );
 }
 
+export type UpdateOptions = { delay?: number };
+
 interface NodeParameterProps {
   name: string;
   value: any;
@@ -29,8 +37,6 @@ interface NodeParameterProps {
   data: any;
   setParam: (name: string, value: any, options: UpdateOptions) => void;
 }
-
-export type UpdateOptions = { delay?: number };
 
 function findDocs(docs: any, parameter: string) {
   for (const sec of docs) {
@@ -75,6 +81,114 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         ))}
       </select>
     </label>
+  ) : meta?.type?.format === "multi-dropdown" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+
+      <div className="dropdown dropdown-bottom w-full">
+        <button
+          tabIndex={0}
+          className="border border-base-300 bg-base-100 rounded-lg h-12 px-4 w-full flex items-center justify-between cursor-pointer"
+        >
+          <span className="truncate text-sm text-base-content/90">
+            {(Array.isArray(value) ? value : []).filter(Boolean).join(", ")}
+          </span>
+          <span className="text-[10px] opacity-60 text-base-content">▼</span>
+        </button>
+
+        <div
+          tabIndex={0}
+          className="dropdown-content left-0 mt-1 w-full bg-white z-[999] rounded-lg border p-2 max-h-60 overflow-y-auto"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {(getDropDownValues(data, meta?.type?.metadata_query) as string[])
+            ?.filter((option: string) => option && option.trim() !== "")
+            ?.map((option: string) => {
+              const currentSelection: string[] = Array.isArray(value) ? value : [];
+              const isChecked: boolean = currentSelection.includes(option);
+
+              return (
+                <label
+                  key={option}
+                  className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded text-gray-900"
+                >
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-primary"
+                    checked={isChecked}
+                    onChange={(evt) => {
+                      const target = evt.target as HTMLInputElement;
+                      const nextSelection: string[] = target.checked
+                        ? [...currentSelection, option]
+                        : currentSelection.filter((v: string) => v !== option);
+
+                      onChange(nextSelection);
+                    }}
+                  />
+                  <span className="text-sm select-none">{option}</span>
+                </label>
+              );
+            })}
+        </div>
+      </div>
+    </div>
+  ) : meta?.type?.format === "multi-dropdown_from_list" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <SelectDropdown
+        value={value ?? []}
+        multi={true}
+        onChange={onChange}
+        options={meta?.type?.options}
+      />
+    </label>
+  ) : meta?.type?.format === "dropdown-textbox_adder" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownTextAdder
+        value={value ?? []}
+        onChange={onChange}
+        options={getDropDownValues(data, meta?.type?.metadata_query1)}
+      />
+    </label>
+  ) : meta?.type?.format === "dropdown-simple_adder" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownTextAdder
+        value={value ?? []}
+        onChange={onChange}
+        options={meta.type?.options1}
+        defaultValues={meta.type?.default_values}
+      />
+    </label>
+  ) : meta?.type?.format === "dropdown-multidropdown_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropDownValues(data, meta?.type?.metadata_query1)}
+        options2={meta?.type?.options2}
+      />
+    </div>
+  ) : meta?.type?.format === "dropdown-multidropdown_relation_adder" ? (
+    <div className="param">
+      <ParamName name={name} doc={doc} />
+      <DropdownMultiDropdownAdder
+        value={value ?? []}
+        onChange={onChange}
+        options1={getDropdownValuesByDirection(data, meta?.type?.direction_map)}
+        options2={meta?.type?.options2}
+      />
+    </div>
+  ) : meta?.type?.format === "double-textbox_adder" ? (
+    <label className="param">
+      <ParamName name={name} doc={doc} />
+      <DoubleTextAdder value={value ?? []} onChange={onChange} />
+    </label>
   ) : meta?.type?.format === "double-dropdown" ? (
     <label className="param">
       <ParamName name={name} doc={doc} />
@@ -82,7 +196,11 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
         <select
           className="select select-bordered appearance-none double-dropdown-first"
           value={value?.[0] ?? ""}
-          onChange={(evt) => onChange([evt.currentTarget.value, value?.[1]])}
+          onChange={(evt) => {
+            const nextTable = evt.currentTarget.value;
+            const cols = getDropDownValues(data, meta?.type?.metadata_query2, { first: nextTable });
+            onChange([nextTable, pickFromOptions(value?.[1], cols)]);
+          }}
         >
           {getDropDownValues(data, meta?.type?.metadata_query1).map((option: string) => (
             <option key={option} value={option}>
@@ -112,7 +230,7 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
       <ParamName name={name} doc={doc} />
       <select
         className="select select-bordered appearance-none w-full"
-        value={value || meta.type.enum[0]}
+        value={value ?? meta.type.enum[0]}
         onChange={(evt) => onChange(evt.currentTarget.value)}
       >
         {meta.type.enum.map((option: string) => (
@@ -162,6 +280,21 @@ export default function NodeParameter({ name, value, meta, data, setParam }: Nod
   );
 }
 
+function getDropdownValuesByDirection(data: any, direction_map: any): string[] {
+  const params = data?.params;
+  const metadata = data?.input_metadata?.[0];
+  const tableKey = direction_map?.[params?.direction];
+  if (!tableKey) return [""];
+  const relation = metadata.relations?.find((r: any) => r?.name === params.relation_name);
+  const tableName = relation?.[tableKey];
+  const columns = metadata.dataframes?.[tableName]?.columns;
+  return Array.isArray(columns) ? ["", ...columns].sort() : [""];
+}
+
+function pickFromOptions(value: any, options: string[]): string {
+  return value != null && options.includes(value) ? value : (options[0] ?? "");
+}
+
 function getDropDownValues(
   data: any,
   query: string,
@@ -174,8 +307,9 @@ function getDropDownValues(
     query = query.replace(`<${k}>`, ss[k]);
   }
   try {
-    const res = ["", ...jmespath.search(metadata, query)];
+    const res = jmespath.search(metadata, query);
     res.sort();
+    res.push("");
     return res;
   } catch (_) {
     return [""];

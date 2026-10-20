@@ -23,22 +23,23 @@ for (const name of WORKSPACES) {
 }
 
 test("Model use", async ({ page }) => {
+  test.setTimeout(60000);
   const ws = await openWorkspace(page, "Model use");
-  await ws.execute({ timeout: 30000 }); // Actually trains the model.
+  await ws.execute({ timeout: 60000 }); // Actually trains the model.
   await ws.expectErrorFree();
   let b = ws.boxByTitle("Train/test split");
-  await b.expectParameterOptions("table name", ["", "records"]);
+  await b.expectParameterOptions("table name", ["records", ""]);
   b = ws.boxByTitle("Train model");
-  await b.expectParameterOptions("model name", ["", "model"]);
+  await b.expectParameterOptions("model name", ["model", ""]);
   b = ws.boxByTitle("View vectors");
   await b.locator.locator(".params-expander").click();
   await b.expectParameterOptions("table name", [
-    "",
     "records",
     "records_test",
     "records_train",
     "training",
+    "",
   ]);
-  await b.expectParameterOptions("vector column", ["", "index", "prediction", "x", "y"]);
-  await b.expectParameterOptions("label column", ["", "index", "prediction", "x", "y"]);
+  await b.expectParameterOptions("vector column", ["index", "prediction", "x", "y", ""]);
+  await b.expectParameterOptions("label column", ["index", "prediction", "x", "y", ""]);
 });

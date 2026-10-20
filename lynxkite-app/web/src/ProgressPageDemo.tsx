@@ -1,5 +1,6 @@
 // A demo of ProgressPage with mock data.
 
+import type { ECharts } from "echarts";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import ScaleDown from "~icons/tabler/arrow-down";
@@ -13,7 +14,6 @@ import UserFilled from "~icons/tabler/user-filled";
 import ManagementPage from "./ManagementPage";
 
 const echarts = await import("echarts");
-
 // Generate fake per-day GPU-hours for a user over the last 30 days.
 function generateDailyUsage(avgHours: number): number[] {
   const days = [];
@@ -359,16 +359,14 @@ function Workspaces(props: { workspaces: any[]; setResources: (ws: any, resource
                       `(${ws.current_box_progress.done + currentBoxDemoCounter * (ws.resources.gpus ?? 0)}/${ws.current_box_progress.input_size})`}
                   </span>
                   {ws.current_box_progress.input_size && (
-                    <>
-                      <progress
-                        className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
-                        value={
-                          ws.current_box_progress.done +
-                          currentBoxDemoCounter * (ws.resources.gpus ?? 0)
-                        }
-                        max={ws.current_box_progress.input_size}
-                      />
-                    </>
+                    <progress
+                      className={`progress progress-${ws.resources.gpus ? "secondary" : "neutral"} w-50`}
+                      value={
+                        ws.current_box_progress.done +
+                        currentBoxDemoCounter * (ws.resources.gpus ?? 0)
+                      }
+                      max={ws.current_box_progress.input_size}
+                    />
                   )}
                 </div>
               ) : (
@@ -509,7 +507,7 @@ function GpuServices(props: {
 
 function UserUsageChart(props: { dailyUsage: number[]; gpuQuota: number }) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartInstance = useRef<echarts.ECharts>(null);
+  const chartInstance = useRef<ECharts | null>(null);
   useEffect(() => {
     if (!chartRef.current) return;
     chartInstance.current = echarts.init(chartRef.current, null, { renderer: "canvas" });

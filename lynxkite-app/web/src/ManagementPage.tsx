@@ -12,7 +12,7 @@ import SettingsIcon from "~icons/tabler/settings";
 import UserIcon from "~icons/tabler/user";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { triggerLogin, triggerLogout, useConfig, useCurrentUser } from "./common.ts";
+import { triggerLogin, triggerLogout, getConfig, useCurrentUser } from "./common.ts";
 import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.tsx";
 
 const SIDEBAR_OPEN_KEY = "lynxkite-sidebar-open";
@@ -44,9 +44,9 @@ export default function ManagementPage(props: {
       // Storage may be blocked, for example when embedded in another site.
     }
   }
-  const config = useConfig();
+  const config = getConfig();
   const currentUser = useCurrentUser();
-  const authEnabled = !!config.data?.authentication_issuer;
+  const authEnabled = !!config.authentication_issuer;
 
   return (
     <div className={`management-page ${props.className || ""}`}>
@@ -167,7 +167,7 @@ export default function ManagementPage(props: {
             <img src={logo} className="logo-image" alt="LynxKite logo" />
           </a>
           <img src={logoSparky} className="logo-image-sparky" alt="LynxKite logo" />
-          <div className="tagline">The Complete Graph Data Science Platform</div>
+          <div className="tagline">Discover Drugs, Graphs and the World!</div>
         </div>
         <div className="management-page-content">{props.children}</div>
       </div>

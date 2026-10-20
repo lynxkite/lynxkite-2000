@@ -21,6 +21,9 @@
   -moz-osx-font-smoothing: grayscale;
 
   background: #002a4c;
+  --color-base-100: white;
+  --color-base-200: #eee;
+  --color-base-300: #ddd;
   --color-primary: oklch(75% 0.13 230);
   --color-primary-content: white;
   --border: 1px;
@@ -29,6 +32,7 @@
   --radius-box: 0.5rem;
   --radius-selector: 0.5rem;
   --bold: 500;
+  --iconized-border-size: 46px;
 }
 
 img,
@@ -138,18 +142,75 @@ svg {
   flex-direction: column;
   height: 100vh;
 
+  &.read-only {
+    .react-flow__node input,
+    .react-flow__node select,
+    .react-flow__node textarea,
+    .react-flow__node button:not(.drag-handle):not([data-allow-readonly]) {
+      pointer-events: none;
+    }
+  }
+
   .top-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     background: #002a4c;
     color: oklch(75% 0.13 230);
     gap: 10px;
+    padding-right: 4px;
+
+    .top-bar-leading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .top-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .top-bar-trailing {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
 
     .ws-name {
       font-size: 1.5em;
-      flex: 1;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: white;
+    }
+
+    .workspace-progress-compact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .workspace-progress-compact progress {
+      width: 140px;
+      flex: 0 0 140px;
+      height: 8px;
+    }
+
+    .workspace-progress-compact-meta {
+      font-size: 0.7rem;
+      white-space: nowrap;
+      color: oklch(85% 0.08 230);
+      flex: 0 0 auto;
     }
 
     .logo img {
@@ -161,6 +222,7 @@ svg {
     .tools {
       display: flex;
       align-items: center;
+      flex: 0 0 auto;
 
       .btn {
         color: oklch(75% 0.13 230);
@@ -191,10 +253,66 @@ svg {
     }
   }
 
+  .user-menu-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .user-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: oklch(75% 0.13 230);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    svg {
+      font-size: 1.4em;
+    }
+  }
+
   .error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
     background: #ffdddd;
     padding: 8px;
     font-size: 12px;
+  }
+
+  .error-line {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .error-copy-button {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  .error-copy-button:hover {
+    opacity: 1;
   }
 
   .node-message {
@@ -226,7 +344,7 @@ svg {
     display: flex;
     flex-direction: column;
 
-    > :not(.title, .react-flow__handle) {
+    &:not(.lynxkite-node-iconized) > :not(.title, .react-flow__handle) {
       user-select: text;
       cursor: default;
     }
@@ -366,6 +484,67 @@ svg {
   }
 
   .lynxkite-node .title.planned {
+    --status-color-1: #888f;
+    --status-color-2: #888f;
+    --status-color-3: #888f;
+  }
+
+  .lynxkite-node.lynxkite-node-iconized {
+    border-radius: 40px;
+    --status-color-1: #0000;
+    --status-color-2: #0000;
+    --status-color-3: #0000;
+    transition:
+      --status-color-1 0.3s,
+      --status-color-2 0.3s,
+      --status-color-3 0.3s;
+    background-image: linear-gradient(
+      to right,
+      var(--status-color-1),
+      var(--status-color-2) 40%,
+      var(--status-color-2) 60%,
+      var(--status-color-3)
+    );
+    background-blend-mode: luminosity;
+    border: var(--iconized-border-size) solid;
+    border-image: url(assets/candy-9-slice.webp) 140 fill;
+    background-size: 250% 250%;
+    background-position-x: calc(-1 * var(--iconized-border-size));
+    overflow: visible;
+
+    .node-content {
+      display: none;
+    }
+
+    /* In the iconized view we fill the box with the tooltip handler, and center the icon inside it. */
+    div[data-tooltip-id] {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .title-icon {
+        display: block;
+        width: 150px;
+        color: white;
+        filter: drop-shadow(10px 10px 1px #0001);
+      }
+
+      .title-icon-placeholder {
+        flex: none;
+        width: 0;
+      }
+    }
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.active {
+    --status-color-1: #0000;
+    --status-color-2: #fff4;
+    --status-color-3: #888f;
+    animation: active-node-gradient-animation-border-iconized 1.2s alternate ease-in-out infinite;
+  }
+
+  .lynxkite-node.lynxkite-node-iconized.planned {
     --status-color-1: #888f;
     --status-color-2: #888f;
     --status-color-3: #888f;
@@ -543,9 +722,34 @@ svg {
       margin: 3px 0;
     }
 
+    .search-result-op {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
     .search-result-path {
       color: #0008;
       font-size: 80%;
+    }
+
+    .search-result-description {
+      color: #0008;
+      font-size: 80%;
+      line-height: 1.3;
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .search-result-highlight {
+      background-color: oklch(92% 0.08 90);
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 2px;
     }
 
     .back-button,
@@ -561,11 +765,23 @@ svg {
       background-color: oklch(75% 0.2 55);
       border-radius: 4px;
     }
+
+    .category-ops-contained {
+      font-size: 80%;
+      color: #0008;
+      margin-left: auto;
+      margin-right: 5px;
+    }
   }
 
   .react-flow__node {
     width: auto !important;
     height: auto !important;
+    transition: transform 0.04s linear !important;
+  }
+
+  .react-flow__node.dragging {
+    transition: none !important;
   }
 
   .react-flow__node-table_view {
@@ -730,7 +946,7 @@ svg {
 }
 
 .assistant-panel {
-  width: min(34vw, 420px);
+  width: min(38vw, 460px);
   min-width: 300px;
   border-left: 1px solid #d8dde3;
   background: white;
@@ -757,6 +973,14 @@ svg {
   .chat-bubble p:first-child {
     margin-top: 0;
   }
+}
+
+.chat-system-message {
+  margin: auto;
+  text-align: center;
+  color: rgb(119, 119, 119);
+  font-style: italic;
+  font-size: 90%;
 }
 
 .assistant-empty {
@@ -797,6 +1021,28 @@ svg {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.assistant-mic-wrapper {
+  display: inline-flex;
+}
+
+.assistant-mic-button.is-recording {
+  color: #ffffff;
+  border-color: #0284c7;
+  background: #0ea5e9;
+}
+
+.assistant-mic-button.is-disabled {
+  color: #9ca3af;
+  border-color: #d1d5db;
+  background: #f3f4f6;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.assistant-clear-button {
+  margin-right: auto;
 }
 
 .prose {
@@ -1239,6 +1485,27 @@ svg {
     padding: 0 0 10px 0;
   }
 
+  .directory-error {
+    padding: 10px;
+    padding-bottom: 0;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      font-size: 200%;
+    }
+
+    > p {
+      flex: 1;
+
+      h1 {
+        font-size: 120%;
+        font-weight: bold;
+      }
+    }
+  }
+
   .logo {
     margin: 0;
     text-align: center;
@@ -1264,6 +1531,19 @@ svg {
     color: #39bcf3;
     font-size: 14px;
     font-weight: 500;
+  }
+
+  .user-menu-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
   }
 
   @media (min-width: 1400px) {
@@ -1330,6 +1610,7 @@ svg {
 
     button {
       padding-right: 10px;
+      white-space: nowrap;
     }
 
     &.empty {
@@ -1392,6 +1673,16 @@ svg {
 @keyframes active-node-gradient-animation {
   to {
     background-position-x: 100%;
+  }
+}
+
+@keyframes active-node-gradient-animation-border-iconized {
+  from {
+    background-position-x: calc(-1 * var(--iconized-border-size));
+  }
+
+  to {
+    background-position-x: calc(100% + var(--iconized-border-size));
   }
 }
 
@@ -1471,6 +1762,26 @@ svg {
 .selected .lynxkite-node {
   outline: var(--xy-selection-border, var(--xy-selection-border-default));
   outline-offset: 7.5px;
+}
+
+.react-flow__node.selected .lynxkite-node,
+.react-flow__node.selected .node-group,
+.react-flow__node.selected .comment-view {
+  outline: var(--xy-selection-border, 2px dotted rgba(0, 89, 220, 0.98));
+  outline-offset: 8px;
+  box-shadow:
+    0 0 0 5px rgba(0, 89, 220, 0.2),
+    0 0 0 10px rgba(0, 89, 220, 0.1);
+}
+
+.react-flow__node.selected .node-group {
+  outline-offset: 20px;
+}
+
+.react-flow__selection,
+.react-flow__nodesselection,
+.react-flow__nodesselection-rect {
+  pointer-events: none;
 }
 
 .selected .node-group {

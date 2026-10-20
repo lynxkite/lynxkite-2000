@@ -15,7 +15,7 @@ test.afterEach(async () => {
 });
 
 test("Copy-paste box", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   await workspace.selectBox("Import Parquet 1");
   await workspace.copySelection();
   await workspace.pasteSelection();
@@ -36,7 +36,7 @@ test("Copy-paste connected boxes", async () => {
 });
 
 test("Cut-paste box", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   await workspace.selectBox("Import Parquet 1");
   await workspace.cutSelection();
   await expect(workspace.getBox("Import Parquet 1")).not.toBeVisible();
@@ -58,7 +58,7 @@ test("Copy-paste normal text", async () => {
 });
 
 test("Copy boxes and paste into text field", async () => {
-  await workspace.addBox("Import Parquet");
+  await workspace.addBox("File operations › Import Parquet");
   await workspace.selectBox("Import Parquet 1");
   await workspace.copySelection();
   await workspace.addBox("NetworkX › Generators › Directed › Scale-free graph");

@@ -5,6 +5,7 @@ import {
   BackgroundVariant,
   type Connection,
   MarkerType,
+  type Node,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -36,28 +37,40 @@ import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
 import Close from "~icons/tabler/x.jsx";
-import type { Op as OpsOp, WorkspaceNode } from "../apiTypes.ts";
+import type { Op as OpsOp, WorkspaceEdge, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
-import { apiJson, parentPath, uploadFile, useConfig, usePath } from "../common.ts";
+import {
+  apiJson,
+  getConfig,
+  isStaticWorkspaceMode,
+  parentPath,
+  uploadFile,
+  useFolderPermissions,
+  usePath,
+} from "../common.ts";
 import Tooltip from "../Tooltip.tsx";
+import UserMenu from "../UserMenu";
 import { useAutoConnect } from "./autoConnect.ts";
 import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
-import { nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
+import { type CRDTWorkspace, nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
-import { snapChangesToGrid } from "./grid.ts";
+import { GRID_SIZE, snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
-import { LynxKiteState } from "./LynxKiteState";
-import NodeSearch, { buildCategoryHierarchy, type Catalogs } from "./NodeSearch.tsx";
+import { LynxKiteNodeState, LynxKiteState } from "./LynxKiteState";
+import NodeSearch, { buildCategoryHierarchy, type Catalogs, type Category } from "./NodeSearch.tsx";
 import NodeWithGraphCreationView from "./nodes/GraphCreationNode.tsx";
 import Group from "./nodes/Group.tsx";
 import NodeWithComment from "./nodes/NodeWithComment.tsx";
 import NodeWithGradio from "./nodes/NodeWithGradio.tsx";
+import NodeWithGraphVisualization from "./nodes/NodeWithGraphVisualization.tsx";
 import NodeWithImage from "./nodes/NodeWithImage.tsx";
 import NodeWithMolecule from "./nodes/NodeWithMolecule.tsx";
 import NodeWithParams from "./nodes/NodeWithParams";
 import NodeWithTableView from "./nodes/NodeWithTableView.tsx";
 import NodeWithVisualization from "./nodes/NodeWithVisualization.tsx";
+import { useStaticWorkspace } from "./staticWorkspace.ts";
+import { WorkspaceProgress } from "./WorkspaceProgress.tsx";
 
 const Assistant = lazy(() => import("./Assistant.tsx"));
 
@@ -84,25 +97,66 @@ export default function Workspace(props: any) {
   );
 }
 
+const ICONIZE_THRESHOLD = 0.3;
+const NON_ICONIZED_NODE_TYPES = new Set([
+  "visualization",
+  "graph_visualization",
+  "image",
+  "molecule",
+]);
+
 function LynxKiteFlow() {
   const reactFlow = useReactFlow();
   const reactFlowContainer = useRef<HTMLDivElement>(null);
   const cursorScreenPos = useRef<XYPosition | null>(null);
+  const selectedNodeIdsRef = useRef<Set<string>>(new Set());
+  const selectedEdgeIdsRef = useRef<Set<string>>(new Set());
+  const categoryHierarchy = useRef<Category | null>(null);
   const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [isAreaSelecting, setIsAreaSelecting] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [gridSnapEnabled, setGridSnapEnabled] = useState(
     () => localStorage.getItem("gridSnapEnabled") === "true",
   );
+  const isStatic = isStaticWorkspaceMode();
   const path = usePath().replace(/^[/]edit[/]/, "");
   const [message, setMessage] = useState(null as string | null);
-  const shortPath = path!
+  const [iconized, setIconized] = useState(reactFlow.getZoom() < ICONIZE_THRESHOLD);
+  const permissions = useFolderPermissions(path);
+  const canWrite = isStatic ? false : permissions.write;
+  // Conditional useFoo hooks are safe here because isStatic never changes.
+  // biome-ignore-start lint/correctness/useHookAtTopLevel: isStatic is static
+  const crdt: CRDTWorkspace = isStatic
+    ? useStaticWorkspace()
+    : useCRDTWorkspace(path, canWrite, !isStatic);
+  // biome-ignore-end lint/correctness/useHookAtTopLevel: isStatic is static
+  const workspace = crdt.ws;
+  const workspaceReady = Boolean(workspace) && (isStatic || !permissions.isLoading);
+  const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite.json") : path)!
     .split("/")
     .pop()!
     .replace(/[.]lynxkite[.]json$/, "");
-  const crdt = useCRDTWorkspace(path);
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
+  const selectedNodeCount = crdt.selectedNodeCount;
+  const isAnyGroupSelected = crdt.isAnyGroupSelected;
+  const nodesRef = useRef(nodes);
+  const onNodesChangeRef = useRef(crdt?.onFENodesChange);
+  useEffect(() => {
+    nodesRef.current = nodes;
+    onNodesChangeRef.current = crdt?.onFENodesChange;
+  }, [nodes, crdt?.onFENodesChange]);
   const autoConnect = useAutoConnect(edges, crdt);
+  const workspaceContextValue = useMemo(
+    () => ({ workspace: workspace as any, canWrite }),
+    [workspace, canWrite],
+  );
+  const nodeStateContextValue = useMemo(() => ({ iconized }), [iconized]);
+
+  useEffect(() => {
+    selectedNodeIdsRef.current = new Set(nodes.filter((n) => n.selected).map((n) => n.id));
+    selectedEdgeIdsRef.current = new Set(edges.filter((e) => e.selected).map((e) => e.id));
+  }, [nodes, edges]);
 
   // Track Shift key state
   useEffect(() => {
@@ -137,15 +191,24 @@ function LynxKiteFlow() {
     .map((segment) => encodeURIComponent(segment))
     .join("/");
   const catalog = useSWR<Catalogs>(
-    `/api/catalog?workspace=${encodedPathForAPI}`,
+    isStatic ? null : `/api/catalog?workspace=${encodedPathForAPI}`,
     fetcher as Fetcher<Catalogs>,
   );
-  const config = useConfig();
-  const categoryHierarchy = useMemo(() => {
-    if (!catalog.data || !crdt?.ws?.env) return undefined;
-    return buildCategoryHierarchy(catalog.data[crdt.ws.env]);
-  }, [catalog, crdt]);
-  const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
+  const config = getConfig();
+  const refreshCategoryHierarchy = useCallback(() => {
+    if (!catalog.data || !crdt?.ws?.env) {
+      categoryHierarchy.current = null;
+      return null;
+    }
+    const hierarchy = buildCategoryHierarchy(catalog.data[crdt.ws.env] ?? {});
+    categoryHierarchy.current = hierarchy;
+    return hierarchy;
+  }, [catalog.data, crdt?.ws?.env]);
+  useEffect(() => {
+    // Rebuild when catalog/env first become available (initial load) or env changes.
+    refreshCategoryHierarchy();
+  }, [refreshCategoryHierarchy]);
+  const suppressSearchForGesture = useRef(false);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
       | {
@@ -157,6 +220,7 @@ function LynxKiteFlow() {
     () => ({
       basic: NodeWithParams,
       visualization: NodeWithVisualization,
+      graph_visualization: NodeWithGraphVisualization,
       image: NodeWithImage,
       table_view: NodeWithTableView,
       service: NodeWithTableView,
@@ -174,6 +238,49 @@ function LynxKiteFlow() {
     }),
     [],
   );
+  const defaultEdgeOptions = useMemo(
+    () => ({
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: "#888",
+        width: 15,
+        height: 15,
+      },
+    }),
+    [],
+  );
+  const fitViewOptions = useMemo(() => ({ maxZoom: 1 }), []);
+  const onNodesChange = useCallback(
+    (changes: any[]) => {
+      const snapped = snapChangesToGrid(
+        changes,
+        isShiftPressed || gridSnapEnabled,
+        nodesRef.current,
+      );
+      onNodesChangeRef.current?.(snapped);
+    },
+    [isShiftPressed, gridSnapEnabled],
+  );
+  const onMove = useCallback(() => {
+    const nextIconized = reactFlow.getZoom() < ICONIZE_THRESHOLD;
+    setIconized((prev) => (prev === nextIconized ? prev : nextIconized));
+  }, [reactFlow]);
+
+  function clearSelection() {
+    if (!crdt) return;
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
+    if (selectedNodes.length > 0) {
+      crdt.onFENodesChange?.(
+        selectedNodes.map((n) => ({ id: n.id, type: "select" as const, selected: false })),
+      );
+    }
+    if (selectedEdges.length > 0) {
+      crdt.onFEEdgesChange?.(
+        selectedEdges.map((e) => ({ id: e.id, type: "select" as const, selected: false })),
+      );
+    }
+  }
 
   // Global keyboard shortcuts.
   useEffect(() => {
@@ -181,26 +288,29 @@ function LynxKiteFlow() {
       const isPrimaryModifierPressed = event.ctrlKey || event.metaKey;
       // Show the node search dialog on "/".
       if (nodeSearchSettings || isTypingInFormElement()) return;
-      if (event.key === "/" && categoryHierarchy) {
+      if (event.key === "/" && categoryHierarchy.current && canWrite) {
         event.preventDefault();
         setNodeSearchSettings({
           pos: getBestPosition(),
         });
-      } else if (event.key === "r") {
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        clearSelection();
+      } else if (event.key === "r" && canWrite) {
         event.preventDefault();
         executeWorkspace();
       } else if (isPrimaryModifierPressed) {
-        if (event.key === "z") {
+        if (event.key === "z" && canWrite) {
           crdt?.undo();
-        } else if (event.key === "y") {
+        } else if (event.key === "y" && canWrite) {
           crdt?.redo();
         } else if (!(nodeSearchSettings || isTypingInFormElement())) {
           const key = event.key.toLowerCase();
           if (key === "c") {
             copySelection(nodes, edges, crdt?.ws ?? {});
-          } else if (key === "v") {
+          } else if (key === "v" && canWrite) {
             pasteSelection(crdt, cursorScreenPos, reactFlow, setMessage);
-          } else if (key === "x") {
+          } else if (key === "x" && canWrite) {
             cutSelection(nodes, edges, crdt?.ws ?? {}, deleteSelection);
           } else if (key === "a") {
             event.preventDefault();
@@ -213,7 +323,7 @@ function LynxKiteFlow() {
     return () => {
       document.removeEventListener("keyup", handleKey);
     };
-  }, [categoryHierarchy, nodeSearchSettings]);
+  }, [categoryHierarchy, nodeSearchSettings, canWrite, crdt, nodes, edges]);
 
   function getBestPosition() {
     const W = reactFlowContainer.current!.clientWidth;
@@ -226,7 +336,7 @@ function LynxKiteFlow() {
     while (pos.y < H) {
       // Find a position that is not occupied by a node.
       const fpos = reactFlow.screenToFlowPosition(pos);
-      const occupied = crdt?.ws?.nodes?.some((n) => {
+      const occupied = nodes.some((n) => {
         const np = n.position;
         return (
           np.x < fpos.x + w + GAP &&
@@ -260,27 +370,28 @@ function LynxKiteFlow() {
 
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
-    setSuppressSearchUntil(Date.now() + 200);
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
-      if (!categoryHierarchy) return;
-      if (suppressSearchUntil > Date.now()) return;
+      if (!canWrite) return;
+      if (suppressSearchForGesture.current) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
         return;
       }
+      const hierarchy = categoryHierarchy.current;
+      if (!hierarchy) return;
       event.preventDefault();
       setNodeSearchSettings({
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [categoryHierarchy, crdt.ws, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [canWrite, nodeSearchSettings, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
     let id = `${prefix} ${i}`;
-    const used = new Set(crdt?.ws?.nodes?.map((n) => n.id));
+    const used = new Set(nodes.map((n) => n.id));
     while (used.has(id)) {
       i += 1;
       id = `${prefix} ${i}`;
@@ -293,8 +404,8 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
-      width: 315,
-      height: 315,
+      width: GRID_SIZE * 9,
+      height: GRID_SIZE * 9,
       data: {
         meta: meta,
         title: meta.name,
@@ -321,17 +432,76 @@ function LynxKiteFlow() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      setSuppressSearchUntil(Date.now() + 200);
-      const edge = {
+      suppressSearchForGesture.current = true;
+      if (
+        !connection.source ||
+        !connection.target ||
+        !connection.sourceHandle ||
+        !connection.targetHandle
+      ) {
+        return;
+      }
+      const edge: WorkspaceEdge = {
         id: `${connection.source} ${connection.sourceHandle} ${connection.target} ${connection.targetHandle}`,
         source: connection.source,
-        sourceHandle: connection.sourceHandle!,
+        sourceHandle: connection.sourceHandle,
         target: connection.target,
-        targetHandle: connection.targetHandle!,
+        targetHandle: connection.targetHandle,
       };
+      const sourceNode = nodes.find((n) => n.id === edge.source);
+      const targetNode = nodes.find((n) => n.id === edge.target);
+      const prevInput = (targetNode?.data as any)?.input_metadata ?? [];
+      if (edge.sourceHandle === "output" && targetNode && prevInput.length <= 1) {
+        // only if the source is single output and the target is single input or missing
+        const nextInputMetadata = (sourceNode?.data as any)?.output_metadata ?? null;
+        crdt?.applyChange((conn) => {
+          const wnodes = conn.ws.get("nodes") as YArray<any>;
+          const wnode = wnodes.toArray().find((n) => (n as YMap<any>).get("id") === targetNode.id);
+          const target_data = (wnode as YMap<any>)?.get("data") as YMap<any>;
+          if (target_data?.get("input_metadata") !== nextInputMetadata) {
+            target_data?.set("input_metadata", nextInputMetadata);
+          }
+        });
+      }
       crdt?.addEdge(edge);
     },
-    [crdt],
+    [crdt, nodes],
+  );
+  const zoomToReadableNode = useCallback(
+    (event: MouseEvent, node: Node) => {
+      if (!iconized || node.data?.collapsed || NON_ICONIZED_NODE_TYPES.has(node.type || "")) return;
+      // Area selection drag should not trigger auto-zoom.
+      if (isAreaSelecting) return;
+      if ((event.target as Element).closest(".react-flow__resize-control")) return;
+
+      const selectedNodeIdsBeforeClick = new Set(selectedNodeIdsRef.current);
+      const selectedEdgeIdsBeforeClick = new Set(selectedEdgeIdsRef.current);
+      const shouldPreserveSelection = selectedNodeIdsBeforeClick.has(node.id);
+
+      // React Flow may collapse a multi-selection to a single node on click.
+      // Restore the previous selection if the click happened inside the selected area.
+      if (shouldPreserveSelection && crdt) {
+        requestAnimationFrame(() => {
+          crdt.onFENodesChange?.(
+            nodes.map((n) => ({
+              id: n.id,
+              type: "select" as const,
+              selected: selectedNodeIdsBeforeClick.has(n.id),
+            })),
+          );
+          crdt.onFEEdgesChange?.(
+            edges.map((e) => ({
+              id: e.id,
+              type: "select" as const,
+              selected: selectedEdgeIdsBeforeClick.has(e.id),
+            })),
+          );
+        });
+      }
+
+      reactFlow.fitView({ nodes: [node], duration: 500, maxZoom: 0.85, padding: 0.7 });
+    },
+    [iconized, isAreaSelecting, reactFlow, crdt, nodes, edges],
   );
   const parentDir = parentPath(path!);
   function onDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -344,13 +514,17 @@ function LynxKiteFlow() {
   async function onDrop(e: React.DragEvent<HTMLDivElement>) {
     e.stopPropagation();
     e.preventDefault();
+    if (!canWrite) return;
     const file = e.dataTransfer.files[0];
     if (!catalog.data || !crdt?.ws?.env) {
       return;
     }
     try {
       await uploadFile(file, {
-        onProgress: (percentCompleted) => {
+        onProgress: (uploadedBytes, totalBytes) => {
+          const percentCompleted = totalBytes
+            ? Math.round((100 * uploadedBytes) / totalBytes)
+            : 100;
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
@@ -374,6 +548,8 @@ function LynxKiteFlow() {
         node.data!.params.file_format = "excel";
       } else if (file.name.includes(".cif")) {
         node.data!.params.file_format = "cif";
+      } else if (file.name.includes(".pdb")) {
+        node.data!.params.file_format = "pdb";
       }
       addNode(node);
     } catch (error) {
@@ -502,7 +678,9 @@ function LynxKiteFlow() {
       for (const node of wnodes) {
         const g = groups[node.get("parentId") as string];
         if (!g) continue;
-        const pos = node.get("position") as XYPosition;
+        const posValue = node.get("position");
+        // Yjs position values can be either a plain object or a Y.Map with a toJSON method.
+        const pos = (posValue.toJSON ? posValue.toJSON() : posValue) as XYPosition;
         node.set("position", {
           x: pos.x + g.position.x,
           y: pos.y + g.position.y,
@@ -523,184 +701,218 @@ function LynxKiteFlow() {
       childNodeIds.map((id) => ({ id, type: "select" as const, selected: true })),
     );
   }
-  const selected = nodes.filter((n) => n.selected);
-  const isAnyGroupSelected = nodes.some((n) => n.selected && n.type === "node_group");
-  return (
-    <div className="workspace">
-      <div className="top-bar bg-neutral">
-        <Link className="logo" to="/">
-          <img alt="" src={favicon} />
-        </Link>
-        <div className="ws-name">{shortPath}</div>
-        <title>{shortPath}</title>
-        {crdt?.ws && (
-          <>
-            <ExecutionOptions
-              env={crdt.ws.env || ""}
-              value={crdt.ws.execution_options}
-              onChange={crdt.setExecutionOptions}
-            />
-            <EnvironmentSelector
-              options={Object.keys(catalog.data || {})}
-              value={crdt.ws.env || ""}
-              onChange={crdt.setEnv}
-            />
-          </>
-        )}
-        <div className="tools text-secondary">
-          {crdt?.ws && (
-            <>
-              <Tooltip doc="Group selected nodes">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length < 2}
-                  onClick={groupSelection}
-                  name="groupBtn"
-                >
-                  <GroupIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Ungroup selected nodes">
-                <button
-                  className="btn btn-link"
-                  disabled={!isAnyGroupSelected}
-                  onClick={ungroupSelection}
-                  name="ungroupBtn"
-                >
-                  <UngroupIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Delete selected nodes and edges">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length === 0}
-                  onClick={deleteSelection}
-                >
-                  <DeleteIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc="Change selected box to a different box">
-                <button
-                  className="btn btn-link"
-                  disabled={selected.length !== 1}
-                  onClick={changeBox}
-                >
-                  <ChangeTypeIcon />
-                </button>
-              </Tooltip>
-              <Tooltip doc={gridSnapEnabled ? "Disable grid snapping" : "Enable grid snapping"}>
-                <button
-                  className="btn btn-link"
-                  onClick={() => setGridSnapEnabled(!gridSnapEnabled)}
-                >
-                  {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
-                </button>
-              </Tooltip>
-              {config.data?.assistant_available && (
-                <Tooltip doc={"Toggle assistant"}>
-                  <button
-                    className="btn btn-link"
-                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-                  >
-                    <RobotIcon />
-                  </button>
-                </Tooltip>
-              )}
-              <Tooltip
-                doc={crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"}
-              >
-                <button
-                  className="btn btn-link"
-                  onClick={() => crdt.setPausedState(!crdt.ws?.paused)}
-                >
-                  {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
-                </button>
-              </Tooltip>
-              <Tooltip doc="Re-run the workspace">
-                <button className="btn btn-link" onClick={executeWorkspace}>
-                  <RestartIcon />
-                </button>
-              </Tooltip>
-            </>
-          )}
-          <Tooltip doc="Close workspace">
-            <Link
-              className="btn btn-link"
-              to={`/dir/${parentDir
-                .split("/")
-                .map((segment) => encodeURIComponent(segment))
-                .join("/")}`}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </Link>
-          </Tooltip>
+  if (!isStatic && !permissions.isLoading && !permissions.read) {
+    return (
+      <div className="workspace">
+        <div className="hero min-h-screen">
+          <div className="card bg-base-100 shadow-sm">
+            <div className="card-body">
+              <h2 className="card-title">No access</h2>
+              <p>You do not have permission to view this workspace.</p>
+              <div className="card-actions justify-end">
+                <Link to="/" className="btn btn-primary">
+                  Back
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className={`workspace${canWrite ? "" : " read-only"}`}>
+      {!isStatic && (
+        <div className="top-bar bg-neutral">
+          <div className="top-bar-leading">
+            <Link className="logo" to="/">
+              <img alt="" src={favicon} />
+            </Link>
+            <div className="ws-name">{shortPath}</div>
+            {!canWrite && !permissions.isLoading && (
+              <span className="badge badge-ghost ml-2">Read-only</span>
+            )}
+          </div>
+          <title>{shortPath}</title>
+          <div className="top-bar-trailing">
+            <WorkspaceProgress path={path} enabled={Boolean(crdt?.ws)} />
+            {crdt?.ws && canWrite && (
+              <div className="top-bar-controls">
+                <ExecutionOptions
+                  env={crdt.ws.env || ""}
+                  value={crdt.ws.execution_options}
+                  onChange={crdt.setExecutionOptions}
+                />
+                <EnvironmentSelector
+                  options={Object.keys(catalog.data || {})}
+                  value={crdt.ws.env || ""}
+                  onChange={crdt.setEnv}
+                />
+              </div>
+            )}
+            <div className="tools text-secondary">
+              {crdt?.ws && canWrite && (
+                <>
+                  <Tooltip doc="Group selected nodes">
+                    <button
+                      className="btn btn-link"
+                      disabled={selectedNodeCount < 2}
+                      onClick={groupSelection}
+                      name="groupBtn"
+                    >
+                      <GroupIcon />
+                    </button>
+                  </Tooltip>
+                  <Tooltip doc="Ungroup selected nodes">
+                    <button
+                      className="btn btn-link"
+                      disabled={!isAnyGroupSelected}
+                      onClick={ungroupSelection}
+                      name="ungroupBtn"
+                    >
+                      <UngroupIcon />
+                    </button>
+                  </Tooltip>
+                  <Tooltip doc="Delete selected nodes and edges">
+                    <button
+                      className="btn btn-link"
+                      disabled={selectedNodeCount === 0}
+                      onClick={deleteSelection}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </Tooltip>
+                  <Tooltip doc="Change selected box to a different box">
+                    <button
+                      className="btn btn-link"
+                      disabled={selectedNodeCount !== 1}
+                      onClick={changeBox}
+                    >
+                      <ChangeTypeIcon />
+                    </button>
+                  </Tooltip>
+                  <Tooltip doc={gridSnapEnabled ? "Disable grid snapping" : "Enable grid snapping"}>
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setGridSnapEnabled(!gridSnapEnabled)}
+                    >
+                      {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
+                    </button>
+                  </Tooltip>
+                  {config.assistant_available && (
+                    <Tooltip doc={"Toggle assistant"}>
+                      <button
+                        className="btn btn-link"
+                        onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                      >
+                        <RobotIcon />
+                      </button>
+                    </Tooltip>
+                  )}
+                  <Tooltip
+                    doc={
+                      crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"
+                    }
+                  >
+                    <button
+                      className="btn btn-link"
+                      onClick={() => crdt.setPausedState(!crdt.ws?.paused)}
+                    >
+                      {crdt.ws.paused ? <PlayIcon /> : <PauseIcon />}
+                    </button>
+                  </Tooltip>
+                  <Tooltip doc="Re-run the workspace">
+                    <button className="btn btn-link" onClick={executeWorkspace}>
+                      <RestartIcon />
+                    </button>
+                  </Tooltip>
+                </>
+              )}
+              <Tooltip doc="Close workspace">
+                <Link
+                  className="btn btn-link"
+                  to={`/dir/${parentDir
+                    .split("/")
+                    .map((segment) => encodeURIComponent(segment))
+                    .join("/")}`}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </Link>
+              </Tooltip>
+              <UserMenu />
+            </div>
+          </div>
+        </div>
+      )}
       <div className="workspace-body">
         <div
           className="reactflow-container"
-          onDragOver={onDragOver}
+          onPointerDownCapture={() => {
+            // If node search is visible, this click will cause a blur event and close it.
+            // Then it will cause a click event which will reopen it. We set this flag to prevent the search from reopening immediately.
+            suppressSearchForGesture.current = Boolean(nodeSearchSettings);
+          }}
+          onDragOver={canWrite ? onDragOver : undefined}
           onMouseMove={onMouseMove}
-          onDrop={onDrop}
+          onDrop={canWrite ? onDrop : undefined}
           ref={reactFlowContainer}
         >
-          {crdt?.ws ? (
-            <LynxKiteState.Provider value={{ workspace: crdt.ws }}>
-              <ReactFlow
-                nodes={nodes}
-                edges={autoConnect.renderedEdges}
-                nodeTypes={nodeTypes}
-                edgeTypes={edgeTypes}
-                fitView
-                onNodesChange={(changes) => {
-                  changes = snapChangesToGrid(
-                    changes,
-                    isShiftPressed || gridSnapEnabled,
-                    crdt?.ws?.nodes || [],
-                  );
-                  crdt?.onFENodesChange?.(changes);
-                }}
-                onEdgesChange={crdt?.onFEEdgesChange}
-                onPaneClick={toggleNodeSearch}
-                onConnect={onConnect}
-                onNodeDrag={autoConnect.onNodeDrag}
-                onNodeDragStop={autoConnect.onNodeDragStop}
-                proOptions={{ hideAttribution: true }}
-                maxZoom={10}
-                minZoom={0.1}
-                zoomOnScroll={true}
-                panOnScroll={false}
-                panOnDrag={[0]}
-                selectionOnDrag={false}
-                preventScrolling={true}
-                defaultEdgeOptions={{
-                  markerEnd: {
-                    type: MarkerType.ArrowClosed,
-                    color: "#888",
-                    width: 15,
-                    height: 15,
-                  },
-                }}
-                fitViewOptions={{ maxZoom: 1 }}
-              >
-                <Background
-                  variant={BackgroundVariant.Dots}
-                  gap={35}
-                  size={6}
-                  color="#f0f0f0"
-                  bgColor="#fafafa"
-                  offset={3}
-                />
-                {nodeSearchSettings && categoryHierarchy && (
-                  <NodeSearch
-                    pos={nodeSearchSettings.pos}
-                    categoryHierarchy={categoryHierarchy}
-                    onCancel={closeNodeSearch}
-                    onClick={addNodeFromSearch}
+          {workspaceReady && workspace ? (
+            <LynxKiteState.Provider value={workspaceContextValue}>
+              <LynxKiteNodeState.Provider value={nodeStateContextValue}>
+                <ReactFlow
+                  nodes={nodes}
+                  edges={autoConnect.renderedEdges}
+                  nodeTypes={nodeTypes}
+                  edgeTypes={edgeTypes}
+                  fitView
+                  nodesDraggable={canWrite}
+                  nodesConnectable={canWrite}
+                  elementsSelectable={true}
+                  deleteKeyCode={canWrite ? ["Backspace", "Delete"] : null}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={crdt?.onFEEdgesChange}
+                  onPaneClick={canWrite ? toggleNodeSearch : undefined}
+                  onConnect={canWrite ? onConnect : undefined}
+                  onNodeClick={zoomToReadableNode}
+                  onSelectionDragStart={() => setIsAreaSelecting(true)}
+                  onSelectionDragStop={() => setIsAreaSelecting(false)}
+                  onSelectionEnd={() => setIsAreaSelecting(false)}
+                  onNodeDrag={canWrite ? autoConnect.onNodeDrag : undefined}
+                  onNodeDragStop={canWrite ? autoConnect.onNodeDragStop : undefined}
+                  onMove={onMove}
+                  proOptions={{ hideAttribution: true }}
+                  maxZoom={10}
+                  minZoom={0.1}
+                  zoomOnScroll={true}
+                  panOnScroll={false}
+                  panOnDrag={[0]}
+                  selectionOnDrag={false}
+                  preventScrolling={true}
+                  onlyRenderVisibleElements={true}
+                  defaultEdgeOptions={defaultEdgeOptions}
+                  fitViewOptions={fitViewOptions}
+                >
+                  <Background
+                    variant={BackgroundVariant.Dots}
+                    gap={GRID_SIZE}
+                    size={6}
+                    color="#f0f0f0"
+                    bgColor="#fafafa"
+                    offset={3}
                   />
-                )}
-              </ReactFlow>
+                  {nodeSearchSettings && categoryHierarchy.current && canWrite && (
+                    <NodeSearch
+                      pos={nodeSearchSettings.pos}
+                      categoryHierarchy={categoryHierarchy.current}
+                      onCancel={closeNodeSearch}
+                      onClick={addNodeFromSearch}
+                    />
+                  )}
+                </ReactFlow>
+              </LynxKiteNodeState.Provider>
             </LynxKiteState.Provider>
           ) : (
             <div className="workspace-loading">Loading workspace...</div>
@@ -714,9 +926,13 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        {isAssistantOpen && (
+        {isAssistantOpen && canWrite && (
           <Suspense fallback={<aside className="assistant-panel" />}>
-            <Assistant workspace={path} />
+            <Assistant
+              crdtWorkspace={crdt}
+              selectedNodeIds={crdt.selectedNodeIds}
+              workspacePath={path}
+            />
           </Suspense>
         )}
       </div>

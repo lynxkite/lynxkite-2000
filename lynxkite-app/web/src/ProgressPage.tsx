@@ -1,8 +1,8 @@
 // A system-wide progress page, that gives an overview of workspaces running, resources used, etc.
 
+import type { ECharts } from "echarts";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import useSWR from "swr";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
@@ -13,20 +13,16 @@ import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
+import { getConfig } from "./common.ts";
 import ManagementPage from "./ManagementPage";
+import {
+  formatWorkspaceProgressSuffix,
+  getWorkspaceProgress,
+  parseProgressWorkspace,
+  workspaceProgressColor,
+} from "./progress";
 
 const echarts = await import("echarts");
-
-function timeLeft(ws: any): string {
-  if (ws.eta_seconds == null) return "";
-  if (ws.eta_seconds <= 0) return "done";
-  const minutes = Math.floor(ws.eta_seconds / 60);
-  const seconds = Math.floor(ws.eta_seconds % 60);
-  if (minutes > 0) return `~${minutes}m ${seconds}s left`;
-  return `~${seconds}s left`;
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ProgressPage() {
   // Update every second so we see the time left count down.
@@ -41,8 +37,8 @@ export default function ProgressPage() {
     { id: "gpu-services", label: "Running GPU services" },
     // { id: "users", label: "Users & groups" },
   ];
-  const config = useSWR<{ enterprise_available?: boolean }>("/api/config", fetcher);
-  const enterpriseAvailable = config.data?.enterprise_available === true;
+  const config = getConfig();
+  const enterpriseAvailable = config.enterprise_available === true;
 
   const [data, setData] = useState<{
     workspaces: any[];
@@ -98,7 +94,6 @@ export default function ProgressPage() {
     if (!enterpriseAvailable) {
       return;
     }
-
     const doc = new Y.Doc();
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const provider = new WebsocketProvider(
@@ -110,26 +105,17 @@ export default function ProgressPage() {
     const wsMap = doc.getMap("workspaces");
     const gpuServicesText = doc.getText("gpu_services");
 
-    function parseWorkspace(value: unknown) {
-      if (typeof value === "string") {
-        return JSON.parse(value);
-      }
-      return value as any;
-    }
-
     function syncWorkspaces() {
-      const workspaces: any[] = [];
-      for (const value of (wsMap as Y.Map<unknown>).values()) {
-        try {
-          const ws = parseWorkspace(value);
+      setData((prev) => {
+        const workspaces: any[] = [];
+        for (const [, value] of (wsMap as Y.Map<unknown>).entries()) {
+          const ws = parseProgressWorkspace(value);
           if (ws && typeof ws === "object") {
-            workspaces.push({ ...ws, user: "Test User" });
+            workspaces.push({ ...ws, user: ws.user || "—" });
           }
-        } catch (e) {
-          console.warn("failed to parse workspace entry from CRDT", e);
         }
-      }
-      setData((prev) => ({ ...prev, workspaces }));
+        return { ...prev, workspaces };
+      });
     }
 
     function syncGpuServices() {
@@ -149,7 +135,6 @@ export default function ProgressPage() {
 
     wsMap.observe(syncWorkspaces);
     gpuServicesText.observe(syncGpuServices);
-    // Sync once the provider has connected and received initial state.
     provider.on("sync", () => {
       syncWorkspaces();
       syncGpuServices();
@@ -169,7 +154,7 @@ export default function ProgressPage() {
     };
   }, [enterpriseAvailable]);
 
-  if (config.data && !enterpriseAvailable) {
+  if (!enterpriseAvailable) {
     return (
       <ManagementPage>
         <p className="p-4 prose">
@@ -239,53 +224,45 @@ function Workspaces(props: {
       <tbody>
         {props.workspaces.map((ws) => {
           const roomName = ws.room_name || ws.name;
-          const boxFraction = ws.boxes_total > 0 ? ws.boxes_done / ws.boxes_total : 0;
-          const tqdm = ws.active_node?.tqdm;
-          // Combined progress: box fraction covers full bar, tqdm refines the current box's slice
-          const tqdmFraction = tqdm?.total > 0 ? tqdm.n / tqdm.total : null;
-          // Each box is 1/total wide. The active box contributes its tqdm progress within that slice.
-          const combinedProgress =
-            tqdmFraction != null ? (ws.boxes_done + tqdmFraction) / ws.boxes_total : boxFraction;
+          const progress = getWorkspaceProgress(ws);
+          const tqdm = progress.activeNode?.tqdm;
+          const suffix = formatWorkspaceProgressSuffix(progress);
+          const showPause =
+            progress.status === "active" ||
+            progress.status === "running" ||
+            progress.status === "paused";
           return (
             <tr key={ws.name}>
               <td className="workspace-name">{ws.name}</td>
               <td className="workspace-user">{ws.user}</td>
               <td className="workspace-progress">
                 <div className="progress-details">
-                  {ws.active_node && (
+                  {progress.activeNode && (
                     <span className="active-node-label">
-                      {ws.active_node.title}
+                      {progress.activeNode.title}
                       {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
                     </span>
                   )}
                   <progress
-                    className={`progress progress-${ws.status === "active" ? "primary" : "neutral"} w-50`}
-                    value={combinedProgress * 100}
+                    className={`progress progress-${workspaceProgressColor(progress.status)} w-50`}
+                    value={progress.percent}
                     max={100}
                   />
                 </div>
               </td>
               <td className="workspace-eta">
-                {ws.boxes_total > 0 && `${ws.boxes_done}/${ws.boxes_total}`}
-                {timeLeft(ws) && <span> {timeLeft(ws)}</span>}
+                {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
+                {suffix && <span> {suffix}</span>}
               </td>
               <td className="workspace-resources">{ws.gpus || "—"}</td>
               <td className="table-actions">
-                {ws.paused ? (
+                {showPause && (
                   <button
                     className="btn btn-sm"
-                    title="Resume"
-                    onClick={() => props.onPause(roomName, false)}
+                    title={progress.paused ? "Resume" : "Pause"}
+                    onClick={() => props.onPause(roomName, !progress.paused)}
                   >
-                    <Play />
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-sm"
-                    title="Pause"
-                    onClick={() => props.onPause(roomName, true)}
-                  >
-                    <Pause />
+                    {progress.paused ? <Play /> : <Pause />}
                   </button>
                 )}
                 <button
@@ -385,7 +362,7 @@ function GpuServices(props: {
 
 function UserUsageChart(props: { dailyUsage: number[]; gpuQuota: number }) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const chartInstance = useRef<echarts.ECharts>(null);
+  const chartInstance = useRef<ECharts>(null);
   useEffect(() => {
     if (!chartRef.current) return;
     chartInstance.current = echarts.init(chartRef.current, null, { renderer: "canvas" });

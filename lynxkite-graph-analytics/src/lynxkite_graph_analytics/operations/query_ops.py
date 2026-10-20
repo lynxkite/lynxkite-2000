@@ -9,7 +9,7 @@ import pandas as pd
 import polars as pl
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "Query operations")
 
 
 @op("SQL", icon="database")

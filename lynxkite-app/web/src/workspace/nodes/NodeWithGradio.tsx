@@ -26,7 +26,7 @@ function NodeWithGradio(props: any) {
   return (
     <div style={{ margin: "16px" }}>
       <div style={{ marginBottom: "16px" }}>
-        <a href={src} target="_blank">
+        <a href={src} target="_blank" rel="noopener">
           <WindowMaximize style={{ marginRight: "5px" }} />
           Pop out
         </a>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserManager } from "oidc-client-ts";
+import { type User, UserManager } from "oidc-client-ts";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import useSWR, { type Fetcher } from "swr";
@@ -13,14 +13,53 @@ export type GlobalConfig = {
   enterprise_available: boolean;
 };
 
+export type FolderPermissions = {
+  read: boolean;
+  write: boolean;
+};
+
 let cachedConfig: GlobalConfig | undefined;
 let userManager: UserManager | null = null;
 let userManagerKey: string | undefined;
 let loginStarted = false;
 let axiosInterceptorsInstalled = false;
 
-function setCachedConfig(config: GlobalConfig | undefined) {
-  cachedConfig = config;
+const STATIC_CONFIG: GlobalConfig = {
+  assistant_available: false,
+  authentication_issuer: null,
+  authentication_audience: null,
+  enterprise_available: false,
+};
+
+type StaticWorkspaceConfig = {
+  workspace: string;
+  filesBase: string;
+};
+
+export function getStaticWorkspaceConfig(): StaticWorkspaceConfig | undefined {
+  return (window as Window & { LYNXKITE_STATIC_WORKSPACE?: StaticWorkspaceConfig })
+    .LYNXKITE_STATIC_WORKSPACE;
+}
+
+export function isStaticWorkspaceMode() {
+  return Boolean(getStaticWorkspaceConfig());
+}
+
+export async function loadConfig() {
+  if (cachedConfig) {
+    throw new Error("loadConfig() has already been called. Call getConfig() instead.");
+  }
+  if (isStaticWorkspaceMode()) {
+    cachedConfig = STATIC_CONFIG;
+    return;
+  }
+  cachedConfig = await apiJson<GlobalConfig>("/api/config");
+}
+export function getConfig(): GlobalConfig {
+  if (!cachedConfig) {
+    throw new Error("Global configuration is not initialized.");
+  }
+  return cachedConfig;
 }
 
 async function getAccessToken(): Promise<string | null> {
@@ -33,6 +72,12 @@ async function getAccessToken(): Promise<string | null> {
     return null;
   }
   return user.access_token;
+}
+
+/** Query params for y-websocket when auth is on. Empty when auth off. */
+export async function getWebSocketParams(): Promise<Record<string, string>> {
+  const token = await getAccessToken();
+  return token ? { access_token: token } : {};
 }
 
 function getUserManager() {
@@ -56,17 +101,11 @@ function getUserManager() {
   return userManager;
 }
 
-export async function triggerLogout() {
-  const manager = getUserManager();
-  if (!manager) return;
-  await manager.signoutRedirect();
-}
-
 export function useCurrentUser(): string | null {
-  const config = useConfig();
+  const config = getConfig();
   const [displayName, setDisplayName] = useState<string | null>(null);
   useEffect(() => {
-    if (!config.data?.authentication_issuer) return;
+    if (!config.authentication_issuer) return;
     const manager = getUserManager();
     if (!manager) return;
     manager.getUser().then((u) => {
@@ -74,7 +113,7 @@ export function useCurrentUser(): string | null {
         u ? (u.profile?.name ?? (u.profile?.email as string | undefined) ?? "User") : null,
       );
     });
-  }, [config.data?.authentication_issuer]);
+  }, [config.authentication_issuer]);
   return displayName;
 }
 
@@ -95,6 +134,26 @@ export async function triggerLogin() {
   }
 }
 
+export async function triggerLogout() {
+  const manager = getUserManager();
+  if (!manager) {
+    return;
+  }
+  // Remove local user state before redirecting.
+  await manager.removeUser();
+  // Build the logout URL manually with client_id instead of id_token_hint.
+  // Keycloak 26 skips the confirmation page when id_token_hint is present,
+  // but shows it when relying on the browser SSO session cookie + client_id.
+  const metadata = await manager.metadataService.getMetadata();
+  const endSessionEndpoint = metadata.end_session_endpoint;
+  if (!endSessionEndpoint) return;
+  const params = new URLSearchParams({
+    client_id: cachedConfig?.authentication_audience ?? "",
+    post_logout_redirect_uri: window.location.origin,
+  });
+  window.location.href = `${endSessionEndpoint}?${params}`;
+}
+
 function ensureAxiosInterceptors() {
   if (axiosInterceptorsInstalled) {
     return;
@@ -110,7 +169,7 @@ function ensureAxiosInterceptors() {
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (error?.response?.status === 401) {
+      if (error.response?.status === 401) {
         await triggerLogin();
       }
       return Promise.reject(error);
@@ -133,6 +192,7 @@ export async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Pr
   });
   if (response.status === 401) {
     await triggerLogin();
+    throw new Error("Unauthorized");
   }
   return response;
 }
@@ -145,14 +205,31 @@ export async function apiJson<T>(input: RequestInfo | URL, init?: RequestInit): 
   return (await response.json()) as T;
 }
 
-export async function loadConfig(): Promise<GlobalConfig | null> {
-  try {
-    const config = await apiJson<GlobalConfig>("/api/config");
-    setCachedConfig(config);
-    return config;
-  } catch (_error) {
-    return null;
+function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string): string {
+  const staticConfig = getStaticWorkspaceConfig();
+  if (staticConfig) {
+    const filesBase = staticConfig.filesBase.replace(/[/]?$/, "/");
+    return `${filesBase}${encodeURIComponent(nodeId)}.json?v=${displayVersion}`;
   }
+  const sanitizedWorkspacePath = wsPath
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  const sanitizedNodeId = encodeURIComponent(nodeId);
+  return `/api/node_output?workspace=${sanitizedWorkspacePath}&node_id=${sanitizedNodeId}&version=${displayVersion}`;
+}
+
+export function useDisplay(display_version: number, node_id: string): any {
+  const ws = useContext(LynxKiteState).workspace;
+  const routePath = usePath().replace(/^[/]edit[/]/, "");
+  const wsPath = (ws?.path as string | undefined) || routePath || undefined;
+  const displayVersion = display_version;
+  const displayKey =
+    wsPath && displayVersion != null ? fetchDisplayUrl(node_id, displayVersion, wsPath) : null;
+  const { data } = useSWR(displayKey, (key: string) => apiJson(key), {
+    revalidateOnFocus: false,
+  });
+  return data;
 }
 
 export async function completeLoginCallback(): Promise<string> {
@@ -166,16 +243,25 @@ export async function completeLoginCallback(): Promise<string> {
   return state?.returnTo || "/";
 }
 
-export function useConfig() {
-  const config = useSWR<GlobalConfig>("/api/config", (resource: string, init?: RequestInit) =>
-    apiJson<GlobalConfig>(resource, init),
-  );
+export function useAuth() {
+  const config = getConfig();
+  const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    if (config.data) {
-      setCachedConfig(config.data);
+    const manager = getUserManager();
+    if (!manager) {
+      return;
     }
-  }, [config.data]);
-  return config;
+    manager.getUser().then(setUser);
+    const onUserLoaded = (u: User) => setUser(u);
+    const onUserUnloaded = () => setUser(null);
+    manager.events.addUserLoaded(onUserLoaded);
+    manager.events.addUserUnloaded(onUserUnloaded);
+    return () => {
+      manager.events.removeUserLoaded(onUserLoaded);
+      manager.events.removeUserUnloaded(onUserUnloaded);
+    };
+  }, [config.authentication_issuer, config.authentication_audience]);
+  return user;
 }
 
 export function usePath() {
@@ -204,6 +290,24 @@ export function useCategoryHierarchy() {
 
 export const pathFetcher = <T>(url: string): Promise<T> => apiJson<T>(url);
 
+/** Effective folder permissions. Auth off → full access. */
+export function useFolderPermissions(path: string | undefined) {
+  const config = getConfig();
+  const authOff = !config.authentication_issuer;
+  // Hooks must run unconditionally; null key tells SWR not to fetch.
+  const key =
+    authOff || path === undefined ? null : `/api/permissions?path=${encodeURIComponent(path)}`;
+  const { data, error, isLoading } = useSWR(key, pathFetcher<FolderPermissions>, {
+    revalidateOnFocus: false,
+  });
+  return {
+    read: authOff ? true : (data?.read ?? false),
+    write: authOff ? true : (data?.write ?? false),
+    isLoading: authOff ? false : Boolean(key) && isLoading,
+    error: authOff ? undefined : error,
+  };
+}
+
 export function parentPath(path: string): string {
   const parts = path.split("/").filter(Boolean);
   return parts.slice(0, -1).join("/");
@@ -216,17 +320,21 @@ export function shortName(path: string): string {
 export async function uploadFile(
   file: File,
   opts?: {
-    onProgress?: (percent: number) => void;
+    directory?: string;
+    path?: string;
+    onProgress?: (uploadedBytes: number, totalBytes: number) => void;
   },
 ): Promise<void> {
   const formData = new FormData();
-  formData.append("file", file);
-  await axios.post("/api/upload", formData, {
+  formData.append("file", file, opts?.path ?? file.name);
+  const directory =
+    opts?.directory !== undefined ? `?dir=${encodeURIComponent(opts.directory)}` : "";
+  await axios.post(`/api/upload${directory}`, formData, {
     onUploadProgress: (event) => {
       if (!opts?.onProgress) return;
-      if (!event.total) return;
-      const percent = Math.round((100 * event.loaded) / event.total);
-      opts.onProgress(percent);
+      const progress = event.progress ?? (event.total ? event.loaded / event.total : undefined);
+      if (progress === undefined) return;
+      opts.onProgress(Math.min(file.size, progress * file.size), file.size);
     },
   });
 }

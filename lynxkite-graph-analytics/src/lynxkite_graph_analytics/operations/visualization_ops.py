@@ -12,7 +12,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-op = ops.op_registration(core.ENV)
+op = ops.op_registration(core.ENV, "Visualizations")
 
 
 def _map_color(value):
@@ -38,56 +38,78 @@ def _map_color(value):
         ]
 
 
-@op("Visualize graph", view="visualization", icon="eye", color="blue")
-def visualize_graph(
+def _nodes_and_edges(
     graph: core.Bundle,
-    *,
-    color_nodes_by: core.NodePropertyName | None = None,
-    label_by: core.NodePropertyName | None = None,
-    color_edges_by: core.EdgePropertyName | None = None,
-):
-    nodes = bundle.df_for_frontend(graph.dfs["nodes"], 10_000)
-    if color_nodes_by:
-        nodes["color"] = _map_color(nodes[color_nodes_by])
-    for cols in ["x y", "long lat"]:
-        x, y = cols.split()
-        if (
-            x in nodes.columns
-            and nodes[x].dtype == "float64"
-            and y in nodes.columns
-            and nodes[y].dtype == "float64"
-        ):
-            cx, cy = nodes[x].mean(), nodes[y].mean()
-            dx, dy = nodes[x].std(), nodes[y].std()
-            # Scale up to avoid float precision issues and because eCharts omits short edges.
-            scale_x = 100 / max(dx, dy)
-            scale_y = scale_x
-            if y == "lat":
-                scale_y *= -1
-            pos = {
-                node_id: ((row[x] - cx) * scale_x, (row[y] - cy) * scale_y)
-                for node_id, row in nodes.iterrows()
-            }
-            curveness = 0  # Street maps are better with straight streets.
-            break
+) -> tuple[tuple[pd.DataFrame, str], tuple[pd.DataFrame, str, str]]:
+    """Returns the nodes that appear in the relations of the graph and the edges between them in the form: (nodes, id), (edges, source_id, target_id)"""
+    node_tables = []
+    seen_tables = set()
+
+    def add_table(table: str, id: str):
+        if table not in seen_tables:
+            df = graph.dfs[table].copy()
+            df["_id"] = df[id]
+            df["_table"] = table
+            node_tables.append(df)
+            seen_tables.add(table)
+
+    for relation in graph.relations:
+        add_table(relation.source_table, relation.source_key)
+        add_table(relation.target_table, relation.target_key)
+    nodes = pd.concat(node_tables, ignore_index=True)
+    node_id = "_unique_id"
+    nodes[node_id] = nodes["_table"].astype(str) + "_" + nodes["_id"].astype(str)
+    nodes = nodes.drop_duplicates(subset=[node_id])
+    nodes = nodes.set_index(node_id, drop=False)
+
+    source_id = "_unique_source"
+    target_id = "_unique_target"
+    if graph.relations:
+        edge_tables = []
+        for relation in graph.relations:
+            df = graph.dfs[relation.df].copy()
+            df[source_id] = relation.source_table + "_" + df[relation.source_column].astype(str)
+            df[target_id] = relation.target_table + "_" + df[relation.target_column].astype(str)
+            edge_tables.append(df)
+        edges_df = pd.concat(edge_tables, ignore_index=True)
+
+    if not edges_df.empty:
+        valid_nodes = set(nodes[node_id].astype(str))
+        edges_df = edges_df[
+            edges_df[source_id].astype(str).isin(valid_nodes)
+            & edges_df[target_id].astype(str).isin(valid_nodes)
+        ]
+
+    return (nodes, node_id), (edges_df, source_id, target_id)
+
+
+@op("Visualize graph", view="graph_visualization", icon="eye", color="blue")
+def visualize_graph(b: core.Bundle, *, chip_data: str = ""):
+    """
+    Visualizes the graph using ECharts and allows the user to customize the visualization through "chips".
+    :param b: the bundle
+    :param chip_data: the frontend uses this parameter to store relevant data of the chips
+    """
+
+    b = b.copy()
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(b)
+
+    item_count = len(nodes) + len(edges)
+    if item_count < 10000:
+        pos = nx.spring_layout(
+            b.to_nx(), k=10 / np.sqrt(item_count), iterations=max(1, int(10000 / item_count))
+        )
     else:
-        pos = nx.spring_layout(graph.to_nx(), iterations=max(1, int(10000 / len(nodes))))
-        curveness = 0.3
-    nodes = nodes.to_records()
-    deduped_edges = graph.dfs["edges"].drop_duplicates(["source", "target"])
-    edges = bundle.df_for_frontend(deduped_edges, 10_000)
-    if color_edges_by:
-        edges["color"] = _map_color(edges[color_edges_by])
+        pos = {node_id: np.random.rand(2) for node_id in nodes[node_id]}
+
+    edges = bundle.df_for_frontend(edges, 10000)
+    nodes = bundle.df_for_frontend(nodes, 10000)
+
+    node_columns = [col for col in nodes.columns]
+    edge_columns = [col for col in edges.columns]
+
+    nodes_dict = nodes.to_dict(orient="index")
     edges = edges.to_records()
-
-    def format_label(value):
-        if pd.isna(value):
-            return ""
-        elif isinstance(value, float):
-            return f"{value:.2f}"
-        else:
-            return str(value)
-
     v = {
         "animationDuration": 500,
         "animationEasingUpdate": "quinticInOut",
@@ -95,11 +117,9 @@ def visualize_graph(
         "series": [
             {
                 "type": "graph",
-                # Mouse zoom/panning is disabled for now. It interacts badly with ReactFlow.
-                # "roam": True,
                 "lineStyle": {
                     "color": "gray",
-                    "curveness": curveness,
+                    "curveness": 0.3,
                 },
                 "emphasis": {
                     "focus": "adjacency",
@@ -110,24 +130,19 @@ def visualize_graph(
                 "label": {"position": "top", "formatter": "{b}"},
                 "data": [
                     {
-                        "id": str(n.id),
-                        "x": float(pos[n.id][0]),
-                        "y": float(pos[n.id][1]),
-                        # Adjust node size to cover the same area no matter how many nodes there are.
+                        "id": str(node_id),
+                        "x": float(pos[node_id][0]),
+                        "y": float(pos[node_id][1]),
                         "symbolSize": 50 / len(nodes) ** 0.5,
-                        "itemStyle": {"color": n.color} if color_nodes_by else {},
-                        "label": {"show": label_by is not None},
-                        "name": format_label(getattr(n, label_by, "")) if label_by else None,
-                        "value": str(getattr(n, color_nodes_by, "")) if color_nodes_by else None,
+                        "attributes": {col: str(record[col]) for col in node_columns},
                     }
-                    for n in nodes
+                    for node_id, record in nodes_dict.items()
                 ],
                 "links": [
                     {
-                        "source": str(r.source),
-                        "target": str(r.target),
-                        "lineStyle": {"color": r.color} if color_edges_by else {},
-                        "value": str(getattr(r, color_edges_by, "")) if color_edges_by else None,
+                        "source": str(getattr(r, source_id, "")),
+                        "target": str(getattr(r, target_id, "")),
+                        "attributes": {col: str(getattr(r, col)) for col in edge_columns},
                     }
                     for r in edges
                 ],
@@ -138,7 +153,7 @@ def visualize_graph(
 
 
 @op("Scatter plot", icon="chart-dots", color="blue", view="matplotlib")
-def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
+def scatter_plot(self, b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
     table_x, column_x = x
     table_y, column_y = y
     dx = b.dfs[table_x][column_x]
@@ -153,6 +168,7 @@ def scatter_plot(b: core.Bundle, *, x: core.TableColumn, y: core.TableColumn):
 
 @op("Bar chart", icon="chart-bar", color="blue", view="matplotlib")
 def bar_chart(
+    self,
     b: core.Bundle,
     *,
     x: core.TableColumn,
@@ -174,7 +190,7 @@ def bar_chart(
 
 
 @op("Histogram", icon="chart-histogram", color="blue", view="matplotlib")
-def histogram(b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
+def histogram(self, b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
     table, col = column
     data = b.dfs[table][col]
     plt.figure(figsize=(6, 6))
@@ -185,10 +201,11 @@ def histogram(b: core.Bundle, *, column: core.TableColumn, bins: int = 20):
 
 @op("Binned graph visualization", view="matplotlib", color="blue", icon="table")
 def binned_graph_visualization(
+    self,
     b: core.Bundle,
     *,
-    x_property: core.NodePropertyName,
-    y_property: core.NodePropertyName,
+    x_property: str,
+    y_property: str,
     x_bins=5,
     y_bins=5,
     show_loops: bool = False,
@@ -197,10 +214,8 @@ def binned_graph_visualization(
     Nodes binned together by x and y are aggregated into one node.
     Edges between bins are aggregated into one edge.
     """
-    nodes = b.dfs["nodes"].copy()
-    edges = b.dfs["edges"].copy()
-    if "weight" not in edges.columns:
-        edges["weight"] = 1
+    b = b.copy()
+    (nodes, node_id), (edges, source_id, target_id) = _nodes_and_edges(b)
 
     nodes["x_bin"] = pd.cut(nodes[x_property], bins=x_bins)
     nodes["y_bin"] = pd.cut(nodes[y_property], bins=y_bins)
@@ -212,8 +227,10 @@ def binned_graph_visualization(
     nodes["bin"] = list(zip(nodes["x_bin"], nodes["y_bin"]))
     nodes["bin_key"] = nodes["bin"].apply(lambda b: f"{b[0]},{b[1]}")
     # Aggregate edges between bins.
-    edges["source_bin"] = nodes.loc[edges["source"], "bin_key"].values
-    edges["target_bin"] = nodes.loc[edges["target"], "bin_key"].values
+    node_bins = nodes.set_index(node_id)["bin_key"]
+    edges["source_bin"] = edges[source_id].map(node_bins)
+    edges["target_bin"] = edges[target_id].map(node_bins)
+    edges = edges.dropna(subset=["source_bin", "target_bin"])
 
     edge_counts = (
         edges.groupby(["source_bin", "target_bin"], observed=True).size().reset_index(name="weight")

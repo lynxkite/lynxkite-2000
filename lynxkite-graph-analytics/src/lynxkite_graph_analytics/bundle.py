@@ -2,6 +2,7 @@
 
 import dataclasses
 import enum
+import numpy as np
 import typing
 
 import networkx as nx
@@ -77,25 +78,37 @@ class Bundle:
         return cls(dfs={"records": df})
 
     def to_nx(self):
-        # TODO: Use relations.
+        """Returns a NetworkX DiGraph created from the nodes and edges in the relations of the bundle."""
         graph = nx.DiGraph()
-        if "nodes" in self.dfs:
-            df = self.dfs["nodes"]
-            if df.index.name != "id":
-                df = df.set_index("id")
-            graph.add_nodes_from(df.to_dict("index").items())
-        if "edges" in self.dfs:
-            edges = self.dfs["edges"]
-            graph.add_edges_from(
-                [
-                    (
-                        e["source"],
-                        e["target"],
-                        {k: e[k] for k in edges.columns if k not in ["source", "target"]},
-                    )
-                    for e in edges.to_records()
-                ]
+        added_tables = set()
+
+        def _add_node_table(table, key):
+            if table in added_tables:
+                return
+            df = self.dfs[table]
+            if df.index.name != key:
+                df = df.set_index(key)
+
+            graph.add_nodes_from(
+                map(lambda item: (f"{table}_{item[0]}", item[1]), df.to_dict("index").items())
             )
+            added_tables.add(table)
+
+        for relation in self.relations:
+            _add_node_table(relation.source_table, relation.source_key)
+            _add_node_table(relation.target_table, relation.target_key)
+
+            edges = self.dfs[relation.df]
+            attrs = edges.columns.difference([relation.source_column, relation.target_column])
+            graph.add_edges_from(
+                (
+                    f"{relation.source_table}_{row[relation.source_column]}",
+                    f"{relation.target_table}_{row[relation.target_column]}",
+                    {k: row[k] for k in attrs},
+                )
+                for row in edges.to_dict("records")
+            )
+
         return graph
 
     def copy(self):
@@ -311,4 +324,4 @@ def df_for_frontend(df: pd.DataFrame, limit: int) -> pd.DataFrame:
     for c in df.columns:
         if not pd.api.types.is_numeric_dtype(df[c]):
             df[c] = df[c].astype(str)
-    return df
+    return df.astype(object).replace({np.nan: None})

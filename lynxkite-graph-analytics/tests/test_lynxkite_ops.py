@@ -4,7 +4,7 @@ import networkx as nx
 
 from lynxkite_core import workspace, ops
 from lynxkite_graph_analytics.core import Bundle, execute, ENV
-from lynxkite_graph_analytics.operations.file_ops import FileFormat, export_to_file
+from lynxkite_graph_analytics.operations.file_ops import ExportFileFormat, export_to_file
 
 
 async def test_execute_operation_not_in_catalog():
@@ -22,10 +22,10 @@ async def test_execute_operation_not_in_catalog():
 @pytest.mark.parametrize(
     "file_format, method_name",
     [
-        (FileFormat.csv, "to_csv"),
-        (FileFormat.json, "to_json"),
-        (FileFormat.parquet, "to_parquet"),
-        (FileFormat.excel, "to_excel"),
+        (ExportFileFormat.csv, "to_csv"),
+        (ExportFileFormat.json, "to_json"),
+        (ExportFileFormat.parquet, "to_parquet"),
+        (ExportFileFormat.excel, "to_excel"),
     ],
 )
 async def test_export_to_file(monkeypatch, file_format, method_name):

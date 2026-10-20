@@ -38,6 +38,7 @@ class WorkspaceNodeData(BaseConfig):
     op_id: str
     params: dict
     display: Optional[Any] = None
+    display_version: Optional[int] = None
     input_metadata: Optional[list[dict]] = None
     output_metadata: Optional[list[dict]] = None
     error: Optional[str] = None
@@ -47,6 +48,7 @@ class WorkspaceNodeData(BaseConfig):
     status: NodeStatus = NodeStatus.done
     telemetry: Optional[dict[str, Any]] = None
     meta: Optional["ops.Op"] = None
+    tags: Optional[list[str]] = None
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -72,6 +74,7 @@ class WorkspaceNode(BaseConfig):
     position: Position
     width: Optional[float] = None
     height: Optional[float] = None
+    parentId: Optional[str] = None
     _ws_crdt: Optional["pycrdt.Map"] = None
 
     def _find_crdt_node(self) -> "pycrdt.Map | None":
@@ -101,6 +104,7 @@ class WorkspaceNode(BaseConfig):
     def publish_result(self, result: ops.Result):
         """Sends the result to the frontend. Call this in an executor when the result is available."""
         self.data.display = result.display
+        self.data.display_version = result.display_version
         self.data.input_metadata = result.input_metadata
         self.data.output_metadata = result.output_metadata
         self.data.error = result.error
@@ -111,6 +115,7 @@ class WorkspaceNode(BaseConfig):
                 try:
                     nc["data"]["status"] = NodeStatus.done
                     nc["data"]["display"] = self.data.display
+                    nc["data"]["display_version"] = self.data.display_version
                     nc["data"]["input_metadata"] = self.data.input_metadata
                     nc["data"]["output_metadata"] = self.data.output_metadata
                     nc["data"]["error"] = self.data.error
@@ -180,6 +185,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
+    assistant_messages: Optional[list[dict]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
@@ -211,14 +217,12 @@ class Workspace(BaseConfig):
 
     def model_dump_json_sorted(self) -> str:
         """Returns the workspace as JSON."""
-        # Pydantic can't sort the keys. TODO: Keep an eye on https://github.com/pydantic/pydantic-core/pull/1637.
-        j = self.model_dump()
+        j = self.model_dump(mode="json")
         if "path" in j:
             del j["path"]
-        j = json.dumps(j, indent=2, sort_keys=True) + "\n"
-        return j
+        return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
-    def save(self, path: str | pathlib.Path):
+    def save(self, path: str | pathlib.Path, from_frontend=False):
         """Persist the workspace to a local file in JSON format."""
         path = str(path)
         j = self.model_dump_json_sorted()
@@ -232,6 +236,10 @@ class Workspace(BaseConfig):
             temp_name = f.name
             f.write(j)
         os.replace(temp_name, path)
+        if not from_frontend:
+            pathlib.Path(
+                path
+            ).touch()  # trigger the on_modified event to reload the workspace in the frontend
 
     @staticmethod
     def load(path: str | pathlib.Path) -> "Workspace":
@@ -248,6 +256,7 @@ class Workspace(BaseConfig):
         path = str(path)
         with open(path, encoding="utf-8") as f:
             j = f.read()
+        ops.load_user_scripts(path)
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()
@@ -282,6 +291,7 @@ class Workspace(BaseConfig):
                     data.error = None
                     if nc:
                         nc["data"]["error"] = None
+                data.tags = list(set(op.tags or []) | set(data.tags or []))
             else:
                 data.error = "Unknown operation."
                 data.meta = ops.Op.placeholder_from_id(data.op_id)
@@ -314,13 +324,17 @@ class Workspace(BaseConfig):
         if func:
             kwargs["type"] = func.__op__.type
             kwargs["data"] = WorkspaceNodeData(
-                title=func.__op__.name, op_id=func.__op__.id, params={}
+                title=func.__op__.name,
+                op_id=func.__op__.id,
+                params={},
+                tags=(func.__op__.tags or []) + kwargs.get("tags", []),
             )
         elif "title" in kwargs:
             kwargs["data"] = WorkspaceNodeData(
                 title=kwargs["title"],
                 op_id=kwargs.get("op_id", kwargs["title"]),
                 params=kwargs.get("params", {}),
+                tags=kwargs.get("tags", []),
             )
         kwargs.setdefault("type", "basic")
         kwargs.setdefault("id", f"{kwargs['data'].title} {random_string}")

@@ -1,0 +1,1 @@
+{"dataframes":{"corrupted_features":{"columns":["metric","score"],"data":[["accuracy",0.9433792690233673],["precision",0.9528700906344411],["recall",0.9342417061611374],["f1 score",0.9434639545318576]]}},"relations":[],"other":{}}

@@ -4,33 +4,116 @@ import asyncio
 import contextlib
 import pathlib
 import posixpath
+import threading
 import fastapi
 import os.path
 import pycrdt.websocket
 import pycrdt.store.file
+import typing
+from dataclasses import dataclass, field
 import uvicorn.protocols.utils
 import builtins
+from websockets.exceptions import ConnectionClosedOK
 from lynxkite_core import workspace, ops
 from watchdog import events, observers
 from .crdt_update import crdt_update
+from . import progress_crdt
+from . import ws_auth
 
+enterprise_backend: typing.Any = None
 try:
     import lynxkite_enterprise.backend as enterprise_backend  # ty: ignore[unresolved-import]
 except ImportError:
-    enterprise_backend = None
+    pass
 
 router = fastapi.APIRouter()
 main_loop = None
+WORKSPACE_CHANGED_THROTTLE_SECONDS = 1.0
+
+
+@dataclass
+class WorkspaceRuntimeState:
+    last_known_version: typing.Any = None
+    last_frontend_save: str | None = None
+    delayed_execution: asyncio.Task | None = None
+    pending_workspace_changes: list[int] = field(default_factory=list)
+    delayed_workspace_change: asyncio.Task | None = None
+    next_allowed_flush_at: float = 0.0
+
+    def destroy(self):
+        self.last_known_version = None
+        self.last_frontend_save = None
+        if self.delayed_workspace_change:
+            self.delayed_workspace_change.cancel()
+        self.pending_workspace_changes = []
+        self.next_allowed_flush_at = 0.0
+        if self.delayed_execution:
+            self.delayed_execution.cancel()
+
+
+state: dict[str, WorkspaceRuntimeState] = {}
 
 
 def ws_exception_handler(exception, log):
-    if isinstance(exception, builtins.ExceptionGroup):
+    if isinstance(exception, builtins.BaseExceptionGroup):
         for ex in exception.exceptions:
-            if not isinstance(ex, uvicorn.protocols.utils.ClientDisconnected):
-                log.exception(ex)
-    else:
+            ws_exception_handler(ex, log)
+    elif isinstance(exception, RuntimeError) and str(exception).startswith(
+        "Unexpected ASGI message 'websocket.send', after sending 'websocket.close'"
+    ):
+        # The peer may close while pycrdt is flushing a pending sync/update.
+        # Uvicorn rejects the late send; this is a normal disconnect race,
+        # not a workspace or server failure.
+        pass
+    elif not isinstance(
+        exception, (uvicorn.protocols.utils.ClientDisconnected, ConnectionClosedOK)
+    ):
         log.exception(exception)
     return True
+
+
+def _task_result_callback(task: asyncio.Task):
+    with contextlib.suppress(asyncio.CancelledError):
+        task.result()
+
+
+async def _flush_workspace_changes_async(
+    name: str, ws: pycrdt.Map, runtime_state: WorkspaceRuntimeState
+):
+    this_task = asyncio.current_task()
+    loop = asyncio.get_running_loop()
+    try:
+        if state.get(name) is not runtime_state:
+            return
+        now = loop.time()
+        next_allowed = runtime_state.next_allowed_flush_at
+        if now < next_allowed:
+            await asyncio.sleep(next_allowed - now)
+
+        if state.get(name) is not runtime_state:
+            return
+        delays = runtime_state.pending_workspace_changes[:]
+        runtime_state.pending_workspace_changes.clear()
+        if delays:
+            delay = max(delays)
+            await workspace_changed(name, delay, ws)
+            runtime_state.next_allowed_flush_at = loop.time() + WORKSPACE_CHANGED_THROTTLE_SECONDS
+    except asyncio.CancelledError:
+        pass
+    finally:
+        new_runtime_state = state.get(name)
+        if new_runtime_state is not None:
+            runtime_state = new_runtime_state
+            if runtime_state.delayed_workspace_change is this_task:
+                runtime_state.delayed_workspace_change = None
+            # Ensure trailing changes are not dropped while throttling.
+            if (
+                runtime_state.pending_workspace_changes
+                and runtime_state.delayed_workspace_change is None
+            ):
+                task = asyncio.create_task(_flush_workspace_changes_async(name, ws, runtime_state))
+                runtime_state.delayed_workspace_change = task
+                task.add_done_callback(_task_result_callback)
 
 
 class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
@@ -63,10 +146,9 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
                 workspace.Workspace().save(name)
             else:
                 load_workspace(ws, name)
-        ws_simple = workspace.Workspace.model_validate(ws.to_py())
-        clean_input(ws_simple)
         # Set the last known version to the current state, so we don't trigger a change event.
-        last_known_versions[name] = ws_simple
+        state[name] = WorkspaceRuntimeState()
+        state[name].last_known_version = _workspace_fingerprint_from_dict(ws.to_py())
         room = pycrdt.websocket.YRoom(
             ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
         )
@@ -74,10 +156,21 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
-            task = loop.create_task(workspace_changed(name, changes, ws))
-            # We have no way to await workspace_changed(). The best we can do is to
-            # dereference its result after it's done, so exceptions are logged normally.
-            task.add_done_callback(lambda t: t.result())
+            # Frontend changes that result from typing are delayed to avoid
+            # rerunning the workspace for every keystroke.
+            runtime_state = state.get(name)
+            if runtime_state is None:
+                return
+            delay = max(
+                getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
+                for change in changes
+            )
+            runtime_state.pending_workspace_changes.append(delay)
+
+            if runtime_state.delayed_workspace_change is None:
+                task = asyncio.create_task(_flush_workspace_changes_async(name, ws, runtime_state))
+                runtime_state.delayed_workspace_change = task
+                task.add_done_callback(_task_result_callback)
 
         ws.observe_deep(on_change)
 
@@ -119,7 +212,8 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
     def stop(self):
         if self.started:
             self.observer.stop()
-            self.observer.join()
+            if threading.current_thread() is not self.observer:
+                self.observer.join()
             self.started = False
 
     def __del__(self):
@@ -133,7 +227,7 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
     def on_deleted(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
-            delete_room(self.file_path)
+            self.loop.call_soon_threadsafe(delete_room, self.file_path)
 
 
 class CodeWebsocketServer(WorkspaceWebsocketServer):
@@ -168,34 +262,46 @@ class CodeWebsocketServer(WorkspaceWebsocketServer):
         return room
 
 
-last_ws_input = None
+def _workspace_fingerprint_from_dict(ws_dict):
+    """Produce a lightweight fingerprint for change detection.
 
-
-def clean_input(ws_pyd):
-    """Delete everything that we want to ignore for the purposes of change detection."""
-    for node in ws_pyd.nodes:
-        node.data.display = None
-        node.data.input_metadata = None
-        node.data.output_metadata = None
-        node.data.error = None
-        node.data.message = None
-        node.data.telemetry = None
-        node.data.collapsed = False
-        node.data.expanded_height = 0
-        node.data.status = workspace.NodeStatus.done
-        for p in list(node.data.params):
+    Operates on a plain dict (e.g. from CRDT .to_py() or model_dump),
+    avoiding expensive model_validate, deep copy, and pydantic __eq__.
+    """
+    # Work on a shallow copy so we don't mutate the input.
+    ws_dict = dict(ws_dict)
+    nodes = []
+    for node in ws_dict.get("nodes", []):
+        node = dict(node)
+        data = dict(node.get("data", {}))
+        data["display"] = None
+        data["display_version"] = None
+        data["input_metadata"] = None
+        data["output_metadata"] = None
+        data["error"] = None
+        data["message"] = None
+        data["telemetry"] = None
+        data["collapsed"] = False
+        data["expanded_height"] = 0
+        data["status"] = "done"
+        params = dict(data.get("params", {}))
+        for p in list(params):
             if p.startswith("_"):
-                del node.data.params[p]
-        if node.data.op_id == "Comment":
-            node.data.params = {}
-        node.position.x = 0
-        node.position.y = 0
-        node.width = 0
-        node.height = 0
-        node.__execution_delay = 0
-        if node.model_extra:
-            for key in list(node.model_extra.keys()):
-                delattr(node, key)
+                del params[p]
+        if data.get("op_id") == "Comment":
+            params = {}
+        data["params"] = params
+        node["data"] = data
+        node["position"] = {"x": 0, "y": 0}
+        node["width"] = 0
+        node["height"] = 0
+        node["__execution_delay"] = 0
+        if node.get("model_extra"):
+            for key in list(node["model_extra"]):
+                del node[key]
+        nodes.append(node)
+    ws_dict["nodes"] = nodes
+    return ws_dict
 
 
 def load_workspace(ws: pycrdt.Map, name: str):
@@ -205,8 +311,24 @@ def load_workspace(ws: pycrdt.Map, name: str):
         ws: CRDT object to udpate with the workspace contents.
         name: Name of the workspace to load.
     """
+    runtime_state = state.get(name)
+    if runtime_state:
+        with open(name, encoding="utf-8") as f:
+            file_contents = f.read()
+        if runtime_state.last_frontend_save == file_contents:
+            runtime_state.last_frontend_save = None
+            return
+        runtime_state.last_frontend_save = None
     ws_pyd = workspace.Workspace.load(name)
     update_workspace(ws, ws_pyd)
+
+
+def save_workspace_from_frontend(name: str, ws_pyd: workspace.Workspace):
+    serialized = ws_pyd.model_dump_json_sorted()
+    runtime_state = state.get(name)
+    if runtime_state is not None:
+        runtime_state.last_frontend_save = serialized
+    ws_pyd.save(pathlib.Path() / name, from_frontend=True)
 
 
 def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
@@ -221,12 +343,15 @@ def update_workspace(ws: pycrdt.Map, ws_pyd: workspace.Workspace):
             ws,
             ws_pyd.model_dump(),
             # We treat some fields as black boxes. They are not edited on the frontend.
-            non_collaborative_fields={"display", "input_metadata", "meta"},
+            non_collaborative_fields={
+                "display",
+                "input_metadata",
+                "meta",
+                "position",  # Edited, but we don't want to track x and y separately.
+                "output_metadata",
+                "telemetry",
+            },
         )
-
-
-last_known_versions = {}
-delayed_executions = {}
 
 
 def print_diff(old, new, prefix=""):
@@ -256,7 +381,7 @@ def print_diff(old, new, prefix=""):
             print(f"{prefix}+ {new}")
 
 
-async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: pycrdt.Map):
+async def workspace_changed(name: str, delay: int, ws_crdt: pycrdt.Map):
     """Callback to react to changes in the workspace.
 
     Args:
@@ -264,38 +389,36 @@ async def workspace_changed(name: str, changes: list[pycrdt.MapEvent], ws_crdt: 
         changes: Changes performed to the workspace.
         ws_crdt: CRDT object representing the workspace.
     """
-    ws_pyd = workspace.Workspace.model_validate(ws_crdt.to_py())
+    runtime_state = state.get(name)
+    if runtime_state is None:
+        return
+    raw = ws_crdt.to_py()
+    ws_fingerprint = _workspace_fingerprint_from_dict(raw)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_changed(ws_websocket_server)
-    ws_pyd.save(pathlib.Path() / name)
+        enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
+    ws_pyd = workspace.Workspace.model_validate(raw)
+    save_workspace_from_frontend(name, ws_pyd)
     # Do not trigger execution for superficial changes.
     # This is a quick solution until we build proper caching.
-    ws_simple = ws_pyd.model_copy(deep=True)
-    clean_input(ws_simple)
-    if ws_simple == last_known_versions.get(name):
+    if ws_fingerprint == runtime_state.last_known_version:
         return
-    last_known_versions[name] = ws_simple
-    if name in delayed_executions:
-        delayed_executions[name].cancel()
-    # Frontend changes that result from typing are delayed to avoid
-    # rerunning the workspace for every keystroke.
-    delay = max(
-        getattr(change, "keys", {}).get("__execution_delay", {}).get("newValue", 0) or 0
-        for change in changes
-    )
+    runtime_state.last_known_version = ws_fingerprint
+
+    if runtime_state.delayed_execution is not None:
+        runtime_state.delayed_execution.cancel()
     # Check if workspace is paused - if so, skip automatic execution
-    if getattr(ws_pyd, "paused", False):
+    if ws_pyd.paused:
         return
 
     task = asyncio.create_task(execute(name, ws_crdt, ws_pyd, delay=delay))
-    delayed_executions[name] = task
+    runtime_state.delayed_execution = task
     try:
         await task
     except asyncio.CancelledError:
         pass
     finally:
-        if delayed_executions.get(name) is task:
-            del delayed_executions[name]
+        if state.get(name) is runtime_state and runtime_state.delayed_execution is task:
+            runtime_state.delayed_execution = None
 
 
 async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *, delay: int = 0):
@@ -310,7 +433,6 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     """
     if delay:
         await asyncio.sleep(delay)
-    print(f"Running {name} in {ws_pyd.env}...")
     cwd = pathlib.Path()
     path = cwd / name
     assert path.is_relative_to(cwd), f"Path '{path}' is invalid"
@@ -321,13 +443,18 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
     ws_pyd.normalize()
     if not ws_pyd.has_executor():
         return
-    with ws_crdt.doc.transaction():
-        for nc in ws_crdt["nodes"]:
-            nc["data"]["status"] = "planned"
-            nc["data"]["message"] = None
-    await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
-    ws_pyd.save(path)
-    print(f"Finished running {name} in {ws_pyd.env}.")
+    progress_crdt.reset_run_timer(name)
+    print(f"Running {name} in {ws_pyd.env}...")
+    try:
+        with ws_crdt.doc.transaction():
+            for nc in ws_crdt["nodes"]:
+                nc["data"]["status"] = "planned"
+                nc["data"]["message"] = None
+        await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
+        save_workspace_from_frontend(name, ws_pyd)
+        print(f"Finished running {name} in {ws_pyd.env}.")
+    finally:
+        progress_crdt.mark_run_finished(name)
 
 
 async def code_changed(name: str, changes: pycrdt.TextEvent, text: pycrdt.Text):
@@ -345,6 +472,9 @@ async def get_room(name):
 
 
 def get_room_or_none(name):
+    if "ws_websocket_server" not in globals():
+        # This can happen if the server is not running, e.g. when running tests.
+        return None
     return ws_websocket_server.rooms.get(name)
 
 
@@ -358,23 +488,28 @@ async def lifespan(app):
     code_websocket_server = CodeWebsocketServer(auto_clean_rooms=False)
     async with ws_websocket_server:
         async with code_websocket_server:
-            if enterprise_backend is not None:
-                async with enterprise_backend.lifespan_context(ws_websocket_server):
+            async with progress_crdt.lifespan_context(ws_websocket_server):
+                if enterprise_backend is not None:
+                    async with enterprise_backend.lifespan_context(
+                        ws_websocket_server, progress_crdt
+                    ):
+                        yield
+                else:
                     yield
-            else:
-                yield
     print("closing websocket server")
 
 
 def delete_room(name: str):
     if name in ws_websocket_server.rooms:
-        del ws_websocket_server.rooms[name]
-    if name in delayed_executions:
-        delayed_executions[name].cancel()
-        del delayed_executions[name]
-    last_known_versions.pop(name, None)
-    if enterprise_backend is not None:
-        enterprise_backend.on_workspace_deleted(name)
+        room_entry = ws_websocket_server.rooms.pop(name)
+        file_change_handler = getattr(room_entry, "file_change_handler", None)
+        if file_change_handler is not None:
+            file_change_handler.stop()
+        del room_entry
+    if name in state:
+        state_entry = state.pop(name)
+        state_entry.destroy()
+    progress_crdt.delete_workspace_entry(name)
 
 
 def sanitize_path(path):
@@ -391,18 +526,27 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
+    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
     if enterprise_backend is not None:
-        enterprise_backend.on_workspace_connection_open(room_name, ws_websocket_server)
-    server = pycrdt.websocket.ASGIServer(ws_websocket_server)
+        enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
     try:
-        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+        await ws_auth.serve(
+            ws_websocket_server, scope, websocket._receive, websocket._send, room_name
+        )
     finally:
+        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
         if enterprise_backend is not None:
-            enterprise_backend.on_workspace_connection_close(room_name, ws_websocket_server)
+            enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
+
+
+progress_crdt.register_routes(router, sanitize_path)
 
 
 @router.websocket("/ws/code/crdt/{room_name:path}")
 async def code_crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     room_name = sanitize_path(room_name)
-    server = pycrdt.websocket.ASGIServer(code_websocket_server)
-    await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+    await ws_auth.serve(
+        code_websocket_server, scope, websocket._receive, websocket._send, room_name
+    )

@@ -17,3 +17,10 @@ Homepage = "https://github.com/lynxkite/lynxkite-2000/"
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.ruff]
+extend-exclude = ["tests/files"]
+
+[tool.ty]
+exclude = ["tests/files/**"]
+force-exclude = true

@@ -14,6 +14,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router";
+import { isStaticWorkspaceMode, loadConfig } from "./common.ts";
 import Directory from "./Directory.tsx";
 import { recordVisit } from "./sidebarStore.ts";
 
@@ -49,29 +50,55 @@ function WorkspaceError() {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
-      <Route path="/" element={<Directory />} />
-      <Route path="/dir" element={<Directory />} />
-      <Route path="/dir/*" element={<Directory />} />
-      <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
-      <Route
-        path="/edit/*"
-        element={withSuspense(<Workspace />)}
-        errorElement={<WorkspaceError />}
-      />
-      <Route path="/code/*" element={withSuspense(<Code />)} />
-      <Route path="/progress" element={withSuspense(<ProgressPage />)} />
-      <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
-    </>,
+    isStaticWorkspaceMode() ? (
+      <Route path="*" element={withSuspense(<Workspace />)} errorElement={<WorkspaceError />} />
+    ) : (
+      <>
+        <Route path="/" element={<Directory />} />
+        <Route path="/dir" element={<Directory />} />
+        <Route path="/dir/*" element={<Directory />} />
+        <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
+        <Route
+          path="/edit/*"
+          element={withSuspense(<Workspace />)}
+          errorElement={<WorkspaceError />}
+        />
+        <Route path="/code/*" element={withSuspense(<Code />)} />
+        <Route path="/progress" element={withSuspense(<ProgressPage />)} />
+        <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
+      </>
+    ),
   ),
 );
 
 recordVisit(window.location.pathname);
 router.subscribe((state) => recordVisit(state.location.pathname));
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-    <ReactTooltip id="tooltip-global" opacity={1} />
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById("root")!);
+
+async function bootstrap() {
+  try {
+    await loadConfig();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to reach the server.";
+    root.render(
+      <div className="hero min-h-screen">
+        <div className="card bg-base-100 shadow-sm">
+          <div className="card-body">
+            <h2 className="card-title">LynxKite failed to load</h2>
+            <p>{message}</p>
+          </div>
+        </div>
+      </div>,
+    );
+    return;
+  }
+  root.render(
+    <StrictMode>
+      <RouterProvider router={router} />
+      <ReactTooltip id="tooltip-global" opacity={1} />
+    </StrictMode>,
+  );
+}
+
+void bootstrap();

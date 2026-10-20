@@ -15,7 +15,7 @@ test.describe("Directory operations", () => {
     const workspace = await Workspace.empty(splash.page, workspaceName);
     await workspace.expectCurrentWorkspaceIs(workspaceName);
     // Add a box so the workspace is saved
-    await workspace.addBox("Import Parquet");
+    await workspace.addBox("File operations › Import Parquet");
     await workspace.close();
     await splash.deleteEntry(workspaceName);
     await expect(splash.getEntry(workspaceName)).not.toBeVisible();

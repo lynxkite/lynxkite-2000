@@ -7,6 +7,7 @@ export function toId(x: string) {
 }
 
 export const ROOT = "automated-tests";
+const PRIMARY_MODIFIER = process.platform === "darwin" ? "Meta" : "Control";
 
 export class Workspace {
   readonly page: Page;
@@ -77,7 +78,9 @@ export class Workspace {
     await this.page.keyboard.press("/");
     const parts = boxName.split(" › ");
     for (const part of parts) {
-      await this.page.locator(".node-search").getByText(part.trim(), { exact: true }).click();
+      // Allow for category counts at the end.
+      const re = new RegExp(`^${part.trim()}\\s*\\d*`);
+      await this.page.locator(".node-search").getByText(re).click();
     }
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
   }
@@ -101,6 +104,9 @@ export class Workspace {
     await expect(box).toHaveClass(/selected/);
   }
   async selectBoxes(boxIds: string[]) {
+    // Unselect any previously selected boxes by pressing Escape first,
+    // then select the boxes one by one while holding Control.
+    await this.page.keyboard.press("Escape");
     for (const boxId of boxIds) {
       await this.getBox(boxId)
         .locator(".react-flow__resize-control.handle")
@@ -160,13 +166,21 @@ export class Workspace {
     await this.page.mouse.up();
   }
   async copySelection() {
-    await this.page.keyboard.press("Control+c");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+c`);
   }
   async pasteSelection() {
-    await this.page.keyboard.press("Control+v");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+v`);
   }
   async cutSelection() {
-    await this.page.keyboard.press("Control+x");
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+x`);
+  }
+
+  async undo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+z`);
+  }
+
+  async redo() {
+    await this.page.keyboard.press(`${PRIMARY_MODIFIER}+y`);
   }
 
   async tryToConnectBoxes(sourceId: string, targetId: string) {
@@ -182,17 +196,14 @@ export class Workspace {
       this.page.locator(`.react-flow__edge[aria-label="Edge from ${sourceId} to ${targetId}"]`),
     ).toBeAttached({ timeout: 1000 });
   }
-  async connectBoxes(sourceId: string, targetId: string, maxRetries = 20) {
-    // Drag-and-drop in ReactFlow is flaky, so we retry. Cap retries to avoid infinite hangs.
-    for (let i = 0; i < maxRetries; i++) {
+  async connectBoxes(sourceId: string, targetId: string) {
+    // The method above is unreliable. I gave up after a lot of debugging and added these retries.
+    while (true) {
       try {
         await this.tryToConnectBoxes(sourceId, targetId);
         return;
       } catch (_) {}
     }
-    throw new Error(
-      `Failed to connect "${sourceId}" to "${targetId}" after ${maxRetries} attempts`,
-    );
   }
 
   async execute(opts?: object) {
@@ -263,7 +274,7 @@ export class Splash {
 
   async enterSandbox() {
     await this.getEntry("testing sandbox").click();
-    await this.loaded();
+    await expect(this.page.locator(".current-folder")).toHaveText("testing sandbox");
   }
 
   workspace(name: string) {

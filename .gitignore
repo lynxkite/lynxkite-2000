@@ -17,6 +17,9 @@ build
 *.egg-info
 
 examples/.*
+examples/generated_samples
+**/.assistant_memory/
+!.workspace_files
 
 # Playwright
 test-results

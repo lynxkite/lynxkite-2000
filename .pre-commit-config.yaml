@@ -12,7 +12,7 @@ repos:
       args: [ --fix ]
     - id: ruff-format
 - repo: https://github.com/biomejs/pre-commit
-  rev: v2.3.6
+  rev: v2.5.15
   hooks:
     - id: biome-check
 # https://github.com/astral-sh/ty/issues/269
@@ -24,6 +24,21 @@ repos:
       entry: uv run --no-sync ty check
       types: [python]
       pass_filenames: true
+      exclude: ^lynxkite-assistant/tests/files
+    - id: gen-skills
+      name: gen-skills
+      language: system
+      entry: python scripts/generate_skills_from_catalog.py ./.agents/skills
+      types: [python]
+      pass_filenames: true
+      require_serial: true
+    - id: check-demo-workspaces
+      name: check-demo-workspaces
+      language: system
+      entry: python scripts/demo_pre-commit.py
+      types: [json]
+      pass_filenames: true
+      require_serial: true
 - repo: https://github.com/fpgmaas/deptry.git
   rev: "0.23.0"
   hooks:

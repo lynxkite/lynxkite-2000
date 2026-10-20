@@ -103,6 +103,68 @@ def graph_edges_input():
     return from_bundle
 
 
+@input_op("masked tensor")
+def masked_tensor_input():
+    """A tensor aligned with the full node set, with NaN for unmasked values."""
+
+    def from_bundle(
+        b: core.Bundle,
+        ctx: InputContext,
+        *,
+        full_id: core.TableColumn,
+        mask_id: core.TableColumn,
+        label_column: core.TableColumn,
+    ):
+        """
+        :param b: the bundle
+        :param ctx: the input context
+        :param full_id: the dataframe to align to, and its id column
+        :param mask_id: the dataframe with the values to keep, and its id column
+        :param label_column: the column with labels in the mask dataframe
+        :return:
+        """
+        full_df = b.dfs[full_id[0]]
+        mask_df = b.dfs[mask_id[0]]
+        full_ids = full_df[full_id[1]]
+
+        mask_value_by_id = mask_df.set_index(mask_id[1])[label_column[1]]
+        aligned_values = full_ids.map(mask_value_by_id)
+        return torch.as_tensor(aligned_values.to_numpy(copy=True), dtype=torch.float32)
+
+    return from_bundle
+
+
+@op("NaN-aware MSE loss")
+def nan_mse_loss(pred, label):
+    """Mean squared error over the entries of the label tensor that are not NaN.
+    :param pred: The tensor of predictions.
+    :param label: The label tensor, with NaN for entries that should be ignored.
+    """
+
+    def _nan_mse_loss(pred, label):
+        if pred.shape != label.shape:
+            if (
+                pred.ndim == label.ndim + 1
+                and pred.shape[-1] == 1
+                and pred.shape[:-1] == label.shape
+            ):
+                label = label.unsqueeze(-1)
+            elif (
+                label.ndim == pred.ndim + 1
+                and label.shape[-1] == 1
+                and label.shape[:-1] == pred.shape
+            ):
+                pred = pred.unsqueeze(-1)
+
+        valid = torch.isfinite(label)
+        if not torch.any(valid):
+            return pred.sum() * 0.0
+        diff = pred[valid] - label[valid]
+        return torch.mean(diff**2)
+
+    return _nan_mse_loss
+
+
 @input_op("sequential")
 def sequential_input(*, type: TorchTypes = TorchTypes.float, per_sample: bool = True):
     """An input tensor with a sequence for each sample.
@@ -269,6 +331,27 @@ def binary_cross_entropy_loss(x, y):
     return torch.nn.functional.binary_cross_entropy_with_logits
 
 
+class ConvolutionTypes(enum.StrEnum):
+    GCNConv = "GCNConv"
+    SAGEConv = "SAGEConv"
+    GATConv = "GATConv"
+    GATv2Conv = "GATv2Conv"
+
+
+@op("Graph conv")
+def graph_conv(x, edges, *, convolution_type: ConvolutionTypes, output_dim: int):
+    """A graph convolution layer.
+    :param x: The feature tensor.
+    :param edges: The edge tensor.
+    :param convolution_type: The type of graph convolution to apply.
+    :param output_dim: The number of outputs of this layer.
+    """
+    import torch_geometric.nn as pyg_nn
+
+    conv = getattr(pyg_nn, convolution_type.value)
+    return conv(-1, output_dim)
+
+
 @op("Constant vector")
 def constant_vector(*, value=0, size=1):
     return lambda _: torch.full((size,), value)
@@ -297,36 +380,46 @@ def concatenate(a, b):
     return cat
 
 
-reg(
-    "Pick element by index",
-    inputs=["x", "index"],
-    outputs=["x_i"],
-)
-reg(
-    "Pick element by constant",
-    inputs=["x"],
-    outputs=["x_i"],
-    params=[ops.Parameter.basic("index", "0")],
-)
-reg(
-    "Take first n",
-    inputs=["x"],
-    outputs=["x"],
-    params=[ops.Parameter.basic("n", 1, int)],
-)
-reg(
-    "Drop first n",
-    inputs=["x"],
-    outputs=["x"],
-    params=[ops.Parameter.basic("n", 1, int)],
-)
-reg(
-    "Graph conv",
-    color="blue",
-    inputs=["x", "edges"],
-    outputs=["x"],
-    params=[P.options("type", ["GCNConv", "GATConv", "GATv2Conv", "SAGEConv"])],
-)
+@op("Pick element by index")
+def pick_element_by_index(x, index):
+    """
+    Picks an element from the input tensor by the specified input index.
+    :param x: The input tensor.
+    :param index: The index of the element to pick.
+    """
+    return x[index]
+
+
+@op("Pick element by constant")
+def pick_element_by_constant(x, *, index: int = 0):
+    """
+    Picks an element from the input tensor by the specified index parameter.
+    :param x: The input tensor.
+    :param index: The index of the element to pick.
+    """
+    return x[index]
+
+
+@op("Take first n")
+def take_first_n(x, *, n: int = 1):
+    """
+    Returns the first n elements from the input tensor.
+    :param x: The input tensor.
+    :param n: The number of elements to take from the beginning of the tensor.
+    """
+    return x[:n]
+
+
+@op("Drop first n")
+def drop_first_n(x, *, n: int = 1):
+    """
+    Returns the input tensor with the first n elements dropped.
+    :param x: The input tensor.
+    :param n: The number of elements to drop from the beginning of the tensor.
+    """
+    return x[n:]
+
+
 reg(
     "Heterogeneous graph conv",
     inputs=["node_embeddings", "edge_modules"],
@@ -337,8 +430,28 @@ reg(
     ],
 )
 
-reg("Triplet margin loss", inputs=["x", "x_pos", "x_neg"], outputs=["loss"])
-reg("Cross-entropy loss", inputs=["x", "y"], outputs=["loss"])
+
+@op("Triplet margin loss", outputs=["loss"])
+def triplet_margin_loss(x, x_pos, x_neg):
+    """
+    Returns the triplet margin loss for the given input tensors.
+    :param x: the anchor tensor.
+    :param x_pos: the positive tensor.
+    :param x_neg: the negative tensor.
+    """
+    return torch.nn.functional.triplet_margin_loss
+
+
+@op("Cross-entropy loss", outputs=["loss"])
+def cross_entropy_loss(x, y):
+    """
+    Returns the cross-entropy loss for the given input tensors.
+    :param x: the input tensor.
+    :param y: the target tensor.
+    """
+    return torch.nn.functional.cross_entropy
+
+
 reg(
     "Optimizer",
     inputs=["loss"],
