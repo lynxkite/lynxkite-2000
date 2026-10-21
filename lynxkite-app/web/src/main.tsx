@@ -27,6 +27,24 @@ function withSuspense(element: ReactElement) {
   return <Suspense>{element}</Suspense>;
 }
 
+function NotFound() {
+  return (
+    <div className="hero min-h-screen">
+      <div className="card bg-base-100 shadow-sm">
+        <div className="card-body">
+          <h1 className="card-title">Page not found</h1>
+          <p>The page you are looking for does not exist.</p>
+          <div className="card-actions justify-end">
+            <Link to="/" className="btn btn-primary">
+              Go home
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WorkspaceError() {
   const error = useRouteError();
   const stack = error instanceof Error ? error.stack : null;
@@ -65,6 +83,7 @@ const router = createBrowserRouter(
         <Route path="/code/*" element={withSuspense(<Code />)} />
         <Route path="/progress" element={withSuspense(<ProgressPage />)} />
         <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
+        <Route path="*" element={<NotFound />} />
       </>
     ),
   ),
