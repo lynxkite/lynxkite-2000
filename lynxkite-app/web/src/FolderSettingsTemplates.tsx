@@ -178,7 +178,6 @@ function FieldTemplate(props: FieldTemplateProps) {
   );
   const body = (
     <>
-      {description}
       {children}
       {errors}
       {help}
