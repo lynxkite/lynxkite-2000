@@ -20,7 +20,9 @@ DummyContext = OpContext(
 def test_records_not_first_is_rejected():
     """@elementwise row function must have Record as first positional parameter."""
 
-    with pytest.raises(ValueError, match="'record: Record' as first parameter"):
+    with pytest.raises(
+        ValueError, match="first parameter to be named 'record' or annotated as Record"
+    ):
 
         @op(ENV, "Bad record position")
         @elementwise(input_table="table")
@@ -33,9 +35,7 @@ def test_dynamic_input_table_sync_reads_correct_df():
 
     @op(ENV, "Dynamic sync")
     @elementwise(input_table="table")
-    def tag_dyn(
-        record: Record, *, table: TableColumn = ("proteins", "label"), suffix: str = "_x"
-    ) -> None:
+    def tag_dyn(record, *, table: TableColumn = ("proteins", "label"), suffix: str = "_x") -> None:
         record["label"] = record["label"] + suffix
 
     df = pd.DataFrame({"label": ["a", "b"]})
@@ -53,8 +53,8 @@ async def test_dynamic_input_table_async_reads_correct_df():
 
     @op(ENV, "Dynamic async")
     @elementwise(input_table="table")
-    async def tag_dyn_async(record: Record, *, table: str = "proteins", suffix: str = "_x") -> None:
-        record["label"] = record["label"] + suffix
+    async def tag_dyn_async(rec: Record, *, table: str = "proteins", suffix: str = "_x") -> None:
+        rec["label"] = rec["label"] + suffix
 
     df = pd.DataFrame({"label": ["x", "y"]})
     bundle = Bundle(dfs={"proteins": df})
