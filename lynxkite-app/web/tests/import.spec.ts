@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 // Test uploading a file in an import box.
@@ -50,6 +51,33 @@ async function validateImport(workspace: Workspace, fileName: string, fileFormat
 
 test("Can import a CSV file", async () => {
   await validateImport(workspace, "import_test.csv", "csv");
+});
+
+// biome-ignore lint/correctness/noEmptyPattern: Playwright requires destructuring argument
+test("Can download a table as CSV", async ({}, testInfo) => {
+  await validateImport(workspace, "import_test.csv", "csv");
+  const tableBox = workspace.getBox("View tables 1");
+
+  const requestPromise = workspace.page.waitForRequest("**/api/export_table");
+  const downloadPromise = workspace.page.waitForEvent("download");
+  await tableBox.locator(".float-right button").click();
+  const request = await requestPromise;
+  expect(request.method()).toBe("POST");
+  expect(request.headers()["content-type"]).toBe("application/json");
+  expect(request.postDataJSON()).toEqual({
+    workspace_name: "testing sandbox/import_spec_test.lynxkite.json",
+    box_id: "View tables 1",
+    output_id: "output",
+    table_name: "table",
+    format: "csv",
+  });
+
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("table.csv");
+  const downloadPath = testInfo.outputPath("table.csv");
+  await download.saveAs(downloadPath);
+  expect(await readFile(downloadPath, "utf-8")).toBe("name\nAdam\nEve\nBob\nIsolated Joe\n");
+  await expect(tableBox.locator("table tbody tr")).toHaveCount(4);
 });
 
 test("Can import a parquet file", async () => {
