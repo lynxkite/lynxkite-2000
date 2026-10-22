@@ -30,11 +30,12 @@ def authenticate_websocket(scope: dict[str, Any], room_path: str) -> bool:
 
     token = _token_from_scope(scope)
     if token is None:
-        return True
-    try:
-        user = get_provider().verify(token)
-    except JWTError:
-        return True
+        user: acl.User = {}
+    else:
+        try:
+            user = get_provider().verify(token)
+        except JWTError:
+            return True
 
     if not acl.has_permission(user, "read", room_path):
         return True
