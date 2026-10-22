@@ -9,6 +9,7 @@ import "./index.css";
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  isRouteErrorResponse,
   Link,
   Route,
   RouterProvider,
@@ -45,19 +46,26 @@ function NotFound() {
   );
 }
 
-function WorkspaceError() {
+function RouteError({ workspace = false }: { workspace?: boolean }) {
   const error = useRouteError();
-  const stack = error instanceof Error ? error.stack : null;
+  const details =
+    error instanceof Error
+      ? error.stack || error.message
+      : isRouteErrorResponse(error)
+        ? `${error.status} ${error.statusText}`
+        : typeof error === "string"
+          ? error
+          : "Unknown error.";
   return (
     <div className="hero min-h-screen">
       <div className="card bg-base-100 shadow-sm">
         <div className="card-body">
           <h2 className="card-title">Something went wrong...</h2>
-          <pre>{stack || "Unknown error."}</pre>
+          <pre className="whitespace-pre-wrap break-words">{details}</pre>
           <div className="card-actions justify-end">
-            <Link to="/" className="btn btn-primary">
-              Close workspace
-            </Link>
+            <a href="/" className="btn btn-primary">
+              {workspace ? "Close workspace" : "Go home"}
+            </a>
           </div>
         </div>
       </div>
@@ -68,9 +76,13 @@ function WorkspaceError() {
 const router = createBrowserRouter(
   createRoutesFromElements(
     isStaticWorkspaceMode() ? (
-      <Route path="*" element={withSuspense(<Workspace />)} errorElement={<WorkspaceError />} />
+      <Route
+        path="*"
+        element={withSuspense(<Workspace />)}
+        errorElement={<RouteError workspace />}
+      />
     ) : (
-      <>
+      <Route errorElement={<RouteError />}>
         <Route path="/" element={<Directory />} />
         <Route path="/dir" element={<Directory />} />
         <Route path="/dir/*" element={<Directory />} />
@@ -78,13 +90,13 @@ const router = createBrowserRouter(
         <Route
           path="/edit/*"
           element={withSuspense(<Workspace />)}
-          errorElement={<WorkspaceError />}
+          errorElement={<RouteError workspace />}
         />
         <Route path="/code/*" element={withSuspense(<Code />)} />
         <Route path="/progress" element={withSuspense(<ProgressPage />)} />
         <Route path="/progress-demo" element={withSuspense(<ProgressPageDemo />)} />
         <Route path="*" element={<NotFound />} />
-      </>
+      </Route>
     ),
   ),
 );
