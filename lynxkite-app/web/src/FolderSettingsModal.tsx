@@ -28,7 +28,7 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
 
   const schema = useSWR(path !== null ? "/api/get_settings_schema" : null, pathFetcher);
   const settings = useSWR(
-    path !== null ? `/api/dir/get_settings?path=${encodeURIComponent(path)}` : null,
+    path !== null ? `/api/dir/get_local_settings?path=${encodeURIComponent(path)}` : null,
     pathFetcher,
   );
   const { mutate: mutateSettings } = settings;
@@ -56,7 +56,7 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
     setSaving(true);
     setError(null);
     try {
-      const res = await apiFetch("/api/dir/set_settings", {
+      const res = await apiFetch("/api/dir/set_local_settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path, settings: data.formData }),

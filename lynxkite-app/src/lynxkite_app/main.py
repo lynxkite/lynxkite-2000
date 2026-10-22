@@ -159,13 +159,23 @@ async def list_dir(path: str, request: fastapi.Request):
     return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))
 
 
-@app.get("/api/dir/get_settings")
+@app.get("/api/dir/get_local_settings")
 async def get_dir_settings(path: str, request: fastapi.Request):
     await auth.check_permission(request, "read", path)
     dir_path = data_path / path
     assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
-    settings = folder_settings.get_settings(data_path, path)
+    settings = folder_settings.get_local_settings(data_path, path)
     return settings
+
+
+@app.post("/api/dir/set_local_settings")
+async def set_local_settings(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
+    dir_path = data_path / req["path"]
+    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
+    new_settings = folder_settings.FolderSettings.model_validate(req["settings"])
+    folder_settings.set_local_settings(data_path, req["path"], new_settings)
+    return {"status": "ok"}
 
 
 @app.get("/api/get_settings_schema")
