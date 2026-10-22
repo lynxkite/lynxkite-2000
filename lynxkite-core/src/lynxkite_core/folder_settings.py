@@ -101,23 +101,37 @@ def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     return dirs
 
 
-def _iter_section_dicts(data_root: Path, workspace_path: str):
+def _read_settings_dict(directory: Path) -> dict | None:
     """Yield raw configuration dicts from root→workspace settings.yaml files."""
-    for directory in _containing_dirs(data_root, workspace_path):
-        settings_path = directory / SETTINGS_FILENAME
-        if not settings_path.is_file():
-            continue
-        with settings_path.open(encoding="utf-8") as handle:
-            raw = yaml.safe_load(handle) or {}
-        yield raw
+    settings_path = directory / SETTINGS_FILENAME
+    if not settings_path.is_file():
+        return None
+    with settings_path.open(encoding="utf-8") as handle:
+        raw = yaml.safe_load(handle) or {}
+    return raw
 
 
-def get_settings(data_root: Path, workspace_path: str) -> FolderSettings:
-    """Load settings applying to the given workspace."""
+def get_local_settings(data_root: Path, path: str) -> FolderSettings:
+    """The settings specified at the given path. Excludes inherited settings."""
+    values = _read_settings_dict(data_root / path)
+    return FolderSettings.model_validate(values or {})
+
+
+def get_total_settings(data_root: Path, path: str) -> FolderSettings:
+    """The settings applying to the given path. Includes inherited settings."""
     merged: dict = {}
-    for values in _iter_section_dicts(data_root, workspace_path):
-        deepmerge.always_merger.merge(merged, values)
+    for directory in _containing_dirs(data_root, path):
+        values = _read_settings_dict(directory)
+        if values is not None:
+            deepmerge.always_merger.merge(merged, values)
     return FolderSettings.model_validate(merged)
+
+
+def set_local_settings(data_root: Path, path: str, new_settings: FolderSettings) -> None:
+    """Save settings for the given path."""
+    settings_path = data_root / path / SETTINGS_FILENAME
+    with settings_path.open("w", encoding="utf-8") as handle:
+        yaml.safe_dump(new_settings.model_dump(), handle)
 
 
 def get_settings_schema() -> dict:
