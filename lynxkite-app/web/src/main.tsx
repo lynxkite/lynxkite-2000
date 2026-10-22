@@ -10,6 +10,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Link,
+  Navigate,
   Route,
   RouterProvider,
   useRouteError,
@@ -54,7 +55,7 @@ const router = createBrowserRouter(
       <Route path="*" element={withSuspense(<Workspace />)} errorElement={<WorkspaceError />} />
     ) : (
       <>
-        <Route path="/" element={<Directory />} />
+        <Route path="/" element={<Navigate to="/dir" replace />} />
         <Route path="/dir" element={<Directory />} />
         <Route path="/dir/*" element={<Directory />} />
         <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />

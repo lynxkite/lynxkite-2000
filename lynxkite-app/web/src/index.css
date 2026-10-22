@@ -1441,7 +1441,8 @@ svg {
     opacity: 0;
   }
 
-  .management-sidebar:not(.open) .sidebar-section {
+  .management-sidebar:not(.open) .sidebar-section,
+  .management-sidebar:not(.open) .sidebar-progress-section {
     display: none;
   }
 
