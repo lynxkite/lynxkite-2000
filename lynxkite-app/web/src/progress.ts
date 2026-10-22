@@ -58,3 +58,27 @@ export function getWorkspaceProgress(workspace: any) {
     etaSeconds: typeof workspace?.eta_seconds === "number" ? workspace.eta_seconds : null,
   };
 }
+
+export async function pauseWorkspace(roomName: string, paused: boolean) {
+  try {
+    await fetch("/api/pause_workspace", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_name: roomName, paused }),
+    });
+  } catch (e) {
+    console.error("Failed to pause workspace", e);
+  }
+}
+
+export async function stopWorkspace(roomName: string) {
+  try {
+    await fetch("/api/stop_workspace", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_name: roomName }),
+    });
+  } catch (e) {
+    console.error("Failed to stop workspace", e);
+  }
+}

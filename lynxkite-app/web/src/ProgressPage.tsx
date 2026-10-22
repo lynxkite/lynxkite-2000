@@ -19,6 +19,8 @@ import {
   formatWorkspaceProgressSuffix,
   getWorkspaceProgress,
   parseProgressWorkspace,
+  pauseWorkspace,
+  stopWorkspace,
   workspaceProgressColor,
 } from "./progress";
 
@@ -49,30 +51,6 @@ export default function ProgressPage() {
     gpuServices: [],
     users: [],
   });
-
-  async function pauseWorkspace(roomName: string, paused: boolean) {
-    try {
-      await fetch("/api/pause_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName, paused }),
-      });
-    } catch (e) {
-      console.error("Failed to pause workspace", e);
-    }
-  }
-
-  async function stopWorkspace(roomName: string) {
-    try {
-      await fetch("/api/stop_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName }),
-      });
-    } catch (e) {
-      console.error("Failed to stop workspace", e);
-    }
-  }
 
   async function scaleGpuService(gpuService: any, newReplicaCount: number) {
     const targetReplicas = Math.max(0, newReplicaCount);
