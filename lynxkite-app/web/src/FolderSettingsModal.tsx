@@ -3,7 +3,6 @@
 // come from the backend; see the "Folder settings editor" plan for the
 // GET/POST /api/settings and GET /api/settings/schema endpoints this expects.
 import Form from "@rjsf/core";
-import type { RJSFSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import useSWR from "swr";

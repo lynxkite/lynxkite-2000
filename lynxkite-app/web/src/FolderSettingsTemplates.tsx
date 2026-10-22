@@ -155,7 +155,6 @@ function FieldTemplate(props: FieldTemplateProps) {
     children,
     errors,
     help,
-    description,
     hidden,
     required,
     displayLabel,
