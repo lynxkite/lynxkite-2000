@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from lynxkite_core.folder_settings import get_settings, ACLSettings
+from lynxkite_core.folder_settings import get_total_settings, ACLSettings
 
 type User = dict[str, str | list[str]]
 type Action = Literal["read", "write"]
@@ -56,7 +56,7 @@ def user_principals(user: User) -> set[str]:
 
 def resolve_acl(path: str | None) -> ACLSettings:
     """Effective acl.read / acl.write lists from settings.yaml root→folder merge."""
-    settings = get_settings(_data_root, path or "")
+    settings = get_total_settings(_data_root, path or "")
     return settings.acl
 
 
