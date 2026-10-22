@@ -56,10 +56,7 @@ def check_demo_ws(ws_path):
 
 
 if __name__ == "__main__":
-    if not os.getcwd().endswith("lynxkite-2000"):
-        print("Please run this script from the lynxkite-2000 directory.")
-        sys.exit(1)
-    os.chdir(os.path.join(os.getcwd(), demo_dir))
+    os.chdir(Path(__file__).resolve().parent.parent / demo_dir)
     ops.detect_plugins()
     errors = []
     for ws_file in sys.argv[1:]:
