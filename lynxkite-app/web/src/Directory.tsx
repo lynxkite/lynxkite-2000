@@ -26,7 +26,14 @@ import {
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
-import { entryLink, shortName, toggleFavorite, useFavorites } from "./sidebarStore.ts";
+import {
+  entryLink,
+  removeEntry,
+  renameEntry,
+  shortName,
+  toggleFavorite,
+  useFavorites,
+} from "./sidebarStore.ts";
 import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
@@ -234,11 +241,12 @@ export default function Directory() {
     if (confirmationEnabled && !window.confirm(`Are you sure you want to delete "${item.name}"?`))
       return;
     const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
-    await apiFetch(apiPath, {
+    const res = await apiFetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: item.name }),
     });
+    if (res.ok) removeEntry(item.name);
     list.mutate();
   }
 
@@ -267,6 +275,7 @@ export default function Directory() {
       alert("Failed to rename item.");
       return;
     }
+    renameEntry(renameTarget.name, newPath);
     setRenameTarget(null);
     list.mutate();
   }

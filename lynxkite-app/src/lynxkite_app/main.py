@@ -166,7 +166,8 @@ SEARCH_LIMIT = 20
 @app.get("/api/dir/search")
 async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT):
     """Finds files and folders whose path contains `q`, ignoring case."""
-    await auth.check_permission(request, "read", "")
+    user = await auth.get_current_user(request)
+    auth_on = auth.is_auth_enabled()
     query = q.strip().lower()
     if not query:
         return []
@@ -175,23 +176,17 @@ async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT
         # Hidden and "__" entries are not shown in the directory browser either.
         dirs[:] = [d for d in dirs if not d.startswith((".", "__"))]
         for name in dirs + files:
-            if name.startswith((".", "__")):
+            if name.startswith((".", "__")) or name == SETTINGS_FILENAME:
                 continue
             p = pathlib.Path(root) / name
             rel = p.relative_to(data_path).as_posix()
-            if query in rel.lower():
-                matches.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
+            if query not in rel.lower():
+                continue
+            if auth_on and not acl.has_permission(user, "read", rel):
+                continue
+            matches.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
     matches.sort(key=lambda x: (x.type != "directory", x.name.lower()))
-    results = []
-    for entry in matches:
-        try:
-            await auth.check_permission(request, "read", entry.name)
-        except fastapi.HTTPException:
-            continue
-        results.append(entry)
-        if len(results) >= limit:
-            break
-    return results
+    return matches[:limit]
 
 
 @app.post("/api/dir/mkdir")

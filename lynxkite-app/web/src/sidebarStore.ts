@@ -79,6 +79,32 @@ export function toggleFavorite(item: DirectoryEntry) {
   }
 }
 
+function isSameOrInside(name: string, path: string) {
+  return name === path || name.startsWith(`${path}/`);
+}
+
+/** Keeps the lists in sync after a file or folder is renamed. Items inside a folder move with it. */
+export function renameEntry(oldPath: string, newPath: string) {
+  for (const store of [favorites, recent]) {
+    store.set(
+      store
+        .get()
+        .map((item) =>
+          isSameOrInside(item.name, oldPath)
+            ? { ...item, name: newPath + item.name.slice(oldPath.length) }
+            : item,
+        ),
+    );
+  }
+}
+
+/** Drops a deleted file or folder, and anything inside it, from the lists. */
+export function removeEntry(path: string) {
+  for (const store of [favorites, recent]) {
+    store.set(store.get().filter((item) => !isSameOrInside(item.name, path)));
+  }
+}
+
 export function recordVisit(pathname: string) {
   const match = pathname.match(/^[/](edit|code)[/](.+?)[/]?$/);
   if (!match) return;
