@@ -37,7 +37,7 @@ jobs:
           echo node version; node --version
           echo npm version; npm --version
           npm i
-          npx playwright install --with-deps
+          npx playwright install --with-deps chromium
 
       - name: Check generated frontend types
         run: |
