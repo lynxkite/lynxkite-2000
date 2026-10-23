@@ -3,11 +3,10 @@
 // come from the backend; see the "Folder settings editor" plan for the
 // GET/POST /api/settings and GET /api/settings/schema endpoints this expects.
 import Form from "@rjsf/core";
-import type { RJSFSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import useSWR from "swr";
-import { apiFetch, apiJson } from "./common.ts";
+import { apiFetch, pathFetcher } from "./common.ts";
 import { folderSettingsTemplates } from "./FolderSettingsTemplates.tsx";
 
 export interface AclSettings {
@@ -15,63 +14,10 @@ export interface AclSettings {
   write: string[];
 }
 
-// `lim` maps a box name to its resource overrides (e.g. { memory: "8Gi", cpu: "2" }).
-// Other top-level keys are preserved by the backend even though this type doesn't
-// know about them yet.
-export interface FolderSettings {
-  acl: AclSettings;
-  lim: Record<string, Record<string, string>>;
-  [key: string]: unknown;
-}
-
 export interface FolderSettingsModalHandle {
   open: (path: string) => void;
   close: () => void;
 }
-
-// TODO(backend): remove this mock fallback once GET /api/settings/schema and
-// GET /api/settings exist. It's here only so the form can be demoed before the
-// backend endpoints are implemented.
-const MOCK_SCHEMA: RJSFSchema = {
-  type: "object",
-  properties: {
-    acl: {
-      title: "Access control",
-      type: "object",
-      properties: {
-        read: {
-          title: "Read access",
-          description: '"*" for any authenticated user, or sub:<id> / group:<name>',
-          type: "array",
-          items: { type: "string" },
-        },
-        write: {
-          title: "Write access",
-          description: '"*" for any authenticated user, or sub:<id> / group:<name>',
-          type: "array",
-          items: { type: "string" },
-        },
-      },
-    },
-    lim: {
-      title: "LIM resources",
-      description: "Resource overrides per box name",
-      type: "object",
-      additionalProperties: {
-        type: "object",
-        additionalProperties: { type: "string" },
-      },
-    },
-  },
-};
-
-const MOCK_SETTINGS: FolderSettings = {
-  acl: { read: ["*"], write: ["group:Eng"] },
-  lim: { "Box A": { memory: "8Gi", cpu: "2" } },
-};
-
-const schemaFetcher = (url: string) => apiJson<RJSFSchema>(url).catch(() => MOCK_SCHEMA);
-const settingsFetcher = (url: string) => apiJson<FolderSettings>(url).catch(() => MOCK_SETTINGS);
 
 export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props, ref) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -79,13 +25,12 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const schema = useSWR(path !== null ? "/api/settings/schema" : null, schemaFetcher);
+  const schema = useSWR(path !== null ? "/api/get_settings_schema" : null, pathFetcher);
   const settings = useSWR(
-    path !== null ? `/api/settings?path=${encodeURIComponent(path)}` : null,
-    settingsFetcher,
+    path !== null ? `/api/dir/get_local_settings?path=${encodeURIComponent(path)}` : null,
+    pathFetcher,
   );
   const { mutate: mutateSettings } = settings;
-  const usingMockData = schema.data === MOCK_SCHEMA || settings.data === MOCK_SETTINGS;
 
   useImperativeHandle(ref, () => ({
     open: (newPath: string) => {
@@ -105,12 +50,12 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
     setError(null);
   }
 
-  async function handleSubmit(data: { formData?: FolderSettings }) {
+  async function handleSubmit(data: { formData?: object }) {
     if (!data.formData || path === null) return;
     setSaving(true);
     setError(null);
     try {
-      const res = await apiFetch("/api/settings", {
+      const res = await apiFetch("/api/dir/set_local_settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path, settings: data.formData }),
@@ -123,13 +68,7 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
       dialogRef.current?.close();
       setPath(null);
     } catch (_e) {
-      if (usingMockData) {
-        // No backend to actually save to yet — just demo the round trip.
-        dialogRef.current?.close();
-        setPath(null);
-      } else {
-        setError("Failed to save settings.");
-      }
+      setError("Failed to save settings.");
     } finally {
       setSaving(false);
     }
@@ -143,11 +82,6 @@ export const FolderSettingsModal = forwardRef<FolderSettingsModalHandle>((_props
       <div className="modal-box folder-settings-modal-box w-11/12">
         <h1 className="title">Folder settings</h1>
         <p className="description">{path || "/"}</p>
-        {usingMockData && (
-          <p className="description" style={{ color: "oklch(60% 0.15 55)" }}>
-            Demo data — the backend endpoints for this form aren't implemented yet.
-          </p>
-        )}
 
         {loading && <p>Loading...</p>}
         {loadError && <p className="error">Failed to load folder settings.</p>}

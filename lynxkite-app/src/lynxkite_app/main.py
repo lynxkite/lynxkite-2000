@@ -13,8 +13,7 @@ import starlette.datastructures
 import starlette.exceptions
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from lynxkite_core import opcontext, ops, workspace
-from lynxkite_core.folder_settings import SETTINGS_FILENAME
+from lynxkite_core import opcontext, ops, workspace, folder_settings
 from pydantic_core import from_json
 
 from . import acl, auth, crdt, workspace_export
@@ -151,13 +150,39 @@ async def list_dir(path: str, request: fastapi.Request):
     auth_on = auth.is_auth_enabled()
     entries: list[DirectoryEntry] = []
     for p in dir_path.iterdir():
-        if p.name.startswith(".") or p.name == SETTINGS_FILENAME:
+        if p.name.startswith(".") or p.name == folder_settings.SETTINGS_FILENAME:
             continue
         rel = p.relative_to(data_path).as_posix()
         if auth_on and not acl.has_permission(user, "read", rel):
             continue
         entries.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
     return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))
+
+
+@app.get("/api/dir/get_local_settings")
+async def get_dir_settings(path: str, request: fastapi.Request):
+    await auth.check_permission(request, "read", path)
+    dir_path = data_path / path
+    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
+    settings = folder_settings.get_local_settings(data_path, path)
+    return settings
+
+
+@app.post("/api/dir/set_local_settings")
+async def set_local_settings(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
+    dir_path = data_path / req["path"]
+    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
+    new_settings = folder_settings.FolderSettings.model_validate(req["settings"])
+    folder_settings.set_local_settings(data_path, req["path"], new_settings)
+    return {"status": "ok"}
+
+
+@app.get("/api/get_settings_schema")
+async def get_settings_schema(request: fastapi.Request):
+    await auth.check_permission(request, "read", "")
+    schema = folder_settings.get_settings_schema()
+    return schema
 
 
 @app.post("/api/dir/mkdir")

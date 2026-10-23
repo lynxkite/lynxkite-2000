@@ -155,7 +155,6 @@ function FieldTemplate(props: FieldTemplateProps) {
     children,
     errors,
     help,
-    description,
     hidden,
     required,
     displayLabel,
@@ -176,7 +175,6 @@ function FieldTemplate(props: FieldTemplateProps) {
   );
   const body = (
     <>
-      {description}
       {children}
       {errors}
       {help}

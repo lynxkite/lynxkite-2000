@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from lynxkite_core.folder_settings import resolve_flat_section
+from lynxkite_core.folder_settings import get_total_settings, ACLSettings
 
 type User = dict[str, str | list[str]]
 type Action = Literal["read", "write"]
@@ -54,10 +54,10 @@ def user_principals(user: User) -> set[str]:
     return principals
 
 
-def resolve_acl(path: str | None) -> dict[str, list[str]]:
+def resolve_acl(path: str | None) -> ACLSettings:
     """Effective acl.read / acl.write lists from settings.yaml root→folder merge."""
-    section = resolve_flat_section(_data_root, path or "", "acl")
-    return {"read": section.get("read", []), "write": section.get("write", [])}
+    settings = get_total_settings(_data_root, path or "")
+    return settings.acl
 
 
 def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
@@ -73,10 +73,10 @@ def has_permission(user: User, action: Action, path: str | None) -> bool:
     principals = user_principals(user)
     authenticated = bool(user.get("sub"))
     if action == "write":
-        return _matches(grants["write"], principals, authenticated=authenticated)
+        return _matches(grants.write, principals, authenticated=authenticated)
     # write implies read
-    return _matches(grants["read"], principals, authenticated=authenticated) or _matches(
-        grants["write"], principals, authenticated=authenticated
+    return _matches(grants.read, principals, authenticated=authenticated) or _matches(
+        grants.write, principals, authenticated=authenticated
     )
 
 
