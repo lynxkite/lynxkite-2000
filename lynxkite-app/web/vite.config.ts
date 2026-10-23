@@ -12,6 +12,14 @@ export default defineConfig({
     chunkSizeWarningLimit: 3000,
     sourcemap: true,
   },
+  resolve: {
+    alias: [
+      {
+        find: /^monaco-editor\/esm\/vs\//,
+        replacement: "monaco-editor/",
+      },
+    ],
+  },
   esbuild: {
     supported: {
       // For dynamic imports.
