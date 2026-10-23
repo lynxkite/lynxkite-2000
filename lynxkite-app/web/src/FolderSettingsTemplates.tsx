@@ -88,7 +88,6 @@ function FieldErrorTemplate({ errors = [] }: FieldErrorProps) {
   return (
     <ul className="text-error text-sm">
       {errors.map((e, i) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: static list
         <li key={i}>{e}</li>
       ))}
     </ul>
@@ -104,7 +103,6 @@ function ErrorListTemplate({ errors }: ErrorListProps) {
   return (
     <div role="alert" className="alert alert-error mb-4 flex-col items-start">
       {errors.map((e, i) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: static list
         <div key={i}>{e.stack}</div>
       ))}
     </div>
