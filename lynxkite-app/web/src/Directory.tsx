@@ -441,28 +441,28 @@ export default function Directory() {
             onDragOver={
               canWrite
                 ? (e) => {
-                  e.preventDefault();
-                  setIsDragOver(true);
-                }
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }
                 : undefined
             }
             onDragLeave={
               canWrite
                 ? (e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                    setIsDragOver(false);
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setIsDragOver(false);
+                    }
                   }
-                }
                 : undefined
             }
             onDrop={
               canWrite
                 ? (e) => {
-                  e.preventDefault();
-                  setIsDragOver(false);
-                  if (e.dataTransfer.items.length || e.dataTransfer.files.length)
-                    uploadDroppedItems(e.dataTransfer);
-                }
+                    e.preventDefault();
+                    setIsDragOver(false);
+                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                      uploadDroppedItems(e.dataTransfer);
+                  }
                 : undefined
             }
           >
@@ -531,7 +531,7 @@ export default function Directory() {
                               }}
                             >
                               {pendingDownload?.action === "download" &&
-                                pendingDownload.itemName === item.name
+                              pendingDownload.itemName === item.name
                                 ? "Downloading..."
                                 : "Download"}
                             </button>
@@ -554,7 +554,7 @@ export default function Directory() {
                               }}
                             >
                               {pendingDownload?.action === "export" &&
-                                pendingDownload.itemName === item.name
+                              pendingDownload.itemName === item.name
                                 ? "Exporting..."
                                 : "Export static page"}
                             </button>
@@ -581,6 +581,6 @@ export default function Directory() {
       )}
       {uploadProgress && <UploadProgressToast {...uploadProgress} />}
       {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
-    </ManagementPage >
+    </ManagementPage>
   );
 }
