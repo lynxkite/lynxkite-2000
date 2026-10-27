@@ -17,10 +17,9 @@ import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.
 
 const SIDEBAR_OPEN_KEY = "lynxkite-sidebar-open";
 
-const NAV_ITEMS = [
-  { to: "/dir", icon: <Folder />, label: "Files" },
-  { to: "/progress", icon: <Activity />, label: "Progress" },
-];
+const FILES_NAV_ITEM = { to: "/dir", icon: <Folder />, label: "Files" };
+// The progress page needs the LynxKite Enterprise backend.
+const PROGRESS_NAV_ITEM = { to: "/progress", icon: <Activity />, label: "Progress" };
 
 export default function ManagementPage(props: {
   children: React.ReactNode;
@@ -47,6 +46,9 @@ export default function ManagementPage(props: {
   const config = getConfig();
   const currentUser = useCurrentUser();
   const authEnabled = !!config.authentication_issuer;
+  const navItems = config.enterprise_available
+    ? [FILES_NAV_ITEM, PROGRESS_NAV_ITEM]
+    : [FILES_NAV_ITEM];
 
   return (
     <div className={`management-page ${props.className || ""}`}>
@@ -63,7 +65,7 @@ export default function ManagementPage(props: {
         <SidebarSearch open={sidebarOpen} onExpand={() => setSidebarOpen(true)} />
 
         <nav className="sidebar-nav">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <NavLink
               key={item.to + item.label}
               to={item.to}
@@ -103,7 +105,7 @@ export default function ManagementPage(props: {
 
         {authEnabled && (
           <div className="sidebar-user-section">
-            {authEnabled && currentUser === null && (
+            {currentUser === null && (
               <button
                 type="button"
                 className="sidebar-nav-item"
@@ -114,7 +116,7 @@ export default function ManagementPage(props: {
                 <span className="sidebar-label">Sign in</span>
               </button>
             )}
-            {authEnabled && currentUser !== null && (
+            {currentUser !== null && (
               // biome-ignore lint/a11y/useKeyWithClickEvents: expands the collapsed sidebar
               // biome-ignore lint/a11y/noStaticElementInteractions: expands the collapsed sidebar
               <div className="sidebar-user" onClick={() => !sidebarOpen && setSidebarOpen(true)}>
