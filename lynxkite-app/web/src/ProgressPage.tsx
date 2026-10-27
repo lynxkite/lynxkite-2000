@@ -3,8 +3,6 @@
 import type { ECharts } from "echarts";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { WebsocketProvider } from "y-websocket";
-import * as Y from "yjs";
 import ScaleDown from "~icons/tabler/arrow-down";
 import Back from "~icons/tabler/arrow-left";
 import ScaleUp from "~icons/tabler/arrow-up";
@@ -18,19 +16,15 @@ import ManagementPage from "./ManagementPage";
 import {
   formatWorkspaceProgressSuffix,
   getWorkspaceProgress,
-  parseProgressWorkspace,
+  pauseWorkspace,
+  stopWorkspace,
+  useProgress,
   workspaceProgressColor,
 } from "./progress";
 
 const echarts = await import("echarts");
 
 export default function ProgressPage() {
-  // Update every second so we see the time left count down.
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), 1000);
-    return () => clearInterval(interval);
-  }, []);
   const [currentTab, setCurrentTab] = useState("workspaces");
   const tabs = [
     { id: "workspaces", label: "Running workspaces" },
@@ -40,39 +34,8 @@ export default function ProgressPage() {
   const config = getConfig();
   const enterpriseAvailable = config.enterprise_available === true;
 
-  const [data, setData] = useState<{
-    workspaces: any[];
-    gpuServices: any[];
-    users: any[];
-  }>({
-    workspaces: [],
-    gpuServices: [],
-    users: [],
-  });
-
-  async function pauseWorkspace(roomName: string, paused: boolean) {
-    try {
-      await fetch("/api/pause_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName, paused }),
-      });
-    } catch (e) {
-      console.error("Failed to pause workspace", e);
-    }
-  }
-
-  async function stopWorkspace(roomName: string) {
-    try {
-      await fetch("/api/stop_workspace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_name: roomName }),
-      });
-    } catch (e) {
-      console.error("Failed to stop workspace", e);
-    }
-  }
+  const progress = useProgress(enterpriseAvailable);
+  const workspaces = progress.workspaces.map((ws) => ({ ...ws, user: ws.user || "—" }));
 
   async function scaleGpuService(gpuService: any, newReplicaCount: number) {
     const targetReplicas = Math.max(0, newReplicaCount);
@@ -90,69 +53,6 @@ export default function ProgressPage() {
       console.error("Failed to scale GPU service", e);
     }
   }
-  useEffect(() => {
-    if (!enterpriseAvailable) {
-      return;
-    }
-    const doc = new Y.Doc();
-    const proto = location.protocol === "https:" ? "wss:" : "ws:";
-    const provider = new WebsocketProvider(
-      `${proto}//${location.host}/ws/progress/crdt`,
-      "progress",
-      doc,
-    );
-
-    const wsMap = doc.getMap("workspaces");
-    const gpuServicesText = doc.getText("gpu_services");
-
-    function syncWorkspaces() {
-      setData((prev) => {
-        const workspaces: any[] = [];
-        for (const [, value] of (wsMap as Y.Map<unknown>).entries()) {
-          const ws = parseProgressWorkspace(value);
-          if (ws && typeof ws === "object") {
-            workspaces.push({ ...ws, user: ws.user || "—" });
-          }
-        }
-        return { ...prev, workspaces };
-      });
-    }
-
-    function syncGpuServices() {
-      const raw = gpuServicesText.toString();
-      if (!raw) {
-        return;
-      }
-      try {
-        const gpuServices = JSON.parse(raw);
-        if (Array.isArray(gpuServices)) {
-          setData((prev) => ({ ...prev, gpuServices }));
-        }
-      } catch {
-        // ignore malformed JSON during partial updates
-      }
-    }
-
-    wsMap.observe(syncWorkspaces);
-    gpuServicesText.observe(syncGpuServices);
-    provider.on("sync", () => {
-      syncWorkspaces();
-      syncGpuServices();
-    });
-    provider.on("status", (event: any) => {
-      if (event?.status === "connected") {
-        syncWorkspaces();
-        syncGpuServices();
-      }
-    });
-
-    return () => {
-      wsMap.unobserve(syncWorkspaces);
-      gpuServicesText.unobserve(syncGpuServices);
-      provider.destroy();
-      doc.destroy();
-    };
-  }, [enterpriseAvailable]);
 
   if (!enterpriseAvailable) {
     return (
@@ -189,15 +89,15 @@ export default function ProgressPage() {
 
       {currentTab === "workspaces" && (
         <Workspaces
-          workspaces={data.workspaces}
+          workspaces={workspaces}
           onPause={(roomName, paused) => pauseWorkspace(roomName, paused)}
           onStop={(roomName) => stopWorkspace(roomName)}
         />
       )}
       {currentTab === "gpu-services" && (
-        <GpuServices gpuServices={data.gpuServices} scaleGpuService={scaleGpuService} />
+        <GpuServices gpuServices={progress.gpuServices} scaleGpuService={scaleGpuService} />
       )}
-      {currentTab === "users" && <UsersAndGroups users={data.users} />}
+      {currentTab === "users" && <UsersAndGroups users={[]} />}
     </ManagementPage>
   );
 }

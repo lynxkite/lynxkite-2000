@@ -10,12 +10,14 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Link,
+  Navigate,
   Route,
   RouterProvider,
   useRouteError,
 } from "react-router";
 import { isStaticWorkspaceMode, loadConfig } from "./common.ts";
 import Directory from "./Directory.tsx";
+import { recordVisit } from "./sidebarStore.ts";
 
 const AuthCallback = lazy(() => import("./AuthCallback.tsx"));
 const Code = lazy(() => import("./Code.tsx"));
@@ -53,7 +55,7 @@ const router = createBrowserRouter(
       <Route path="*" element={withSuspense(<Workspace />)} errorElement={<WorkspaceError />} />
     ) : (
       <>
-        <Route path="/" element={<Directory />} />
+        <Route path="/" element={<Navigate to="/dir" replace />} />
         <Route path="/dir" element={<Directory />} />
         <Route path="/dir/*" element={<Directory />} />
         <Route path="/auth/callback" element={withSuspense(<AuthCallback />)} />
@@ -69,6 +71,9 @@ const router = createBrowserRouter(
     ),
   ),
 );
+
+recordVisit(window.location.pathname);
+router.subscribe((state) => recordVisit(state.location.pathname));
 
 const root = createRoot(document.getElementById("root")!);
 

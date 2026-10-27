@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { WebsocketProvider } from "y-websocket";
+import * as Y from "yjs";
+import { apiFetch } from "./common.ts";
+
 export function formatWorkspaceEta(seconds: number | null | undefined): string {
   if (seconds == null) return "";
   if (seconds <= 0) return "done";
@@ -57,4 +62,99 @@ export function getWorkspaceProgress(workspace: any) {
     status: workspace?.status ?? "",
     etaSeconds: typeof workspace?.eta_seconds === "number" ? workspace.eta_seconds : null,
   };
+}
+
+async function postProgressAction(path: string, body: object, what: string) {
+  try {
+    const res = await apiFetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) console.error(`Failed to ${what}: ${res.status} ${res.statusText}`);
+  } catch (e) {
+    console.error(`Failed to ${what}`, e);
+  }
+}
+
+export function pauseWorkspace(roomName: string, paused: boolean) {
+  return postProgressAction(
+    "/api/pause_workspace",
+    { room_name: roomName, paused },
+    "pause workspace",
+  );
+}
+
+export function stopWorkspace(roomName: string) {
+  return postProgressAction("/api/stop_workspace", { room_name: roomName }, "stop workspace");
+}
+
+/**
+ * Subscribes to the deployment-wide progress CRDT. Pass `enabled: false` to skip connecting.
+ * Also re-renders every second so the time-left estimates count down.
+ */
+export function useProgress(enabled: boolean) {
+  const [workspaces, setWorkspaces] = useState<any[]>([]);
+  const [gpuServices, setGpuServices] = useState<any[]>([]);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const interval = setInterval(() => setTick((t) => t + 1), 1000);
+    return () => clearInterval(interval);
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const doc = new Y.Doc();
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const provider = new WebsocketProvider(
+      `${proto}//${location.host}/ws/progress/crdt`,
+      "progress",
+      doc,
+    );
+    const wsMap = doc.getMap("workspaces");
+    const gpuServicesText = doc.getText("gpu_services");
+
+    function syncWorkspaces() {
+      const ws: any[] = [];
+      for (const value of (wsMap as Y.Map<unknown>).values()) {
+        const parsed = parseProgressWorkspace(value);
+        if (parsed) ws.push(parsed);
+      }
+      setWorkspaces(ws);
+    }
+
+    function syncGpuServices() {
+      const raw = gpuServicesText.toString();
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setGpuServices(parsed);
+      } catch {
+        // Ignore malformed JSON during partial updates.
+      }
+    }
+
+    function syncAll() {
+      syncWorkspaces();
+      syncGpuServices();
+    }
+
+    wsMap.observe(syncWorkspaces);
+    gpuServicesText.observe(syncGpuServices);
+    provider.on("sync", syncAll);
+    provider.on("status", (event: any) => {
+      if (event?.status === "connected") syncAll();
+    });
+
+    return () => {
+      wsMap.unobserve(syncWorkspaces);
+      gpuServicesText.unobserve(syncGpuServices);
+      provider.destroy();
+      doc.destroy();
+    };
+  }, [enabled]);
+
+  return { workspaces, gpuServices };
 }
