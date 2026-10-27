@@ -1,5 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import asyncio
 import os
 import pathlib
 import shutil
@@ -163,14 +164,7 @@ async def list_dir(path: str, request: fastapi.Request):
 SEARCH_LIMIT = 20
 
 
-@app.get("/api/dir/search")
-async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT):
-    """Finds files and folders whose path contains `q`, ignoring case."""
-    user = await auth.get_current_user(request)
-    auth_on = auth.is_auth_enabled()
-    query = q.strip().lower()
-    if not query:
-        return []
+def _search_paths(query: str, user, auth_on: bool, limit: int) -> list[DirectoryEntry]:
     matches = []
     for root, dirs, files in os.walk(data_path):
         # Hidden and "__" entries are not shown in the directory browser either.
@@ -187,6 +181,18 @@ async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT
             matches.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
     matches.sort(key=lambda x: (x.type != "directory", x.name.lower()))
     return matches[:limit]
+
+
+@app.get("/api/dir/search")
+async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT):
+    """Finds files and folders whose path contains `q`, ignoring case."""
+    user = await auth.get_current_user(request)
+    auth_on = auth.is_auth_enabled()
+    query = q.strip().lower()
+    if not query:
+        return []
+    # Walking the data directory can take a while. Do it off the event loop.
+    return await asyncio.to_thread(_search_paths, query, user, auth_on, limit)
 
 
 @app.post("/api/dir/mkdir")
