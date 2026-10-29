@@ -143,7 +143,7 @@ usage: lynxkite_graph_analytics.operations.graph_ops.pcsf(relation=<relation_val
 for detailed information, see references/pcsf.md
 
 **Local SPARQL query:**
-usage: lynxkite_graph_analytics.operations.knowledge_graph_ops.local_sparql(graph=<graph_value>, query=<query_value>, name=<name_value>, bundle=<bundle_variable>)
+usage: lynxkite_graph_analytics.operations.knowledge_graph_ops.local_sparql(query=<query_value>, name=<name_value>, graph=<graph_variable>)
 for detailed information, see references/local_sparql.md
 
 **Remote SPARQL query:**

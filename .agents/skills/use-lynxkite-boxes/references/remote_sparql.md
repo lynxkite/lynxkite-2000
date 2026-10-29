@@ -19,17 +19,15 @@ def remote_sparql(*, endpoint: str = "", query: ops.LongStr, name: str = "result
     )
     r.raise_for_status()
 
-    bundle = core.Bundle()
     if "json" in r.headers.get("Content-Type", ""):
         data = r.json()
         if "results" in data:
             rows = [{k: v["value"] for k, v in b.items()} for b in data["results"]["bindings"]]
-            bundle.dfs[name] = pd.DataFrame(rows, columns=data["head"]["vars"])
+            return pd.DataFrame(rows, columns=data["head"]["vars"])
         else:
-            bundle.dfs[name] = pd.DataFrame({"result": [data["boolean"]]})
+            return pd.DataFrame({"result": [data["boolean"]]})
     else:
-        bundle.other[name] = Graph().parse(data=r.text, format="turtle")
-    return bundle
+        return Graph().parse(data=r.text, format="turtle")
 
 ```
 Custom types:

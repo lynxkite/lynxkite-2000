@@ -30,20 +30,6 @@
       "targetHandle": "b"
     },
     {
-      "id": "Local SPARQL query 1 output View tables 5 bundle",
-      "source": "Local SPARQL query 1",
-      "sourceHandle": "output",
-      "target": "View tables 5",
-      "targetHandle": "bundle"
-    },
-    {
-      "id": "Remote SPARQL query 1 output Local SPARQL query 1 bundle",
-      "source": "Remote SPARQL query 1",
-      "sourceHandle": "output",
-      "target": "Local SPARQL query 1",
-      "targetHandle": "bundle"
-    },
-    {
       "id": "Remote SPARQL query 2 output View tables 4 bundle",
       "source": "Remote SPARQL query 2",
       "sourceHandle": "output",
@@ -63,6 +49,27 @@
       "sourceHandle": "output",
       "target": "View tables 2",
       "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 1 output Local SPARQL query 1 graph",
+      "source": "Remote SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "Local SPARQL query 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Local SPARQL query 1 output View tables 1 bundle",
+      "source": "Local SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 1 output View tables 5 bundle",
+      "source": "Remote SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "View tables 5",
+      "targetHandle": "bundle"
     }
   ],
   "env": "LynxKite Graph Analytics",
@@ -72,7 +79,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -119,7 +126,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -166,7 +173,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 0,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -480,7 +487,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 63,
+        "display_version": 82,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -664,58 +671,6 @@
     },
     {
       "data": {
-        "collapsed": null,
-        "display": null,
-        "display_version": 1,
-        "error": null,
-        "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "results": {
-                "columns": [
-                  "o",
-                  "p",
-                  "s"
-                ],
-                "key": "results",
-                "length": 231.0
-              }
-            },
-            "other": {
-              "nobel": {
-                "key": "nobel"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "View tables",
-        "output_metadata": [
-          {}
-        ],
-        "params": {
-          "limit": 100.0
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "View tables"
-      },
-      "height": 594.0,
-      "id": "View tables 5",
-      "parentId": null,
-      "position": {
-        "x": 4849.956720033193,
-        "y": 3574.29906371186
-      },
-      "type": "table_view",
-      "width": 1096.0
-    },
-    {
-      "data": {
         "__execution_delay": 0.0,
         "collapsed": null,
         "display": null,
@@ -753,98 +708,17 @@
         "display_version": null,
         "error": null,
         "expanded_height": null,
-        "input_metadata": [
-          {
-            "dataframes": {
-              "results": {
-                "columns": [
-                  "o",
-                  "p",
-                  "s"
-                ],
-                "key": "results",
-                "length": 231.0
-              }
-            },
-            "other": {
-              "nobel": {
-                "key": "nobel"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "message": null,
-        "meta": null,
-        "op_id": "Knowledge graphs > Local SPARQL query",
-        "output_metadata": [
-          {
-            "dataframes": {
-              "results": {
-                "columns": [
-                  "o",
-                  "p",
-                  "s"
-                ],
-                "key": "results",
-                "length": 231.0
-              }
-            },
-            "other": {
-              "nobel": {
-                "key": "nobel"
-              }
-            },
-            "relations": []
-          }
-        ],
-        "params": {
-          "graph": "nobel",
-          "name": "results",
-          "query": "SELECT ?s ?p ?o\nWHERE { ?s ?p ?o }"
-        },
-        "status": "done",
-        "tags": [],
-        "telemetry": null,
-        "title": "Local SPARQL query"
-      },
-      "height": 384.0,
-      "id": "Local SPARQL query 1",
-      "parentId": null,
-      "position": {
-        "x": 3941.5455060900745,
-        "y": 3679.785877270142
-      },
-      "type": "basic",
-      "width": 414.0
-    },
-    {
-      "data": {
-        "__execution_delay": 0.0,
-        "collapsed": null,
-        "display": null,
-        "display_version": null,
-        "error": null,
-        "expanded_height": null,
         "input_metadata": [],
         "message": null,
         "meta": null,
         "op_id": "Knowledge graphs > Remote SPARQL query",
         "output_metadata": [
-          {
-            "dataframes": {},
-            "other": {
-              "nobel": {
-                "key": "nobel"
-              }
-            },
-            "relations": []
-          }
+          {}
         ],
         "params": {
           "endpoint": "https://qlever.dev/api/wikidata",
           "name": "nobel",
-          "query": "PREFIX received: <http://www.wikidata.org/prop/direct/P166>\nPREFIX physics_nobel:  <http://www.wikidata.org/entity/Q38104>\n\nCONSTRUCT { ?person received: physics_nobel: }\nWHERE     { ?person received: physics_nobel: }\nLIMIT 1000"
+          "query": "PREFIX received: <http://www.wikidata.org/prop/direct/P166>\nPREFIX physics_nobel:  <http://www.wikidata.org/entity/Q38104>\n\nCONSTRUCT { ?person received: physics_nobel: }\nWHERE     { ?person received: physics_nobel: }\nLIMIT 1001"
         },
         "status": "done",
         "tags": [
@@ -916,11 +790,11 @@
     {
       "data": {
         "__execution_delay": 0.0,
-        "collapsed": null,
+        "collapsed": false,
         "display": null,
         "display_version": null,
         "error": null,
-        "expanded_height": null,
+        "expanded_height": 734.0,
         "input_metadata": [],
         "message": null,
         "meta": null,
@@ -1012,6 +886,174 @@
       },
       "type": "basic",
       "width": 619.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Local SPARQL query",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "o",
+                  "p",
+                  "s"
+                ],
+                "key": "records",
+                "length": 231.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "name": "results",
+          "query": "SELECT ?s ?p ?o\nWHERE {?s ?p ?o}"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Local SPARQL query"
+      },
+      "height": 433.0,
+      "id": "Local SPARQL query 1",
+      "parentId": null,
+      "position": {
+        "x": 3962.017793550195,
+        "y": 3695.614624451096
+      },
+      "type": "basic",
+      "width": 385.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "o",
+                  "p",
+                  "s"
+                ],
+                "key": "records",
+                "length": 231.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 462.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 4621.825439566734,
+        "y": 3693.9160792344155
+      },
+      "type": "table_view",
+      "width": 1072.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "object",
+                  "predicate",
+                  "subject"
+                ],
+                "key": "edges",
+                "length": 231.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 232.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "rdf_graph",
+                "source_column": "subject",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "object",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "edges": true,
+            "nodes": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 517.0,
+      "id": "View tables 5",
+      "parentId": null,
+      "position": {
+        "x": 3860.3923939338392,
+        "y": 3084.7480305279405
+      },
+      "type": "table_view",
+      "width": 1132.0
     }
   ],
   "paused": true

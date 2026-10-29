@@ -1,6 +1,7 @@
 """Operations for working with knowledge graphs"""
 
 import pandas as pd
+import rdflib
 import requests
 from rdflib import Graph
 from lynxkite_core import ops
@@ -27,35 +28,30 @@ def remote_sparql(*, endpoint: str = "", query: ops.LongStr, name: str = "result
     )
     r.raise_for_status()
 
-    bundle = core.Bundle()
     if "json" in r.headers.get("Content-Type", ""):
         data = r.json()
         if "results" in data:
             rows = [{k: v["value"] for k, v in b.items()} for b in data["results"]["bindings"]]
-            bundle.dfs[name] = pd.DataFrame(rows, columns=data["head"]["vars"])
+            return pd.DataFrame(rows, columns=data["head"]["vars"])
         else:
-            bundle.dfs[name] = pd.DataFrame({"result": [data["boolean"]]})
+            return pd.DataFrame({"result": [data["boolean"]]})
     else:
-        bundle.other[name] = Graph().parse(data=r.text, format="turtle")
-    return bundle
+        return Graph().parse(data=r.text, format="turtle")
 
 
 @op("Local SPARQL query")
-def local_sparql(bundle: core.Bundle, *, graph: str, query: ops.LongStr, name: str = "results"):
+def local_sparql(graph: rdflib.Graph, *, query: ops.LongStr, name: str = "results"):
     """
     Run a SPARQL query on a local rdf knowledge graph.
-    :param bundle: The bundle containing the knowledge graph.
-    :param graph: The name of the knowledge graph within to query.
+    :param graph: The RDF graph to query.
     :param query: The SPARQL query to execute.
     :param name: The name of the resulting DataFrame.
     """
-    g = bundle.other[graph]
-    result = g.query(query)
+    result = graph.query(query)
 
     if result.type == "SELECT":
-        bundle.dfs[name] = pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
+        return pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
     elif result.type == "ASK":
-        bundle.dfs[name] = pd.DataFrame({"result": [result.askAnswer]})
+        return pd.DataFrame({"result": [result.askAnswer]})
     else:
-        bundle.other[name] = result.graph
-    return bundle
+        return result.graph
