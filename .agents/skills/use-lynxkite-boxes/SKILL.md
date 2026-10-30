@@ -121,6 +121,14 @@ for detailed information, see references/sample_graph.md
 usage: lynxkite_graph_analytics.operations.graph_ops.pcsf(relation=<relation_value>, price_column=<price_column_value>, weight_column=<weight_column_value>, root_cost_column=<root_cost_column_value>, output_edge=<output_edge_value>, output_node=<output_node_value>, output_root_nodes=<output_root_nodes_value>, output_profit=<output_profit_value>, b=<b_variable>)
 for detailed information, see references/pcsf.md
 
+**Local SPARQL query:**
+usage: lynxkite_graph_analytics.operations.knowledge_graph_ops.local_sparql(query=<query_value>, name=<name_value>, graph=<graph_variable>)
+for detailed information, see references/local_sparql.md
+
+**Remote SPARQL query:**
+usage: lynxkite_graph_analytics.operations.knowledge_graph_ops.remote_sparql(endpoint=<endpoint_value>, query=<query_value>, name=<name_value>)
+for detailed information, see references/remote_sparql.md
+
 **Define model:**
 usage: lynxkite_graph_analytics.operations.ml_ops.define_model(model_workspace=<model_workspace_value>, save_as=<save_as_value>, bundle=<bundle_variable>)
 for detailed information, see references/define_model.md
