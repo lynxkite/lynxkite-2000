@@ -64,6 +64,17 @@ def test_wildcard_requires_authenticated_user(data_root):
     assert not acl.has_permission({}, "read", "x.lynxkite.json")
 
 
+def test_anonymous_principal(data_root):
+    _write_settings(
+        data_root,
+        {"acl": {"read": ["anonymous", "*"], "write": ["group:lynxkite"]}},
+    )
+    assert acl.has_permission({}, "read", "x.lynxkite.json")
+    assert not acl.has_permission({}, "write", "x.lynxkite.json")
+    assert acl.has_permission({"sub": "r1"}, "read", "x.lynxkite.json")
+    assert acl.has_permission({"sub": "w1", "groups": ["lynxkite"]}, "write", "x.lynxkite.json")
+
+
 def test_parent_folder_inheritance(data_root):
     _write_settings(
         data_root / "team-a",

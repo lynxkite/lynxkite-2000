@@ -1,4 +1,8 @@
-"""Folder-level ACL for LynxKite authorization, stored in settings.yaml."""
+"""Folder-level ACL for LynxKite authorization, stored in settings.yaml.
+
+Used when auth is on. Requests with no token are treated as anonymous. A * matches any logged in user.
+For guest-read / staff-write, use read: [anonymous, *] and write: [*].
+"""
 
 from __future__ import annotations
 
@@ -39,12 +43,14 @@ def user_principals(user: User) -> set[str]:
     """Build ACL principal IDs from JWT claims.
 
     Returns ``sub:<subject>`` for the user ID and ``group:<name>`` for each group
-    claim. These match entries in ``settings.yaml`` ``acl.read`` / ``acl.write``.
+    claim. Unauthenticated users get ``anonymous``.
     """
     principals: set[str] = set()
     sub = user.get("sub")
     if sub:
         principals.add(f"sub:{sub}")
+    else:
+        principals.add("anonymous")
     groups = user.get("groups")
     if isinstance(groups, str):
         groups = [groups]
@@ -61,8 +67,8 @@ def resolve_acl(path: str | None) -> dict[str, list[str]]:
 
 
 def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
-    if "*" in allowed:
-        return authenticated
+    if authenticated and "*" in allowed:
+        return True
     return bool(principals & set(allowed))
 
 
