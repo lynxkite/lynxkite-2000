@@ -166,7 +166,7 @@ def _search_paths(query: str, user, auth_on: bool, limit: int) -> list[Directory
         # Hidden and "__" entries are not shown in the directory browser either.
         dirs[:] = [d for d in dirs if not d.startswith((".", "__"))]
         for name in dirs + files:
-            if name.startswith((".", "__")) or name == SETTINGS_FILENAME:
+            if name.startswith((".", "__")) or name == folder_settings.SETTINGS_FILENAME:
                 continue
             p = pathlib.Path(root) / name
             rel = p.relative_to(data_path).as_posix()
