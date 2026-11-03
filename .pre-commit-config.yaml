@@ -32,7 +32,7 @@ repos:
       name: check-demo-workspaces
       language: system
       entry: python scripts/demo_pre-commit.py --rerun
-      types: [json]
+      files: ^examples/.*\.lynxkite\.json$
       pass_filenames: true
       require_serial: true
 - repo: https://github.com/fpgmaas/deptry.git

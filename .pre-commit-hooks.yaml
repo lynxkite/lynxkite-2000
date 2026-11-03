@@ -2,6 +2,5 @@
   name: check-demo-workspaces
   language: script
   entry: scripts/demo_pre-commit.py
-  types: [json]
   pass_filenames: true
   require_serial: true
