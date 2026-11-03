@@ -13,6 +13,7 @@ import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
 import Star from "~icons/tabler/star";
 import StarFilled from "~icons/tabler/star-filled";
+import Settings from "~icons/tabler/settings";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import {
@@ -23,6 +24,7 @@ import {
   useFolderPermissions,
   usePath,
 } from "./common.ts";
+import { FolderSettingsModal, type FolderSettingsModalHandle } from "./FolderSettingsModal.tsx";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
 import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
@@ -118,6 +120,7 @@ export default function Directory() {
   });
   const navigate = useNavigate();
   const renameModalRef = useRef<ModalHandle>(null);
+  const folderSettingsModalRef = useRef<FolderSettingsModalHandle>(null);
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -378,6 +381,12 @@ export default function Directory() {
               <button type="button" onClick={() => fileInputRef.current?.click()}>
                 <Upload /> Upload file
               </button>
+              <button
+                type="button"
+                onClick={() => folderSettingsModalRef.current?.open(path || "")}
+              >
+                <Settings /> Folder settings
+              </button>
             </div>
           )}
           {!canWrite && !permissions.isLoading && config.authentication_issuer && (
@@ -561,6 +570,7 @@ export default function Directory() {
         </>
       )}
       {uploadProgress && <UploadProgressToast {...uploadProgress} />}
+      {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
     </ManagementPage>
   );
 }

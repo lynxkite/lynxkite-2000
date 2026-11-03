@@ -39,6 +39,12 @@ jobs:
           npm i
           npx playwright install --with-deps
 
+      - name: Check generated frontend types
+        run: |
+          cd lynxkite-app
+          uv run pydantic2ts --module lynxkite_app.frontend_types --output ./web/src/apiTypes.ts --json2ts-cmd "./web/node_modules/.bin/json2ts"
+          git diff --exit-code -- web/src/apiTypes.ts
+
       - name: Build the frontend
         run: |
           cd lynxkite-app/web

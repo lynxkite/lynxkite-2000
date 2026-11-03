@@ -89,7 +89,13 @@ export default function Assistant(props: {
   // Initialize with persisted messages on first load
   useEffect(() => {
     if (!messagesLoaded && persistedMessages.length > 0 && messages.length === 0) {
-      setMessages(persistedMessages);
+      setMessages(
+        persistedMessages.map((message, index) => ({
+          id: `persisted-${index}`,
+          role: message.role,
+          parts: [{ type: "text", text: message.content }],
+        })),
+      );
       setMessagesLoaded(true);
     }
   }, [messagesLoaded, persistedMessages, messages.length, setMessages]);

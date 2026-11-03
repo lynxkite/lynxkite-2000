@@ -26,6 +26,8 @@ dependencies = [
     "pykeen>=1.11.1",
     "seaborn>=0.13.2",
     "scikit-learn>=1.8.0",
+    "rdflib>=7.6.0",
+    "requests>=2.34.2",
 ]
 license = "AGPL-3.0-or-later"
 
