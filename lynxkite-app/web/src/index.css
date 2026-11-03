@@ -1708,6 +1708,12 @@ svg {
   }
 }
 
+.modal-box.folder-settings-modal-box {
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
 .msp-lynxkite-wrapper {
   flex: 1;
   position: relative;
