@@ -118,6 +118,16 @@ def test_visualization_operations_display_is_populated_automatically():
     assert result.display == {"display_value": 1}
 
 
+def test_async_visualization_operations_display_is_populated_automatically():
+    @ops.op("test", "async_display_op", view="visualization", outputs=["result"])
+    async def display_op():
+        return {"display_value": 1}
+
+    result = ops.CATALOGS["test"]["async_display_op"](DummyContext)
+    assert isinstance(result, ops.Result)
+    assert result.display == {"display_value": 1}
+
+
 def test_detect_plugins_with_plugins():
     # This test assumes that these plugins are installed as part of the testing process.
     plugins = ops.detect_plugins()

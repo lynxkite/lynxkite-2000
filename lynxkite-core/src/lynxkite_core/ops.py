@@ -323,11 +323,9 @@ class Op(BaseConfig):
         params = self.convert_params(params)
         ctx_name, ctx_idx = find_ctx_param_name(self.func)
         if ctx_name is not None and ctx_idx is not None:
-            inputs_list = list(inputs)
-            inputs_list.insert(ctx_idx, op_ctx)
-            res = self.func(*inputs_list, **params)
-        else:
-            res = self.func(*inputs, **params)
+            inputs = list(inputs)
+            inputs.insert(ctx_idx, op_ctx)
+        res = self.func(*inputs, **params)
 
         is_visualization_type = self.type in [
             "visualization",
@@ -346,11 +344,15 @@ class Op(BaseConfig):
                 res = Result(output=res)
 
         # Save display if needed
-        if is_visualization_type and not self.type == "graph_creation_view":
-            if op_ctx.ws and op_ctx.node:
-                res.save_display(
-                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
-                )
+        if (
+            is_visualization_type
+            and self.type != "graph_creation_view"
+            and op_ctx.ws
+            and op_ctx.node
+        ):
+            res.save_display(
+                op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
+            )
 
         return res
 
