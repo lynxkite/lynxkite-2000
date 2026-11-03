@@ -1,19 +1,36 @@
 #!/usr/bin/env python3
 """Pre-commit hook to check the demo workspaces."""
 
-from lynxkite_core import workspace, ops
-from pathlib import Path
-import os
+import argparse
 import asyncio
+import os
 import sys
+from pathlib import Path
 
-demo_dir = "examples"
+from lynxkite_core import ops, workspace
+
+ops.detect_plugins()
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--rerun",
+    action="store_true",
+    help="Allow re-running workspaces",
+)
+parser.add_argument(
+    "filenames",
+    nargs="*",
+    help="Files to check",
+)
+args = parser.parse_args()
 
 
-def check_demo_ws(ws_path):
+def check_demo_ws(ws_path: Path, rerun: bool):
     parent_dir = ws_path.parent
     ws_name = ws_path.name
-    ws = workspace.Workspace.load(ws_path)
+    try:
+        ws = workspace.Workspace.load(ws_path)
+    except Exception as e:
+        return f"Could not read {ws_path}: {e}"
     changed_ws = False
     if not ws.paused:
         ws.paused = True
@@ -38,6 +55,8 @@ def check_demo_ws(ws_path):
         ):
             missing_ws_files = True
     if missing_ws_files:
+        if not rerun:
+            return f"Missing workspace files for {ws_path}"
         try:
             with open(os.devnull, "w") as f:
                 old_stderr = sys.stderr
@@ -56,18 +75,15 @@ def check_demo_ws(ws_path):
 
 
 if __name__ == "__main__":
-    os.chdir(Path(__file__).resolve().parent.parent / demo_dir)
-    ops.detect_plugins()
     errors = []
-    for ws_file in sys.argv[1:]:
+    for ws_file in args.filenames:
         ws_path = Path(ws_file)
         if (
-            ws_path.is_relative_to(demo_dir)
-            and ws_file.endswith(".lynxkite.json")
+            ws_file.endswith(".lynxkite.json")
             and ".workspace_files" not in ws_file
             and "generated_samples" not in ws_file
         ):
-            e = check_demo_ws(ws_path.relative_to(demo_dir))
+            e = check_demo_ws(ws_path, args.rerun)
             if e:
                 errors.append(e)
     if errors:
