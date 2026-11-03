@@ -296,7 +296,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Unknown operation.")
+        node.publish_error(f"Unknown operation: {node.data.op_id}")
         return
     node.publish_started()
     input_map = {}
