@@ -6,7 +6,7 @@ client = TestClient(app)
 
 
 def test_permissions_auth_off():
-    response = client.get("/api/permissions?path=foo.lynxkite.json")
+    response = client.get("/api/permissions?path=foo.lynxkite")
     assert response.status_code == 200
     assert response.json() == {"read": True, "write": True}
 

@@ -132,10 +132,10 @@ function LynxKiteFlow() {
   // biome-ignore-end lint/correctness/useHookAtTopLevel: isStatic is static
   const workspace = crdt.ws;
   const workspaceReady = Boolean(workspace) && (isStatic || !permissions.isLoading);
-  const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite.json") : path)!
+  const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite") : path)!
     .split("/")
     .pop()!
-    .replace(/[.]lynxkite(?:[.]json)?$/, "");
+    .replace(/[.]lynxkite$/, "");
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const selectedNodeCount = crdt.selectedNodeCount;

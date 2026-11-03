@@ -3,9 +3,10 @@ import pathlib
 import tempfile
 import uuid
 
+import pytest
 from fastapi.testclient import TestClient
 from lynxkite_app import main
-from lynxkite_core import ops, workspace
+from lynxkite_core import ops, workspace, workspace_paths
 
 ops.user_script_root = None
 client = TestClient(main.app)
@@ -64,24 +65,38 @@ def test_rename_workspace_bundle(tmp_path, monkeypatch):
     assert not crdt_path.exists()
 
 
-def test_rename_legacy_workspace_to_bundle(tmp_path, monkeypatch):
+def test_legacy_workspace_requests_migration(tmp_path, monkeypatch):
     monkeypatch.setattr(main, "data_path", tmp_path)
     monkeypatch.setattr(main.crdt, "delete_room", lambda name: None)
     old_path = tmp_path / "old.lynxkite.json"
-    workspace.Workspace().save(old_path)
-    old_data_path = tmp_path / ".workspace_files" / old_path.name
-    old_data_path.mkdir(parents=True)
-    (old_data_path / "node-1.json").write_text("{}")
+    old_path.write_text("{}")
 
-    response = client.post(
-        "/api/rename",
-        json={"old_path": "old.lynxkite.json", "new_path": "new.lynxkite"},
-    )
+    response = client.post("/api/delete", json={"path": "old.lynxkite.json"})
 
-    assert response.status_code == 200
-    assert (tmp_path / "new.lynxkite" / "workspace.json").is_file()
-    assert (tmp_path / "new.lynxkite" / "node_data" / "node-1" / "display.json").is_file()
-    assert not old_data_path.exists()
+    assert response.status_code == 400
+    assert "Old workspace detected" in response.json()["detail"]
+    assert "python3 scripts/migrate_workspaces.py" in response.json()["detail"]
+    assert old_path.is_file()
+
+
+def test_app_startup_rejects_legacy_workspace(tmp_path, monkeypatch):
+    monkeypatch.setattr(main, "data_path", tmp_path)
+    (tmp_path / "old.lynxkite.json").write_text("{}")
+
+    with pytest.raises(
+        workspace_paths.LegacyWorkspaceError, match="Old workspace detected"
+    ) as error:
+        with TestClient(main.app):
+            pass
+    assert f"python3 scripts/migrate_workspaces.py {tmp_path}" in str(error.value)
+
+
+def test_app_starts_with_new_workspace_bundle(tmp_path, monkeypatch):
+    monkeypatch.setattr(main, "data_path", tmp_path)
+    workspace.Workspace().save(tmp_path / "current.lynxkite")
+
+    with TestClient(main.app):
+        pass
 
 
 def test_delete_workspace_bundle(tmp_path, monkeypatch):

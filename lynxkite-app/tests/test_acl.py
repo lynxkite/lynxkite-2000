@@ -21,10 +21,10 @@ def _write_settings(folder: Path, data: dict) -> None:
 def test_resolve_folder():
     assert acl.resolve_folder(None) == ""
     assert acl.resolve_folder("") == ""
-    assert acl.resolve_folder("team-a/project/foo.lynxkite.json") == "team-a/project/"
+    assert acl.resolve_folder("team-a/project/foo.lynxkite") == "team-a/project/"
     assert acl.resolve_folder("uploads/data.csv") == "uploads/"
     assert acl.resolve_folder("team-a/project") == "team-a/project/"
-    assert acl.resolve_folder("root.lynxkite.json") == ""
+    assert acl.resolve_folder("root.lynxkite") == ""
 
 
 def test_child_settings_override_parent(data_root):
@@ -37,9 +37,9 @@ def test_child_settings_override_parent(data_root):
         {"acl": {"read": ["group:B"], "write": ["group:B"]}},
     )
     user = {"sub": "u1", "groups": ["B"]}
-    assert acl.has_permission(user, "read", "team-a/project/ws.lynxkite.json")
-    assert acl.has_permission(user, "write", "team-a/project/ws.lynxkite.json")
-    assert not acl.has_permission(user, "write", "team-a/other/ws.lynxkite.json")
+    assert acl.has_permission(user, "read", "team-a/project/ws.lynxkite")
+    assert acl.has_permission(user, "write", "team-a/project/ws.lynxkite")
+    assert not acl.has_permission(user, "write", "team-a/other/ws.lynxkite")
 
 
 def test_write_implies_read(data_root):
@@ -48,20 +48,20 @@ def test_write_implies_read(data_root):
         {"acl": {"read": [], "write": ["sub:writer"]}},
     )
     user = {"sub": "writer"}
-    path = "shared/ws.lynxkite.json"
+    path = "shared/ws.lynxkite"
     assert acl.has_permission(user, "write", path)
     assert acl.has_permission(user, "read", path)
 
 
 def test_default_deny(data_root):
     user = {"sub": "u1"}
-    assert not acl.has_permission(user, "read", "any/ws.lynxkite.json")
+    assert not acl.has_permission(user, "read", "any/ws.lynxkite")
 
 
 def test_wildcard_requires_authenticated_user(data_root):
     _write_settings(data_root, {"acl": {"read": ["*"], "write": []}})
-    assert acl.has_permission({"sub": "u1"}, "read", "x.lynxkite.json")
-    assert not acl.has_permission({}, "read", "x.lynxkite.json")
+    assert acl.has_permission({"sub": "u1"}, "read", "x.lynxkite")
+    assert not acl.has_permission({}, "read", "x.lynxkite")
 
 
 def test_parent_folder_inheritance(data_root):
@@ -70,7 +70,7 @@ def test_parent_folder_inheritance(data_root):
         {"acl": {"read": ["group:Team"], "write": []}},
     )
     user = {"sub": "u1", "groups": ["Team"]}
-    assert acl.has_permission(user, "read", "team-a/nested/ws.lynxkite.json")
+    assert acl.has_permission(user, "read", "team-a/nested/ws.lynxkite")
 
 
 def test_partial_override_keeps_parent_read(data_root):
@@ -81,14 +81,14 @@ def test_partial_override_keeps_parent_read(data_root):
     )
     reader = {"sub": "r1"}
     writer = {"sub": "w1", "groups": ["Eng"]}
-    assert acl.has_permission(reader, "read", "team-a/ws.lynxkite.json")
-    assert not acl.has_permission(reader, "write", "team-a/ws.lynxkite.json")
-    assert acl.has_permission(writer, "write", "team-a/ws.lynxkite.json")
+    assert acl.has_permission(reader, "read", "team-a/ws.lynxkite")
+    assert not acl.has_permission(reader, "write", "team-a/ws.lynxkite")
+    assert acl.has_permission(writer, "write", "team-a/ws.lynxkite")
 
 
 def test_invalid_action():
     with pytest.raises(ValueError, match="Invalid action"):
-        acl.has_permission({"sub": "u1"}, "execute", "x.lynxkite.json")  # type: ignore[arg-type]
+        acl.has_permission({"sub": "u1"}, "execute", "x.lynxkite")  # type: ignore[arg-type]
 
 
 def test_effective_permissions(data_root):
@@ -98,11 +98,11 @@ def test_effective_permissions(data_root):
     )
     reader = {"sub": "reader"}
     admin = {"sub": "admin"}
-    assert acl.effective_permissions(reader, "a.lynxkite.json") == {
+    assert acl.effective_permissions(reader, "a.lynxkite") == {
         "read": True,
         "write": False,
     }
-    assert acl.effective_permissions(admin, "a.lynxkite.json") == {
+    assert acl.effective_permissions(admin, "a.lynxkite") == {
         "read": True,
         "write": True,
     }

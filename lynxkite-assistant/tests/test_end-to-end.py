@@ -1,9 +1,10 @@
 from lynxkite_assistant import python_workspace_conversion, workspace_backend
 from pathlib import Path
 import pytest
-from lynxkite_core import ops, workspace
+from lynxkite_core import ops, workspace, workspace_paths
 import os
 import asyncio
+import shutil
 
 
 async def _exec(a, b):
@@ -26,49 +27,60 @@ def setup_workspace():
 
 
 @pytest.fixture
-def create_temp_file():
-    created_files = []
+def create_temp_workspace():
+    created_workspaces = []
 
-    def _create_temp_file(filename):
-        Path(filename).touch()
-        created_files.append(filename)
-        return filename
+    def _create_temp_workspace(path):
+        path = Path(path)
+        path.mkdir()
+        created_workspaces.append(path)
+        return path
 
-    yield _create_temp_file
-    for file in created_files:
-        if os.path.exists(file):
-            os.remove(file)
+    yield _create_temp_workspace
+    for path in created_workspaces:
+        if path.exists():
+            shutil.rmtree(path)
 
 
 def get_example_jsons():
     # we assume that the test are run from the root of the repository
-    for root, dirs, files in os.walk("examples"):
-        if "generated_samples" in root:
-            continue
-        for file in files:
-            if file.endswith(".lynxkite.json"):
-                yield os.path.join(root, file)
+    for root, dirs, _files in os.walk("examples"):
+        dirs[:] = [
+            directory for directory in dirs if directory not in {"generated_samples"}
+        ]
+        for directory in [
+            directory for directory in dirs if directory.endswith(".lynxkite")
+        ]:
+            yield os.path.join(root, directory)
+        dirs[:] = [
+            directory for directory in dirs if not directory.endswith(".lynxkite")
+        ]
     # hand-made test files:
-    yield "lynxkite-assistant/tests/files/original.lynxkite.json"
+    yield "lynxkite-assistant/tests/files/original.lynxkite"
 
 
 @pytest.mark.parametrize("og_ws_path", get_example_jsons())
-def test_workspace_unchanged(og_ws_path, create_temp_file):
+def test_workspace_unchanged(og_ws_path, create_temp_workspace):
     if "Model definition" in og_ws_path:
         pytest.skip(
             "Skipping test because Repeat block causes cyclical nodes, whose handling is not implemented."
         )
     if "sql" in og_ws_path or "Gradio/Example" in og_ws_path:
         pytest.skip("Skipping test because SQL and Gradio examples have faulty blocks.")
-    mod_ws_path = create_temp_file(
-        og_ws_path.replace(".lynxkite.json", ".modified.lynxkite.json")
+    original_path = Path(og_ws_path)
+    workspace_name = original_path.name.removesuffix(".lynxkite")
+    mod_ws_path = create_temp_workspace(
+        original_path.parent / f"{workspace_name}.modified.lynxkite"
     )
-    with open(mod_ws_path, "w") as f, open(og_ws_path) as og_f:
+    with (
+        open(workspace_paths.workspace_file_path(mod_ws_path), "w") as f,
+        open(workspace_paths.workspace_file_path(og_ws_path)) as og_f,
+    ):
         f.write(og_f.read())
     ops.load_user_scripts(og_ws_path)
     og_ws = workspace.Workspace.load(og_ws_path)
     resp = python_workspace_conversion.workspace_to_python(og_ws)
-    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
+    asyncio.run(workspace_backend.set_workspace_file_content(str(mod_ws_path), resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
 
     def get_idx(node_ids, nid):
@@ -116,17 +128,20 @@ def data_path():
     yield relative_path.parent / "files"
 
 
-def test_workspace_changed(data_path, create_temp_file):
-    expected_ws_path = data_path / "after_change.lynxkite.json"
-    mod_ws_path = create_temp_file(data_path / "modified.lynxkite.json")
-    with open(mod_ws_path, "w") as f, open(expected_ws_path) as og_f:
+def test_workspace_changed(data_path, create_temp_workspace):
+    expected_ws_path = data_path / "after_change.lynxkite"
+    mod_ws_path = create_temp_workspace(data_path / "modified.lynxkite")
+    with (
+        open(workspace_paths.workspace_file_path(mod_ws_path), "w") as f,
+        open(workspace_paths.workspace_file_path(expected_ws_path)) as og_f,
+    ):
         f.write(og_f.read())
 
     resp = open(data_path / "workspace_files/modified.py").read()
     ops.load_user_scripts(
-        data_path / "modified.lynxkite.json"
+        data_path / "modified.lynxkite"
     )  # we pretend that the code is running from the tests folder
-    asyncio.run(workspace_backend.set_workspace_file_content(mod_ws_path, resp))
+    asyncio.run(workspace_backend.set_workspace_file_content(str(mod_ws_path), resp))
     mod_ws = workspace.Workspace.load(mod_ws_path)
     expected_ws = workspace.Workspace.load(expected_ws_path)
 

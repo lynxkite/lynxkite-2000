@@ -152,7 +152,7 @@ export default function Directory() {
     return item.name
       .split("/")
       .pop()
-      ?.replace(/[.]lynxkite(?:[.]json)?$/, "");
+      ?.replace(/[.]lynxkite$/, "");
   }
 
   function encodePathSegments(path: string): string {
@@ -161,12 +161,7 @@ export default function Directory() {
   }
 
   function boxDirectoryPath(item: DirectoryEntry): string {
-    if (item.name.endsWith(".lynxkite")) {
-      return `${item.name}/node_data`;
-    }
-    const parts = item.name.split("/");
-    const name = parts.pop()!;
-    return [...parts, ".workspace_files", name].join("/");
+    return `${item.name}/node_data`;
   }
 
   function newWorkspaceIn(path: string, workspaceName: string) {

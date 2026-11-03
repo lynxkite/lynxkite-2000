@@ -229,7 +229,7 @@ class Workspace(BaseConfig):
         return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
     def save(self, path: str | pathlib.Path, from_frontend=False):
-        """Persist the workspace to a local file in JSON format."""
+        """Persist the workspace to a .lynxkite bundle."""
         path = str(workspace_file_path(path))
         j = self.model_dump_json_sorted()
         dirname, basename = os.path.split(path)
@@ -254,7 +254,7 @@ class Workspace(BaseConfig):
         After loading the workspace, the metadata of the workspace is updated.
 
         Args:
-            path: The path to the file to load the workspace from.
+            path: The path to the .lynxkite bundle to load.
 
         Returns:
             Workspace: The loaded workspace object, with updated metadata.

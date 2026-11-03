@@ -62,10 +62,8 @@ if __name__ == "__main__":
             ws_path.is_relative_to(demo_dir)
             and (
                 ws_path.suffix == ".lynxkite"
-                or ws_path.suffixes[-2:] == [".lynxkite", ".json"]
                 or (ws_path.name == "workspace.json" and ws_path.parent.suffix == ".lynxkite")
             )
-            and ".workspace_files" not in ws_file
             and "generated_samples" not in ws_file
         ):
             if ws_path.name == "workspace.json" and ws_path.parent.suffix == ".lynxkite":
