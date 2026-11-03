@@ -343,18 +343,18 @@ class Op(BaseConfig):
             else:
                 res = Result(output=res)
 
-        # Save display if needed
+        return res
+
+    def save_display(self, result: Result, op_ctx: OpContext):
+        """Saves resolved visualization data. The executor must call this after awaiting the result."""
         if (
-            is_visualization_type
-            and self.type != "graph_creation_view"
+            self.type in ["visualization", "graph_visualization", "table_view", "image", "molecule"]
             and op_ctx.ws
             and op_ctx.node
         ):
-            res.save_display(
+            result.save_display(
                 op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
             )
-
-        return res
 
     def get_input(self, name: str):
         """Returns the input with the given name."""

@@ -360,6 +360,7 @@ async def _execute_node(
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
             result.display = dataclasses.asdict(result.display)
+        op.save_display(result, op_ctx)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

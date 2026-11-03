@@ -1,5 +1,7 @@
 import inspect
-from lynxkite_core import ops
+import pytest
+from lynxkite_core import ops, workspace
+from lynxkite_core.executors import simple, one_by_one
 import enum
 from pydantic_core import to_json
 
@@ -118,14 +120,82 @@ def test_visualization_operations_display_is_populated_automatically():
     assert result.display == {"display_value": 1}
 
 
-def test_async_visualization_operations_display_is_populated_automatically():
+async def test_async_visualization_operations_display_is_populated_automatically():
     @ops.op("test", "async_display_op", view="visualization", outputs=["result"])
     async def display_op():
         return {"display_value": 1}
 
     result = ops.CATALOGS["test"]["async_display_op"](DummyContext)
     assert isinstance(result, ops.Result)
-    assert result.display == {"display_value": 1}
+    assert inspect.isawaitable(result.display)
+    assert await result.display == {"display_value": 1}
+
+
+@pytest.mark.parametrize("executor", [simple, one_by_one])
+@pytest.mark.parametrize(
+    "view",
+    [
+        "visualization",
+        "graph_visualization",
+        "table_view",
+        "image",
+        "molecule",
+        "graph_creation_view",
+    ],
+)
+@pytest.mark.parametrize("is_async", [False, True])
+async def test_visualization_display_is_saved_after_execution(tmp_path, executor, view, is_async):
+    env = "test_display_saving"
+    display = {"display_value": 1}
+
+    def sync_display_op():
+        assert not path.exists()
+        return display
+
+    async def async_display_op():
+        assert not path.exists()
+        return display
+
+    display_op = ops.op(env, "display", view=view)(
+        async_display_op if is_async else sync_display_op
+    )
+    executor.register(env)
+    ws_path = str(tmp_path / "example.lynxkite.json")
+    ws = workspace.Workspace(env=env, path=ws_path)
+    node = ws.add_node(display_op)
+    path = ops.build_output_path(ws_path, node.id)
+
+    await ws.execute()
+
+    assert node.data.error is None
+    assert node.data.status == workspace.NodeStatus.done
+    if view == "graph_creation_view":
+        assert node.data.display == display
+        assert node.data.display_version is None
+        assert not path.exists()
+    else:
+        assert node.data.display is None
+        assert node.data.display_version == 1
+        assert path.read_bytes() == to_json(display)
+
+
+@pytest.mark.parametrize("executor", [simple, one_by_one])
+async def test_async_visualization_errors_are_published(tmp_path, executor):
+    env = "test_display_error"
+
+    @ops.op(env, "display", view="visualization")
+    async def display_op():
+        raise ValueError("display failed")
+
+    executor.register(env)
+    ws_path = str(tmp_path / "example.lynxkite.json")
+    ws = workspace.Workspace(env=env, path=ws_path)
+    node = ws.add_node(display_op)
+
+    await ws.execute()
+
+    assert node.data.error == "ValueError: display failed"
+    assert not ops.build_output_path(ws_path, node.id).exists()
 
 
 def test_detect_plugins_with_plugins():
