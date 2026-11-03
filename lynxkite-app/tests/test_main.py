@@ -1,4 +1,5 @@
 import pathlib
+import shutil
 import tempfile
 import uuid
 from fastapi.testclient import TestClient
@@ -35,6 +36,44 @@ def test_list_dir():
     file.unlink()
     ws.unlink()
     dir.rmdir()
+
+
+def test_search_dir():
+    test_dir = pathlib.Path() / str(uuid.uuid4())
+    (test_dir / "sub").mkdir(parents=True)
+    (test_dir / "__hidden").mkdir()
+    (test_dir / ".dot").mkdir()
+    (test_dir / "sub" / "Needle.txt").touch()
+    (test_dir / "sub" / "other.txt").touch()
+    (test_dir / "__hidden" / "needle.txt").touch()
+    (test_dir / ".dot" / "needle.txt").touch()
+    (test_dir / "sub" / "settings.yaml").touch()
+    try:
+        response = client.get("/api/dir/search?q=NEEDLE")
+        assert response.status_code == 200
+        assert response.json() == [
+            {"name": f"{test_dir.as_posix()}/sub/Needle.txt", "type": "file"},
+        ]
+        assert client.get("/api/dir/search?q=%20").json() == []
+        # settings.yaml is never listed, even when it matches.
+        assert client.get("/api/dir/search?q=settings.yaml").json() == []
+    finally:
+        shutil.rmtree(test_dir)
+
+
+def test_search_dir_limit():
+    test_dir = pathlib.Path() / str(uuid.uuid4())
+    test_dir.mkdir()
+    for i in range(25):
+        (test_dir / f"file_{i}.txt").touch()
+    try:
+        response = client.get(f"/api/dir/search?q={test_dir.name}")
+        assert response.status_code == 200
+        assert len(response.json()) == 20
+        response = client.get(f"/api/dir/search?q={test_dir.name}&limit=5")
+        assert len(response.json()) == 5
+    finally:
+        shutil.rmtree(test_dir)
 
 
 def test_make_dir():
