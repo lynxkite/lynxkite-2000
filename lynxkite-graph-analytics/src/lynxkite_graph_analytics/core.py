@@ -3,6 +3,7 @@
 import inspect
 import os
 import pathlib
+import rdflib
 import time
 from lynxkite_core import ops, workspace
 from lynxkite_core.executors.one_by_one import mount_gradio
@@ -276,6 +277,8 @@ async def await_if_needed(obj):
 def _to_bundle(x):
     if isinstance(x, nx.Graph):
         x = Bundle.from_nx(x)
+    elif isinstance(x, rdflib.Graph):
+        x = Bundle.from_rdf(x)
     elif isinstance(x, pd.DataFrame):
         x = Bundle.from_df(x)
     assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
@@ -370,6 +373,9 @@ async def _execute_node(
         result.output_metadata = [_get_metadata(result.output)]
     else:
         result.output_metadata = []
+    if result.error:
+        node.publish_result(result)
+        return
     try:
         if node.type == "service":
             assert len(op.outputs) == 0, f"Unexpected outputs for service node {node.id}"

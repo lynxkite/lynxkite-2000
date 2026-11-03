@@ -1,5 +1,6 @@
 import os
 import pathlib
+import tempfile
 import uuid
 
 from fastapi.testclient import TestClient
@@ -110,3 +111,34 @@ def test_get_node_output_from_workspace_bundle(tmp_path, monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == {"value": 42}
+
+
+def test_upload_nested_folder():
+    with tempfile.TemporaryDirectory(dir=".") as directory:
+        root = pathlib.Path(directory)
+        response = client.post(
+            "/api/upload",
+            params={"dir": root.name},
+            files={"file": ("folder/subfolder/hello.txt", b"hello")},
+        )
+        assert response.status_code == 200
+        assert (root / "folder/subfolder/hello.txt").read_bytes() == b"hello"
+
+        response = client.post(
+            "/api/upload",
+            params={"dir": root.name},
+            files=[
+                ("directory", (None, "folder/empty/nested")),
+                ("directory", (None, "folder/another-empty")),
+            ],
+        )
+        assert response.status_code == 200
+        assert (root / "folder/empty/nested").is_dir()
+        assert (root / "folder/another-empty").is_dir()
+
+        response = client.post(
+            "/api/upload",
+            params={"dir": root.name},
+            files={"file": ("../outside.txt", b"no")},
+        )
+        assert response.status_code == 400

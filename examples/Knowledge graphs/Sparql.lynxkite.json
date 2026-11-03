@@ -1,0 +1,1060 @@
+{
+  "assistant_messages": [],
+  "edges": [
+    {
+      "id": "Merge 1 output Define edges 1 b",
+      "source": "Merge 1",
+      "sourceHandle": "output",
+      "target": "Define edges 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "View tables 3 output Merge 1 bundles",
+      "source": "View tables 3",
+      "sourceHandle": "output",
+      "target": "Merge 1",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "View tables 4 output Merge 1 bundles",
+      "source": "View tables 4",
+      "sourceHandle": "output",
+      "target": "Merge 1",
+      "targetHandle": "bundles"
+    },
+    {
+      "id": "Define edges 1 output Visualize graph 1 b",
+      "source": "Define edges 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Remote SPARQL query 2 output View tables 4 bundle",
+      "source": "Remote SPARQL query 2",
+      "sourceHandle": "output",
+      "target": "View tables 4",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 3 output View tables 3 bundle",
+      "source": "Remote SPARQL query 3",
+      "sourceHandle": "output",
+      "target": "View tables 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 4 output View tables 2 bundle",
+      "source": "Remote SPARQL query 4",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 1 output Local SPARQL query 1 graph",
+      "source": "Remote SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "Local SPARQL query 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Local SPARQL query 1 output View tables 1 bundle",
+      "source": "Local SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Remote SPARQL query 1 output View tables 5 bundle",
+      "source": "Remote SPARQL query 1",
+      "sourceHandle": "output",
+      "target": "View tables 5",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "results": {
+                "columns": [
+                  "desc",
+                  "person"
+                ],
+                "key": "results",
+                "length": 6.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 362.0,
+      "id": "View tables 2",
+      "parentId": null,
+      "position": {
+        "x": 2647.4778252499764,
+        "y": 1050.0047622192567
+      },
+      "type": "table_view",
+      "width": 947.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 686.0,
+      "id": "View tables 3",
+      "parentId": null,
+      "position": {
+        "x": 2762.853367240834,
+        "y": 1592.1465020704509
+      },
+      "type": "table_view",
+      "width": 901.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 695.0,
+      "id": "View tables 4",
+      "parentId": null,
+      "position": {
+        "x": 2820.692800372032,
+        "y": 2384.5416621286304
+      },
+      "type": "table_view",
+      "width": 785.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": {
+          "dataframes": {
+            "edge": {
+              "columns": [
+                "teacher_name",
+                "student_name"
+              ],
+              "data": [
+                [
+                  "Gustav Ludwig Hertz",
+                  "Heinz Pose"
+                ],
+                [
+                  "Max Planck",
+                  "Gustav Ludwig Hertz"
+                ],
+                [
+                  "Max Planck",
+                  "Max Abraham"
+                ],
+                [
+                  "Max Planck",
+                  "Max von Laue"
+                ],
+                [
+                  "Max Planck",
+                  "Moritz Schlick"
+                ],
+                [
+                  "Max Planck",
+                  "Walter H. Schottky"
+                ],
+                [
+                  "Max Planck",
+                  "Walther Bothe"
+                ],
+                [
+                  "Max Planck",
+                  "Walther Meissner"
+                ],
+                [
+                  "Max von Laue",
+                  "Le\u00f3 Szil\u00e1rd"
+                ],
+                [
+                  "Moritz Schlick",
+                  "Friedrich Waismann"
+                ],
+                [
+                  "Moritz Schlick",
+                  "Ludwig Schajowicz"
+                ]
+              ]
+            },
+            "node": {
+              "columns": [
+                "name",
+                "generation"
+              ],
+              "data": [
+                [
+                  "Friedrich Waismann",
+                  "2"
+                ],
+                [
+                  "Gustav Ludwig Hertz",
+                  "1"
+                ],
+                [
+                  "Heinz Pose",
+                  "2"
+                ],
+                [
+                  "Le\u00f3 Szil\u00e1rd",
+                  "2"
+                ],
+                [
+                  "Ludwig Schajowicz",
+                  "2"
+                ],
+                [
+                  "Max Abraham",
+                  "1"
+                ],
+                [
+                  "Max Planck",
+                  "0"
+                ],
+                [
+                  "Max von Laue",
+                  "1"
+                ],
+                [
+                  "Moritz Schlick",
+                  "1"
+                ],
+                [
+                  "Walter H. Schottky",
+                  "1"
+                ],
+                [
+                  "Walther Bothe",
+                  "1"
+                ],
+                [
+                  "Walther Meissner",
+                  "1"
+                ]
+              ]
+            }
+          },
+          "other": {},
+          "relations": [
+            {
+              "df": "edge",
+              "name": "scientists",
+              "source_column": "teacher_name",
+              "source_key": "name",
+              "source_table": "node",
+              "target_column": "student_name",
+              "target_key": "name",
+              "target_table": "node"
+            }
+          ]
+        },
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              },
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Define edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              },
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edge",
+                "name": "scientists",
+                "source_column": "teacher_name",
+                "source_key": "name",
+                "source_table": "node",
+                "target_column": "student_name",
+                "target_key": "name",
+                "target_table": "node"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "relations": "{\"scientists\":{\"name\":\"scientists\",\"df\":\"edge\",\"source_column\":\"teacher_name\",\"target_column\":\"student_name\",\"source_table\":\"node\",\"target_table\":\"node\",\"source_key\":\"name\",\"target_key\":\"name\"}}"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Define edges"
+      },
+      "height": 771.0,
+      "id": "Define edges 1",
+      "parentId": null,
+      "position": {
+        "x": 4384.057669797205,
+        "y": 1944.5271893547401
+      },
+      "type": "graph_creation_view",
+      "width": 594.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Merge",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              },
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "merge_mode": "must be unique"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Merge"
+      },
+      "height": 315.0,
+      "id": "Merge 1",
+      "parentId": null,
+      "position": {
+        "x": 3853.6047328658437,
+        "y": 2160.6508304134895
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 82,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              },
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edge",
+                "name": "scientists",
+                "source_column": "teacher_name",
+                "source_key": "name",
+                "source_table": "node",
+                "target_column": "student_name",
+                "target_key": "name",
+                "target_table": "node"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "generation",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "attribute": "name",
+              "disabled": "false",
+              "type": "label"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "20",
+              "type": "node_size"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "3",
+              "type": "edge_width"
+            },
+            {
+              "attribute": "generation",
+              "disabled": "false",
+              "type": "node_tooltip"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 1308.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 5138.031735537476,
+        "y": 1675.6975768964737
+      },
+      "type": "graph_visualization",
+      "width": 1604.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# Find the ID of the physicist Max Planck"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 90.0,
+      "id": "Comment 1",
+      "parentId": null,
+      "position": {
+        "x": 1951.731334608538,
+        "y": 798.4126275865262
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# We can see from the descriptions that the ID we were looking for is \n# http://www.wikidata.org/entity/Q9021"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 322.0,
+      "id": "Comment 2",
+      "parentId": null,
+      "position": {
+        "x": 3627.0522794545077,
+        "y": 1047.6513888676727
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# Create the edge and node tables for the scientists that were the students of Planck, or the students of his students  "
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 290.0,
+      "id": "Comment 3",
+      "parentId": null,
+      "position": {
+        "x": 1330.8047807910086,
+        "y": 2127.164404364301
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# Construct a subgraph with people who received a nobel prize in physics"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 170.0,
+      "id": "Comment 4",
+      "parentId": null,
+      "position": {
+        "x": 3134.648218931213,
+        "y": 3415.4888546904435
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Remote SPARQL query",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "endpoint": "https://qlever.dev/api/wikidata",
+          "name": "nobel",
+          "query": "PREFIX received: <http://www.wikidata.org/prop/direct/P166>\nPREFIX physics_nobel:  <http://www.wikidata.org/entity/Q38104>\n\nCONSTRUCT { ?person received: physics_nobel: }\nWHERE     { ?person received: physics_nobel: }\nLIMIT 1001"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Remote SPARQL query"
+      },
+      "height": 459.0,
+      "id": "Remote SPARQL query 1",
+      "parentId": null,
+      "position": {
+        "x": 3056.9095009656157,
+        "y": 3640.648052517912
+      },
+      "type": "basic",
+      "width": 550.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Remote SPARQL query",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "node": {
+                "columns": [
+                  "generation",
+                  "name"
+                ],
+                "key": "node",
+                "length": 12.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "endpoint": "https://qlever.dev/api/wikidata",
+          "name": "node",
+          "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX scientist: <http://www.wikidata.org/entity/Q9021>\nPREFIX teacher_of:  <http://www.wikidata.org/prop/direct/P802>\n\nSELECT DISTINCT ?name ?generation\nWHERE {\n  {\n    BIND(scientist: AS ?person)\n    BIND(0 AS ?generation)\n    ?person teacher_of: ?student .\n  }\n  UNION\n  {\n    scientist: teacher_of: ?person .\n    BIND(1 AS ?generation)\n  }\nUNION\n  {\n     scientist: teacher_of: ?teacher .\n     BIND(2 AS ?generation)\n    ?teacher teacher_of: ?person .\n  }\n  ?person rdfs:label ?name . FILTER(LANG(?name) = \"en\")\n}\nLIMIT 1000"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Remote SPARQL query"
+      },
+      "height": 824.0,
+      "id": "Remote SPARQL query 2",
+      "parentId": null,
+      "position": {
+        "x": 1802.9358174410231,
+        "y": 2320.501001627242
+      },
+      "type": "basic",
+      "width": 708.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 734.0,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Remote SPARQL query",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edge": {
+                "columns": [
+                  "student_name",
+                  "teacher_name"
+                ],
+                "key": "edge",
+                "length": 11.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "endpoint": "https://qlever.dev/api/wikidata",
+          "name": "edge",
+          "query": "PREFIX wdt:  <http://www.wikidata.org/prop/direct/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\nPREFIX scientist: <http://www.wikidata.org/entity/Q9021>\n\nSELECT DISTINCT ?teacher_name ?student_name\nWHERE {\n  {\n    BIND(scientist: AS ?teacher)\n    ?teacher wdt:P802 ?student .\n  }\n  UNION\n  {\n    scientist: wdt:P802 ?teacher .\n    ?teacher wdt:P802 ?student .\n  }\n  ?teacher rdfs:label ?teacher_name . FILTER(LANG(?teacher_name) = \"en\")\n  ?student rdfs:label ?student_name . FILTER(LANG(?student_name) = \"en\")\n}\nLIMIT 1000"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Remote SPARQL query"
+      },
+      "height": 734.0,
+      "id": "Remote SPARQL query 3",
+      "parentId": null,
+      "position": {
+        "x": 1827.643578033446,
+        "y": 1551.0816191469464
+      },
+      "type": "basic",
+      "width": 667.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Remote SPARQL query",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "results": {
+                "columns": [
+                  "desc",
+                  "person"
+                ],
+                "key": "results",
+                "length": 6.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "endpoint": "https://qlever.dev/api/wikidata",
+          "name": "results",
+          "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?person ?desc\nWHERE {\n  ?person rdfs:label \"Max Planck\"@en .\n  OPTIONAL { ?person <http://schema.org/description> ?desc . FILTER(LANG(?desc) = \"en\") }\n}\nLIMIT 1000"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Remote SPARQL query"
+      },
+      "height": 541.0,
+      "id": "Remote SPARQL query 4",
+      "parentId": null,
+      "position": {
+        "x": 1861.0276101353568,
+        "y": 957.9795383827772
+      },
+      "type": "basic",
+      "width": 619.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {}
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Local SPARQL query",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "o",
+                  "p",
+                  "s"
+                ],
+                "key": "records",
+                "length": 231.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "name": "results",
+          "query": "SELECT ?s ?p ?o\nWHERE {?s ?p ?o}"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Local SPARQL query"
+      },
+      "height": 433.0,
+      "id": "Local SPARQL query 1",
+      "parentId": null,
+      "position": {
+        "x": 3962.017793550195,
+        "y": 3695.614624451096
+      },
+      "type": "basic",
+      "width": 385.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "o",
+                  "p",
+                  "s"
+                ],
+                "key": "records",
+                "length": 231.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 462.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 4621.825439566734,
+        "y": 3693.9160792344155
+      },
+      "type": "table_view",
+      "width": 1072.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 1,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "object",
+                  "predicate",
+                  "subject"
+                ],
+                "key": "edges",
+                "length": 231.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 232.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "rdf_graph",
+                "source_column": "subject",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "object",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "edges": true,
+            "nodes": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 517.0,
+      "id": "View tables 5",
+      "parentId": null,
+      "position": {
+        "x": 3860.3923939338392,
+        "y": 3084.7480305279405
+      },
+      "type": "table_view",
+      "width": 1132.0
+    }
+  ],
+  "paused": true
+}

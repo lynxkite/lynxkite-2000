@@ -55,7 +55,7 @@ import { copySelection, cutSelection, pasteSelection } from "./clipboard.ts";
 import { type CRDTWorkspace, nodeToYMap, useCRDTWorkspace } from "./crdt.ts";
 import EnvironmentSelector from "./EnvironmentSelector";
 import ExecutionOptions from "./ExecutionOptions.tsx";
-import { snapChangesToGrid } from "./grid.ts";
+import { GRID_SIZE, snapChangesToGrid } from "./grid.ts";
 import LynxKiteEdge from "./LynxKiteEdge.tsx";
 import { LynxKiteNodeState, LynxKiteState } from "./LynxKiteState";
 import NodeSearch, { buildCategoryHierarchy, type Catalogs, type Category } from "./NodeSearch.tsx";
@@ -208,7 +208,7 @@ function LynxKiteFlow() {
     // Rebuild when catalog/env first become available (initial load) or env changes.
     refreshCategoryHierarchy();
   }, [refreshCategoryHierarchy]);
-  const [suppressSearchUntil, setSuppressSearchUntil] = useState(0);
+  const suppressSearchForGesture = useRef(false);
   const [nodeSearchSettings, setNodeSearchSettings] = useState(
     undefined as
       | {
@@ -370,12 +370,11 @@ function LynxKiteFlow() {
 
   const closeNodeSearch = useCallback(() => {
     setNodeSearchSettings(undefined);
-    setSuppressSearchUntil(Date.now() + 200);
   }, []);
   const toggleNodeSearch = useCallback(
     (event: MouseEvent) => {
       if (!canWrite) return;
-      if (suppressSearchUntil > Date.now()) return;
+      if (suppressSearchForGesture.current) return;
       if (nodeSearchSettings) {
         closeNodeSearch();
         return;
@@ -387,7 +386,7 @@ function LynxKiteFlow() {
         pos: { x: event.clientX, y: event.clientY },
       });
     },
-    [canWrite, nodeSearchSettings, suppressSearchUntil, closeNodeSearch],
+    [canWrite, nodeSearchSettings, closeNodeSearch],
   );
   function findFreeId(prefix: string) {
     let i = 1;
@@ -405,8 +404,8 @@ function LynxKiteFlow() {
   function nodeFromMeta(meta: OpsOp): Partial<WorkspaceNode> {
     const node: Partial<WorkspaceNode> = {
       type: meta.type,
-      width: 315,
-      height: 315,
+      width: GRID_SIZE * 9,
+      height: GRID_SIZE * 9,
       data: {
         meta: meta,
         title: meta.name,
@@ -433,7 +432,7 @@ function LynxKiteFlow() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      setSuppressSearchUntil(Date.now() + 200);
+      suppressSearchForGesture.current = true;
       if (
         !connection.source ||
         !connection.target ||
@@ -522,7 +521,10 @@ function LynxKiteFlow() {
     }
     try {
       await uploadFile(file, {
-        onProgress: (percentCompleted) => {
+        onProgress: (uploadedBytes, totalBytes) => {
+          const percentCompleted = totalBytes
+            ? Math.round((100 * uploadedBytes) / totalBytes)
+            : 100;
           if (percentCompleted === 100) setMessage("Processing file...");
           else setMessage(`Uploading ${percentCompleted}%`);
         },
@@ -847,6 +849,11 @@ function LynxKiteFlow() {
       <div className="workspace-body">
         <div
           className="reactflow-container"
+          onPointerDownCapture={() => {
+            // If node search is visible, this click will cause a blur event and close it.
+            // Then it will cause a click event which will reopen it. We set this flag to prevent the search from reopening immediately.
+            suppressSearchForGesture.current = Boolean(nodeSearchSettings);
+          }}
           onDragOver={canWrite ? onDragOver : undefined}
           onMouseMove={onMouseMove}
           onDrop={canWrite ? onDrop : undefined}
@@ -890,7 +897,7 @@ function LynxKiteFlow() {
                 >
                   <Background
                     variant={BackgroundVariant.Dots}
-                    gap={35}
+                    gap={GRID_SIZE}
                     size={6}
                     color="#f0f0f0"
                     bgColor="#fafafa"
@@ -921,7 +928,11 @@ function LynxKiteFlow() {
         </div>
         {isAssistantOpen && canWrite && (
           <Suspense fallback={<aside className="assistant-panel" />}>
-            <Assistant crdtWorkspace={crdt} selectedNodeIds={crdt.selectedNodeIds} />
+            <Assistant
+              crdtWorkspace={crdt}
+              selectedNodeIds={crdt.selectedNodeIds}
+              workspacePath={path}
+            />
           </Suspense>
         )}
       </div>

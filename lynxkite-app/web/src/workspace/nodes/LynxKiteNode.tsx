@@ -15,6 +15,7 @@ import Skull from "~icons/tabler/skull.jsx";
 import type { Op as OpsOp, WorkspaceNodeData } from "../../apiTypes.ts";
 import { COLORS, useCategoryHierarchy } from "../../common.ts";
 import InlineSVG from "../../InlineSVG.tsx";
+import PrettyError from "../../PrettyError.tsx";
 import { getTablerIconSvgMarkup } from "../../TablerIcons.ts";
 import Tooltip from "../../Tooltip";
 import { docToString } from "../docToString.ts";
@@ -306,7 +307,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
                 <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
               ) : (
                 <>
-                  {data.error && <div className="error">{data.error}</div>}
+                  {data.error && <PrettyError error={data.error} />}
                   <ErrorBoundary
                     resetKeys={[props]}
                     fallback={

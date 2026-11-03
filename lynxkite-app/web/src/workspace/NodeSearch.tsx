@@ -473,7 +473,7 @@ export function NodeSearchInternal(props: {
             {result.parentPath.length ? (
               <span className="search-result-path">({result.parentPath.join(" › ")})</span>
             ) : null}
-            {!!searchTerm && !result.isCategory && !result.isBack && result.description ? (
+            {searchTerm && !result.isCategory && !result.isBack && result.description ? (
               <span className="search-result-description">
                 {highlightMatches(descriptionPreview(result.description, searchTerm), searchTerm)}
               </span>

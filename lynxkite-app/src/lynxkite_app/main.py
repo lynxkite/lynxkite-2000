@@ -13,8 +13,7 @@ import starlette.datastructures
 import starlette.exceptions
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from lynxkite_core import opcontext, ops, workspace, workspace_paths
-from lynxkite_core.folder_settings import SETTINGS_FILENAME
+from lynxkite_core import folder_settings, opcontext, ops, workspace, workspace_paths
 from pydantic_core import from_json
 
 from . import acl, auth, crdt, workspace_export
@@ -103,9 +102,8 @@ async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
     assert isinstance(req["path"], str)
-    workspace_path: pathlib.Path = data_path / req["path"]
-    crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
-    assert workspace_path.is_relative_to(data_path), f"Path '{workspace_path}' is invalid"
+    workspace_path: pathlib.Path = safely_inside(data_path, req["path"])
+    crdt_path: pathlib.Path = safely_inside(data_path / ".crdt", f"{req['path']}.crdt")
     if workspace_paths.is_workspace_bundle(workspace_path):
         shutil.rmtree(workspace_path)
     else:
@@ -113,6 +111,7 @@ async def delete_workspace(req: dict, request: fastapi.Request):
         workspace_data_path = workspace_paths.workspace_data_dir(workspace_path)
         if workspace_data_path.exists():
             shutil.rmtree(workspace_data_path)
+    workspace_path.unlink(missing_ok=True)
     crdt_path.unlink(missing_ok=True)
     crdt.delete_room(req["path"])
 
@@ -120,8 +119,9 @@ async def delete_workspace(req: dict, request: fastapi.Request):
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
     await auth.check_permission(request, "read", workspace)
-    json_path = data_path / workspace_paths.display_path(workspace, node_id)
-    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
+    json_path = safely_inside(
+        data_path, data_path / workspace_paths.display_path(workspace, node_id)
+    )
     output = None
     if json_path.exists():
         with open(json_path, mode="r") as f:
@@ -151,12 +151,11 @@ def _get_path_type(path: pathlib.Path) -> str:
 async def list_dir(path: str, request: fastapi.Request):
     await auth.check_permission(request, "read", path)
     user = await auth.get_current_user(request)
-    dir_path = data_path / path
-    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
+    dir_path = safely_inside(data_path, path)
     auth_on = auth.is_auth_enabled()
     entries: list[DirectoryEntry] = []
     for p in dir_path.iterdir():
-        if p.name.startswith(".") or p.name == SETTINGS_FILENAME:
+        if p.name.startswith(".") or p.name == folder_settings.SETTINGS_FILENAME:
             continue
         rel = p.relative_to(data_path).as_posix()
         if auth_on and not acl.has_permission(user, "read", rel):
@@ -165,11 +164,34 @@ async def list_dir(path: str, request: fastapi.Request):
     return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))
 
 
+@app.get("/api/dir/get_local_settings")
+async def get_dir_settings(path: str, request: fastapi.Request):
+    await auth.check_permission(request, "read", path)
+    safely_inside(data_path, path)
+    settings = folder_settings.get_local_settings(data_path, path)
+    return settings
+
+
+@app.post("/api/dir/set_local_settings")
+async def set_local_settings(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
+    safely_inside(data_path, req["path"])
+    new_settings = folder_settings.FolderSettings.model_validate(req["settings"])
+    folder_settings.set_local_settings(data_path, req["path"], new_settings)
+    return {"status": "ok"}
+
+
+@app.get("/api/get_settings_schema")
+async def get_settings_schema(request: fastapi.Request):
+    await auth.check_permission(request, "read", "")
+    schema = folder_settings.get_settings_schema()
+    return schema
+
+
 @app.post("/api/dir/mkdir")
 async def make_dir(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
-    path = data_path / req["path"]
-    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
+    path = safely_inside(data_path, req["path"])
     assert not path.exists(), f"{path} already exists"
     path.mkdir()
 
@@ -177,10 +199,8 @@ async def make_dir(req: dict, request: fastapi.Request):
 @app.post("/api/dir/delete")
 async def delete_dir(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
-    path: pathlib.Path = data_path / req["path"]
-    assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()]), (
-        f"Path '{path}' is invalid"
-    )
+    path: pathlib.Path = safely_inside(data_path, req["path"])
+    assert all([path.exists(), path.is_dir()]), f"Path '{path}' is invalid"
     shutil.rmtree(path)
 
 
@@ -188,10 +208,8 @@ async def delete_dir(req: dict, request: fastapi.Request):
 async def rename_path(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["old_path"])
     await auth.check_permission(request, "write", req["new_path"])
-    old_path: pathlib.Path = data_path / req["old_path"]
-    new_path: pathlib.Path = data_path / req["new_path"]
-    assert old_path.is_relative_to(data_path), f"Path '{old_path}' is invalid"
-    assert new_path.is_relative_to(data_path), f"Path '{new_path}' is invalid"
+    old_path: pathlib.Path = safely_inside(data_path, req["old_path"])
+    new_path: pathlib.Path = safely_inside(data_path, req["new_path"])
     assert old_path.exists(), f"Path '{old_path}' does not exist"
     assert not new_path.exists(), f"Path '{new_path}' already exists"
     old_rel = req["old_path"]
@@ -231,29 +249,43 @@ async def service_post(req: fastapi.Request, module_path: str):
     return await module.api_service_post(req)
 
 
+def safely_inside(base: pathlib.Path, relative: str | pathlib.Path) -> pathlib.Path:
+    path = base / relative
+    path_r = path.resolve()
+    base_r = base.resolve()
+    if not path_r.is_relative_to(base_r):
+        raise fastapi.HTTPException(status_code=400, detail=f"Path '{path}' is invalid")
+    return path
+
+
 @app.post("/api/upload")
 async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
     """Receives file uploads and stores them in DATA_PATH/dir."""
     await auth.check_permission(req, "write", dir)
-    upload_dir = data_path / dir
-    assert upload_dir.is_relative_to(data_path), f"Path '{upload_dir}' is invalid"
+    upload_dir = safely_inside(data_path, dir)
     form = await req.form()
-    for file in form.values():
-        if not isinstance(file, starlette.datastructures.UploadFile) or not file.filename:
-            continue
-        file_path = upload_dir / file.filename
-        assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+    for name, file in form.multi_items():
+        if (
+            name == "file"
+            and isinstance(file, starlette.datastructures.UploadFile)
+            and file.filename
+        ):
+            file_path = safely_inside(upload_dir, file.filename)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            with file_path.open("wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+        elif name == "directory" and isinstance(file, str):
+            file_path = safely_inside(upload_dir, file)
+            file_path.mkdir(parents=True, exist_ok=True)
     return {"status": "ok"}
 
 
+# TODO: workspace download.
 @app.post("/api/download")
 async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
     await auth.check_permission(request, "read", req["path"])
-    file_path = data_path / req["path"]
-    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    file_path = safely_inside(data_path, req["path"])
     if not file_path.exists() or not file_path.is_file():
         raise fastapi.HTTPException(status_code=404, detail="File not found")
     return fastapi.responses.FileResponse(file_path)
@@ -264,8 +296,7 @@ async def export_workspace(req: dict, request: fastapi.Request):
     """Sends a static workspace ZIP to the client."""
     await auth.check_permission(request, "read", req["path"])
     workspace_path = pathlib.Path(req["path"])
-    file_path = data_path / workspace_path
-    assert file_path.is_relative_to(data_path), f"Path '{file_path}' is invalid"
+    file_path = safely_inside(data_path, req["path"])
     if not file_path.exists() or not file_path.is_file():
         raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:

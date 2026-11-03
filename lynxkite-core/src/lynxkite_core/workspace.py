@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Literal, Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
@@ -173,6 +173,11 @@ class WorkspaceExecutionContext:
     app: "fastapi.FastAPI | None"
 
 
+class WorkspaceAssistantMessage(BaseConfig):
+    role: Literal["system", "user", "assistant"]
+    content: str
+
+
 class Workspace(BaseConfig):
     """A workspace is a representation of a computational graph that consists of nodes and edges.
 
@@ -186,7 +191,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
-    assistant_messages: Optional[list[dict]] = None
+    assistant_messages: Optional[list[WorkspaceAssistantMessage]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
