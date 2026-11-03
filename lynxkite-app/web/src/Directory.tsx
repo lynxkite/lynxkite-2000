@@ -11,9 +11,9 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Settings from "~icons/tabler/settings";
 import Star from "~icons/tabler/star";
 import StarFilled from "~icons/tabler/star-filled";
-import Settings from "~icons/tabler/settings";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
 import {

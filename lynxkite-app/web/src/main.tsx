@@ -103,7 +103,6 @@ const router = createBrowserRouter(
   ),
 );
 
-
 recordVisit(window.location.pathname);
 router.subscribe((state) => recordVisit(state.location.pathname));
 

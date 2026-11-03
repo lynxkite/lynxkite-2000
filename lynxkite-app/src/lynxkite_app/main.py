@@ -189,8 +189,8 @@ async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT
         return []
     # Walking the data directory can take a while. Do it off the event loop.
     return await asyncio.to_thread(_search_paths, query, user, auth_on, limit)
-  
-  
+
+
 @app.get("/api/dir/get_local_settings")
 async def get_dir_settings(path: str, request: fastapi.Request):
     await auth.check_permission(request, "read", path)
