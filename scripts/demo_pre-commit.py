@@ -17,6 +17,11 @@ parser.add_argument(
     help="Allow re-running workspaces",
 )
 parser.add_argument(
+    "--root-dir",
+    default="examples",
+    help="Run workspaces in this directory",
+)
+parser.add_argument(
     "filenames",
     nargs="*",
     help="Files to check",
@@ -75,17 +80,14 @@ def check_demo_ws(ws_path: Path, rerun: bool):
 
 
 if __name__ == "__main__":
+    os.chdir(args.root_dir)
+    ops.detect_plugins()
     errors = []
     for ws_file in args.filenames:
         ws_path = Path(ws_file)
-        if (
-            ws_file.endswith(".lynxkite.json")
-            and ".workspace_files" not in ws_file
-            and "generated_samples" not in ws_file
-        ):
-            e = check_demo_ws(ws_path, args.rerun)
-            if e:
-                errors.append(e)
+        e = check_demo_ws(ws_path.relative_to(args.root_dir), args.rerun)
+        if e:
+            errors.append(e)
     if errors:
         print("Errors found in demo workspaces:")
         for e in errors:
