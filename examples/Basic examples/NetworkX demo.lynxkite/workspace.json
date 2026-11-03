@@ -1,0 +1,1092 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "xy-edge__Sample graph 2output-Discard loop edges 1graph",
+      "source": "Sample graph 2",
+      "sourceHandle": "output",
+      "target": "Discard loop edges 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Ladder graph 1 output Sample graph 1 graph",
+      "source": "Ladder graph 1",
+      "sourceHandle": "output",
+      "target": "Sample graph 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Scale-free graph 1 output PageRank 1 G",
+      "source": "Scale-free graph 1",
+      "sourceHandle": "output",
+      "target": "PageRank 1",
+      "targetHandle": "G"
+    },
+    {
+      "id": "PageRank 1 output Sample graph 2 graph",
+      "source": "PageRank 1",
+      "sourceHandle": "output",
+      "target": "Sample graph 2",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Discard loop edges 1 output Core number 1 G",
+      "source": "Discard loop edges 1",
+      "sourceHandle": "output",
+      "target": "Core number 1",
+      "targetHandle": "G"
+    },
+    {
+      "id": "Visualize graph 5 b Karate club graph 1 output",
+      "source": "Karate club graph 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 5",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Sample graph 2 output Visualize graph 4 b",
+      "source": "Sample graph 2",
+      "sourceHandle": "output",
+      "target": "Visualize graph 4",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Core number 1 output Visualize graph 1 b",
+      "source": "Core number 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Sample graph 1 output Visualize graph 2 b",
+      "source": "Sample graph 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 2",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "in_progress": true,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 298.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 200.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Sample graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 298.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 200.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "nodes": "1000"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Sample graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 175.0,
+      "id": "Sample graph 1",
+      "parentId": null,
+      "position": {
+        "x": -210.0,
+        "y": 315.0
+      },
+      "type": "basic",
+      "width": 210.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "in_progress": true,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2163.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Sample graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 189.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "nodes": "100"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Sample graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 175.0,
+      "id": "Sample graph 2",
+      "parentId": null,
+      "position": {
+        "x": 700.0,
+        "y": -35.0
+      },
+      "type": "basic",
+      "width": 245.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 210.0,
+        "in_progress": true,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 189.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Discard loop edges",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 186.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {},
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Discard loop edges"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 71.0,
+      "id": "Discard loop edges 1",
+      "parentId": null,
+      "position": {
+        "x": 385.0,
+        "y": 385.0
+      },
+      "type": "basic",
+      "width": 280.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Generators > Classic > Ladder graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 298.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 200.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "n": "100"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Ladder graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 175.0,
+      "id": "Ladder graph 1",
+      "parentId": null,
+      "position": {
+        "x": -560.0,
+        "y": 315.0
+      },
+      "type": "basic",
+      "width": 210.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 190.0,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Generators > Social > Karate club graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target",
+                  "weight"
+                ],
+                "key": "edges",
+                "length": 78.0
+              },
+              "nodes": {
+                "columns": [
+                  "club",
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 34.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {},
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Karate club graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 71.0,
+      "id": "Karate club graph 1",
+      "parentId": null,
+      "position": {
+        "x": -420.0,
+        "y": -350.0
+      },
+      "type": "basic",
+      "width": 366.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Generators > Directed > Scale-free graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2163.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "alpha": "0.41",
+          "beta": "0.54",
+          "delta_in": "0.2",
+          "delta_out": "0",
+          "gamma": "0.05",
+          "n": "1000"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Scale-free graph"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 315.0,
+      "id": "Scale-free graph 1",
+      "parentId": null,
+      "position": {
+        "x": -210.0,
+        "y": -105.0
+      },
+      "type": "basic",
+      "width": 280.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2163.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Algorithms > Link analysis > PageRank alg > PageRank",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2163.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "alpha": "0.85",
+          "max_iter": "100",
+          "tol": "1e-06",
+          "weight": "weight"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "PageRank"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 175.0,
+      "id": "PageRank 1",
+      "parentId": null,
+      "position": {
+        "x": 280.0,
+        "y": -35.0
+      },
+      "type": "basic",
+      "width": 245.0
+    },
+    {
+      "data": {
+        "collapsed": true,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 146.8653948727346,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 186.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Algorithms > Core > Core number",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 186.0
+              },
+              "nodes": {
+                "columns": [
+                  "core_number",
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {},
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Core number"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 71.0,
+      "id": "Core number 1",
+      "parentId": null,
+      "position": {
+        "x": 385.0,
+        "y": 595.0
+      },
+      "type": "basic",
+      "width": 280.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# NetworkX in LynxKite\n\nLynxKite lets you access 400+ algorithms from NetworkX. Many of these can be executed on NVIDIA GPUs simply by setting `NX_CUGRAPH_AUTOCONFIG=true`.\n\nThis workspace shows off a few example operations without any overarching story."
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 270.0,
+      "id": "Comment 1",
+      "parentId": null,
+      "position": {
+        "x": -521.6656523965811,
+        "y": -717.827051521327
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 33,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target",
+                  "weight"
+                ],
+                "key": "edges",
+                "length": 78.0
+              },
+              "nodes": {
+                "columns": [
+                  "club",
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 34.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "club",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 568.0,
+      "id": "Visualize graph 5",
+      "parentId": null,
+      "position": {
+        "x": 118.45002077301234,
+        "y": -688.3634670135662
+      },
+      "type": "graph_visualization",
+      "width": 600.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 25,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 189.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "pagerank",
+              "continuous": "true",
+              "disabled": "false",
+              "type": "node_color"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 588.0,
+      "id": "Visualize graph 4",
+      "parentId": null,
+      "position": {
+        "x": 1074.9569156797108,
+        "y": -237.86687265395784
+      },
+      "type": "graph_visualization",
+      "width": 587.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 17,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 186.0
+              },
+              "nodes": {
+                "columns": [
+                  "core_number",
+                  "id",
+                  "pagerank"
+                ],
+                "key": "nodes",
+                "length": 84.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "core_number",
+              "continuous": "true",
+              "disabled": "false",
+              "type": "node_color"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 490.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 816.2489747351705,
+        "y": 388.290113319988
+      },
+      "type": "graph_visualization",
+      "width": 506.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 10,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 298.0
+              },
+              "nodes": {
+                "columns": [
+                  "id"
+                ],
+                "key": "nodes",
+                "length": 200.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "symbolSize": "5",
+              "type": "node_size"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 473.0,
+      "id": "Visualize graph 2",
+      "parentId": null,
+      "position": {
+        "x": -195.49147735863474,
+        "y": 554.3343097800306
+      },
+      "type": "graph_visualization",
+      "width": 493.0
+    }
+  ],
+  "paused": true
+}
