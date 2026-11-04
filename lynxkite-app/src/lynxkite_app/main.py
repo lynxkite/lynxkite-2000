@@ -101,7 +101,22 @@ if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
 if register_lim_routes is not None and LIM_WORKER:
     register_lim_routes(app)
-app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
+
+
+class DownloadAwareGZipMiddleware(GZipMiddleware):
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope["path"] in {
+            "/api/download",
+            "/api/export_workspace",
+        }:
+            # Avoid using GZip compression for download and export endpoints to monitor file sizes
+            # note: this will make single file transfers uncompressed
+            await self.app(scope, receive, send)
+            return
+        await super().__call__(scope, receive, send)
+
+
+app.add_middleware(DownloadAwareGZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
 def _get_ops(env: str):
@@ -344,8 +359,18 @@ async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
     await auth.check_permission(request, "read", req["path"])
     file_path = safely_inside(data_path, req["path"])
-    if not file_path.exists() or not file_path.is_file():
+    if not file_path.exists():
         raise fastapi.HTTPException(status_code=404, detail="File not found")
+    if file_path.is_dir():
+        zip_path = pathlib.Path(
+            shutil.make_archive(file_path.stem, "zip", file_path.parent, file_path.name)
+        )
+        return fastapi.responses.FileResponse(
+            zip_path,
+            filename=zip_path.name,
+            background=starlette.background.BackgroundTask(zip_path.unlink),
+        )
+
     return fastapi.responses.FileResponse(file_path)
 
 

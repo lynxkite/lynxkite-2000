@@ -41,8 +41,24 @@ import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
 type DownloadAction = "download" | "export";
+type DownloadProgress = {
+  phase: "preparing" | "downloading";
+  receivedBytes: number;
+  totalBytes: number | null;
+};
 
 type UploadItem = { file: File; path: string };
+
+function formatBytes(bytes: number) {
+  const units = ["B", "KB", "MB", "GB"];
+  let value = bytes;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+  return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
 
 async function collectDroppedEntry(
   entry: FileSystemEntry,
@@ -132,6 +148,9 @@ export default function Directory() {
   const [pendingDownload, setPendingDownload] = useState<{
     action: DownloadAction;
     itemName: string;
+    phase: DownloadProgress["phase"];
+    receivedBytes: number;
+    totalBytes: number | null;
   } | null>(null);
 
   function encodePathSegments(path: string): string {
@@ -287,7 +306,12 @@ export default function Directory() {
     list.mutate();
   }
 
-  async function downloadBlob(apiPath: string, item: DirectoryEntry, fileName: string) {
+  async function downloadBlob(
+    apiPath: string,
+    item: DirectoryEntry,
+    fileName: string,
+    onProgress: (progress: DownloadProgress) => void,
+  ) {
     const res = await apiFetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -297,7 +321,31 @@ export default function Directory() {
       alert("Failed to download file.");
       return false;
     }
-    const blob = await res.blob();
+    const headerLength = Number(res.headers.get("Content-Length"));
+    const totalBytes = Number.isFinite(headerLength) && headerLength > 0 ? headerLength : null;
+    onProgress({ phase: "downloading", receivedBytes: 0, totalBytes });
+    let blob: Blob;
+    if (res.body) {
+      const reader = res.body.getReader();
+      const chunks: Uint8Array<ArrayBuffer>[] = [];
+      let receivedBytes = 0;
+      let lastProgressUpdate = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value as Uint8Array<ArrayBuffer>);
+        receivedBytes += value.byteLength;
+        if (performance.now() - lastProgressUpdate >= 100) {
+          onProgress({ phase: "downloading", receivedBytes, totalBytes });
+          lastProgressUpdate = performance.now();
+        }
+      }
+      onProgress({ phase: "downloading", receivedBytes, totalBytes });
+      blob = new Blob(chunks, { type: res.headers.get("Content-Type") ?? "" });
+    } else {
+      blob = await res.blob();
+      onProgress({ phase: "downloading", receivedBytes: blob.size, totalBytes });
+    }
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -323,9 +371,17 @@ export default function Directory() {
     trigger: HTMLElement,
   ) {
     if (pendingDownload !== null) return;
-    setPendingDownload({ action, itemName: item.name });
+    setPendingDownload({
+      action,
+      itemName: item.name,
+      phase: "preparing",
+      receivedBytes: 0,
+      totalBytes: null,
+    });
     try {
-      const started = await downloadBlob(apiPath, item, fileName);
+      const started = await downloadBlob(apiPath, item, fileName, (progress) => {
+        setPendingDownload({ action, itemName: item.name, ...progress });
+      });
       if (started) {
         closeDropdown(trigger);
       }
@@ -493,28 +549,29 @@ export default function Directory() {
                             </li>
                           </>
                         )}
-                        {item.type !== "directory" && (
-                          <li>
-                            <button
-                              type="button"
-                              aria-disabled={pendingDownload !== null}
-                              onClick={async (e) => {
-                                await runDownloadAction(
-                                  "download",
-                                  "/api/download",
-                                  item,
-                                  item.name.split("/").pop()!,
-                                  e.currentTarget,
-                                );
-                              }}
-                            >
-                              {pendingDownload?.action === "download" &&
-                              pendingDownload.itemName === item.name
-                                ? "Downloading..."
-                                : "Download"}
-                            </button>
-                          </li>
-                        )}
+                        <li>
+                          <button
+                            type="button"
+                            aria-disabled={pendingDownload !== null}
+                            onClick={async (e) => {
+                              const fileName = item.name.split("/").pop()!;
+                              await runDownloadAction(
+                                "download",
+                                "/api/download",
+                                item,
+                                item.type === "workspace" ? `${fileName}.zip` : fileName,
+                                e.currentTarget,
+                              );
+                            }}
+                          >
+                            {pendingDownload?.action === "download" &&
+                            pendingDownload.itemName === item.name
+                              ? pendingDownload.phase === "preparing"
+                                ? "Preparing..."
+                                : "Downloading..."
+                              : "Download"}
+                          </button>
+                        </li>
                         {item.type === "workspace" && (
                           <li>
                             <button
@@ -533,7 +590,9 @@ export default function Directory() {
                             >
                               {pendingDownload?.action === "export" &&
                               pendingDownload.itemName === item.name
-                                ? "Exporting..."
+                                ? pendingDownload.phase === "preparing"
+                                  ? "Preparing..."
+                                  : "Exporting..."
                                 : "Export static page"}
                             </button>
                           </li>
@@ -579,6 +638,64 @@ export default function Directory() {
             onSubmit={(name) => newFolderIn(path || "", name)}
           />
         </>
+      )}
+      {pendingDownload && (
+        <div className="toast toast-end z-50">
+          <output
+            className="alert alert-info flex w-80 max-w-[calc(100vw-2rem)] flex-col items-stretch gap-2"
+            aria-live="polite"
+          >
+            <span>
+              {pendingDownload.phase === "preparing"
+                ? `Preparing ${pendingDownload.itemName}...`
+                : `Downloading ${pendingDownload.itemName}`}
+            </span>
+            {pendingDownload.phase === "preparing" ? (
+              <progress
+                className="progress progress-primary w-full"
+                aria-label="Preparing download"
+              />
+            ) : (
+              <>
+                <progress
+                  className="progress progress-primary w-full"
+                  value={
+                    pendingDownload.totalBytes === null ? undefined : pendingDownload.receivedBytes
+                  }
+                  max={pendingDownload.totalBytes ?? 1}
+                  aria-label="Download progress"
+                  aria-valuetext={
+                    pendingDownload.totalBytes === null
+                      ? `${formatBytes(pendingDownload.receivedBytes)} downloaded`
+                      : `${Math.min(
+                          100,
+                          Math.round(
+                            (100 * pendingDownload.receivedBytes) / pendingDownload.totalBytes,
+                          ),
+                        )}%`
+                  }
+                />
+                <span className="flex justify-between gap-2 text-sm tabular-nums">
+                  {formatBytes(pendingDownload.receivedBytes)}
+                  {pendingDownload.totalBytes !== null && (
+                    <>
+                      <span>of {formatBytes(pendingDownload.totalBytes)}</span>
+                      <span>
+                        {Math.min(
+                          100,
+                          Math.round(
+                            (100 * pendingDownload.receivedBytes) / pendingDownload.totalBytes,
+                          ),
+                        )}
+                        %
+                      </span>
+                    </>
+                  )}
+                </span>
+              </>
+            )}
+          </output>
+        </div>
       )}
       {uploadProgress && <UploadProgressToast {...uploadProgress} />}
       {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
