@@ -101,6 +101,22 @@ function getUserManager() {
   return userManager;
 }
 
+export function useCurrentUser(): string | null {
+  const config = getConfig();
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  useEffect(() => {
+    if (!config.authentication_issuer) return;
+    const manager = getUserManager();
+    if (!manager) return;
+    manager.getUser().then((u) => {
+      setDisplayName(
+        u ? (u.profile?.name ?? (u.profile?.email as string | undefined) ?? "User") : null,
+      );
+    });
+  }, [config.authentication_issuer]);
+  return displayName;
+}
+
 export async function triggerLogin() {
   const manager = getUserManager();
   if (!manager || loginStarted) {
