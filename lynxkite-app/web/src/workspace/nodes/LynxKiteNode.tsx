@@ -151,14 +151,17 @@ function canScrollRight(e: HTMLElement) {
 function onWheel(e: WheelEvent) {
   if (e.ctrlKey) return; // Zoom, not scroll.
   let t = e.target as HTMLElement;
+  // Shift + wheel scrolls horizontally, but the browser may still report the delta as vertical.
+  const dx = e.shiftKey && e.deltaX === 0 ? e.deltaY : e.deltaX;
+  const dy = e.shiftKey ? 0 : e.deltaY;
   // If we find an element inside the node container that can apply this scroll event, we stop propagation.
   // Otherwise ReactFlow can have it and pan the workspace.
   while (t && !t.classList.contains("node-container")) {
     if (
-      (e.deltaX < 0 && canScrollLeft(t)) ||
-      (e.deltaX > 0 && canScrollRight(t)) ||
-      (e.deltaY < 0 && canScrollUp(t)) ||
-      (e.deltaY > 0 && canScrollDown(t))
+      (dx < 0 && canScrollLeft(t)) ||
+      (dx > 0 && canScrollRight(t)) ||
+      (dy < 0 && canScrollUp(t)) ||
+      (dy > 0 && canScrollDown(t))
     ) {
       e.stopPropagation();
       return;
