@@ -67,11 +67,11 @@ async def edit_requirements(ws_path, content: str) -> None:
 @mcp.tool()
 def create_new_lynxkite_workspace(ws_path, env_name="LynxKite Graph Analytics") -> None:
     """Create a new LynxKite workspace. Worksapces should be created under the `examples` folder.
-    The extension should always be .lynxkite.json.
+    The extension should always be .lynxkite.
     The env_name should be one of the available environments: "LynxKite Graph Analytics", "Pillow", "PyTorch model".
     """
-    if not ws_path.endswith(".lynxkite.json"):
-        raise ValueError("The workspace file name should end with .lynxkite.json")
+    if not ws_path.endswith(".lynxkite"):
+        raise ValueError("The workspace name should end with .lynxkite")
     if not ws_path.startswith("examples/"):
         raise ValueError("The workspace file should be created under the examples folder")
     ws = workspace.Workspace()

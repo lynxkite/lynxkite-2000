@@ -139,9 +139,13 @@ export default function Directory() {
     return segments.map((segment) => encodeURIComponent(segment)).join("/");
   }
 
+  function boxDirectoryPath(item: DirectoryEntry): string {
+    return `${item.name}/node_data`;
+  }
+
   function newWorkspaceIn(path: string, workspaceName: string) {
     const pathSlash = path ? `${encodePathSegments(path)}/` : "";
-    navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite.json`, {
+    navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite`, {
       replace: true,
     });
   }
@@ -263,7 +267,7 @@ export default function Directory() {
     const oldParts = renameTarget.name.split("/");
     oldParts.pop();
     const parentPath = oldParts.join("/");
-    const targetName = renameTarget.type === "workspace" ? `${newName}.lynxkite.json` : newName;
+    const targetName = renameTarget.type === "workspace" ? `${newName}.lynxkite` : newName;
     const newPath = parentPath ? `${parentPath}/${targetName}` : targetName;
     if (newPath === renameTarget.name) {
       setRenameTarget(null);
@@ -457,6 +461,13 @@ export default function Directory() {
                         <DotsVertical />
                       </button>
                       <ul tabIndex={0} className="dropdown-content menu">
+                        {item.type === "workspace" && (
+                          <li>
+                            <Link to={`/dir/${encodePathSegments(boxDirectoryPath(item))}`}>
+                              View box files
+                            </Link>
+                          </li>
+                        )}
                         {canWrite && (
                           <>
                             <li>
