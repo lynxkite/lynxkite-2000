@@ -1,5 +1,5 @@
 // Pages like the directory browser use this to get a uniform layout.
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { NavLink } from "react-router";
 import Activity from "~icons/tabler/activity";
 import Book from "~icons/tabler/book";
@@ -12,7 +12,15 @@ import SettingsIcon from "~icons/tabler/settings";
 import UserIcon from "~icons/tabler/user";
 import logo from "./assets/logo.png";
 import logoSparky from "./assets/logo-sparky.jpg";
-import { getConfig, triggerLogin, triggerLogout, useCurrentUser } from "./common.ts";
+import {
+  getConfig,
+  triggerLogin,
+  triggerLogout,
+  useCurrentUser,
+  useFolderPermissions,
+  usePath,
+} from "./common.ts";
+import { FolderSettingsModal, type FolderSettingsModalHandle } from "./FolderSettingsModal.tsx";
 import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.tsx";
 
 const SIDEBAR_OPEN_KEY = "lynxkite-sidebar-open";
@@ -26,7 +34,18 @@ export default function ManagementPage(props: {
   className?: string;
   sidebarBottom?: React.ReactNode;
 }) {
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const folderSettingsModalRef = useRef<FolderSettingsModalHandle>(null);
+  // Settings apply to the folder being viewed, or the folder containing the open workspace.
+  const route = usePath();
+  const folderPath = route.startsWith("/edit/")
+    ? route
+        .replace(/^[/]edit[/]/, "")
+        .split("/")
+        .slice(0, -1)
+        .join("/")
+    : route.replace(/^[/]dir[/]?/, "").replace(/^[/]$/, "");
+  const settingsPath = route === "/progress" ? "" : folderPath;
+  const canWrite = useFolderPermissions(settingsPath).write;
   const [sidebarOpen, setSidebarOpenState] = useState(() => {
     try {
       return localStorage.getItem(SIDEBAR_OPEN_KEY) !== "false";
@@ -86,15 +105,17 @@ export default function ManagementPage(props: {
             <Book />
             <span className="sidebar-label">Documentation</span>
           </a>
-          <button
-            type="button"
-            className="sidebar-nav-item"
-            title="Settings"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <SettingsIcon />
-            <span className="sidebar-label">Settings</span>
-          </button>
+          {canWrite && (
+            <button
+              type="button"
+              className="sidebar-nav-item"
+              title="Settings"
+              onClick={() => folderSettingsModalRef.current?.open(settingsPath)}
+            >
+              <SettingsIcon />
+              <span className="sidebar-label">Settings</span>
+            </button>
+          )}
         </nav>
 
         <div className="sidebar-inner">
@@ -149,19 +170,7 @@ export default function ManagementPage(props: {
         </div>
       </div>
 
-      {settingsOpen && (
-        // biome-ignore lint/a11y/useKeyWithClickEvents: mockup dialog
-        <div className="settings-popup-backdrop" onClick={() => setSettingsOpen(false)}>
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: mockup dialog */}
-          <div className="settings-popup" onClick={(e) => e.stopPropagation()}>
-            <h3>Folder settings</h3>
-            <p>Folder demos will be here</p>
-            <button type="button" onClick={() => setSettingsOpen(false)}>
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
 
       <div className="management-main">
         <div className="logo">
