@@ -311,7 +311,6 @@ async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
     return {"status": "ok"}
 
 
-# TODO: workspace download.
 @app.post("/api/download")
 async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
