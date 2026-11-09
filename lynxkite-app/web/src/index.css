@@ -2137,27 +2137,3 @@ svg {
     position: absolute !important;
   }
 }
-
-.settings-popup-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.settings-popup {
-  background: white;
-  color: #123;
-  padding: 20px 28px;
-  border-radius: 10px;
-  min-width: 280px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  text-align: center;
-
-  h3 {
-    margin-top: 0;
-  }
-}
