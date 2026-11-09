@@ -18,7 +18,6 @@ import {
   triggerLogout,
   useCurrentUser,
   useFolderPermissions,
-  usePath,
 } from "./common.ts";
 import { FolderSettingsModal, type FolderSettingsModalHandle } from "./FolderSettingsModal.tsx";
 import { SidebarFavorites, SidebarRecent, SidebarSearch } from "./SidebarExtras.tsx";
@@ -35,17 +34,9 @@ export default function ManagementPage(props: {
   sidebarBottom?: React.ReactNode;
 }) {
   const folderSettingsModalRef = useRef<FolderSettingsModalHandle>(null);
-  // Settings apply to the folder being viewed, or the folder containing the open workspace.
-  const route = usePath();
-  const folderPath = route.startsWith("/edit/")
-    ? route
-        .replace(/^[/]edit[/]/, "")
-        .split("/")
-        .slice(0, -1)
-        .join("/")
-    : route.replace(/^[/]dir[/]?/, "").replace(/^[/]$/, "");
-  const settingsPath = route === "/progress" ? "" : folderPath;
-  const canWrite = useFolderPermissions(settingsPath).write;
+  // The sidebar button always opens the global (root folder) settings.
+  // Per-folder settings are available in the directory browser.
+  const canWrite = useFolderPermissions("").write;
   const [sidebarOpen, setSidebarOpenState] = useState(() => {
     try {
       return localStorage.getItem(SIDEBAR_OPEN_KEY) !== "false";
@@ -110,7 +101,7 @@ export default function ManagementPage(props: {
               type="button"
               className="sidebar-nav-item"
               title="Settings"
-              onClick={() => folderSettingsModalRef.current?.open(settingsPath)}
+              onClick={() => folderSettingsModalRef.current?.open("")}
             >
               <SettingsIcon />
               <span className="sidebar-label">Settings</span>
