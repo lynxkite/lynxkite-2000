@@ -1,25 +1,26 @@
 """CRDT is used to synchronize workspace state for backend and frontend(s)."""
 
 import asyncio
+import builtins
 import contextlib
+import os.path
 import pathlib
 import posixpath
 import threading
-import fastapi
-import os.path
-import pycrdt.websocket
-import pycrdt.store.file
 import typing
 from dataclasses import dataclass, field
+
+import fastapi
+import pycrdt.store.file
+import pycrdt.websocket
 import uvicorn.protocols.utils
-import builtins
-from websockets.exceptions import ConnectionClosedOK
-from lynxkite_core import workspace, ops
+from lynxkite_core import ops, workspace, workspace_paths
 from lynxkite_core.workspace_paths import workspace_file_path
 from watchdog import events, observers
+from websockets.exceptions import ConnectionClosedOK
+
+from . import progress_crdt, ws_auth
 from .crdt_update import crdt_update
-from . import progress_crdt
-from . import ws_auth
 
 enterprise_backend: typing.Any = None
 try:
@@ -528,6 +529,9 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
+    if not workspace_paths.is_workspace_bundle(room_name):
+        await websocket.close(code=1008)
+        return
     progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)

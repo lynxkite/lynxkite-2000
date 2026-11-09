@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-import pytest
 import yaml
 from lynxkite_core.folder_settings import (
     ACLSettings,
@@ -12,7 +11,6 @@ from lynxkite_core.folder_settings import (
     get_total_settings,
     set_local_settings,
 )
-from lynxkite_core.workspace_paths import LegacyWorkspaceError
 
 
 def test_get_total_settings_merges_parent_and_child(tmp_path: Path):
@@ -105,11 +103,6 @@ def test_get_total_settings_accepts_folder_path_without_suffix(tmp_path: Path):
 
     merged = get_total_settings(tmp_path, "team")
     assert merged.lim["Box A"] == LIMBoxConfig(cpu="1", memory="8Gi")
-
-
-def test_get_total_settings_rejects_legacy_workspace(tmp_path: Path):
-    with pytest.raises(LegacyWorkspaceError, match="python3 scripts/migrate_workspaces.py"):
-        get_total_settings(tmp_path, "team/ws.lynxkite.json")
 
 
 def test_get_total_settings_merges_acl_parent_and_child(tmp_path: Path):

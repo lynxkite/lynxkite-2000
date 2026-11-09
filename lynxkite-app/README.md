@@ -16,12 +16,6 @@ uv pip install -e .
 cd ../examples && LYNXKITE_RELOAD=1 lynxkite
 ```
 
-The app stops at startup if the data directory contains legacy `.lynxkite.json` workspaces.
-From the repository root, migrate them before restarting:
-
-```bash
-python3 scripts/migrate_workspaces.py examples
-```
 
 To run the frontend:
 

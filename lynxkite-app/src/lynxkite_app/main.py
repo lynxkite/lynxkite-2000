@@ -1,7 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
 import asyncio
-import contextlib
 import os
 import pathlib
 import shutil
@@ -54,46 +53,7 @@ lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
 
-def check_for_legacy_workspaces(data_root: pathlib.Path) -> None:
-    data_root = data_root.resolve()
-    if not data_root.is_dir():
-        raise NotADirectoryError(data_root)
-
-    def raise_walk_error(error: OSError) -> None:
-        raise error
-
-    for parent, directories, filenames in os.walk(data_root, onerror=raise_walk_error):
-        directories[:] = sorted(
-            name
-            for name in directories
-            if not name.startswith(".")
-            and name != "node_modules"
-            and not name.endswith(workspace_paths.WORKSPACE_BUNDLE_SUFFIX)
-        )
-        for filename in sorted(filenames):
-            candidate = pathlib.Path(parent) / filename
-            if workspace_paths.is_legacy_workspace(candidate):
-                raise workspace_paths.LegacyWorkspaceError(candidate, data_root.resolve())
-
-
-@contextlib.asynccontextmanager
-async def lifespan(app):
-    check_for_legacy_workspaces(data_path)
-    async with crdt.lifespan(app):
-        yield
-
-
-app = fastapi.FastAPI(lifespan=lifespan)
-
-
-@app.exception_handler(workspace_paths.LegacyWorkspaceError)
-async def legacy_workspace_error_handler(
-    request: fastapi.Request, error: workspace_paths.LegacyWorkspaceError
-):
-    detailed_error = workspace_paths.LegacyWorkspaceError(error.path, data_path.resolve())
-    return fastapi.responses.JSONResponse(status_code=400, content={"detail": str(detailed_error)})
-
-
+app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 if assistant_router is not None:
     app.include_router(assistant_router)
@@ -143,7 +103,6 @@ async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
     assert isinstance(req["path"], str)
     workspace_path: pathlib.Path = safely_inside(data_path, req["path"])
-    workspace_paths.reject_legacy_workspace(workspace_path)
     crdt_path: pathlib.Path = safely_inside(data_path / ".crdt", f"{req['path']}.crdt")
     if workspace_paths.is_workspace_bundle(workspace_path):
         shutil.rmtree(workspace_path)
@@ -156,6 +115,8 @@ async def delete_workspace(req: dict, request: fastapi.Request):
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
     await auth.check_permission(request, "read", workspace)
+    if not workspace_paths.is_workspace_bundle(workspace):
+        raise fastapi.HTTPException(status_code=404, detail="Output not found")
     json_path = safely_inside(
         data_path, data_path / workspace_paths.display_path(workspace, node_id)
     )
@@ -174,7 +135,6 @@ class DirectoryEntry(pydantic.BaseModel):
 
 
 def _get_path_type(path: pathlib.Path) -> str:
-    workspace_paths.reject_legacy_workspace(path)
     if path.is_dir() and workspace_paths.is_workspace_bundle(path):
         return "workspace"
     elif path.is_dir():
@@ -280,8 +240,6 @@ async def rename_path(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["new_path"])
     old_path: pathlib.Path = safely_inside(data_path, req["old_path"])
     new_path: pathlib.Path = safely_inside(data_path, req["new_path"])
-    workspace_paths.reject_legacy_workspace(old_path)
-    workspace_paths.reject_legacy_workspace(new_path)
     assert old_path.exists(), f"Path '{old_path}' does not exist"
     assert not new_path.exists(), f"Path '{new_path}' already exists"
     old_rel = req["old_path"]
@@ -355,7 +313,6 @@ async def export_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "read", req["path"])
     workspace_path = pathlib.Path(req["path"])
     file_path = safely_inside(data_path, req["path"])
-    workspace_paths.reject_legacy_workspace(file_path)
     if (
         not file_path.exists()
         or not file_path.is_dir()
@@ -381,6 +338,8 @@ async def export_workspace(req: dict, request: fastapi.Request):
 async def execute_workspace(name: str, req: fastapi.Request):
     """Trigger and await the execution of a workspace."""
     await auth.check_permission(req, "write", name)
+    if not workspace_paths.is_workspace_bundle(name):
+        raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)

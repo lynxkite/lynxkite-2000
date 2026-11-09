@@ -92,7 +92,6 @@ class FolderSettings(BaseModel):
 
 def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     path = workspace_path.replace("\\", "/")
-    workspace_paths.reject_legacy_workspace(path)
     if path.endswith(workspace_paths.WORKSPACE_BUNDLE_SUFFIX):
         path = path.rsplit("/", 1)[0] if "/" in path else ""
     else:
