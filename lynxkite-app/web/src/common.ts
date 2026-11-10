@@ -143,16 +143,9 @@ export async function triggerLogout() {
 
   const returnTo = window.location.origin;
   const clientId = cachedConfig?.authentication_audience ?? "";
-  const issuer = (cachedConfig?.authentication_issuer || "").replace(/\/$/, "");
 
   try {
-    if (issuer.includes("auth0.com")) {
-      const url = new URL(`${issuer}/v2/logout`);
-      url.searchParams.set("client_id", clientId);
-      url.searchParams.set("returnTo", returnTo);
-      window.location.assign(url.toString());
-      return;
-    }
+    // Standard OIDC RP-initiated logout. Works for both Keycloak and Auth0 (/oidc/logout).
     const { end_session_endpoint: endSession } = await manager.metadataService.getMetadata();
     if (!endSession) {
       window.location.assign(returnTo);

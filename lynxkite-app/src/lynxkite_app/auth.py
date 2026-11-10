@@ -15,14 +15,16 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from . import acl
 
 security = HTTPBearer(auto_error=False)
-issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")  # https://dev-lynxkite.eu.auth0.com/
-audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")  # CzxYq4nCYr3qvp2t9GDZFb1G7bRkNtD0
+# Keycloak: https://<host>/realms/lynxkite, Auth0: https://dev-lynxkite.eu.auth0.com/
+issuer = os.environ.get("LYNXKITE_AUTH_ISSUER")
+# Keycloak: lynxkite-web, Auth0: the SPA application's client id.
+audience = os.environ.get("LYNXKITE_AUTH_AUDIENCE")
 
 
 class OIDCProvider:
     def __init__(self, issuer: str, audience: str):
         self.audience = audience
-        # Strip trailing slash so Auth0 issuers do not 404 on well-known discovery.
+        # Strip trailing slash: Auth0 issuers end in "/", Keycloak issuers do not.
         discovery = f"{issuer.rstrip('/')}/.well-known/openid-configuration"
         self.config = httpx.get(discovery).json()
         self.issuer = self.config.get("issuer") or issuer
