@@ -430,7 +430,7 @@ export default function Directory() {
               </button>
             </div>
           )}
-          {!canWrite && !permissions.isLoading && config.authentication_issuer && (
+          {!canWrite && !permissions.isLoading && (
             <p className="text-sm opacity-70 px-2">This folder is read-only.</p>
           )}
 
