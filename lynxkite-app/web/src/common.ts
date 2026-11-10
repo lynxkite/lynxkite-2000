@@ -209,7 +209,7 @@ function fetchDisplayUrl(nodeId: string, displayVersion: number, wsPath: string)
   const staticConfig = getStaticWorkspaceConfig();
   if (staticConfig) {
     const filesBase = staticConfig.filesBase.replace(/[/]?$/, "/");
-    return `${filesBase}${encodeURIComponent(nodeId)}.json?v=${displayVersion}`;
+    return `${filesBase}${encodeURIComponent(nodeId)}/display.json?v=${displayVersion}`;
   }
   const sanitizedWorkspacePath = wsPath
     .split("/")

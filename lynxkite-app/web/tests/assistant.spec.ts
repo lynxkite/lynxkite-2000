@@ -40,5 +40,5 @@ test("sends the workspace path for a new workspace", async () => {
     .replace(/^\/edit\//, "")
     .replace(/\/$/, "");
   await expect.poll(() => requestedWorkspace).toBe(expectedPath);
-  expect(expectedPath.endsWith("assistant_path_test.lynxkite.json")).toBe(true);
+  expect(expectedPath.endsWith("assistant_path_test.lynxkite")).toBe(true);
 });
