@@ -36,7 +36,9 @@ class OIDCProvider:
             self.jwks,
             issuer=self.issuer,
             algorithms=["RS256"],
-            options={"verify_aud": False},
+            # We receive the ID token alone. Keycloak's ID tokens carry at_hash, which python-jose
+            # can only check against the access token. at_hash matters only for implicit/hybrid flows.
+            options={"verify_aud": False, "verify_at_hash": False},
         )
         value = payload.get("aud")
         if value == self.audience:
