@@ -9,6 +9,8 @@ import deepmerge
 import pydantic
 import yaml
 
+from . import workspace_paths
+
 SETTINGS_FILENAME = "settings.yaml"
 
 
@@ -90,7 +92,7 @@ class FolderSettings(BaseModel):
 
 def _containing_dirs(data_root: Path, workspace_path: str) -> list[Path]:
     path = workspace_path.replace("\\", "/")
-    if path.endswith(".lynxkite.json"):
+    if path.endswith(workspace_paths.WORKSPACE_BUNDLE_SUFFIX):
         path = path.rsplit("/", 1)[0] if "/" in path else ""
     else:
         path = path.strip("/")

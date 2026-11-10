@@ -62,7 +62,7 @@ def code_as_workspace(source_path: str):
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             function_nodes[node.name] = node
-    ws = workspace.Workspace(env=ENV, path=source_path + ".lynxkite.json", paused=True)
+    ws = workspace.Workspace(env=ENV, path=source_path + ".lynxkite", paused=True)
     saved_values = {}
     box_x = {}
     box_y = {}

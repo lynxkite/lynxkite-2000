@@ -14,7 +14,7 @@ import starlette.datastructures
 import starlette.exceptions
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from lynxkite_core import opcontext, ops, workspace, folder_settings
+from lynxkite_core import folder_settings, opcontext, ops, workspace, workspace_paths
 from pydantic_core import from_json
 
 from . import acl, auth, crdt, workspace_export
@@ -39,6 +39,8 @@ except ImportError:
     register_lim_routes = None
 
 LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER")
+data_path = pathlib.Path()
+acl.set_data_root(data_path)
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -49,6 +51,7 @@ opcontext.PROGRESS_REPORTER = ProgressReporter
 opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
+
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
@@ -85,10 +88,6 @@ def get_config() -> dict[str, bool | str | None]:
     }
 
 
-data_path = pathlib.Path()
-acl.set_data_root(data_path)
-
-
 @app.get("/api/permissions")
 async def get_permissions(path: str, request: fastapi.Request) -> dict[str, bool]:
     return await auth.effective_permissions(request, path)
@@ -103,20 +102,24 @@ async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
     assert isinstance(req["path"], str)
-    json_path: pathlib.Path = safely_inside(data_path, req["path"])
+    workspace_path: pathlib.Path = safely_inside(data_path, req["path"])
     crdt_path: pathlib.Path = safely_inside(data_path / ".crdt", f"{req['path']}.crdt")
-    workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
-    json_path.unlink(missing_ok=True)
+    if workspace_paths.is_workspace_bundle(workspace_path):
+        shutil.rmtree(workspace_path)
+    else:
+        workspace_path.unlink()
     crdt_path.unlink(missing_ok=True)
-    if workspace_files_path.exists():
-        shutil.rmtree(workspace_files_path)
     crdt.delete_room(req["path"])
 
 
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
-    await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
-    json_path = safely_inside(data_path, ops.build_output_path(workspace, node_id))
+    await auth.check_permission(request, "read", workspace)
+    if not workspace_paths.is_workspace_bundle(workspace):
+        raise fastapi.HTTPException(status_code=404, detail="Output not found")
+    json_path = safely_inside(
+        data_path, data_path / workspace_paths.display_path(workspace, node_id)
+    )
     output = None
     if json_path.exists():
         with open(json_path, mode="r") as f:
@@ -132,10 +135,10 @@ class DirectoryEntry(pydantic.BaseModel):
 
 
 def _get_path_type(path: pathlib.Path) -> str:
-    if path.is_dir():
-        return "directory"
-    elif path.suffixes[-2:] == [".lynxkite", ".json"]:
+    if path.is_dir() and workspace_paths.is_workspace_bundle(path):
         return "workspace"
+    elif path.is_dir():
+        return "directory"
     else:
         return "file"
 
@@ -243,6 +246,7 @@ async def rename_path(req: dict, request: fastapi.Request):
     old_path.rename(new_path)
     # Drop any open room under the old name so clients don't keep stale pointers.
     crdt.delete_room(old_rel)
+    (data_path / ".crdt" / f"{old_rel}.crdt").unlink(missing_ok=True)
 
 
 @app.get("/api/service/{module_path:path}")
@@ -292,6 +296,7 @@ async def upload(req: fastapi.Request, dir: str = "uploads") -> dict[str, str]:
     return {"status": "ok"}
 
 
+# TODO: workspace download.
 @app.post("/api/download")
 async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
@@ -308,7 +313,11 @@ async def export_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "read", req["path"])
     workspace_path = pathlib.Path(req["path"])
     file_path = safely_inside(data_path, req["path"])
-    if not file_path.exists() or not file_path.is_file():
+    if (
+        not file_path.exists()
+        or not file_path.is_dir()
+        or not workspace_paths.is_workspace_bundle(file_path)
+    ):
         raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:
         zip_path = pathlib.Path(f.name)
@@ -329,6 +338,8 @@ async def export_workspace(req: dict, request: fastapi.Request):
 async def execute_workspace(name: str, req: fastapi.Request):
     """Trigger and await the execution of a workspace."""
     await auth.check_permission(req, "write", name)
+    if not workspace_paths.is_workspace_bundle(name):
+        raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)

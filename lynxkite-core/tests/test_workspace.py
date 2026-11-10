@@ -1,13 +1,14 @@
 import os
 import pathlib
 import pytest
+import shutil
 import tempfile
 from lynxkite_core import ops, workspace, workspace_progress
 
 ENV = "test_workspace_env"
 
 
-def test_save_load():
+def test_save_load(tmp_path):
     ws = workspace.Workspace(env=ENV)
     ws.add_node(
         id="1",
@@ -28,7 +29,7 @@ def test_save_load():
             targetHandle="",
         )
     )
-    path = os.path.join(tempfile.gettempdir(), "test_workspace.json")
+    path = tmp_path / "test_workspace.lynxkite"
 
     try:
         ws.save(path)
@@ -58,7 +59,7 @@ def test_save_load():
             assert edge.sourceHandle == loaded_edge.sourceHandle
             assert edge.targetHandle == loaded_edge.targetHandle
     finally:
-        os.remove(path)
+        shutil.rmtree(path)
 
 
 @pytest.fixture(autouse=True)

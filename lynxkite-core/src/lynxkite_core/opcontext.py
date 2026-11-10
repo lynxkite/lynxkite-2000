@@ -1,16 +1,20 @@
 """Defines the OpContext class, which is passed to operations when they are executed.
 This context can be used to send messages to the frontend, capture stdout/stderr, and more."""
 
-import inspect
-import typing
-import contextlib
 import asyncio
+import contextlib
+import inspect
 import io
+import os
+import typing
 from dataclasses import dataclass, field
+from pathlib import Path
+
+from .workspace_paths import box_data_dir
 
 if typing.TYPE_CHECKING:
-    from .ops import Op
     from . import workspace
+    from .ops import Op
 
 
 class FunctionTerminalEmulator(typing.Protocol):
@@ -224,6 +228,21 @@ class OpContext:
         if self.op is not None:
             return getattr(self.op, name)
         raise AttributeError(name)
+
+    def get_box_dir(self, subdir: str | os.PathLike[str] = Path("")) -> Path:
+        """Get the custom output path for the current box based on the workspace and node.
+        Create the directory if it doesn't exist.
+        """
+        if self.ws is None or self.node is None:
+            raise ValueError("Both ws and node must be provided")
+        ws_path = Path(self.ws.path or "")
+        path = box_data_dir(ws_path, self.node.id)
+        subdir_path = Path(subdir)
+        if subdir_path.is_absolute() or ".." in subdir_path.parts:
+            raise ValueError("subdir must be a relative path")
+        calc_path = path / subdir_path
+        os.makedirs(calc_path, exist_ok=True)
+        return calc_path
 
     def print(
         self,
